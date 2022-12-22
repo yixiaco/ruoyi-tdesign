@@ -13,7 +13,6 @@
     "lint:fix": "eslint --ext .vue,.js,jsx,.ts,.tsx ./ --max-warnings 0 --fix",
     "stylelint": "stylelint src/**/*.{html,vue,sass,less}",
     "stylelint:fix": "stylelint --fix src/**/*.{html,vue,vss,sass,less}",
-    "prepare": "husky install",
     "site:preview": "npm run build && cp -r dist _site",
     "test": "echo \"no test specified,work in process\"",
     "test:coverage": "echo \"no test:coverage specified,work in process\""
@@ -65,7 +64,6 @@
     "eslint-plugin-prettier": "^4.0.0",
     "eslint-plugin-vue": "^9.2.0",
     "eslint-plugin-vue-scoped-css": "^2.2.0",
-    "husky": "^7.0.4",
     "less": "^4.1.1",
     "lint-staged": "^12.1.2",
     "mockjs": "^1.1.0",
