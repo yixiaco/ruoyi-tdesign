@@ -1,0 +1,47 @@
+import { request } from '@/utils/request';
+#if($table.crud || $table.sub)
+#set($Result="TableDataInfo<${ClassName}Vo>")
+import { R, TableDataInfo } from '@/api/model/resultModel';
+#elseif($table.tree)
+#set($Result="R<Array<${ClassName}Vo>>")
+import { R } from '@/api/model/resultModel';
+#end
+import { ${ClassName}Vo } from '@/api/${moduleName}/model/${businessName}Model';
+
+// 查询${functionName}列表
+export function list${BusinessName}(query) {
+  return request.get<$Result>({
+    url: '/${moduleName}/${businessName}/list',
+    params: query,
+  });
+}
+
+// 查询${functionName}详细
+export function get${BusinessName}(${pkColumn.javaField}: ${GenUtil.javaTypeToTypescript(${pkColumn.javaType})}) {
+  return request.get<R<${ClassName}Vo>>({
+    url: `/${moduleName}/${businessName}/${${pkColumn.javaField}}`,
+  });
+}
+
+// 新增${functionName}
+export function add${BusinessName}(data) {
+  return request.post<R<void>>({
+    url: '/${moduleName}/${businessName}',
+    data,
+  });
+}
+
+// 修改${functionName}
+export function update${BusinessName}(data) {
+  return request.put<R<void>>({
+    url: '/${moduleName}/${businessName}',
+    data,
+  });
+}
+
+// 删除${functionName}
+export function del${BusinessName}(${pkColumn.javaField}s: Array<${GenUtil.javaTypeToTypescript(${pkColumn.javaType})}>) {
+  return request.delete<R<void>>({
+    url: `/${moduleName}/${businessName}/${${pkColumn.javaField}s}`,
+  });
+}

@@ -1,0 +1,55 @@
+package ${packageName}.domain.bo;
+
+import com.ruoyi.common.core.validate.AddGroup;
+import com.ruoyi.common.core.validate.EditGroup;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import javax.validation.constraints.*;
+
+import java.util.Date;
+
+#foreach ($import in $importList)
+import ${import};
+#end
+#if($table.crud || $table.sub)
+import com.ruoyi.common.core.domain.BaseEntity;
+#elseif($table.tree)
+import com.ruoyi.common.core.domain.TreeEntity;
+#end
+
+/**
+ * ${functionName}业务对象 ${tableName}
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+#if($table.crud || $table.sub)
+#set($Entity="BaseEntity")
+#elseif($table.tree)
+#set($Entity="TreeEntity<${ClassName}Bo>")
+#end
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class ${ClassName}Bo extends ${Entity} {
+
+#foreach ($column in $columns)
+#if(($column.isPk == '1' || $column.query || $column.isInsert || $column.isEdit))
+    /**
+     * $column.columnComment
+     */
+#if($column.isRequired == 1)
+#set($Group0 = [])
+#if($column.isInsert && $Group0.add('AddGroup.class'))#end
+#if($column.isEdit && $Group0.add('EditGroup.class'))#end
+#set($Group = $StringUtils.join($Group0, ", "))
+#if($column.javaType == 'String')
+    @NotBlank(message = "$column.columnComment不能为空"#if($Group), groups = {${Group}}#end)
+#else
+    @NotNull(message = "$column.columnComment不能为空"#if($Group), groups = {${Group}}#end)
+#end
+#end
+    private $column.javaType $column.javaField;
+
+#end
+#end
+}

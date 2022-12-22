@@ -1,0 +1,185 @@
+<template>
+  <div>
+    <t-image
+      :src="options.img"
+      :style="{ width: '160px', height: '160px', margin: '0 auto' }"
+      shape="circle"
+      overlay-trigger="hover"
+      @click="editCropper()"
+    >
+      <template #overlayContent>
+        <div style="background: rgba(0, 0, 0, 0.4); color: #fff; height: 100%; border-radius: 50%; line-height: 160px">
+          <photo-icon size="2em" />
+        </div>
+      </template>
+    </t-image>
+    <t-dialog
+      v-model:visible="open"
+      :close-on-overlay-click="false"
+      :title="title"
+      width="800px"
+      attach="body"
+      :footer="null"
+      @opened="modalOpened"
+      @close="closeDialog"
+    >
+      <t-row>
+        <t-col :xs="12" :md="6" :style="{ height: '350px' }">
+          <vue-cropper
+            v-if="visible"
+            ref="cropperRef"
+            :img="options.img"
+            :info="true"
+            :auto-crop="options.autoCrop"
+            :auto-crop-width="options.autoCropWidth"
+            :auto-crop-height="options.autoCropHeight"
+            :fixed-box="options.fixedBox"
+            :output-type="options.outputType"
+            @real-time="realTime"
+          />
+        </t-col>
+        <t-col :xs="12" :md="6" :style="{ height: '350px' }">
+          <div class="avatar-upload-preview">
+            <img :src="options.previews.url" :style="options.previews.img" />
+          </div>
+        </t-col>
+      </t-row>
+      <br />
+      <t-row>
+        <t-col :sm="2" :xs="3">
+          <t-upload accept=".jpg,.jpeg,.png" action="#" :show-file-list="false" :before-upload="beforeUpload">
+            <t-button>
+              <template #icon><upload-icon /></template>
+              选择
+            </t-button>
+          </t-upload>
+        </t-col>
+        <t-col :sm="6" :xs="7">
+          <t-button @click="changeScale(1)">
+            <template #icon><add-circle-icon /></template>
+          </t-button>
+          <t-button @click="changeScale(-1)">
+            <template #icon><minus-circle-icon /></template>
+          </t-button>
+          <t-button @click="rotateLeft()">
+            <template #icon><chevron-left-icon /></template>
+          </t-button>
+          <t-button @click="rotateRight()">
+            <template #icon><chevron-right-icon /></template>
+          </t-button>
+        </t-col>
+        <t-col :sm="{ span: 3, offset: 1 }" :xs="{ span: 7, offset: 5 }">
+          <t-button theme="primary" @click="uploadImg()">提 交 </t-button>
+        </t-col>
+      </t-row>
+    </t-dialog>
+  </div>
+</template>
+
+<script lang="ts" setup>
+import 'vue-cropper/dist/index.css';
+import { VueCropper } from 'vue-cropper';
+import { getCurrentInstance, reactive, ref } from 'vue';
+import {
+  AddCircleIcon,
+  ChevronLeftIcon,
+  ChevronRightIcon,
+  MinusCircleIcon,
+  PhotoIcon,
+  UploadIcon,
+} from 'tdesign-icons-vue-next';
+import { UploadFile } from 'tdesign-vue-next';
+import { uploadAvatar } from '@/api/system/user';
+import { useUserStore } from '@/store/modules/user';
+
+const userStore = useUserStore();
+const { proxy } = getCurrentInstance();
+
+const open = ref(false);
+const cropperRef = ref(null);
+const visible = ref(false);
+const title = ref('修改头像');
+
+// 图片裁剪数据
+const options = reactive({
+  img: userStore.avatar, // 裁剪图片的地址
+  autoCrop: true, // 是否默认生成截图框
+  autoCropWidth: 200, // 默认生成截图框宽度
+  autoCropHeight: 200, // 默认生成截图框高度
+  fixedBox: true, // 固定截图框大小 不允许改变
+  outputType: 'png', // 默认生成截图为PNG格式
+  filename: '',
+  previews: {}, // 预览数据
+});
+
+/** 编辑头像 */
+function editCropper() {
+  open.value = true;
+}
+/** 打开弹出层结束时的回调 */
+function modalOpened() {
+  visible.value = true;
+}
+/** 向左旋转 */
+function rotateLeft() {
+  cropperRef.value.rotateLeft();
+}
+/** 向右旋转 */
+function rotateRight() {
+  cropperRef.value.rotateRight();
+}
+/** 图片缩放 */
+function changeScale(num) {
+  num = num || 1;
+  cropperRef.value.changeScale(num);
+}
+/** 上传预处理 */
+function beforeUpload(file: UploadFile) {
+  if (file.type.indexOf('image/') === -1) {
+    proxy.$modal.msgError('文件格式错误，请上传图片类型,如：JPG，PNG后缀的文件。');
+  } else {
+    const reader = new FileReader();
+    reader.readAsDataURL(file.raw);
+    reader.onload = () => {
+      options.img = reader.result.toString();
+      options.filename = file.name;
+    };
+  }
+  return false;
+}
+/** 上传图片 */
+function uploadImg() {
+  cropperRef.value.getCropBlob((data) => {
+    const formData = new FormData();
+    formData.append('avatarfile', data, options.filename);
+    uploadAvatar(formData).then((response) => {
+      open.value = false;
+      options.img = response.data.imgUrl;
+      userStore.avatar = options.img;
+      proxy.$modal.msgSuccess('修改成功');
+      visible.value = false;
+    });
+  });
+}
+/** 实时预览 */
+function realTime(data) {
+  options.previews = data;
+}
+/** 关闭窗口 */
+function closeDialog() {
+  options.img = userStore.avatar;
+}
+</script>
+
+<style lang="less" scoped>
+.avatar-upload-preview {
+  position: absolute;
+  top: 50%;
+  transform: translate(50%, -50%);
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  box-shadow: 0 0 4px #ccc;
+  overflow: hidden;
+}
+</style>

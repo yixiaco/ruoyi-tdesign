@@ -1,0 +1,166 @@
+<template>
+  <div class="app-container">
+    <t-row :gutter="[20, 20]">
+      <t-col :span="12">
+        <t-card hover-shadow>
+          <template #header><span>基本信息</span></template>
+          <t-form layout="inline">
+            <t-row>
+              <t-col :span="3">
+                <t-form-item label="Redis版本">
+                  <div v-if="cache.info">{{ cache.info.redis_version }}</div>
+                </t-form-item>
+              </t-col>
+              <t-col :span="3">
+                <t-form-item label="运行模式">
+                  <div v-if="cache.info">{{ cache.info.redis_mode === 'standalone' ? '单机' : '集群' }}</div>
+                </t-form-item>
+              </t-col>
+              <t-col :span="3">
+                <t-form-item label="端口">
+                  <div v-if="cache.info">{{ cache.info.tcp_port }}</div>
+                </t-form-item>
+              </t-col>
+              <t-col :span="3">
+                <t-form-item label="客户端数">
+                  <div v-if="cache.info">{{ cache.info.connected_clients }}</div>
+                </t-form-item>
+              </t-col>
+              <t-col :span="3">
+                <t-form-item label="运行时间(天)">
+                  <div v-if="cache.info">{{ cache.info.uptime_in_days }}</div>
+                </t-form-item>
+              </t-col>
+              <t-col :span="3">
+                <t-form-item label="使用内存">
+                  <div v-if="cache.info">{{ cache.info.used_memory_human }}</div>
+                </t-form-item>
+              </t-col>
+              <t-col :span="3">
+                <t-form-item label="使用CPU">
+                  <div v-if="cache.info">{{ parseFloat(cache.info.used_cpu_user_children).toFixed(2) }}</div>
+                </t-form-item>
+              </t-col>
+              <t-col :span="3">
+                <t-form-item label="内存配置">
+                  <div v-if="cache.info">{{ cache.info.maxmemory_human }}</div>
+                </t-form-item>
+              </t-col>
+              <t-col :span="3">
+                <t-form-item label="AOF是否开启">
+                  <div v-if="cache.info">{{ cache.info.aof_enabled === '0' ? '否' : '是' }}</div>
+                </t-form-item>
+              </t-col>
+              <t-col :span="3">
+                <t-form-item label="RDB是否成功">
+                  <div v-if="cache.info">{{ cache.info.rdb_last_bgsave_status }}</div>
+                </t-form-item>
+              </t-col>
+              <t-col :span="3">
+                <t-form-item label="Key数量">
+                  <div v-if="cache.dbSize">{{ cache.dbSize }}</div>
+                </t-form-item>
+              </t-col>
+              <t-col :span="3">
+                <t-form-item label="网络入口/出口">
+                  <div v-if="cache.info">
+                    {{ cache.info.instantaneous_input_kbps }}kps/{{ cache.info.instantaneous_output_kbps }}kps
+                  </div>
+                </t-form-item>
+              </t-col>
+            </t-row>
+          </t-form>
+        </t-card>
+      </t-col>
+
+      <t-col :span="6">
+        <t-card hover-shadow>
+          <template #header><span>命令统计</span></template>
+          <div class="el-table el-table--enable-row-hover el-table--medium">
+            <div ref="commandstats" style="height: 420px" />
+          </div>
+        </t-card>
+      </t-col>
+
+      <t-col :span="6">
+        <t-card hover-shadow>
+          <template #header>
+            <span>内存信息</span>
+          </template>
+          <div class="el-table el-table--enable-row-hover el-table--medium">
+            <div ref="usedmemory" style="height: 420px" />
+          </div>
+        </t-card>
+      </t-col>
+    </t-row>
+  </div>
+</template>
+<script lang="ts">
+export default {
+  name: 'Cache',
+};
+</script>
+<script lang="ts" setup>
+import * as echarts from 'echarts';
+import { getCurrentInstance, ref } from 'vue';
+import { getCache } from '@/api/monitor/cache';
+
+const cache = ref([]);
+const commandstats = ref(null);
+const usedmemory = ref(null);
+const { proxy } = getCurrentInstance();
+
+function getList() {
+  proxy.$modal.loading('正在加载缓存监控数据，请稍候！');
+  getCache().then((response) => {
+    proxy.$modal.closeLoading();
+    cache.value = response.data;
+
+    const commandstatsIntance = echarts.init(commandstats.value, 'macarons');
+    commandstatsIntance.setOption({
+      tooltip: {
+        trigger: 'item',
+        formatter: '{a} <br/>{b} : {c} ({d}%)',
+      },
+      series: [
+        {
+          name: '命令',
+          type: 'pie',
+          roseType: 'radius',
+          radius: [15, 95],
+          center: ['50%', '38%'],
+          data: response.data.commandStats,
+          animationEasing: 'cubicInOut',
+          animationDuration: 1000,
+        },
+      ],
+    });
+
+    const usedmemoryInstance = echarts.init(usedmemory.value, 'macarons');
+    usedmemoryInstance.setOption({
+      tooltip: {
+        formatter: `{b} <br/>{a} : ${cache.value.info.used_memory_human}`,
+      },
+      series: [
+        {
+          name: '峰值',
+          type: 'gauge',
+          min: 0,
+          max: 1000,
+          detail: {
+            formatter: cache.value.info.used_memory_human,
+          },
+          data: [
+            {
+              value: parseFloat(cache.value.info.used_memory_human),
+              name: '内存消耗',
+            },
+          ],
+        },
+      ],
+    });
+  });
+}
+
+getList();
+</script>

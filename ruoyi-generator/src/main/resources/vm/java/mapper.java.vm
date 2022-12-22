@@ -1,0 +1,25 @@
+package ${packageName}.mapper;
+
+import ${packageName}.domain.${ClassName};
+import ${packageName}.domain.bo.${ClassName}Bo;
+import ${packageName}.domain.vo.${ClassName}Vo;
+import com.ruoyi.common.core.mapper.BaseMapperPlus;
+
+import java.util.List;
+
+/**
+ * ${functionName}Mapper接口
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+public interface ${ClassName}Mapper extends BaseMapperPlus<${ClassName}Mapper, ${ClassName}, ${ClassName}Vo> {
+
+    /**
+     * 查询${table.functionName}列表
+     *
+     * @param bo bo对象
+     * @return {@link ${ClassName}Vo}
+     */
+    List<${ClassName}Vo> queryList(${ClassName}Bo bo);
+}

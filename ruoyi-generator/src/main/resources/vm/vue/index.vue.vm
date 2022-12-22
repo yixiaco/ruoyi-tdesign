@@ -1,0 +1,696 @@
+<template>
+  <div class="app-container">
+    <t-space direction="vertical">
+      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
+#foreach($column in $columns)
+#if($column.query)
+#set($dictType=$column.dictType)
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.htmlType == "input" || $column.htmlType == "textarea")
+        <t-form-item label="${comment}" name="${column.javaField}">
+          <t-input v-model="queryParams.${column.javaField}" placeholder="请输入${comment}" clearable @keyup.enter="handleQuery" />
+        </t-form-item>
+#elseif(($column.htmlType == "select" || $column.htmlType == "radio") && "" != $dictType)
+        <t-form-item label="${comment}" name="${column.javaField}">
+          <t-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
+            <t-option
+              v-for="dict in ${dictType}"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </t-select>
+        </t-form-item>
+#elseif(($column.htmlType == "select" || $column.htmlType == "radio") && $dictType)
+        <t-form-item label="${comment}" name="${column.javaField}">
+          <t-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
+            <t-option label="请选择字典生成" value="" />
+          </t-select>
+        </t-form-item>
+#elseif($column.htmlType == "datetime" && $column.queryType != "BETWEEN")
+        <t-form-item label="${comment}" name="${column.javaField}">
+          <t-date-picker
+            v-model="queryParams.${column.javaField}"
+            allow-input
+            clearable
+            placeholder="请选择${comment}"
+          />
+        </t-form-item>
+#elseif($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+        <t-form-item label="${comment}" style="width: 340px">
+          <t-date-range-picker
+            v-model="daterange${AttrName}"
+            allow-input
+            clearable
+            separator="-"
+            enable-time-picker
+            :placeholder="['开始日期', '结束日期']"
+          />
+        </t-form-item>
+#end
+#end
+#end
+        <t-form-item label-width="0px">
+          <t-button theme="primary" @click="handleQuery">
+            <template #icon> <search-icon /></template>
+            搜索
+          </t-button>
+          <t-button theme="default" @click="resetQuery">
+            <template #icon> <refresh-icon /></template>
+            重置
+          </t-button>
+        </t-form-item>
+      </t-form>
+
+      <t-table
+        v-model:column-controller-visible="columnControllerVisible"
+        :loading="loading"
+        row-key="${pkColumn.javaField}"
+        :data="${businessName}List"
+        :columns="columns"
+        :selected-row-keys="ids"
+        select-on-row-click
+        :pagination="pagination"
+        :column-controller="{
+          hideTriggerButton: true,
+        }"
+        @select-change="handleSelectionChange"
+      >
+        <template #topContent>
+          <t-row>
+            <t-col flex="auto">
+              <t-button v-hasPermi="['${moduleName}:${businessName}:add']" theme="primary" @click="handleAdd">
+                <template #icon> <add-icon /></template>
+                新增
+              </t-button>
+              <t-button
+                v-hasPermi="['${moduleName}:${businessName}:edit']"
+                theme="default"
+                variant="outline"
+                :disabled="single"
+                @click="handleUpdate"
+              >
+                <template #icon> <edit-icon /> </template>
+                修改
+              </t-button>
+              <t-button
+                v-hasPermi="['${moduleName}:${businessName}:remove']"
+                theme="danger"
+                variant="outline"
+                :disabled="multiple"
+                @click="handleDelete"
+              >
+                <template #icon> <delete-icon /> </template>
+                删除
+              </t-button>
+              <t-button v-hasPermi="['${moduleName}:${businessName}:export']" theme="default" variant="outline" @click="handleExport">
+                <template #icon> <download-icon /> </template>
+                导出
+              </t-button>
+            </t-col>
+            <t-col flex="none">
+              <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
+                <template #icon> <search-icon /> </template>
+              </t-button>
+              <t-button theme="default" variant="outline" @click="columnControllerVisible = true">
+                <template #icon> <setting-icon /> </template>
+                列配置
+              </t-button>
+            </t-col>
+          </t-row>
+        </template>
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.list && $column.htmlType == "imageUpload")
+        <template #${javaField}="{ row }">
+            <image-preview :src="row.${javaField}" :width="50" :height="50"/>
+        </template>
+#elseif($column.list && $column.dictType && "" != $column.dictType)
+        <t-table-column label="${comment}" align="center" name="${javaField}">
+          <template #default="{ row }">
+#if($column.htmlType == "checkbox")
+            <dict-tag :options="${column.dictType}" :value="row.${javaField} ? row.${javaField}.split(',') : []"/>
+#else
+            <dict-tag :options="${column.dictType}" :value="row.${javaField}"/>
+#end
+          </template>
+        </t-table-column>
+#end
+#end
+        <template #operation="{ row }">
+          <t-space :size="8">
+            <t-link v-hasPermi="['${moduleName}:${businessName}:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
+              <edit-icon />修改
+            </t-link>
+            <t-link v-hasPermi="['${moduleName}:${businessName}:remove']" theme="danger" hover="color" @click.stop="handleDelete(row)">
+              <delete-icon />删除
+            </t-link>
+          </t-space>
+        </template>
+      </t-table>
+    </t-space>
+
+    <!-- 添加或修改${functionName}对话框 -->
+    <t-dialog
+      v-model:visible="open"
+      :close-on-overlay-click="false"
+      :title="title"
+      width="500px"
+      attach="body"
+      :confirm-btn="{
+        content: '确 定',
+        theme: 'primary',
+        loading: buttonLoading,
+      }"
+      @confirm="onConfirm"
+    >
+      <t-form
+        ref="${businessName}Ref"
+        label-align="right"
+        :data="form"
+        :rules="rules"
+        label-width="calc(5em + 24px)"
+        scroll-to-first-error="smooth"
+        @submit="submitForm"
+      >
+#foreach($column in $columns)
+#set($field=$column.javaField)
+#if($column.insert && !$column.pk)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#set($dictType=$column.dictType)
+#if($column.htmlType == "input")
+        <t-form-item label="${comment}" name="${field}">
+          <t-input v-model="form.${field}" placeholder="请输入${comment}" />
+        </t-form-item>
+#elseif($column.htmlType == "imageUpload")
+        <t-form-item label="${comment}">
+          <image-upload v-model="form.${field}"/>
+        </t-form-item>
+#elseif($column.htmlType == "fileUpload")
+        <t-form-item label="${comment}">
+          <file-upload v-model="form.${field}"/>
+        </t-form-item>
+#elseif($column.htmlType == "editor")
+        <t-form-item label="${comment}">
+          <editor v-model="form.${field}" :min-height="192"/>
+        </t-form-item>
+#elseif($column.htmlType == "select" && "" != $dictType)
+        <t-form-item label="${comment}" name="${field}">
+          <t-select v-model="form.${field}" placeholder="请选择${comment}">
+            <t-option
+              v-for="dict in ${dictType}"
+              :key="dict.value"
+              :label="dict.label"
+              #if($column.javaType == "Integer" || $column.javaType == "Long"):value="parseInt(dict.value)"#else:value="dict.value"#end
+            />
+          </t-select>
+        </t-form-item>
+#elseif($column.htmlType == "select" && $dictType)
+        <t-form-item label="${comment}" name="${field}">
+          <t-select v-model="form.${field}" placeholder="请选择${comment}">
+            <t-option label="请选择字典生成" value="" />
+          </t-select>
+        </t-form-item>
+#elseif($column.htmlType == "checkbox" && "" != $dictType)
+        <t-form-item label="${comment}">
+          <t-checkbox-group v-model="form.${field}">
+            <t-checkbox
+              v-for="dict in ${dictType}"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </t-checkbox-group>
+        </t-form-item>
+#elseif($column.htmlType == "checkbox" && $dictType)
+        <t-form-item label="${comment}">
+          <t-checkbox-group v-model="form.${field}">
+            <t-checkbox>请选择字典生成</t-checkbox>
+          </t-checkbox-group>
+        </t-form-item>
+#elseif($column.htmlType == "radio" && "" != $dictType)
+        <t-form-item label="${comment}">
+          <t-radio-group v-model="form.${field}">
+            <t-radio
+              v-for="dict in ${dictType}"
+              :key="dict.value"
+              #if($column.javaType == "Integer" || $column.javaType == "Long"):value="parseInt(dict.value)"#else:value="dict.value"#end
+
+            >{{dict.label}}</t-radio>
+          </t-radio-group>
+        </t-form-item>
+#elseif($column.htmlType == "radio" && $dictType)
+        <t-form-item label="${comment}">
+          <t-radio-group v-model="form.${field}">
+            <t-radio value="1">请选择字典生成</t-radio>
+          </t-radio-group>
+        </t-form-item>
+#elseif($column.htmlType == "datetime")
+        <t-form-item label="${comment}" name="${field}">
+          <t-date-picker
+            v-model="form.${field}"
+            enable-time-picker
+            allow-input
+            clearable
+            placeholder="请选择${comment}"
+          />
+        </t-form-item>
+#elseif($column.htmlType == "textarea")
+        <t-form-item label="${comment}" name="${field}">
+          <t-textarea v-model="form.${field}" placeholder="请输入内容" />
+        </t-form-item>
+#end
+#end
+#end
+#if($table.sub)
+        <t-divider>${subTable.functionName}信息</t-divider>
+        <t-space direction="vertical">
+          <t-space>
+            <t-button theme="primary" @click="handleAdd${subClassName}">
+              <template #icon> <add-icon /></template>
+              添加
+            </t-button>
+            <t-button theme="danger" variant="outline" :disabled="multiple" @click="handleDelete${subClassName}">
+              <template #icon> <delete-icon /> </template>
+              删除
+            </t-button>
+          </t-space>
+          <t-table :data="${subclassName}List" row-key="${subTable.pkColumn.javaField}" :row-class-name="row${subClassName}Index" @select-change="handle${subClassName}SelectionChange" ref="${subclassName}">
+#foreach($column in $subTable.columns)
+#set($javaField=$column.javaField)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.pk || $javaField == ${subTableFkclassName})
+#elseif($column.list && $column.htmlType == "input")
+            <template #${javaField}="{ row }">
+              <t-input v-model="row.$javaField" placeholder="请输入$comment" />
+            </template>
+#elseif($column.list && $column.htmlType == "datetime")
+            <template #${javaField}="{ row }">
+              <t-date-picker
+                v-model="row.$javaField"
+                allow-input
+                clearable
+                placeholder="请选择${comment}"
+              />
+            </template>
+#elseif($column.list && ($column.htmlType == "select" || $column.htmlType == "radio") && "" != $column.dictType)
+            <template #${javaField}="{ row }">
+              <t-select v-model="row.$javaField" placeholder="请选择$comment">
+                <t-option
+                  v-for="dict in $column.dictType"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </t-select>
+            </template>
+#elseif($column.list && ($column.htmlType == "select" || $column.htmlType == "radio") && "" == $column.dictType)
+            <template #${javaField}="{ row }">
+              <t-select v-model="row.$javaField" placeholder="请选择$comment">
+                <t-option label="请选择字典生成" value="" />
+              </t-select>
+            </template>
+#end
+#end
+          </t-table>
+        </t-space>
+#end
+      </t-form>
+    </t-dialog>
+  </div>
+</template>
+<script lang="ts">
+export default {
+  name: '${BusinessName}',
+};
+</script>
+<script lang="ts" setup>
+import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import {
+  AddIcon,
+  DeleteIcon,
+  DownloadIcon,
+  EditIcon,
+  RefreshIcon,
+  SearchIcon,
+  SettingIcon,
+} from 'tdesign-icons-vue-next';
+import { list${BusinessName}, get${BusinessName}, del${BusinessName}, add${BusinessName}, update${BusinessName} } from '@/api/${moduleName}/${businessName}';
+
+const { proxy } = getCurrentInstance();
+#if(${dicts} != '')
+#set($dictsNoSymbol=$dicts.replace("'", ""))
+const { ${dictsNoSymbol} } = proxy.useDict(${dicts});
+#end
+
+const ${businessName}List = ref([]);
+#if($table.sub)
+const ${subclassName}List = ref([]);
+#end
+const ${businessName}Ref = ref(null);
+const open = ref(false);
+const buttonLoading = ref(false);
+const loading = ref(false);
+const columnControllerVisible = ref(false);
+const showSearch = ref(true);
+const ids = ref([]);
+#if($table.sub)
+const checked${subClassName} = ref([]);
+#end
+const single = ref(true);
+const multiple = ref(true);
+const total = ref(0);
+const title = ref('');
+#foreach ($column in $columns)
+#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+const daterange${AttrName} = ref([]);
+#end
+#end
+
+const data = reactive({
+  form: {},
+  queryParams: {
+    pageNum: 1,
+    pageSize: 10,
+    params: {
+#foreach ($column in $columns)
+#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+      begin${AttrName}: undefined,
+      end${AttrName}: undefined,
+#end
+#end
+    },
+#foreach ($column in $columns)
+#if($column.query)
+    $column.javaField: undefined#if($foreach.count != $columns.size()),#end
+#end
+#end
+  },
+  rules: {
+#foreach ($column in $columns)
+#if($column.required)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+    $column.javaField: [{ required: true, message: '$comment不能为空', trigger: #if($column.htmlType == "select")'change'#else'blur'#end }]#if($foreach.count != $columns.size()),#end
+#end
+#end
+  },
+});
+// 列显隐信息
+const columns = ref([
+  { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.pk)
+#elseif($column.list && $column.htmlType == "datetime")
+  { title: `${comment}`, colKey: '${javaField}', align: 'center', width: 180 },
+#elseif($column.list && $column.htmlType == "imageUpload")
+  { title: `${comment}`, colKey: '${javaField}', align: 'center', width: 100 },
+#elseif($column.list && "" != $javaField)
+  { title: `${comment}`, colKey: '${javaField}', align: 'center' },
+#end
+#end
+  { title: `操作`, colKey: 'operation', align: 'center', width: 150 },
+]);
+#if($table.sub)
+// 子表
+const subColumns = ref([
+  { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
+  { title: '序号', colKey: 'serial-number', width: 80, align: 'center' },
+#foreach($column in $subTable.columns)
+#set($javaField=$column.javaField)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.pk || $javaField == ${subTableFkclassName})
+#elseif($column.list && $column.htmlType == "input")
+  { title: `${comment}`, colKey: '${javaField}', align: 'center', width: 150 },
+#elseif($column.list && $column.htmlType == "datetime")
+  { title: `${comment}`, colKey: '${javaField}', align: 'center', width: 240 },
+#elseif($column.list && ($column.htmlType == "select" || $column.htmlType == "radio") && "" != $column.dictType)
+  { title: `${comment}`, colKey: '${javaField}', align: 'center', width: 150 },
+#elseif($column.list && ($column.htmlType == "select" || $column.htmlType == "radio") && "" == $column.dictType)
+  { title: `${comment}`, colKey: '${javaField}', align: 'center', width: 150 },
+#end
+#end
+]);
+#end
+
+// 分页
+const pagination = computed(() => {
+  return {
+    current: queryParams.value.pageNum,
+    pageSize: queryParams.value.pageSize,
+    total: total.value,
+    showJumper: true,
+    onChange: (pageInfo) => {
+      data.queryParams.pageNum = pageInfo.current;
+      data.queryParams.pageSize = pageInfo.pageSize;
+      getList();
+    },
+  };
+});
+
+const { queryParams, form, rules } = toRefs(data);
+
+/** 查询${functionName}列表 */
+function getList() {
+  loading.value = true;
+#foreach ($column in $columns)
+#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+  queryParams.value.params = {};
+#break
+#end
+#end
+#foreach ($column in $columns)
+#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+  if (daterange${AttrName}.value !== null && daterange${AttrName}.value.length !== 0) {
+    queryParams.value.params['begin${AttrName}'] = daterange${AttrName}.value[0];
+    queryParams.value.params['end${AttrName}'] = daterange${AttrName}.value[1];
+  }
+#end
+#end
+  list${BusinessName}(queryParams.value).then((response) => {
+    ${businessName}List.value = response.rows;
+    total.value = response.total;
+    loading.value = false;
+  });
+}
+
+// 表单重置
+function reset() {
+  form.value = {
+#foreach ($column in $columns)
+#if($column.htmlType == "radio")
+    $column.javaField: #if($column.javaType == "Integer" || $column.javaType == "Long")0#else"0"#end,
+#elseif($column.htmlType == "checkbox")
+    $column.javaField: [],
+#else
+    $column.javaField: null,
+#end
+#end
+  };
+#if($table.sub)
+  ${subclassName}List.value = [];
+#end
+  proxy.resetForm('${businessName}Ref');
+}
+
+/** 搜索按钮操作 */
+function handleQuery() {
+  queryParams.value.pageNum = 1;
+  getList();
+}
+
+/** 重置按钮操作 */
+function resetQuery() {
+#foreach ($column in $columns)
+#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+  daterange${AttrName}.value = [];
+#end
+#end
+  proxy.resetForm('queryRef');
+  handleQuery();
+}
+
+// 多选框选中数据
+function handleSelectionChange(selection) {
+  ids.value = selection;
+  single.value = selection.length !== 1;
+  multiple.value = !selection.length;
+}
+
+/** 新增按钮操作 */
+function handleAdd() {
+  reset();
+  open.value = true;
+  title.value = '添加${functionName}';
+}
+
+/** 修改按钮操作 */
+function handleUpdate(row) {
+  buttonLoading.value = true;
+  reset();
+  open.value = true;
+  title.value = '修改${functionName}';
+  const $${pkColumn.javaField} = row.${pkColumn.javaField} || ids.value;
+  get${BusinessName}($${pkColumn.javaField}).then((response) => {
+    buttonLoading.value = false;
+    form.value = response.data;
+#foreach ($column in $columns)
+#if($column.htmlType == "checkbox")
+    form.value.$column.javaField = form.value.${column.javaField}.split(",");
+#end
+#end
+#if($table.sub)
+    ${subclassName}List.value = response.data.${subclassName}List;
+#end
+  });
+}
+
+/** 提交按钮 */
+function onConfirm() {
+  ${businessName}Ref.value.submit();
+}
+
+/** 提交表单 */
+function submitForm({ validateResult }) {
+  if (validateResult) {
+    buttonLoading.value = true;
+#foreach ($column in $columns)
+#if($column.htmlType == "checkbox")
+    form.value.$column.javaField = form.value.${column.javaField}.join(",");
+#end
+#end
+#if($table.sub)
+    form.value.${subclassName}List = ${subclassName}List.value;
+#end
+    if (form.value.${pkColumn.javaField}) {
+      update${BusinessName}(form.value)
+        .then(() => {
+          proxy.#[[$modal]]#.msgSuccess('修改成功');
+          open.value = false;
+          getList();
+        })
+        .finally(() => {
+          buttonLoading.value = false;
+        });
+    } else {
+      add${BusinessName}(form.value)
+        .then(() => {
+          proxy.#[[$modal]]#.msgSuccess('新增成功');
+          open.value = false;
+          getList();
+        })
+        .finally(() => {
+          buttonLoading.value = false;
+        });
+    }
+  }
+}
+
+/** 删除按钮操作 */
+function handleDelete(row) {
+  const $${pkColumn.javaField}s = row.${pkColumn.javaField} || ids.value;
+  proxy.#[[$modal]]#.confirm(`是否确认删除${functionName}编号为${$${pkColumn.javaField}s}的数据项？`, () => {
+    loading.value = true;
+    return del${BusinessName}($${pkColumn.javaField}s)
+      .then(() => {
+        getList();
+        proxy.#[[$modal]]#.msgSuccess('删除成功');
+      })
+      .finally(() => {
+        loading.value = false;
+      });
+  });
+}
+
+#if($table.sub)
+/** ${subTable.functionName}序号 */
+function row${subClassName}Index({ row, rowIndex }) {
+  row.index = rowIndex + 1;
+}
+
+/** ${subTable.functionName}添加按钮操作 */
+function handleAdd${subClassName}() {
+  let obj = {};
+#foreach($column in $subTable.columns)
+#if($column.pk || $column.javaField == ${subTableFkclassName})
+#elseif($column.list && "" != $javaField)
+  obj.$column.javaField = '';
+#end
+#end
+  ${subclassName}List.value.push(obj);
+}
+
+/** ${subTable.functionName}删除按钮操作 */
+function handleDelete${subClassName}() {
+  if (checked${subClassName}.value.length == 0) {
+    proxy.#[[$modal]]#.msgError('请先选择要删除的${subTable.functionName}数据');
+  } else {
+    const ${subclassName}s = ${subclassName}List.value;
+    const checked${subClassName}s = checked${subClassName}.value;
+    ${subclassName}List.value = ${subclassName}s.filter(function(item) {
+      return checked${subClassName}s.indexOf(item.index) == -1;
+    });
+  }
+}
+
+/** 复选框选中数据 */
+function handle${subClassName}SelectionChange(selection) {
+  checked${subClassName}.value = selection;
+}
+
+#end
+/** 导出按钮操作 */
+function handleExport() {
+  proxy.download(
+    '${moduleName}/${businessName}/export',
+    {
+      ...queryParams.value,
+    },
+    `${businessName}_#[[${new Date().getTime()}]]#.xlsx`,
+  );
+}
+
+getList();
+</script>
