@@ -104,6 +104,26 @@ export interface SysUser extends BaseEntity {
    * 数据权限 当前角色ID
    */
   roleId: number;
+
+  /**
+   * 创建者
+   */
+  createBy?: string;
+
+  /**
+   * 创建时间
+   */
+  createTime: object;
+
+  /**
+   * 更新者
+   */
+  updateBy?: string;
+
+  /**
+   * 更新时间
+   */
+  updateTime?: object;
 }
 
 export interface UserProfile {

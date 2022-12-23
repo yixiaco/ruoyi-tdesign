@@ -128,6 +128,26 @@ export interface GenTable extends BaseEntity {
    * 上级菜单名称字段
    */
   parentMenuName: string;
+
+  /**
+   * 创建者
+   */
+  createBy?: string;
+
+  /**
+   * 创建时间
+   */
+  createTime: object;
+
+  /**
+   * 更新者
+   */
+  updateBy?: string;
+
+  /**
+   * 更新时间
+   */
+  updateTime?: object;
 }
 
 /**
@@ -223,6 +243,26 @@ export interface GenTableColumn extends BaseEntity {
    * 排序
    */
   sort: number;
+
+  /**
+   * 创建者
+   */
+  createBy?: string;
+
+  /**
+   * 创建时间
+   */
+  createTime: object;
+
+  /**
+   * 更新者
+   */
+  updateBy?: string;
+
+  /**
+   * 更新时间
+   */
+  updateTime?: object;
 }
 
 export interface GenTableInfo {

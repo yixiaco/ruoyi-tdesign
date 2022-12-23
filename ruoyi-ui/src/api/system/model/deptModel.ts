@@ -46,4 +46,24 @@ export interface SysDept extends TreeEntity<SysDept> {
    * 祖级列表
    */
   ancestors: string;
+
+  /**
+   * 创建者
+   */
+  createBy?: string;
+
+  /**
+   * 创建时间
+   */
+  createTime: object;
+
+  /**
+   * 更新者
+   */
+  updateBy?: string;
+
+  /**
+   * 更新时间
+   */
+  updateTime?: object;
 }

@@ -38,4 +38,24 @@ export interface SysPost extends BaseEntity {
    * 用户是否存在此岗位标识 默认不存在
    */
   flag: boolean;
+
+  /**
+   * 创建者
+   */
+  createBy?: string;
+
+  /**
+   * 创建时间
+   */
+  createTime: object;
+
+  /**
+   * 更新者
+   */
+  updateBy?: string;
+
+  /**
+   * 更新时间
+   */
+  updateTime?: object;
 }

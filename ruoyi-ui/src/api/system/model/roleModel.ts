@@ -71,6 +71,26 @@ export interface SysRole extends BaseEntity {
    * 角色菜单权限
    */
   permissions: Array<string>;
+
+  /**
+   * 创建者
+   */
+  createBy?: string;
+
+  /**
+   * 创建时间
+   */
+  createTime: object;
+
+  /**
+   * 更新者
+   */
+  updateBy?: string;
+
+  /**
+   * 更新时间
+   */
+  updateTime?: object;
 }
 
 /**
