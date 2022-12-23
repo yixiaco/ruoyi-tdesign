@@ -1,9 +1,9 @@
 # 项目相关配置
 ruoyi:
   # 名称
-  name: RuoYi-Vue-Plus
+  name: ruoyi-tdesign
   # 版本
-  version: ${ruoyi-vue-plus.version}
+  version: ${ruoyi-tdesign.version}
   # 版权年份
   copyrightYear: 2022
   # 实例演示开关
@@ -51,7 +51,7 @@ logging:
   level:
     com.ruoyi: @logging.level@
     org.springframework: warn
-  config: classpath:logback.xml
+  config: classpath:logback-spring.xml
 
 # 用户配置
 user:
@@ -187,12 +187,12 @@ swagger:
     # 描述
     description: '描述：用于管理集团旗下公司的人员信息,具体包括XXX,XXX模块...'
     # 版本
-    version: '版本号: ${ruoyi-vue-plus.version}'
+    version: '版本号: ${ruoyi-tdesign.version}'
     # 作者信息
     contact:
-      name: Lion Li
-      email: crazylionli@163.com
-      url: https://gitee.com/JavaLionLi/RuoYi-Vue-Plus
+      name: YiXia
+      email: ruoyi_tdesign@163.com
+      url: https://gitee.com/yixiacoco/ruoyi-tdesign
   components:
     # 鉴权方式配置
     security-schemes:

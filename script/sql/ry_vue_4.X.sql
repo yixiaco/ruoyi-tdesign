@@ -160,7 +160,7 @@ create table sys_menu (
 INSERT INTO sys_menu VALUES (1, '系统管理', 0, 1, 'system', NULL, '', 1, 0, 'M', '0', '0', '', 'setting', 'admin', sysdate(), 'admin', null, '系统管理目录');
 INSERT INTO sys_menu VALUES (2, '系统监控', 0, 2, 'monitor', NULL, '', 1, 0, 'M', '0', '0', '', 'chart', 'admin', sysdate(), 'admin', null, '系统监控目录');
 INSERT INTO sys_menu VALUES (3, '系统工具', 0, 3, 'tool', NULL, '', 1, 0, 'M', '0', '0', '', 'tools', 'admin', sysdate(), 'admin', null, '系统工具目录');
-INSERT INTO sys_menu VALUES (4, 'PLUS官网', 0, 4, 'https://gitee.com/JavaLionLi/RuoYi-Vue-Plus', NULL, '', 0, 0, 'M', '0', '0', '', 'link', 'admin', sysdate(), 'admin', null, 'RuoYi-Vue-Plus官网地址');
+INSERT INTO sys_menu VALUES (4, 'PLUS官网', 0, 4, 'https://gitee.com/yixiacoco/ruoyi-tdesign', NULL, '', 0, 0, 'M', '0', '0', '', 'link', 'admin', sysdate(), 'admin', null, 'ruoyi-tdesign官网地址');
 
 -- 二级菜单
 insert into sys_menu values('100',  '用户管理', '1',   '1', 'user',       'system/user/index',        '', 1, 0, 'C', '0', '0', 'system:user:list',        'user',          'admin', sysdate(), '', null, '用户管理菜单');
