@@ -117,9 +117,9 @@
 #elseif($column.list && $column.dictType && "" != $column.dictType)
       <template #${javaField}="{ row }">
 #if($column.htmlType == "checkbox")
-        <dict-tag :options="${column.dictType}" :value="row.${javaField} ? row.${javaField}.split(',') : []"/>
+        <dict-tag :options="${column.dictType}" :value="row.${javaField} ? row.${javaField}.split(',') : []" />
 #else
-        <dict-tag :options="${column.dictType}" :value="row.${javaField}"/>
+        <dict-tag :options="${column.dictType}" :value="row.${javaField}" />
 #end
       </template>
 #end
@@ -207,7 +207,11 @@
               v-for="dict in ${dictType}"
               :key="dict.value"
               :label="dict.label"
-              #if($column.javaType == "Integer" || $column.javaType == "Long"):value="parseInt(dict.value)"#else:value="dict.value"#end
+#if($column.javaType == "Integer" || $column.javaType == "Long")
+              :value="parseInt(dict.value)"
+#else
+              :value="dict.value"
+#end
             />
           </t-select>
         </t-form-item>
@@ -240,7 +244,11 @@
             <t-radio
               v-for="dict in ${dictType}"
               :key="dict.value"
-              #if($column.javaType == "Integer" || $column.javaType == "Long"):value="parseInt(dict.value)"#else:label="dict.value"#end
+#if($column.javaType == "Integer" || $column.javaType == "Long")
+              :value="parseInt(dict.value)"
+#else
+              :value="dict.value"
+#end
             >{{dict.label}}</t-radio>
           </t-radio-group>
         </t-form-item>
@@ -271,8 +279,12 @@
     </t-dialog>
   </div>
 </template>
-
-<script setup name="${BusinessName}">
+<script lang="ts">
+export default {
+  name: '${BusinessName}',
+};
+</script>
+<script lang="ts" setup>
 import { getCurrentInstance, reactive, ref, toRefs } from 'vue';
 import {
   AddIcon,
@@ -310,12 +322,30 @@ const daterange${AttrName} = ref([]);
 #end
 
 const data = reactive({
-  form: {},
+  form: {
+#foreach ($column in $columns)
+#if($column.htmlType == "radio")
+    $column.javaField: #if($column.javaType == "Integer" || $column.javaType == "Long")0#else"0"#end,
+#elseif($column.htmlType == "checkbox")
+    $column.javaField: [],
+#else
+    $column.javaField: null,
+#end
+#end
+  },
   queryParams: {
-    params: {},
+    params: {
+#foreach ($column in $columns)
+#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+      begin${AttrName}: undefined,
+      end${AttrName}: undefined,
+#end
+#end
+    },
 #foreach ($column in $columns)
 #if($column.query)
-    $column.javaField: undefined#if($foreach.count != $columns.size()),#end
+    $column.javaField: undefined,
 #end
 #end
   },
@@ -328,7 +358,7 @@ const data = reactive({
 #else
 #set($comment=$column.columnComment)
 #end
-    $column.javaField: [{ required: true, message: '$comment不能为空', trigger: #if($column.htmlType == "select")'change'#else'blur'#end }]#if($foreach.count != $columns.size()),#end
+    $column.javaField: [{ required: true, message: '$comment不能为空', trigger: #if($column.htmlType == "select")'change'#else'blur'#end }],
 #end
 #end
   },
@@ -366,16 +396,27 @@ function getList() {
   loading.value = true;
 #foreach ($column in $columns)
 #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
-  queryParams.value.params = {};
+#set($existDatetime = true)
 #break
 #end
+#end
+#if($existDatetime)
+  queryParams.value.params = {
+#foreach ($column in $columns)
+#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+    begin${AttrName}: undefined,
+    end${AttrName}: undefined,
+#end
+#end
+  };
 #end
 #foreach ($column in $columns)
 #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
   if (daterange${AttrName}.value !== null && daterange${AttrName}.value.length !== 0) {
-    queryParams.value.params['begin${AttrName}'] = daterange${AttrName}.value[0];
-    queryParams.value.params['end${AttrName}'] = daterange${AttrName}.value[1];
+    queryParams.value.params.begin${AttrName} = daterange${AttrName}.value[0];
+    queryParams.value.params.end${AttrName} = daterange${AttrName}.value[1];
   }
 #end
 #end
