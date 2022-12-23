@@ -23,21 +23,21 @@ import java.util.regex.Pattern;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class GenUtils {
 
-    public static final Pattern ARRAY_PATTERN = Pattern.compile("(\\S+)\\[]" );
-    public static final Pattern LIST_PATTERN = Pattern.compile("List<(\\S+)>" );
+    public static final Pattern ARRAY_PATTERN = Pattern.compile("(\\S+)\\[]");
+    public static final Pattern LIST_PATTERN = Pattern.compile("List<(\\S+)>");
     private static final Set<String> KEY_WORD = new HashSet<>();
 
     static {
         /* mysql关键字 */
-        KEY_WORD.addAll(ListUtil.toList("select" , "insert" , "into" , "form" , "group" , "by" , "as" , "order" , "and" , "or" , "desc" ,
-                                        "asc" , "join" , "on" , "left" , "right" , "inner" , "table" , "sort" , "name" , "show" , "table" , "language" ,
-                                        "lock" , "update" , "lock" , "option" , "where" , "ssl" , "limit" , "status" , "exit" , "drop" , "div" , "as" ,
-                                        "not" , "null" , "is" , "add" , "all" , "union" , "alter" , "blob" , "txt" , "clob" , "before" , "between" ,
-                                        "bigint" , "binary" , "int" , "case" , "do" , "then" , "when" , "char" , "varchar" , "check" , "column" , "if" ,
-                                        "else" , "elseif" , "dec" , "exit" , "explain" , "exists" , "drop" , "for" , "delete" , "user" , "database" ,
-                                        "force" , "goto" , "key" , "regexp" , "set" , "unlock" , "true" , "false" , "use" , "tinyint" , "sql" , "xor" ,
-                                        "values" , "using" , "tinyblob" , "smallint" , "double" , "enum" , "decimal" , "date" , "datetime" , "timestamp" ,
-                                        "year" , "float" , "time" , "long" , "geometry" , "json" , "integer" , "tables" , "change" , "character" , "collate" ));
+        KEY_WORD.addAll(ListUtil.toList("select", "insert", "into", "form", "group", "by", "as", "order", "and", "or", "desc",
+                                        "asc", "join", "on", "left", "right", "inner", "table", "sort", "name", "show", "table", "language",
+                                        "lock", "update", "lock", "option", "where", "ssl", "limit", "status", "exit", "drop", "div", "as",
+                                        "not", "null", "is", "add", "all", "union", "alter", "blob", "txt", "clob", "before", "between",
+                                        "bigint", "binary", "int", "case", "do", "then", "when", "char", "varchar", "check", "column", "if",
+                                        "else", "elseif", "dec", "exit", "explain", "exists", "drop", "for", "delete", "user", "database",
+                                        "force", "goto", "key", "regexp", "set", "unlock", "true", "false", "use", "tinyint", "sql", "xor",
+                                        "values", "using", "tinyblob", "smallint", "double", "enum", "decimal", "date", "datetime", "timestamp",
+                                        "year", "float", "time", "long", "geometry", "json", "integer", "tables", "change", "character", "collate"));
     }
 
     /**
@@ -264,17 +264,23 @@ public class GenUtils {
         return KEY_WORD.contains(key);
     }
 
+    /**
+     * java类型转typescript类型
+     *
+     * @param javaType
+     * @return
+     */
     public static String javaTypeToTypescript(String javaType) {
-        if (StringUtils.containsAnyIgnoreCase(javaType, "long","Integer","int","short","byte")) {
+        if (StringUtils.containsAnyIgnoreCase(javaType, "long", "Integer", "int", "short", "byte")) {
             return "number";
-        } else if (StringUtils.containsAny(javaType,"String", "CharSequence")) {
+        } else if (StringUtils.containsAny(javaType, "String", "CharSequence")) {
             return "string";
-        } else if (StringUtils.containsAnyIgnoreCase(javaType,"boolean")) {
+        } else if (StringUtils.containsAnyIgnoreCase(javaType, "boolean")) {
             return "boolean";
         } else if (ARRAY_PATTERN.matcher(javaType).matches()) {
             String type = ARRAY_PATTERN.matcher(javaType).group(0);
             return "Array<" + javaTypeToTypescript(type) + ">";
-        }  else if (LIST_PATTERN.matcher(javaType).matches()) {
+        } else if (LIST_PATTERN.matcher(javaType).matches()) {
             String type = LIST_PATTERN.matcher(javaType).group(0);
             return "Array<" + javaTypeToTypescript(type) + ">";
         } else {

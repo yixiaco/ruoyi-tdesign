@@ -51,7 +51,8 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService, DictService 
             .eq(StringUtils.isNotBlank(dictType.getStatus()), SysDictType::getStatus, dictType.getStatus())
             .like(StringUtils.isNotBlank(dictType.getDictType()), SysDictType::getDictType, dictType.getDictType())
             .between(params.get("beginTime") != null && params.get("endTime") != null,
-                SysDictType::getCreateTime, params.get("beginTime"), params.get("endTime"));
+                SysDictType::getCreateTime, params.get("beginTime"), params.get("endTime"))
+            .orderByDesc(SysDictType::getCreateTime);
         Page<SysDictType> page = baseMapper.selectPage(pageQuery.build(), lqw);
         return TableDataInfo.build(page);
     }
