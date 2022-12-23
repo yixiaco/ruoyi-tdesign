@@ -71,15 +71,24 @@
               </t-select>
             </template>
             <template #dictType="{ row }">
-              <t-select v-model="row.dictType" clearable filterable placeholder="请选择">
+              <t-select
+                v-model="row.dictType"
+                clearable
+                filterable
+                placeholder="请选择"
+                :popup-props="{ overlayInnerStyle: { width: '100%' } }"
+              >
                 <t-option
                   v-for="dict in dictOptions"
                   :key="dict.dictType"
                   :label="dict.dictName"
                   :value="dict.dictType"
+                  class="gen-option"
                 >
                   <span style="float: left">{{ dict.dictName }}</span>
-                  <span style="float: right; color: #8492a6; font-size: 13px">{{ dict.dictType }}</span>
+                  <span style="float: right; color: #8492a6; font-size: 13px; margin-left: 5px">{{
+                    dict.dictType
+                  }}</span>
                 </t-option>
               </t-select>
             </template>
