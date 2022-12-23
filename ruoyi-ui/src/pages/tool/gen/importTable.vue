@@ -3,7 +3,7 @@
   <t-dialog
     v-model:visible="visible"
     :close-on-overlay-click="false"
-    title="导入表"
+    header="导入表"
     width="800px"
     top="5vh"
     attach="body"

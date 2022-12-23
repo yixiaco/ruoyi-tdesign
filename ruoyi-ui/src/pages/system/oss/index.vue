@@ -162,7 +162,7 @@
     <t-dialog
       v-model:visible="open"
       :close-on-overlay-click="false"
-      :title="title"
+      :header="title"
       width="700px"
       attach="body"
       @confirm="submitForm"

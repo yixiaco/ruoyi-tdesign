@@ -141,7 +141,7 @@
     <!-- 预览界面 -->
     <t-dialog
       v-model:visible="preview.open"
-      :title="preview.title"
+      :header="preview.title"
       :close-on-overlay-click="false"
       width="80%"
       top="5vh"

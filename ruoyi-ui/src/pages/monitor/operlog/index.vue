@@ -123,7 +123,7 @@
     </t-space>
 
     <!-- 操作日志详细 -->
-    <t-dialog v-model:visible="open" :close-on-overlay-click="false" title="操作日志详细" width="700px" attach="body">
+    <t-dialog v-model:visible="open" :close-on-overlay-click="false" header="操作日志详细" width="700px" attach="body">
       <t-form label-align="right" :data="form" label-width="calc(5em + 24px)">
         <t-row :gutter="[0, 20]">
           <t-col :span="6">

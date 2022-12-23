@@ -194,7 +194,7 @@
     <t-dialog
       v-model:visible="open"
       :close-on-overlay-click="false"
-      :title="title"
+      :header="title"
       width="650px"
       attach="body"
       @close="cancel"
@@ -311,7 +311,7 @@
       v-model:visible="upload.open"
       :close-on-overlay-click="false"
       width="410px"
-      :title="upload.title"
+      :header="upload.title"
       attach="body"
       :footer="null"
     >

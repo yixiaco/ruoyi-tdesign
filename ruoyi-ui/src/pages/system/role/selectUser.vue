@@ -3,7 +3,7 @@
   <t-dialog
     v-model:visible="visible"
     :close-on-overlay-click="false"
-    title="选择用户"
+    header="选择用户"
     width="800px"
     top="5vh"
     attach="body"

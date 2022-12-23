@@ -143,7 +143,7 @@
     <t-dialog
       v-model:visible="open"
       :close-on-overlay-click="false"
-      :title="title"
+      :header="title"
       width="600px"
       attach="body"
       @close="cancel"
@@ -204,7 +204,7 @@
     <!-- 分配角色数据权限对话框 -->
     <t-dialog
       v-model:visible="openDataScope"
-      :title="title"
+      :header="title"
       :close-on-overlay-click="false"
       width="500px"
       attach="body"
