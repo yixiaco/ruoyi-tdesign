@@ -125,7 +125,10 @@
 #end
 #end
       <template #operation="{ row }">
-        <t-space>
+        <t-space :size="8">
+          <t-link v-hasPermi="['${moduleName}:${businessName}:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
+            <browse-icon />详情
+          </t-link>
           <t-link v-hasPermi="['${moduleName}:${businessName}:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
             <edit-icon />修改
           </t-link>
@@ -277,6 +280,50 @@
 #end
       </t-form>
     </t-dialog>
+
+    <!-- ${functionName}详情 -->
+    <t-dialog v-model:visible="openView" header="${functionName}详情" width="700px" attach="body">
+      <t-loading :loading="openViewLoading">
+        <t-form label-align="right" colon :data="form" label-width="calc(5em + 24px)">
+          <t-row :gutter="[0, 20]">
+#foreach($column in $columns)
+#set($javaField=$column.javaField)
+#set($parentheseIndex=$column.columnComment.indexOf("（"))
+#if($parentheseIndex != -1)
+#set($comment=$column.columnComment.substring(0, $parentheseIndex))
+#else
+#set($comment=$column.columnComment)
+#end
+#if($column.detail && $column.htmlType == "imageUpload")
+            <t-col :span="6">
+              <t-form-item label="${comment}">
+                <image-preview :src="form.${javaField}" :width="50" :height="50"/>
+              </t-form-item>
+            </t-col>
+#elseif($column.list && $column.htmlType == "datetime")
+            <t-col :span="6">
+              <t-form-item label="${comment}">{{ parseTime(form.${javaField}) }}</t-form-item>
+            </t-col>
+#elseif($column.detail && $column.dictType && "" != $column.dictType)
+            <t-col :span="6">
+              <t-form-item label="${comment}">
+#if($column.htmlType == "checkbox")
+                <dict-tag :options="${column.dictType}" :value="form.${javaField} ? form.${javaField}.split(',') : []" />
+#else
+                <dict-tag :options="${column.dictType}" :value="form.${javaField}" />
+#end
+              </t-form-item>
+            </t-col>
+#elseif($column.detail)
+            <t-col :span="6">
+              <t-form-item label="${comment}">{{ form.${javaField} }}</t-form-item>
+            </t-col>
+#end
+#end
+          </t-row>
+        </t-form>
+      </t-loading>
+    </t-dialog>
   </div>
 </template>
 <script lang="ts">
@@ -288,6 +335,7 @@ export default {
 import { getCurrentInstance, reactive, ref, toRefs } from 'vue';
 import {
   AddIcon,
+  BrowseIcon,
   DeleteIcon,
   EditIcon,
   RefreshIcon,
@@ -306,6 +354,8 @@ const { ${dictsNoSymbol} } = proxy.useDict(${dicts});
 const ${businessName}List = ref([]);
 const ${businessName}Options = ref([]);
 const open = ref(false);
+const openView = ref(false);
+const openViewLoading = ref(false);
 const buttonLoading = ref(false);
 const loading = ref(false);
 const columnControllerVisible = ref(false);
@@ -320,19 +370,20 @@ const ${businessName}Ref = ref(null);
 const daterange${AttrName} = ref([]);
 #end
 #end
-
-const data = reactive({
-  form: {
+const formInitValue = {
 #foreach ($column in $columns)
 #if($column.htmlType == "radio")
-    $column.javaField: #if($column.javaType == "Integer" || $column.javaType == "Long")0#else"0"#end,
+  $column.javaField: #if($column.javaType == "Integer" || $column.javaType == "Long")0#else"0"#end,
 #elseif($column.htmlType == "checkbox")
-    $column.javaField: [],
+  $column.javaField: [],
 #else
-    $column.javaField: null,
+  $column.javaField: null,
 #end
 #end
-  },
+};
+
+const data = reactive({
+  form: { ...formInitValue },
   queryParams: {
     params: {
 #foreach ($column in $columns)
@@ -386,7 +437,7 @@ const columns = ref([
   { title: `${comment}`, colKey: '${javaField}', align: 'center' },
 #end
 #end
-  { title: `操作`, colKey: 'operation', align: 'center', width: 150 },
+  { title: `操作`, colKey: 'operation', align: 'center', width: 230 },
 ]);
 
 const { queryParams, form, rules } = toRefs(data);
@@ -439,17 +490,7 @@ function getTreeselect() {
 
 // 表单重置
 function reset() {
-  form.value = {
-#foreach ($column in $columns)
-#if($column.htmlType == "radio")
-    $column.javaField: #if($column.javaType == "Integer" || $column.javaType == "Long")0#else"0"#end,
-#elseif($column.htmlType == "checkbox")
-    $column.javaField: [],
-#else
-    $column.javaField: null,
-#end
-#end
-  };
+  form.value = { ...formInitValue };
   proxy.resetForm('${businessName}Ref');
 }
 
@@ -493,6 +534,18 @@ function toggleExpandAll() {
   }
 }
 
+/** 详情按钮操作 */
+function handleDetail(row) {
+  reset();
+  openView.value = true;
+  openViewLoading.value = true;
+  const $${pkColumn.javaField} = row.${pkColumn.javaField} || ids.value;
+  get${BusinessName}($${pkColumn.javaField}).then((response) => {
+    form.value = { ...form.value, ...response.data };
+    openViewLoading.value = false;
+  });
+}
+
 /** 修改按钮操作 */
 async function handleUpdate(row) {
   buttonLoading.value = true;
@@ -505,7 +558,7 @@ async function handleUpdate(row) {
   }
   get${BusinessName}(row.${pkColumn.javaField}).then((response) => {
     buttonLoading.value = false;
-    form.value = response.data;
+    form.value = { ...form.value, ...response.data };
 #foreach ($column in $columns)
 #if($column.htmlType == "checkbox")
     form.value.$column.javaField = form.value.${column.javaField}.split(",");

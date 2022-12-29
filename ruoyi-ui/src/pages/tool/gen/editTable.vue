@@ -39,6 +39,9 @@
             <template #isList="{ row }">
               <t-custom-checkbox v-model="row.isList" true-label="1" false-label="0"></t-custom-checkbox>
             </template>
+            <template #isDetail="{ row }">
+              <t-custom-checkbox v-model="row.isDetail" true-label="1" false-label="0"></t-custom-checkbox>
+            </template>
             <template #isQuery="{ row }">
               <t-custom-checkbox v-model="row.isQuery" true-label="1" false-label="0"></t-custom-checkbox>
             </template>
@@ -141,15 +144,16 @@ const columns = ref([
   { title: `字段列名`, colKey: 'columnName', align: 'center', ellipsis: true, width: '10%' },
   { title: `字段描述`, colKey: 'columnComment', align: 'center', width: '10%' },
   { title: `物理类型`, colKey: 'columnType', align: 'center', ellipsis: true, width: '10%' },
-  { title: `Java类型`, colKey: 'javaType', align: 'center', width: '11%' },
+  { title: `Java类型`, colKey: 'javaType', align: 'center', width: '10%' },
   { title: `java属性`, colKey: 'javaField', align: 'center', width: '10%' },
   { title: `插入`, colKey: 'isInsert', align: 'center', width: '5%' },
   { title: `编辑`, colKey: 'isEdit', align: 'center', width: '5%' },
   { title: `列表`, colKey: 'isList', align: 'center', width: '5%' },
+  { title: `详情`, colKey: 'isDetail', align: 'center', width: '5%' },
   { title: `查询`, colKey: 'isQuery', align: 'center', width: '5%' },
   { title: `查询方式`, colKey: 'queryType', align: 'center', width: '10%' },
   { title: `必填`, colKey: 'isRequired', align: 'center', width: '5%' },
-  { title: `显示类型`, colKey: 'htmlType', align: 'center', width: '12%' },
+  { title: `显示类型`, colKey: 'htmlType', align: 'center', width: '10%' },
   { title: `字典类型`, colKey: 'dictType', align: 'center', width: '12%' },
 ]);
 

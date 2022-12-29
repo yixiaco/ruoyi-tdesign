@@ -33,7 +33,7 @@ export interface ${ClassName} extends ${Entity} {
  */
 export interface ${ClassName}Vo {
 #foreach ($column in $columns)
-#if($column.isList == '1' || $column.isPk == '1' || $column.isEdit == '1')
+#if($column.isList == '1' || $column.isPk == '1' || $column.isEdit == '1' || $column.isDetail == '1')
   /** $column.columnComment */
   $column.javaField: ${GenUtil.javaTypeToTypescript($column.javaType)};
 #end

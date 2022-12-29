@@ -10,37 +10,37 @@
     @opened="handleOpen"
     @confirm="handleImportTable"
   >
-    <t-form ref="queryRef" :data="queryParams" layout="inline" label-width="70px">
-      <t-form-item label="表名称" name="tableName">
-        <t-input
-          v-model="queryParams.tableName"
-          style="width: 150px"
-          placeholder="请输入表名称"
-          clearable
-          @keyup.enter="handleQuery"
-        />
-      </t-form-item>
-      <t-form-item label="表描述" name="tableComment">
-        <t-input
-          v-model="queryParams.tableComment"
-          style="width: 150px"
-          placeholder="请输入表描述"
-          clearable
-          @keyup.enter="handleQuery"
-        />
-      </t-form-item>
-      <t-form-item label-width="0px">
-        <t-button theme="primary" @click="handleQuery">
-          <template #icon> <search-icon /></template>
-          搜索
-        </t-button>
-        <t-button theme="default" @click="resetQuery">
-          <template #icon> <refresh-icon /></template>
-          重置
-        </t-button>
-      </t-form-item>
-    </t-form>
-    <t-row>
+    <t-space direction="vertical">
+      <t-form ref="queryRef" :data="queryParams" layout="inline" label-width="70px">
+        <t-form-item label="表名称" name="tableName">
+          <t-input
+            v-model="queryParams.tableName"
+            style="width: 150px"
+            placeholder="请输入表名称"
+            clearable
+            @keyup.enter="handleQuery"
+          />
+        </t-form-item>
+        <t-form-item label="表描述" name="tableComment">
+          <t-input
+            v-model="queryParams.tableComment"
+            style="width: 150px"
+            placeholder="请输入表描述"
+            clearable
+            @keyup.enter="handleQuery"
+          />
+        </t-form-item>
+        <t-form-item label-width="0px">
+          <t-button theme="primary" @click="handleQuery">
+            <template #icon> <search-icon /></template>
+            搜索
+          </t-button>
+          <t-button theme="default" @click="resetQuery">
+            <template #icon> <refresh-icon /></template>
+            重置
+          </t-button>
+        </t-form-item>
+      </t-form>
       <t-table
         ref="table"
         height="260px"
@@ -54,7 +54,7 @@
         @select-change="handleSelectionChange"
       >
       </t-table>
-    </t-row>
+    </t-space>
   </t-dialog>
 </template>
 

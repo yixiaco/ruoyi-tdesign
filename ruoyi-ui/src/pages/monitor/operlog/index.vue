@@ -123,39 +123,39 @@
     </t-space>
 
     <!-- 操作日志详细 -->
-    <t-dialog v-model:visible="open" :close-on-overlay-click="false" header="操作日志详细" width="700px" attach="body">
-      <t-form label-align="right" :data="form" label-width="calc(5em + 24px)">
+    <t-dialog v-model:visible="open" header="操作日志详细" width="700px" attach="body">
+      <t-form label-align="right" colon :data="form" label-width="calc(5em + 24px)">
         <t-row :gutter="[0, 20]">
           <t-col :span="6">
-            <t-form-item label="操作模块：">{{ form.title }} / {{ typeFormat(form) }}</t-form-item>
-            <t-form-item label="登录信息："
+            <t-form-item label="操作模块">{{ form.title }} / {{ typeFormat(form) }}</t-form-item>
+            <t-form-item label="登录信息"
               >{{ form.operName }} / {{ form.operIp }} / {{ form.operLocation }}</t-form-item
             >
           </t-col>
           <t-col :span="6">
-            <t-form-item label="请求地址：">{{ form.operUrl }}</t-form-item>
-            <t-form-item label="请求方式：">{{ form.requestMethod }}</t-form-item>
+            <t-form-item label="请求地址">{{ form.operUrl }}</t-form-item>
+            <t-form-item label="请求方式">{{ form.requestMethod }}</t-form-item>
           </t-col>
           <t-col :span="12">
-            <t-form-item label="操作方法：">{{ form.method }}</t-form-item>
+            <t-form-item label="操作方法">{{ form.method }}</t-form-item>
           </t-col>
           <t-col :span="12">
-            <t-form-item label="请求参数：">{{ form.operParam }}</t-form-item>
+            <t-form-item label="请求参数">{{ form.operParam }}</t-form-item>
           </t-col>
           <t-col :span="12">
-            <t-form-item label="返回参数：">{{ form.jsonResult }}</t-form-item>
+            <t-form-item label="返回参数">{{ form.jsonResult }}</t-form-item>
           </t-col>
           <t-col :span="6">
-            <t-form-item label="操作状态：">
+            <t-form-item label="操作状态">
               <div v-if="form.status === 0">正常</div>
               <div v-else-if="form.status === 1">失败</div>
             </t-form-item>
           </t-col>
           <t-col :span="6">
-            <t-form-item label="操作时间：">{{ parseTime(form.operTime) }}</t-form-item>
+            <t-form-item label="操作时间">{{ parseTime(form.operTime) }}</t-form-item>
           </t-col>
           <t-col :span="12">
-            <t-form-item v-if="form.status === 1" label="异常信息：">{{ form.errorMsg }}</t-form-item>
+            <t-form-item v-if="form.status === 1" label="异常信息">{{ form.errorMsg }}</t-form-item>
           </t-col>
         </t-row>
       </t-form>
@@ -169,14 +169,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
-import {
-  BrowseIcon,
-  DeleteIcon,
-  DownloadIcon,
-  RefreshIcon,
-  SearchIcon,
-  SettingIcon,
-} from 'tdesign-icons-vue-next';
+import { BrowseIcon, DeleteIcon, DownloadIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import { list, delOperlog, cleanOperlog } from '@/api/monitor/operlog';
 
 const { proxy } = getCurrentInstance();

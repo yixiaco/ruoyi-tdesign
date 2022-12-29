@@ -74,8 +74,7 @@ public class ${ClassName}Controller extends BaseController {
      */
     @SaCheckPermission(value = {"${permissionPrefix}:query", "${permissionPrefix}:edit"}, mode = SaMode.OR)
     @GetMapping("/{${pkColumn.javaField}}")
-    public R<${ClassName}Vo> getInfo(@NotNull(message = "主键不能为空")
-                                     @PathVariable ${pkColumn.javaType} ${pkColumn.javaField}) {
+    public R<${ClassName}Vo> getInfo(@NotNull(message = "主键不能为空") @PathVariable ${pkColumn.javaType} ${pkColumn.javaField}) {
         return R.ok(i${ClassName}Service.queryById(${pkColumn.javaField}));
     }
 
@@ -109,8 +108,7 @@ public class ${ClassName}Controller extends BaseController {
     @SaCheckPermission("${permissionPrefix}:remove")
     @Log(title = "${functionName}", businessType = BusinessType.DELETE)
     @DeleteMapping("/{${pkColumn.javaField}s}")
-    public R<Void> remove(@NotEmpty(message = "主键不能为空")
-                          @PathVariable ${pkColumn.javaType}[] ${pkColumn.javaField}s) {
+    public R<Void> remove(@NotEmpty(message = "主键不能为空") @PathVariable ${pkColumn.javaType}[] ${pkColumn.javaField}s) {
         return toAjax(i${ClassName}Service.deleteWithValidByIds(Arrays.asList(${pkColumn.javaField}s)));
     }
 }

@@ -112,6 +112,10 @@ public class GenUtils {
         if (!arraysContains(GenConstants.COLUMN_NAME_NOT_LIST, columnName)) {
             column.setIsList(GenConstants.REQUIRE);
         }
+        // VO对象 默认详情勾选
+        if (!arraysContains(GenConstants.COLUMN_NAME_NOT_LIST, columnName)) {
+            column.setIsDetail(GenConstants.REQUIRE);
+        }
         // BO对象 默认查询勾选
         if (!arraysContains(GenConstants.COLUMN_NAME_NOT_QUERY, columnName) && !column.isPk()) {
             column.setIsQuery(GenConstants.REQUIRE);

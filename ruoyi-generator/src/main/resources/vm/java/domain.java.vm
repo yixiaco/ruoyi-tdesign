@@ -32,8 +32,6 @@ import com.ruoyi.common.core.domain.TreeEntity;
 @TableName("${tableName}")
 public class ${ClassName} extends ${Entity} {
 
-    private static final long serialVersionUID = 1L;
-
 #foreach ($column in $columns)
     /**
      * $column.columnComment

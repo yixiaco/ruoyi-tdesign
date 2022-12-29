@@ -106,6 +106,12 @@ public class GenTableColumn extends BaseEntity {
     private String isQuery;
 
     /**
+     * 是否详情字段（1是）
+     */
+    @TableField(updateStrategy = FieldStrategy.IGNORED, jdbcType = JdbcType.VARCHAR)
+    private String isDetail;
+
+    /**
      * 创建者
      */
     @TableField(fill = FieldFill.INSERT)
@@ -208,6 +214,14 @@ public class GenTableColumn extends BaseEntity {
 
     public boolean isQuery(String isQuery) {
         return isQuery != null && StringUtils.equals("1", isQuery);
+    }
+
+    public boolean isDetail() {
+        return isDetail(this.isDetail);
+    }
+
+    public boolean isDetail(String isDetail) {
+        return isDetail != null && StringUtils.equals("1", isDetail);
     }
 
     public boolean isSuperColumn() {

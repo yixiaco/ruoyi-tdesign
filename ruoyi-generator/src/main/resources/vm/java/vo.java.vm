@@ -20,10 +20,8 @@ import java.util.Date;
 @ExcelIgnoreUnannotated
 public class ${ClassName}Vo {
 
-    private static final long serialVersionUID = 1L;
-
 #foreach ($column in $columns)
-#if($column.isList == '1' || $column.isPk == '1' || $column.isEdit == '1')
+#if($column.isList == '1' || $column.isPk == '1' || $column.isEdit == '1' || $column.isDetail == '1')
     /**
      * $column.columnComment
      */

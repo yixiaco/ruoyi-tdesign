@@ -70,7 +70,7 @@
           <dict-tag :options="sys_normal_disable" :value="row.status" />
         </template>
         <template #operation="{ row }">
-          <t-space>
+          <t-space :size="8">
             <t-link v-hasPermi="['system:menu:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
               <edit-icon />修改
             </t-link>
@@ -342,7 +342,7 @@ const columns = ref([
   { title: `组件路径`, colKey: 'component', align: 'center', ellipsis: true },
   { title: `状态`, colKey: 'status', align: 'center', width: 80 },
   { title: `创建时间`, colKey: 'createTime', align: 'center' },
-  { title: `操作`, colKey: 'operation', align: 'center', width: 210 },
+  { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 
 const { queryParams, form, rules } = toRefs(data);
