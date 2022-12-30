@@ -55,21 +55,34 @@
           </t-upload>
         </t-col>
         <t-col :sm="6" :xs="7">
-          <t-button @click="changeScale(1)">
-            <template #icon><add-circle-icon /></template>
-          </t-button>
-          <t-button @click="changeScale(-1)">
-            <template #icon><minus-circle-icon /></template>
-          </t-button>
-          <t-button @click="rotateLeft()">
-            <template #icon><chevron-left-icon /></template>
-          </t-button>
-          <t-button @click="rotateRight()">
-            <template #icon><chevron-right-icon /></template>
-          </t-button>
+          <t-tooltip content="放大">
+            <t-button @click="changeScale(1)">
+              <template #icon><zoom-in-icon /></template>
+            </t-button>
+          </t-tooltip>
+          <t-tooltip content="缩小">
+            <t-button @click="changeScale(-1)">
+              <template #icon><zoom-out-icon /></template>
+            </t-button>
+          </t-tooltip>
+          <t-tooltip content="旋转">
+            <t-button @click="rotateRight()">
+              <template #icon><rotation-icon /></template>
+            </t-button>
+          </t-tooltip>
+          <t-tooltip content="缩放到裁剪框大小">
+            <t-button @click="cropScale()">
+              <template #icon><rectangle-icon /></template>
+            </t-button>
+          </t-tooltip>
+          <t-tooltip content="还原">
+            <t-button @click="refresh()">
+              <template #icon><refresh-icon /></template>
+            </t-button>
+          </t-tooltip>
         </t-col>
         <t-col :sm="{ span: 3, offset: 1 }" :xs="{ span: 7, offset: 5 }">
-          <t-button theme="primary" @click="uploadImg()">提 交 </t-button>
+          <t-button theme="primary" @click="uploadImg()">提 交</t-button>
         </t-col>
       </t-row>
     </t-dialog>
@@ -81,12 +94,13 @@ import 'vue-cropper/dist/index.css';
 import { VueCropper } from 'vue-cropper';
 import { getCurrentInstance, reactive, ref } from 'vue';
 import {
-  AddCircleIcon,
-  ChevronLeftIcon,
-  ChevronRightIcon,
-  MinusCircleIcon,
   PhotoIcon,
+  RectangleIcon,
+  RefreshIcon,
+  RotationIcon,
   UploadIcon,
+  ZoomInIcon,
+  ZoomOutIcon,
 } from 'tdesign-icons-vue-next';
 import { UploadFile } from 'tdesign-vue-next';
 import { uploadAvatar } from '@/api/system/user';
@@ -120,18 +134,24 @@ function editCropper() {
 function modalOpened() {
   visible.value = true;
 }
-/** 向左旋转 */
-function rotateLeft() {
-  cropperRef.value.rotateLeft();
-}
 /** 向右旋转 */
 function rotateRight() {
   cropperRef.value.rotateRight();
+}
+/** 缩放到指定大小 */
+function cropScale() {
+  const size = Math.min(cropperRef.value.trueWidth, cropperRef.value.trueHeight);
+  const cropSize = Math.min(cropperRef.value.cropW, cropperRef.value.cropH);
+  cropperRef.value.scale = cropSize / size;
 }
 /** 图片缩放 */
 function changeScale(num) {
   num = num || 1;
   cropperRef.value.changeScale(num);
+}
+/** 重置 */
+function refresh() {
+  cropperRef.value.refresh();
 }
 /** 上传预处理 */
 function beforeUpload(file: UploadFile) {

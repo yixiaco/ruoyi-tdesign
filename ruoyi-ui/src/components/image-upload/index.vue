@@ -160,7 +160,7 @@ function listToString(list, separator?) {
   let strs = '';
   separator = separator || ',';
   for (const i in list) {
-    if (undefined !== list[i].ossId && list[i].url.indexOf('blob:') !== 0) {
+    if (list[i].ossId && list[i].url.indexOf('blob:') !== 0) {
       strs += list[i].ossId + separator;
     }
   }

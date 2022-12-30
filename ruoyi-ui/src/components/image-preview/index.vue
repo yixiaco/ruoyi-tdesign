@@ -1,7 +1,12 @@
 <template>
-  <t-image-viewer :images="realSrcList">
+  <t-image-viewer :key="props.src" :images="realSrcList">
     <template #trigger="{ open }">
-      <t-image :src="realSrc" :style="{ width: realWidth, height: realHeight }" overlay-trigger="hover">
+      <t-image
+        :key="realSrc"
+        :src="realSrc"
+        :style="{ display: 'inline-block', width: realWidth, height: realHeight }"
+        overlay-trigger="hover"
+      >
         <template #overlayContent>
           <div
             style="
@@ -14,10 +19,13 @@
             "
             @click.stop="open"
           >
-            <t-tag style="border-radius: 3px; background: transparent; color: #fff">
-              <browse-icon size="16" /> 预览
+            <t-tag shape="mark" theme="warning" style="border-radius: 3px; background: transparent; color: #fff">
+              <browse-icon size="16" />预览
             </t-tag>
           </div>
+        </template>
+        <template #error>
+          <image-error-icon />
         </template>
       </t-image>
     </template>
@@ -25,13 +33,14 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
-import { BrowseIcon } from 'tdesign-icons-vue-next';
+import { computed, watch, ref } from 'vue';
+import { BrowseIcon, ImageErrorIcon } from 'tdesign-icons-vue-next';
+import { listByIds } from '@/api/system/oss';
 
 const props = defineProps({
   src: {
     type: String,
-    default: '',
+    required: true,
   },
   width: {
     type: [Number, String],
@@ -43,18 +52,33 @@ const props = defineProps({
   },
 });
 
+const realSrcList = ref([]);
+
+watch(
+  () => props.src,
+  (value) => {
+    if (value) {
+      if (/^([0-9],?)+$/.test(value)) {
+        // 使用id
+        listByIds(value).then((res) => {
+          realSrcList.value = res.data.map((item) => item.url);
+        });
+      } else {
+        // http
+        realSrcList.value = value.split(',');
+      }
+    } else {
+      realSrcList.value = [];
+    }
+  },
+  { immediate: true },
+);
+
 const realSrc = computed(() => {
-  if (!props.src) {
+  if (realSrcList.value.length === 0) {
     return '';
   }
-  return props.src.split(',')[0];
-});
-
-const realSrcList = computed(() => {
-  if (!props.src) {
-    return [];
-  }
-  return props.src.split(',');
+  return realSrcList.value[0];
 });
 
 const realWidth = computed(() => (typeof props.width === 'string' ? props.width : `${props.width}px`));

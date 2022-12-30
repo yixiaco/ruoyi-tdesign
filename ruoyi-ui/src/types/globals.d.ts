@@ -21,6 +21,7 @@ declare module 'vue' {
     download: typeof import('@/utils/request')['download'];
     parseTime: typeof import('@/utils/ruoyi')['parseTime'];
     resetForm: typeof import('@/utils/ruoyi')['resetForm'];
+    bytesToSize: typeof import('@/utils/ruoyi')['bytesToSize'];
     handleTree: typeof import('@/utils/ruoyi')['handleTree'];
     addDateRange: typeof import('@/utils/ruoyi')['addDateRange'];
     selectDictLabel: typeof import('@/utils/ruoyi')['selectDictLabel'];

@@ -112,7 +112,7 @@
 #end
 #if($column.list && $column.htmlType == "imageUpload")
       <template #${javaField}="{ row }">
-          <image-preview :src="row.${javaField}" :width="50" :height="50"/>
+          <image-preview :src="row.${javaField}" :width="60" :height="60" />
       </template>
 #elseif($column.list && $column.dictType && "" != $column.dictType)
       <template #${javaField}="{ row }">
@@ -193,15 +193,15 @@
         </t-form-item>
 #elseif($column.htmlType == "imageUpload")
         <t-form-item label="${comment}">
-          <image-upload v-model="form.${field}"/>
+          <image-upload v-model="form.${field}" :limit="1" />
         </t-form-item>
 #elseif($column.htmlType == "fileUpload")
         <t-form-item label="${comment}">
-          <file-upload v-model="form.${field}"/>
+          <file-upload v-model="form.${field}" />
         </t-form-item>
 #elseif($column.htmlType == "editor")
         <t-form-item label="${comment}">
-          <editor v-model="form.${field}" :min-height="192"/>
+          <editor v-model="form.${field}" :min-height="192" />
         </t-form-item>
 #elseif($column.htmlType == "select" && "" != $dictType)
         <t-form-item label="${comment}" name="${field}">
@@ -297,7 +297,7 @@
 #if($column.detail && $column.htmlType == "imageUpload")
             <t-col :span="6">
               <t-form-item label="${comment}">
-                <image-preview :src="form.${javaField}" :width="50" :height="50"/>
+                <image-preview :src="form.${javaField}" :width="60" :height="60" />
               </t-form-item>
             </t-col>
 #elseif($column.list && $column.htmlType == "datetime")
@@ -313,6 +313,10 @@
                 <dict-tag :options="${column.dictType}" :value="form.${javaField}" />
 #end
               </t-form-item>
+            </t-col>
+#elseif($column.detail && $column.htmlType == "textarea")
+            <t-col :span="12">
+              <t-form-item label="${comment}">{{ form.${javaField} }}</t-form-item>
             </t-col>
 #elseif($column.detail)
             <t-col :span="6">
@@ -430,6 +434,8 @@ const columns = ref([
   { title: `${comment}`, colKey: '${javaField}', align: 'center', width: 180 },
 #elseif($column.list && $column.htmlType == "imageUpload")
   { title: `${comment}`, colKey: '${javaField}', align: 'center', width: 100 },
+#elseif($column.list && $column.htmlType == "textarea")
+  { title: `${comment}`, colKey: '${javaField}', align: 'center', ellipsis: true },
 #elseif($column.list && "" != $javaField)
 #if(${foreach.index} == 1)
   { title: `${comment}`, colKey: '${javaField}' },

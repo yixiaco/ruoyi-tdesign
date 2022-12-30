@@ -140,8 +140,20 @@
           ></image-preview>
           <span v-if="!checkFileSuffix(row.fileSuffix) || !previewListResource" v-text="row.url" />
         </template>
+        <template #size="{ row }">
+          <span>{{ bytesToSize(row.size) }}</span>
+        </template>
         <template #operation="{ row }">
           <t-space :size="8">
+            <t-link
+              v-hasPermi="['system:oss:download']"
+              v-copyText="row.url"
+              v-copyText:callback="copyTextSuccess"
+              theme="primary"
+              hover="color"
+            >
+              <relativity-icon />复制
+            </t-link>
             <t-link
               v-hasPermi="['system:oss:download']"
               theme="primary"
@@ -182,7 +194,15 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { AddIcon, DeleteIcon, DownloadIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
+import {
+  AddIcon,
+  DeleteIcon,
+  DownloadIcon,
+  RefreshIcon,
+  RelativityIcon,
+  SearchIcon,
+  SettingIcon,
+} from 'tdesign-icons-vue-next';
 import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 import { listOss, delOss } from '@/api/system/oss';
@@ -238,6 +258,7 @@ const columns = ref([
   { title: `原名`, colKey: 'originalName', align: 'center', ellipsis: true },
   { title: `文件后缀`, colKey: 'fileSuffix', align: 'center' },
   { title: `文件展示`, colKey: 'url', align: 'center', ellipsis: true },
+  { title: `大小`, colKey: 'size', align: 'center' },
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
   { title: `上传人`, colKey: 'createBy', align: 'center' },
   { title: `服务商`, colKey: 'service', align: 'center' },
@@ -333,6 +354,10 @@ function submitForm() {
   open.value = false;
   reset();
   getList();
+}
+/** 复制成功 */
+function copyTextSuccess() {
+  proxy.$modal.msgSuccess('复制成功');
 }
 /** 下载按钮操作 */
 function handleDownload(row) {

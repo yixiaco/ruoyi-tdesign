@@ -47,6 +47,11 @@ public class SysOss extends BaseEntity {
     private String url;
 
     /**
+     * 字节长度
+     */
+    private Long size;
+
+    /**
      * 服务商
      */
     private String service;

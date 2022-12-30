@@ -40,6 +40,11 @@ public class SysOssVo {
     private String url;
 
     /**
+     * 字节长度
+     */
+    private Long size;
+
+    /**
      * 创建时间
      */
     private Date createTime;

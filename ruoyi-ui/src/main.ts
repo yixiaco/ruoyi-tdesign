@@ -7,7 +7,15 @@ import { useDict } from '@/utils/dict';
 import plugins from './plugins'; // plugins
 import { download } from '@/utils/request';
 import directive from './directive'; // directive
-import { parseTime, resetForm, addDateRange, handleTree, selectDictLabel, selectDictLabels } from '@/utils/ruoyi';
+import {
+  parseTime,
+  bytesToSize,
+  resetForm,
+  addDateRange,
+  handleTree,
+  selectDictLabel,
+  selectDictLabels,
+} from '@/utils/ruoyi';
 import { getConfigKey, updateConfigByKey } from '@/api/system/config';
 
 // 字典标签组件
@@ -33,6 +41,7 @@ app.config.globalProperties.getConfigKey = getConfigKey;
 app.config.globalProperties.updateConfigByKey = updateConfigByKey;
 app.config.globalProperties.download = download;
 app.config.globalProperties.parseTime = parseTime;
+app.config.globalProperties.bytesToSize = bytesToSize;
 app.config.globalProperties.resetForm = resetForm;
 app.config.globalProperties.handleTree = handleTree;
 app.config.globalProperties.addDateRange = addDateRange;

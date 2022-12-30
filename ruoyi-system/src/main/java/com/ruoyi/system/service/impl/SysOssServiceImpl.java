@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.constant.CacheNames;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -22,7 +23,6 @@ import com.ruoyi.system.domain.bo.SysOssBo;
 import com.ruoyi.system.domain.vo.SysOssVo;
 import com.ruoyi.system.mapper.SysOssMapper;
 import com.ruoyi.system.service.ISysOssService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -42,11 +42,8 @@ import java.util.stream.Collectors;
  *
  * @author Lion Li
  */
-@RequiredArgsConstructor
 @Service
-public class SysOssServiceImpl implements ISysOssService {
-
-    private final SysOssMapper baseMapper;
+public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> implements ISysOssService {
 
     @Override
     public TableDataInfo<SysOssVo> queryPageList(SysOssBo bo, PageQuery pageQuery) {
@@ -58,7 +55,7 @@ public class SysOssServiceImpl implements ISysOssService {
     }
 
     @Override
-    public List<SysOssVo> listByIds(Collection<Long> ossIds) {
+    public List<SysOssVo> listVoByIds(Collection<Long> ossIds) {
         List<SysOssVo> list = new ArrayList<>();
         for (Long id : ossIds) {
             SysOssVo vo = SpringUtils.getAopProxy(this).getById(id);
@@ -77,7 +74,7 @@ public class SysOssServiceImpl implements ISysOssService {
         lqw.eq(StringUtils.isNotBlank(bo.getFileSuffix()), SysOss::getFileSuffix, bo.getFileSuffix());
         lqw.eq(StringUtils.isNotBlank(bo.getUrl()), SysOss::getUrl, bo.getUrl());
         lqw.between(params.get("beginCreateTime") != null && params.get("endCreateTime") != null,
-            SysOss::getCreateTime, params.get("beginCreateTime"), params.get("endCreateTime"));
+                    SysOss::getCreateTime, params.get("beginCreateTime"), params.get("endCreateTime"));
         lqw.eq(StringUtils.isNotBlank(bo.getCreateBy()), SysOss::getCreateBy, bo.getCreateBy());
         lqw.eq(StringUtils.isNotBlank(bo.getService()), SysOss::getService, bo.getService());
         return lqw;
@@ -98,7 +95,7 @@ public class SysOssServiceImpl implements ISysOssService {
         FileUtils.setAttachmentResponseHeader(response, sysOss.getOriginalName());
         response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE + "; charset=UTF-8");
         OssClient storage = OssFactory.instance();
-        try(InputStream inputStream = storage.getObjectContent(sysOss.getUrl())) {
+        try (InputStream inputStream = storage.getObjectContent(sysOss.getUrl())) {
             int available = inputStream.available();
             IoUtil.copy(inputStream, response.getOutputStream(), available);
             response.setContentLength(available);
@@ -125,6 +122,7 @@ public class SysOssServiceImpl implements ISysOssService {
         oss.setFileName(uploadResult.getFilename());
         oss.setOriginalName(originalfileName);
         oss.setService(storage.getConfigKey());
+        oss.setSize(file.getSize());
         baseMapper.insert(oss);
         SysOssVo sysOssVo = new SysOssVo();
         BeanCopyUtils.copy(oss, sysOssVo);
