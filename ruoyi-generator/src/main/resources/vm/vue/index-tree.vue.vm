@@ -579,8 +579,8 @@ function onConfirm() {
 }
 
 /** 提交表单 */
-function submitForm({ validateResult }) {
-  if (validateResult) {
+function submitForm({ validateResult, firstError }) {
+  if (validateResult === true) {
     buttonLoading.value = true;
 #foreach ($column in $columns)
 #if($column.htmlType == "checkbox")
@@ -608,6 +608,8 @@ function submitForm({ validateResult }) {
           buttonLoading.value = false;
         });
     }
+  } else {
+    proxy.#[[$modal]]#.msgError(firstError);
   }
 }
 

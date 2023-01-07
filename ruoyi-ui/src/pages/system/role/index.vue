@@ -558,8 +558,8 @@ function confirm(type) {
   }
 }
 /** 提交按钮 */
-function submitForm({ validateResult }) {
-  if (validateResult) {
+function submitForm({ validateResult, firstError }) {
+  if (validateResult === true) {
     if (form.value.roleId) {
       form.value.menuIds = getMenuAllCheckedKeys();
       updateRole(form.value).then((response) => {
@@ -575,6 +575,8 @@ function submitForm({ validateResult }) {
         getList();
       });
     }
+  } else {
+    proxy.$modal.msgError(firstError);
   }
 }
 /** 取消按钮 */

@@ -303,8 +303,8 @@ function onConfirm() {
   configRef.value.submit();
 }
 /** 提交按钮 */
-function submitForm({ validateResult }) {
-  if (validateResult) {
+function submitForm({ validateResult, firstError }) {
+  if (validateResult === true) {
     if (form.value.configId) {
       updateConfig(form.value).then(() => {
         proxy.$modal.msgSuccess('修改成功');
@@ -318,6 +318,8 @@ function submitForm({ validateResult }) {
         getList();
       });
     }
+  } else {
+    proxy.$modal.msgError(firstError);
   }
 }
 /** 删除按钮操作 */

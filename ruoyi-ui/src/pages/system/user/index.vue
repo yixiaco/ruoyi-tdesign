@@ -654,8 +654,8 @@ function submitForm() {
   userRef.value.submit();
 }
 
-const onSubmit = ({ validateResult }) => {
-  if (validateResult) {
+const onSubmit = ({ validateResult, firstError }) => {
+  if (validateResult === true) {
     dLoading.value = true;
     if (form.value.userId) {
       updateUser(form.value)
@@ -678,6 +678,8 @@ const onSubmit = ({ validateResult }) => {
           dLoading.value = false;
         });
     }
+  } else {
+    proxy.$modal.msgError(firstError);
   }
 };
 

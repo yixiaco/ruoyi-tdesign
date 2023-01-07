@@ -352,8 +352,8 @@ function onConfirm() {
   ossConfigRef.value.submit();
 }
 /** 提交按钮 */
-function submitForm({ validateResult }) {
-  if (validateResult) {
+function submitForm({ validateResult, firstError }) {
+  if (validateResult === true) {
     buttonLoading.value = true;
     if (form.value.ossConfigId) {
       updateOssConfig(form.value)
@@ -376,6 +376,8 @@ function submitForm({ validateResult }) {
           buttonLoading.value = false;
         });
     }
+  } else {
+    proxy.$modal.msgError(firstError);
   }
 }
 /** 用户状态修改  */

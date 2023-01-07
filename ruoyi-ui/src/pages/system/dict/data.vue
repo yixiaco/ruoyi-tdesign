@@ -346,8 +346,8 @@ function onConfirm() {
   dataRef.value.submit();
 }
 /** 提交按钮 */
-function submitForm({ validateResult }) {
-  if (validateResult) {
+function submitForm({ validateResult, firstError }) {
+  if (validateResult === true) {
     if (form.value.dictCode) {
       updateData(form.value).then((response) => {
         useDictStore().removeDict(queryParams.value.dictType);
@@ -363,6 +363,8 @@ function submitForm({ validateResult }) {
         getList();
       });
     }
+  } else {
+    proxy.$modal.msgError(firstError);
   }
 }
 /** 删除按钮操作 */

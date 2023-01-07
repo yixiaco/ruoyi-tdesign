@@ -54,7 +54,7 @@ const rules = ref({
 
 /** 提交按钮 */
 function submit({ validateResult }) {
-  if (validateResult) {
+  if (validateResult === true) {
     updateUserProfile(user.value).then(() => {
       proxy.$modal.msgSuccess('修改成功');
     });
