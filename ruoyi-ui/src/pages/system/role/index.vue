@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <t-card>
     <t-space direction="vertical">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
         <t-form-item label="角色名称" name="roleName">
@@ -254,7 +254,7 @@
         </t-form-item>
       </t-form>
     </t-dialog>
-  </div>
+  </t-card>
 </template>
 <script lang="ts">
 export default {

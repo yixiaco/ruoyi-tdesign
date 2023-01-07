@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <t-card>
     <t-space direction="vertical">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline">
         <t-form-item label="配置key" name="configKey">
@@ -167,7 +167,7 @@
         </t-form-item>
       </t-form>
     </t-dialog>
-  </div>
+  </t-card>
 </template>
 <script lang="ts">
 export default {

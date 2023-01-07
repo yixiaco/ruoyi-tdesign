@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <t-card>
     <t-space direction="vertical">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline">
         <t-form-item label="字典名称" name="dictType">
@@ -163,7 +163,7 @@
         </t-form>
       </t-loading>
     </t-dialog>
-  </div>
+  </t-card>
 </template>
 <script lang="ts">
 export default {

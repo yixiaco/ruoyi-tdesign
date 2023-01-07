@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <t-card>
     <t-row :gutter="[20, 20]">
       <t-col :span="12">
         <t-card hover-shadow>
@@ -93,7 +93,7 @@
         </t-card>
       </t-col>
     </t-row>
-  </div>
+  </t-card>
 </template>
 <script lang="ts">
 export default {

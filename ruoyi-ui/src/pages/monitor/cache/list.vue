@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <t-card>
     <t-row :gutter="10">
       <t-col :span="4">
         <t-card>
@@ -94,7 +94,7 @@
         </t-card>
       </t-col>
     </t-row>
-  </div>
+  </t-card>
 </template>
 <script lang="ts">
 export default {

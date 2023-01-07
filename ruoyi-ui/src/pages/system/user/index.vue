@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <t-card>
     <t-row :gutter="20">
       <!--部门数据-->
       <t-col :sm="2" :xs="12">
@@ -333,7 +333,7 @@
       <div><t-checkbox v-model="upload.updateSupport" />是否更新已经存在的用户数据</div>
       <t-link hover="color" style="font-size: 12px; vertical-align: baseline" @click="importTemplate">下载模板</t-link>
     </t-dialog>
-  </div>
+  </t-card>
 </template>
 <script lang="ts">
 export default {

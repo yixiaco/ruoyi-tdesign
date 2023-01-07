@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <t-card>
     <t-space direction="vertical">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
         <t-form-item label="登录地址" name="ipaddr">
@@ -119,7 +119,7 @@
         </template>
       </t-table>
     </t-space>
-  </div>
+  </t-card>
 </template>
 <script lang="ts">
 export default {

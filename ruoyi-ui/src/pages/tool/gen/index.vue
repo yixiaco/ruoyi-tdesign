@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <t-card>
     <t-space direction="vertical">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline">
         <t-form-item label="数据源" name="dataName">
@@ -168,7 +168,7 @@
       </t-tabs>
     </t-dialog>
     <import-table ref="importRef" @ok="handleQuery" />
-  </div>
+  </t-card>
 </template>
 <script lang="ts">
 export default {

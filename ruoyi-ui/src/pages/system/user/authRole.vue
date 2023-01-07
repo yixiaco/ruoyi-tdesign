@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <t-card>
     <h4 class="form-header h4">基本信息</h4>
     <t-form :data="form" label-width="80px">
       <t-row>
@@ -36,7 +36,7 @@
         <t-button theme="default" variant="outline" @click="close()">返回</t-button>
       </div>
     </t-form>
-  </div>
+  </t-card>
 </template>
 <script lang="ts">
 export default {

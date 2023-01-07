@@ -1,5 +1,5 @@
 <template>
-  <div class="app-container">
+  <t-card>
     <t-row :gutter="20">
       <t-col :sm="3" :xs="12">
         <t-card class="box-card" shadow>
@@ -61,7 +61,7 @@
         </t-card>
       </t-col>
     </t-row>
-  </div>
+  </t-card>
 </template>
 <script lang="ts">
 export default {
