@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SysMenuMapper">
 
-    <resultMap type="SysMenu" id="SysMenuResult">
+    <resultMap type="com.ruoyi.common.core.domain.entity.SysMenu" id="SysMenuResult">
         <id property="menuId" column="menu_id"/>
         <result property="menuName" column="menu_name"/>
         <result property="parentName" column="parent_name"/>
@@ -22,18 +22,30 @@
         <result property="icon" column="icon"/>
         <result property="createBy" column="create_by"/>
         <result property="createTime" column="create_time"/>
-        <result property="updateTime" column="update_time"/>
         <result property="updateBy" column="update_by"/>
+        <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
     </resultMap>
 
-    <select id="selectMenuListByUserId" parameterType="SysMenu" resultMap="SysMenuResult">
+    <sql id="selectSysMenuVo">
+        select sm.menu_id, sm.menu_name, sm.parent_id, sm.order_num, sm.path, sm.component, sm.query_param, sm.is_frame, sm.is_cache, sm.menu_type, sm.visible, sm.`status`, sm.perms, sm.icon, sm.create_by, sm.create_time, sm.update_by, sm.update_time, sm.remark from sys_menu sm
+    </sql>
+    <select id="queryList" parameterType="com.ruoyi.common.core.domain.entity.SysMenu" resultMap="SysMenuResult">
+        <include refid="selectSysMenuVo"/>
+        <where>
+            <if test="menuName != null and menuName != ''"> and sm.menu_name like concat('%', #{menuName}, '%')</if>
+            <if test="visible != null and visible != ''"> and sm.visible = #{visible}</if>
+            <if test="status != null and status != ''"> and sm.`status` = #{status}</if>
+        </where>
+        order by parent_id, order_num
+    </select>
+
+    <select id="selectMenuListByUserId" parameterType="com.ruoyi.common.core.domain.entity.SysMenu" resultMap="SysMenuResult">
         select distinct m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.query_param, m.visible, m.status,
         m.perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time
         from sys_menu m
         left join sys_role_menu rm on m.menu_id = rm.menu_id
         left join sys_user_role sur on rm.role_id = sur.role_id
-        left join sys_role ro on sur.role_id = ro.role_id
         ${ew.getCustomSqlSegment}
     </select>
 

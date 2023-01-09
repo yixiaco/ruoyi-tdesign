@@ -12,7 +12,6 @@ import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.redis.RedisUtils;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.annotation.AfterReturning;
@@ -35,7 +34,6 @@ import java.util.Map;
  * @author Lion Li
  */
 @Slf4j
-@RequiredArgsConstructor
 @Aspect
 @Component
 public class RepeatSubmitAspect {

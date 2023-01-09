@@ -14,6 +14,14 @@ import java.util.List;
  */
 public interface SysDictDataMapper extends BaseMapperPlus<SysDictDataMapper, SysDictData, SysDictData> {
 
+    /**
+     * 查询字典数据列表
+     *
+     * @param dictData
+     * @return {@link SysDictData}
+     */
+    List<SysDictData> queryList(SysDictData dictData);
+
     default List<SysDictData> selectDictDataByType(String dictType) {
         return selectList(
             new LambdaQueryWrapper<SysDictData>()

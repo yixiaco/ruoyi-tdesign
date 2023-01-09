@@ -10,10 +10,14 @@ import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.redis.CacheUtils;
 import com.ruoyi.common.utils.redis.RedisUtils;
 import com.ruoyi.system.domain.SysCache;
-import lombok.RequiredArgsConstructor;
 import org.redisson.spring.data.connection.RedissonConnectionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.connection.RedisConnection;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -23,12 +27,12 @@ import java.util.stream.Collectors;
  *
  * @author Lion Li
  */
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/monitor/cache")
 public class CacheController {
 
-    private final RedissonConnectionFactory connectionFactory;
+    @Autowired
+    private RedissonConnectionFactory connectionFactory;
 
     private final static List<SysCache> CACHES = new ArrayList<>();
 

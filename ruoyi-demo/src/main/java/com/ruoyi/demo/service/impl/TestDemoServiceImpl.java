@@ -12,7 +12,7 @@ import com.ruoyi.demo.domain.bo.TestDemoBo;
 import com.ruoyi.demo.domain.vo.TestDemoVo;
 import com.ruoyi.demo.mapper.TestDemoMapper;
 import com.ruoyi.demo.service.ITestDemoService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -25,11 +25,11 @@ import java.util.Map;
  * @author Lion Li
  * @date 2021-07-26
  */
-@RequiredArgsConstructor
 @Service
 public class TestDemoServiceImpl implements ITestDemoService {
 
-    private final TestDemoMapper baseMapper;
+    @Autowired
+    private TestDemoMapper baseMapper;
 
     @Override
     public TestDemoVo queryById(Long id) {

@@ -18,6 +18,17 @@ import java.util.List;
 public interface SysDeptMapper extends BaseMapperPlus<SysDeptMapper, SysDept, SysDept> {
 
     /**
+     * 查询部门列表
+     *
+     * @param dept
+     * @return {@link SysDept}
+     */
+    @DataPermission({
+        @DataColumn(key = "deptName", value = "dept_id")
+    })
+    List<SysDept> queryList(SysDept dept);
+
+    /**
      * 查询部门管理数据
      *
      * @param queryWrapper 查询条件
@@ -36,5 +47,4 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDeptMapper, SysDept, Sy
      * @return 选中部门列表
      */
     List<Long> selectDeptListByRoleId(@Param("roleId") Long roleId, @Param("deptCheckStrictly") boolean deptCheckStrictly);
-
 }

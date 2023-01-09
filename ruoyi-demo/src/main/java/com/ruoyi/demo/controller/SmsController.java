@@ -4,7 +4,7 @@ import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.sms.config.properties.SmsProperties;
 import com.ruoyi.sms.core.SmsTemplate;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -21,12 +21,12 @@ import java.util.Map;
  * @version 4.2.0
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/demo/sms")
 public class SmsController {
 
-    private final SmsProperties smsProperties;
+    @Autowired
+    private SmsProperties smsProperties;
 //    private final SmsTemplate smsTemplate; // 可以使用spring注入
 //    private final AliyunSmsTemplate smsTemplate; // 也可以注入某个厂家的模板工具
 

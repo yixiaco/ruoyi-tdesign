@@ -15,7 +15,7 @@ import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.redis.RedisUtils;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.servlet.http.HttpServletRequest;
@@ -25,13 +25,15 @@ import javax.servlet.http.HttpServletRequest;
  *
  * @author Lion Li
  */
-@RequiredArgsConstructor
 @Service
 public class SysRegisterService {
 
-    private final ISysUserService userService;
-    private final ISysConfigService configService;
-    private final LogininforService asyncService;
+    @Autowired
+    private ISysUserService userService;
+    @Autowired
+    private ISysConfigService configService;
+    @Autowired
+    private LogininforService asyncService;
 
     /**
      * 注册

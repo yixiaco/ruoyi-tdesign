@@ -3,13 +3,12 @@ package com.ruoyi.web.controller.system;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.system.domain.SysNotice;
 import com.ruoyi.system.service.ISysNoticeService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -19,20 +18,20 @@ import org.springframework.web.bind.annotation.*;
  * @author Lion Li
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/system/notice")
 public class SysNoticeController extends BaseController {
 
-    private final ISysNoticeService noticeService;
+    @Autowired
+    private ISysNoticeService noticeService;
 
     /**
      * 获取通知公告列表
      */
     @SaCheckPermission("system:notice:list")
     @GetMapping("/list")
-    public TableDataInfo<SysNotice> list(SysNotice notice, PageQuery pageQuery) {
-        return noticeService.selectPageNoticeList(notice, pageQuery);
+    public TableDataInfo<SysNotice> list(SysNotice notice) {
+        return noticeService.selectPageNoticeList(notice);
     }
 
     /**

@@ -3,7 +3,7 @@ package com.ruoyi.system.service.impl;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -14,28 +14,24 @@ import com.ruoyi.common.utils.ip.AddressUtils;
 import com.ruoyi.system.domain.SysLogininfor;
 import com.ruoyi.system.mapper.SysLogininforMapper;
 import com.ruoyi.system.service.ISysLogininforService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 系统访问日志情况信息 服务层处理
  *
  * @author Lion Li
  */
-@RequiredArgsConstructor
 @Slf4j
 @Service
-public class SysLogininforServiceImpl implements ISysLogininforService, LogininforService {
-
-    private final SysLogininforMapper baseMapper;
+public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, SysLogininfor> implements ISysLogininforService, LogininforService {
 
     /**
      * 记录登录信息
@@ -87,24 +83,12 @@ public class SysLogininforServiceImpl implements ISysLogininforService, Logininf
         if (msg == null) {
             msg = "";
         }
-        return "[" + msg.toString() + "]";
+        return "[" + msg + "]";
     }
 
     @Override
-    public TableDataInfo<SysLogininfor> selectPageLogininforList(SysLogininfor logininfor, PageQuery pageQuery) {
-        Map<String, Object> params = logininfor.getParams();
-        LambdaQueryWrapper<SysLogininfor> lqw = new LambdaQueryWrapper<SysLogininfor>()
-            .like(StringUtils.isNotBlank(logininfor.getIpaddr()), SysLogininfor::getIpaddr, logininfor.getIpaddr())
-            .eq(StringUtils.isNotBlank(logininfor.getStatus()), SysLogininfor::getStatus, logininfor.getStatus())
-            .like(StringUtils.isNotBlank(logininfor.getUserName()), SysLogininfor::getUserName, logininfor.getUserName())
-            .between(params.get("beginTime") != null && params.get("endTime") != null,
-                SysLogininfor::getLoginTime, params.get("beginTime"), params.get("endTime"));
-        if (StringUtils.isBlank(pageQuery.getOrderByColumn())) {
-            pageQuery.setOrderByColumn("info_id");
-            pageQuery.setIsAsc("desc");
-        }
-        Page<SysLogininfor> page = baseMapper.selectPage(pageQuery.build(), lqw);
-        return TableDataInfo.build(page);
+    public TableDataInfo<SysLogininfor> selectPageLogininforList(SysLogininfor logininfor) {
+        return PageQuery.of(() -> baseMapper.queryList(logininfor));
     }
 
     /**
@@ -126,14 +110,7 @@ public class SysLogininforServiceImpl implements ISysLogininforService, Logininf
      */
     @Override
     public List<SysLogininfor> selectLogininforList(SysLogininfor logininfor) {
-        Map<String, Object> params = logininfor.getParams();
-        return baseMapper.selectList(new LambdaQueryWrapper<SysLogininfor>()
-            .like(StringUtils.isNotBlank(logininfor.getIpaddr()), SysLogininfor::getIpaddr, logininfor.getIpaddr())
-            .eq(StringUtils.isNotBlank(logininfor.getStatus()), SysLogininfor::getStatus, logininfor.getStatus())
-            .like(StringUtils.isNotBlank(logininfor.getUserName()), SysLogininfor::getUserName, logininfor.getUserName())
-            .between(params.get("beginTime") != null && params.get("endTime") != null,
-                SysLogininfor::getLoginTime, params.get("beginTime"), params.get("endTime"))
-            .orderByDesc(SysLogininfor::getInfoId));
+        return baseMapper.queryList(logininfor);
     }
 
     /**
@@ -143,6 +120,7 @@ public class SysLogininforServiceImpl implements ISysLogininforService, Logininf
      * @return 结果
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public int deleteLogininforByIds(Long[] infoIds) {
         return baseMapper.deleteBatchIds(Arrays.asList(infoIds));
     }

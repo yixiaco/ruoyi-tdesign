@@ -6,6 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.entity.SysMenu;
@@ -21,23 +22,28 @@ import com.ruoyi.system.mapper.SysMenuMapper;
 import com.ruoyi.system.mapper.SysRoleMapper;
 import com.ruoyi.system.mapper.SysRoleMenuMapper;
 import com.ruoyi.system.service.ISysMenuService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 菜单 业务层处理
  *
  * @author Lion Li
  */
-@RequiredArgsConstructor
 @Service
-public class SysMenuServiceImpl implements ISysMenuService {
+public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements ISysMenuService {
 
-    private final SysMenuMapper baseMapper;
-    private final SysRoleMapper roleMapper;
-    private final SysRoleMenuMapper roleMenuMapper;
+    @Autowired
+    private SysRoleMapper roleMapper;
+    @Autowired
+    private SysRoleMenuMapper roleMenuMapper;
 
     /**
      * 根据用户查询系统菜单列表
@@ -61,12 +67,7 @@ public class SysMenuServiceImpl implements ISysMenuService {
         List<SysMenu> menuList = null;
         // 管理员显示所有菜单信息
         if (LoginHelper.isAdmin(userId)) {
-            menuList = baseMapper.selectList(new LambdaQueryWrapper<SysMenu>()
-                .like(StringUtils.isNotBlank(menu.getMenuName()), SysMenu::getMenuName, menu.getMenuName())
-                .eq(StringUtils.isNotBlank(menu.getVisible()), SysMenu::getVisible, menu.getVisible())
-                .eq(StringUtils.isNotBlank(menu.getStatus()), SysMenu::getStatus, menu.getStatus())
-                .orderByAsc(SysMenu::getParentId)
-                .orderByAsc(SysMenu::getOrderNum));
+            menuList = baseMapper.queryList(menu);
         } else {
             QueryWrapper<SysMenu> wrapper = Wrappers.query();
             wrapper.eq("sur.user_id", userId)
@@ -289,9 +290,9 @@ public class SysMenuServiceImpl implements ISysMenuService {
     @Override
     public String checkMenuNameUnique(SysMenu menu) {
         boolean exist = baseMapper.exists(new LambdaQueryWrapper<SysMenu>()
-            .eq(SysMenu::getMenuName, menu.getMenuName())
-            .eq(SysMenu::getParentId, menu.getParentId())
-            .ne(ObjectUtil.isNotNull(menu.getMenuId()), SysMenu::getMenuId, menu.getMenuId()));
+                                              .eq(SysMenu::getMenuName, menu.getMenuName())
+                                              .eq(SysMenu::getParentId, menu.getParentId())
+                                              .ne(ObjectUtil.isNotNull(menu.getMenuId()), SysMenu::getMenuId, menu.getMenuId()));
         if (exist) {
             return UserConstants.NOT_UNIQUE;
         }
@@ -441,6 +442,6 @@ public class SysMenuServiceImpl implements ISysMenuService {
      */
     public String innerLinkReplaceEach(String path) {
         return StringUtils.replaceEach(path, new String[]{Constants.HTTP, Constants.HTTPS, Constants.WWW, "."},
-            new String[]{"", "", "", "/"});
+                                       new String[]{"", "", "", "/"});
     }
 }

@@ -10,6 +10,7 @@ import com.ruoyi.demo.domain.vo.TestTreeVo;
 import com.ruoyi.demo.mapper.TestTreeMapper;
 import com.ruoyi.demo.service.ITestTreeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -23,11 +24,11 @@ import java.util.Map;
  * @date 2021-07-26
  */
 // @DS("slave") // 切换从库查询
-@RequiredArgsConstructor
 @Service
 public class TestTreeServiceImpl implements ITestTreeService {
 
-    private final TestTreeMapper baseMapper;
+    @Autowired
+    private TestTreeMapper baseMapper;
 
     @Override
     public TestTreeVo queryById(Long id) {

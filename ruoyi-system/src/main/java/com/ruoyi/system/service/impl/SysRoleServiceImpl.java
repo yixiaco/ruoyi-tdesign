@@ -2,12 +2,8 @@ package com.ruoyi.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.StringUtils;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.entity.SysRole;
@@ -22,30 +18,34 @@ import com.ruoyi.system.mapper.SysRoleMapper;
 import com.ruoyi.system.mapper.SysRoleMenuMapper;
 import com.ruoyi.system.mapper.SysUserRoleMapper;
 import com.ruoyi.system.service.ISysRoleService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * 角色 业务层处理
  *
  * @author Lion Li
  */
-@RequiredArgsConstructor
 @Service
-public class SysRoleServiceImpl implements ISysRoleService {
+public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> implements ISysRoleService {
 
-    private final SysRoleMapper baseMapper;
-    private final SysRoleMenuMapper roleMenuMapper;
-    private final SysUserRoleMapper userRoleMapper;
-    private final SysRoleDeptMapper roleDeptMapper;
+    @Autowired
+    private SysRoleMenuMapper roleMenuMapper;
+    @Autowired
+    private SysUserRoleMapper userRoleMapper;
+    @Autowired
+    private SysRoleDeptMapper roleDeptMapper;
 
     @Override
-    public TableDataInfo<SysRole> selectPageRoleList(SysRole role, PageQuery pageQuery) {
-        Page<SysRole> page = baseMapper.selectPageRoleList(pageQuery.build(), this.buildQueryWrapper(role));
-        return TableDataInfo.build(page);
+    public TableDataInfo<SysRole> selectPageRoleList(SysRole role) {
+        return PageQuery.of(() -> baseMapper.queryList(role));
     }
 
     /**
@@ -56,21 +56,7 @@ public class SysRoleServiceImpl implements ISysRoleService {
      */
     @Override
     public List<SysRole> selectRoleList(SysRole role) {
-        return baseMapper.selectRoleList(this.buildQueryWrapper(role));
-    }
-
-    private Wrapper<SysRole> buildQueryWrapper(SysRole role) {
-        Map<String, Object> params = role.getParams();
-        QueryWrapper<SysRole> wrapper = Wrappers.query();
-        wrapper.eq("r.del_flag", UserConstants.ROLE_NORMAL)
-            .eq(ObjectUtil.isNotNull(role.getRoleId()), "r.role_id", role.getRoleId())
-            .like(StringUtils.isNotBlank(role.getRoleName()), "r.role_name", role.getRoleName())
-            .eq(StringUtils.isNotBlank(role.getStatus()), "r.status", role.getStatus())
-            .like(StringUtils.isNotBlank(role.getRoleKey()), "r.role_key", role.getRoleKey())
-            .between(params.get("beginTime") != null && params.get("endTime") != null,
-                "r.create_time", params.get("beginTime"), params.get("endTime"))
-            .orderByAsc("r.role_sort");
-        return wrapper;
+        return baseMapper.queryList(role);
     }
 
     /**

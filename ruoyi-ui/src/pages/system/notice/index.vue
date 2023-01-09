@@ -220,7 +220,7 @@ const data = reactive({
 // 列显隐信息
 const columns = ref([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
-  { title: `序号`, colKey: 'noticeId', align: 'center', width: 100 },
+  { title: `序号`, colKey: 'noticeId', align: 'center', width: 100, ellipsis: true },
   { title: `公告标题`, colKey: 'noticeTitle', align: 'center', ellipsis: true },
   { title: `公告类型`, colKey: 'noticeType', align: 'center', width: 100 },
   { title: `状态`, colKey: 'status', align: 'center', width: 100 },

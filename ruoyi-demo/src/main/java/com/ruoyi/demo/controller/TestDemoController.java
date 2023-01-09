@@ -20,7 +20,7 @@ import com.ruoyi.demo.domain.bo.TestDemoBo;
 import com.ruoyi.demo.domain.bo.TestDemoImportVo;
 import com.ruoyi.demo.domain.vo.TestDemoVo;
 import com.ruoyi.demo.service.ITestDemoService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -40,12 +40,12 @@ import java.util.concurrent.TimeUnit;
  * @date 2021-07-26
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/demo/demo")
 public class TestDemoController extends BaseController {
 
-    private final ITestDemoService iTestDemoService;
+    @Autowired
+    private ITestDemoService iTestDemoService;
 
     /**
      * 查询测试单表列表

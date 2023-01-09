@@ -4,8 +4,8 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SysNoticeMapper">
 
-    <resultMap type="SysNotice" id="SysNoticeResult">
-        <result property="noticeId" column="notice_id"/>
+    <resultMap type="com.ruoyi.system.domain.SysNotice" id="SysNoticeResult">
+        <id property="noticeId" column="notice_id"/>
         <result property="noticeTitle" column="notice_title"/>
         <result property="noticeType" column="notice_type"/>
         <result property="noticeContent" column="notice_content"/>
@@ -16,5 +16,19 @@
         <result property="updateTime" column="update_time"/>
         <result property="remark" column="remark"/>
     </resultMap>
+
+    <sql id="selectSysNoticeVo">
+        select sn.notice_id, sn.notice_title, sn.notice_type, sn.notice_content, sn.`status`, sn.create_by, sn.create_time, sn.update_by, sn.update_time, sn.remark from sys_notice sn
+    </sql>
+    <select id="queryList" parameterType="com.ruoyi.system.domain.SysNotice" resultMap="SysNoticeResult">
+        <include refid="selectSysNoticeVo"/>
+        <where>
+            <if test="noticeTitle != null and noticeTitle != ''"> and sn.notice_title like concat('%', #{noticeTitle}, '%')</if>
+            <if test="noticeType != null and noticeType != ''"> and sn.notice_type = #{noticeType}</if>
+            <if test="status != null and status != ''"> and sn.`status` = #{status}</if>
+            <if test="createBy != null and createBy != ''"> and sn.create_by like concat('%', #{createBy}, '%')</if>
+        </where>
+        order by create_time desc
+    </select>
 
 </mapper>

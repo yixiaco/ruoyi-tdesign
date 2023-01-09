@@ -18,35 +18,29 @@ import java.util.List;
  */
 public interface SysUserMapper extends BaseMapperPlus<SysUserMapper, SysUser, SysUser> {
 
-    @DataPermission({
-        @DataColumn(key = "deptName", value = "d.dept_id"),
-        @DataColumn(key = "userName", value = "u.user_id")
-    })
-    Page<SysUser> selectPageUserList(@Param("page") Page<SysUser> page, @Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
-
     /**
-     * 根据条件分页查询用户列表
+     * 查询用户信息列表
      *
-     * @param queryWrapper 查询条件
-     * @return 用户信息集合信息
+     * @param bo bo对象
+     * @return {@link SysUser}
      */
     @DataPermission({
         @DataColumn(key = "deptName", value = "d.dept_id"),
         @DataColumn(key = "userName", value = "u.user_id")
     })
-    List<SysUser> selectUserList(@Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
+    List<SysUser> queryList(SysUser bo);
 
     /**
      * 根据条件分页查询已配用户角色列表
      *
-     * @param queryWrapper 查询条件
+     * @param user 查询条件
      * @return 用户信息集合信息
      */
     @DataPermission({
         @DataColumn(key = "deptName", value = "d.dept_id"),
         @DataColumn(key = "userName", value = "u.user_id")
     })
-    Page<SysUser> selectAllocatedList(@Param("page") Page<SysUser> page, @Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
+    List<SysUser> selectAllocatedList(SysUser user);
 
     /**
      * 根据条件分页查询未分配用户角色列表

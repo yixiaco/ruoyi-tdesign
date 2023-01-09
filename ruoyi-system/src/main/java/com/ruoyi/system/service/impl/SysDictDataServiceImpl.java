@@ -1,19 +1,18 @@
 package com.ruoyi.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.constant.CacheNames;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.entity.SysDictData;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.redis.CacheUtils;
 import com.ruoyi.system.mapper.SysDictDataMapper;
 import com.ruoyi.system.service.ISysDictDataService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -22,21 +21,12 @@ import java.util.List;
  *
  * @author Lion Li
  */
-@RequiredArgsConstructor
 @Service
-public class SysDictDataServiceImpl implements ISysDictDataService {
-
-    private final SysDictDataMapper baseMapper;
+public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDictData> implements ISysDictDataService {
 
     @Override
-    public TableDataInfo<SysDictData> selectPageDictDataList(SysDictData dictData, PageQuery pageQuery) {
-        LambdaQueryWrapper<SysDictData> lqw = new LambdaQueryWrapper<SysDictData>()
-            .eq(StringUtils.isNotBlank(dictData.getDictType()), SysDictData::getDictType, dictData.getDictType())
-            .like(StringUtils.isNotBlank(dictData.getDictLabel()), SysDictData::getDictLabel, dictData.getDictLabel())
-            .eq(StringUtils.isNotBlank(dictData.getStatus()), SysDictData::getStatus, dictData.getStatus())
-            .orderByAsc(SysDictData::getDictSort);
-        Page<SysDictData> page = baseMapper.selectPage(pageQuery.build(), lqw);
-        return TableDataInfo.build(page);
+    public TableDataInfo<SysDictData> selectPageDictDataList(SysDictData dictData) {
+        return PageQuery.of(() -> baseMapper.queryList(dictData));
     }
 
     /**
@@ -47,11 +37,7 @@ public class SysDictDataServiceImpl implements ISysDictDataService {
      */
     @Override
     public List<SysDictData> selectDictDataList(SysDictData dictData) {
-        return baseMapper.selectList(new LambdaQueryWrapper<SysDictData>()
-            .eq(StringUtils.isNotBlank(dictData.getDictType()), SysDictData::getDictType, dictData.getDictType())
-            .like(StringUtils.isNotBlank(dictData.getDictLabel()), SysDictData::getDictLabel, dictData.getDictLabel())
-            .eq(StringUtils.isNotBlank(dictData.getStatus()), SysDictData::getStatus, dictData.getStatus())
-            .orderByAsc(SysDictData::getDictSort));
+        return baseMapper.queryList(dictData);
     }
 
     /**
@@ -64,9 +50,9 @@ public class SysDictDataServiceImpl implements ISysDictDataService {
     @Override
     public String selectDictLabel(String dictType, String dictValue) {
         return baseMapper.selectOne(new LambdaQueryWrapper<SysDictData>()
-                .select(SysDictData::getDictLabel)
-                .eq(SysDictData::getDictType, dictType)
-                .eq(SysDictData::getDictValue, dictValue))
+                                        .select(SysDictData::getDictLabel)
+                                        .eq(SysDictData::getDictType, dictType)
+                                        .eq(SysDictData::getDictValue, dictValue))
             .getDictLabel();
     }
 
@@ -87,6 +73,7 @@ public class SysDictDataServiceImpl implements ISysDictDataService {
      * @param dictCodes 需要删除的字典数据ID
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteDictDataByIds(Long[] dictCodes) {
         for (Long dictCode : dictCodes) {
             SysDictData data = selectDictDataById(dictCode);

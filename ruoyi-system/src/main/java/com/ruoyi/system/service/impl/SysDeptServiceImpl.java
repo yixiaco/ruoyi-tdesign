@@ -6,6 +6,7 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.common.core.domain.entity.SysRole;
@@ -19,7 +20,7 @@ import com.ruoyi.system.mapper.SysDeptMapper;
 import com.ruoyi.system.mapper.SysRoleMapper;
 import com.ruoyi.system.mapper.SysUserMapper;
 import com.ruoyi.system.service.ISysDeptService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -31,13 +32,13 @@ import java.util.List;
  *
  * @author Lion Li
  */
-@RequiredArgsConstructor
 @Service
-public class SysDeptServiceImpl implements ISysDeptService {
+public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> implements ISysDeptService {
 
-    private final SysDeptMapper baseMapper;
-    private final SysRoleMapper roleMapper;
-    private final SysUserMapper userMapper;
+    @Autowired
+    private SysRoleMapper roleMapper;
+    @Autowired
+    private SysUserMapper userMapper;
 
     /**
      * 查询部门管理数据
@@ -47,15 +48,7 @@ public class SysDeptServiceImpl implements ISysDeptService {
      */
     @Override
     public List<SysDept> selectDeptList(SysDept dept) {
-        LambdaQueryWrapper<SysDept> lqw = new LambdaQueryWrapper<>();
-        lqw.eq(SysDept::getDelFlag, "0")
-            .eq(ObjectUtil.isNotNull(dept.getDeptId()), SysDept::getDeptId, dept.getDeptId())
-            .eq(ObjectUtil.isNotNull(dept.getParentId()), SysDept::getParentId, dept.getParentId())
-            .like(StringUtils.isNotBlank(dept.getDeptName()), SysDept::getDeptName, dept.getDeptName())
-            .eq(StringUtils.isNotBlank(dept.getStatus()), SysDept::getStatus, dept.getStatus())
-            .orderByAsc(SysDept::getParentId)
-            .orderByAsc(SysDept::getOrderNum);
-        return baseMapper.selectDeptList(lqw);
+        return baseMapper.queryList(dept);
     }
 
     /**

@@ -227,7 +227,7 @@ const type = ref(0);
 const previewListResource = ref(true);
 const daterangeCreateTime = ref([]);
 // 默认排序
-const defaultSort = ref({ sortBy: 'createTime', descending: false });
+const defaultSort = ref({ sortBy: 'createTime', descending: true });
 const sort = ref({ ...defaultSort.value });
 
 const data = reactive({
@@ -259,10 +259,10 @@ const columns = ref([
   { title: `文件后缀`, colKey: 'fileSuffix', align: 'center' },
   { title: `文件展示`, colKey: 'url', align: 'center', ellipsis: true },
   { title: `大小`, colKey: 'size', align: 'center' },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180, sorter: true },
   { title: `上传人`, colKey: 'createBy', align: 'center' },
   { title: `服务商`, colKey: 'service', align: 'center' },
-  { title: `操作`, colKey: 'operation', align: 'center' },
+  { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 
 // 分页

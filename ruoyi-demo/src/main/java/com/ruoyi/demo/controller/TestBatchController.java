@@ -6,6 +6,7 @@ import com.ruoyi.common.core.domain.R;
 import com.ruoyi.demo.domain.TestDemo;
 import com.ruoyi.demo.mapper.TestDemoMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,7 +21,6 @@ import java.util.List;
  * @author Lion Li
  * @date 2021-05-30
  */
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/demo/batch")
 public class TestBatchController extends BaseController {
@@ -28,7 +28,8 @@ public class TestBatchController extends BaseController {
     /**
      * 为了便于测试 直接引入mapper
      */
-    private final TestDemoMapper testDemoMapper;
+    @Autowired
+    private TestDemoMapper testDemoMapper;
 
     /**
      * 新增批量方法 可完美替代 saveBatch 秒级插入上万数据 (对mysql负荷较大)

@@ -19,8 +19,8 @@ import com.ruoyi.sms.config.properties.SmsProperties;
 import com.ruoyi.sms.core.SmsTemplate;
 import com.ruoyi.sms.entity.SmsResult;
 import com.ruoyi.system.service.ISysConfigService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -38,13 +38,15 @@ import java.util.Map;
 @SaIgnore
 @Slf4j
 @Validated
-@RequiredArgsConstructor
 @RestController
 public class CaptchaController {
 
-    private final CaptchaProperties captchaProperties;
-    private final SmsProperties smsProperties;
-    private final ISysConfigService configService;
+    @Autowired
+    private CaptchaProperties captchaProperties;
+    @Autowired
+    private SmsProperties smsProperties;
+    @Autowired
+    private ISysConfigService configService;
 
     /**
      * 短信验证码

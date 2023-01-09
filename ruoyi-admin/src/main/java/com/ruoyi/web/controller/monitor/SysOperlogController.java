@@ -3,16 +3,20 @@ package com.ruoyi.web.controller.monitor;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.SysOperLog;
 import com.ruoyi.system.service.ISysOperLogService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 import java.util.List;
@@ -23,20 +27,20 @@ import java.util.List;
  * @author Lion Li
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/monitor/operlog")
 public class SysOperlogController extends BaseController {
 
-    private final ISysOperLogService operLogService;
+    @Autowired
+    private ISysOperLogService operLogService;
 
     /**
      * 获取操作日志记录列表
      */
     @SaCheckPermission("monitor:operlog:list")
     @GetMapping("/list")
-    public TableDataInfo<SysOperLog> list(SysOperLog operLog, PageQuery pageQuery) {
-        return operLogService.selectPageOperLogList(operLog, pageQuery);
+    public TableDataInfo<SysOperLog> list(SysOperLog operLog) {
+        return operLogService.selectPageOperLogList(operLog);
     }
 
     /**

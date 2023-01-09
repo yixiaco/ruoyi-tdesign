@@ -14,7 +14,7 @@ import com.ruoyi.system.service.ISysMenuService;
 import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.system.service.SysLoginService;
 import com.ruoyi.system.service.SysPermissionService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -32,14 +32,17 @@ import java.util.Map;
  * @author Lion Li
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 public class SysLoginController {
 
-    private final SysLoginService loginService;
-    private final ISysMenuService menuService;
-    private final ISysUserService userService;
-    private final SysPermissionService permissionService;
+    @Autowired
+    private SysLoginService loginService;
+    @Autowired
+    private ISysMenuService menuService;
+    @Autowired
+    private ISysUserService userService;
+    @Autowired
+    private SysPermissionService permissionService;
 
     /**
      * 登录方法

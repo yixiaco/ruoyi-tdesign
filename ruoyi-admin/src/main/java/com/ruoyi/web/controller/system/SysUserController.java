@@ -9,7 +9,6 @@ import cn.hutool.core.util.ObjectUtil;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.domain.entity.SysDept;
 import com.ruoyi.common.core.domain.entity.SysRole;
@@ -28,7 +27,7 @@ import com.ruoyi.system.service.ISysDeptService;
 import com.ruoyi.system.service.ISysPostService;
 import com.ruoyi.system.service.ISysRoleService;
 import com.ruoyi.system.service.ISysUserService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -46,23 +45,26 @@ import java.util.Map;
  * @author Lion Li
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/system/user")
 public class SysUserController extends BaseController {
 
-    private final ISysUserService userService;
-    private final ISysRoleService roleService;
-    private final ISysPostService postService;
-    private final ISysDeptService deptService;
+    @Autowired
+    private ISysUserService userService;
+    @Autowired
+    private ISysRoleService roleService;
+    @Autowired
+    private ISysPostService postService;
+    @Autowired
+    private ISysDeptService deptService;
 
     /**
      * 获取用户列表
      */
     @SaCheckPermission("system:user:list")
     @GetMapping("/list")
-    public TableDataInfo<SysUser> list(SysUser user, PageQuery pageQuery) {
-        return userService.selectPageUserList(user, pageQuery);
+    public TableDataInfo<SysUser> list(SysUser user) {
+        return userService.selectPageUserList(user);
     }
 
     /**
@@ -179,7 +181,7 @@ public class SysUserController extends BaseController {
     @Log(title = "用户管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{userIds}")
     public R<Void> remove(@PathVariable Long[] userIds) {
-        if (ArrayUtil.contains(userIds, getUserId())) {
+        if (ArrayUtil.contains(userIds, LoginHelper.getUserId())) {
             return R.fail("当前用户不能删除");
         }
         return toAjax(userService.deleteUserByIds(userIds));

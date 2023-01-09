@@ -6,7 +6,7 @@ import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.domain.model.RegisterBody;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.SysRegisterService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -18,12 +18,13 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Lion Li
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 public class SysRegisterController extends BaseController {
 
-    private final SysRegisterService registerService;
-    private final ISysConfigService configService;
+    @Autowired
+    private SysRegisterService registerService;
+    @Autowired
+    private ISysConfigService configService;
 
     /**
      * 用户注册

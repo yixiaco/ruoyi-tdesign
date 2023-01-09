@@ -1,7 +1,6 @@
 package com.ruoyi.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.system.domain.SysOss;
 import com.ruoyi.system.domain.bo.SysOssBo;
@@ -20,7 +19,7 @@ import java.util.List;
  */
 public interface ISysOssService extends IService<SysOss> {
 
-    TableDataInfo<SysOssVo> queryPageList(SysOssBo sysOss, PageQuery pageQuery);
+    TableDataInfo<SysOssVo> queryPageList(SysOssBo sysOss);
 
     List<SysOssVo> listVoByIds(Collection<Long> ossIds);
 

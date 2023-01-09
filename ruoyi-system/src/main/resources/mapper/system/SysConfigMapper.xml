@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SysConfigMapper">
 
-    <resultMap type="SysConfig" id="SysConfigResult">
+    <resultMap type="com.ruoyi.system.domain.SysConfig" id="SysConfigResult">
         <id property="configId" column="config_id"/>
         <result property="configName" column="config_name"/>
         <result property="configKey" column="config_key"/>
@@ -14,6 +14,20 @@
         <result property="createTime" column="create_time"/>
         <result property="updateBy" column="update_by"/>
         <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
     </resultMap>
 
+    <sql id="selectSysConfigVo">
+        select sc.config_id, sc.config_name, sc.config_key, sc.config_value, sc.config_type, sc.create_by, sc.create_time, sc.update_by, sc.update_time, sc.remark from sys_config sc
+    </sql>
+    <select id="queryList" parameterType="com.ruoyi.system.domain.SysConfig" resultMap="SysConfigResult">
+        <include refid="selectSysConfigVo"/>
+        <where>
+            <if test="configName != null and configName != ''"> and sc.config_name like concat('%', #{configName}, '%')</if>
+            <if test="configKey != null and configKey != ''"> and sc.config_key like concat('%', #{configKey}, '%')</if>
+            <if test="configType != null and configType != ''"> and sc.config_type = #{configType}</if>
+            <if test="params.beginTime != null and params.endTime != null">and sc.create_time between #{params.beginTime} and #{params.endTime}</if>
+        </where>
+        order by create_time desc
+    </select>
 </mapper>

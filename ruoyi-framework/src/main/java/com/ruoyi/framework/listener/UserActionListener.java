@@ -13,8 +13,8 @@ import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.ip.AddressUtils;
 import com.ruoyi.common.utils.redis.RedisUtils;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import java.time.Duration;
@@ -24,12 +24,12 @@ import java.time.Duration;
  *
  * @author Lion Li
  */
-@RequiredArgsConstructor
 @Component
 @Slf4j
 public class UserActionListener implements SaTokenListener {
 
-    private final SaTokenConfig tokenConfig;
+    @Autowired
+    private SaTokenConfig tokenConfig;
 
     /**
      * 每次登录时触发

@@ -4,14 +4,13 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.domain.entity.SysDictType;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.service.ISysDictTypeService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,20 +23,20 @@ import java.util.List;
  * @author Lion Li
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/system/dict/type")
 public class SysDictTypeController extends BaseController {
 
-    private final ISysDictTypeService dictTypeService;
+    @Autowired
+    private ISysDictTypeService dictTypeService;
 
     /**
      * 查询字典类型列表
      */
     @SaCheckPermission("system:dict:list")
     @GetMapping("/list")
-    public TableDataInfo<SysDictType> list(SysDictType dictType, PageQuery pageQuery) {
-        return dictTypeService.selectPageDictTypeList(dictType, pageQuery);
+    public TableDataInfo<SysDictType> list(SysDictType dictType) {
+        return dictTypeService.selectPageDictTypeList(dictType);
     }
 
     /**

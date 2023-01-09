@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SysOperLogMapper">
 
-    <resultMap type="SysOperLog" id="SysOperLogResult">
+    <resultMap type="com.ruoyi.system.domain.SysOperLog" id="SysOperLogResult">
         <id property="operId" column="oper_id"/>
         <result property="title" column="title"/>
         <result property="businessType" column="business_type"/>
@@ -23,4 +23,26 @@
         <result property="operTime" column="oper_time"/>
     </resultMap>
 
-</mapper> 
+    <sql id="selectSysOperLogVo">
+        select sol.oper_id, sol.title, sol.business_type, sol.method, sol.request_method, sol.operator_type, sol.oper_name, sol.dept_name, sol.oper_url, sol.oper_ip, sol.oper_location, sol.oper_param, sol.json_result, sol.`status`, sol.error_msg, sol.oper_time from sys_oper_log sol
+    </sql>
+    <select id="queryList" parameterType="com.ruoyi.system.domain.SysOperLog" resultMap="SysOperLogResult">
+        <include refid="selectSysOperLogVo"/>
+        <where>
+            <if test="title != null and title != ''"> and sol.title like concat('%', #{title}, '%')</if>
+            <if test="businessType != null "> and sol.business_type = #{businessType}</if>
+            <if test="businessTypes != null and !businessTypes.isEmpty()">
+                and sol.business_type in
+                <foreach collection="businessTypes" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="operName != null and operName != ''"> and sol.oper_name like concat('%', #{operName}, '%')</if>
+            <if test="status != null "> and sol.`status` = #{status}</if>
+            <if test="params.beginTime != null and params.endTime != null">and sol.oper_time between #{params.beginTime} and #{params.endTime}</if>
+        </where>
+        order by oper_id desc
+    </select>
+
+
+</mapper>

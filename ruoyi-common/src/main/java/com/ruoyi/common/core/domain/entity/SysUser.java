@@ -1,6 +1,11 @@
 package com.ruoyi.common.core.domain.entity;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.common.annotation.Sensitive;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.BaseEntity;
@@ -139,6 +144,12 @@ public class SysUser extends BaseEntity {
      */
     @TableField(exist = false)
     private Long[] roleIds;
+
+    /**
+     * 部门组
+     */
+    @TableField(exist = false)
+    private Long[] deptIds;
 
     /**
      * 岗位组

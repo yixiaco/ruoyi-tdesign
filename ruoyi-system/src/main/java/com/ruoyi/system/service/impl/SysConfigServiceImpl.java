@@ -4,7 +4,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.constant.CacheNames;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.PageQuery;
@@ -17,37 +17,25 @@ import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.domain.SysConfig;
 import com.ruoyi.system.mapper.SysConfigMapper;
 import com.ruoyi.system.service.ISysConfigService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 参数配置 服务层实现
  *
  * @author Lion Li
  */
-@RequiredArgsConstructor
 @Service
-public class SysConfigServiceImpl implements ISysConfigService, ConfigService {
-
-    private final SysConfigMapper baseMapper;
+public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig> implements ISysConfigService, ConfigService {
 
     @Override
-    public TableDataInfo<SysConfig> selectPageConfigList(SysConfig config, PageQuery pageQuery) {
-        Map<String, Object> params = config.getParams();
-        LambdaQueryWrapper<SysConfig> lqw = new LambdaQueryWrapper<SysConfig>()
-            .like(StringUtils.isNotBlank(config.getConfigName()), SysConfig::getConfigName, config.getConfigName())
-            .eq(StringUtils.isNotBlank(config.getConfigType()), SysConfig::getConfigType, config.getConfigType())
-            .like(StringUtils.isNotBlank(config.getConfigKey()), SysConfig::getConfigKey, config.getConfigKey())
-            .between(params.get("beginTime") != null && params.get("endTime") != null,
-                SysConfig::getCreateTime, params.get("beginTime"), params.get("endTime"));
-        Page<SysConfig> page = baseMapper.selectPage(pageQuery.build(), lqw);
-        return TableDataInfo.build(page);
+    public TableDataInfo<SysConfig> selectPageConfigList(SysConfig config) {
+        return PageQuery.of(() -> baseMapper.queryList(config));
     }
 
     /**
@@ -101,14 +89,7 @@ public class SysConfigServiceImpl implements ISysConfigService, ConfigService {
      */
     @Override
     public List<SysConfig> selectConfigList(SysConfig config) {
-        Map<String, Object> params = config.getParams();
-        LambdaQueryWrapper<SysConfig> lqw = new LambdaQueryWrapper<SysConfig>()
-            .like(StringUtils.isNotBlank(config.getConfigName()), SysConfig::getConfigName, config.getConfigName())
-            .eq(StringUtils.isNotBlank(config.getConfigType()), SysConfig::getConfigType, config.getConfigType())
-            .like(StringUtils.isNotBlank(config.getConfigKey()), SysConfig::getConfigKey, config.getConfigKey())
-            .between(params.get("beginTime") != null && params.get("endTime") != null,
-                SysConfig::getCreateTime, params.get("beginTime"), params.get("endTime"));
-        return baseMapper.selectList(lqw);
+        return baseMapper.queryList(config);
     }
 
     /**
@@ -155,6 +136,7 @@ public class SysConfigServiceImpl implements ISysConfigService, ConfigService {
      * @param configIds 需要删除的参数ID
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteConfigByIds(Long[] configIds) {
         for (Long configId : configIds) {
             SysConfig config = selectConfigById(configId);

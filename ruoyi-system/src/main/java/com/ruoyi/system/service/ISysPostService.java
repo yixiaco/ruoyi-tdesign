@@ -1,6 +1,6 @@
 package com.ruoyi.system.service;
 
-import com.ruoyi.common.core.domain.PageQuery;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.system.domain.SysPost;
 
@@ -11,10 +11,15 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface ISysPostService {
+public interface ISysPostService extends IService<SysPost> {
 
-
-    TableDataInfo<SysPost> selectPagePostList(SysPost post, PageQuery pageQuery);
+    /**
+     * 获取岗位列表
+     *
+     * @param post 岗位信息
+     * @return 岗位列表
+     */
+    TableDataInfo<SysPost> selectPagePostList(SysPost post);
 
     /**
      * 查询岗位信息集合

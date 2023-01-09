@@ -2,7 +2,7 @@ package com.ruoyi.system.service;
 
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.domain.entity.SysUser;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.HashSet;
@@ -14,12 +14,13 @@ import java.util.Set;
  *
  * @author ruoyi
  */
-@RequiredArgsConstructor
 @Service
 public class SysPermissionService {
 
-    private final ISysRoleService roleService;
-    private final ISysMenuService menuService;
+    @Autowired
+    private ISysRoleService roleService;
+    @Autowired
+    private ISysMenuService menuService;
 
     /**
      * 获取角色数据权限

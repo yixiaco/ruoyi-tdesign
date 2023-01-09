@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SysDictTypeMapper">
 
-    <resultMap type="SysDictType" id="SysDictTypeResult">
+    <resultMap type="com.ruoyi.common.core.domain.entity.SysDictType" id="SysDictTypeResult">
         <id property="dictId" column="dict_id"/>
         <result property="dictName" column="dict_name"/>
         <result property="dictType" column="dict_type"/>
@@ -13,6 +13,21 @@
         <result property="createTime" column="create_time"/>
         <result property="updateBy" column="update_by"/>
         <result property="updateTime" column="update_time"/>
+        <result property="remark" column="remark"/>
     </resultMap>
 
-</mapper> 
+    <sql id="selectSysDictTypeVo">
+        select sdt.dict_id, sdt.dict_name, sdt.dict_type, sdt.`status`, sdt.create_by, sdt.create_time, sdt.update_by, sdt.update_time, sdt.remark from sys_dict_type sdt
+    </sql>
+    <select id="queryList" parameterType="com.ruoyi.common.core.domain.entity.SysDictType" resultMap="SysDictTypeResult">
+        <include refid="selectSysDictTypeVo"/>
+        <where>
+            <if test="dictName != null and dictName != ''"> and sdt.dict_name like concat('%', #{dictName}, '%')</if>
+            <if test="dictType != null and dictType != ''"> and sdt.dict_type like concat('%', #{dictType}, '%')</if>
+            <if test="status != null and status != ''"> and sdt.`status` = #{status}</if>
+            <if test="params.beginTime != null and params.endTime != null">and sdt.create_time between #{params.beginTime} and #{params.endTime}</if>
+        </where>
+        order by create_time desc
+    </select>
+
+</mapper>

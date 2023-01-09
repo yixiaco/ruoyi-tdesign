@@ -1,13 +1,9 @@
 package com.ruoyi.system.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.annotation.DataColumn;
 import com.ruoyi.common.annotation.DataPermission;
 import com.ruoyi.common.core.domain.entity.SysRole;
 import com.ruoyi.common.core.mapper.BaseMapperPlus;
-import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -17,22 +13,6 @@ import java.util.List;
  * @author Lion Li
  */
 public interface SysRoleMapper extends BaseMapperPlus<SysRoleMapper, SysRole, SysRole> {
-
-    @DataPermission({
-        @DataColumn(key = "deptName", value = "d.dept_id")
-    })
-    Page<SysRole> selectPageRoleList(@Param("page") Page<SysRole> page, @Param(Constants.WRAPPER) Wrapper<SysRole> queryWrapper);
-
-    /**
-     * 根据条件分页查询角色数据
-     *
-     * @param queryWrapper 查询条件
-     * @return 角色数据集合信息
-     */
-    @DataPermission({
-        @DataColumn(key = "deptName", value = "d.dept_id")
-    })
-    List<SysRole> selectRoleList(@Param(Constants.WRAPPER) Wrapper<SysRole> queryWrapper);
 
     /**
      * 根据用户ID查询角色
@@ -59,4 +39,14 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRoleMapper, SysRole, Sy
      */
     List<SysRole> selectRolesByUserName(String userName);
 
+    /**
+     * 查询角色信息列表
+     *
+     * @param bo bo对象
+     * @return {@link SysRole}
+     */
+    @DataPermission({
+        @DataColumn(key = "deptName", value = "d.dept_id")
+    })
+    List<SysRole> queryList(SysRole bo);
 }

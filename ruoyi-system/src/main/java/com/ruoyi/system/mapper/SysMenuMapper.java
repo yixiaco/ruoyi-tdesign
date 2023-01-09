@@ -18,6 +18,14 @@ import java.util.List;
 public interface SysMenuMapper extends BaseMapperPlus<SysMenuMapper, SysMenu, SysMenu> {
 
     /**
+     * 查询菜单权限列表
+     *
+     * @param menu
+     * @return {@link SysMenu}
+     */
+    List<SysMenu> queryList(SysMenu menu);
+
+    /**
      * 根据用户所有权限
      *
      * @return 权限列表
@@ -78,5 +86,4 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenuMapper, SysMenu, Sy
      * @return 选中菜单列表
      */
     List<Long> selectMenuListByRoleId(@Param("roleId") Long roleId, @Param("menuCheckStrictly") boolean menuCheckStrictly);
-
 }

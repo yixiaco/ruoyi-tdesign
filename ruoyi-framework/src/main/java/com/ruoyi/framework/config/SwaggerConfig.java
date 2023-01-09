@@ -7,16 +7,21 @@ import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.oas.models.info.Info;
 import io.swagger.v3.oas.models.security.SecurityRequirement;
-import lombok.RequiredArgsConstructor;
-import org.springdoc.core.*;
+import org.springdoc.core.OpenAPIService;
+import org.springdoc.core.PropertyResolverUtils;
+import org.springdoc.core.SecurityService;
+import org.springdoc.core.SpringDocConfigProperties;
+import org.springdoc.core.SpringDocConfiguration;
 import org.springdoc.core.customizers.OpenApiBuilderCustomizer;
 import org.springdoc.core.customizers.OpenApiCustomiser;
 import org.springdoc.core.customizers.ServerBaseUrlCustomizer;
 import org.springdoc.core.providers.JavadocProvider;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -29,14 +34,16 @@ import java.util.Optional;
  *
  * @author Lion Li
  */
-@RequiredArgsConstructor
 @Configuration
 @AutoConfigureBefore(SpringDocConfiguration.class)
+@EnableConfigurationProperties(ServerProperties.class)
 @ConditionalOnProperty(name = "swagger.enabled", havingValue = "true", matchIfMissing = true)
 public class SwaggerConfig {
 
-    private final SwaggerProperties swaggerProperties;
-    private final ServerProperties serverProperties;
+    @Autowired
+    private SwaggerProperties swaggerProperties;
+    @Autowired
+    private ServerProperties serverProperties;
 
     @Bean
     @ConditionalOnMissingBean(OpenAPI.class)

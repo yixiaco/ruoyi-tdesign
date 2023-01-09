@@ -15,8 +15,11 @@ import com.ruoyi.common.utils.StreamUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.redis.RedisUtils;
 import com.ruoyi.system.domain.SysUserOnline;
-import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -27,7 +30,6 @@ import java.util.List;
  *
  * @author Lion Li
  */
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/monitor/online")
 public class SysUserOnlineController extends BaseController {

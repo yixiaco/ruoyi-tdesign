@@ -15,15 +15,17 @@ import com.ruoyi.common.core.service.LogininforService;
 import com.ruoyi.common.enums.DeviceType;
 import com.ruoyi.common.enums.LoginType;
 import com.ruoyi.common.enums.UserStatus;
-import com.ruoyi.common.exception.user.*;
+import com.ruoyi.common.exception.user.CaptchaException;
+import com.ruoyi.common.exception.user.CaptchaExpireException;
+import com.ruoyi.common.exception.user.UserException;
 import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.MessageUtils;
 import com.ruoyi.common.utils.ServletUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.redis.RedisUtils;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
@@ -37,15 +39,18 @@ import java.util.function.Supplier;
  *
  * @author Lion Li
  */
-@RequiredArgsConstructor
 @Slf4j
 @Service
 public class SysLoginService {
 
-    private final ISysUserService userService;
-    private final ISysConfigService configService;
-    private final LogininforService asyncService;
-    private final SysPermissionService permissionService;
+    @Autowired
+    private ISysUserService userService;
+    @Autowired
+    private ISysConfigService configService;
+    @Autowired
+    private LogininforService asyncService;
+    @Autowired
+    private SysPermissionService permissionService;
 
     @Value("${user.password.maxRetryCount}")
     private Integer maxRetryCount;

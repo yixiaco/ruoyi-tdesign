@@ -2,7 +2,6 @@ package com.ruoyi.demo.controller.queue;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.utils.redis.QueueUtils;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,7 +22,6 @@ import java.util.concurrent.TimeUnit;
  * @version 3.6.0
  */
 @Slf4j
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/demo/queue/delayed")
 public class DelayedQueueController {

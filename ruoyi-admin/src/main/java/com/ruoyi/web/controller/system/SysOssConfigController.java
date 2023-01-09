@@ -4,7 +4,6 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.validate.AddGroup;
@@ -14,7 +13,7 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.system.domain.bo.SysOssConfigBo;
 import com.ruoyi.system.domain.vo.SysOssConfigVo;
 import com.ruoyi.system.service.ISysOssConfigService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,20 +29,20 @@ import java.util.Arrays;
  * @date 2021-08-13
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/system/oss/config")
 public class SysOssConfigController extends BaseController {
 
-    private final ISysOssConfigService iSysOssConfigService;
+    @Autowired
+    private ISysOssConfigService iSysOssConfigService;
 
     /**
      * 查询对象存储配置列表
      */
     @SaCheckPermission("system:oss:list")
     @GetMapping("/list")
-    public TableDataInfo<SysOssConfigVo> list(@Validated(QueryGroup.class) SysOssConfigBo bo, PageQuery pageQuery) {
-        return iSysOssConfigService.queryPageList(bo, pageQuery);
+    public TableDataInfo<SysOssConfigVo> list(@Validated(QueryGroup.class) SysOssConfigBo bo) {
+        return iSysOssConfigService.queryPageList(bo);
     }
 
     /**

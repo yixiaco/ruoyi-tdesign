@@ -1,5 +1,6 @@
 package com.ruoyi.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.entity.SysUser;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -11,10 +12,15 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface ISysUserService {
+public interface ISysUserService extends IService<SysUser> {
 
-
-    TableDataInfo<SysUser> selectPageUserList(SysUser user, PageQuery pageQuery);
+    /**
+     * 获取用户列表
+     *
+     * @param user 用户信息
+     * @return 用户信息集合信息
+     */
+    TableDataInfo<SysUser> selectPageUserList(SysUser user);
 
     /**
      * 根据条件分页查询用户列表

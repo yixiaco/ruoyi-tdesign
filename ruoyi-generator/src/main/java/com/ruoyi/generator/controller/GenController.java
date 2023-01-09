@@ -12,7 +12,7 @@ import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.generator.domain.GenTable;
 import com.ruoyi.generator.domain.GenTableColumn;
 import com.ruoyi.generator.service.IGenTableService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -28,12 +28,12 @@ import java.util.Map;
  * @author Lion Li
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/tool/gen")
 public class GenController extends BaseController {
 
-    private final IGenTableService genTableService;
+    @Autowired
+    private IGenTableService genTableService;
 
     /**
      * 查询代码生成列表

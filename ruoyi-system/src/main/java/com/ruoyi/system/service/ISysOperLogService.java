@@ -1,6 +1,6 @@
 package com.ruoyi.system.service;
 
-import com.ruoyi.common.core.domain.PageQuery;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.system.domain.SysOperLog;
 
@@ -11,9 +11,15 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface ISysOperLogService {
+public interface ISysOperLogService extends IService<SysOperLog> {
 
-    TableDataInfo<SysOperLog> selectPageOperLogList(SysOperLog operLog, PageQuery pageQuery);
+    /**
+     * 获取操作日志记录列表
+     *
+     * @param operLog 操作日志对象
+     * @return 操作日志集合
+     */
+    TableDataInfo<SysOperLog> selectPageOperLogList(SysOperLog operLog);
 
     /**
      * 新增操作日志

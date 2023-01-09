@@ -5,7 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.constant.CacheConstants;
 import com.ruoyi.common.constant.CacheNames;
 import com.ruoyi.common.constant.UserConstants;
@@ -22,13 +22,17 @@ import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.mapper.SysDictDataMapper;
 import com.ruoyi.system.mapper.SysDictTypeMapper;
 import com.ruoyi.system.service.ISysDictTypeService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -36,25 +40,15 @@ import java.util.stream.Collectors;
  *
  * @author Lion Li
  */
-@RequiredArgsConstructor
 @Service
-public class SysDictTypeServiceImpl implements ISysDictTypeService, DictService {
+public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDictType> implements ISysDictTypeService, DictService {
 
-    private final SysDictTypeMapper baseMapper;
-    private final SysDictDataMapper dictDataMapper;
+    @Autowired
+    private SysDictDataMapper dictDataMapper;
 
     @Override
-    public TableDataInfo<SysDictType> selectPageDictTypeList(SysDictType dictType, PageQuery pageQuery) {
-        Map<String, Object> params = dictType.getParams();
-        LambdaQueryWrapper<SysDictType> lqw = new LambdaQueryWrapper<SysDictType>()
-            .like(StringUtils.isNotBlank(dictType.getDictName()), SysDictType::getDictName, dictType.getDictName())
-            .eq(StringUtils.isNotBlank(dictType.getStatus()), SysDictType::getStatus, dictType.getStatus())
-            .like(StringUtils.isNotBlank(dictType.getDictType()), SysDictType::getDictType, dictType.getDictType())
-            .between(params.get("beginTime") != null && params.get("endTime") != null,
-                SysDictType::getCreateTime, params.get("beginTime"), params.get("endTime"))
-            .orderByDesc(SysDictType::getCreateTime);
-        Page<SysDictType> page = baseMapper.selectPage(pageQuery.build(), lqw);
-        return TableDataInfo.build(page);
+    public TableDataInfo<SysDictType> selectPageDictTypeList(SysDictType dictType) {
+        return PageQuery.of(() -> baseMapper.queryList(dictType));
     }
 
     /**
@@ -65,13 +59,7 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService, DictService 
      */
     @Override
     public List<SysDictType> selectDictTypeList(SysDictType dictType) {
-        Map<String, Object> params = dictType.getParams();
-        return baseMapper.selectList(new LambdaQueryWrapper<SysDictType>()
-            .like(StringUtils.isNotBlank(dictType.getDictName()), SysDictType::getDictName, dictType.getDictName())
-            .eq(StringUtils.isNotBlank(dictType.getStatus()), SysDictType::getStatus, dictType.getStatus())
-            .like(StringUtils.isNotBlank(dictType.getDictType()), SysDictType::getDictType, dictType.getDictType())
-            .between(params.get("beginTime") != null && params.get("endTime") != null,
-                SysDictType::getCreateTime, params.get("beginTime"), params.get("endTime")));
+        return baseMapper.queryList(dictType);
     }
 
     /**
@@ -129,6 +117,7 @@ public class SysDictTypeServiceImpl implements ISysDictTypeService, DictService 
      * @param dictIds 需要删除的字典ID
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public void deleteDictTypeByIds(Long[] dictIds) {
         for (Long dictId : dictIds) {
             SysDictType dictType = selectDictTypeById(dictId);

@@ -4,14 +4,13 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.service.ISysPostService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,20 +23,20 @@ import java.util.List;
  * @author Lion Li
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/system/post")
 public class SysPostController extends BaseController {
 
-    private final ISysPostService postService;
+    @Autowired
+    private ISysPostService postService;
 
     /**
      * 获取岗位列表
      */
     @SaCheckPermission("system:post:list")
     @GetMapping("/list")
-    public TableDataInfo<SysPost> list(SysPost post, PageQuery pageQuery) {
-        return postService.selectPagePostList(post, pageQuery);
+    public TableDataInfo<SysPost> list(SysPost post) {
+        return postService.selectPagePostList(post);
     }
 
     /**

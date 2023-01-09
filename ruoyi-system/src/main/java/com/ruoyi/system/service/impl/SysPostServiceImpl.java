@@ -2,18 +2,17 @@ package com.ruoyi.system.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.exception.ServiceException;
-import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.SysUserPost;
 import com.ruoyi.system.mapper.SysPostMapper;
 import com.ruoyi.system.mapper.SysUserPostMapper;
 import com.ruoyi.system.service.ISysPostService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
@@ -24,21 +23,15 @@ import java.util.List;
  *
  * @author Lion Li
  */
-@RequiredArgsConstructor
 @Service
-public class SysPostServiceImpl implements ISysPostService {
+public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> implements ISysPostService {
 
-    private final SysPostMapper baseMapper;
-    private final SysUserPostMapper userPostMapper;
+    @Autowired
+    private SysUserPostMapper userPostMapper;
 
     @Override
-    public TableDataInfo<SysPost> selectPagePostList(SysPost post, PageQuery pageQuery) {
-        LambdaQueryWrapper<SysPost> lqw = new LambdaQueryWrapper<SysPost>()
-            .like(StringUtils.isNotBlank(post.getPostCode()), SysPost::getPostCode, post.getPostCode())
-            .eq(StringUtils.isNotBlank(post.getStatus()), SysPost::getStatus, post.getStatus())
-            .like(StringUtils.isNotBlank(post.getPostName()), SysPost::getPostName, post.getPostName());
-        Page<SysPost> page = baseMapper.selectPage(pageQuery.build(), lqw);
-        return TableDataInfo.build(page);
+    public TableDataInfo<SysPost> selectPagePostList(SysPost post) {
+        return PageQuery.of(() -> baseMapper.queryList(post));
     }
 
     /**
@@ -49,10 +42,7 @@ public class SysPostServiceImpl implements ISysPostService {
      */
     @Override
     public List<SysPost> selectPostList(SysPost post) {
-        return baseMapper.selectList(new LambdaQueryWrapper<SysPost>()
-            .like(StringUtils.isNotBlank(post.getPostCode()), SysPost::getPostCode, post.getPostCode())
-            .eq(StringUtils.isNotBlank(post.getStatus()), SysPost::getStatus, post.getStatus())
-            .like(StringUtils.isNotBlank(post.getPostName()), SysPost::getPostName, post.getPostName()));
+        return baseMapper.queryList(post);
     }
 
     /**

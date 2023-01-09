@@ -5,8 +5,7 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.constant.CacheNames;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.domain.PageQuery;
@@ -23,7 +22,6 @@ import com.ruoyi.system.domain.bo.SysOssConfigBo;
 import com.ruoyi.system.domain.vo.SysOssConfigVo;
 import com.ruoyi.system.mapper.SysOssConfigMapper;
 import com.ruoyi.system.service.ISysOssConfigService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,11 +37,8 @@ import java.util.List;
  * @date 2021-08-13
  */
 @Slf4j
-@RequiredArgsConstructor
 @Service
-public class SysOssConfigServiceImpl implements ISysOssConfigService {
-
-    private final SysOssConfigMapper baseMapper;
+public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, SysOssConfig> implements ISysOssConfigService {
 
     /**
      * 项目启动时，初始化参数到缓存，加载配置类
@@ -69,19 +64,8 @@ public class SysOssConfigServiceImpl implements ISysOssConfigService {
     }
 
     @Override
-    public TableDataInfo<SysOssConfigVo> queryPageList(SysOssConfigBo bo, PageQuery pageQuery) {
-        LambdaQueryWrapper<SysOssConfig> lqw = buildQueryWrapper(bo);
-        Page<SysOssConfigVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
-        return TableDataInfo.build(result);
-    }
-
-
-    private LambdaQueryWrapper<SysOssConfig> buildQueryWrapper(SysOssConfigBo bo) {
-        LambdaQueryWrapper<SysOssConfig> lqw = Wrappers.lambdaQuery();
-        lqw.eq(StringUtils.isNotBlank(bo.getConfigKey()), SysOssConfig::getConfigKey, bo.getConfigKey());
-        lqw.like(StringUtils.isNotBlank(bo.getBucketName()), SysOssConfig::getBucketName, bo.getBucketName());
-        lqw.eq(StringUtils.isNotBlank(bo.getStatus()), SysOssConfig::getStatus, bo.getStatus());
-        return lqw;
+    public TableDataInfo<SysOssConfigVo> queryPageList(SysOssConfigBo bo) {
+        return PageQuery.of(() -> baseMapper.queryList(bo));
     }
 
     @Override
@@ -115,6 +99,7 @@ public class SysOssConfigServiceImpl implements ISysOssConfigService {
     }
 
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
         if (isValid) {
             if (CollUtil.containsAny(ids, OssConstant.SYSTEM_DATA_IDS)) {

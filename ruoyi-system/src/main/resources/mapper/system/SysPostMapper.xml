@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SysPostMapper">
 
-    <resultMap type="SysPost" id="SysPostResult">
+    <resultMap type="com.ruoyi.system.domain.SysPost" id="SysPostResult">
         <id property="postId" column="post_id"/>
         <result property="postCode" column="post_code"/>
         <result property="postName" column="post_name"/>
@@ -31,6 +31,19 @@
                  left join sys_user_post up on up.post_id = p.post_id
                  left join sys_user u on u.user_id = up.user_id
         where u.user_name = #{userName}
+    </select>
+
+    <sql id="selectSysPostVo">
+        select sp.post_id, sp.post_code, sp.post_name, sp.post_sort, sp.`status`, sp.create_by, sp.create_time, sp.update_by, sp.update_time, sp.remark from sys_post sp
+    </sql>
+    <select id="queryList" parameterType="com.ruoyi.system.domain.SysPost" resultMap="SysPostResult">
+        <include refid="selectSysPostVo"/>
+        <where>
+            <if test="postCode != null and postCode != ''"> and sp.post_code like concat('%', #{postCode}, '%')</if>
+            <if test="postName != null and postName != ''"> and sp.post_name like concat('%', #{postName}, '%')</if>
+            <if test="status != null and status != ''"> and sp.`status` = #{status}</if>
+        </where>
+        order by create_time desc
     </select>
 
 </mapper>

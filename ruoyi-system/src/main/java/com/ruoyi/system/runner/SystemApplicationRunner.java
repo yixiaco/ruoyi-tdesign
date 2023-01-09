@@ -4,8 +4,8 @@ import com.ruoyi.common.config.RuoYiConfig;
 import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysDictTypeService;
 import com.ruoyi.system.service.ISysOssConfigService;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationArguments;
 import org.springframework.boot.ApplicationRunner;
 import org.springframework.stereotype.Component;
@@ -16,14 +16,17 @@ import org.springframework.stereotype.Component;
  * @author Lion Li
  */
 @Slf4j
-@RequiredArgsConstructor
 @Component
 public class SystemApplicationRunner implements ApplicationRunner {
 
-    private final RuoYiConfig ruoyiConfig;
-    private final ISysConfigService configService;
-    private final ISysDictTypeService dictTypeService;
-    private final ISysOssConfigService ossConfigService;
+    @Autowired
+    private RuoYiConfig ruoyiConfig;
+    @Autowired
+    private ISysConfigService configService;
+    @Autowired
+    private ISysDictTypeService dictTypeService;
+    @Autowired
+    private ISysOssConfigService ossConfigService;
 
     @Override
     public void run(ApplicationArguments args) throws Exception {

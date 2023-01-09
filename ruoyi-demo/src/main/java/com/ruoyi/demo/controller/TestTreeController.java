@@ -14,6 +14,7 @@ import com.ruoyi.demo.domain.bo.TestTreeBo;
 import com.ruoyi.demo.domain.vo.TestTreeVo;
 import com.ruoyi.demo.service.ITestTreeService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -30,12 +31,12 @@ import java.util.List;
  * @date 2021-07-26
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/demo/tree")
 public class TestTreeController extends BaseController {
 
-    private final ITestTreeService iTestTreeService;
+    @Autowired
+    private ITestTreeService iTestTreeService;
 
     /**
      * 查询测试树表列表

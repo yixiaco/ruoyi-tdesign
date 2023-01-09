@@ -4,14 +4,13 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.controller.BaseController;
-import com.ruoyi.common.core.domain.PageQuery;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.enums.BusinessType;
 import com.ruoyi.common.utils.poi.ExcelUtil;
 import com.ruoyi.system.domain.SysConfig;
 import com.ruoyi.system.service.ISysConfigService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,20 +23,20 @@ import java.util.List;
  * @author Lion Li
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/system/config")
 public class SysConfigController extends BaseController {
 
-    private final ISysConfigService configService;
+    @Autowired
+    private ISysConfigService configService;
 
     /**
      * 获取参数配置列表
      */
     @SaCheckPermission("system:config:list")
     @GetMapping("/list")
-    public TableDataInfo<SysConfig> list(SysConfig config, PageQuery pageQuery) {
-        return configService.selectPageConfigList(config, pageQuery);
+    public TableDataInfo<SysConfig> list(SysConfig config) {
+        return configService.selectPageConfigList(config);
     }
 
     /**

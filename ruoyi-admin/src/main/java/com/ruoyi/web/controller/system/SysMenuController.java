@@ -8,9 +8,10 @@ import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.domain.entity.SysMenu;
 import com.ruoyi.common.enums.BusinessType;
+import com.ruoyi.common.helper.LoginHelper;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.system.service.ISysMenuService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -24,12 +25,12 @@ import java.util.Map;
  * @author Lion Li
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/system/menu")
 public class SysMenuController extends BaseController {
 
-    private final ISysMenuService menuService;
+    @Autowired
+    private ISysMenuService menuService;
 
     /**
      * 获取菜单列表
@@ -37,7 +38,7 @@ public class SysMenuController extends BaseController {
     @SaCheckPermission("system:menu:list")
     @GetMapping("/list")
     public R<List<SysMenu>> list(SysMenu menu) {
-        List<SysMenu> menus = menuService.selectMenuList(menu, getUserId());
+        List<SysMenu> menus = menuService.selectMenuList(menu, LoginHelper.getUserId());
         return R.ok(menus);
     }
 
@@ -57,7 +58,7 @@ public class SysMenuController extends BaseController {
      */
     @GetMapping("/treeselect")
     public R<List<Tree<Long>>> treeselect(SysMenu menu) {
-        List<SysMenu> menus = menuService.selectMenuList(menu, getUserId());
+        List<SysMenu> menus = menuService.selectMenuList(menu, LoginHelper.getUserId());
         return R.ok(menuService.buildMenuTreeSelect(menus));
     }
 
@@ -68,7 +69,7 @@ public class SysMenuController extends BaseController {
      */
     @GetMapping(value = "/roleMenuTreeselect/{roleId}")
     public R<Map<String, Object>> roleMenuTreeselect(@PathVariable("roleId") Long roleId) {
-        List<SysMenu> menus = menuService.selectMenuList(getUserId());
+        List<SysMenu> menus = menuService.selectMenuList(LoginHelper.getUserId());
         Map<String, Object> ajax = new HashMap<>();
         ajax.put("checkedKeys", menuService.selectMenuListByRoleId(roleId));
         ajax.put("menus", menuService.buildMenuTreeSelect(menus));

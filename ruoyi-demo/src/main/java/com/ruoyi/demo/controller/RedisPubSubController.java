@@ -2,7 +2,6 @@ package com.ruoyi.demo.controller;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.utils.redis.RedisUtils;
-import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
@@ -12,7 +11,6 @@ import org.springframework.web.bind.annotation.RestController;
  *
  * @author Lion Li
  */
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/demo/redis/pubsub")
 public class RedisPubSubController {

@@ -1,6 +1,6 @@
 package com.ruoyi.system.service;
 
-import com.ruoyi.common.core.domain.PageQuery;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.system.domain.SysConfig;
 
@@ -11,10 +11,15 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface ISysConfigService {
+public interface ISysConfigService extends IService<SysConfig> {
 
-
-    TableDataInfo<SysConfig> selectPageConfigList(SysConfig config, PageQuery pageQuery);
+    /**
+     * 获取参数配置列表
+     *
+     * @param config 参数配置
+     * @return 参数配置结果
+     */
+    TableDataInfo<SysConfig> selectPageConfigList(SysConfig config);
 
     /**
      * 查询参数配置信息

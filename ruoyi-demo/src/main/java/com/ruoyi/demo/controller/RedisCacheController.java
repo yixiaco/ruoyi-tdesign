@@ -3,7 +3,6 @@ package com.ruoyi.demo.controller;
 import com.ruoyi.common.constant.CacheNames;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.utils.redis.RedisUtils;
-import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
@@ -20,7 +19,6 @@ import java.time.Duration;
  */
 // 类级别 缓存统一配置
 //@CacheConfig(cacheNames = CacheNames.DEMO_CACHE)
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/demo/cache")
 public class RedisCacheController {

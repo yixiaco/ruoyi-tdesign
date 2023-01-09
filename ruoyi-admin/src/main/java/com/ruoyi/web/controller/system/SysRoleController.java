@@ -20,7 +20,7 @@ import com.ruoyi.system.service.ISysDeptService;
 import com.ruoyi.system.service.ISysRoleService;
 import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.system.service.SysPermissionService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,23 +35,26 @@ import java.util.Map;
  * @author Lion Li
  */
 @Validated
-@RequiredArgsConstructor
 @RestController
 @RequestMapping("/system/role")
 public class SysRoleController extends BaseController {
 
-    private final ISysRoleService roleService;
-    private final ISysUserService userService;
-    private final ISysDeptService deptService;
-    private final SysPermissionService permissionService;
+    @Autowired
+    private ISysRoleService roleService;
+    @Autowired
+    private ISysUserService userService;
+    @Autowired
+    private ISysDeptService deptService;
+    @Autowired
+    private SysPermissionService permissionService;
 
     /**
      * 获取角色信息列表
      */
     @SaCheckPermission("system:role:list")
     @GetMapping("/list")
-    public TableDataInfo<SysRole> list(SysRole role, PageQuery pageQuery) {
-        return roleService.selectPageRoleList(role, pageQuery);
+    public TableDataInfo<SysRole> list(SysRole role) {
+        return roleService.selectPageRoleList(role);
     }
 
     /**
@@ -110,7 +113,7 @@ public class SysRoleController extends BaseController {
 
         if (roleService.updateRole(role) > 0) {
             // 更新缓存用户权限
-            LoginUser loginUser = getLoginUser();
+            LoginUser loginUser = LoginHelper.getLoginUser();
             SysUser sysUser = userService.selectUserById(loginUser.getUserId());
             if (ObjectUtil.isNotNull(sysUser) && !sysUser.isAdmin()) {
                 loginUser.setMenuPermission(permissionService.getMenuPermission(sysUser));

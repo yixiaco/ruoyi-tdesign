@@ -1,6 +1,6 @@
 package com.ruoyi.system.service;
 
-import com.ruoyi.common.core.domain.PageQuery;
+import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.common.core.domain.entity.SysDictData;
 import com.ruoyi.common.core.domain.entity.SysDictType;
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -12,10 +12,15 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface ISysDictTypeService {
+public interface ISysDictTypeService extends IService<SysDictType> {
 
-
-    TableDataInfo<SysDictType> selectPageDictTypeList(SysDictType dictType, PageQuery pageQuery);
+    /**
+     * 查询字典类型列表
+     *
+     * @param dictType 字典类型信息
+     * @return 字典类型集合信息
+     */
+    TableDataInfo<SysDictType> selectPageDictTypeList(SysDictType dictType);
 
     /**
      * 根据条件分页查询字典类型
