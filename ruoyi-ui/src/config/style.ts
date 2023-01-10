@@ -10,6 +10,5 @@ export default {
   isHeaderFixed: true,
   isUseTabsRouter: true,
   showHeader: true,
-  backgroundTheme: 'blueGrey',
-  brandTheme: 'default',
+  brandTheme: '#0052D9',
 };

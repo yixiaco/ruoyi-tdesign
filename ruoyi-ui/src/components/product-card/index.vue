@@ -1,5 +1,5 @@
 <template>
-  <t-card theme="poster2">
+  <t-card theme="poster2" :bordered="false">
     <template #avatar>
       <t-avatar size="56px">
         <template #icon>
@@ -13,8 +13,8 @@
     </template>
     <template #status>
       <t-tag :theme="product.isSetup ? 'success' : 'default'" :disabled="!product.isSetup">{{
-          product.isSetup ? '已启用' : '已停用'
-        }}</t-tag>
+        product.isSetup ? '已启用' : '已停用'
+      }}</t-tag>
     </template>
     <template #content>
       <p class="list-card-item_detail--name">{{ product.name }}</p>
@@ -24,9 +24,9 @@
       <t-avatar-group cascading="left-up" :max="2">
         <t-avatar>{{ typeMap[product.type - 1] }}</t-avatar>
         <t-avatar
-        ><template #icon>
-          <add-icon />
-        </template>
+          ><template #icon>
+            <add-icon />
+          </template>
         </t-avatar>
       </t-avatar-group>
     </template>

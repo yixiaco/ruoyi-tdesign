@@ -9,7 +9,7 @@
         <img src="@/assets/assets-tencent-logo.png" class="logo" />
       </div>
 
-      <t-card class="user-info-list" title="个人信息">
+      <t-card class="user-info-list" title="个人信息" :bordered="false">
         <template #actions>
           <t-button theme="default" shape="square" variant="text">
             <t-icon name="edit" size="18" />
@@ -27,7 +27,7 @@
         </t-row>
       </t-card>
 
-      <t-card class="content-container">
+      <t-card class="content-container" :bordered="false">
         <t-tabs value="second">
           <t-tab-panel value="first" label="内容列表">
             <p>内容列表</p>
@@ -54,13 +54,13 @@
     </t-col>
 
     <t-col :flex="1">
-      <t-card class="user-intro">
+      <t-card class="user-intro" :bordered="false">
         <t-avatar size="90px">T</t-avatar>
         <div class="name">My Account</div>
         <div class="position">XXG 港澳业务拓展组员工 直客销售</div>
       </t-card>
 
-      <t-card title="团队成员" class="user-team">
+      <t-card title="团队成员" class="user-team" :bordered="false">
         <template #actions>
           <t-button theme="default" shape="square" variant="text">
             <t-icon name="edit" size="18" />
@@ -73,7 +73,7 @@
         </t-list>
       </t-card>
 
-      <t-card title="服务产品" class="product-container">
+      <t-card title="服务产品" class="product-container" :bordered="false">
         <template #actions>
           <t-button theme="default" shape="square" variant="text">
             <t-icon name="edit" size="18" />
@@ -104,10 +104,10 @@ import { useSettingStore } from '@/store';
 import { LAST_7_DAYS } from '@/utils/date';
 import { USER_INFO_LIST, TEAM_MEMBERS, PRODUCT_LIST } from './constants';
 import { getFolderLineDataSet } from './index';
-import ProductAIcon from '@/assets/icons/assets-product-1.svg';
-import ProductBIcon from '@/assets/icons/assets-product-2.svg';
-import ProductCIcon from '@/assets/icons/assets-product-3.svg';
-import ProductDIcon from '@/assets/icons/assets-product-4.svg';
+import ProductAIcon from '@/assets/assets-product-1.svg';
+import ProductBIcon from '@/assets/assets-product-2.svg';
+import ProductCIcon from '@/assets/assets-product-3.svg';
+import ProductDIcon from '@/assets/assets-product-4.svg';
 import { changeChartsTheme } from '@/utils/color';
 
 echarts.use([GridComponent, TooltipComponent, LineChart, CanvasRenderer, LegendComponent]);
