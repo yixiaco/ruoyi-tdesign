@@ -382,16 +382,10 @@ function handlePreviewListResource(previewListResource) {
 function handleDelete(row) {
   const ossIds = row.ossId || ids.value;
   proxy.$modal.confirm(`是否确认删除OSS对象存储编号为"${ossIds}"的数据项?`, () => {
-    loading.value = true;
-    return delOss(ossIds)
-      .then(() => {
-        loading.value = false;
-        getList();
-        proxy.$modal.msgSuccess('删除成功');
-      })
-      .finally(() => {
-        loading.value = false;
-      });
+    return delOss(ossIds).then(() => {
+      getList();
+      proxy.$modal.msgSuccess('删除成功');
+    });
   });
 }
 

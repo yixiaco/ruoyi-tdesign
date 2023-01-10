@@ -2,6 +2,7 @@ package com.ruoyi.web.controller.system;
 
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.hutool.core.net.URLDecoder;
 import cn.hutool.core.util.ObjectUtil;
 import com.ruoyi.common.annotation.Log;
 import com.ruoyi.common.core.controller.BaseController;
@@ -28,6 +29,7 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotEmpty;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
@@ -69,6 +71,19 @@ public class SysOssController extends BaseController {
     }
 
     /**
+     * 查询OSS对象基于url串
+     *
+     * @param urls OSS对象url串
+     */
+    @SaCheckPermission("system:oss:list")
+    @GetMapping("/listByUrls")
+    public R<List<SysOssVo>> listByUrls(@NotEmpty(message = "url不能为空") String urls) {
+        String[] urlArray = URLDecoder.decode(String.valueOf(urls), StandardCharsets.UTF_8).split(",");
+        List<SysOssVo> list = iSysOssService.listVoByUrls(Arrays.asList(urlArray));
+        return R.ok(list);
+    }
+
+    /**
      * 上传OSS对象存储
      *
      * @param file 文件
@@ -96,7 +111,7 @@ public class SysOssController extends BaseController {
     @SaCheckPermission("system:oss:download")
     @GetMapping("/download/{ossId}")
     public void download(@PathVariable Long ossId, HttpServletResponse response) throws IOException {
-        iSysOssService.download(ossId,response);
+        iSysOssService.download(ossId, response);
     }
 
     /**

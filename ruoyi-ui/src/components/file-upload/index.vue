@@ -11,6 +11,7 @@
       :max="limit"
       :on-fail="handleUploadError"
       :headers="headers"
+      :draggable="draggable"
       :size-limit="{ size: fileSize, unit: 'MB', message: '上传文件大小不能超过 {sizeLimit} MB!' }"
       :placeholder="isShowTip ? `请上传大小不超过 ${fileSize}MB 格式为 ${fileType.join('/')} 的文件` : ''"
       @one-file-success="handleOneUploadSuccess"
@@ -27,7 +28,7 @@
 import { computed, getCurrentInstance, PropType, ref, watch } from 'vue';
 import { SuccessContext, UploadFile } from 'tdesign-vue-next';
 import { getToken } from '@/utils/auth';
-import { listByIds, delOss } from '@/api/system/oss';
+import { listByIds, delOss, listByUrls } from '@/api/system/oss';
 
 const props = defineProps({
   modelValue: [String, Object, Array],
@@ -35,6 +36,10 @@ const props = defineProps({
   limit: {
     type: Number,
     default: 5,
+  },
+  draggable: {
+    type: Boolean,
+    default: false,
   },
   // 大小限制(MB)
   fileSize: {
@@ -53,7 +58,12 @@ const props = defineProps({
   },
   theme: {
     type: String as PropType<'custom' | 'file' | 'file-input' | 'file-flow'>,
-    default: 'custom',
+    default: 'file',
+  },
+  // 模式，id模式返回ossId，url模式返回url链接
+  mode: {
+    type: String as PropType<'id' | 'url'>,
+    default: 'url',
   },
 });
 
@@ -76,16 +86,43 @@ watch(
       let list;
       if (Array.isArray(val)) {
         list = val;
-      } else {
+      } else if (props.mode === 'url') {
+        await listByUrls(val).then((res) => {
+          list = res.data.map((oss) => {
+            return {
+              name: oss.originalName,
+              status: 'success',
+              size: oss.size,
+              uploadTime: oss.createTime,
+              url: oss.url,
+              ossId: oss.ossId,
+            };
+          });
+        });
+      } else if (props.mode === 'id') {
         await listByIds(val).then((res) => {
           list = res.data.map((oss) => {
-            return { name: oss.originalName, status: 'success', url: oss.url, ossId: oss.ossId };
+            return {
+              name: oss.originalName,
+              status: 'success',
+              size: oss.size,
+              uploadTime: oss.createTime,
+              url: oss.url,
+              ossId: oss.ossId,
+            };
           });
         });
       }
       // 然后将数组转为对象数组
       fileList.value = list.map((item) => {
-        item = { name: item.name, status: item.status, url: item.url, ossId: item.ossId };
+        item = {
+          name: item.name,
+          status: item.status,
+          size: item.size,
+          uploadTime: item.uploadTime,
+          url: item.url,
+          ossId: item.ossId,
+        };
         item.uid = item.uid || new Date().getTime() + temp++;
         return item;
       });
@@ -156,8 +193,14 @@ function listToString(list, separator?) {
   let strs = '';
   separator = separator || ',';
   for (const i in list) {
-    if (list[i].ossId) {
-      strs += list[i].ossId + separator;
+    if (props.mode === 'url') {
+      if (list[i].url) {
+        strs += list[i].url + separator;
+      }
+    } else if (props.mode === 'id') {
+      if (list[i].ossId) {
+        strs += list[i].ossId + separator;
+      }
     }
   }
   return strs !== '' ? strs.substring(0, strs.length - 1) : '';

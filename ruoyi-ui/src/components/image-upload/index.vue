@@ -10,6 +10,7 @@
       :on-fail="handleUploadError"
       :headers="headers"
       :theme="theme"
+      :draggable="draggable"
       accept="image/*"
       :size-limit="{ size: fileSize, unit: 'MB', message: '上传头像图片大小不能超过 {sizeLimit} MB!' }"
       :placeholder="isShowTip ? `请上传大小不超过 ${fileSize}MB 格式为 ${fileType.join('/')} 的文件` : ''"
@@ -17,6 +18,7 @@
       @success="handleUploadSuccess"
       @remove="handleDelete"
     >
+      <slot v-if="theme === 'custom'" />
     </t-upload>
   </div>
 </template>
@@ -25,7 +27,7 @@
 import { getCurrentInstance, PropType, ref, watch } from 'vue';
 import { SuccessContext } from 'tdesign-vue-next';
 import { getToken } from '@/utils/auth';
-import { listByIds, delOss } from '@/api/system/oss';
+import { listByIds, delOss, listByUrls } from '@/api/system/oss';
 
 const props = defineProps({
   modelValue: [String, Object, Array],
@@ -33,6 +35,10 @@ const props = defineProps({
   limit: {
     type: Number,
     default: 5,
+  },
+  draggable: {
+    type: Boolean,
+    default: false,
   },
   // 大小限制(MB)
   fileSize: {
@@ -53,6 +59,11 @@ const props = defineProps({
     type: String as PropType<'custom' | 'image' | 'image-flow'>,
     default: 'image',
   },
+  // 模式，id模式返回ossId，url模式返回url链接
+  mode: {
+    type: String as PropType<'id' | 'url'>,
+    default: 'url',
+  },
 });
 
 const { proxy } = getCurrentInstance();
@@ -70,7 +81,11 @@ watch(
       let list;
       if (Array.isArray(val)) {
         list = val;
-      } else {
+      } else if (props.mode === 'url') {
+        await listByUrls(val).then((res) => {
+          list = res.data;
+        });
+      } else if (props.mode === 'id') {
         await listByIds(val).then((res) => {
           list = res.data;
         });
@@ -79,10 +94,17 @@ watch(
       fileList.value = list.map((item) => {
         // 字符串回显处理 如果此处存的是url可直接回显 如果存的是id需要调用接口查出来
         if (typeof item === 'string') {
-          item = { name: item, url: item };
+          item = { name: item, status: 'success', url: item };
         } else {
           // 此处name使用ossId 防止删除出现重名
-          item = { name: item.ossId, url: item.url, ossId: item.ossId };
+          item = {
+            name: item.ossId,
+            status: 'success',
+            size: item.size,
+            uploadTime: item.createTime,
+            url: item.url,
+            ossId: item.ossId,
+          };
         }
         return item;
       });
@@ -160,8 +182,14 @@ function listToString(list, separator?) {
   let strs = '';
   separator = separator || ',';
   for (const i in list) {
-    if (list[i].ossId && list[i].url.indexOf('blob:') !== 0) {
-      strs += list[i].ossId + separator;
+    if (props.mode === 'url') {
+      if (list[i].url && list[i].url.indexOf('blob:') !== 0) {
+        strs += list[i].url + separator;
+      }
+    } else if (props.mode === 'id') {
+      if (list[i].ossId && list[i].url.indexOf('blob:') !== 0) {
+        strs += list[i].ossId + separator;
+      }
     }
   }
   return strs !== '' ? strs.substring(0, strs.length - 1) : '';

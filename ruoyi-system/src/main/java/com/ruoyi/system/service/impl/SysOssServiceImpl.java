@@ -29,7 +29,6 @@ import org.springframework.web.multipart.MultipartFile;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -48,14 +47,26 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
 
     @Override
     public List<SysOssVo> listVoByIds(Collection<Long> ossIds) {
-        List<SysOssVo> list = new ArrayList<>();
-        for (Long id : ossIds) {
-            SysOssVo vo = SpringUtils.getAopProxy(this).getById(id);
-            if (ObjectUtil.isNotNull(vo)) {
-                list.add(this.matchingUrl(vo));
-            }
+        List<SysOssVo> list = baseMapper.selectVoList(lambdaQuery().eq(SysOss::getOssId, ossIds).getWrapper());
+        for (SysOssVo vo : list) {
+            matchingUrl(vo);
         }
         return list;
+    }
+
+    /**
+     * 查询OSS对象基于url串
+     *
+     * @param urls OSS对象url串
+     * @return
+     */
+    @Override
+    public List<SysOssVo> listVoByUrls(List<String> urls) {
+        List<SysOssVo> ossVos = baseMapper.selectVoList(lambdaQuery().in(SysOss::getUrl, urls).getWrapper());
+        for (SysOssVo ossVo : ossVos) {
+            matchingUrl(ossVo);
+        }
+        return ossVos;
     }
 
     @Cacheable(cacheNames = CacheNames.SYS_OSS, key = "#ossId")
