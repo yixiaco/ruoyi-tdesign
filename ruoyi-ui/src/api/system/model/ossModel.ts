@@ -28,9 +28,14 @@ export interface SysOssVo {
   url: string;
 
   /**
+   * 字节长度
+   */
+  size: number;
+
+  /**
    * 创建时间
    */
-  createTime: object;
+  createTime: string;
 
   /**
    * 上传人

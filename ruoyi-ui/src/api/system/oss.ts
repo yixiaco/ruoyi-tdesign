@@ -17,6 +17,14 @@ export function listByIds(ossId) {
   });
 }
 
+// 查询OSS对象基于url串
+export function listByUrls(urls) {
+  return request.get<R<Array<SysOssVo>>>({
+    url: `/system/oss/listByUrls`,
+    params: { urls: encodeURIComponent(urls) },
+  });
+}
+
 // 删除OSS对象存储
 export function delOss(ossId) {
   return request.delete<R<void>>({
