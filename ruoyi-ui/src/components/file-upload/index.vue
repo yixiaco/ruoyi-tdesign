@@ -68,7 +68,7 @@ const props = defineProps({
 });
 
 const { proxy } = getCurrentInstance();
-const emit = defineEmits(['update:modelValue']);
+const emit = defineEmits(['update:modelValue', 'change']);
 const baseUrl = import.meta.env.VITE_APP_BASE_API;
 const uploadFileUrl = ref(`${baseUrl}/system/oss/upload`); // 上传文件服务器地址
 const headers = ref({ Authorization: `Bearer ${getToken()}` });
@@ -179,13 +179,17 @@ function handleDelete({ file }) {
   delOss(ossId).then(() => {
     proxy.$modal.msgSuccess(`文件【${name}】删除成功！`);
   });
-  emit('update:modelValue', listToString(fileList.value));
+  const value = listToString(fileList.value);
+  emit('update:modelValue', value);
+  emit('change', value);
 }
 
 // 上传结束处理
 function uploadedSuccessfully(uploadList) {
   fileList.value = fileList.value.filter((f) => f.url !== undefined).concat(uploadList);
-  emit('update:modelValue', listToString(fileList.value));
+  const value = listToString(fileList.value);
+  emit('update:modelValue', value);
+  emit('change', value);
 }
 
 // 对象转成指定字符串分隔
