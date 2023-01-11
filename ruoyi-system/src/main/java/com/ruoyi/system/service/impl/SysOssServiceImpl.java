@@ -47,7 +47,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
 
     @Override
     public List<SysOssVo> listVoByIds(Collection<Long> ossIds) {
-        List<SysOssVo> list = baseMapper.selectVoList(lambdaQuery().eq(SysOss::getOssId, ossIds).getWrapper());
+        List<SysOssVo> list = baseMapper.selectVoList(lambdaQuery().in(SysOss::getOssId, ossIds).getWrapper());
         for (SysOssVo vo : list) {
             matchingUrl(vo);
         }
