@@ -14,6 +14,7 @@
       accept="image/*"
       :size-limit="{ size: fileSize, unit: 'MB', message: '上传头像图片大小不能超过 {sizeLimit} MB!' }"
       :placeholder="isShowTip ? `请上传大小不超过 ${fileSize}MB 格式为 ${fileType.join('/')} 的文件` : ''"
+      :disabled="disabled"
       @one-file-success="handleOneUploadSuccess"
       @success="handleUploadSuccess"
       @remove="handleDelete"
@@ -63,6 +64,10 @@ const props = defineProps({
   mode: {
     type: String as PropType<'id' | 'url'>,
     default: 'url',
+  },
+  disabled: {
+    type: Boolean,
+    default: false,
   },
 });
 
