@@ -179,7 +179,7 @@
               <t-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')"
                 >全选/全不选</t-checkbox
               >
-              <t-checkbox v-model="menuCheckStrictly">父子联动</t-checkbox>
+              <t-checkbox v-model="form.menuCheckStrictly">父子联动</t-checkbox>
             </t-space>
             <t-tree
               ref="menuRef"
@@ -188,7 +188,7 @@
               :data="menuOptions"
               :expanded="menuExpandNode"
               checkable
-              :check-strictly="!menuCheckStrictly"
+              :check-strictly="!form.menuCheckStrictly"
               empty="加载中，请稍候"
               :keys="{ value: 'id', label: 'label', children: 'children' }"
               @expand="onExpand('menu', $event)"
@@ -235,7 +235,7 @@
               <t-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')"
                 >全选/全不选</t-checkbox
               >
-              <t-checkbox v-model="deptCheckStrictly">父子联动</t-checkbox>
+              <t-checkbox v-model="form.deptCheckStrictly">父子联动</t-checkbox>
             </t-space>
             <t-tree
               ref="deptRef"
@@ -245,7 +245,7 @@
               checkable
               :expanded="deptExpandNode"
               expand-all
-              :check-strictly="!deptCheckStrictly"
+              :check-strictly="!form.deptCheckStrictly"
               empty="加载中，请稍候"
               :keys="{ value: 'id', label: 'label', children: 'children' }"
               @expand="onExpand('dept', $event)"
@@ -317,8 +317,6 @@ const menuIds = ref([]);
 const deptIds = ref([]);
 const menuExpandNode = ref([]);
 const deptExpandNode = ref([]);
-const menuCheckStrictly = ref(true);
-const deptCheckStrictly = ref(true);
 const columnControllerVisible = ref(false);
 
 /** 数据范围选项 */
@@ -350,6 +348,9 @@ const formInitValue = {
   menuIds: [],
   deptIds: [],
   remark: undefined,
+  dataScope: undefined,
+  menuCheckStrictly: true,
+  deptCheckStrictly: true,
 };
 const data = reactive({
   form: { ...formInitValue },
