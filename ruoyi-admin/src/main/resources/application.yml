@@ -83,6 +83,9 @@ spring:
     restart:
       # 热部署开关
       enabled: true
+  mvc:
+    format:
+      date-time: yyyy-MM-dd HH:mm:ss
   jackson:
     # 日期格式化
     date-format: yyyy-MM-dd HH:mm:ss
@@ -102,7 +105,7 @@ sa-token:
   # token有效期 设为一天 (必定过期) 单位: 秒
   timeout: 86400
   # token临时有效期 (指定时间无操作就过期) 单位: 秒
-  activity-timeout: 1800
+  activity-timeout: 7200
   # 是否允许同一账号并发登录 (为true时允许一起登录, 为false时新登录挤掉旧登录)
   is-concurrent: true
   # 在多人登录同一账号时，是否共用一个token (为true时所有登录共用一个token, 为false时每次登录新建一个token)
@@ -166,7 +169,7 @@ mybatis-plus:
       # AUTO 自增 NONE 空 INPUT 用户输入 ASSIGN_ID 雪花 ASSIGN_UUID 唯一 UUID
       idType: ASSIGN_ID
       # 逻辑已删除值
-      logicDeleteValue: 2
+      logicDeleteValue: 1
       # 逻辑未删除值
       logicNotDeleteValue: 0
       # 字段验证策略之 insert,在 insert 的时候的字段验证策略
@@ -202,14 +205,17 @@ swagger:
         name: ${sa-token.token-name}
 
 springdoc:
+  swagger-ui:
+    # 持久化认证数据
+    persistAuthorization: true
   #这里定义了两个分组，可定义多个，也可以不定义
   group-configs:
-    - group: 1.演示模块
-      packages-to-scan: com.ruoyi.demo
-    - group: 2.系统模块
+    - group: 1.系统模块
       packages-to-scan: com.ruoyi.web
-    - group: 3.代码生成模块
+    - group: 2.代码生成模块
       packages-to-scan: com.ruoyi.generator
+    - group: 3.论坛模块
+      packages-to-scan: com.ruoyi.bbs
 
 # 防止XSS攻击
 xss:
@@ -218,7 +224,7 @@ xss:
   # 排除链接（多个用逗号分隔）
   excludes: /system/notice
   # 匹配链接
-  urlPatterns: /system/*,/monitor/*,/tool/*
+  urlPatterns: /system/*,/monitor/*,/tool/*,/bbs/*
 
 # 全局线程池相关配置
 thread-pool:
@@ -246,4 +252,4 @@ management:
     health:
       show-details: ALWAYS
     logfile:
-      external-file: ./logs/sys-console.log
+      external-file: ./logs/${ruoyi.name}-console.log

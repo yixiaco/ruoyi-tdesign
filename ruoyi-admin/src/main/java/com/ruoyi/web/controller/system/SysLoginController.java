@@ -13,7 +13,6 @@ import com.ruoyi.system.domain.vo.RouterVo;
 import com.ruoyi.system.service.ISysMenuService;
 import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.system.service.SysLoginService;
-import com.ruoyi.system.service.SysPermissionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -41,8 +40,6 @@ public class SysLoginController {
     private ISysMenuService menuService;
     @Autowired
     private ISysUserService userService;
-    @Autowired
-    private SysPermissionService permissionService;
 
     /**
      * 登录方法
@@ -56,7 +53,7 @@ public class SysLoginController {
         Map<String, Object> ajax = new HashMap<>();
         // 生成令牌
         String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
-            loginBody.getUuid());
+                                          loginBody.getUuid());
         ajax.put(Constants.TOKEN, token);
         return R.ok(ajax);
     }

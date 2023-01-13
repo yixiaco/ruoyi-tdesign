@@ -15,6 +15,7 @@ import com.ruoyi.common.utils.JsonUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.redis.CacheUtils;
 import com.ruoyi.common.utils.redis.RedisUtils;
+import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.oss.constant.OssConstant;
 import com.ruoyi.oss.factory.OssFactory;
 import com.ruoyi.system.domain.SysOssConfig;
@@ -23,6 +24,7 @@ import com.ruoyi.system.domain.vo.SysOssConfigVo;
 import com.ruoyi.system.mapper.SysOssConfigMapper;
 import com.ruoyi.system.service.ISysOssConfigService;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -52,7 +54,7 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
             if ("0".equals(config.getStatus())) {
                 RedisUtils.setCacheObject(OssConstant.DEFAULT_CONFIG_KEY, configKey);
             }
-            setConfigCache(true, config);
+            SpringUtils.context().publishEvent(config);
         }
         // 初始化OSS工厂
         OssFactory.init();
@@ -72,7 +74,11 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
     public Boolean insertByBo(SysOssConfigBo bo) {
         SysOssConfig config = BeanUtil.toBean(bo, SysOssConfig.class);
         validEntityBeforeSave(config);
-        return setConfigCache(baseMapper.insert(config) > 0, config);
+        boolean flag = baseMapper.insert(config) > 0;
+        if (flag) {
+            SpringUtils.context().publishEvent(config);
+        }
+        return flag;
     }
 
     @Override
@@ -85,7 +91,11 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
         luw.set(ObjectUtil.isNull(config.getExt1()), SysOssConfig::getExt1, "");
         luw.set(ObjectUtil.isNull(config.getRemark()), SysOssConfig::getRemark, "");
         luw.eq(SysOssConfig::getOssConfigId, config.getOssConfigId());
-        return setConfigCache(baseMapper.update(config, luw) > 0, config);
+        boolean flag = baseMapper.update(config, luw) > 0;
+        if (flag) {
+            SpringUtils.context().publishEvent(config);
+        }
+        return flag;
     }
 
     /**
@@ -114,7 +124,7 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
         boolean flag = baseMapper.deleteBatchIds(ids) > 0;
         if (flag) {
             list.forEach(sysOssConfig ->
-                CacheUtils.evict(CacheNames.SYS_OSS_CONFIG, sysOssConfig.getConfigKey()));
+                             CacheUtils.evict(CacheNames.SYS_OSS_CONFIG, sysOssConfig.getConfigKey()));
         }
         return flag;
     }
@@ -125,8 +135,8 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
     private String checkConfigKeyUnique(SysOssConfig sysOssConfig) {
         long ossConfigId = ObjectUtil.isNull(sysOssConfig.getOssConfigId()) ? -1L : sysOssConfig.getOssConfigId();
         SysOssConfig info = baseMapper.selectOne(new LambdaQueryWrapper<SysOssConfig>()
-            .select(SysOssConfig::getOssConfigId, SysOssConfig::getConfigKey)
-            .eq(SysOssConfig::getConfigKey, sysOssConfig.getConfigKey()));
+                                                     .select(SysOssConfig::getOssConfigId, SysOssConfig::getConfigKey)
+                                                     .eq(SysOssConfig::getConfigKey, sysOssConfig.getConfigKey()));
         if (ObjectUtil.isNotNull(info) && info.getOssConfigId() != ossConfigId) {
             return UserConstants.NOT_UNIQUE;
         }
@@ -150,19 +160,15 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
     }
 
     /**
-     * 如果操作成功 则更新缓存
+     * 更新配置缓存
      *
-     * @param flag   操作状态
      * @param config 配置
-     * @return 返回操作状态
      */
-    private boolean setConfigCache(boolean flag, SysOssConfig config) {
-        if (flag) {
-            CacheUtils.put(CacheNames.SYS_OSS_CONFIG, config.getConfigKey(), JsonUtils.toJsonString(config));
-            RedisUtils.publish(OssConstant.DEFAULT_CONFIG_KEY, config.getConfigKey(), msg -> {
-                log.info("发布刷新OSS配置 => " + msg);
-            });
-        }
-        return flag;
+    @EventListener
+    public void updateConfigCache(SysOssConfig config) {
+        CacheUtils.put(CacheNames.SYS_OSS_CONFIG, config.getConfigKey(), JsonUtils.toJsonString(config));
+        RedisUtils.publish(OssConstant.DEFAULT_CONFIG_KEY, config.getConfigKey(), msg -> {
+            log.info("发布刷新OSS配置 => " + msg);
+        });
     }
 }

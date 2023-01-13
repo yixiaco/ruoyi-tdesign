@@ -192,15 +192,15 @@
           <t-input v-model="form.${field}" placeholder="请输入${comment}" />
         </t-form-item>
 #elseif($column.htmlType == "imageUpload")
-        <t-form-item label="${comment}">
+        <t-form-item label="${comment}" name="${field}">
           <image-upload v-model="form.${field}" :limit="1" />
         </t-form-item>
 #elseif($column.htmlType == "fileUpload")
-        <t-form-item label="${comment}">
+        <t-form-item label="${comment}" name="${field}">
           <file-upload v-model="form.${field}" />
         </t-form-item>
 #elseif($column.htmlType == "editor")
-        <t-form-item label="${comment}">
+        <t-form-item label="${comment}" name="${field}">
           <editor v-model="form.${field}" :min-height="192" />
         </t-form-item>
 #elseif($column.htmlType == "select" && "" != $dictType)
@@ -225,7 +225,7 @@
           </t-select>
         </t-form-item>
 #elseif($column.htmlType == "checkbox" && "" != $dictType)
-        <t-form-item label="${comment}">
+        <t-form-item label="${comment}" name="${field}">
           <t-checkbox-group v-model="form.${field}">
             <t-checkbox
               v-for="dict in ${dictType}"
@@ -236,13 +236,13 @@
           </t-checkbox-group>
         </t-form-item>
 #elseif($column.htmlType == "checkbox" && $dictType)
-        <t-form-item label="${comment}">
+        <t-form-item label="${comment}" name="${field}">
           <t-checkbox-group v-model="form.${field}">
             <t-checkbox>请选择字典生成</t-checkbox>
           </t-checkbox-group>
         </t-form-item>
 #elseif($column.htmlType == "radio" && "" != $dictType)
-        <t-form-item label="${comment}">
+        <t-form-item label="${comment}" name="${field}">
           <t-radio-group v-model="form.${field}">
             <t-radio
               v-for="dict in ${dictType}"
@@ -256,7 +256,7 @@
           </t-radio-group>
         </t-form-item>
 #elseif($column.htmlType == "radio" && $dictType)
-        <t-form-item label="${comment}">
+        <t-form-item label="${comment}" name="${field}">
           <t-radio-group v-model="form.${field}">
             <t-radio value="1">请选择字典生成</t-radio>
           </t-radio-group>
@@ -376,9 +376,7 @@ const daterange${AttrName} = ref([]);
 #end
 const formInitValue = {
 #foreach ($column in $columns)
-#if($column.htmlType == "radio")
-  $column.javaField: #if($column.javaType == "Integer" || $column.javaType == "Long")0#else"0"#end,
-#elseif($column.htmlType == "checkbox")
+#if($column.htmlType == "checkbox")
   $column.javaField: [],
 #else
   $column.javaField: null,

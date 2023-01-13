@@ -4,13 +4,13 @@ import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.domain.PageQuery;
-import com.ruoyi.common.core.domain.dto.OperLogDTO;
+import com.ruoyi.common.core.domain.event.OperLogEvent;
 import com.ruoyi.common.core.page.TableDataInfo;
-import com.ruoyi.common.core.service.OperLogService;
 import com.ruoyi.common.utils.ip.AddressUtils;
 import com.ruoyi.system.domain.SysOperLog;
 import com.ruoyi.system.mapper.SysOperLogMapper;
 import com.ruoyi.system.service.ISysOperLogService;
+import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,17 +25,17 @@ import java.util.List;
  * @author Lion Li
  */
 @Service
-public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOperLog> implements ISysOperLogService, OperLogService {
+public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOperLog> implements ISysOperLogService {
 
     /**
      * 操作日志记录
      *
-     * @param operLogDTO 操作日志信息
+     * @param operLogEvent 操作日志事件
      */
     @Async
-    @Override
-    public void recordOper(final OperLogDTO operLogDTO) {
-        SysOperLog operLog = BeanUtil.toBean(operLogDTO, SysOperLog.class);
+    @EventListener
+    public void recordOper(OperLogEvent operLogEvent) {
+        SysOperLog operLog = BeanUtil.toBean(operLogEvent, SysOperLog.class);
         // 远程查询操作地点
         operLog.setOperLocation(AddressUtils.getRealAddressByIP(operLog.getOperIp()));
         insertOperlog(operLog);

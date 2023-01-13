@@ -54,7 +54,7 @@ public class PlusDataPermissionHandler {
     /**
      * 无效注解方法缓存用于快速返回
      */
-    private final Set<String> inavlidCacheSet = new ConcurrentHashSet<>();
+    private final Set<String> invalidCacheSet = new ConcurrentHashSet<>();
 
     /**
      * spel 解析器
@@ -70,7 +70,7 @@ public class PlusDataPermissionHandler {
     public Expression getSqlSegment(Expression where, String mappedStatementId, boolean isSelect) {
         DataColumn[] dataColumns = findAnnotation(mappedStatementId);
         if (ArrayUtil.isEmpty(dataColumns)) {
-            inavlidCacheSet.add(mappedStatementId);
+            invalidCacheSet.add(mappedStatementId);
             return where;
         }
         LoginUser currentUser = DataPermissionHelper.getVariable("user");
@@ -129,7 +129,7 @@ public class PlusDataPermissionHandler {
                 }
                 // 不包含 key 变量 则不处理
                 if (!StringUtils.containsAny(type.getSqlTemplate(),
-                    Arrays.stream(dataColumn.key()).map(key -> "#" + key).toArray(String[]::new)
+                                             Arrays.stream(dataColumn.key()).map(key -> "#" + key).toArray(String[]::new)
                 )) {
                     continue;
                 }
@@ -194,6 +194,6 @@ public class PlusDataPermissionHandler {
      * 是否为无效方法 无数据权限
      */
     public boolean isInvalid(String mappedStatementId) {
-        return inavlidCacheSet.contains(mappedStatementId);
+        return invalidCacheSet.contains(mappedStatementId);
     }
 }

@@ -15,11 +15,11 @@ import lombok.NoArgsConstructor;
 
 /**
  * 登录鉴权助手
- *
+ * <p>
  * user_type 为 用户类型 同一个用户表 可以有多种用户类型 例如 pc,app
  * deivce 为 设备类型 同一个用户类型 可以有 多种设备类型 例如 web,ios
  * 可以组成 用户类型与设备类型多对多的 权限灵活控制
- *
+ * <p>
  * 多用户体系 针对 多种用户类型 但权限控制不一致
  * 可以组成 多用户类型表与多设备类型 分别控制权限
  *
@@ -83,12 +83,18 @@ public class LoginHelper {
         LoginUser loginUser = getLoginUser();
         if (ObjectUtil.isNull(loginUser)) {
             String loginId = StpUtil.getLoginIdAsString();
-            String[] strs = StringUtils.split(loginId, JOIN_CODE);
-            if (!ArrayUtil.containsAny(strs, UserType.values())) {
+            String userId = null;
+            for (UserType value : UserType.values()) {
+                if (StringUtils.contains(loginId, value.getUserType())) {
+                    String[] strs = StringUtils.split(loginId, JOIN_CODE);
+                    // 用户id在总是在最后
+                    userId = strs[strs.length - 1];
+                }
+            }
+            if (StringUtils.isBlank(userId)) {
                 throw new UtilException("登录用户: LoginId异常 => " + loginId);
             }
-            // 用户id在总是在最后
-            return Long.parseLong(strs[strs.length - 1]);
+            return Long.parseLong(userId);
         }
         return loginUser.getUserId();
     }

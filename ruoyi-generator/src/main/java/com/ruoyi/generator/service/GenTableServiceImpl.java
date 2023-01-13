@@ -9,6 +9,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
+import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ruoyi.common.constant.Constants;
@@ -65,6 +66,8 @@ public class GenTableServiceImpl implements IGenTableService {
     private GenTableMapper baseMapper;
     @Autowired
     private GenTableColumnMapper genTableColumnMapper;
+    @Autowired
+    private IdentifierGenerator identifierGenerator;
 
     /**
      * 查询业务字段列表
@@ -75,8 +78,8 @@ public class GenTableServiceImpl implements IGenTableService {
     @Override
     public List<GenTableColumn> selectGenTableColumnListByTableId(Long tableId) {
         return genTableColumnMapper.selectList(new LambdaQueryWrapper<GenTableColumn>()
-            .eq(GenTableColumn::getTableId, tableId)
-            .orderByAsc(GenTableColumn::getSort));
+                                                   .eq(GenTableColumn::getTableId, tableId)
+                                                   .orderByAsc(GenTableColumn::getSort));
     }
 
     /**
@@ -104,7 +107,7 @@ public class GenTableServiceImpl implements IGenTableService {
         wrapper.like(StringUtils.isNotBlank(genTable.getTableName()), "lower(table_name)", StringUtils.lowerCase(genTable.getTableName()))
             .like(StringUtils.isNotBlank(genTable.getTableComment()), "lower(table_comment)", StringUtils.lowerCase(genTable.getTableComment()))
             .between(params.get("beginTime") != null && params.get("endTime") != null,
-                "create_time", params.get("beginTime"), params.get("endTime"))
+                     "create_time", params.get("beginTime"), params.get("endTime"))
             .orderByDesc("table_id");
         return wrapper;
     }
@@ -213,10 +216,9 @@ public class GenTableServiceImpl implements IGenTableService {
         Map<String, String> dataMap = new LinkedHashMap<>();
         // 查询表信息
         GenTable table = baseMapper.selectGenTableById(tableId);
-        Snowflake snowflake = IdUtil.getSnowflake();
         List<Long> menuIds = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
-            menuIds.add(snowflake.nextId());
+            menuIds.add(identifierGenerator.nextId(null).longValue());
         }
         table.setMenuIds(menuIds);
         // 设置主子表信息
@@ -370,10 +372,9 @@ public class GenTableServiceImpl implements IGenTableService {
     private void generatorCode(String tableName, ZipOutputStream zip) {
         // 查询表信息
         GenTable table = baseMapper.selectGenTableByName(tableName);
-        Snowflake snowflake = IdUtil.getSnowflake();
         List<Long> menuIds = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
-            menuIds.add(snowflake.nextId());
+            menuIds.add(identifierGenerator.nextId(null).longValue());
         }
         table.setMenuIds(menuIds);
         // 设置主子表信息
