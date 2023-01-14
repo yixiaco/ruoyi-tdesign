@@ -295,7 +295,7 @@ function getList() {
   });
 }
 function checkFileSuffix(fileSuffix) {
-  const arr = ['png', 'jpg', 'jpeg'];
+  const arr = ['png', 'jpg', 'jpeg', 'ico', 'bmp', 'webp', 'gif'];
   return arr.some((type) => {
     return fileSuffix.indexOf(type) > -1;
   });
