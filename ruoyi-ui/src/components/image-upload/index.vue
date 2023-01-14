@@ -11,7 +11,7 @@
       :headers="headers"
       :theme="theme"
       :draggable="draggable"
-      accept="image/*"
+      :accept="rawAccept"
       :size-limit="{ size: fileSize, unit: 'MB', message: '上传头像图片大小不能超过 {sizeLimit} MB!' }"
       :placeholder="isShowTip ? `请上传大小不超过 ${fileSize}MB 格式为 ${fileType.join('/')} 的文件` : ''"
       :disabled="disabled"
@@ -25,7 +25,7 @@
 </template>
 
 <script lang="ts" setup>
-import { getCurrentInstance, PropType, ref, watch } from 'vue';
+import {computed, getCurrentInstance, PropType, ref, watch} from 'vue';
 import { SuccessContext } from 'tdesign-vue-next';
 import { getToken } from '@/utils/auth';
 import { listByIds, delOss, listByUrls } from '@/api/system/oss';
@@ -45,6 +45,24 @@ const props = defineProps({
   fileSize: {
     type: Number,
     default: 5,
+  },
+  // 接受上传的文件类型
+  accept: {
+    type: Array as PropType<
+      Array<
+        | 'image/gif'
+        | 'image/jpeg'
+        | 'image/png'
+        | 'image/svg+xml'
+        | 'image/tiff'
+        | 'image/vnd.wap.wbmp'
+        | 'image/webp'
+        | 'image/x-icon'
+        | 'image/x-jng'
+        | 'image/x-ms-bmp'
+        | 'image/*'
+      >
+    >,
   },
   // 文件类型, 例如['png', 'jpg', 'jpeg']
   fileType: {
@@ -77,6 +95,9 @@ const baseUrl = import.meta.env.VITE_APP_BASE_API;
 const uploadImgUrl = ref(`${baseUrl}/system/oss/upload`); // 上传的图片服务器地址
 const headers = ref({ Authorization: `Bearer ${getToken()}` });
 const fileList = ref([]);
+const rawAccept = computed(() => {
+  return props.accept || props.fileType.map((value) => `.${value}`).join(',');
+});
 
 watch(
   () => props.modelValue,
