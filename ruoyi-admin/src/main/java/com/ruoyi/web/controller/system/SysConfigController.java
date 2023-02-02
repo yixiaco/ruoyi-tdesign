@@ -1,7 +1,9 @@
 package com.ruoyi.web.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import com.ruoyi.common.annotation.Log;
+import com.ruoyi.common.annotation.RepeatSubmit;
 import com.ruoyi.common.constant.UserConstants;
 import com.ruoyi.common.core.controller.BaseController;
 import com.ruoyi.common.core.domain.R;
@@ -15,7 +17,9 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletResponse;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 /**
  * 参数配置 信息操作处理
@@ -95,7 +99,7 @@ public class SysConfigController extends BaseController {
         if (UserConstants.NOT_UNIQUE.equals(configService.checkConfigKeyUnique(config))) {
             return R.fail("修改参数'" + config.getConfigName() + "'失败，参数键名已存在");
         }
-        configService.updateConfig(config);
+        configService.updateConfigs(config);
         return R.ok();
     }
 
@@ -106,7 +110,7 @@ public class SysConfigController extends BaseController {
     @Log(title = "参数管理", businessType = BusinessType.UPDATE)
     @PutMapping("/updateByKey")
     public R<Void> updateByKey(@RequestBody SysConfig config) {
-        configService.updateConfig(config);
+        configService.updateConfigs(config);
         return R.ok();
     }
 
@@ -131,6 +135,29 @@ public class SysConfigController extends BaseController {
     @DeleteMapping("/refreshCache")
     public R<Void> refreshCache() {
         configService.resetConfigCache();
+        return R.ok();
+    }
+
+    /**
+     * 查询多个参数
+     * @return
+     */
+    @SaCheckPermission(value = {"system:config:list", "system:config:query", "system:config:edit"}, mode = SaMode.OR)
+    @GetMapping("/configKeys")
+    public R<Map<String, Object>> queryConfigs(String[] keys) {
+        Map<String, Object> result = configService.queryConfigs(Arrays.asList(keys));
+        return R.ok(result);
+    }
+
+    /**
+     * 修改BBS网站参数配置
+     */
+    @SaCheckPermission("system:config:edit")
+    @Log(title = "参数管理", businessType = BusinessType.UPDATE)
+    @RepeatSubmit()
+    @PutMapping("/updateConfigs")
+    public R<Void> updateConfigs(@RequestBody Map<String, String> configs) {
+        configService.updateConfigs(configs);
         return R.ok();
     }
 }

@@ -64,3 +64,19 @@ export function refreshCache() {
     url: '/system/config/refreshCache',
   });
 }
+
+// 查询BBS网站参数配置详细
+export function getConfigByKeys(keys: string) {
+  return request.get<R<object>>({
+    url: `/system/config/configKeys`,
+    params: { keys },
+  });
+}
+
+// 修改BBS网站参数配置
+export function updateConfigs(configs) {
+  return request.put<R<void>>({
+    url: '/system/config/updateConfigs',
+    data: configs,
+  });
+}

@@ -5,6 +5,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.system.domain.SysConfig;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 参数配置 服务层
@@ -66,7 +67,7 @@ public interface ISysConfigService extends IService<SysConfig> {
      * @param config 参数配置信息
      * @return 结果
      */
-    String updateConfig(SysConfig config);
+    String updateConfigs(SysConfig config);
 
     /**
      * 批量删除参数信息
@@ -98,4 +99,18 @@ public interface ISysConfigService extends IService<SysConfig> {
      */
     String checkConfigKeyUnique(SysConfig config);
 
+    /**
+     * 查询多个参数
+     *
+     * @param keys
+     * @return
+     */
+    Map<String, Object> queryConfigs(List<String> keys);
+
+    /**
+     * 更新配置
+     *
+     * @param configs
+     */
+    void updateConfigs(Map<String, String> configs);
 }

@@ -24,6 +24,9 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.function.Function;
+import java.util.stream.Collectors;
 
 /**
  * 参数配置 服务层实现
@@ -116,7 +119,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
      */
     @CachePut(cacheNames = CacheNames.SYS_CONFIG, key = "#config.configKey")
     @Override
-    public String updateConfig(SysConfig config) {
+    public String updateConfigs(SysConfig config) {
         int row = 0;
         if (config.getConfigId() != null) {
             SysConfig temp = baseMapper.selectById(config.getConfigId());
@@ -193,6 +196,46 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
             return UserConstants.NOT_UNIQUE;
         }
         return UserConstants.UNIQUE;
+    }
+
+    /**
+     * 查询多个参数
+     *
+     * @param keys
+     * @return
+     */
+    @Override
+    public Map<String, Object> queryConfigs(List<String> keys) {
+        List<SysConfig> list = lambdaQuery().in(SysConfig::getConfigKey, keys).list();
+        return list.stream().collect(Collectors.toMap(SysConfig::getConfigKey, SysConfig::getConfigValue));
+    }
+
+    /**
+     * 更新配置
+     *
+     * @param configs
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateConfigs(Map<String, String> configs) {
+        List<SysConfig> list = lambdaQuery().in(SysConfig::getConfigKey, configs.keySet()).list();
+        Map<String, SysConfig> map = list.stream().collect(Collectors.toMap(SysConfig::getConfigKey, Function.identity()));
+        configs.forEach((key, value) -> {
+            SysConfig config;
+            if (map.containsKey(key)) {
+                config = map.get(key);
+            } else {
+                config = new SysConfig();
+                config.setConfigKey(key);
+                list.add(config);
+            }
+            config.setConfigValue(value);
+        });
+        saveOrUpdateBatch(list);
+        // 更新缓存
+        for (SysConfig sysConfig : list) {
+            CacheUtils.put(CacheNames.SYS_CONFIG, sysConfig.getConfigKey(), sysConfig.getConfigValue());
+        }
     }
 
     /**
