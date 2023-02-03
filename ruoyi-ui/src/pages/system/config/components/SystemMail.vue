@@ -178,9 +178,10 @@ const rules = ref({
   host: [{ required: true, message: 'SMTP服务器域名不能为空', trigger: 'blur' }],
   port: [{ required: true, message: 'SMTP服务端口不能为空', trigger: 'blur' }],
   from: [
-    { required: true, message: '发送方不能为空', trigger: 'blur' },
+    { required: true, message: '发送方不能为空', trigger: 'change' },
     {
-      pattern: /^(\S+@\S+\.\S+)|(\S+ <\S+@\S+\.\S+>)$/,
+      pattern:
+        /^([^ \f\n\r\t\v<]+@[^ \f\n\r\t\v<>]+\.[^ \f\n\r\t\v>]+)|(\S+ <[^ \f\n\r\t\v<]+@[^ \f\n\r\t\v<>]+\.[^ \f\n\r\t\v>]+>)$/,
       message: '发送方格式错误',
       trigger: 'change',
     },
