@@ -25,6 +25,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 
@@ -62,10 +63,12 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     @Cacheable(cacheNames = CacheNames.SYS_CONFIG, key = "#configKey")
     @Override
     public String selectConfigByKey(String configKey) {
-        SysConfig retConfig = baseMapper.selectOne(new LambdaQueryWrapper<SysConfig>()
-                                                       .eq(SysConfig::getConfigKey, configKey));
-        if (ObjectUtil.isNotNull(retConfig)) {
-            return retConfig.getConfigValue();
+        Optional<SysConfig> oneOpt = lambdaQuery()
+            .eq(SysConfig::getConfigKey, configKey)
+            .select(SysConfig::getConfigId, SysConfig::getConfigValue)
+            .oneOpt();
+        if (oneOpt.isPresent()) {
+            return oneOpt.get().getConfigValue();
         }
         return StringUtils.EMPTY;
     }
@@ -245,8 +248,9 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
      * @return 参数值
      */
     @Override
+    @Cacheable(cacheNames = CacheNames.SYS_CONFIG, key = "#configKey")
     public String getConfigValue(String configKey) {
-        return SpringUtils.getAopProxy(this).selectConfigByKey(configKey);
+        return selectConfigByKey(configKey);
     }
 
 }

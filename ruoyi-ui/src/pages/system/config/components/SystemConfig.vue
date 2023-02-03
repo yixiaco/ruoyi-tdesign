@@ -71,10 +71,19 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import {getCurrentInstance, onMounted, reactive, ref, toRefs, watch} from 'vue';
 import { getConfigByKeys, refreshCache, updateConfigs } from '@/api/system/config';
 import { useHasPermission } from '@/utils/auth';
 
+const props = defineProps({
+  action: {
+    type: Boolean,
+    required: true,
+    default: false,
+  },
+});
+
+const isInit = ref(false);
 // 表单禁用
 const disabled = !useHasPermission(['system:config:edit']);
 const loading = ref(false);
@@ -138,7 +147,16 @@ function handleRefreshCache() {
   });
 }
 
-init();
+watch(
+  () => props.action,
+  (val) => {
+    if (!isInit.value && val) {
+      isInit.value = true;
+      init();
+    }
+  },
+  { immediate: true },
+);
 </script>
 
 <style scoped></style>

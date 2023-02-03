@@ -190,7 +190,7 @@ export default {
     });
     const formRef = ref(null);
     const instance = DialogPlugin.confirm({
-      theme: 'warning',
+      theme: props.theme || 'warning',
       header: title || '系统提示',
       confirmBtn: btn,
       cancelBtn: props.cancelButtonText,

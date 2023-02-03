@@ -1,8 +1,11 @@
 <template>
-  <t-card v-show="showMode === 'tabs'">
-    <t-tabs :default-value="1">
+  <t-card>
+    <t-tabs v-model="action">
       <t-tab-panel :value="1" label="系统配置" :destroy-on-hide="false">
-        <system-config />
+        <system-config :action="action === 1" />
+      </t-tab-panel>
+      <t-tab-panel :value="2" label="邮箱配置" :destroy-on-hide="false">
+        <system-mail :action="action === 2" />
       </t-tab-panel>
     </t-tabs>
   </t-card>
@@ -15,6 +18,7 @@ export default {
 <script lang="ts" setup>
 import { ref } from 'vue';
 import SystemConfig from './components/SystemConfig.vue';
+import SystemMail from '@/pages/system/config/components/SystemMail.vue';
 
-const showMode = ref<'tabs' | 'list'>('tabs');
+const action = ref(1);
 </script>

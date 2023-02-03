@@ -1,7 +1,8 @@
 package com.ruoyi.demo.controller;
 
 import com.ruoyi.common.core.domain.R;
-import com.ruoyi.common.utils.email.MailUtils;
+import com.ruoyi.common.core.service.MailService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,6 +21,9 @@ import java.io.File;
 @RequestMapping("/demo/mail")
 public class MailController {
 
+    @Autowired
+    private MailService mailService;
+
     /**
      * 发送邮件
      *
@@ -29,7 +33,7 @@ public class MailController {
      */
     @GetMapping("/sendSimpleMessage")
     public R<Void> sendSimpleMessage(String to, String subject, String text) {
-        MailUtils.sendText(to, subject, text);
+        mailService.sendText(to, subject, text);
         return R.ok();
     }
 
@@ -43,7 +47,7 @@ public class MailController {
      */
     @GetMapping("/sendMessageWithAttachment")
     public R<Void> sendMessageWithAttachment(String to, String subject, String text, String filePath) {
-        MailUtils.sendText(to, subject, text, new File(filePath));
+        mailService.sendText(to, subject, text, new File(filePath));
         return R.ok();
     }
 
