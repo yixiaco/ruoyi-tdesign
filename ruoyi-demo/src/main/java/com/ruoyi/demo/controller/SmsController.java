@@ -1,9 +1,7 @@
 package com.ruoyi.demo.controller;
 
 import com.ruoyi.common.core.domain.R;
-import com.ruoyi.common.utils.spring.SpringUtils;
-import com.ruoyi.sms.config.properties.SmsProperties;
-import com.ruoyi.sms.core.SmsTemplate;
+import com.ruoyi.sms.service.SmsService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -26,7 +24,7 @@ import java.util.Map;
 public class SmsController {
 
     @Autowired
-    private SmsProperties smsProperties;
+    private SmsService smsService;
 //    private final SmsTemplate smsTemplate; // 可以使用spring注入
 //    private final AliyunSmsTemplate smsTemplate; // 也可以注入某个厂家的模板工具
 
@@ -38,16 +36,9 @@ public class SmsController {
      */
     @GetMapping("/sendAliyun")
     public R<Object> sendAliyun(String phones, String templateId) {
-        if (!smsProperties.getEnabled()) {
-            return R.fail("当前系统没有开启短信功能！");
-        }
-        if (!SpringUtils.containsBean("aliyunSmsTemplate")) {
-            return R.fail("阿里云依赖未引入！");
-        }
-        SmsTemplate smsTemplate = SpringUtils.getBean(SmsTemplate.class);
         Map<String, String> map = new HashMap<>(1);
         map.put("code", "1234");
-        Object send = smsTemplate.send(phones, templateId, map);
+        Object send = smsService.send(phones, templateId, map);
         return R.ok(send);
     }
 
@@ -59,17 +50,10 @@ public class SmsController {
      */
     @GetMapping("/sendTencent")
     public R<Object> sendTencent(String phones, String templateId) {
-        if (!smsProperties.getEnabled()) {
-            return R.fail("当前系统没有开启短信功能！");
-        }
-        if (!SpringUtils.containsBean("tencentSmsTemplate")) {
-            return R.fail("腾讯云依赖未引入！");
-        }
-        SmsTemplate smsTemplate = SpringUtils.getBean(SmsTemplate.class);
         Map<String, String> map = new HashMap<>(1);
 //        map.put("2", "测试测试");
         map.put("1", "1234");
-        Object send = smsTemplate.send(phones, templateId, map);
+        Object send = smsService.send(phones, templateId, map);
         return R.ok(send);
     }
 

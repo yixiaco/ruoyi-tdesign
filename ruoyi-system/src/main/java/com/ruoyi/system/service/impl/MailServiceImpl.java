@@ -8,6 +8,7 @@ import com.ruoyi.common.core.service.ConfigService;
 import com.ruoyi.common.core.service.MailService;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.email.MailUtils;
+import com.ruoyi.system.handle.MailContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -18,6 +19,10 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
+ * mail服务
+ * 当执行多次的接口调用时，可以手动缓存对象到{@linkplain  MailContextHolder}中，并在执行结束后移除缓存，避免修改配置后读取不到；
+ * 或者可以使用{@linkplain com.ruoyi.system.aspectj.MailContextCache}注解在使用的SpringBean中使用，可以在整个方法中缓存发送对象
+ *
  * @author hexm
  * @date 2023/02/03 15:19
  */
@@ -29,14 +34,20 @@ public class MailServiceImpl implements MailService {
     @Autowired
     private ConfigService configService;
 
-    private MailAccount getAccount() {
+    @Override
+    public MailAccount getAccount() {
+        // 优先从上下文中获取
+        MailAccount account = MailContextHolder.getAccount();
+        if (account != null) {
+            return account;
+        }
         String mailJson = configService.getConfigValue(SYS_MAIL_KEY);
         if (StrUtil.isBlank(mailJson)) {
             throw new ServiceException("邮箱未配置！");
         }
         MailProperties properties = JSONUtil.toBean(mailJson, MailProperties.class);
         if (properties.getEnabled()) {
-            MailAccount account = new MailAccount();
+            account = new MailAccount();
             account.setHost(properties.getHost());
             account.setPort(properties.getPort());
             account.setAuth(properties.getAuth());

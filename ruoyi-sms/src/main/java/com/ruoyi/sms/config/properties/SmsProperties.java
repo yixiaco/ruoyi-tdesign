@@ -1,8 +1,6 @@
 package com.ruoyi.sms.config.properties;
 
 import lombok.Data;
-import org.springframework.boot.context.properties.ConfigurationProperties;
-import org.springframework.stereotype.Component;
 
 /**
  * SMS短信 配置属性
@@ -11,8 +9,6 @@ import org.springframework.stereotype.Component;
  * @version 4.2.0
  */
 @Data
-@Component
-@ConfigurationProperties(prefix = "sms")
 public class SmsProperties {
 
     private Boolean enabled;
@@ -21,6 +17,7 @@ public class SmsProperties {
      * 配置节点
      * 阿里云 dysmsapi.aliyuncs.com
      * 腾讯云 sms.tencentcloudapi.com
+     * 请勿修改地域域名，暂不支持其他地域域名
      */
     private String endpoint;
 

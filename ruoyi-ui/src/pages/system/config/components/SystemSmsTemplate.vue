@@ -7,51 +7,21 @@
         :data="form"
         :rules="rules"
         reset-type="initial"
-        label-width="calc(15em + 24px)"
+        label-width="calc(6em + 24px)"
         scroll-to-first-error="smooth"
         :disabled="disabled"
         @submit="submitForm"
       >
-        <t-form-item label="主框架页-默认皮肤样式名称" name="sys.index.skinName">
-          <t-select v-model="form['sys.index.skinName']" auto-width>
-            <t-option label="蓝色" value="skin-blue" />
-            <t-option label="绿色" value="skin-green" />
-            <t-option label="紫色" value="skin-purple" />
-            <t-option label="红色" value="skin-red" />
-            <t-option label="黄色" value="skin-yellow" />
-          </t-select>
-        </t-form-item>
-        <t-form-item label="用户管理-账号初始密码" name="sys.user.initPassword">
+        <t-form-item label="登录模板ID" name="captchaTemplateId">
           <t-input
-            v-model="form['sys.user.initPassword']"
-            placeholder="请输入账号初始密码"
+            v-model="form['sys.sms.captchaTemplateId']"
+            placeholder="请输入登录模板ID"
             :maxlength="50"
             show-limit-number
           ></t-input>
-        </t-form-item>
-        <t-form-item label="主框架页-侧边栏主题" name="sys.index.sideTheme">
-          <t-select v-model="form['sys.index.sideTheme']" auto-width>
-            <t-option label="深色主题" value="theme-dark" />
-            <t-option label="浅色主题" value="theme-light" />
-          </t-select>
-        </t-form-item>
-        <t-form-item label="账号自助-验证码开关" name="sys.account.captchaEnabled">
-          <t-select v-model="form['sys.account.captchaEnabled']" auto-width>
-            <t-option label="开启" value="true" />
-            <t-option label="关闭" value="false" />
-          </t-select>
-        </t-form-item>
-        <t-form-item label="账号自助-是否开启用户注册功能" name="sys.account.registerUser">
-          <t-select v-model="form['sys.account.registerUser']" auto-width>
-            <t-option label="开启" value="true" />
-            <t-option label="关闭" value="false" />
-          </t-select>
-        </t-form-item>
-        <t-form-item label="OSS预览列表资源开关" name="sys.oss.previewListResource">
-          <t-select v-model="form['sys.oss.previewListResource']" auto-width>
-            <t-option label="开启" value="true" />
-            <t-option label="关闭" value="false" />
-          </t-select>
+          <template #help>
+            需要验证码场景，例如：注册、登录、修改密码、修改绑定手机号（阿里云模板固定参数${code}）
+          </template>
         </t-form-item>
         <t-form-item v-hasPermi="['system:config:edit']">
           <t-button theme="default" variant="outline" @click="init()">还原</t-button>
@@ -67,7 +37,7 @@
 
 <script lang="ts">
 export default {
-  name: 'SystemConfig',
+  name: 'SystemSmsTemplate',
 };
 </script>
 <script lang="ts" setup>
@@ -90,18 +60,11 @@ const loading = ref(false);
 const buttonLoading = ref(false);
 const data = reactive({
   form: {
-    'sys.index.skinName': 'skin-blue',
-    'sys.user.initPassword': '123456',
-    'sys.index.sideTheme': 'theme-dark',
-    'sys.account.captchaEnabled': 'true',
-    'sys.account.registerUser': 'false',
-    'sys.oss.previewListResource': 'true',
+    'sys.sms.captchaTemplateId': '',
   },
 });
 
-const rules = ref({
-  'sys.user.initPassword': [{ required: true, message: '账号初始密码不能为空', trigger: 'blur' }],
-});
+const rules = ref({});
 
 const { form } = toRefs(data);
 

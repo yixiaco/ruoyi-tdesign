@@ -53,7 +53,10 @@ public class TencentSmsTemplate implements SmsTemplate {
             throw new SmsException("模板ID不能为空");
         }
         SendSmsRequest req = new SendSmsRequest();
-        Set<String> set = Arrays.stream(phones.split(",")).map(p -> "+86" + p).collect(Collectors.toSet());
+        Set<String> set = Arrays.stream(phones.split(","))
+            // 如果没有+号开头，则默认添加中国地区+86
+            .map(p -> !p.startsWith("+") ? "+86" + p : p)
+            .collect(Collectors.toSet());
         req.setPhoneNumberSet(ArrayUtil.toArray(set, String.class));
         if (CollUtil.isNotEmpty(param)) {
             req.setTemplateParamSet(ArrayUtil.toArray(param.values(), String.class));

@@ -14,9 +14,10 @@ import com.ruoyi.common.utils.redis.RedisUtils;
 import com.ruoyi.common.utils.reflect.ReflectUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.framework.config.properties.CaptchaProperties;
-import com.ruoyi.sms.config.properties.SmsProperties;
-import com.ruoyi.sms.core.SmsTemplate;
+import com.ruoyi.sms.aspectj.SmsContextCache;
+import com.ruoyi.sms.constants.SmsTemplateKeyConstants;
 import com.ruoyi.sms.entity.SmsResult;
+import com.ruoyi.sms.service.SmsService;
 import com.ruoyi.system.service.ISysConfigService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,7 +47,7 @@ public class CaptchaController {
     @Autowired
     private CaptchaProperties captchaProperties;
     @Autowired
-    private SmsProperties smsProperties;
+    private SmsService smsService;
     @Autowired
     private ISysConfigService configService;
 
@@ -55,21 +56,18 @@ public class CaptchaController {
      *
      * @param phonenumber 用户手机号
      */
+    @SmsContextCache
     @GetMapping("/captchaSms")
     public R<Void> smsCaptcha(@NotBlank(message = "{user.phonenumber.not.blank}")
                               String phonenumber) {
-        if (!smsProperties.getEnabled()) {
-            return R.fail("当前系统没有开启短信功能！");
-        }
         String key = CacheConstants.CAPTCHA_CODE_KEY + phonenumber;
         String code = RandomUtil.randomNumbers(4);
         RedisUtils.setCacheObject(key, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
         // 验证码模板id 自行处理 (查数据库或写死均可)
-        String templateId = "";
+        String loginTemplateId = configService.selectConfigByKey(SmsTemplateKeyConstants.CAPTCHA);
         Map<String, String> map = new HashMap<>(1);
         map.put("code", code);
-        SmsTemplate smsTemplate = SpringUtils.getBean(SmsTemplate.class);
-        SmsResult result = smsTemplate.send(phonenumber, templateId, map);
+        SmsResult result = smsService.send(phonenumber, loginTemplateId, map);
         if (!result.isSuccess()) {
             log.error("验证码短信发送异常 => {}", result);
             return R.fail(result.getMessage());

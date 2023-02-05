@@ -9,10 +9,19 @@ import java.util.Collection;
 import java.util.Map;
 
 /**
+ * mail服务
+ *
  * @author hexm
  * @date 2023/02/03 14:51
  */
 public interface MailService {
+
+    /**
+     * 获取邮件发送实例
+     *
+     * @return
+     */
+    MailAccount getAccount();
 
     /**
      * 获取邮件发送实例 (自定义发送人以及授权码)
