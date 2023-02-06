@@ -221,7 +221,7 @@ const data = reactive({
 });
 // 列显隐信息
 const columns = ref([
-  { title: `部门名称`, colKey: 'deptName', align: 'center', width: 260, ellipsis: true },
+  { title: `部门名称`, colKey: 'deptName', align: 'left', width: 260, ellipsis: true },
   { title: `排序`, colKey: 'orderNum', align: 'center', width: 200 },
   { title: `状态`, colKey: 'status', align: 'center', width: 100 },
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 200, ellipsis: true },

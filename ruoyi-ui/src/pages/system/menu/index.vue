@@ -335,7 +335,7 @@ const data = reactive({
 });
 // 列显隐信息
 const columns = ref([
-  { title: `菜单名称`, colKey: 'menuName', align: 'center', width: 160, ellipsis: true },
+  { title: `菜单名称`, colKey: 'menuName', align: 'left', ellipsis: true },
   { title: `图标`, colKey: 'icon', align: 'center', width: 100 },
   { title: `排序`, colKey: 'orderNum', align: 'center', width: 60 },
   { title: `权限标识`, colKey: 'perms', align: 'center', ellipsis: true },
