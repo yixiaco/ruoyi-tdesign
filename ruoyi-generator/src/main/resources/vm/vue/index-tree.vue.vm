@@ -42,13 +42,13 @@
         />
       </t-form-item>
 #elseif($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
-      <t-form-item label="${comment}" style="width: 308px">
+      <t-form-item label="${comment}">
         <t-date-range-picker
           v-model="daterange${AttrName}"
+          style="width: 240px"
           allow-input
           clearable
           separator="-"
-          enable-time-picker
           :placeholder="['开始日期', '结束日期']"
         />
       </t-form-item>
