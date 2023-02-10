@@ -3,12 +3,12 @@ import isString from 'lodash/isString';
 import merge from 'lodash/merge';
 import { saveAs } from 'file-saver';
 import { DialogPlugin, LoadingPlugin, MessagePlugin, NotifyPlugin } from 'tdesign-vue-next';
-import { Recordable } from 'vite-plugin-mock';
+import type { InternalAxiosRequestConfig } from 'axios';
 import type { AxiosTransform, CreateAxiosOptions } from './AxiosTransform';
 import { VAxios } from './Axios';
 import proxy from '@/config/proxy';
 import { joinTimestamp, formatRequestDate, setObjToUrlParams } from './utils';
-// import { TOKEN_NAME } from '@/config/global';
+import { ContentTypeEnum } from '@/constants';
 import { getToken } from '@/utils/auth';
 // @ts-ignore
 import errorCode from '@/utils/errorCode';
@@ -205,7 +205,7 @@ const transform: AxiosTransform = {
         cache.session.setJSON('sessionObj', requestObj);
       }
     }
-    return config;
+    return config as InternalAxiosRequestConfig;
   },
 
   // 响应拦截器处理
@@ -262,7 +262,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
         withCredentials: true,
         // 头信息
         headers: {
-          'Content-Type': 'application/json;charset=UTF-8',
+          'Content-Type': ContentTypeEnum.Json,
           'Content-Language': 'zh_CN',
         },
         baseURL: import.meta.env.VITE_APP_BASE_API,

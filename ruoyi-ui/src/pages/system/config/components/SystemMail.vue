@@ -30,18 +30,11 @@
             :min="0"
           ></t-input-number>
         </t-form-item>
-        <t-form-item name="from">
-          <template #label>
-            <span>
-              发送方
-              <t-tooltip
-                content="邮件中显示的发件人姓名，遵循RFC-822标准。支持以下形式：1.user@xxx.xx 2.name <user@xxx.xx>"
-                placement="top"
-              >
-                <help-circle-filled-icon />
-              </t-tooltip>
-            </span>
-          </template>
+        <t-form-item
+          label="发送方"
+          name="from"
+          help="邮件中显示的发件人姓名，遵循RFC-822标准。支持以下形式：1.user@xxx.xx 2.name <user@xxx.xx>"
+        >
           <t-input v-model="form.from" placeholder="请输入发送方" :maxlength="100" show-limit-number></t-input>
         </t-form-item>
         <t-form-item label="是否需要用户名密码验证" name="auth">
@@ -50,26 +43,20 @@
             <t-option label="否" value="false" />
           </t-select>
         </t-form-item>
-        <t-form-item v-if="form.auth === 'true'" name="user">
-          <template #label>
-            <span>
-              用户名
-              <t-tooltip content="发件人邮箱地址（如果使用foxmail邮箱，此处为qq号）" placement="top">
-                <help-circle-filled-icon />
-              </t-tooltip>
-            </span>
-          </template>
+        <t-form-item
+          v-if="form.auth === 'true'"
+          label="用户名"
+          name="user"
+          help="发件人邮箱地址（如果使用foxmail邮箱，此处为qq号）"
+        >
           <t-input v-model="form.user" placeholder="请输入用户名" :maxlength="100" show-limit-number></t-input>
         </t-form-item>
-        <t-form-item v-if="form.auth === 'true'" name="pass">
-          <template #label>
-            <span>
-              密码
-              <t-tooltip content="注意，某些邮箱需要为SMTP服务单独设置密码，详情查看相关帮助" placement="top">
-                <help-circle-filled-icon />
-              </t-tooltip>
-            </span>
-          </template>
+        <t-form-item
+          v-if="form.auth === 'true'"
+          label="密码"
+          name="pass"
+          help="注意，某些邮箱需要为SMTP服务单独设置密码，详情查看相关帮助"
+        >
           <t-input
             v-model="form.pass"
             type="password"
@@ -78,18 +65,11 @@
             show-limit-number
           ></t-input>
         </t-form-item>
-        <t-form-item name="starttlsEnable">
-          <template #label>
-            <span>
-              STARTTLS安全连接
-              <t-tooltip
-                content="使用 STARTTLS安全连接，STARTTLS是对纯文本通信协议的扩展。它将纯文本连接升级为加密连接（TLS或SSL）， 而不是使用一个单独的加密通信端口。"
-                placement="top"
-              >
-                <help-circle-filled-icon />
-              </t-tooltip>
-            </span>
-          </template>
+        <t-form-item
+          label="STARTTLS安全连接"
+          name="starttlsEnable"
+          help="使用 STARTTLS安全连接，STARTTLS是对纯文本通信协议的扩展。它将纯文本连接升级为加密连接（TLS或SSL）， 而不是使用一个单独的加密通信端口。"
+        >
           <t-select v-model="form.starttlsEnable" auto-width>
             <t-option label="使用" value="true" />
             <t-option label="不使用" value="false" />
@@ -101,7 +81,7 @@
             <t-option label="关闭" value="false" />
           </t-select>
         </t-form-item>
-        <t-form-item label="SMTP超时时长" name="timeout">
+        <t-form-item label="SMTP超时时长" name="timeout" help="SMTP超时时长，单位毫秒，缺省值0不超时">
           <t-input-number
             v-model="form.timeout"
             :allow-input-over-limit="false"
@@ -110,7 +90,7 @@
             :min="0"
           ></t-input-number>
         </t-form-item>
-        <t-form-item label="Socket连接超时值" name="connectionTimeout">
+        <t-form-item label="Socket连接超时值" name="connectionTimeout" help="Socket连接超时值，单位毫秒，缺省值0不超时">
           <t-input-number
             v-model="form.connectionTimeout"
             :allow-input-over-limit="false"
@@ -139,7 +119,6 @@ export default {
 </script>
 <script lang="ts" setup>
 import { getCurrentInstance, watch, reactive, ref, toRefs } from 'vue';
-import { HelpCircleFilledIcon } from 'tdesign-icons-vue-next';
 import { getConfigByKeys, refreshCache, updateConfigs } from '@/api/system/config';
 import { useHasPermission } from '@/utils/auth';
 import { sendTestMail } from '@/api/system/mail';
@@ -186,13 +165,7 @@ const rules = ref({
       trigger: 'change',
     },
   ],
-  user: [
-    { required: true, message: '用户名不能为空', trigger: 'blur' },
-    {
-      email: { ignore_max_length: true },
-      message: '请输入正确的邮箱地址',
-    },
-  ],
+  user: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
   pass: [{ required: true, message: '密码不能为空', trigger: 'blur' }],
 });
 

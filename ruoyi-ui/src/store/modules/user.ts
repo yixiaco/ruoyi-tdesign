@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia';
 import { store } from '@/store';
 import { getToken, setToken, removeToken } from '@/utils/auth';
-import { login, getInfo, logout } from '@/api/login';
+import { isLogin, login, getInfo, logout } from '@/api/login';
 import { LoginParam, UserInfo } from '@/api/model/loginModel';
 import defAva from '@/assets/images/profile.jpg';
 import { R } from '@/api/model/ResultModel';
@@ -15,6 +15,19 @@ export const useUserStore = defineStore('user', {
     permissions: [],
   }),
   actions: {
+    isLogin() {
+      return new Promise<boolean>((resolve, reject) => {
+        if (this.token) {
+          isLogin()
+            .then((res) => resolve(res.data))
+            .catch((error) => {
+              reject(error);
+            });
+        } else {
+          resolve(false);
+        }
+      });
+    },
     login(userInfo: LoginParam) {
       const username = userInfo.username.trim();
       const { password } = userInfo;

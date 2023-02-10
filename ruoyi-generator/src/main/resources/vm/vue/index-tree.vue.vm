@@ -112,7 +112,7 @@
 #end
 #if($column.list && $column.htmlType == "imageUpload")
       <template #${javaField}="{ row }">
-          <image-preview :src="row.${javaField}" :width="60" :height="60" />
+        <image-preview :src="row.${javaField}" :width="60" :height="60" />
       </template>
 #elseif($column.list && $column.dictType && "" != $column.dictType)
       <template #${javaField}="{ row }">

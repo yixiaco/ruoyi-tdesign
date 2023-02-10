@@ -1,6 +1,7 @@
 package com.ruoyi.web.controller.system;
 
 import cn.dev33.satoken.annotation.SaIgnore;
+import cn.dev33.satoken.stp.StpUtil;
 import com.ruoyi.common.constant.Constants;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.domain.entity.SysMenu;
@@ -42,6 +43,17 @@ public class SysLoginController {
     private ISysUserService userService;
 
     /**
+     * 当前是否登录状态
+     *
+     * @return
+     */
+    @SaIgnore
+    @GetMapping("/isLogin")
+    public R<Boolean> isLogin() {
+        return R.ok(StpUtil.isLogin());
+    }
+
+    /**
      * 登录方法
      *
      * @param loginBody 登录信息
@@ -52,8 +64,7 @@ public class SysLoginController {
     public R<Map<String, Object>> login(@Validated @RequestBody LoginBody loginBody) {
         Map<String, Object> ajax = new HashMap<>();
         // 生成令牌
-        String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(),
-                                          loginBody.getUuid());
+        String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(), loginBody.getUuid());
         ajax.put(Constants.TOKEN, token);
         return R.ok(ajax);
     }

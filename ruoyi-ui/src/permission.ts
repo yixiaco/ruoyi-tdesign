@@ -11,10 +11,10 @@ NProgress.configure({ showSpinner: false });
 router.beforeEach(async (to, from, next) => {
   NProgress.start();
 
-  const userStore = getUserStore();
   const permissionStore = getPermissionStore();
   const { whiteListRouters } = permissionStore;
 
+  const userStore = getUserStore();
   const { token } = userStore;
   if (token) {
     if (to.path === '/login') {
@@ -64,11 +64,18 @@ router.beforeEach(async (to, from, next) => {
   }
 });
 
-router.afterEach((to) => {
+router.afterEach(async (to) => {
   if (to.path === '/login') {
     const userStore = getUserStore();
-
-    userStore.logout();
+    const { token } = userStore;
+    const isLogin = await userStore.isLogin();
+    if (isLogin) {
+      const redirect = to.query.redirect as string;
+      const redirectUrl = redirect ? decodeURIComponent(redirect) : '/';
+      await router.push(redirectUrl);
+    } else if (token) {
+      await userStore.logout();
+    }
   }
   NProgress.done();
 });

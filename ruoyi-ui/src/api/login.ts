@@ -2,6 +2,15 @@ import { request } from '@/utils/request';
 import { CaptchaImage, LoginModel, UserInfo } from '@/api/model/loginModel';
 import { R } from '@/api/model/ResultModel';
 
+/**
+ * 是否登录状态
+ */
+export function isLogin() {
+  return request.get<R<boolean>>({
+    url: '/isLogin',
+  });
+}
+
 // 登录方法
 export function login(username, password, code, uuid) {
   const data = {

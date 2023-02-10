@@ -33,7 +33,7 @@
         </t-input>
       </t-form-item>
 
-      <t-form-item class="verification-code" name="code">
+      <t-form-item v-if="captchaEnabled" class="verification-code" name="code">
         <t-input v-model="formData.code" size="large" placeholder="请输入验证码">
           <template #label>
             <secured-icon />

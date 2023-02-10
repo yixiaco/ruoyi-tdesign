@@ -1,6 +1,6 @@
 <template>
   <div :class="layoutCls">
-    <t-head-menu :class="menuCls" :theme="theme" expand-type="popup" :value="active">
+    <t-head-menu :class="menuCls" :theme="menuTheme" expand-type="popup" :value="active">
       <template #logo>
         <span v-if="showLogo" class="header-logo-container" @click="handleNav('/')">
           <logo-full class="t-logo" />
@@ -33,7 +33,7 @@
               <t-icon name="help-circle" />
             </t-button>
           </t-tooltip>
-          <t-dropdown :min-column-width="135" trigger="click">
+          <t-dropdown :min-column-width="120" trigger="click">
             <template #dropdown>
               <t-dropdown-menu>
                 <t-dropdown-item class="operations-dropdown-container-item" @click="handleNav('/user/profile')">
@@ -75,7 +75,7 @@
 import { computed } from 'vue';
 import type { PropType } from 'vue';
 import { useRouter } from 'vue-router';
-import { useSettingStore, useUserStore } from '@/store';
+import { getUserStore, useSettingStore, useUserStore } from '@/store';
 import { getActive } from '@/router';
 import { prefix } from '@/config/global';
 import LogoFull from '@/assets/icons/assets-logo-full.svg?component';
@@ -90,7 +90,7 @@ const userStore = useUserStore();
 const props = defineProps({
   theme: {
     type: String,
-    default: '',
+    default: 'light',
   },
   layout: {
     type: String,
@@ -142,7 +142,7 @@ const menuCls = computed(() => {
     },
   ];
 });
-
+const menuTheme = computed(() => props.theme as 'light' | 'dark');
 const changeCollapsed = () => {
   settingStore.updateConfig({
     isSidebarCompact: !settingStore.isSidebarCompact,
@@ -153,8 +153,10 @@ const handleNav = (url) => {
   router.push(url);
 };
 
-const handleLogout = () => {
-  router.push({
+const handleLogout = async () => {
+  const userStore = getUserStore();
+  await userStore.logout();
+  await router.push({
     path: '/login',
     query: { redirect: encodeURIComponent(router.currentRoute.value.fullPath) },
   });
@@ -174,6 +176,10 @@ const navToHelper = () => {
     position: fixed;
     top: 0;
     z-index: 1001;
+
+    :deep(.t-head-menu__inner) {
+      padding-right: var(--td-comp-margin-xl);
+    }
 
     &-side {
       left: 232px;
@@ -198,14 +204,12 @@ const navToHelper = () => {
 
   :deep(.t-menu__item) {
     min-width: unset;
-    padding: 0px 16px;
   }
 }
 
 .operations-container {
   display: flex;
   align-items: center;
-  margin-right: 12px;
 
   .t-popup__reference {
     display: flex;
@@ -214,29 +218,15 @@ const navToHelper = () => {
   }
 
   .t-button {
-    margin: 0 8px;
-    &.header-user-btn {
-      margin: 0;
-    }
-  }
-
-  .t-icon {
-    font-size: 20px;
-    &.general {
-      margin-right: 16px;
-    }
+    margin-left: var(--td-comp-margin-l);
   }
 }
 
 .header-operate-left {
   display: flex;
-  margin-left: 20px;
   align-items: normal;
   line-height: 0;
-
-  .collapsed-icon {
-    font-size: 20px;
-  }
+  padding-left: var(--td-comp-margin-xl);
 }
 
 .header-logo-container {
@@ -263,14 +253,10 @@ const navToHelper = () => {
   display: inline-flex;
   align-items: center;
   color: var(--td-text-color-primary);
-  .t-icon {
-    margin-left: 4px;
-    font-size: 16px;
-  }
 }
 
 :deep(.t-head-menu__inner) {
-  border-bottom: 1px solid var(--td-border-level-1-color);
+  border-bottom: 1px solid var(--td-component-stroke);
 }
 
 .t-menu--light {
@@ -285,12 +271,6 @@ const navToHelper = () => {
   .header-user-account {
     color: rgba(255, 255, 255, 0.55);
   }
-  .t-button {
-    --ripple-color: var(--td-gray-color-10) !important;
-    &:hover {
-      background: var(--td-gray-color-12) !important;
-    }
-  }
 }
 
 .operations-dropdown-container-item {
@@ -298,20 +278,14 @@ const navToHelper = () => {
   display: flex;
   align-items: center;
 
-  .t-icon {
-    margin-right: 8px;
+  :deep(.t-dropdown__item-text) {
+    display: flex;
+    align-items: center;
   }
 
-  :deep(.t-dropdown__item) {
-    .t-dropdown__item__content {
-      display: flex;
-      justify-content: center;
-    }
-    .t-dropdown__item__content__text {
-      display: flex;
-      align-items: center;
-      font-size: 14px;
-    }
+  .t-icon {
+    font-size: var(--td-comp-size-xxxs);
+    margin-right: var(--td-comp-margin-s);
   }
 
   :deep(.t-dropdown__item) {
@@ -322,6 +296,16 @@ const navToHelper = () => {
     :deep(.t-dropdown__item) {
       margin-bottom: 8px;
     }
+  }
+}
+</style>
+
+<!-- eslint-disable-next-line vue-scoped-css/enforce-style-type -->
+<style lang="less">
+.operations-dropdown-container-item {
+  .t-dropdown__item-text {
+    display: flex;
+    align-items: center;
   }
 }
 </style>
