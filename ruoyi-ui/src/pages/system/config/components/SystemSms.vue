@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 600px; margin-top: 20px">
+  <div>
     <t-card header="短信平台配置">
       <t-loading :loading="loading">
         <t-form
@@ -41,12 +41,12 @@
               :maxlength="100"
               show-limit-number
             ></t-input>
-            <template #help> {{ accessKeyDoc }} </template>
+            <template #help> <span v-html="accessKeyDoc" /> </template>
           </t-form-item>
           <t-form-item label="短信签名" name="signName">
             <t-input v-model="form.signName" placeholder="请输入短信签名" :maxlength="100" show-limit-number></t-input>
             <template #help>
-              {{ signNameDoc }}
+              <span v-html="signNameDoc" />
             </template>
           </t-form-item>
           <t-form-item v-if="form.endpoint === 'sms.tencentcloudapi.com'" label="短信应用ID" name="sdkAppId">
@@ -132,7 +132,7 @@ const { proxy } = getCurrentInstance();
 const accessKeyDoc = computed(() => {
   switch (form.value.endpoint) {
     case 'dysmsapi.aliyuncs.com':
-      return '如何获取AccessKey，请查询: (https://help.aliyun.com/document_detail/116401.htm) 或\n (https://usercenter.console.aliyun.com/#/manage/ak)';
+      return '如何获取AccessKey，请查询: (https://help.aliyun.com/document_detail/116401.htm) 或<br /> (https://usercenter.console.aliyun.com/#/manage/ak)';
     case 'sms.tencentcloudapi.com':
       return 'SecretId、SecretKey 查询: https://console.cloud.tencent.com/cam/capi';
     default:
@@ -146,7 +146,7 @@ const signNameDoc = computed(() => {
       return '签名信息可前往 https://dysms.console.aliyun.com/domestic/text/sign 的签名管理查看';
     case 'sms.tencentcloudapi.com':
       return (
-        '签名信息可前往 [国内短信](https://console.cloud.tencent.com/smsv2/csms-sign) 或\n' +
+        '签名信息可前往 [国内短信](https://console.cloud.tencent.com/smsv2/csms-sign) 或<br />' +
         '[国际/港澳台短信](https://console.cloud.tencent.com/smsv2/isms-sign) 的签名管理查看'
       );
     default:

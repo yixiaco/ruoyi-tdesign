@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 500px; margin-top: 20px">
+  <div>
     <t-loading :loading="loading">
       <t-form
         label-align="right"
