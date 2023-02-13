@@ -189,6 +189,7 @@ import {
   SettingIcon,
   UploadIcon,
 } from 'tdesign-icons-vue-next';
+import { PrimaryTableCol } from 'tdesign-vue-next';
 import { listTable, previewTable, delTable, genCode, synchDb } from '@/api/tool/gen';
 import router from '@/router';
 import ImportTable from './importTable.vue';
@@ -227,7 +228,7 @@ const data = reactive({
 });
 
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 55, align: 'center' },
   { title: '序号', colKey: 'serial-number', width: 80, align: 'center' },
   { title: `表名称`, colKey: 'tableName', align: 'center', ellipsis: true },

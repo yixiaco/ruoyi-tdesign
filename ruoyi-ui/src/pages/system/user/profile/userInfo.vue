@@ -25,6 +25,7 @@
 <script lang="ts" setup>
 import { getCurrentInstance, ref, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { FormRule } from 'tdesign-vue-next';
 import { updateUserProfile } from '@/api/system/user';
 import { useTabsRouterStore } from '@/store';
 
@@ -40,11 +41,11 @@ const { user } = toRefs(props);
 
 const { proxy } = getCurrentInstance();
 
-const rules = ref({
+const rules = ref<Record<string, Array<FormRule>>>({
   nickName: [{ required: true, message: '用户昵称不能为空', trigger: 'blur' }],
   email: [
     { required: true, message: '邮箱地址不能为空', trigger: 'blur' },
-    { type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] },
+    { email: true, message: '请输入正确的邮箱地址', trigger: 'change' },
   ],
   phonenumber: [
     { required: true, message: '手机号码不能为空', trigger: 'blur' },

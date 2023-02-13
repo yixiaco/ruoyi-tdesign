@@ -181,6 +181,7 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
+import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import useDictStore from '@/store/modules/dict';
 import { listType, getType, delType, addType, updateType, refreshCache } from '@/api/system/dict/type';
 
@@ -217,14 +218,14 @@ const data = reactive({
     dictType: undefined,
     status: undefined,
   },
-  rules: {
-    dictName: [{ required: true, message: '字典名称不能为空', trigger: 'blur' }],
-    dictType: [{ required: true, message: '字典类型不能为空', trigger: 'blur' }],
-  },
+});
+const rules = ref<Record<string, Array<FormRule>>>({
+  dictName: [{ required: true, message: '字典名称不能为空', trigger: 'blur' }],
+  dictType: [{ required: true, message: '字典类型不能为空', trigger: 'blur' }],
 });
 
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
   { title: `字典编号`, colKey: 'dictId', align: 'center' },
   { title: `字典名称`, colKey: 'dictName', align: 'center', ellipsis: true },
@@ -250,7 +251,7 @@ const pagination = computed(() => {
   };
 });
 
-const { queryParams, form, rules } = toRefs(data);
+const { queryParams, form } = toRefs(data);
 
 /** 查询字典类型列表 */
 function getList() {

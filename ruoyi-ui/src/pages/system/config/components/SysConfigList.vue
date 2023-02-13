@@ -177,6 +177,7 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
+import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { listConfig, getConfig, delConfig, addConfig, updateConfig, refreshCache } from '@/api/system/config';
 
 const { proxy } = getCurrentInstance();
@@ -213,15 +214,14 @@ const data = reactive({
     configKey: undefined,
     configType: undefined,
   },
-  rules: {
-    configName: [{ required: true, message: '参数名称不能为空', trigger: 'blur' }],
-    configKey: [{ required: true, message: '参数键名不能为空', trigger: 'blur' }],
-    configValue: [{ required: true, message: '参数键值不能为空', trigger: 'blur' }],
-  },
 });
-
+const rules = ref<Record<string, Array<FormRule>>>({
+  configName: [{ required: true, message: '参数名称不能为空', trigger: 'blur' }],
+  configKey: [{ required: true, message: '参数键名不能为空', trigger: 'blur' }],
+  configValue: [{ required: true, message: '参数键值不能为空', trigger: 'blur' }],
+});
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
   { title: `参数主键`, colKey: 'configId', align: 'center' },
   { title: `参数名称`, colKey: 'configName', align: 'center', ellipsis: true },
@@ -248,7 +248,7 @@ const pagination = computed(() => {
   };
 });
 
-const { queryParams, form, rules } = toRefs(data);
+const { queryParams, form } = toRefs(data);
 
 /** 查询参数列表 */
 function getList() {

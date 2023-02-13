@@ -276,6 +276,7 @@ import {
   SettingIcon,
   UserIcon,
 } from 'tdesign-icons-vue-next';
+import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import {
   addRole,
   changeRoleStatus,
@@ -328,7 +329,7 @@ const dataScopeOptions = ref([
   { value: '5', label: '仅本人数据权限' },
 ]);
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
   { title: `角色编号`, colKey: 'roleId', align: 'center', width: '120' },
   { title: `角色名称`, colKey: 'roleName', ellipsis: true, align: 'center', width: '150' },
@@ -361,14 +362,13 @@ const data = reactive({
     roleKey: undefined,
     status: undefined,
   },
-  rules: {
-    roleName: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }],
-    roleKey: [{ required: true, message: '权限字符不能为空', trigger: 'blur' }],
-    roleSort: [{ required: true, message: '角色顺序不能为空', trigger: 'blur' }],
-  },
 });
-
-const { queryParams, form, rules } = toRefs(data);
+const rules = ref<Record<string, Array<FormRule>>>({
+  roleName: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }],
+  roleKey: [{ required: true, message: '权限字符不能为空', trigger: 'blur' }],
+  roleSort: [{ required: true, message: '角色顺序不能为空', trigger: 'blur' }],
+});
+const { queryParams, form } = toRefs(data);
 
 const pagination = computed(() => {
   return {

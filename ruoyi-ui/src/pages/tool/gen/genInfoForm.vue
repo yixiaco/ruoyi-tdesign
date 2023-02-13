@@ -229,6 +229,7 @@
 <script lang="ts" setup>
 import { getCurrentInstance, ref, toRefs, watch } from 'vue';
 import { ChevronDownIcon, HelpCircleFilledIcon } from 'tdesign-icons-vue-next';
+import { FormRule } from 'tdesign-vue-next';
 import { listMenu } from '@/api/system/menu';
 
 const subColumns = ref([]);
@@ -248,7 +249,8 @@ const props = defineProps({
 const { info, tables } = toRefs(props);
 
 // 表单校验
-const rules = ref({
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
+const rules = ref<Record<string, Array<FormRule>>>({
   tplCategory: [{ required: true, message: '请选择生成模板', trigger: 'blur' }],
   packageName: [{ required: true, message: '请输入生成包路径', trigger: 'blur' }],
   moduleName: [{ required: true, message: '请输入生成模块名', trigger: 'blur' }],

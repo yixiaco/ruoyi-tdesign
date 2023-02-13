@@ -354,6 +354,7 @@ import {
   UploadIcon,
 } from 'tdesign-icons-vue-next';
 import { useRouter } from 'vue-router';
+import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { getToken } from '@/utils/auth';
 import {
   changeUserStatus,
@@ -405,7 +406,7 @@ const upload = reactive({
   url: `${import.meta.env.VITE_APP_BASE_API}/system/user/importData`,
 });
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
   { title: `用户编号`, colKey: 'userId', align: 'center' },
   { title: `用户名称`, colKey: 'userName', ellipsis: true, align: 'center' },
@@ -442,22 +443,21 @@ const data = reactive({
     status: undefined,
     deptId: undefined,
   },
-  rules: {
-    userName: [
-      { required: true, message: '用户名称不能为空', trigger: 'blur' },
-      { min: 2, max: 20, message: '用户名称长度必须介于 2 和 20 之间', trigger: 'blur' },
-    ],
-    nickName: [{ required: true, message: '用户昵称不能为空', trigger: 'blur' }],
-    password: [
-      { required: true, message: '用户密码不能为空', trigger: 'blur' },
-      { min: 5, max: 20, message: '用户密码长度必须介于 5 和 20 之间', trigger: 'blur' },
-    ],
-    email: [{ type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }],
-    phonenumber: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
-  },
 });
-
-const { queryParams, form, rules } = toRefs(data);
+const rules = ref<Record<string, Array<FormRule>>>({
+  userName: [
+    { required: true, message: '用户名称不能为空', trigger: 'blur' },
+    { min: 2, max: 20, message: '用户名称长度必须介于 2 和 20 之间', trigger: 'blur' },
+  ],
+  nickName: [{ required: true, message: '用户昵称不能为空', trigger: 'blur' }],
+  password: [
+    { required: true, message: '用户密码不能为空', trigger: 'blur' },
+    { min: 5, max: 20, message: '用户密码长度必须介于 5 和 20 之间', trigger: 'blur' },
+  ],
+  email: [{ email: true, message: '请输入正确的邮箱地址', trigger: 'change' }],
+  phonenumber: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
+});
+const { queryParams, form } = toRefs(data);
 
 const pagination = computed(() => {
   return {

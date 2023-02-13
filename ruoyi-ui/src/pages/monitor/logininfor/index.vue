@@ -127,15 +127,9 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import {
-  DeleteIcon,
-  DownloadIcon,
-  LockOffIcon,
-  RefreshIcon,
-  SearchIcon,
-  SettingIcon,
-} from 'tdesign-icons-vue-next';
+import { DeleteIcon, DownloadIcon, LockOffIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
+import { PrimaryTableCol } from 'tdesign-vue-next';
 import { list, delLogininfor, cleanLogininfor, unlockLogininfor } from '@/api/monitor/logininfor';
 
 const { proxy } = getCurrentInstance();
@@ -165,7 +159,7 @@ const queryParams = ref({
   isAsc: undefined,
 });
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
   { title: `访问编号`, colKey: 'infoId', align: 'center' },
   { title: `用户名称`, colKey: 'userName', align: 'center' },

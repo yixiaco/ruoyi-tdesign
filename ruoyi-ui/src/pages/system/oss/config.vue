@@ -177,6 +177,7 @@ export default {
 <script lang="ts" setup>
 import { AddIcon, DeleteIcon, EditIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import {
   listOssConfig,
   getOssConfig,
@@ -203,7 +204,7 @@ const title = ref('');
 const ossConfigRef = ref(null);
 
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
   { title: `主建`, colKey: 'ossConfigId', align: 'center' },
   { title: `配置key`, colKey: 'configKey', align: 'center' },
@@ -242,49 +243,49 @@ const data = reactive({
     bucketName: undefined,
     status: undefined,
   },
-  rules: {
-    configKey: [{ required: true, message: 'configKey不能为空', trigger: 'blur' }],
-    accessKey: [
-      { required: true, message: 'accessKey不能为空', trigger: 'blur' },
-      {
-        min: 2,
-        max: 200,
-        message: 'accessKey长度必须介于 2 和 100 之间',
-        trigger: 'blur',
-      },
-    ],
-    secretKey: [
-      { required: true, message: 'secretKey不能为空', trigger: 'blur' },
-      {
-        min: 2,
-        max: 100,
-        message: 'secretKey长度必须介于 2 和 100 之间',
-        trigger: 'blur',
-      },
-    ],
-    bucketName: [
-      { required: true, message: 'bucketName不能为空', trigger: 'blur' },
-      {
-        min: 2,
-        max: 100,
-        message: 'bucketName长度必须介于 2 和 100 之间',
-        trigger: 'blur',
-      },
-    ],
-    endpoint: [
-      { required: true, message: 'endpoint不能为空', trigger: 'blur' },
-      {
-        min: 2,
-        max: 100,
-        message: 'endpoint名称长度必须介于 2 和 100 之间',
-        trigger: 'blur',
-      },
-    ],
-    accessPolicy: [{ required: true, message: 'accessPolicy不能为空', trigger: 'blur' }],
-  },
+});
+const rules = ref<Record<string, Array<FormRule>>>({
+  configKey: [{ required: true, message: 'configKey不能为空', trigger: 'blur' }],
+  accessKey: [
+    { required: true, message: 'accessKey不能为空', trigger: 'blur' },
+    {
+      min: 2,
+      max: 200,
+      message: 'accessKey长度必须介于 2 和 100 之间',
+      trigger: 'blur',
+    },
+  ],
+  secretKey: [
+    { required: true, message: 'secretKey不能为空', trigger: 'blur' },
+    {
+      min: 2,
+      max: 100,
+      message: 'secretKey长度必须介于 2 和 100 之间',
+      trigger: 'blur',
+    },
+  ],
+  bucketName: [
+    { required: true, message: 'bucketName不能为空', trigger: 'blur' },
+    {
+      min: 2,
+      max: 100,
+      message: 'bucketName长度必须介于 2 和 100 之间',
+      trigger: 'blur',
+    },
+  ],
+  endpoint: [
+    { required: true, message: 'endpoint不能为空', trigger: 'blur' },
+    {
+      min: 2,
+      max: 100,
+      message: 'endpoint名称长度必须介于 2 和 100 之间',
+      trigger: 'blur',
+    },
+  ],
+  accessPolicy: [{ required: true, message: 'accessPolicy不能为空', trigger: 'blur' }],
 });
 
-const { queryParams, form, rules } = toRefs(data);
+const { queryParams, form } = toRefs(data);
 
 /** 查询对象存储配置列表 */
 function getList() {

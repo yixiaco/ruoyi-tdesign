@@ -67,6 +67,7 @@ export default {
 <script lang="ts" setup>
 import { DeleteIcon, RefreshIcon, SearchIcon } from 'tdesign-icons-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
+import { PrimaryTableCol } from 'tdesign-vue-next';
 import { forceLogout, list as initData } from '@/api/monitor/online';
 
 const { proxy } = getCurrentInstance();
@@ -83,7 +84,7 @@ const queryParams = ref({
 });
 
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: '序号', colKey: 'serial-number', width: 80, align: 'center' },
   { title: `会话编号`, colKey: 'tokenId', align: 'center', ellipsis: true },
   { title: `登录名称`, colKey: 'userName', align: 'center', ellipsis: true },

@@ -19,6 +19,7 @@
 <script lang="ts" setup>
 import { getCurrentInstance, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { FormRule } from 'tdesign-vue-next';
 import { updateUserPwd } from '@/api/system/user';
 import { useTabsRouterStore } from '@/store';
 
@@ -33,14 +34,10 @@ const user = reactive({
   confirmPassword: undefined,
 });
 
-const equalToPassword = (rule, value, callback) => {
-  if (user.newPassword !== value) {
-    callback(new Error('两次输入的密码不一致'));
-  } else {
-    callback();
-  }
+const equalToPassword = (value) => {
+  return user.newPassword === value;
 };
-const rules = ref({
+const rules = ref<Record<string, Array<FormRule>>>({
   oldPassword: [{ required: true, message: '旧密码不能为空', trigger: 'blur' }],
   newPassword: [
     { required: true, message: '新密码不能为空', trigger: 'blur' },
@@ -48,7 +45,7 @@ const rules = ref({
   ],
   confirmPassword: [
     { required: true, message: '确认密码不能为空', trigger: 'blur' },
-    { required: true, validator: equalToPassword, trigger: 'blur' },
+    { validator: equalToPassword, trigger: 'blur', message: '两次输入的密码不一致' },
   ],
 });
 

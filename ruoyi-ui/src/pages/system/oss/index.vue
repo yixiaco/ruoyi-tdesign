@@ -205,6 +205,7 @@ import {
 } from 'tdesign-icons-vue-next';
 import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
+import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { listOss, delOss } from '@/api/system/oss';
 import ImagePreview from '@/components/image-preview/index.vue';
 import FileUpload from '@/components/file-upload/index.vue';
@@ -246,13 +247,13 @@ const data = reactive({
     orderByColumn: undefined,
     isAsc: undefined,
   },
-  rules: {
-    file: [{ required: true, message: '文件不能为空', trigger: 'blur' }],
-  },
+});
+const rules = ref<Record<string, Array<FormRule>>>({
+  file: [{ required: true, message: '文件不能为空', trigger: 'blur' }],
 });
 
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
   { title: `文件名`, colKey: 'fileName', align: 'center', ellipsis: true },
   { title: `原名`, colKey: 'originalName', align: 'center', ellipsis: true },
@@ -280,7 +281,7 @@ const pagination = computed(() => {
   };
 });
 
-const { queryParams, form, rules } = toRefs(data);
+const { queryParams, form } = toRefs(data);
 
 /** 查询OSS对象存储列表 */
 function getList() {

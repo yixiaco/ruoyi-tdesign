@@ -46,6 +46,7 @@ export default {
 <script lang="ts" setup>
 import { computed, getCurrentInstance, nextTick, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
+import { PrimaryTableCol } from 'tdesign-vue-next';
 import { getAuthRole, updateAuthRole } from '@/api/system/user';
 import { useTabsRouterStore } from '@/store';
 
@@ -67,7 +68,7 @@ const form = ref({
   userId: undefined,
 });
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: '序号', colKey: 'serial-number', width: 80, align: 'center' },
   { colKey: 'row-select', type: 'multiple', width: 55, align: 'center' },
   { title: `角色编号`, colKey: 'roleId', align: 'center' },

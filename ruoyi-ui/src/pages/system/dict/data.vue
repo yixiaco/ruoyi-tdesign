@@ -183,6 +183,7 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
+import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import useDictStore from '@/store/modules/dict';
 import { optionselect as getDictOptionselect, getType } from '@/api/system/dict/type';
 import { listData, getData, delData, addData, updateData } from '@/api/system/dict/data';
@@ -237,14 +238,14 @@ const data = reactive({
     dictType: undefined,
     status: undefined,
   },
-  rules: {
-    dictLabel: [{ required: true, message: '数据标签不能为空', trigger: 'blur' }],
-    dictValue: [{ required: true, message: '数据键值不能为空', trigger: 'blur' }],
-    dictSort: [{ required: true, message: '数据顺序不能为空', trigger: 'blur' }],
-  },
+});
+const rules = ref<Record<string, Array<FormRule>>>({
+  dictLabel: [{ required: true, message: '数据标签不能为空', trigger: 'blur' }],
+  dictValue: [{ required: true, message: '数据键值不能为空', trigger: 'blur' }],
+  dictSort: [{ required: true, message: '数据顺序不能为空', trigger: 'blur' }],
 });
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
   { title: `字典编码`, colKey: 'dictCode', align: 'center' },
   { title: `字典标签`, colKey: 'dictLabel', align: 'center' },
@@ -271,7 +272,7 @@ const pagination = computed(() => {
   };
 });
 
-const { queryParams, form, rules } = toRefs(data);
+const { queryParams, form } = toRefs(data);
 
 /** 查询字典类型详细 */
 function getTypes(dictId) {

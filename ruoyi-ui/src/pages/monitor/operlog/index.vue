@@ -170,6 +170,7 @@ export default {
 <script lang="ts" setup>
 import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
 import { BrowseIcon, DeleteIcon, DownloadIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
+import { PrimaryTableCol } from 'tdesign-vue-next';
 import { list, delOperlog, cleanOperlog } from '@/api/monitor/operlog';
 
 const { proxy } = getCurrentInstance();
@@ -202,7 +203,7 @@ const data = reactive({
 });
 
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
   { title: `日志编号`, colKey: 'operId', align: 'center' },
   { title: `系统模块`, colKey: 'title', align: 'center' },

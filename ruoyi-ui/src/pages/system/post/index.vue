@@ -161,6 +161,7 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
+import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { listPost, addPost, delPost, getPost, updatePost } from '@/api/system/post';
 
 const { proxy } = getCurrentInstance();
@@ -195,14 +196,14 @@ const data = reactive({
     postName: undefined,
     status: undefined,
   },
-  rules: {
-    postName: [{ required: true, message: '岗位名称不能为空', trigger: 'blur' }],
-    postCode: [{ required: true, message: '岗位编码不能为空', trigger: 'blur' }],
-    postSort: [{ required: true, message: '岗位顺序不能为空', trigger: 'blur' }],
-  },
+});
+const rules = ref<Record<string, Array<FormRule>>>({
+  postName: [{ required: true, message: '岗位名称不能为空', trigger: 'blur' }],
+  postCode: [{ required: true, message: '岗位编码不能为空', trigger: 'blur' }],
+  postSort: [{ required: true, message: '岗位顺序不能为空', trigger: 'blur' }],
 });
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
   { title: `岗位编号`, colKey: 'postId', align: 'center' },
   { title: `岗位编码`, colKey: 'postCode', align: 'center' },
@@ -228,7 +229,7 @@ const pagination = computed(() => {
   };
 });
 
-const { queryParams, form, rules } = toRefs(data);
+const { queryParams, form } = toRefs(data);
 
 /** 查询岗位列表 */
 function getList() {

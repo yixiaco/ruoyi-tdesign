@@ -120,6 +120,7 @@ export default {
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router';
 import { getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { FormRule } from 'tdesign-vue-next';
 import { getGenTable, updateGenTable } from '@/api/tool/gen';
 import { optionselect as getDictOptionselect } from '@/api/system/dict/type';
 import BasicInfoForm from './basicInfoForm.vue';
@@ -161,7 +162,7 @@ const columns = ref([
   { title: `字典类型`, colKey: 'dictType', align: 'center', width: '12%' },
 ]);
 
-const rules = ref({
+const rules = ref<Record<string, Array<FormRule>>>({
   tplCategory: [{ required: true, message: '请选择生成模板', trigger: 'blur' }],
   packageName: [{ required: true, message: '请输入生成包路径', trigger: 'blur' }],
   moduleName: [{ required: true, message: '请输入生成模块名', trigger: 'blur' }],

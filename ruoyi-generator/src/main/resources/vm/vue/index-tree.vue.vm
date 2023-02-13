@@ -347,6 +347,7 @@ import {
   SettingIcon,
   UnfoldMoreIcon,
 } from 'tdesign-icons-vue-next';
+import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { list${BusinessName}, get${BusinessName}, del${BusinessName}, add${BusinessName}, update${BusinessName} } from '@/api/${moduleName}/${businessName}';
 
 const { proxy } = getCurrentInstance();
@@ -402,7 +403,8 @@ const data = reactive({
 #end
 #end
   },
-  rules: {
+});
+const rules = ref<Record<string, Array<FormRule>>>({
 #foreach ($column in $columns)
 #if($column.required)
 #set($parentheseIndex=$column.columnComment.indexOf("（"))
@@ -411,13 +413,12 @@ const data = reactive({
 #else
 #set($comment=$column.columnComment)
 #end
-    $column.javaField: [{ required: true, message: '$comment不能为空', trigger: #if($column.htmlType == "select")'change'#else'blur'#end }],
+  $column.javaField: [{ required: true, message: '$comment不能为空', trigger: #if($column.htmlType == "select")'change'#else'blur'#end }],
 #end
 #end
-  },
 });
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
 #foreach($column in $columns)
 #set($javaField=$column.javaField)
@@ -444,7 +445,7 @@ const columns = ref([
   { title: `操作`, colKey: 'operation', align: 'center', width: 230 },
 ]);
 
-const { queryParams, form, rules } = toRefs(data);
+const { queryParams, form } = toRefs(data);
 
 /** 查询${functionName}列表 */
 function getList() {

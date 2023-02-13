@@ -66,6 +66,7 @@ export default {
 <script lang="ts" setup>
 import { computed, getCurrentInstance, reactive, ref } from 'vue';
 import { RefreshIcon, SearchIcon } from 'tdesign-icons-vue-next';
+import { PrimaryTableCol } from 'tdesign-vue-next';
 import { authUserSelectAll, unallocatedUserList } from '@/api/system/role';
 
 const props = defineProps({
@@ -83,7 +84,7 @@ const loading = ref(false);
 const total = ref(0);
 const userIds = ref([]);
 
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
   { title: `用户名称`, colKey: 'userName', align: 'center', ellipsis: true },
   { title: `用户昵称`, colKey: 'nickName', ellipsis: true, align: 'center' },

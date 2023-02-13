@@ -104,6 +104,7 @@ export default {
 <script lang="ts" setup>
 import { getCurrentInstance, ref } from 'vue';
 import { DeleteIcon, RefreshIcon } from 'tdesign-icons-vue-next';
+import { PrimaryTableCol } from 'tdesign-vue-next';
 import {
   listCacheName,
   listCacheKey,
@@ -123,14 +124,14 @@ const subLoading = ref(false);
 const nowCacheName = ref('');
 const tableHeight = ref(window.innerHeight - 340);
 
-const cacheNameColumns = ref([
+const cacheNameColumns = ref<Array<PrimaryTableCol>>([
   { title: '序号', colKey: 'serial-number', width: 80, align: 'center' },
   { title: `缓存名称`, colKey: 'cacheName', align: 'center', ellipsis: true },
   { title: `备注`, colKey: 'remark', align: 'center', ellipsis: true },
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
 
-const cacheKeysColumns = ref([
+const cacheKeysColumns = ref<Array<PrimaryTableCol>>([
   { title: '序号', colKey: 'serial-number', width: 80, align: 'center' },
   { title: `缓存键名`, colKey: 'cacheKey', align: 'center', ellipsis: true },
   { title: `操作`, colKey: 'operation', align: 'center' },

@@ -30,6 +30,7 @@
 
 <script lang="ts" setup>
 import { ref, toRefs } from 'vue';
+import { FormRule } from 'tdesign-vue-next';
 
 const props = defineProps({
   info: {
@@ -40,7 +41,8 @@ const props = defineProps({
 const { info } = toRefs(props);
 
 // 表单校验
-const rules = ref({
+// eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
+const rules = ref<Record<string, Array<FormRule>>>({
   tableName: [{ required: true, message: '请输入表名称', trigger: 'blur' }],
   tableComment: [{ required: true, message: '请输入表描述', trigger: 'blur' }],
   className: [{ required: true, message: '请输入实体类名称', trigger: 'blur' }],

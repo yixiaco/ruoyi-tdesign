@@ -29,7 +29,7 @@ export interface Cache {
 }
 
 export interface SysCacheInfo {
-  info: Map<string, string>;
+  info: any;
   dbSize: number;
   commandStats: Array<Cache>;
 }

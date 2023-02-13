@@ -104,8 +104,9 @@ export default {
 import * as echarts from 'echarts';
 import { getCurrentInstance, ref } from 'vue';
 import { getCache } from '@/api/monitor/cache';
+import { SysCacheInfo } from '@/api/monitor/model/cacheModel';
 
-const cache = ref([]);
+const cache = ref(<SysCacheInfo>{});
 const commandstats = ref(null);
 const usedmemory = ref(null);
 const { proxy } = getCurrentInstance();

@@ -291,6 +291,7 @@ import {
   UnfoldMoreIcon,
 } from 'tdesign-icons-vue-next';
 import { getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { addMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu';
 import IconSelect from '@/components/icon-select/index.vue';
 
@@ -327,14 +328,14 @@ const data = reactive({
     menuName: undefined,
     visible: undefined,
   },
-  rules: {
-    menuName: [{ required: true, message: '菜单名称不能为空', trigger: 'blur' }],
-    orderNum: [{ required: true, message: '菜单顺序不能为空', trigger: 'blur' }],
-    path: [{ required: true, message: '路由地址不能为空', trigger: 'blur' }],
-  },
+});
+const rules = ref<Record<string, Array<FormRule>>>({
+  menuName: [{ required: true, message: '菜单名称不能为空', trigger: 'blur' }],
+  orderNum: [{ required: true, message: '菜单顺序不能为空', trigger: 'blur' }],
+  path: [{ required: true, message: '路由地址不能为空', trigger: 'blur' }],
 });
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: `菜单名称`, colKey: 'menuName', align: 'left', ellipsis: true },
   { title: `图标`, colKey: 'icon', align: 'center', width: 100 },
   { title: `排序`, colKey: 'orderNum', align: 'center', width: 60 },
@@ -345,7 +346,7 @@ const columns = ref([
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 
-const { queryParams, form, rules } = toRefs(data);
+const { queryParams, form } = toRefs(data);
 
 /** 查询菜单列表 */
 function getList() {

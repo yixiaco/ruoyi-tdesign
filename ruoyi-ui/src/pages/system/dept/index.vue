@@ -177,6 +177,7 @@ import {
   SettingIcon,
   UnfoldMoreIcon,
 } from 'tdesign-icons-vue-next';
+import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from '@/api/system/dept';
 
 const { proxy } = getCurrentInstance();
@@ -211,16 +212,9 @@ const data = reactive({
     deptName: undefined,
     status: undefined,
   },
-  rules: {
-    parentId: [{ required: true, message: '上级部门不能为空', trigger: 'blur' }],
-    deptName: [{ required: true, message: '部门名称不能为空', trigger: 'blur' }],
-    orderNum: [{ required: true, message: '显示排序不能为空', trigger: 'blur' }],
-    email: [{ type: 'email', message: '请输入正确的邮箱地址', trigger: ['blur', 'change'] }],
-    phone: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
-  },
 });
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: `部门名称`, colKey: 'deptName', align: 'left', width: 260, ellipsis: true },
   { title: `排序`, colKey: 'orderNum', align: 'center', width: 200 },
   { title: `状态`, colKey: 'status', align: 'center', width: 100 },
@@ -228,7 +222,15 @@ const columns = ref([
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
 
-const { queryParams, form, rules } = toRefs(data);
+const rules = ref<Record<string, Array<FormRule>>>({
+  parentId: [{ required: true, message: '上级部门不能为空', trigger: 'blur' }],
+  deptName: [{ required: true, message: '部门名称不能为空', trigger: 'blur' }],
+  orderNum: [{ required: true, message: '显示排序不能为空', trigger: 'blur' }],
+  email: [{ email: true, message: '请输入正确的邮箱地址', trigger: 'change' }],
+  phone: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
+});
+
+const { queryParams, form } = toRefs(data);
 
 /** 查询部门列表 */
 function getList() {

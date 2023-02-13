@@ -61,6 +61,7 @@
 <script lang="ts" setup>
 import { computed, getCurrentInstance, reactive, ref } from 'vue';
 import { RefreshIcon, SearchIcon } from 'tdesign-icons-vue-next';
+import { PrimaryTableCol } from 'tdesign-vue-next';
 import { listDbTable, importTable } from '@/api/tool/gen';
 
 const total = ref(0);
@@ -77,7 +78,7 @@ const queryParams = reactive({
   tableComment: undefined,
 });
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 55, align: 'center' },
   { title: `表名称`, colKey: 'tableName', align: 'center', ellipsis: true },
   { title: `表描述`, colKey: 'tableComment', align: 'center', ellipsis: true },

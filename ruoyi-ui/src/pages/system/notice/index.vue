@@ -177,6 +177,7 @@ export default {
 <script lang="ts" setup>
 import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
 import { AddIcon, DeleteIcon, EditIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
+import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api/system/notice';
 
 const { proxy } = getCurrentInstance();
@@ -211,14 +212,13 @@ const data = reactive({
     createBy: undefined,
     status: undefined,
   },
-  rules: {
-    noticeTitle: [{ required: true, message: '公告标题不能为空', trigger: 'blur' }],
-    noticeType: [{ required: true, message: '公告类型不能为空', trigger: 'change' }],
-  },
 });
-
+const rules = ref<Record<string, Array<FormRule>>>({
+  noticeTitle: [{ required: true, message: '公告标题不能为空', trigger: 'blur' }],
+  noticeType: [{ required: true, message: '公告类型不能为空', trigger: 'change' }],
+});
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
   { title: `序号`, colKey: 'noticeId', align: 'center', width: 100, ellipsis: true },
   { title: `公告标题`, colKey: 'noticeTitle', align: 'center', ellipsis: true },
@@ -243,7 +243,7 @@ const pagination = computed(() => {
     },
   };
 });
-const { queryParams, form, rules } = toRefs(data);
+const { queryParams, form } = toRefs(data);
 
 /** 查询公告列表 */
 function getList() {
