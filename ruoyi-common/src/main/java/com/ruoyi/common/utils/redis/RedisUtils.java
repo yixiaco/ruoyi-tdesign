@@ -38,11 +38,11 @@ public class RedisUtils {
      */
     public static long rateLimiter(String key, RateType rateType, int rate, int rateInterval, int expire) {
         RRateLimiter rateLimiter = CLIENT.getRateLimiter(key);
+        rateLimiter.trySetRate(rateType, rate, rateInterval, RateIntervalUnit.SECONDS);
         if (expire > 0) {
             // 设置有效时长,防止缓存积压
             rateLimiter.expire(Duration.ofSeconds(rateInterval));
         }
-        rateLimiter.trySetRate(rateType, rate, rateInterval, RateIntervalUnit.SECONDS);
         if (rateLimiter.tryAcquire()) {
             return rateLimiter.availablePermits();
         } else {
