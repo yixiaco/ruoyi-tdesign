@@ -77,7 +77,7 @@
     </t-card>
     <br />
     <t-card header="短信模板配置">
-      <system-sms-template :action="action" />
+      <system-sms-template :action="action" :disabled="disabled" />
     </t-card>
   </div>
 </template>
@@ -89,8 +89,8 @@ export default {
 </script>
 <script lang="ts" setup>
 import { getCurrentInstance, watch, reactive, ref, toRefs, computed } from 'vue';
+import { FormRule } from 'tdesign-vue-next';
 import { getConfigByKeys, refreshCache, updateConfigs } from '@/api/system/config';
-import { useHasPermission } from '@/utils/auth';
 import SystemSmsTemplate from './SystemSmsTemplate.vue';
 
 const props = defineProps({
@@ -99,11 +99,13 @@ const props = defineProps({
     required: true,
     default: false,
   },
+  disabled: {
+    type: Boolean,
+    required: true,
+  },
 });
 
 const isInit = ref(false);
-// 表单禁用
-const disabled = !useHasPermission(['system:config:edit']);
 const loading = ref(false);
 const buttonLoading = ref(false);
 const key = 'sys.sms';
@@ -118,7 +120,7 @@ const data = reactive({
   },
 });
 
-const rules = ref({
+const rules = ref<Record<string, Array<FormRule>>>({
   accessKeyId: [{ required: true, message: 'accessKeyId不能为空', trigger: 'blur' }],
   accessKeySecret: [{ required: true, message: 'accessKeySecret不能为空', trigger: 'blur' }],
   signName: [{ required: true, message: '短信签名不能为空', trigger: 'blur' }],

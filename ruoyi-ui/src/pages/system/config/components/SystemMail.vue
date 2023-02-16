@@ -28,6 +28,7 @@
             theme="normal"
             :max="65535"
             :min="0"
+            :decimal-places="0"
           ></t-input-number>
         </t-form-item>
         <t-form-item
@@ -88,6 +89,7 @@
             theme="normal"
             suffix="毫秒"
             :min="0"
+            :decimal-places="0"
           ></t-input-number>
         </t-form-item>
         <t-form-item label="Socket连接超时值" name="connectionTimeout" help="Socket连接超时值，单位毫秒，缺省值0不超时">
@@ -97,6 +99,7 @@
             theme="normal"
             suffix="毫秒"
             :min="0"
+            :decimal-places="0"
           ></t-input-number>
         </t-form-item>
         <t-form-item v-hasPermi="['system:config:edit']">
@@ -119,8 +122,8 @@ export default {
 </script>
 <script lang="ts" setup>
 import { getCurrentInstance, watch, reactive, ref, toRefs } from 'vue';
+import { FormRule } from 'tdesign-vue-next';
 import { getConfigByKeys, refreshCache, updateConfigs } from '@/api/system/config';
-import { useHasPermission } from '@/utils/auth';
 import { sendTestMail } from '@/api/system/mail';
 
 const props = defineProps({
@@ -129,11 +132,13 @@ const props = defineProps({
     required: true,
     default: false,
   },
+  disabled: {
+    type: Boolean,
+    required: true,
+  },
 });
 
 const isInit = ref(false);
-// 表单禁用
-const disabled = !useHasPermission(['system:config:edit']);
 const loading = ref(false);
 const buttonLoading = ref(false);
 const key = 'sys.mail';
@@ -153,7 +158,7 @@ const data = reactive({
   },
 });
 
-const rules = ref({
+const rules = ref<Record<string, Array<FormRule>>>({
   host: [{ required: true, message: 'SMTP服务器域名不能为空', trigger: 'blur' }],
   port: [{ required: true, message: 'SMTP服务端口不能为空', trigger: 'blur' }],
   from: [
