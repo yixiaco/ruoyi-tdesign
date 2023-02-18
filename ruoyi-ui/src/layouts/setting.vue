@@ -297,14 +297,14 @@ watchEffect(() => {
   .setting-container {
     padding-bottom: 100px;
   }
-  :deep(.t-radio-group.t-size-m) {
+  .t-radio-group.t-size-m {
     min-height: 32px;
     width: 100%;
     justify-content: space-between;
     align-items: center;
   }
 
-  :deep(.t-radio-group.t-size-m .t-radio-button) {
+  .t-radio-group.t-size-m .t-radio-button {
     height: auto;
   }
 

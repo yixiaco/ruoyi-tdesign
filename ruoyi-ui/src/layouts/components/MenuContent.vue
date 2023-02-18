@@ -4,20 +4,20 @@
       <template v-if="!item.children || !item.children.length || item.meta?.single">
         <t-menu-item v-if="getHref(item)" :name="item.path" :value="item.path" @click="openHref(getHref(item)[0])">
           <template #icon>
-            <component :is="menuIcon(item)"></component>
+            <component :is="menuIcon(item)" class="t-icon"></component>
           </template>
           {{ item.title }}
         </t-menu-item>
         <t-menu-item v-else :name="item.path" :value="item.path" :to="item.path">
           <template #icon>
-            <component :is="menuIcon(item)"></component>
+            <component :is="menuIcon(item)" class="t-icon"></component>
           </template>
           {{ item.title }}
         </t-menu-item>
       </template>
       <t-submenu v-else :name="item.path" :value="item.path" :title="item.title">
         <template #icon>
-          <component :is="menuIcon(item)"></component>
+          <component :is="menuIcon(item)" class="t-icon"></component>
         </template>
         <menu-content v-if="item.children" :nav-data="item.children" />
       </t-submenu>
@@ -53,7 +53,7 @@ const menuIcon = (item: ListItemType) => {
 };
 
 const getMenuList = (list: MenuRoute[], basePath?: string): ListItemType[] => {
-  if (!list) {
+  if (!list || list.length === 0) {
     return [];
   }
   // 如果meta中有orderNo则按照从小到大排序
@@ -82,7 +82,7 @@ const getHref = (item: MenuRoute) => {
   if (frameSrc && frameBlank) {
     return frameSrc.match(/(http|https):\/\/([\w.]+\/?)\S*/);
   }
-  return null;
+  return path.match(/(http|https):\/\/([\w.]+\/?)\S*/);
 };
 
 const getPath = (item: ListItemType) => {
