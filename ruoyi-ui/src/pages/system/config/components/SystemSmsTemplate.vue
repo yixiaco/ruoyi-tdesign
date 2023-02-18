@@ -42,8 +42,8 @@ export default {
 </script>
 <script lang="ts" setup>
 import { getCurrentInstance, reactive, ref, toRefs, watch } from 'vue';
+import { FormRule } from 'tdesign-vue-next';
 import { getConfigByKeys, refreshCache, updateConfigs } from '@/api/system/config';
-import { useHasPermission } from '@/utils/auth';
 
 const props = defineProps({
   action: {
@@ -51,11 +51,13 @@ const props = defineProps({
     required: true,
     default: false,
   },
+  disabled: {
+    type: Boolean,
+    required: true,
+  },
 });
 
 const isInit = ref(false);
-// 表单禁用
-const disabled = !useHasPermission(['system:config:edit']);
 const loading = ref(false);
 const buttonLoading = ref(false);
 const data = reactive({
@@ -64,7 +66,7 @@ const data = reactive({
   },
 });
 
-const rules = ref({});
+const rules = ref<Record<string, Array<FormRule>>>({});
 
 const { form } = toRefs(data);
 
