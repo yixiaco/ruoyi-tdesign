@@ -7,13 +7,25 @@ import { TreeEntity } from '@/api/model/ResultModel';
 #end
 
 /**
+ * ${functionName}查询对象
+ */
+export interface ${ClassName}Query extends ${Entity} {
+#foreach ($column in $columns)
+#if($column.isQuery == '1')
+  /** $column.columnComment */
+  $column.javaField?: ${GenUtil.javaTypeToTypescript($column.javaType)};
+#end
+#end
+}
+
+/**
  * ${functionName}业务对象
  */
 export interface ${ClassName}Bo extends ${Entity} {
 #foreach ($column in $columns)
-#if(($column.isPk == '1' || $column.isQuery == '1' || $column.isInsert == '1' || $column.isEdit == '1'))
+#if(($column.isPk == '1' || $column.isInsert == '1' || $column.isEdit == '1'))
   /** $column.columnComment */
-  $column.javaField: ${GenUtil.javaTypeToTypescript($column.javaType)};
+  $column.javaField?: ${GenUtil.javaTypeToTypescript($column.javaType)};
 #end
 #end
 }
@@ -33,9 +45,9 @@ export interface ${ClassName} extends ${Entity} {
  */
 export interface ${ClassName}Vo {
 #foreach ($column in $columns)
-#if($column.isList == '1' || $column.isPk == '1' || $column.isEdit == '1' || $column.isDetail == '1')
+#if($column.isList == '1' || $column.isPk == '1' || $column.isEdit == '1' || $column.isInsert == '1' || $column.isDetail == '1')
   /** $column.columnComment */
-  $column.javaField: ${GenUtil.javaTypeToTypescript($column.javaType)};
+  $column.javaField?: ${GenUtil.javaTypeToTypescript($column.javaType)};
 #end
 #end
 }

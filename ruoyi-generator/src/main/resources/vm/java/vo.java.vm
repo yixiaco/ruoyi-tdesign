@@ -21,7 +21,7 @@ import java.util.Date;
 public class ${ClassName}Vo {
 
 #foreach ($column in $columns)
-#if($column.isList == '1' || $column.isPk == '1' || $column.isEdit == '1' || $column.isDetail == '1')
+#if($column.isList == '1' || $column.isPk == '1' || $column.isEdit == '1' || $column.isInsert == '1' || $column.isDetail == '1')
     /**
      * $column.columnComment
      */

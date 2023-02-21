@@ -177,7 +177,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import { useRoute } from 'vue-router';
-import { computed, getCurrentInstance, onActivated, reactive, ref, toRefs } from 'vue';
+import { computed, getCurrentInstance, onActivated, ref } from 'vue';
 import {
   BrowseIcon,
   DeleteIcon,
@@ -195,6 +195,7 @@ import router from '@/router';
 import ImportTable from './importTable.vue';
 import 'highlight.js/styles/github.css';
 import 'highlight.js/lib/common';
+import { GenTable } from '@/api/tool/model/genModel';
 
 const route = useRoute();
 const { proxy } = getCurrentInstance();
@@ -210,22 +211,7 @@ const total = ref(0);
 const tableNames = ref([]);
 const dateRange = ref([]);
 const uniqueId = ref('');
-
-const data = reactive({
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    tableName: undefined,
-    tableComment: undefined,
-    dataName: 'master',
-  },
-  preview: {
-    open: false,
-    title: '代码预览',
-    data: {},
-    activeName: 'domain.java',
-  },
-});
+const importRef = ref(null);
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
@@ -239,6 +225,20 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 330 },
 ]);
 
+const queryParams = ref<GenTable>({
+  pageNum: 1,
+  pageSize: 10,
+  tableName: undefined,
+  tableComment: undefined,
+  dataName: 'master',
+});
+const preview = ref({
+  open: false,
+  title: '代码预览',
+  data: {},
+  activeName: 'domain.java',
+});
+
 // 分页
 const pagination = computed(() => {
   return {
@@ -247,14 +247,12 @@ const pagination = computed(() => {
     total: total.value,
     showJumper: true,
     onChange: (pageInfo) => {
-      data.queryParams.pageNum = pageInfo.current;
-      data.queryParams.pageSize = pageInfo.pageSize;
+      queryParams.value.pageNum = pageInfo.current;
+      queryParams.value.pageSize = pageInfo.pageSize;
       getList();
     },
   };
 });
-
-const { queryParams, preview } = toRefs(data);
 
 localStorage.setItem('dataName', queryParams.value.dataName);
 
@@ -310,7 +308,7 @@ function handleSynchDb(row) {
 }
 /** 打开导入表弹窗 */
 function openImportTable() {
-  proxy.$refs.importRef.show();
+  importRef.value.show();
 }
 /** 重置按钮操作 */
 function resetQuery() {
@@ -323,7 +321,8 @@ function handlePreview(row) {
   previewTable(row.tableId).then((response) => {
     preview.value.data = response.data;
     preview.value.open = true;
-    preview.value.activeName = 'domain.java';
+    // 不变更页面
+    // preview.value.activeName = 'domain.java';
   });
 }
 /** 复制代码成功 */

@@ -275,7 +275,7 @@ public class GenUtils {
      * @return
      */
     public static String javaTypeToTypescript(String javaType) {
-        if (StringUtils.containsAnyIgnoreCase(javaType, "long", "Integer", "int", "short", "byte")) {
+        if (StringUtils.containsAnyIgnoreCase(javaType, "long", "Integer", "int", "short", "byte", "BigDecimal", "BigInteger")) {
             return "number";
         } else if (StringUtils.containsAny(javaType, "String", "CharSequence")) {
             return "string";
@@ -288,7 +288,7 @@ public class GenUtils {
             String type = LIST_PATTERN.matcher(javaType).group(0);
             return "Array<" + javaTypeToTypescript(type) + ">";
         } else {
-            return "object";
+            return "any";
         }
     }
 }

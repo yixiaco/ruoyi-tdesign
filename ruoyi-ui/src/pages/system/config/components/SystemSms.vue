@@ -88,7 +88,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { getCurrentInstance, watch, reactive, ref, toRefs, computed } from 'vue';
+import { getCurrentInstance, watch, ref, computed } from 'vue';
 import { FormRule } from 'tdesign-vue-next';
 import { getConfigByKeys, refreshCache, updateConfigs } from '@/api/system/config';
 import SystemSmsTemplate from './SystemSmsTemplate.vue';
@@ -109,15 +109,13 @@ const isInit = ref(false);
 const loading = ref(false);
 const buttonLoading = ref(false);
 const key = 'sys.sms';
-const data = reactive({
-  form: {
-    enabled: 'false',
-    endpoint: 'dysmsapi.aliyuncs.com',
-    accessKeyId: 'xxxxxxx',
-    accessKeySecret: 'xxxxxxx',
-    signName: '',
-    sdkAppId: '',
-  },
+const form = ref({
+  enabled: 'false',
+  endpoint: 'dysmsapi.aliyuncs.com',
+  accessKeyId: 'xxxxxxx',
+  accessKeySecret: 'xxxxxxx',
+  signName: '',
+  sdkAppId: '',
 });
 
 const rules = ref<Record<string, Array<FormRule>>>({
@@ -126,8 +124,6 @@ const rules = ref<Record<string, Array<FormRule>>>({
   signName: [{ required: true, message: '短信签名不能为空', trigger: 'blur' }],
   sdkAppId: [{ required: true, message: '短信应用ID为空', trigger: 'blur' }],
 });
-
-const { form } = toRefs(data);
 
 const { proxy } = getCurrentInstance();
 /// 密钥对文档说明
@@ -183,9 +179,10 @@ function init() {
   loading.value = true;
   getConfigByKeys(key).then((res) => {
     loading.value = false;
-    let result = res.data[key];
-    result = (result && JSON.parse(result)) || {};
-    data.form = { ...data.form, ...result };
+    const result = res.data[key];
+    if (result) {
+      form.value = JSON.parse(result);
+    }
   });
 }
 

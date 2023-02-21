@@ -69,6 +69,7 @@ import { DeleteIcon, RefreshIcon, SearchIcon } from 'tdesign-icons-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 import { PrimaryTableCol } from 'tdesign-vue-next';
 import { forceLogout, list as initData } from '@/api/monitor/online';
+import { SysUserOnlineQuery } from '@/api/monitor/model/userOnlineModel';
 
 const { proxy } = getCurrentInstance();
 
@@ -78,7 +79,7 @@ const total = ref(0);
 const pageNum = ref(1);
 const pageSize = ref(10);
 
-const queryParams = ref({
+const queryParams = ref<SysUserOnlineQuery>({
   ipaddr: undefined,
   userName: undefined,
 });

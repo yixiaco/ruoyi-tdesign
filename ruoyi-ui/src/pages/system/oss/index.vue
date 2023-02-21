@@ -203,18 +203,19 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { computed, getCurrentInstance, ref } from 'vue';
 import { useRouter } from 'vue-router';
 import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { listOss, delOss } from '@/api/system/oss';
 import ImagePreview from '@/components/image-preview/index.vue';
 import FileUpload from '@/components/file-upload/index.vue';
 import ImageUpload from '@/components/image-upload/index.vue';
+import { SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
 
 const router = useRouter();
 const { proxy } = getCurrentInstance();
 
-const ossList = ref([]);
+const ossList = ref<SysOssVo[]>([]);
 const open = ref(false);
 const columnControllerVisible = ref(false);
 const loading = ref(true);
@@ -231,27 +232,6 @@ const daterangeCreateTime = ref([]);
 const defaultSort = ref({ sortBy: 'createTime', descending: true });
 const sort = ref({ ...defaultSort.value });
 
-const data = reactive({
-  form: {},
-  // 查询参数
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    fileName: undefined,
-    originalName: undefined,
-    fileSuffix: undefined,
-    url: undefined,
-    createTime: undefined,
-    createBy: undefined,
-    service: undefined,
-    orderByColumn: undefined,
-    isAsc: undefined,
-  },
-});
-const rules = ref<Record<string, Array<FormRule>>>({
-  file: [{ required: true, message: '文件不能为空', trigger: 'blur' }],
-});
-
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
@@ -266,6 +246,25 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 
+const rules = ref<Record<string, Array<FormRule>>>({
+  file: [{ required: true, message: '文件不能为空', trigger: 'blur' }],
+});
+
+const form = ref({});
+const queryParams = ref<SysOssQuery>({
+  pageNum: 1,
+  pageSize: 10,
+  fileName: undefined,
+  originalName: undefined,
+  fileSuffix: undefined,
+  url: undefined,
+  createTime: undefined,
+  createBy: undefined,
+  service: undefined,
+  orderByColumn: undefined,
+  isAsc: undefined,
+});
+
 // 分页
 const pagination = computed(() => {
   return {
@@ -274,14 +273,12 @@ const pagination = computed(() => {
     total: total.value,
     showJumper: true,
     onChange: (pageInfo) => {
-      data.queryParams.pageNum = pageInfo.current;
-      data.queryParams.pageSize = pageInfo.pageSize;
+      queryParams.value.pageNum = pageInfo.current;
+      queryParams.value.pageSize = pageInfo.pageSize;
       getList();
     },
   };
 });
-
-const { queryParams, form } = toRefs(data);
 
 /** 查询OSS对象存储列表 */
 function getList() {

@@ -121,7 +121,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { getCurrentInstance, watch, reactive, ref, toRefs } from 'vue';
+import { getCurrentInstance, watch, ref } from 'vue';
 import { FormRule } from 'tdesign-vue-next';
 import { getConfigByKeys, refreshCache, updateConfigs } from '@/api/system/config';
 import { sendTestMail } from '@/api/system/mail';
@@ -142,20 +142,18 @@ const isInit = ref(false);
 const loading = ref(false);
 const buttonLoading = ref(false);
 const key = 'sys.mail';
-const data = reactive({
-  form: {
-    enabled: 'false',
-    host: 'smtp.163.com',
-    port: '465',
-    auth: 'true',
-    from: 'xxx@163.com',
-    user: 'xxx@163.com',
-    pass: 'xxxxxxxxxx',
-    starttlsEnable: 'true',
-    sslEnable: 'true',
-    timeout: '0',
-    connectionTimeout: '0',
-  },
+const form = ref<Record<string, string>>({
+  enabled: 'false',
+  host: 'smtp.163.com',
+  port: '465',
+  auth: 'true',
+  from: 'xxx@163.com',
+  user: 'xxx@163.com',
+  pass: 'xxxxxxxxxx',
+  starttlsEnable: 'true',
+  sslEnable: 'true',
+  timeout: '0',
+  connectionTimeout: '0',
 });
 
 const rules = ref<Record<string, Array<FormRule>>>({
@@ -173,8 +171,6 @@ const rules = ref<Record<string, Array<FormRule>>>({
   user: [{ required: true, message: '用户名不能为空', trigger: 'blur' }],
   pass: [{ required: true, message: '密码不能为空', trigger: 'blur' }],
 });
-
-const { form } = toRefs(data);
 
 const { proxy } = getCurrentInstance();
 
@@ -205,9 +201,10 @@ function init() {
   loading.value = true;
   getConfigByKeys(key).then((res) => {
     loading.value = false;
-    let result = res.data[key];
-    result = (result && JSON.parse(result)) || {};
-    data.form = { ...data.form, ...result };
+    const result = res.data[key];
+    if (result) {
+      form.value = JSON.parse(result);
+    }
   });
 }
 

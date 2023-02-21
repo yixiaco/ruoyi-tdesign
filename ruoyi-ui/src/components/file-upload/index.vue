@@ -13,11 +13,12 @@
       :headers="headers"
       :draggable="draggable"
       :size-limit="{ size: fileSize, unit: 'MB', message: '上传文件大小不能超过 {sizeLimit} MB!' }"
-      :placeholder="isShowTip ? `请上传大小不超过 ${fileSize}MB 格式为 ${fileType.join('/')} 的文件` : ''"
+      :tips="isShowTip ? `请上传大小不超过 ${fileSize}MB 格式为 ${fileType.join('/')} 的文件` : ''"
       :disabled="disabled"
       @one-file-success="handleOneUploadSuccess"
       @success="handleUploadSuccess"
       @remove="handleDelete"
+      @validate="onValidate"
     >
       <!-- 上传按钮 -->
       <t-button v-if="theme === 'custom'" theme="primary">选取文件</t-button>
@@ -27,7 +28,7 @@
 
 <script lang="ts" setup>
 import { computed, getCurrentInstance, PropType, ref, watch } from 'vue';
-import { SuccessContext, UploadFile } from 'tdesign-vue-next';
+import { SuccessContext, UploadFile, UploadValidateType } from 'tdesign-vue-next';
 import { getToken } from '@/utils/auth';
 import { listByIds, delOss, listByUrls } from '@/api/system/oss';
 
@@ -153,6 +154,20 @@ function handleBeforeUpload(file: UploadFile) {
   }
   return true;
 }
+
+// 有文件数量超出时会触发，文件大小超出限制、文件同名时会触发等场景。注意如果设置允许上传同名文件，则此事件不会触发
+const onValidate = (params: { type: UploadValidateType; files: UploadFile[] }) => {
+  const { files, type } = params;
+  if (type === 'FILE_OVER_SIZE_LIMIT') {
+    files.map((t) => t.name).join('、');
+    proxy.$modal.msgWarning(`${files.map((t) => t.name).join('、')} 等文件大小超出限制，已自动过滤`, 5000);
+  } else if (type === 'FILES_OVER_LENGTH_LIMIT') {
+    proxy.$modal.msgWarning('文件数量超出限制，仅上传未超出数量的文件');
+  } else if (type === 'FILTER_FILE_SAME_NAME') {
+    // 如果希望支持上传同名文件，请设置 allowUploadDuplicateFile={true}
+    proxy.$modal.msgWarning('不允许上传同名文件');
+  }
+};
 
 // 上传失败
 function handleUploadError() {

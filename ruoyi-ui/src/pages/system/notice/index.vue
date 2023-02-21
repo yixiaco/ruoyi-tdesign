@@ -175,15 +175,16 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { computed, getCurrentInstance, ref } from 'vue';
 import { AddIcon, DeleteIcon, EditIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api/system/notice';
+import { SysNotice } from '@/api/system/model/noticeModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_notice_status, sys_notice_type } = proxy.useDict('sys_notice_status', 'sys_notice_type');
 
-const noticeList = ref([]);
+const noticeList = ref<SysNotice[]>([]);
 const open = ref(false);
 const loading = ref(false);
 const eLoading = ref(false);
@@ -194,25 +195,11 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
-const noticeRef = ref(null);
+const noticeRef = ref<FormInstanceFunctions>(null);
 
 const formInitValue = {
-  noticeId: undefined,
-  noticeTitle: undefined,
-  noticeType: undefined,
-  noticeContent: undefined,
   status: '0',
 };
-const data = reactive({
-  form: { ...formInitValue },
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    noticeTitle: undefined,
-    createBy: undefined,
-    status: undefined,
-  },
-});
 const rules = ref<Record<string, Array<FormRule>>>({
   noticeTitle: [{ required: true, message: '公告标题不能为空', trigger: 'blur' }],
   noticeType: [{ required: true, message: '公告类型不能为空', trigger: 'change' }],
@@ -229,6 +216,15 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
 
+const form = ref<SysNotice>({ ...formInitValue });
+const queryParams = ref<SysNotice>({
+  pageNum: 1,
+  pageSize: 10,
+  noticeTitle: undefined,
+  createBy: undefined,
+  status: undefined,
+});
+
 // 分页
 const pagination = computed(() => {
   return {
@@ -237,13 +233,12 @@ const pagination = computed(() => {
     total: total.value,
     showJumper: true,
     onChange: (pageInfo) => {
-      data.queryParams.pageNum = pageInfo.current;
-      data.queryParams.pageSize = pageInfo.pageSize;
+      queryParams.value.pageNum = pageInfo.current;
+      queryParams.value.pageSize = pageInfo.pageSize;
       getList();
     },
   };
 });
-const { queryParams, form } = toRefs(data);
 
 /** 查询公告列表 */
 function getList() {

@@ -17,28 +17,28 @@ export function listCacheName() {
 }
 
 // 查询缓存键名列表
-export function listCacheKey(cacheName) {
+export function listCacheKey(cacheName: string) {
   return request.get<R<Array<String>>>({
     url: `/monitor/cache/getKeys/${cacheName}`,
   });
 }
 
 // 查询缓存内容
-export function getCacheValue(cacheName, cacheKey) {
+export function getCacheValue(cacheName: string, cacheKey: string) {
   return request.get<R<SysCache>>({
     url: `/monitor/cache/getValue/${cacheName}/${cacheKey}`,
   });
 }
 
 // 清理指定名称缓存
-export function clearCacheName(cacheName) {
+export function clearCacheName(cacheName: string) {
   return request.delete<R<void>>({
     url: `/monitor/cache/clearCacheName/${cacheName}`,
   });
 }
 
 // 清理指定键名缓存
-export function clearCacheKey(cacheName, cacheKey) {
+export function clearCacheKey(cacheName: string, cacheKey: string) {
   return request.delete<R<void>>({
     url: `/monitor/cache/clearCacheKey/${cacheName}/${cacheKey}`,
   });

@@ -7,127 +7,127 @@ export interface GenTable extends BaseEntity {
   /**
    * 编号
    */
-  tableId: number;
+  tableId?: number;
 
   /**
    * 表名称
    */
-  tableName: string;
+  tableName?: string;
 
   /**
    * 表描述
    */
-  tableComment: string;
+  tableComment?: string;
 
   /**
    * 关联父表的表名
    */
-  subTableName: string;
+  subTableName?: string;
 
   /**
    * 本表关联父表的外键名
    */
-  subTableFkName: string;
+  subTableFkName?: string;
 
   /**
    * 实体类名称(首字母大写)
    */
-  className: string;
+  className?: string;
 
   /**
    * 使用的模板（crud单表操作 tree树表操作 sub主子表操作）
    */
-  tplCategory: string;
+  tplCategory?: string;
 
   /**
    * 生成包路径
    */
-  packageName: string;
+  packageName?: string;
 
   /**
    * 生成模块名
    */
-  moduleName: string;
+  moduleName?: string;
 
   /**
    * 生成业务名
    */
-  businessName: string;
+  businessName?: string;
 
   /**
    * 生成功能名
    */
-  functionName: string;
+  functionName?: string;
 
   /**
    * 生成作者
    */
-  functionAuthor: string;
+  functionAuthor?: string;
 
   /**
    * 生成代码方式（0zip压缩包 1自定义路径）
    */
-  genType: string;
+  genType?: string;
 
   /**
    * 生成路径（不填默认项目路径）
    */
-  genPath: string;
+  genPath?: string;
 
   /**
    * 主键信息
    */
-  pkColumn: GenTableColumn;
+  pkColumn?: GenTableColumn;
 
   /**
    * 子表信息
    */
-  subTable: GenTable;
+  subTable?: GenTable;
 
   /**
    * 表列信息
    */
-  columns: Array<GenTableColumn>;
+  columns?: Array<GenTableColumn>;
 
   /**
    * 其它生成选项
    */
-  options: string;
+  options?: string;
 
   /**
    * 备注
    */
-  remark: string;
+  remark?: string;
 
   /**
    * 树编码字段
    */
-  treeCode: string;
+  treeCode?: string;
 
   /**
    * 树父编码字段
    */
-  treeParentCode: string;
+  treeParentCode?: string;
 
   /**
    * 树名称字段
    */
-  treeName: string;
+  treeName?: string;
 
   /*
    * 菜单id列表
    */
-  menuIds: Array<number>;
+  menuIds?: Array<number>;
 
   /**
    * 上级菜单ID字段
    */
-  parentMenuId: string;
+  parentMenuId?: string;
 
   /**
    * 上级菜单名称字段
    */
-  parentMenuName: string;
+  parentMenuName?: string;
 
   /**
    * 创建者
@@ -137,7 +137,7 @@ export interface GenTable extends BaseEntity {
   /**
    * 创建时间
    */
-  createTime: object;
+  createTime?: object;
 
   /**
    * 更新者
@@ -148,6 +148,11 @@ export interface GenTable extends BaseEntity {
    * 更新时间
    */
   updateTime?: object;
+
+  /**
+   * 数据源
+   */
+  dataName?: string;
 }
 
 /**
@@ -157,92 +162,92 @@ export interface GenTableColumn extends BaseEntity {
   /**
    * 编号
    */
-  columnId: number;
+  columnId?: number;
 
   /**
    * 归属表编号
    */
-  tableId: number;
+  tableId?: number;
 
   /**
    * 列名称
    */
-  columnName: string;
+  columnName?: string;
 
   /**
    * 列描述
    */
-  columnComment: string;
+  columnComment?: string;
 
   /**
    * 列类型
    */
-  columnType: string;
+  columnType?: string;
 
   /**
    * JAVA类型
    */
-  javaType: string;
+  javaType?: string;
 
   /**
    * JAVA字段名
    */
-  javaField: string;
+  javaField?: string;
 
   /**
    * 是否主键（1是）
    */
-  isPk: string;
+  isPk?: string;
 
   /**
    * 是否自增（1是）
    */
-  isIncrement: string;
+  isIncrement?: string;
 
   /**
    * 是否必填（1是）
    */
-  isRequired: string;
+  isRequired?: string;
 
   /**
    * 是否为插入字段（1是）
    */
-  isInsert: string;
+  isInsert?: string;
 
   /**
    * 是否编辑字段（1是）
    */
-  isEdit: string;
+  isEdit?: string;
 
   /**
    * 是否列表字段（1是）
    */
-  isList: string;
+  isList?: string;
 
   /**
    * 是否查询字段（1是）
    */
-  isQuery: string;
+  isQuery?: string;
 
   /**
    * 查询方式（EQ等于、NE不等于、GT大于、LT小于、LIKE模糊、BETWEEN范围）
    */
-  queryType: string;
+  queryType?: string;
 
   /**
    * 显示类型（input文本框、textarea文本域、select下拉框、checkbox复选框、radio单选框、datetime日期控件、image图片上传控件、upload文件上传控件、editor富文本控件）
    */
-  htmlType: string;
+  htmlType?: string;
 
   /**
    * 字典类型
    */
-  dictType: string;
+  dictType?: string;
 
   /**
    * 排序
    */
-  sort: number;
+  sort?: number;
 
   /**
    * 创建者
@@ -252,7 +257,7 @@ export interface GenTableColumn extends BaseEntity {
   /**
    * 创建时间
    */
-  createTime: object;
+  createTime?: object;
 
   /**
    * 更新者
@@ -266,7 +271,7 @@ export interface GenTableColumn extends BaseEntity {
 }
 
 export interface GenTableInfo {
-  info: GenTable;
-  rows: Array<GenTableColumn>;
-  tables: Array<GenTable>;
+  info?: GenTable;
+  rows?: Array<GenTableColumn>;
+  tables?: Array<GenTable>;
 }

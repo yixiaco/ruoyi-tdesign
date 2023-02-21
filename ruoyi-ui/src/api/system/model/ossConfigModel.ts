@@ -1,3 +1,109 @@
+import { BaseEntity } from '@/api/model/resultModel';
+
+/**
+ * 对象存储配置查询对象
+ */
+export interface SysOssConfigQuery extends BaseEntity {
+  /** 配置key */
+  configKey?: string;
+  /** 桶名称 */
+  bucketName?: string;
+  /** 状态（0=正常,1=停用） */
+  status?: string;
+}
+
+export interface SysOssConfigBo extends BaseEntity {
+  /**
+   * 主建
+   */
+  ossConfigId?: number;
+
+  /**
+   * 配置key
+   */
+  configKey?: string;
+
+  /**
+   * accessKey
+   */
+  accessKey?: string;
+
+  /**
+   * 秘钥
+   */
+  secretKey?: string;
+
+  /**
+   * 桶名称
+   */
+  bucketName?: string;
+
+  /**
+   * 前缀
+   */
+  prefix?: string;
+
+  /**
+   * 访问站点
+   */
+  endpoint?: string;
+
+  /**
+   * 自定义域名
+   */
+  domain?: string;
+
+  /**
+   * 是否https（Y=是,N=否）
+   */
+  isHttps?: string;
+
+  /**
+   * 状态（0=正常,1=停用）
+   */
+  status?: string;
+
+  /**
+   * 域
+   */
+  region?: string;
+
+  /**
+   * 扩展字段
+   */
+  ext1?: string;
+
+  /**
+   * 备注
+   */
+  remark?: string;
+
+  /**
+   * 桶权限类型(0private 1public 2custom)
+   */
+  accessPolicy?: string;
+
+  /**
+   * 创建者
+   */
+  createBy?: string;
+
+  /**
+   * 创建时间
+   */
+  createTime?: string;
+
+  /**
+   * 更新者
+   */
+  updateBy?: string;
+
+  /**
+   * 更新时间
+   */
+  updateTime?: string;
+}
+
 /**
  * oss配置
  */
@@ -5,70 +111,70 @@ export interface SysOssConfigVo {
   /**
    * 主建
    */
-  ossConfigId: number;
+  ossConfigId?: number;
 
   /**
    * 配置key
    */
-  configKey: string;
+  configKey?: string;
 
   /**
    * accessKey
    */
-  accessKey: string;
+  accessKey?: string;
 
   /**
    * 秘钥
    */
-  secretKey: string;
+  secretKey?: string;
 
   /**
    * 桶名称
    */
-  bucketName: string;
+  bucketName?: string;
 
   /**
    * 前缀
    */
-  prefix: string;
+  prefix?: string;
 
   /**
    * 访问站点
    */
-  endpoint: string;
+  endpoint?: string;
 
   /**
    * 自定义域名
    */
-  domain: string;
+  domain?: string;
 
   /**
    * 是否https（Y=是,N=否）
    */
-  isHttps: string;
+  isHttps?: string;
 
   /**
    * 域
    */
-  region: string;
+  region?: string;
 
   /**
    * 状态（0=正常,1=停用）
    */
-  status: string;
+  status?: string;
 
   /**
    * 扩展字段
    */
-  ext1: string;
+  ext1?: string;
 
   /**
    * 备注
    */
-  remark: string;
+  remark?: string;
 
   /**
    * 桶权限类型(01public 2custom)
    */
-  accessPolicy: string;
+  accessPolicy?: string;
 }

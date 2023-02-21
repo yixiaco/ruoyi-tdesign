@@ -1,9 +1,9 @@
 import { request } from '@/utils/request';
-import { SysUserOnline } from '@/api/monitor/model/userOnlineModel';
+import { SysUserOnline, SysUserOnlineQuery } from '@/api/monitor/model/userOnlineModel';
 import { R, TableDataInfo } from '@/api/model/resultModel';
 
 // 查询在线用户列表
-export function list(query) {
+export function list(query: SysUserOnlineQuery) {
   return request.get<TableDataInfo<SysUserOnline>>({
     url: '/monitor/online/list',
     params: query,

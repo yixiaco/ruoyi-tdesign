@@ -7,32 +7,32 @@ export interface SysConfig extends BaseEntity {
   /**
    * 参数主键
    */
-  configId: number;
+  configId?: number;
 
   /**
    * 参数名称
    */
-  configName: string;
+  configName?: string;
 
   /**
    * 参数键名
    */
-  configKey: string;
+  configKey?: string;
 
   /**
    * 参数键值
    */
-  configValue: string;
+  configValue?: string;
 
   /**
    * 系统内置（Y是 N否）
    */
-  configType: string;
+  configType?: string;
 
   /**
    * 备注
    */
-  remark: string;
+  remark?: string;
 
   /**
    * 创建者
@@ -42,7 +42,7 @@ export interface SysConfig extends BaseEntity {
   /**
    * 创建时间
    */
-  createTime: object;
+  createTime?: object;
 
   /**
    * 更新者

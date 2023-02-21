@@ -33,7 +33,7 @@ import com.ruoyi.common.core.domain.TreeEntity;
 public class ${ClassName}Bo extends ${Entity} {
 
 #foreach ($column in $columns)
-#if(($column.isPk == '1' || $column.isQuery == '1' || $column.isInsert == '1' || $column.isEdit == '1'))
+#if(($column.isPk == '1' || $column.isInsert == '1' || $column.isEdit == '1'))
     /**
      * $column.columnComment
      */

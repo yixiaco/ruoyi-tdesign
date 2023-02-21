@@ -7,32 +7,32 @@ export interface SysNotice extends BaseEntity {
   /**
    * 公告ID
    */
-  noticeId: string;
+  noticeId?: number;
 
   /**
    * 公告标题
    */
-  noticeTitle: string;
+  noticeTitle?: string;
 
   /**
    * 公告类型（1通知 2公告）
    */
-  noticeType: string;
+  noticeType?: string;
 
   /**
    * 公告内容
    */
-  noticeContent: string;
+  noticeContent?: string;
 
   /**
    * 公告状态（0正常 1关闭）
    */
-  status: string;
+  status?: string;
 
   /**
    * 备注
    */
-  remark: string;
+  remark?: string;
 
   /**
    * 创建者
@@ -42,7 +42,7 @@ export interface SysNotice extends BaseEntity {
   /**
    * 创建时间
    */
-  createTime: object;
+  createTime?: string;
 
   /**
    * 更新者
@@ -52,5 +52,5 @@ export interface SysNotice extends BaseEntity {
   /**
    * 更新时间
    */
-  updateTime?: object;
+  updateTime?: string;
 }

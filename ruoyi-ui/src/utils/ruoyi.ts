@@ -161,7 +161,7 @@ export function mergeRecursive(source, target) {
  * @param {*} parentId 父节点字段 默认 'parentId'
  * @param {*} children 孩子节点字段 默认 'children'
  */
-export function handleTree(data, id?: string, parentId?: string, children?: string) {
+export function handleTree<T>(data: T[], id?: string, parentId?: string, children?: string): T[] {
   const config = {
     id: id || 'id',
     parentId: parentId || 'parentId',
@@ -170,7 +170,7 @@ export function handleTree(data, id?: string, parentId?: string, children?: stri
 
   const childrenListMap = {};
   const nodeIds = {};
-  const tree = [];
+  const tree = <T[]>[];
 
   for (const d of data) {
     const parentId = d[config.parentId];
@@ -192,7 +192,7 @@ export function handleTree(data, id?: string, parentId?: string, children?: stri
     adaptToChildrenList(t);
   }
 
-  function adaptToChildrenList(o) {
+  function adaptToChildrenList(o: T) {
     if (childrenListMap[o[config.id]] !== null) {
       o[config.childrenList] = childrenListMap[o[config.id]];
     }

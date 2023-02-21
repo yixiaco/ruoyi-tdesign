@@ -1,3 +1,8 @@
+export interface SysUserOnlineQuery {
+  ipaddr?: string;
+  userName?: string;
+}
+
 /**
  * 当前在线会话
  */

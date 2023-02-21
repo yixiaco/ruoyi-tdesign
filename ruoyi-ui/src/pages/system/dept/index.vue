@@ -167,7 +167,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { getCurrentInstance, ref } from 'vue';
 import {
   AddIcon,
   DeleteIcon,
@@ -177,13 +177,14 @@ import {
   SettingIcon,
   UnfoldMoreIcon,
 } from 'tdesign-icons-vue-next';
-import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { EnhancedTableInstanceFunctions, FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from '@/api/system/dept';
+import { SysDept } from '@/api/system/model/deptModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
-const deptList = ref([]);
+const deptList = ref<SysDept[]>([]);
 const open = ref(false);
 const loading = ref(true);
 const eLoading = ref(true);
@@ -191,28 +192,15 @@ const showSearch = ref(true);
 const title = ref('');
 const deptOptions = ref([]);
 const isExpandAll = ref(true);
-const tableRef = ref(null);
-const deptRef = ref(null);
+const tableRef = ref<EnhancedTableInstanceFunctions>(null);
+const deptRef = ref<FormInstanceFunctions>(null);
 const columnControllerVisible = ref(false);
 
 const formInitValue = {
-  deptId: undefined,
-  parentId: undefined,
-  deptName: undefined,
   orderNum: 0,
-  leader: undefined,
-  phone: undefined,
-  email: undefined,
   status: '0',
 };
 
-const data = reactive({
-  form: { ...formInitValue },
-  queryParams: {
-    deptName: undefined,
-    status: undefined,
-  },
-});
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `部门名称`, colKey: 'deptName', align: 'left', width: 260, ellipsis: true },
@@ -230,7 +218,11 @@ const rules = ref<Record<string, Array<FormRule>>>({
   phone: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
 });
 
-const { queryParams, form } = toRefs(data);
+const form = ref<SysDept>({ ...formInitValue });
+const queryParams = ref<SysDept>({
+  deptName: undefined,
+  status: undefined,
+});
 
 /** 查询部门列表 */
 function getList() {
@@ -285,7 +277,7 @@ function handleUpdate(row) {
   title.value = '修改部门';
   eLoading.value = true;
   getDept(row.deptId).then((response) => {
-    form.value = { ...form.value, ...response.data };
+    form.value = response.data;
     eLoading.value = false;
     listDeptExcludeChild(row.deptId).then((response) => {
       deptOptions.value = proxy.handleTree(response.data, 'deptId');

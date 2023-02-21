@@ -341,7 +341,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, createVNode, getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { computed, createVNode, getCurrentInstance, reactive, ref } from 'vue';
 import {
   SearchIcon,
   RefreshIcon,
@@ -354,7 +354,7 @@ import {
   UploadIcon,
 } from 'tdesign-icons-vue-next';
 import { useRouter } from 'vue-router';
-import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import {FormInstanceFunctions, FormRule, PrimaryTableCol, UploadInstanceFunctions} from 'tdesign-vue-next';
 import { getToken } from '@/utils/auth';
 import {
   changeUserStatus,
@@ -366,13 +366,14 @@ import {
   addUser,
   deptTreeSelect,
 } from '@/api/system/user';
+import { SysUser } from '@/api/system/model/userModel';
 
 const router = useRouter();
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable, sys_user_sex } = proxy.useDict('sys_normal_disable', 'sys_user_sex');
 
-const uploadRef = ref(null);
-const userRef = ref(null);
+const uploadRef = ref<UploadInstanceFunctions>(null);
+const userRef = ref<FormInstanceFunctions>(null);
 const userList = ref([]);
 const open = ref(false);
 const loading = ref(true);
@@ -418,32 +419,6 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
 
-const formInitValue = {
-  userId: undefined,
-  deptId: undefined,
-  userName: undefined,
-  nickName: undefined,
-  password: undefined,
-  phonenumber: undefined,
-  email: undefined,
-  sex: undefined,
-  status: '0',
-  remark: undefined,
-  postIds: [],
-  roleIds: [],
-};
-
-const data = reactive({
-  form: { ...formInitValue },
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    userName: undefined,
-    phonenumber: undefined,
-    status: undefined,
-    deptId: undefined,
-  },
-});
 const rules = ref<Record<string, Array<FormRule>>>({
   userName: [
     { required: true, message: '用户名称不能为空', trigger: 'blur' },
@@ -457,7 +432,19 @@ const rules = ref<Record<string, Array<FormRule>>>({
   email: [{ email: true, message: '请输入正确的邮箱地址', trigger: 'change' }],
   phonenumber: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
 });
-const { queryParams, form } = toRefs(data);
+const form = ref<SysUser>({
+  status: '0',
+  postIds: [],
+  roleIds: [],
+});
+const queryParams = ref<SysUser>({
+  pageNum: 1,
+  pageSize: 10,
+  userName: undefined,
+  phonenumber: undefined,
+  status: undefined,
+  deptId: undefined,
+});
 
 const pagination = computed(() => {
   return {
@@ -466,8 +453,8 @@ const pagination = computed(() => {
     total: total.value,
     showJumper: true,
     onChange: (pageInfo) => {
-      data.queryParams.pageNum = pageInfo.current;
-      data.queryParams.pageSize = pageInfo.pageSize;
+      queryParams.value.pageNum = pageInfo.current;
+      queryParams.value.pageSize = pageInfo.pageSize;
       getList();
     },
   };
@@ -605,7 +592,20 @@ const handleFileSuccess = (context) => {
 };
 /** 重置操作表单 */
 function reset() {
-  form.value = { ...formInitValue };
+  form.value = {
+    userId: undefined,
+    deptId: undefined,
+    userName: undefined,
+    nickName: undefined,
+    password: undefined,
+    phonenumber: undefined,
+    email: undefined,
+    sex: undefined,
+    status: '0',
+    remark: undefined,
+    postIds: [],
+    roleIds: [],
+  };
   proxy.resetForm('userRef');
 }
 /** 取消按钮 */

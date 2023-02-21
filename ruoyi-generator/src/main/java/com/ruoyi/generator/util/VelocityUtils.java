@@ -76,9 +76,9 @@ public class VelocityUtils {
         velocityContext.put("columns", genTable.getColumns());
         velocityContext.put("table", genTable);
         velocityContext.put("dicts", getDicts(genTable));
-        velocityContext.put("dbName" , firstLetter(genTable.getTableName(), "_" ));
-        velocityContext.put("GenUtil" , GenUtils.class);
-        velocityContext.put("StringUtils" , StringUtils.class);
+        velocityContext.put("dbName", firstLetter(genTable.getTableName(), "_"));
+        velocityContext.put("GenUtil", GenUtils.class);
+        velocityContext.put("StringUtils", StringUtils.class);
         setMenuVelocityContext(velocityContext, genTable);
         if (GenConstants.TPL_TREE.equals(tplCategory)) {
             setTreeVelocityContext(velocityContext, genTable);
@@ -160,13 +160,24 @@ public class VelocityUtils {
     public static List<String> getTemplateList(String tplCategory) {
         List<String> templates = new ArrayList<String>();
         templates.add("vm/java/domain.java.vm");
+        templates.add("vm/java/query.java.vm");
         templates.add("vm/java/vo.java.vm");
         templates.add("vm/java/bo.java.vm");
-        templates.add("vm/java/mapper.java.vm");
+        templates.add("vm/java/controller.java.vm");
         templates.add("vm/java/service.java.vm");
         templates.add("vm/java/serviceImpl.java.vm");
-        templates.add("vm/java/controller.java.vm");
+        templates.add("vm/java/mapper.java.vm");
         templates.add("vm/xml/mapper.xml.vm");
+        templates.add("vm/ts/model.ts.vm");
+        templates.add("vm/ts/api.ts.vm");
+        if (GenConstants.TPL_CRUD.equals(tplCategory)) {
+            templates.add("vm/vue/index.vue.vm");
+        } else if (GenConstants.TPL_TREE.equals(tplCategory)) {
+            templates.add("vm/vue/index-tree.vue.vm");
+        } else if (GenConstants.TPL_SUB.equals(tplCategory)) {
+            templates.add("vm/vue/index.vue.vm");
+            templates.add("vm/java/sub-domain.java.vm");
+        }
         if (DataBaseHelper.isOracle()) {
             templates.add("vm/sql/oracle/sql.vm");
         } else if (DataBaseHelper.isPostgerSql()) {
@@ -175,16 +186,6 @@ public class VelocityUtils {
             templates.add("vm/sql/sqlserver/sql.vm");
         } else {
             templates.add("vm/sql/sql.vm");
-        }
-        templates.add("vm/ts/api.ts.vm" );
-        templates.add("vm/ts/model.ts.vm" );
-        if (GenConstants.TPL_CRUD.equals(tplCategory)) {
-            templates.add("vm/vue/index.vue.vm");
-        } else if (GenConstants.TPL_TREE.equals(tplCategory)) {
-            templates.add("vm/vue/index-tree.vue.vm");
-        } else if (GenConstants.TPL_SUB.equals(tplCategory)) {
-            templates.add("vm/vue/index.vue.vm");
-            templates.add("vm/java/sub-domain.java.vm");
         }
         return templates;
     }
@@ -210,6 +211,9 @@ public class VelocityUtils {
 
         if (template.contains("domain.java.vm")) {
             fileName = StringUtils.format("{}/domain/{}.java", javaPath, className);
+        }
+        if (template.contains("query.java.vm")) {
+            fileName = StringUtils.format("{}/domain/dto/{}Query.java", javaPath, className);
         }
         if (template.contains("vo.java.vm")) {
             fileName = StringUtils.format("{}/domain/vo/{}Vo.java", javaPath, className);
@@ -274,7 +278,7 @@ public class VelocityUtils {
             } else if (!column.isSuperColumn() && GenConstants.TYPE_BIGDECIMAL.equals(column.getJavaType())) {
                 importList.add("java.math.BigDecimal");
             } else if (!column.isSuperColumn() && GenConstants.TYPE_TIME.equals(column.getJavaType())) {
-                importList.add("java.sql.Time" );
+                importList.add("java.sql.Time");
             }
         }
         return importList;
@@ -300,14 +304,14 @@ public class VelocityUtils {
     /**
      * 添加字典列表
      *
-     * @param dicts 字典列表
+     * @param dicts   字典列表
      * @param columns 列集合
      */
     public static void addDicts(Set<String> dicts, List<GenTableColumn> columns) {
         for (GenTableColumn column : columns) {
             if (!column.isSuperColumn() && StringUtils.isNotEmpty(column.getDictType()) && StringUtils.equalsAny(
                 column.getHtmlType(),
-                new String[] { GenConstants.HTML_SELECT, GenConstants.HTML_RADIO, GenConstants.HTML_CHECKBOX })) {
+                new String[]{GenConstants.HTML_SELECT, GenConstants.HTML_RADIO, GenConstants.HTML_CHECKBOX})) {
                 dicts.add("'" + column.getDictType() + "'");
             }
         }

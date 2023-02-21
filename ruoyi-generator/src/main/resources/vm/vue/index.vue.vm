@@ -403,7 +403,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { computed, getCurrentInstance, ref } from 'vue';
 import {
   AddIcon,
   BrowseIcon,
@@ -414,8 +414,9 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { list${BusinessName}, get${BusinessName}, del${BusinessName}, add${BusinessName}, update${BusinessName} } from '@/api/${moduleName}/${businessName}';
+import { ${ClassName}Bo, ${ClassName}Query, ${ClassName}Vo } from '@/api/${moduleName}/model/${businessName}Model';
 
 const { proxy } = getCurrentInstance();
 #if(${dicts} != '')
@@ -423,11 +424,11 @@ const { proxy } = getCurrentInstance();
 const { ${dictsNoSymbol} } = proxy.useDict(${dicts});
 #end
 
-const ${businessName}List = ref([]);
+const ${businessName}List = ref<${ClassName}Vo[]>([]);
 #if($table.sub)
 const ${subclassName}List = ref([]);
 #end
-const ${businessName}Ref = ref(null);
+const ${businessName}Ref = ref<FormInstanceFunctions>(null);
 const open = ref(false);
 const openView = ref(false);
 const openViewLoading = ref(false);
@@ -449,37 +450,7 @@ const title = ref('');
 const daterange${AttrName} = ref([]);
 #end
 #end
-const formInitValue = {
-#foreach ($column in $columns)
-#if($column.htmlType == "checkbox")
-  $column.javaField: [],
-#else
-  $column.javaField: null,
-#end
-#end
-};
 
-const data = reactive({
-  form: { ...formInitValue },
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    params: {
-#foreach ($column in $columns)
-#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
-#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
-      begin${AttrName}: undefined,
-      end${AttrName}: undefined,
-#end
-#end
-    },
-#foreach ($column in $columns)
-#if($column.query)
-    $column.javaField: undefined,
-#end
-#end
-  },
-});
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
 #foreach ($column in $columns)
@@ -545,6 +516,26 @@ const subColumns = ref([
 ]);
 #end
 
+const form = ref<${ClassName}Vo>({});
+const queryParams = ref<${ClassName}Query>({
+  pageNum: 1,
+  pageSize: 10,
+  params: {
+#foreach ($column in $columns)
+#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+    begin${AttrName}: undefined,
+    end${AttrName}: undefined,
+#end
+#end
+  },
+#foreach ($column in $columns)
+#if($column.query)
+  $column.javaField: undefined,
+#end
+#end
+});
+
 // 分页
 const pagination = computed(() => {
   return {
@@ -553,14 +544,12 @@ const pagination = computed(() => {
     total: total.value,
     showJumper: true,
     onChange: (pageInfo) => {
-      data.queryParams.pageNum = pageInfo.current;
-      data.queryParams.pageSize = pageInfo.pageSize;
+      queryParams.value.pageNum = pageInfo.current;
+      queryParams.value.pageSize = pageInfo.pageSize;
       getList();
     },
   };
 });
-
-const { queryParams, form } = toRefs(data);
 
 /** 查询${functionName}列表 */
 function getList() {
@@ -600,7 +589,7 @@ function getList() {
 
 // 表单重置
 function reset() {
-  form.value = { ...formInitValue };
+  form.value = {};
 #if($table.sub)
   ${subclassName}List.value = [];
 #end
@@ -646,7 +635,7 @@ function handleDetail(row) {
   openViewLoading.value = true;
   const $${pkColumn.javaField} = row.${pkColumn.javaField} || ids.value;
   get${BusinessName}($${pkColumn.javaField}).then((response) => {
-    form.value = { ...form.value, ...response.data };
+    form.value = response.data;
     openViewLoading.value = false;
   });
 }
@@ -660,7 +649,7 @@ function handleUpdate(row) {
   const $${pkColumn.javaField} = row.${pkColumn.javaField} || ids.value;
   get${BusinessName}($${pkColumn.javaField}).then((response) => {
     buttonLoading.value = false;
-    form.value = { ...form.value, ...response.data };
+    form.value = response.data;
 #foreach ($column in $columns)
 #if($column.htmlType == "checkbox")
     form.value.$column.javaField = form.value.${column.javaField}.split(",");

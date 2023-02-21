@@ -119,14 +119,15 @@ export default {
 </script>
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router';
-import { getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { getCurrentInstance, ref } from 'vue';
 import { FormRule } from 'tdesign-vue-next';
 import { getGenTable, updateGenTable } from '@/api/tool/gen';
 import { optionselect as getDictOptionselect } from '@/api/system/dict/type';
 import BasicInfoForm from './basicInfoForm.vue';
 import GenInfoForm from './genInfoForm.vue';
-import TCustomCheckbox from './checkbox.vue';
+import TCustomCheckbox from './components/checkbox.vue';
 import { useTabsRouterStore } from '@/store';
+import { GenTable, GenTableColumn } from '@/api/tool/model/genModel';
 
 const tabsRouterStore = useTabsRouterStore();
 const route = useRoute();
@@ -136,14 +137,6 @@ const { proxy } = getCurrentInstance();
 const activeName = ref('columnInfo');
 const tableHeight = ref(`${document.documentElement.scrollHeight - 245}px`);
 const dictOptions = ref([]);
-const form = reactive({
-  columnsData: [],
-  info: {},
-  tables: [],
-});
-
-const { tables, columnsData, info } = toRefs(form);
-
 const columns = ref([
   { title: '序号', colKey: 'serial-number', width: '5%', align: 'center' },
   { title: `字段列名`, colKey: 'columnName', align: 'center', ellipsis: true, width: '10%' },
@@ -173,6 +166,10 @@ const rules = ref<Record<string, Array<FormRule>>>({
   className: [{ required: true, message: '请输入实体类名称', trigger: 'blur' }],
   functionAuthor: [{ required: true, message: '请输入作者', trigger: 'blur' }],
 });
+
+const columnsData = ref<GenTableColumn[]>([]);
+const info = ref<GenTable>({});
+const tables = ref<GenTable[]>([]);
 
 function onSubmit({ validateResult, firstError }) {
   if (validateResult === true) {
@@ -209,10 +206,10 @@ function close() {
   const tableId = route.params && route.params.tableId;
   if (tableId) {
     // 获取表详细信息
-    getGenTable(tableId).then((res) => {
-      form.columnsData = res.data.rows;
-      form.info = res.data.info;
-      form.tables = res.data.tables;
+    getGenTable(Number(tableId)).then((res) => {
+      columnsData.value = res.data.rows;
+      info.value = res.data.info;
+      tables.value = res.data.tables;
     });
     /** 查询字典下拉列表 */
     getDictOptionselect().then((response) => {

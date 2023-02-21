@@ -131,11 +131,12 @@ import { DeleteIcon, DownloadIcon, LockOffIcon, RefreshIcon, SearchIcon, Setting
 import { computed, getCurrentInstance, ref } from 'vue';
 import { PrimaryTableCol } from 'tdesign-vue-next';
 import { list, delLogininfor, cleanLogininfor, unlockLogininfor } from '@/api/monitor/logininfor';
+import { SysLogininfor } from '@/api/monitor/model/logininforModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_common_status } = proxy.useDict('sys_common_status');
 
-const logininforList = ref([]);
+const logininforList = ref<SysLogininfor[]>([]);
 const loading = ref(false);
 const columnControllerVisible = ref(false);
 const showSearch = ref(true);
@@ -149,7 +150,7 @@ const defaultSort = ref({ sortBy: 'loginTime', descending: true });
 const sort = ref({ ...defaultSort.value });
 
 // 查询参数
-const queryParams = ref({
+const queryParams = ref<SysLogininfor>({
   pageNum: 1,
   pageSize: 10,
   ipaddr: undefined,

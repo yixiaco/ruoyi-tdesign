@@ -41,7 +41,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { getCurrentInstance, reactive, ref, toRefs, watch } from 'vue';
+import { getCurrentInstance, ref, watch } from 'vue';
 import { FormRule } from 'tdesign-vue-next';
 import { getConfigByKeys, refreshCache, updateConfigs } from '@/api/system/config';
 
@@ -60,15 +60,11 @@ const props = defineProps({
 const isInit = ref(false);
 const loading = ref(false);
 const buttonLoading = ref(false);
-const data = reactive({
-  form: {
-    'sys.sms.captchaTemplateId': '',
-  },
+const form = ref<Record<string, string>>({
+  'sys.sms.captchaTemplateId': '',
 });
 
 const rules = ref<Record<string, Array<FormRule>>>({});
-
-const { form } = toRefs(data);
 
 const { proxy } = getCurrentInstance();
 
@@ -98,7 +94,7 @@ function submitForm({ validateResult, firstError }) {
 function init() {
   loading.value = true;
   getConfigByKeys(Object.keys(form.value).join(',')).then((res) => {
-    data.form = { ...data.form, ...res.data };
+    form.value = res.data;
     loading.value = false;
   });
 }

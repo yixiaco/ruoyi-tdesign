@@ -5,17 +5,17 @@ export interface SysDept extends TreeEntity<SysDept> {
   /**
    * 部门ID
    */
-  deptId: number;
+  deptId?: number;
 
   /**
    * 部门名称
    */
-  deptName: string;
+  deptName?: string;
 
   /**
    * 显示顺序
    */
-  orderNum: number;
+  orderNum?: number;
 
   /**
    * 负责人
@@ -33,19 +33,19 @@ export interface SysDept extends TreeEntity<SysDept> {
   email?: string;
 
   /**
-   * 部门状态:0正常,1停用
+   * 部门状态?:0正常,1停用
    */
-  status: string;
+  status?: string;
 
   /**
    * 删除标志（0代表存在 2代表删除）
    */
-  delFlag: string;
+  delFlag?: string;
 
   /**
    * 祖级列表
    */
-  ancestors: string;
+  ancestors?: string;
 
   /**
    * 创建者
@@ -55,7 +55,7 @@ export interface SysDept extends TreeEntity<SysDept> {
   /**
    * 创建时间
    */
-  createTime: object;
+  createTime?: object;
 
   /**
    * 更新者

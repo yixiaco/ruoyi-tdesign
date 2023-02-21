@@ -1,9 +1,9 @@
 import { request } from '@/utils/request';
 import { SysLogininfor } from '@/api/monitor/model/logininforModel';
-import {R, TableDataInfo} from '@/api/model/resultModel';
+import { R, TableDataInfo } from '@/api/model/resultModel';
 
 // 查询登录日志列表
-export function list(query) {
+export function list(query: SysLogininfor) {
   return request.get<TableDataInfo<SysLogininfor>>({
     url: '/monitor/logininfor/list',
     params: query,
@@ -11,14 +11,14 @@ export function list(query) {
 }
 
 // 删除登录日志
-export function delLogininfor(infoId) {
+export function delLogininfor(infoId: number) {
   return request.delete<R<void>>({
     url: `/monitor/logininfor/${infoId}`,
   });
 }
 
 // 解锁用户登录状态
-export function unlockLogininfor(userName) {
+export function unlockLogininfor(userName: string) {
   return request.get<R<void>>({
     url: `/monitor/logininfor/unlock/${userName}`,
   });

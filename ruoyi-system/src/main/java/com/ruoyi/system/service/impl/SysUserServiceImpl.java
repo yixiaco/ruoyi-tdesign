@@ -96,7 +96,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return 用户信息集合信息
      */
     @Override
-    public TableDataInfo<SysUser> selectAllocatedList(SysUser user, PageQuery pageQuery) {
+    public TableDataInfo<SysUser> selectAllocatedList(SysUser user) {
         return PageQuery.of(() -> baseMapper.selectAllocatedList(user));
     }
 

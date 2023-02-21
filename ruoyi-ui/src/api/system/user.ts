@@ -4,7 +4,7 @@ import { SysUser, SysUserInfo, UserAuthRole, UserAvatarResult, UserProfile } fro
 import { R, TableDataInfo, TreeModel } from '@/api/model/ResultModel';
 
 // 查询用户列表
-export function listUser(query) {
+export function listUser(query: SysUser) {
   return request.get<TableDataInfo<SysUser>>({
     url: '/system/user/list',
     params: query,
@@ -19,7 +19,7 @@ export function getUser(userId?: number) {
 }
 
 // 新增用户
-export function addUser(data) {
+export function addUser(data: SysUser) {
   return request.post<R<void>>({
     url: '/system/user',
     data,
@@ -27,7 +27,7 @@ export function addUser(data) {
 }
 
 // 修改用户
-export function updateUser(data) {
+export function updateUser(data: SysUser) {
   return request.put<R<void>>({
     url: '/system/user',
     data,
@@ -35,7 +35,7 @@ export function updateUser(data) {
 }
 
 // 删除用户
-export function delUser(userId) {
+export function delUser(userId: number) {
   return request.delete<R<void>>({
     url: `/system/user/${userId}`,
     method: 'delete',
@@ -43,7 +43,7 @@ export function delUser(userId) {
 }
 
 // 用户密码重置
-export function resetUserPwd(userId, password) {
+export function resetUserPwd(userId: number, password: string) {
   const data = {
     userId,
     password,
@@ -55,7 +55,7 @@ export function resetUserPwd(userId, password) {
 }
 
 // 用户状态修改
-export function changeUserStatus(userId, status) {
+export function changeUserStatus(userId: number, status: string) {
   const data = {
     userId,
     status,
@@ -74,7 +74,7 @@ export function getUserProfile() {
 }
 
 // 修改用户个人信息
-export function updateUserProfile(data) {
+export function updateUserProfile(data: SysUser) {
   return request.put<R<void>>({
     url: '/system/user/profile',
     data,
@@ -82,7 +82,7 @@ export function updateUserProfile(data) {
 }
 
 // 用户密码重置
-export function updateUserPwd(oldPassword, newPassword) {
+export function updateUserPwd(oldPassword: string, newPassword: string) {
   const data = {
     oldPassword,
     newPassword,
@@ -94,7 +94,7 @@ export function updateUserPwd(oldPassword, newPassword) {
 }
 
 // 用户头像上传
-export function uploadAvatar(data) {
+export function uploadAvatar(data: FormData) {
   return request.post<R<UserAvatarResult>>({
     url: '/system/user/profile/avatar',
     headers: {
@@ -105,14 +105,14 @@ export function uploadAvatar(data) {
 }
 
 // 查询授权角色
-export function getAuthRole(userId) {
+export function getAuthRole(userId: number) {
   return request.get<R<UserAuthRole>>({
     url: `/system/user/authRole/${userId}`,
   });
 }
 
 // 保存授权角色
-export function updateAuthRole(data) {
+export function updateAuthRole(data: { userId: number; roleIds: string }) {
   return request.put<R<void>>({
     url: '/system/user/authRole',
     params: data,

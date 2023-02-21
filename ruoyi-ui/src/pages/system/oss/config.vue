@@ -176,8 +176,8 @@ export default {
 </script>
 <script lang="ts" setup>
 import { AddIcon, DeleteIcon, EditIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
-import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { computed, getCurrentInstance, ref } from 'vue';
+import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import {
   listOssConfig,
   getOssConfig,
@@ -186,11 +186,12 @@ import {
   updateOssConfig,
   changeOssConfigStatus,
 } from '@/api/system/ossConfig';
+import { SysOssConfigQuery, SysOssConfigVo } from '@/api/system/model/ossConfigModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_yes_no, sys_normal_disable } = proxy.useDict('sys_yes_no', 'sys_normal_disable');
 
-const ossConfigList = ref([]);
+const ossConfigList = ref<SysOssConfigVo[]>([]);
 const open = ref(false);
 const buttonLoading = ref(false);
 const loading = ref(false);
@@ -201,7 +202,7 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
-const ossConfigRef = ref(null);
+const ossConfigRef = ref<FormInstanceFunctions>(null);
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
@@ -218,32 +219,6 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
 
-// 分页
-const pagination = computed(() => {
-  return {
-    current: queryParams.value.pageNum,
-    pageSize: queryParams.value.pageSize,
-    total: total.value,
-    showJumper: true,
-    onChange: (pageInfo) => {
-      data.queryParams.pageNum = pageInfo.current;
-      data.queryParams.pageSize = pageInfo.pageSize;
-      getList();
-    },
-  };
-});
-
-const data = reactive({
-  form: {},
-  // 查询参数
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    configKey: undefined,
-    bucketName: undefined,
-    status: undefined,
-  },
-});
 const rules = ref<Record<string, Array<FormRule>>>({
   configKey: [{ required: true, message: 'configKey不能为空', trigger: 'blur' }],
   accessKey: [
@@ -285,7 +260,30 @@ const rules = ref<Record<string, Array<FormRule>>>({
   accessPolicy: [{ required: true, message: 'accessPolicy不能为空', trigger: 'blur' }],
 });
 
-const { queryParams, form } = toRefs(data);
+const form = ref<SysOssConfigVo>({});
+// 查询参数
+const queryParams = ref<SysOssConfigQuery>({
+  pageNum: 1,
+  pageSize: 10,
+  configKey: undefined,
+  bucketName: undefined,
+  status: undefined,
+});
+
+// 分页
+const pagination = computed(() => {
+  return {
+    current: queryParams.value.pageNum,
+    pageSize: queryParams.value.pageSize,
+    total: total.value,
+    showJumper: true,
+    onChange: (pageInfo) => {
+      queryParams.value.pageNum = pageInfo.current;
+      queryParams.value.pageSize = pageInfo.pageSize;
+      getList();
+    },
+  };
+});
 
 /** 查询对象存储配置列表 */
 function getList() {

@@ -8,7 +8,7 @@ export interface SysUser extends BaseEntity {
   /**
    * 用户ID
    */
-  userId: number;
+  userId?: number;
 
   /**
    * 部门ID
@@ -18,17 +18,17 @@ export interface SysUser extends BaseEntity {
   /**
    * 用户账号
    */
-  userName: string;
+  userName?: string;
 
   /**
    * 用户昵称
    */
-  nickName: string;
+  nickName?: string;
 
   /**
    * 用户类型（sys_user系统用户）
    */
-  userType: string;
+  userType?: string;
 
   /**
    * 用户邮箱
@@ -58,12 +58,12 @@ export interface SysUser extends BaseEntity {
   /**
    * 帐号状态（0正常 1停用）
    */
-  status: string;
+  status?: string;
 
   /**
    * 删除标志（0代表存在 2代表删除）
    */
-  delFlag: string;
+  delFlag?: string;
 
   /**
    * 最后登录IP
@@ -88,12 +88,12 @@ export interface SysUser extends BaseEntity {
   /**
    * 角色对象
    */
-  roles: Array<SysRole>;
+  roles?: Array<SysRole>;
 
   /**
    * 角色组
    */
-  roleIds: Array<number>;
+  roleIds?: Array<number>;
 
   /**
    * 岗位组
@@ -103,7 +103,7 @@ export interface SysUser extends BaseEntity {
   /**
    * 数据权限 当前角色ID
    */
-  roleId: number;
+  roleId?: number;
 
   /**
    * 创建者
@@ -113,7 +113,7 @@ export interface SysUser extends BaseEntity {
   /**
    * 创建时间
    */
-  createTime: object;
+  createTime?: object;
 
   /**
    * 更新者
@@ -130,7 +130,7 @@ export interface UserProfile {
   /**
    * 用户信息
    */
-  user: SysUser;
+  user?: SysUser;
   /**
    * 用户所属角色组
    */
@@ -142,18 +142,18 @@ export interface UserProfile {
 }
 
 export interface UserAvatarResult {
-  imgUrl: string;
+  imgUrl?: string;
 }
 
 export interface UserAuthRole {
-  user: SysUser;
-  roles: Array<SysRole>;
+  user?: SysUser;
+  roles?: Array<SysRole>;
 }
 
 export interface SysUserInfo {
-  roles: Array<SysRole>;
-  posts: Array<SysPost>;
-  user: SysUser;
-  postIds: Array<number>;
-  roleIds: Array<number>;
+  roles?: Array<SysRole>;
+  posts?: Array<SysPost>;
+  user?: SysUser;
+  postIds?: Array<number>;
+  roleIds?: Array<number>;
 }

@@ -227,13 +227,15 @@
 </template>
 
 <script lang="ts" setup>
-import { getCurrentInstance, ref, toRefs, watch } from 'vue';
+import { getCurrentInstance, PropType, ref, toRefs, watch } from 'vue';
 import { ChevronDownIcon, HelpCircleFilledIcon } from 'tdesign-icons-vue-next';
 import { FormRule } from 'tdesign-vue-next';
 import { listMenu } from '@/api/system/menu';
+import { SysMenu } from '@/api/system/model/menuModel';
+import { GenTable } from '@/api/tool/model/genModel';
 
 const subColumns = ref([]);
-const menuOptions = ref([]);
+const menuOptions = ref<SysMenu[]>([]);
 const { proxy } = getCurrentInstance();
 
 const props = defineProps({
@@ -242,7 +244,7 @@ const props = defineProps({
     default: null,
   },
   tables: {
-    type: Array,
+    type: Array as PropType<GenTable[]>,
     default: null,
   },
 });

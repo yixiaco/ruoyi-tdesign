@@ -174,8 +174,8 @@ public class SysRoleController extends BaseController {
      */
     @SaCheckPermission("system:role:list")
     @GetMapping("/authUser/allocatedList")
-    public TableDataInfo<SysUser> allocatedList(SysUser user, PageQuery pageQuery) {
-        return userService.selectAllocatedList(user, pageQuery);
+    public TableDataInfo<SysUser> allocatedList(SysUser user) {
+        return userService.selectAllocatedList(user);
     }
 
     /**

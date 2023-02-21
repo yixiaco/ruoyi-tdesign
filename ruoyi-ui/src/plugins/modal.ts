@@ -14,20 +14,20 @@ let loadingInstance;
 
 export default {
   // 消息提示
-  msg(content) {
-    return MessagePlugin.info(content);
+  msg(content, duration?: number) {
+    return MessagePlugin.info(content, duration);
   },
   // 错误消息
-  msgError(content) {
-    return MessagePlugin.error(content);
+  msgError(content, duration?: number) {
+    return MessagePlugin.error(content, duration);
   },
   // 成功消息
-  msgSuccess(content) {
-    return MessagePlugin.success(content);
+  msgSuccess(content, duration?: number) {
+    return MessagePlugin.success(content, duration);
   },
   // 警告消息
-  msgWarning(content) {
-    return MessagePlugin.warning(content);
+  msgWarning(content, duration?: number) {
+    return MessagePlugin.warning(content, duration);
   },
   // 弹出提示
   alert(content: DialogOptions | string) {

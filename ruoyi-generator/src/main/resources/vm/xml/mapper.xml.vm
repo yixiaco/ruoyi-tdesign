@@ -3,7 +3,7 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="${packageName}.mapper.${ClassName}Mapper">
-    #set($className = $packageName + ".domain.bo." + ${ClassName} + "Bo")
+    #set($className = $packageName + ".domain.dto." + ${ClassName} + "Query")
     #set($result = ${ClassName} + "Result")
 
     <resultMap id="${ClassName}ResultVo" type="${packageName}.domain.vo.${ClassName}Vo">

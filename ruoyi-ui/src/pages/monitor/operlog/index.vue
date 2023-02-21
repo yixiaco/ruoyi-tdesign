@@ -168,10 +168,11 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { computed, getCurrentInstance, ref } from 'vue';
 import { BrowseIcon, DeleteIcon, DownloadIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import { PrimaryTableCol } from 'tdesign-vue-next';
 import { list, delOperlog, cleanOperlog } from '@/api/monitor/operlog';
+import { SysOperLog } from '@/api/monitor/model/operlogModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_oper_type, sys_common_status } = proxy.useDict('sys_oper_type', 'sys_common_status');
@@ -188,20 +189,6 @@ const dateRange = ref([]);
 const defaultSort = ref({ sortBy: 'operTime', descending: true });
 const sort = ref({ ...defaultSort.value });
 
-const data = reactive({
-  form: {},
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    title: undefined,
-    operName: undefined,
-    businessType: undefined,
-    status: undefined,
-    orderByColumn: undefined,
-    isAsc: undefined,
-  },
-});
-
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
@@ -216,6 +203,18 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
 
+const form = ref<SysOperLog>({});
+const queryParams = ref<SysOperLog>({
+  pageNum: 1,
+  pageSize: 10,
+  title: undefined,
+  operName: undefined,
+  businessType: undefined,
+  status: undefined,
+  orderByColumn: undefined,
+  isAsc: undefined,
+});
+
 // 分页
 const pagination = computed(() => {
   return {
@@ -224,13 +223,12 @@ const pagination = computed(() => {
     total: total.value,
     showJumper: true,
     onChange: (pageInfo) => {
-      data.queryParams.pageNum = pageInfo.current;
-      data.queryParams.pageSize = pageInfo.pageSize;
+      queryParams.value.pageNum = pageInfo.current;
+      queryParams.value.pageSize = pageInfo.pageSize;
       getList();
     },
   };
 });
-const { queryParams, form } = toRefs(data);
 
 /** 查询登录日志 */
 function getList() {

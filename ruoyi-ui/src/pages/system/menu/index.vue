@@ -290,15 +290,16 @@ import {
   SettingIcon,
   UnfoldMoreIcon,
 } from 'tdesign-icons-vue-next';
-import { getCurrentInstance, reactive, ref, toRefs } from 'vue';
-import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { getCurrentInstance, ref } from 'vue';
+import { EnhancedTableInstanceFunctions, FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { addMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu';
 import IconSelect from '@/components/icon-select/index.vue';
+import { SysMenu } from '@/api/system/model/menuModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_show_hide, sys_normal_disable } = proxy.useDict('sys_show_hide', 'sys_normal_disable');
 
-const menuList = ref([]);
+const menuList = ref<SysMenu[]>([]);
 const open = ref(false);
 const loading = ref(true);
 const eLoading = ref(true);
@@ -307,8 +308,8 @@ const columnControllerVisible = ref(false);
 const title = ref('');
 const menuOptions = ref([]);
 const expandAll = ref(false);
-const tableRef = ref(null);
-const menuRef = ref(null);
+const tableRef = ref<EnhancedTableInstanceFunctions>(null);
+const menuRef = ref<FormInstanceFunctions>(null);
 
 const formInitValue = {
   menuId: undefined,
@@ -322,13 +323,6 @@ const formInitValue = {
   visible: '0',
   status: '0',
 };
-const data = reactive({
-  form: { ...formInitValue },
-  queryParams: {
-    menuName: undefined,
-    visible: undefined,
-  },
-});
 const rules = ref<Record<string, Array<FormRule>>>({
   menuName: [{ required: true, message: '菜单名称不能为空', trigger: 'blur' }],
   orderNum: [{ required: true, message: '菜单顺序不能为空', trigger: 'blur' }],
@@ -346,7 +340,12 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 
-const { queryParams, form } = toRefs(data);
+const form = ref<SysMenu>({ ...formInitValue });
+
+const queryParams = ref<SysMenu>({
+  menuName: undefined,
+  visible: undefined,
+});
 
 /** 查询菜单列表 */
 function getList() {
@@ -412,7 +411,7 @@ async function handleUpdate(row) {
   open.value = true;
   eLoading.value = true;
   getMenu(row.menuId).then((response) => {
-    form.value = { ...form.value, ...response.data };
+    form.value = response.data;
     eLoading.value = false;
   });
 }

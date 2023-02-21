@@ -1,5 +1,5 @@
 import { request } from '@/utils/request';
-import { CaptchaImage, LoginModel, UserInfo } from '@/api/model/loginModel';
+import { CaptchaImage, LoginModel, RegisterBody, UserInfo } from '@/api/model/loginModel';
 import { R } from '@/api/model/ResultModel';
 
 /**
@@ -12,7 +12,7 @@ export function isLogin() {
 }
 
 // 登录方法
-export function login(username, password, code, uuid) {
+export function login(username: string, password: string, code: string, uuid: string) {
   const data = {
     username,
     password,
@@ -31,7 +31,7 @@ export function login(username, password, code, uuid) {
 }
 
 // 注册方法
-export function register(data) {
+export function register(data: RegisterBody) {
   return request.post<R<void>>(
     {
       url: '/register',

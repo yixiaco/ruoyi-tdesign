@@ -51,7 +51,7 @@
               <span>{{ keyFormatter(row.cacheKey) }}</span>
             </template>
             <template #operation="{ row }">
-              <t-link theme="danger" hover="color" @click.stop="handleClearCacheKey(row)">
+              <t-link theme="danger" hover="color" @click.stop="handleClearCacheKey(row.cacheKey)">
                 <delete-icon />
               </t-link>
             </template>
@@ -113,12 +113,13 @@ import {
   clearCacheKey,
   clearCacheAll,
 } from '@/api/monitor/cache';
+import { SysCache } from '@/api/monitor/model/cacheModel';
 
 const { proxy } = getCurrentInstance();
 
-const cacheNames = ref([]);
-const cacheKeys = ref([]);
-const cacheForm = ref({});
+const cacheNames = ref<SysCache[]>([]);
+const cacheKeys = ref<{ cacheKey: String }[]>([]);
+const cacheForm = ref<SysCache>({});
 const loading = ref(true);
 const subLoading = ref(false);
 const nowCacheName = ref('');
@@ -184,7 +185,7 @@ function refreshCacheKeys() {
 }
 
 /** 清理指定键名缓存 */
-function handleClearCacheKey(cacheKey) {
+function handleClearCacheKey(cacheKey: string) {
   clearCacheKey(nowCacheName.value, cacheKey).then((response) => {
     proxy.$modal.msgSuccess(`清理缓存键名[${cacheKey}]成功`);
     getCacheKeys();

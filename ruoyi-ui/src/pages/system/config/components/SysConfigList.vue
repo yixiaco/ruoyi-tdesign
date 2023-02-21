@@ -167,7 +167,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { computed, getCurrentInstance, ref } from 'vue';
 import {
   AddIcon,
   DeleteIcon,
@@ -177,13 +177,14 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { listConfig, getConfig, delConfig, addConfig, updateConfig, refreshCache } from '@/api/system/config';
+import { SysConfig } from '@/api/system/model/configModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_yes_no } = proxy.useDict('sys_yes_no');
 
-const configList = ref([]);
+const configList = ref<SysConfig[]>([]);
 const open = ref(false);
 const loading = ref(false);
 const eLoading = ref(false);
@@ -195,26 +196,8 @@ const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
 const dateRange = ref([]);
-const configRef = ref(null);
+const configRef = ref<FormInstanceFunctions>(null);
 
-const formInitValue = {
-  configId: undefined,
-  configName: undefined,
-  configKey: undefined,
-  configValue: undefined,
-  configType: 'Y',
-  remark: undefined,
-};
-const data = reactive({
-  form: { ...formInitValue },
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    configName: undefined,
-    configKey: undefined,
-    configType: undefined,
-  },
-});
 const rules = ref<Record<string, Array<FormRule>>>({
   configName: [{ required: true, message: '参数名称不能为空', trigger: 'blur' }],
   configKey: [{ required: true, message: '参数键名不能为空', trigger: 'blur' }],
@@ -233,6 +216,15 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 150 },
 ]);
 
+const form = ref<SysConfig>({ configType: 'Y' });
+const queryParams = ref<SysConfig>({
+  pageNum: 1,
+  pageSize: 10,
+  configName: undefined,
+  configKey: undefined,
+  configType: undefined,
+});
+
 // 分页
 const pagination = computed(() => {
   return {
@@ -241,14 +233,12 @@ const pagination = computed(() => {
     total: total.value,
     showJumper: true,
     onChange: (pageInfo) => {
-      data.queryParams.pageNum = pageInfo.current;
-      data.queryParams.pageSize = pageInfo.pageSize;
+      queryParams.value.pageNum = pageInfo.current;
+      queryParams.value.pageSize = pageInfo.pageSize;
       getList();
     },
   };
 });
-
-const { queryParams, form } = toRefs(data);
 
 /** 查询参数列表 */
 function getList() {
@@ -261,7 +251,14 @@ function getList() {
 }
 /** 表单重置 */
 function reset() {
-  form.value = { ...formInitValue };
+  form.value = {
+    configId: undefined,
+    configName: undefined,
+    configKey: undefined,
+    configValue: undefined,
+    configType: 'Y',
+    remark: undefined,
+  };
   proxy.resetForm('configRef');
 }
 /** 搜索按钮操作 */

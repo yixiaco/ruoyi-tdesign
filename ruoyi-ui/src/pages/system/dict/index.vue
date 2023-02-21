@@ -171,7 +171,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { computed, getCurrentInstance, ref } from 'vue';
 import {
   AddIcon,
   DeleteIcon,
@@ -181,14 +181,15 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import useDictStore from '@/store/modules/dict';
 import { listType, getType, delType, addType, updateType, refreshCache } from '@/api/system/dict/type';
+import { SysDictType } from '@/api/system/model/dictModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
-const typeList = ref([]);
+const typeList = ref<SysDictType[]>([]);
 const open = ref(false);
 const loading = ref(false);
 const eLoading = ref(false);
@@ -200,25 +201,7 @@ const total = ref(0);
 const title = ref('');
 const dateRange = ref([]);
 const columnControllerVisible = ref(false);
-const dictRef = ref(null);
-
-const formInitValue = {
-  dictId: undefined,
-  dictName: undefined,
-  dictType: undefined,
-  status: '0',
-  remark: undefined,
-};
-const data = reactive({
-  form: { ...formInitValue },
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    dictName: undefined,
-    dictType: undefined,
-    status: undefined,
-  },
-});
+const dictRef = ref<FormInstanceFunctions>(null);
 const rules = ref<Record<string, Array<FormRule>>>({
   dictName: [{ required: true, message: '字典名称不能为空', trigger: 'blur' }],
   dictType: [{ required: true, message: '字典类型不能为空', trigger: 'blur' }],
@@ -236,6 +219,17 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 160 },
 ]);
 
+const form = ref<SysDictType>({
+  status: '0',
+});
+const queryParams = ref<SysDictType>({
+  pageNum: 1,
+  pageSize: 10,
+  dictName: undefined,
+  dictType: undefined,
+  status: undefined,
+});
+
 // 分页
 const pagination = computed(() => {
   return {
@@ -244,14 +238,12 @@ const pagination = computed(() => {
     total: total.value,
     showJumper: true,
     onChange: (pageInfo) => {
-      data.queryParams.pageNum = pageInfo.current;
-      data.queryParams.pageSize = pageInfo.pageSize;
+      queryParams.value.pageNum = pageInfo.current;
+      queryParams.value.pageSize = pageInfo.pageSize;
       getList();
     },
   };
 });
-
-const { queryParams, form } = toRefs(data);
 
 /** 查询字典类型列表 */
 function getList() {
@@ -264,7 +256,13 @@ function getList() {
 }
 /** 表单重置 */
 function reset() {
-  form.value = { ...formInitValue };
+  form.value = {
+    dictId: undefined,
+    dictName: undefined,
+    dictType: undefined,
+    status: '0',
+    remark: undefined,
+  };
   proxy.resetForm('dictRef');
 }
 /** 搜索按钮操作 */

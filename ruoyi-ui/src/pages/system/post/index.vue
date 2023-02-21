@@ -151,7 +151,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { computed, getCurrentInstance, ref } from 'vue';
 import {
   AddIcon,
   DeleteIcon,
@@ -161,13 +161,14 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { listPost, addPost, delPost, getPost, updatePost } from '@/api/system/post';
+import { SysPost } from '@/api/system/model/postModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
-const postList = ref([]);
+const postList = ref<SysPost[]>([]);
 const open = ref(false);
 const loading = ref(false);
 const eLoading = ref(false);
@@ -177,26 +178,8 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
-const postRef = ref(null);
+const postRef = ref<FormInstanceFunctions>(null);
 const columnControllerVisible = ref(false);
-const formInitValue = {
-  postId: undefined,
-  postCode: undefined,
-  postName: undefined,
-  postSort: 0,
-  status: '0',
-  remark: undefined,
-};
-const data = reactive({
-  form: { ...formInitValue },
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    postCode: undefined,
-    postName: undefined,
-    status: undefined,
-  },
-});
 const rules = ref<Record<string, Array<FormRule>>>({
   postName: [{ required: true, message: '岗位名称不能为空', trigger: 'blur' }],
   postCode: [{ required: true, message: '岗位编码不能为空', trigger: 'blur' }],
@@ -213,6 +196,14 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
+const form = ref<SysPost>({});
+const queryParams = ref<SysPost>({
+  pageNum: 1,
+  pageSize: 10,
+  postCode: undefined,
+  postName: undefined,
+  status: undefined,
+});
 
 // 分页
 const pagination = computed(() => {
@@ -222,14 +213,12 @@ const pagination = computed(() => {
     total: total.value,
     showJumper: true,
     onChange: (pageInfo) => {
-      data.queryParams.pageNum = pageInfo.current;
-      data.queryParams.pageSize = pageInfo.pageSize;
+      queryParams.value.pageNum = pageInfo.current;
+      queryParams.value.pageSize = pageInfo.pageSize;
       getList();
     },
   };
 });
-
-const { queryParams, form } = toRefs(data);
 
 /** 查询岗位列表 */
 function getList() {
@@ -242,7 +231,14 @@ function getList() {
 }
 /** 表单重置 */
 function reset() {
-  form.value = { ...formInitValue };
+  form.value = {
+    postId: undefined,
+    postCode: undefined,
+    postName: undefined,
+    postSort: 0,
+    status: '0',
+    remark: undefined,
+  };
   proxy.resetForm('postRef');
 }
 /** 搜索按钮操作 */
@@ -275,7 +271,7 @@ function handleUpdate(row) {
   eLoading.value = true;
   const postId = row.postId || ids.value;
   getPost(postId).then((response) => {
-    form.value = { ...form.value, ...response.data };
+    form.value = response.data;
     eLoading.value = false;
   });
 }

@@ -67,7 +67,7 @@ export function refreshCache() {
 
 // 查询BBS网站参数配置详细
 export function getConfigByKeys(keys: string) {
-  return request.get<R<object>>({
+  return request.get<R<Record<string, string>>>({
     url: `/system/config/configKeys`,
     params: { keys },
   });

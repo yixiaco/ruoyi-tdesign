@@ -40,14 +40,29 @@ export interface R<T> {
  */
 export interface BaseEntity {
   /**
+   * 分页页码
+   */
+  pageNum?: number;
+  /**
+   * 分页数
+   */
+  pageSize?: number;
+  /**
    * 搜索值
    */
   searchValue?: string;
-
+  /**
+   * 排序字段
+   */
+  orderByColumn?: string;
+  /**
+   * 排序字段顺序
+   */
+  isAsc?: string;
   /**
    * 请求参数
    */
-  params: Map<string, object>;
+  params?: Record<string, any | undefined>;
 }
 
 /**
@@ -67,7 +82,7 @@ export interface TreeEntity<T> extends BaseEntity {
   /**
    * 子部门
    */
-  children: Array<T>;
+  children?: Array<T>;
 }
 
 export interface TreeModel<T> {

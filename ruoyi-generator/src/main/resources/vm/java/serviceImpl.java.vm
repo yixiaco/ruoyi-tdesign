@@ -9,6 +9,7 @@ import com.ruoyi.common.core.domain.PageQuery;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import ${packageName}.domain.bo.${ClassName}Bo;
+import ${packageName}.domain.dto.${ClassName}Query;
 import ${packageName}.domain.vo.${ClassName}Vo;
 import ${packageName}.domain.${ClassName};
 import ${packageName}.mapper.${ClassName}Mapper;
@@ -33,7 +34,7 @@ public class ${ClassName}ServiceImpl extends ServiceImpl<${ClassName}Mapper, ${C
      * @return ${ClassName}Vo
      */
     @Override
-    public ${ClassName}Vo queryById(${pkColumn.javaType} ${pkColumn.javaField}){
+    public ${ClassName}Vo queryById(${pkColumn.javaType} ${pkColumn.javaField}) {
         return baseMapper.selectVoById(${pkColumn.javaField});
     }
 
@@ -41,24 +42,24 @@ public class ${ClassName}ServiceImpl extends ServiceImpl<${ClassName}Mapper, ${C
     /**
      * 查询${functionName}列表
      *
-     * @param bo
+     * @param query 查询对象
      * @return ${ClassName}Vo
      */
     @Override
-    public TableDataInfo<${ClassName}Vo> queryPageList(${ClassName}Bo bo) {
-        return PageQuery.of(() -> baseMapper.queryList(bo));
+    public TableDataInfo<${ClassName}Vo> queryPageList(${ClassName}Query query) {
+        return PageQuery.of(() -> baseMapper.queryList(query));
     }
 #end
 
     /**
      * 查询${functionName}列表
      *
-     * @param bo
+     * @param query 查询对象
      * @return ${ClassName}Vo
      */
     @Override
-    public List<${ClassName}Vo> queryList(${ClassName}Bo bo) {
-        return baseMapper.queryList(bo);
+    public List<${ClassName}Vo> queryList(${ClassName}Query query) {
+        return baseMapper.queryList(query);
     }
 
     /**

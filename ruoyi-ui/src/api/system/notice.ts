@@ -3,7 +3,7 @@ import { R, TableDataInfo } from '@/api/model/resultModel';
 import { SysNotice } from '@/api/system/model/noticeModel';
 
 // 查询公告列表
-export function listNotice(query) {
+export function listNotice(query: SysNotice) {
   return request.get<TableDataInfo<SysNotice>>({
     url: '/system/notice/list',
     params: query,
@@ -11,14 +11,14 @@ export function listNotice(query) {
 }
 
 // 查询公告详细
-export function getNotice(noticeId) {
+export function getNotice(noticeId: number) {
   return request.get<R<SysNotice>>({
     url: `/system/notice/${noticeId}`,
   });
 }
 
 // 新增公告
-export function addNotice(data) {
+export function addNotice(data: SysNotice) {
   return request.post<R<void>>({
     url: '/system/notice',
     data,
@@ -26,7 +26,7 @@ export function addNotice(data) {
 }
 
 // 修改公告
-export function updateNotice(data) {
+export function updateNotice(data: SysNotice) {
   return request.put<R<void>>({
     url: '/system/notice',
     data,
@@ -34,7 +34,7 @@ export function updateNotice(data) {
 }
 
 // 删除公告
-export function delNotice(noticeId) {
+export function delNotice(noticeId: number) {
   return request.delete<R<void>>({
     url: `/system/notice/${noticeId}`,
   });

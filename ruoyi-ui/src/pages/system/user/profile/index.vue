@@ -75,12 +75,13 @@ import { getUserProfile } from '@/api/system/user';
 import UserInfo from '@/pages/system/user/profile/userInfo.vue';
 import ResetPwd from '@/pages/system/user/profile/resetPwd.vue';
 import UserAvatar from '@/pages/system/user/profile/userAvatar.vue';
+import { UserProfile } from '@/api/system/model/userModel';
 
 const activeTab = ref('userinfo');
-const state = reactive({
+const state = reactive<UserProfile>({
   user: {},
-  roleGroup: {},
-  postGroup: {},
+  roleGroup: '',
+  postGroup: '',
 });
 
 function getUser() {

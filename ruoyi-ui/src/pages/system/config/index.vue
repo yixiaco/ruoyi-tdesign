@@ -21,7 +21,7 @@
 </template>
 <script lang="ts">
 export default {
-  name: 'Config',
+  name: 'SysConfig',
 };
 </script>
 <script lang="ts" setup>

@@ -336,7 +336,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { getCurrentInstance, ref } from 'vue';
 import {
   AddIcon,
   BrowseIcon,
@@ -347,8 +347,9 @@ import {
   SettingIcon,
   UnfoldMoreIcon,
 } from 'tdesign-icons-vue-next';
-import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { EnhancedTableInstanceFunctions, FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { list${BusinessName}, get${BusinessName}, del${BusinessName}, add${BusinessName}, update${BusinessName} } from '@/api/${moduleName}/${businessName}';
+import { ${ClassName}Bo, ${ClassName}Query, ${ClassName}Vo } from '@/api/${moduleName}/model/${businessName}Model';
 
 const { proxy } = getCurrentInstance();
 #if(${dicts} != '')
@@ -356,7 +357,7 @@ const { proxy } = getCurrentInstance();
 const { ${dictsNoSymbol} } = proxy.useDict(${dicts});
 #end
 
-const ${businessName}List = ref([]);
+const ${businessName}List = ref<${ClassName}Vo[]>([]);
 const ${businessName}Options = ref([]);
 const open = ref(false);
 const openView = ref(false);
@@ -367,43 +368,14 @@ const columnControllerVisible = ref(false);
 const showSearch = ref(true);
 const title = ref('');
 const isExpandAll = ref(true);
-const tableRef = ref(null);
-const ${businessName}Ref = ref(null);
+const tableRef = ref<EnhancedTableInstanceFunctions>(null);
+const ${businessName}Ref = ref<FormInstanceFunctions>(null);
 #foreach ($column in $columns)
 #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
 const daterange${AttrName} = ref([]);
 #end
 #end
-const formInitValue = {
-#foreach ($column in $columns)
-#if($column.htmlType == "checkbox")
-  $column.javaField: [],
-#else
-  $column.javaField: null,
-#end
-#end
-};
-
-const data = reactive({
-  form: { ...formInitValue },
-  queryParams: {
-    params: {
-#foreach ($column in $columns)
-#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
-#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
-      begin${AttrName}: undefined,
-      end${AttrName}: undefined,
-#end
-#end
-    },
-#foreach ($column in $columns)
-#if($column.query)
-    $column.javaField: undefined,
-#end
-#end
-  },
-});
 const rules = ref<Record<string, Array<FormRule>>>({
 #foreach ($column in $columns)
 #if($column.required)
@@ -445,7 +417,23 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 230 },
 ]);
 
-const { queryParams, form } = toRefs(data);
+const form = ref<${ClassName}Vo>({});
+const queryParams = ref<${ClassName}Query>({
+  params: {
+#foreach ($column in $columns)
+#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+    begin${AttrName}: undefined,
+    end${AttrName}: undefined,
+#end
+#end
+  },
+#foreach ($column in $columns)
+#if($column.query)
+  $column.javaField: undefined,
+#end
+#end
+});
 
 /** 查询${functionName}列表 */
 function getList() {
@@ -495,7 +483,7 @@ function getTreeselect() {
 
 // 表单重置
 function reset() {
-  form.value = { ...formInitValue };
+  form.value = {};
   proxy.resetForm('${businessName}Ref');
 }
 
@@ -544,9 +532,9 @@ function handleDetail(row) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const $${pkColumn.javaField} = row.${pkColumn.javaField} || ids.value;
+  const $${pkColumn.javaField} = row.${pkColumn.javaField};
   get${BusinessName}($${pkColumn.javaField}).then((response) => {
-    form.value = { ...form.value, ...response.data };
+    form.value = response.data;
     openViewLoading.value = false;
   });
 }
@@ -563,7 +551,7 @@ async function handleUpdate(row) {
   }
   get${BusinessName}(row.${pkColumn.javaField}).then((response) => {
     buttonLoading.value = false;
-    form.value = { ...form.value, ...response.data };
+    form.value = response.data;
 #foreach ($column in $columns)
 #if($column.htmlType == "checkbox")
     form.value.$column.javaField = form.value.${column.javaField}.split(",");

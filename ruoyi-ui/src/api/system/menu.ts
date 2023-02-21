@@ -3,7 +3,7 @@ import { RoleMenuTreeselect, SysMenu } from '@/api/system/model/menuModel';
 import { R, TreeModel } from '@/api/model/resultModel';
 
 // 查询菜单列表
-export function listMenu(query?) {
+export function listMenu(query?: Partial<SysMenu>) {
   return request.get<R<Array<SysMenu>>>({
     url: '/system/menu/list',
     params: query,
@@ -11,7 +11,7 @@ export function listMenu(query?) {
 }
 
 // 查询菜单详细
-export function getMenu(menuId) {
+export function getMenu(menuId: number) {
   return request.get<R<SysMenu>>({
     url: `/system/menu/${menuId}`,
   });
@@ -25,14 +25,14 @@ export function treeselect() {
 }
 
 // 根据角色ID查询菜单下拉树结构
-export function roleMenuTreeselect(roleId) {
+export function roleMenuTreeselect(roleId: number) {
   return request.get<R<RoleMenuTreeselect>>({
     url: `/system/menu/roleMenuTreeselect/${roleId}`,
   });
 }
 
 // 新增菜单
-export function addMenu(data) {
+export function addMenu(data: SysMenu) {
   return request.post<R<void>>({
     url: '/system/menu',
     data,
@@ -40,7 +40,7 @@ export function addMenu(data) {
 }
 
 // 修改菜单
-export function updateMenu(data) {
+export function updateMenu(data: SysMenu) {
   return request.put<R<void>>({
     url: '/system/menu',
     data,
@@ -48,7 +48,7 @@ export function updateMenu(data) {
 }
 
 // 删除菜单
-export function delMenu(menuId) {
+export function delMenu(menuId: number) {
   return request.delete<R<void>>({
     url: `/system/menu/${menuId}`,
   });

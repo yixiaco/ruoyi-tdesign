@@ -47,7 +47,7 @@
         <!--        </t-button>-->
       </t-form-item>
 
-      <div class="check-container remember-pwd">
+      <div v-show="false" class="check-container remember-pwd">
         <t-checkbox v-model="formData.rememberMe">记住账号</t-checkbox>
         <span class="tip">忘记账号？</span>
       </div>
@@ -86,8 +86,8 @@
 
     <div class="switch-container">
       <span v-if="type !== 'password'" class="tip" @click="switchType('password')">使用账号密码登录</span>
-      <span v-if="type !== 'qrcode'" class="tip" @click="switchType('qrcode')">使用微信扫码登录</span>
-      <span v-if="type !== 'phone'" class="tip" @click="switchType('phone')">使用手机号登录</span>
+      <span v-show="false" v-if="type !== 'qrcode'" class="tip" @click="switchType('qrcode')">使用微信扫码登录</span>
+      <span v-show="false" v-if="type !== 'phone'" class="tip" @click="switchType('phone')">使用手机号登录</span>
     </div>
   </t-form>
 </template>
@@ -108,15 +108,6 @@ import { LoginParam } from '@/api/model/loginModel';
 
 const userStore = useUserStore();
 
-const INITIAL_DATA = {
-  phone: '',
-  account: 'admin',
-  password: 'admin123',
-  rememberMe: false,
-  code: '',
-  uuid: '',
-};
-
 const FORM_RULES: Record<string, FormRule[]> = {
   phone: [{ required: true, message: '手机号必填', type: 'error' }],
   account: [{ required: true, message: '账号必填', type: 'error' }],
@@ -127,7 +118,14 @@ const FORM_RULES: Record<string, FormRule[]> = {
 const type = ref('password');
 
 const form = ref<FormInstanceFunctions>();
-const formData = ref({ ...INITIAL_DATA });
+const formData = ref({
+  phone: '',
+  account: 'admin',
+  password: 'admin123',
+  rememberMe: false,
+  code: '',
+  uuid: '',
+});
 const showPsw = ref(false);
 const codeUrl = ref('');
 const loading = ref(false);

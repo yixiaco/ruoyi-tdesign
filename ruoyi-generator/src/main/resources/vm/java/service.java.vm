@@ -1,8 +1,9 @@
 package ${packageName}.service;
 
 import ${packageName}.domain.${ClassName};
-import ${packageName}.domain.vo.${ClassName}Vo;
 import ${packageName}.domain.bo.${ClassName}Bo;
+import ${packageName}.domain.dto.${ClassName}Query;
+import ${packageName}.domain.vo.${ClassName}Vo;
 import com.baomidou.mybatisplus.extension.service.IService;
 #if($table.crud || $table.sub)
 import com.ruoyi.common.core.page.TableDataInfo;
@@ -31,19 +32,19 @@ public interface I${ClassName}Service extends IService<${ClassName}> {
     /**
      * 查询${functionName}列表
      *
-     * @param bo
+     * @param query 查询对象
      * @return ${ClassName}Vo
      */
-    TableDataInfo<${ClassName}Vo> queryPageList(${ClassName}Bo bo);
+    TableDataInfo<${ClassName}Vo> queryPageList(${ClassName}Query query);
 #end
 
     /**
      * 查询${functionName}列表
      *
-     * @param bo
+     * @param query 查询对象
      * @return ${ClassName}Vo
      */
-    List<${ClassName}Vo> queryList(${ClassName}Bo bo);
+    List<${ClassName}Vo> queryList(${ClassName}Query query);
 
     /**
      * 新增${functionName}

@@ -1,94 +1,96 @@
 /**
  * 操作日志记录
  */
-export interface SysOperLog {
+import { BaseEntity } from '@/api/model/resultModel';
+
+export interface SysOperLog extends BaseEntity {
   /**
    * 日志主键
    */
-  operId: number;
+  operId?: number;
 
   /**
    * 操作模块
    */
-  title: string;
+  title?: string;
 
   /**
    * 业务类型（0其它 1新增 2修改 3删除）
    */
-  businessType: number;
+  businessType?: number;
 
   /**
    * 业务类型数组
    */
-  businessTypes: Array<number>;
+  businessTypes?: Array<number>;
 
   /**
    * 请求方法
    */
-  method: string;
+  method?: string;
 
   /**
    * 请求方式
    */
-  requestMethod: string;
+  requestMethod?: string;
 
   /**
    * 操作类别（0其它 1后台用户 2手机端用户）
    */
-  operatorType: number;
+  operatorType?: number;
 
   /**
    * 操作人员
    */
-  operName: string;
+  operName?: string;
 
   /**
    * 部门名称
    */
-  deptName: string;
+  deptName?: string;
 
   /**
    * 请求url
    */
-  operUrl: string;
+  operUrl?: string;
 
   /**
    * 操作地址
    */
-  operIp: string;
+  operIp?: string;
 
   /**
    * 操作地点
    */
-  operLocation: string;
+  operLocation?: string;
 
   /**
    * 请求参数
    */
-  operParam: string;
+  operParam?: string;
 
   /**
    * 返回参数
    */
-  jsonResult: string;
+  jsonResult?: string;
 
   /**
    * 操作状态（0正常 1异常）
    */
-  status: number;
+  status?: number;
 
   /**
    * 错误消息
    */
-  errorMsg: string;
+  errorMsg?: string;
 
   /**
    * 操作时间
    */
-  operTime: object;
+  operTime?: object;
 
   /**
    * 请求参数
    */
-  params: Map<string, object>;
+  params?: Map<string, object>;
 }

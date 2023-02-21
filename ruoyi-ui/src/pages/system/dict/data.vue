@@ -171,7 +171,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { computed, getCurrentInstance, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import {
   AddIcon,
@@ -183,16 +183,17 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import useDictStore from '@/store/modules/dict';
 import { optionselect as getDictOptionselect, getType } from '@/api/system/dict/type';
 import { listData, getData, delData, addData, updateData } from '@/api/system/dict/data';
 import { useTabsRouterStore } from '@/store';
+import { SysDictData, SysDictType } from '@/api/system/model/dictModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
-const dataList = ref([]);
+const dataList = ref<SysDictData[]>([]);
 const open = ref(false);
 const loading = ref(false);
 const eLoading = ref(false);
@@ -203,9 +204,9 @@ const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
 const defaultDictType = ref('');
-const typeOptions = ref([]);
+const typeOptions = ref<SysDictType[]>([]);
 const columnControllerVisible = ref(false);
-const dataRef = ref(null);
+const dataRef = ref<FormInstanceFunctions>(null);
 const tabsRouterStore = useTabsRouterStore();
 const route = useRoute();
 const router = useRouter();
@@ -218,27 +219,6 @@ const listClassOptions = ref([
   { value: 'danger', label: '危险' },
 ]);
 
-const formInitValue = {
-  dictCode: undefined,
-  dictLabel: undefined,
-  dictValue: undefined,
-  dictType: undefined,
-  cssClass: undefined,
-  listClass: 'default',
-  dictSort: 0,
-  status: '0',
-  remark: undefined,
-};
-const data = reactive({
-  form: { ...formInitValue },
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    dictName: undefined,
-    dictType: undefined,
-    status: undefined,
-  },
-});
 const rules = ref<Record<string, Array<FormRule>>>({
   dictLabel: [{ required: true, message: '数据标签不能为空', trigger: 'blur' }],
   dictValue: [{ required: true, message: '数据键值不能为空', trigger: 'blur' }],
@@ -257,6 +237,19 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 160 },
 ]);
 
+const form = ref<SysDictData>({
+  listClass: 'default',
+  dictSort: 0,
+  status: '0',
+});
+const queryParams = ref<SysDictData>({
+  pageNum: 1,
+  pageSize: 10,
+  dictLabel: undefined,
+  dictType: undefined,
+  status: undefined,
+});
+
 // 分页
 const pagination = computed(() => {
   return {
@@ -265,14 +258,12 @@ const pagination = computed(() => {
     total: total.value,
     showJumper: true,
     onChange: (pageInfo) => {
-      data.queryParams.pageNum = pageInfo.current;
-      data.queryParams.pageSize = pageInfo.pageSize;
+      queryParams.value.pageNum = pageInfo.current;
+      queryParams.value.pageSize = pageInfo.pageSize;
       getList();
     },
   };
 });
-
-const { queryParams, form } = toRefs(data);
 
 /** 查询字典类型详细 */
 function getTypes(dictId) {
@@ -300,7 +291,17 @@ function getList() {
 }
 /** 表单重置 */
 function reset() {
-  form.value = { ...formInitValue };
+  form.value = {
+    dictCode: undefined,
+    dictLabel: undefined,
+    dictValue: undefined,
+    dictType: undefined,
+    cssClass: undefined,
+    listClass: 'default',
+    dictSort: 0,
+    status: '0',
+    remark: undefined,
+  };
   proxy.resetForm('dataRef');
 }
 /** 搜索按钮操作 */
@@ -315,7 +316,7 @@ function handleClose() {
 /** 重置按钮操作 */
 function resetQuery() {
   proxy.resetForm('queryRef');
-  queryParams.value.dictType = defaultDictType;
+  queryParams.value.dictType = defaultDictType.value;
   handleQuery();
 }
 /** 新增按钮操作 */

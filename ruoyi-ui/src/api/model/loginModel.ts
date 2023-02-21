@@ -26,3 +26,35 @@ export interface LoginParam {
   code: string;
   uuid: string;
 }
+
+/**
+ * 用户登录对象
+ */
+export interface LoginBody {
+  /**
+   * 用户名
+   */
+  username: string;
+
+  /**
+   * 用户密码
+   */
+  password: string;
+
+  /**
+   * 验证码
+   */
+  code: string;
+
+  /**
+   * 唯一标识
+   */
+  uuid: string;
+}
+
+/**
+ * 用户注册对象
+ */
+export interface RegisterBody extends LoginBody {
+  userType: string;
+}

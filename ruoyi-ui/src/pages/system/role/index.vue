@@ -263,7 +263,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import { useRouter } from 'vue-router';
-import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { computed, getCurrentInstance, ref } from 'vue';
 import {
   AddIcon,
   CheckCircleIcon,
@@ -276,7 +276,7 @@ import {
   SettingIcon,
   UserIcon,
 } from 'tdesign-icons-vue-next';
-import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PrimaryTableCol, TreeInstanceFunctions } from 'tdesign-vue-next';
 import {
   addRole,
   changeRoleStatus,
@@ -288,12 +288,14 @@ import {
   deptTreeSelect,
 } from '@/api/system/role';
 import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
+import { SysRole } from '@/api/system/model/roleModel';
+import { TreeModel } from '@/api/model/resultModel';
 
 const router = useRouter();
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
-const roleList = ref([]);
+const roleList = ref<SysRole[]>([]);
 const open = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
@@ -303,21 +305,21 @@ const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
 const dateRange = ref([]);
-const menuOptions = ref([]);
+const menuOptions = ref<TreeModel<number>[]>([]);
 const menuExpand = ref(false);
 const menuNodeAll = ref(false);
 const deptExpand = ref(true);
 const deptNodeAll = ref(false);
-const deptOptions = ref([]);
+const deptOptions = ref<TreeModel<number>[]>([]);
 const openDataScope = ref(false);
-const menuRef = ref(null);
-const deptRef = ref(null);
-const roleRef = ref(null);
+const menuRef = ref<TreeInstanceFunctions>(null);
+const deptRef = ref<TreeInstanceFunctions>(null);
+const roleRef = ref<FormInstanceFunctions>(null);
 const dataScopeRef = ref(null);
-const menuIds = ref([]);
-const deptIds = ref([]);
-const menuExpandNode = ref([]);
-const deptExpandNode = ref([]);
+const menuIds = ref<number[]>([]);
+const deptIds = ref<number[]>([]);
+const menuExpandNode = ref<number[]>([]);
+const deptExpandNode = ref<number[]>([]);
 const columnControllerVisible = ref(false);
 
 /** 数据范围选项 */
@@ -340,35 +342,24 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
 
-const formInitValue = {
-  roleId: undefined,
-  roleName: undefined,
-  roleKey: undefined,
-  roleSort: 0,
-  status: '0',
-  menuIds: [],
-  deptIds: [],
-  remark: undefined,
-  dataScope: undefined,
-  menuCheckStrictly: true,
-  deptCheckStrictly: true,
-};
-const data = reactive({
-  form: { ...formInitValue },
-  queryParams: {
-    pageNum: 1,
-    pageSize: 10,
-    roleName: undefined,
-    roleKey: undefined,
-    status: undefined,
-  },
-});
 const rules = ref<Record<string, Array<FormRule>>>({
   roleName: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }],
   roleKey: [{ required: true, message: '权限字符不能为空', trigger: 'blur' }],
   roleSort: [{ required: true, message: '角色顺序不能为空', trigger: 'blur' }],
 });
-const { queryParams, form } = toRefs(data);
+const form = ref<SysRole>({
+  roleSort: 0,
+  status: '0',
+  menuIds: [],
+  deptIds: [],
+});
+const queryParams = ref<SysRole>({
+  pageNum: 1,
+  pageSize: 10,
+  roleName: undefined,
+  roleKey: undefined,
+  status: undefined,
+});
 
 const pagination = computed(() => {
   return {
@@ -377,8 +368,8 @@ const pagination = computed(() => {
     total: total.value,
     showJumper: true,
     onChange: (pageInfo) => {
-      data.queryParams.pageNum = pageInfo.current;
-      data.queryParams.pageSize = pageInfo.pageSize;
+      queryParams.value.pageNum = pageInfo.current;
+      queryParams.value.pageSize = pageInfo.pageSize;
       getList();
     },
   };
@@ -456,7 +447,7 @@ function getMenuTreeselect() {
 /** 所有部门节点数据 */
 function getDeptAllCheckedKeys() {
   const items = deptRef.value.getItems();
-  return items.filter((item) => item.indeterminate || item.checked).map((item) => item.value);
+  return items.filter((item) => item.indeterminate || item.checked).map((item) => Number(item.value));
 }
 /** 重置新增的表单以及其他数据  */
 function reset() {
@@ -466,7 +457,19 @@ function reset() {
   menuNodeAll.value = false;
   deptExpand.value = true;
   deptNodeAll.value = false;
-  form.value = { ...formInitValue };
+  form.value = {
+    roleId: undefined,
+    roleName: undefined,
+    roleKey: undefined,
+    roleSort: 0,
+    status: '0',
+    menuIds: [],
+    deptIds: [],
+    remark: undefined,
+    dataScope: undefined,
+    menuCheckStrictly: true,
+    deptCheckStrictly: true,
+  };
   proxy.resetForm('roleRef');
 }
 /** 添加角色 */
@@ -526,14 +529,14 @@ function handleCheckedTreeExpand(value, type) {
 function handleCheckedTreeNodeAll(value, type) {
   if (type === 'menu') {
     if (value) {
-      menuIds.value = menuRef.value.getItems().map((item) => item.value);
+      menuIds.value = menuRef.value.getItems().map((item) => Number(item.value));
     } else {
       menuIds.value = [];
     }
     // menuRef.value.setCheckedNodes(value ? menuOptions.value : []);
   } else if (type === 'dept') {
     if (value) {
-      deptIds.value = deptRef.value.getItems().map((item) => item.value);
+      deptIds.value = deptRef.value.getItems().map((item) => Number(item.value));
     } else {
       deptIds.value = [];
     }
@@ -549,7 +552,7 @@ function onExpand(type, value) {
 /** 所有菜单节点数据 */
 function getMenuAllCheckedKeys() {
   const items = menuRef.value.getItems();
-  return items.filter((item) => item.checked || item.indeterminate).map((item) => item.value);
+  return items.filter((item) => item.checked || item.indeterminate).map((item) => Number(item.value));
 }
 function confirm(type) {
   if (type === 'menu') {

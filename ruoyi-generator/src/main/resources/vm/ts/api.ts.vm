@@ -6,10 +6,10 @@ import { R, TableDataInfo } from '@/api/model/resultModel';
 #set($Result="R<Array<${ClassName}Vo>>")
 import { R } from '@/api/model/resultModel';
 #end
-import { ${ClassName}Vo } from '@/api/${moduleName}/model/${businessName}Model';
+import { ${ClassName}Bo, ${ClassName}Query, ${ClassName}Vo } from '@/api/${moduleName}/model/${businessName}Model';
 
 // 查询${functionName}列表
-export function list${BusinessName}(query) {
+export function list${BusinessName}(query: ${ClassName}Query) {
   return request.get<$Result>({
     url: '/${moduleName}/${businessName}/list',
     params: query,
@@ -24,7 +24,7 @@ export function get${BusinessName}(${pkColumn.javaField}: ${GenUtil.javaTypeToTy
 }
 
 // 新增${functionName}
-export function add${BusinessName}(data) {
+export function add${BusinessName}(data: ${ClassName}Bo) {
   return request.post<R<void>>({
     url: '/${moduleName}/${businessName}',
     data,
@@ -32,7 +32,7 @@ export function add${BusinessName}(data) {
 }
 
 // 修改${functionName}
-export function update${BusinessName}(data) {
+export function update${BusinessName}(data: ${ClassName}Bo) {
   return request.put<R<void>>({
     url: '/${moduleName}/${businessName}',
     data,

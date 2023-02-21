@@ -1,10 +1,10 @@
 import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
-import { DeptTreeSelect, SysRole } from '@/api/system/model/roleModel';
+import { DeptTreeSelect, SysRole, SysUserRole } from '@/api/system/model/roleModel';
 import { SysUser } from '@/api/system/model/userModel';
 
 // 查询角色列表
-export function listRole(query) {
+export function listRole(query: SysRole) {
   return request.get<TableDataInfo<SysRole>>({
     url: '/system/role/list',
     params: query,
@@ -12,14 +12,14 @@ export function listRole(query) {
 }
 
 // 查询角色详细
-export function getRole(roleId) {
+export function getRole(roleId: number) {
   return request.get<R<SysRole>>({
     url: `/system/role/${roleId}`,
   });
 }
 
 // 新增角色
-export function addRole(data) {
+export function addRole(data: SysRole) {
   return request.post<R<void>>({
     url: '/system/role',
     data,
@@ -27,7 +27,7 @@ export function addRole(data) {
 }
 
 // 修改角色
-export function updateRole(data) {
+export function updateRole(data: SysRole) {
   return request.put<R<void>>({
     url: '/system/role',
     data,
@@ -35,7 +35,7 @@ export function updateRole(data) {
 }
 
 // 角色数据权限
-export function dataScope(data) {
+export function dataScope(data: SysRole) {
   return request.put<R<void>>({
     url: '/system/role/dataScope',
     data,
@@ -43,7 +43,7 @@ export function dataScope(data) {
 }
 
 // 角色状态修改
-export function changeRoleStatus(roleId, status) {
+export function changeRoleStatus(roleId: number, status: string) {
   const data = {
     roleId,
     status,
@@ -55,14 +55,14 @@ export function changeRoleStatus(roleId, status) {
 }
 
 // 删除角色
-export function delRole(roleId) {
+export function delRole(roleId: number) {
   return request.delete<R<void>>({
     url: `/system/role/${roleId}`,
   });
 }
 
 // 查询角色已授权用户列表
-export function allocatedUserList(query) {
+export function allocatedUserList(query: SysUser) {
   return request.get<TableDataInfo<SysUser>>({
     url: '/system/role/authUser/allocatedList',
     params: query,
@@ -70,7 +70,7 @@ export function allocatedUserList(query) {
 }
 
 // 查询角色未授权用户列表
-export function unallocatedUserList(query) {
+export function unallocatedUserList(query: SysUser) {
   return request.get<TableDataInfo<SysUser>>({
     url: '/system/role/authUser/unallocatedList',
     params: query,
@@ -78,7 +78,7 @@ export function unallocatedUserList(query) {
 }
 
 // 取消用户授权角色
-export function authUserCancel(data) {
+export function authUserCancel(data: SysUserRole) {
   return request.put<R<void>>({
     url: '/system/role/authUser/cancel',
     data,
@@ -86,7 +86,7 @@ export function authUserCancel(data) {
 }
 
 // 批量取消用户授权角色
-export function authUserCancelAll(data) {
+export function authUserCancelAll(data: { roleId: number; userIds: string }) {
   return request.put<R<void>>({
     url: '/system/role/authUser/cancelAll',
     params: data,
@@ -94,7 +94,7 @@ export function authUserCancelAll(data) {
 }
 
 // 授权用户选择
-export function authUserSelectAll(data) {
+export function authUserSelectAll(data: { roleId: number; userIds: string }) {
   return request.put<R<void>>({
     url: '/system/role/authUser/selectAll',
     params: data,
@@ -102,7 +102,7 @@ export function authUserSelectAll(data) {
 }
 
 // 根据角色ID查询部门树结构
-export function deptTreeSelect(roleId) {
+export function deptTreeSelect(roleId: number) {
   return request.get<R<DeptTreeSelect>>({
     url: `/system/role/deptTree/${roleId}`,
   });

@@ -63,12 +63,13 @@ import { computed, getCurrentInstance, reactive, ref } from 'vue';
 import { RefreshIcon, SearchIcon } from 'tdesign-icons-vue-next';
 import { PrimaryTableCol } from 'tdesign-vue-next';
 import { listDbTable, importTable } from '@/api/tool/gen';
+import { GenTable } from '@/api/tool/model/genModel';
 
 const total = ref(0);
 const loading = ref(false);
 const visible = ref(false);
 const tables = ref([]);
-const dbTableList = ref([]);
+const dbTableList = ref<GenTable[]>([]);
 const { proxy } = getCurrentInstance();
 
 const queryParams = reactive({
@@ -141,7 +142,7 @@ function handleImportTable() {
     proxy.$modal.msgError('请选择要导入的表');
     return;
   }
-  importTable({ tables: tableNames }).then((res) => {
+  importTable(tableNames).then((res) => {
     proxy.$modal.msgSuccess(res.msg);
     if (res.code === 200) {
       visible.value = false;
