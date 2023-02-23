@@ -229,7 +229,6 @@
 <script lang="ts" setup>
 import { getCurrentInstance, PropType, ref, toRefs, watch } from 'vue';
 import { ChevronDownIcon, HelpCircleFilledIcon } from 'tdesign-icons-vue-next';
-import { FormRule } from 'tdesign-vue-next';
 import { listMenu } from '@/api/system/menu';
 import { SysMenu } from '@/api/system/model/menuModel';
 import { GenTable } from '@/api/tool/model/genModel';
@@ -250,15 +249,6 @@ const props = defineProps({
 });
 const { info, tables } = toRefs(props);
 
-// 表单校验
-// eslint-disable-next-line @typescript-eslint/no-unused-vars,no-unused-vars
-const rules = ref<Record<string, Array<FormRule>>>({
-  tplCategory: [{ required: true, message: '请选择生成模板', trigger: 'blur' }],
-  packageName: [{ required: true, message: '请输入生成包路径', trigger: 'blur' }],
-  moduleName: [{ required: true, message: '请输入生成模块名', trigger: 'blur' }],
-  businessName: [{ required: true, message: '请输入生成业务名', trigger: 'blur' }],
-  functionName: [{ required: true, message: '请输入生成功能名', trigger: 'blur' }],
-});
 function subSelectChange(value) {
   info.value.subTableFkName = '';
 }

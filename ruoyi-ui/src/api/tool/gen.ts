@@ -21,7 +21,7 @@ export function listDbTable(query: GenTable) {
 }
 
 // 查询表详细信息
-export function getGenTable(tableId: number) {
+export function getGenTable(tableId: number | string) {
   return request.get<R<GenTableInfo>>({
     headers: { datasource: localStorage.getItem('dataName') },
     url: `/tool/gen/${tableId}`,

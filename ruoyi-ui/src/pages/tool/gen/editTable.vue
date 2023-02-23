@@ -119,7 +119,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router';
-import { getCurrentInstance, ref } from 'vue';
+import { getCurrentInstance, reactive, ref, toRefs } from 'vue';
 import { FormRule } from 'tdesign-vue-next';
 import { getGenTable, updateGenTable } from '@/api/tool/gen';
 import { optionselect as getDictOptionselect } from '@/api/system/dict/type';
@@ -167,9 +167,17 @@ const rules = ref<Record<string, Array<FormRule>>>({
   functionAuthor: [{ required: true, message: '请输入作者', trigger: 'blur' }],
 });
 
-const columnsData = ref<GenTableColumn[]>([]);
-const info = ref<GenTable>({});
-const tables = ref<GenTable[]>([]);
+const form = reactive<{
+  columnsData: GenTableColumn[];
+  info: GenTable;
+  tables: GenTable[];
+}>({
+  columnsData: [],
+  info: {},
+  tables: [],
+});
+
+const { tables, columnsData, info } = toRefs(form);
 
 function onSubmit({ validateResult, firstError }) {
   if (validateResult === true) {
@@ -206,7 +214,7 @@ function close() {
   const tableId = route.params && route.params.tableId;
   if (tableId) {
     // 获取表详细信息
-    getGenTable(Number(tableId)).then((res) => {
+    getGenTable(String(tableId)).then((res) => {
       columnsData.value = res.data.rows;
       info.value = res.data.info;
       tables.value = res.data.tables;
