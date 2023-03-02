@@ -47,6 +47,22 @@ public interface GenConstants {
     String PARENT_MENU_NAME = "parentMenuName";
 
     /**
+     * 是否使用bo对象
+     */
+    String IS_USE_BO = "isUseBO";
+
+    /**
+     * 是否使用bo对象
+     */
+    String IS_USE_QUERY = "isUseQuery";
+
+    /**
+     * 是否使用bo对象
+     */
+    String IS_USE_VO = "isUseVO";
+
+
+    /**
      * 数据库字符串类型
      */
     String[] COLUMN_TYPE_STR = {"char", "varchar", "nvarchar", "varchar2"};

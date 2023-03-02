@@ -8,10 +8,25 @@ import com.ruoyi.common.core.domain.PageQuery;
 #end
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import ${packageName}.domain.bo.${ClassName}Bo;
-import ${packageName}.domain.dto.${ClassName}Query;
-import ${packageName}.domain.vo.${ClassName}Vo;
 import ${packageName}.domain.${ClassName};
+#if($useBO)
+#set($bo="${ClassName}Bo")
+import ${packageName}.domain.bo.${ClassName}Bo;
+#else
+#set($bo=$ClassName)
+#end
+#if($useQuery)
+#set($query="${ClassName}Query")
+import ${packageName}.domain.dto.${ClassName}Query;
+#else
+#set($query=$ClassName)
+#end
+#if($useVO)
+#set($vo="${ClassName}Vo")
+import ${packageName}.domain.vo.${ClassName}Vo;
+#else
+#set($vo=$ClassName)
+#end
 import ${packageName}.mapper.${ClassName}Mapper;
 import ${packageName}.service.I${ClassName}Service;
 
@@ -31,11 +46,15 @@ public class ${ClassName}ServiceImpl extends ServiceImpl<${ClassName}Mapper, ${C
      * 查询${functionName}
      *
      * @param ${pkColumn.javaField} 主键
-     * @return ${ClassName}Vo
+     * @return ${vo}
      */
     @Override
-    public ${ClassName}Vo queryById(${pkColumn.javaType} ${pkColumn.javaField}) {
+    public ${vo} queryById(${pkColumn.javaType} ${pkColumn.javaField}) {
+#if($useVO)
         return baseMapper.selectVoById(${pkColumn.javaField});
+#else
+        return baseMapper.selectById(${pkColumn.javaField});
+#end
     }
 
 #if($table.crud || $table.sub)
@@ -43,10 +62,10 @@ public class ${ClassName}ServiceImpl extends ServiceImpl<${ClassName}Mapper, ${C
      * 查询${functionName}列表
      *
      * @param query 查询对象
-     * @return ${ClassName}Vo
+     * @return ${vo}
      */
     @Override
-    public TableDataInfo<${ClassName}Vo> queryPageList(${ClassName}Query query) {
+    public TableDataInfo<${vo}> queryPageList(${query} query) {
         return PageQuery.of(() -> baseMapper.queryList(query));
     }
 #end
@@ -55,10 +74,10 @@ public class ${ClassName}ServiceImpl extends ServiceImpl<${ClassName}Mapper, ${C
      * 查询${functionName}列表
      *
      * @param query 查询对象
-     * @return ${ClassName}Vo
+     * @return ${vo}
      */
     @Override
-    public List<${ClassName}Vo> queryList(${ClassName}Query query) {
+    public List<${vo}> queryList(${query} query) {
         return baseMapper.queryList(query);
     }
 
@@ -70,9 +89,13 @@ public class ${ClassName}ServiceImpl extends ServiceImpl<${ClassName}Mapper, ${C
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean insertByBo(${ClassName}Bo bo) {
+    public Boolean insertByBo(${bo} bo) {
+#if($useBO)
         ${ClassName} add = BeanUtil.toBean(bo, ${ClassName}.class);
         return save(add);
+#else
+        return save(bo);
+#end
     }
 
     /**
@@ -83,9 +106,13 @@ public class ${ClassName}ServiceImpl extends ServiceImpl<${ClassName}Mapper, ${C
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean updateByBo(${ClassName}Bo bo) {
+    public Boolean updateByBo(${bo} bo) {
+#if($useBO)
         ${ClassName} update = BeanUtil.toBean(bo, ${ClassName}.class);
         return updateById(update);
+#else
+        return updateById(bo);
+#end
     }
 
     /**

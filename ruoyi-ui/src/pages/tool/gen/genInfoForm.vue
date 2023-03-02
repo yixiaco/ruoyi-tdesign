@@ -82,6 +82,27 @@
     <t-col :span="6">
       <t-form-item name="info.genType">
         <template #label>
+          选择生成对象
+          <t-tooltip placement="top">
+            <template #content>
+              <p>BO对象：保存和编辑时，会使用BO对象替代原始对象</p>
+              <p>VO对象：列表查询、查看详情时，会使用VO对象替代原始对象</p>
+              <p>Query对象：查询条件传递时，会使用Query对象替代原始对象</p>
+            </template>
+            <help-circle-filled-icon />
+          </t-tooltip>
+        </template>
+        <t-space>
+          <t-checkbox v-model="info.isUseQuery">使用Query对象</t-checkbox>
+          <t-checkbox v-model="info.isUseBO">使用BO对象</t-checkbox>
+          <t-checkbox v-model="info.isUseVO">使用VO对象</t-checkbox>
+        </t-space>
+      </t-form-item>
+    </t-col>
+
+    <t-col :span="6">
+      <t-form-item name="info.genType">
+        <template #label>
           生成代码方式
           <t-tooltip content="默认为zip压缩包下载，也可以自定义生成路径" placement="top">
             <help-circle-filled-icon />
@@ -239,7 +260,7 @@ const { proxy } = getCurrentInstance();
 
 const props = defineProps({
   info: {
-    type: Object,
+    type: Object as PropType<GenTable>,
     default: null,
   },
   tables: {

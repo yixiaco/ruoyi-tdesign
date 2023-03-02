@@ -188,6 +188,9 @@ function onSubmit({ validateResult, firstError }) {
       treeName: info.value.treeName,
       treeParentCode: info.value.treeParentCode,
       parentMenuId: info.value.parentMenuId,
+      isUseQuery: info.value.isUseQuery,
+      isUseBO: info.value.isUseBO,
+      isUseVO: info.value.isUseVO,
     };
     updateGenTable(genTable).then((res) => {
       proxy.$modal.msgSuccess(res.msg);

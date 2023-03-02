@@ -79,6 +79,10 @@ public class VelocityUtils {
         velocityContext.put("dbName", firstLetter(genTable.getTableName(), "_"));
         velocityContext.put("GenUtil", GenUtils.class);
         velocityContext.put("StringUtils", StringUtils.class);
+        velocityContext.put("StrUtil", StrUtil.class);
+        velocityContext.put("useQuery", genTable.getIsUseQuery());
+        velocityContext.put("useBO", genTable.getIsUseBO());
+        velocityContext.put("useVO", genTable.getIsUseVO());
         setMenuVelocityContext(velocityContext, genTable);
         if (GenConstants.TPL_TREE.equals(tplCategory)) {
             setTreeVelocityContext(velocityContext, genTable);
@@ -157,12 +161,19 @@ public class VelocityUtils {
      *
      * @return 模板列表
      */
-    public static List<String> getTemplateList(String tplCategory) {
+    public static List<String> getTemplateList(GenTable table) {
+        String tplCategory = table.getTplCategory();
         List<String> templates = new ArrayList<String>();
         templates.add("vm/java/domain.java.vm");
-        templates.add("vm/java/query.java.vm");
-        templates.add("vm/java/vo.java.vm");
-        templates.add("vm/java/bo.java.vm");
+        if (table.getIsUseQuery()) {
+            templates.add("vm/java/query.java.vm");
+        }
+        if (table.getIsUseVO()) {
+            templates.add("vm/java/vo.java.vm");
+        }
+        if (table.getIsUseBO()) {
+            templates.add("vm/java/bo.java.vm");
+        }
         templates.add("vm/java/controller.java.vm");
         templates.add("vm/java/service.java.vm");
         templates.add("vm/java/serviceImpl.java.vm");

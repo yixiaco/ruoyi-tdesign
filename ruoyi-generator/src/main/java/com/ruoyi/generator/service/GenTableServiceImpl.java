@@ -225,12 +225,14 @@ public class GenTableServiceImpl implements IGenTableService {
         setSubTable(table);
         // 设置主键列信息
         setPkColumn(table);
+        // 设置其他选项
+        setTableFromOptions(table);
         VelocityInitializer.initVelocity();
 
         VelocityContext context = VelocityUtils.prepareContext(table);
 
         // 获取模板列表
-        List<String> templates = VelocityUtils.getTemplateList(table.getTplCategory());
+        List<String> templates = VelocityUtils.getTemplateList(table);
         for (String template : templates) {
             // 渲染模板
             StringWriter sw = new StringWriter();
@@ -269,13 +271,15 @@ public class GenTableServiceImpl implements IGenTableService {
         setSubTable(table);
         // 设置主键列信息
         setPkColumn(table);
+        // 设置其他选项
+        setTableFromOptions(table);
 
         VelocityInitializer.initVelocity();
 
         VelocityContext context = VelocityUtils.prepareContext(table);
 
         // 获取模板列表
-        List<String> templates = VelocityUtils.getTemplateList(table.getTplCategory());
+        List<String> templates = VelocityUtils.getTemplateList(table);
         for (String template : templates) {
             if (!StringUtils.containsAny(template, "sql.vm", "api.js.vm", "index.vue.vm", "index-tree.vue.vm")) {
                 // 渲染模板
@@ -381,13 +385,15 @@ public class GenTableServiceImpl implements IGenTableService {
         setSubTable(table);
         // 设置主键列信息
         setPkColumn(table);
+        // 设置其他信息
+        setTableFromOptions(table);
 
         VelocityInitializer.initVelocity();
 
         VelocityContext context = VelocityUtils.prepareContext(table);
 
         // 获取模板列表
-        List<String> templates = VelocityUtils.getTemplateList(table.getTplCategory());
+        List<String> templates = VelocityUtils.getTemplateList(table);
         for (String template : templates) {
             // 渲染模板
             StringWriter sw = new StringWriter();
@@ -485,12 +491,18 @@ public class GenTableServiceImpl implements IGenTableService {
             String treeName = paramsObj.getStr(GenConstants.TREE_NAME);
             String parentMenuId = paramsObj.getStr(GenConstants.PARENT_MENU_ID);
             String parentMenuName = paramsObj.getStr(GenConstants.PARENT_MENU_NAME);
+            Boolean isUseBO = paramsObj.get(GenConstants.IS_USE_BO, true);
+            Boolean isUseQuery = paramsObj.get(GenConstants.IS_USE_QUERY, true);
+            Boolean isUseVO = paramsObj.get(GenConstants.IS_USE_VO, true);
 
             genTable.setTreeCode(treeCode);
             genTable.setTreeParentCode(treeParentCode);
             genTable.setTreeName(treeName);
             genTable.setParentMenuId(parentMenuId);
             genTable.setParentMenuName(parentMenuName);
+            genTable.setIsUseBO(isUseBO);
+            genTable.setIsUseQuery(isUseQuery);
+            genTable.setIsUseVO(isUseVO);
         }
     }
 

@@ -197,6 +197,24 @@ public class GenTable extends BaseEntity {
     @TableField(exist = false)
     private String parentMenuName;
 
+    /**
+     * 是否使用query对象
+     */
+    @TableField(exist = false)
+    private Boolean isUseQuery;
+
+    /**
+     * 是否使用bo对象
+     */
+    @TableField(exist = false)
+    private Boolean isUseBO;
+
+    /**
+     * 是否使用vo对象
+     */
+    @TableField(exist = false)
+    private Boolean isUseVO;
+
     public boolean isSub() {
         return isSub(this.tplCategory);
     }
@@ -231,5 +249,17 @@ public class GenTable extends BaseEntity {
                 ArrayUtils.addAll(GenConstants.TREE_ENTITY, GenConstants.BASE_ENTITY));
         }
         return StringUtils.equalsAnyIgnoreCase(javaField, GenConstants.BASE_ENTITY);
+    }
+
+    public Boolean getIsUseQuery() {
+        return isUseQuery == null || isUseQuery;
+    }
+
+    public Boolean getIsUseBO() {
+        return isUseBO == null || isUseBO;
+    }
+
+    public Boolean getIsUseVO() {
+        return isUseVO == null || isUseVO;
     }
 }

@@ -1,15 +1,20 @@
 #if($table.crud || $table.sub)
 import { BaseEntity } from '@/api/model/resultModel';
 #set($Entity="BaseEntity")
+#set($QueryEntity=$Entity)
+#set($BoEntity=$Entity)
 #elseif($table.tree)
 import { TreeEntity } from '@/api/model/ResultModel';
-#set($Entity="TreeEntity<${ClassName}Bo>")
+#set($Entity="TreeEntity<${ClassName}>")
+#set($QueryEntity="TreeEntity<${ClassName}Query>")
+#set($BoEntity="TreeEntity<${ClassName}Bo>")
 #end
 
+#if($useQuery)
 /**
  * ${functionName}查询对象
  */
-export interface ${ClassName}Query extends ${Entity} {
+export interface ${ClassName}Query extends ${QueryEntity} {
 #foreach ($column in $columns)
 #if($column.isQuery == '1')
   /** $column.columnComment */
@@ -17,11 +22,13 @@ export interface ${ClassName}Query extends ${Entity} {
 #end
 #end
 }
+#end
 
+#if($useBO)
 /**
  * ${functionName}业务对象
  */
-export interface ${ClassName}Bo extends ${Entity} {
+export interface ${ClassName}Bo extends ${BoEntity} {
 #foreach ($column in $columns)
 #if(($column.isPk == '1' || $column.isInsert == '1' || $column.isEdit == '1'))
   /** $column.columnComment */
@@ -29,6 +36,7 @@ export interface ${ClassName}Bo extends ${Entity} {
 #end
 #end
 }
+#end
 
 /**
  * ${functionName}对象 ${tableName}
@@ -36,10 +44,11 @@ export interface ${ClassName}Bo extends ${Entity} {
 export interface ${ClassName} extends ${Entity} {
 #foreach ($column in $columns)
   /** $column.columnComment */
-  $column.javaField: ${GenUtil.javaTypeToTypescript($column.javaType)};
+  $column.javaField?: ${GenUtil.javaTypeToTypescript($column.javaType)};
 #end
 }
 
+#if($useVO)
 /**
  * ${functionName}视图对象
  */
@@ -51,3 +60,4 @@ export interface ${ClassName}Vo {
 #end
 #end
 }
+#end
