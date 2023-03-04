@@ -13,6 +13,11 @@ export interface SysDept extends TreeEntity<SysDept> {
   deptName?: string;
 
   /**
+   * 上级部门id
+   */
+  parentId?: number;
+
+  /**
    * 显示顺序
    */
   orderNum?: number;

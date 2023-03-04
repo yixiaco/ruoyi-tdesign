@@ -307,7 +307,7 @@ const showSearch = ref(true);
 const columnControllerVisible = ref(false);
 const title = ref('');
 const menuOptions = ref([]);
-const expandAll = ref(false);
+const isExpandAll = ref(false);
 const tableRef = ref<EnhancedTableInstanceFunctions>(null);
 const menuRef = ref<FormInstanceFunctions>(null);
 
@@ -354,6 +354,7 @@ function getList() {
     menuList.value = proxy.handleTree(response.data, 'menuId');
     tableRef.value.resetData(menuList.value);
     loading.value = false;
+    refreshExpandAll();
   });
 }
 /** 查询菜单下拉树结构 */
@@ -396,12 +397,19 @@ function handleAdd(row) {
 }
 /** 展开/折叠操作 */
 function toggleExpandAll() {
-  expandAll.value = !expandAll.value;
-  if (expandAll.value) {
-    tableRef.value.expandAll();
-  } else {
-    tableRef.value.foldAll();
-  }
+  isExpandAll.value = !isExpandAll.value;
+  refreshExpandAll();
+}
+
+/** 刷新展开状态 */
+function refreshExpandAll() {
+  proxy.$nextTick(() => {
+    if (isExpandAll.value) {
+      tableRef.value.expandAll();
+    } else {
+      tableRef.value.foldAll();
+    }
+  });
 }
 /** 修改按钮操作 */
 async function handleUpdate(row) {

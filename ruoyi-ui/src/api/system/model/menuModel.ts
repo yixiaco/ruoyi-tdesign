@@ -15,6 +15,11 @@ export interface SysMenu extends TreeEntity<SysMenu> {
   menuName?: string;
 
   /**
+   * 上级菜单id
+   */
+  parentId?: number;
+
+  /**
    * 显示顺序
    */
   orderNum?: number;

@@ -231,6 +231,7 @@ function getList() {
     deptList.value = proxy.handleTree(response.data, 'deptId');
     tableRef.value.resetData(deptList.value);
     loading.value = false;
+    refreshExpandAll();
   });
 }
 /** 表单重置 */
@@ -264,11 +265,18 @@ function handleAdd(row) {
 /** 展开/折叠操作 */
 function toggleExpandAll() {
   isExpandAll.value = !isExpandAll.value;
-  if (isExpandAll.value) {
-    tableRef.value.expandAll();
-  } else {
-    tableRef.value.foldAll();
-  }
+  refreshExpandAll();
+}
+
+/** 刷新展开状态 */
+function refreshExpandAll() {
+  proxy.$nextTick(() => {
+    if (isExpandAll.value) {
+      tableRef.value.expandAll();
+    } else {
+      tableRef.value.foldAll();
+    }
+  });
 }
 /** 修改按钮操作 */
 function handleUpdate(row) {

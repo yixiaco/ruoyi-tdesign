@@ -427,11 +427,12 @@ const columns = ref<Array<PrimaryTableCol>>([
 #elseif($column.list && "" != $javaField)
 #if(${foreach.index} == 1)
   { title: `${comment}`, colKey: '${javaField}' },
-#end
+#else
   { title: `${comment}`, colKey: '${javaField}', align: 'center' },
 #end
 #end
-  { title: `操作`, colKey: 'operation', align: 'center', width: 230 },
+#end
+  { title: `操作`, colKey: 'operation', align: 'center', width: 240 },
 ]);
 // 提交表单对象
 const form = ref<#if($useVO)$vo#elseif($useBO)$bo#else$ClassName#end>({});
@@ -486,6 +487,7 @@ function getList() {
     ${businessName}List.value = proxy.handleTree(response.data, '${treeCode}', '${treeParentCode}');
     tableRef.value.resetData(${businessName}List.value);
     loading.value = false;
+    refreshExpandAll();
   });
 }
 
@@ -538,11 +540,18 @@ function handleAdd(row) {
 /** 展开/折叠操作 */
 function toggleExpandAll() {
   isExpandAll.value = !isExpandAll.value;
-  if (isExpandAll.value) {
-    tableRef.value.expandAll();
-  } else {
-    tableRef.value.foldAll();
-  }
+  refreshExpandAll();
+}
+
+/** 刷新展开状态 */
+function refreshExpandAll() {
+  proxy.$nextTick(() => {
+    if (isExpandAll.value) {
+      tableRef.value.expandAll();
+    } else {
+      tableRef.value.foldAll();
+    }
+  });
 }
 
 /** 详情按钮操作 */
