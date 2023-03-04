@@ -1,6 +1,7 @@
 <template>
   <t-card>
-    <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
+    <t-space direction="vertical">
+      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
 #foreach($column in $columns)
 #if($column.query)
 #set($dictType=$column.dictType)
@@ -12,96 +13,96 @@
 #set($comment=$column.columnComment)
 #end
 #if($column.htmlType == "input" || $column.htmlType == "textarea")
-      <t-form-item label="${comment}" name="${column.javaField}">
-        <t-input v-model="queryParams.${column.javaField}" placeholder="请输入${comment}" clearable @keyup.enter="handleQuery" />
-      </t-form-item>
+        <t-form-item label="${comment}" name="${column.javaField}">
+          <t-input v-model="queryParams.${column.javaField}" placeholder="请输入${comment}" clearable @keyup.enter="handleQuery" />
+        </t-form-item>
 #elseif(($column.htmlType == "select" || $column.htmlType == "radio") && "" != $dictType)
-      <t-form-item label="${comment}" name="${column.javaField}">
-        <t-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
-          <t-option
-            v-for="dict in ${dictType}"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </t-select>
-      </t-form-item>
+        <t-form-item label="${comment}" name="${column.javaField}">
+          <t-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
+            <t-option
+              v-for="dict in ${dictType}"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </t-select>
+        </t-form-item>
 #elseif(($column.htmlType == "select" || $column.htmlType == "radio") && $dictType)
-      <t-form-item label="${comment}" name="${column.javaField}">
-        <t-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
-          <t-option label="请选择字典生成" value="" />
-        </t-select>
-      </t-form-item>
+        <t-form-item label="${comment}" name="${column.javaField}">
+          <t-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
+            <t-option label="请选择字典生成" value="" />
+          </t-select>
+        </t-form-item>
 #elseif($column.htmlType == "datetime" && $column.queryType != "BETWEEN")
-      <t-form-item label="${comment}" name="${column.javaField}">
-        <t-date-picker
-          v-model="queryParams.${column.javaField}"
-          allow-input
-          clearable
-          placeholder="请选择${comment}"
-        />
-      </t-form-item>
+        <t-form-item label="${comment}" name="${column.javaField}">
+          <t-date-picker
+            v-model="queryParams.${column.javaField}"
+            allow-input
+            clearable
+            placeholder="请选择${comment}"
+          />
+        </t-form-item>
 #elseif($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
-      <t-form-item label="${comment}">
-        <t-date-range-picker
-          v-model="daterange${AttrName}"
-          style="width: 240px"
-          allow-input
-          clearable
-          separator="-"
-          :placeholder="['开始日期', '结束日期']"
-        />
-      </t-form-item>
+        <t-form-item label="${comment}">
+          <t-date-range-picker
+            v-model="daterange${AttrName}"
+            style="width: 240px"
+            allow-input
+            clearable
+            separator="-"
+            :placeholder="['开始日期', '结束日期']"
+          />
+        </t-form-item>
 #end
 #end
 #end
-      <t-form-item label-width="0px">
-        <t-button theme="primary" @click="handleQuery">
-          <template #icon> <search-icon /></template>
-          搜索
-        </t-button>
-        <t-button theme="default" @click="resetQuery">
-          <template #icon> <refresh-icon /></template>
-          重置
-        </t-button>
-      </t-form-item>
-    </t-form>
+        <t-form-item label-width="0px">
+          <t-button theme="primary" @click="handleQuery">
+            <template #icon> <search-icon /></template>
+            搜索
+          </t-button>
+          <t-button theme="default" @click="resetQuery">
+            <template #icon> <refresh-icon /></template>
+            重置
+          </t-button>
+        </t-form-item>
+      </t-form>
 
-    <t-enhanced-table
-      ref="tableRef"
-      v-model:column-controller-visible="columnControllerVisible"
-      :loading="loading"
-      :data="${businessName}List"
-      row-key="${treeCode}"
-      :columns="columns"
-      :column-controller="{
-        hideTriggerButton: true,
-      }"
-      :tree="{ childrenKey: 'children', expandTreeNodeOnClick: true }"
-    >
-      <template #topContent>
-        <t-row>
-          <t-col flex="auto">
-            <t-button v-hasPermi="['${moduleName}:${businessName}:add']" theme="primary" @click="handleAdd">
-              <template #icon> <add-icon /></template>
-              新增
-            </t-button>
-            <t-button theme="default" variant="outline" @click="toggleExpandAll">
-              <template #icon> <unfold-more-icon /> </template>
-              展开/折叠
-            </t-button>
-          </t-col>
-          <t-col flex="none">
-            <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
-              <template #icon> <search-icon /> </template>
-            </t-button>
-            <t-button theme="default" variant="outline" @click="columnControllerVisible = true">
-              <template #icon> <setting-icon /> </template>
-              列配置
-            </t-button>
-          </t-col>
-        </t-row>
-      </template>
+      <t-enhanced-table
+        ref="tableRef"
+        v-model:column-controller-visible="columnControllerVisible"
+        :loading="loading"
+        :data="${businessName}List"
+        row-key="${treeCode}"
+        :columns="columns"
+        :column-controller="{
+          hideTriggerButton: true,
+        }"
+        :tree="{ childrenKey: 'children', expandTreeNodeOnClick: true }"
+      >
+        <template #topContent>
+          <t-row>
+            <t-col flex="auto">
+              <t-button v-hasPermi="['${moduleName}:${businessName}:add']" theme="primary" @click="handleAdd">
+                <template #icon> <add-icon /></template>
+                新增
+              </t-button>
+              <t-button theme="default" variant="outline" @click="toggleExpandAll">
+                <template #icon> <unfold-more-icon /> </template>
+                展开/折叠
+              </t-button>
+            </t-col>
+            <t-col flex="none">
+              <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
+                <template #icon> <search-icon /> </template>
+              </t-button>
+              <t-button theme="default" variant="outline" @click="columnControllerVisible = true">
+                <template #icon> <setting-icon /> </template>
+                列配置
+              </t-button>
+            </t-col>
+          </t-row>
+        </template>
 #foreach($column in $columns)
 #set($javaField=$column.javaField)
 #set($parentheseIndex=$column.columnComment.indexOf("（"))
@@ -111,36 +112,37 @@
 #set($comment=$column.columnComment)
 #end
 #if($column.list && $column.htmlType == "imageUpload")
-      <template #${javaField}="{ row }">
-        <image-preview :src="row.${javaField}" :width="60" :height="60" />
-      </template>
+        <template #${javaField}="{ row }">
+          <image-preview :src="row.${javaField}" :width="60" :height="60" />
+        </template>
 #elseif($column.list && $column.dictType && "" != $column.dictType)
-      <template #${javaField}="{ row }">
+        <template #${javaField}="{ row }">
 #if($column.htmlType == "checkbox")
-        <dict-tag :options="${column.dictType}" :value="row.${javaField} ? row.${javaField}.split(',') : []" />
+          <dict-tag :options="${column.dictType}" :value="row.${javaField} ? row.${javaField}.split(',') : []" />
 #else
-        <dict-tag :options="${column.dictType}" :value="row.${javaField}" />
+          <dict-tag :options="${column.dictType}" :value="row.${javaField}" />
 #end
-      </template>
+        </template>
 #end
 #end
-      <template #operation="{ row }">
-        <t-space :size="8">
-          <t-link v-hasPermi="['${moduleName}:${businessName}:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
-            <browse-icon />详情
-          </t-link>
-          <t-link v-hasPermi="['${moduleName}:${businessName}:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
-            <edit-icon />修改
-          </t-link>
-          <t-link v-hasPermi="['${moduleName}:${businessName}:add']" theme="primary" hover="color" @click.stop="handleAdd(row)">
-            <add-icon />新增
-          </t-link>
-          <t-link v-hasPermi="['${moduleName}:${businessName}:remove']" theme="danger" hover="color" @click.stop="handleDelete(row)">
-            <delete-icon />删除
-          </t-link>
-        </t-space>
-      </template>
-    </t-enhanced-table>
+        <template #operation="{ row }">
+          <t-space :size="8">
+            <t-link v-hasPermi="['${moduleName}:${businessName}:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
+              <browse-icon />详情
+            </t-link>
+            <t-link v-hasPermi="['${moduleName}:${businessName}:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
+              <edit-icon />修改
+            </t-link>
+            <t-link v-hasPermi="['${moduleName}:${businessName}:add']" theme="primary" hover="color" @click.stop="handleAdd(row)">
+              <add-icon />新增
+            </t-link>
+            <t-link v-hasPermi="['${moduleName}:${businessName}:remove']" theme="danger" hover="color" @click.stop="handleDelete(row)">
+              <delete-icon />删除
+            </t-link>
+          </t-space>
+        </template>
+      </t-enhanced-table>
+    </t-space>
 
     <!-- 添加或修改${functionName}对话框 -->
     <t-dialog
@@ -349,7 +351,7 @@ import {
 } from 'tdesign-icons-vue-next';
 import { EnhancedTableInstanceFunctions, FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { list${BusinessName}, get${BusinessName}, del${BusinessName}, add${BusinessName}, update${BusinessName} } from '@/api/${moduleName}/${businessName}';
-import { #if(!$useBO || !$useQuery || !$useVO)${ClassName}#if($useBO || $useQuery || $useVO), #end#end#if($useBO)${ClassName}Bo#if($useQuery || $useVO), #end#end#if($useQuery)${ClassName}Query#if($useVO), #end#end#if($useVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
+import { #if(!$useBO || !$useQuery || !$useVO)${ClassName}#if($useBO || $useQuery || $useVO), #end#end#if(!$useVO && $useBO)${ClassName}Bo#if($useQuery || $useVO), #end#end#if($useQuery)${ClassName}Query#if($useVO), #end#end#if($useVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
 #if($useVO)
 #set($vo="${ClassName}Vo")
 #else

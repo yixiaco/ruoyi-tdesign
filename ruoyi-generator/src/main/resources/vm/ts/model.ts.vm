@@ -22,8 +22,8 @@ export interface ${ClassName}Query extends ${QueryEntity} {
 #end
 #end
 }
-#end
 
+#end
 #if($useBO)
 /**
  * ${functionName}业务对象
@@ -36,8 +36,8 @@ export interface ${ClassName}Bo extends ${BoEntity} {
 #end
 #end
 }
-#end
 
+#end
 /**
  * ${functionName}对象 ${tableName}
  */
@@ -47,8 +47,8 @@ export interface ${ClassName} extends ${Entity} {
   $column.javaField?: ${GenUtil.javaTypeToTypescript($column.javaType)};
 #end
 }
-
 #if($useVO)
+
 /**
  * ${functionName}视图对象
  */

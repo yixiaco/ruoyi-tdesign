@@ -24,7 +24,7 @@ import { R } from '@/api/model/resultModel';
 import { #if(!$useBO || !$useQuery || !$useVO)${ClassName}#if($useBO || $useQuery || $useVO), #end#end#if($useBO)${ClassName}Bo#if($useQuery || $useVO), #end#end#if($useQuery)${ClassName}Query#if($useVO), #end#end#if($useVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
 
 // 查询${functionName}列表
-export function list${BusinessName}(query: ${query}) {
+export function list${BusinessName}(query?: ${query}) {
   return request.get<$Result>({
     url: '/${moduleName}/${businessName}/list',
     params: query,
