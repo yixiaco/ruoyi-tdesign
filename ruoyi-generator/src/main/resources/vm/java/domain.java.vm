@@ -12,8 +12,10 @@ import ${import};
 #end
 #if($table.crud || $table.sub)
 import com.ruoyi.common.core.domain.BaseEntity;
+#set($tree=false)
 #elseif($table.tree)
 import com.ruoyi.common.core.domain.TreeEntity;
+#set($tree=true)
 #end
 
 /**
@@ -22,10 +24,10 @@ import com.ruoyi.common.core.domain.TreeEntity;
  * @author ${author}
  * @date ${datetime}
  */
-#if($table.crud || $table.sub)
+#if(!$tree)
     #set($Entity="BaseEntity")
-#elseif($table.tree)
-    #set($Entity="TreeEntity<${ClassName}>")
+#else
+    #set($Entity="TreeEntity<${ClassName}, ${pkColumn.javaType}>")
 #end
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -52,6 +54,12 @@ public class ${ClassName} extends ${Entity} {
     @TableId(value = "$column.columnName"#if($column.isIncrement == 1), type = IdType.AUTO#end)
 #end
     private $column.javaType $column.javaField;
+
+#end
+#if($tree && ${treeParentCode} != 'parentId')
+    public ${pkColumn.javaType} getParentId() {
+        return ${treeParentCode};
+    }
 
 #end
 }

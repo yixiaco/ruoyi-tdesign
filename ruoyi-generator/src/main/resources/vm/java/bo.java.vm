@@ -13,8 +13,10 @@ import ${import};
 #end
 #if($table.crud || $table.sub)
 import com.ruoyi.common.core.domain.BaseEntity;
+#set($tree=false)
 #elseif($table.tree)
 import com.ruoyi.common.core.domain.TreeEntity;
+#set($tree=true)
 #end
 
 /**
@@ -23,10 +25,10 @@ import com.ruoyi.common.core.domain.TreeEntity;
  * @author ${author}
  * @date ${datetime}
  */
-#if($table.crud || $table.sub)
+#if(!$tree)
 #set($Entity="BaseEntity")
-#elseif($table.tree)
-#set($Entity="TreeEntity<${ClassName}Bo>")
+#else
+#set($Entity="TreeEntity<${ClassName}Bo, ${pkColumn.javaType}>")
 #end
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -51,5 +53,11 @@ public class ${ClassName}Bo extends ${Entity} {
     private $column.javaType $column.javaField;
 
 #end
+#end
+#if($tree && ${treeParentCode} != 'parentId')
+    public ${pkColumn.javaType} getParentId() {
+        return ${treeParentCode};
+    }
+
 #end
 }

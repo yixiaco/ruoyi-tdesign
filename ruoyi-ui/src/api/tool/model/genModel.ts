@@ -159,7 +159,6 @@ export interface GenTable extends BaseEntity {
    */
   isUseVO?: boolean;
 
-
   /**
    * 创建者
    */

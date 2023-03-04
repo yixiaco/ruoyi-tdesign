@@ -65,30 +65,26 @@ export interface BaseEntity {
   params?: Record<string, any | undefined>;
 }
 
+
 /**
  * 树结构
  */
 export interface TreeEntity<T> extends BaseEntity {
   /**
-   * 父菜单名称
+   * 父节点名称
    */
   parentName?: string;
 
   /**
-   * 父菜单ID
-   */
-  parentId?: number;
-
-  /**
-   * 子部门
+   * 子节点
    */
   children?: Array<T>;
 }
 
-export interface TreeModel<T> {
-  id: T;
-  parentId?: T;
+export interface TreeModel<ID> {
+  id: ID;
+  parentId?: ID;
   label: string;
   weight?: any;
-  children?: Array<TreeModel<T>>;
+  children?: Array<TreeModel<ID>>;
 }

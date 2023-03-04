@@ -15,25 +15,26 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TreeEntity<T> extends BaseEntity {
+public abstract class TreeEntity<T, ID> extends BaseEntity {
 
     private static final long serialVersionUID = 1L;
 
     /**
-     * 父菜单名称
+     * 父节点名称
      */
     @TableField(exist = false)
     private String parentName;
 
     /**
-     * 父菜单ID
-     */
-    private Long parentId;
-
-    /**
-     * 子部门
+     * 子节点
      */
     @TableField(exist = false)
     private List<T> children = new ArrayList<>();
 
+    /**
+     * 父节点id
+     *
+     * @return
+     */
+    public abstract ID getParentId();
 }

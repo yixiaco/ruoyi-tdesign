@@ -24,7 +24,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("sys_dept")
-public class SysDept extends TreeEntity<SysDept> {
+public class SysDept extends TreeEntity<SysDept, Long> {
     private static final long serialVersionUID = 1L;
 
     /**
@@ -39,6 +39,11 @@ public class SysDept extends TreeEntity<SysDept> {
     @NotBlank(message = "部门名称不能为空")
     @Size(min = 0, max = 30, message = "部门名称长度不能超过30个字符")
     private String deptName;
+
+    /**
+     * 上级部门id
+     */
+    private Long parentId;
 
     /**
      * 显示顺序
@@ -103,7 +108,4 @@ public class SysDept extends TreeEntity<SysDept> {
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
-
-
-
 }

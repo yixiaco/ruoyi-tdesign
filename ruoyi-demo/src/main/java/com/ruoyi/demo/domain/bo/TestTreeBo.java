@@ -19,13 +19,18 @@ import java.util.Date;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TestTreeBo extends TreeEntity<TestTreeBo> {
+public class TestTreeBo extends TreeEntity<TestTreeBo, Long> {
 
     /**
      * 主键
      */
     @NotNull(message = "主键不能为空", groups = {EditGroup.class})
     private Long id;
+
+    /**
+     * 父节点id
+     */
+    private Long parentId;
 
     /**
      * 部门id

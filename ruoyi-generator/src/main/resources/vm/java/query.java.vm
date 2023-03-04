@@ -8,11 +8,7 @@ import java.util.Date;
 #foreach ($import in $importList)
 import ${import};
 #end
-#if($table.crud || $table.sub)
 import com.ruoyi.common.core.domain.BaseEntity;
-#elseif($table.tree)
-import com.ruoyi.common.core.domain.TreeEntity;
-#end
 
 /**
  * ${functionName}业务对象 ${tableName}
@@ -20,14 +16,9 @@ import com.ruoyi.common.core.domain.TreeEntity;
  * @author ${author}
  * @date ${datetime}
  */
-#if($table.crud || $table.sub)
-#set($Entity="BaseEntity")
-#elseif($table.tree)
-#set($Entity="TreeEntity<${ClassName}Query>")
-#end
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ${ClassName}Query extends ${Entity} {
+public class ${ClassName}Query extends BaseEntity {
 
 #foreach ($column in $columns)
 #if($column.isQuery == '1')

@@ -1,12 +1,10 @@
 #if($table.crud || $table.sub)
 import { BaseEntity } from '@/api/model/resultModel';
 #set($Entity="BaseEntity")
-#set($QueryEntity=$Entity)
 #set($BoEntity=$Entity)
 #elseif($table.tree)
-import { TreeEntity } from '@/api/model/ResultModel';
+import {#if($useQuery) BaseEntity,#end TreeEntity } from '@/api/model/ResultModel';
 #set($Entity="TreeEntity<${ClassName}>")
-#set($QueryEntity="TreeEntity<${ClassName}Query>")
 #set($BoEntity="TreeEntity<${ClassName}Bo>")
 #end
 
@@ -14,7 +12,7 @@ import { TreeEntity } from '@/api/model/ResultModel';
 /**
  * ${functionName}查询对象
  */
-export interface ${ClassName}Query extends ${QueryEntity} {
+export interface ${ClassName}Query extends BaseEntity {
 #foreach ($column in $columns)
 #if($column.isQuery == '1')
   /** $column.columnComment */

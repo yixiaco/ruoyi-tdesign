@@ -21,7 +21,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("test_tree")
-public class TestTree extends TreeEntity<TestTree> {
+public class TestTree extends TreeEntity<TestTree, Long> {
 
     private static final long serialVersionUID = 1L;
 
@@ -31,6 +31,11 @@ public class TestTree extends TreeEntity<TestTree> {
      */
     @TableId(value = "id")
     private Long id;
+
+    /**
+     * 父节点id
+     */
+    private Long parentId;
 
     /**
      * 部门id

@@ -23,7 +23,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("sys_menu")
-public class SysMenu extends TreeEntity<SysMenu> {
+public class SysMenu extends TreeEntity<SysMenu, Long> {
 
     /**
      * 菜单ID
@@ -37,6 +37,11 @@ public class SysMenu extends TreeEntity<SysMenu> {
     @NotBlank(message = "菜单名称不能为空")
     @Size(min = 0, max = 50, message = "菜单名称长度不能超过50个字符")
     private String menuName;
+
+    /**
+     * 父菜单id
+     */
+    private Long parentId;
 
     /**
      * 显示顺序
