@@ -32,7 +32,7 @@ public interface ${ClassName}Mapper extends $extend {
      * 查询${table.functionName}列表
      *
      * @param query 查询对象
-     * @return {@link ${ClassName}Vo}
+     * @return {@link ${vo}}
      */
     List<${vo}> queryList(${query} query);
 }
