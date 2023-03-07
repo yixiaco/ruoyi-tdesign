@@ -1,6 +1,7 @@
 package com.ruoyi.generator.util;
 
 import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.constant.GenConstants;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.generator.config.GenConfig;
@@ -30,14 +31,14 @@ public class GenUtils {
     static {
         /* mysql关键字 */
         KEY_WORD.addAll(ListUtil.toList("select", "insert", "into", "form", "group", "by", "as", "order", "and", "or", "desc",
-                                        "asc", "join", "on", "left", "right", "inner", "table", "sort", "name", "show", "table", "language",
-                                        "lock", "update", "lock", "option", "where", "ssl", "limit", "status", "exit", "drop", "div", "as",
-                                        "not", "null", "is", "add", "all", "union", "alter", "blob", "txt", "clob", "before", "between",
-                                        "bigint", "binary", "int", "case", "do", "then", "when", "char", "varchar", "check", "column", "if",
-                                        "else", "elseif", "dec", "exit", "explain", "exists", "drop", "for", "delete", "user", "database",
-                                        "force", "goto", "key", "regexp", "set", "unlock", "true", "false", "use", "tinyint", "sql", "xor",
-                                        "values", "using", "tinyblob", "smallint", "double", "enum", "decimal", "date", "datetime", "timestamp",
-                                        "year", "float", "time", "long", "geometry", "json", "integer", "tables", "change", "character", "collate"));
+            "asc", "join", "on", "left", "right", "inner", "table", "sort", "name", "show", "table", "language",
+            "lock", "update", "lock", "option", "where", "ssl", "limit", "status", "exit", "drop", "div", "as",
+            "not", "null", "is", "add", "all", "union", "alter", "blob", "txt", "clob", "before", "between",
+            "bigint", "binary", "int", "case", "do", "then", "when", "char", "varchar", "check", "column", "if",
+            "else", "elseif", "dec", "exit", "explain", "exists", "drop", "for", "delete", "user", "database",
+            "force", "goto", "key", "regexp", "set", "unlock", "true", "false", "use", "tinyint", "sql", "xor",
+            "values", "using", "tinyblob", "smallint", "double", "enum", "decimal", "date", "datetime", "timestamp",
+            "year", "float", "time", "long", "geometry", "json", "integer", "tables", "change", "character", "collate"));
     }
 
     /**
@@ -83,11 +84,11 @@ public class GenUtils {
 
             // 如果是浮点型 统一用BigDecimal
             String[] str = StringUtils.split(StringUtils.substringBetween(column.getColumnType(), "(", ")"), ",");
-            if (str != null && str.length == 2 && Integer.parseInt(str[1]) > 0) {
+            if (str != null && str.length == 2 && Integer.parseInt(str[1]) > 0 || arraysContains(GenConstants.COLUMN_TYPE_DOUBLE, column.getColumnType())) {
                 column.setJavaType(GenConstants.TYPE_BIGDECIMAL);
             }
             // 如果是整形
-            else if (str != null && str.length == 1 && Integer.parseInt(str[0]) <= 10) {
+            else if (str != null && str.length == 1 && Integer.parseInt(str[0]) <= 11 || arraysContains(GenConstants.COLUMN_TYPE_INTEGER, column.getColumnType())) {
                 column.setJavaType(GenConstants.TYPE_INTEGER);
             }
             // 长整形
@@ -238,6 +239,8 @@ public class GenUtils {
     public static String getDbType(String columnType) {
         if (StringUtils.indexOf(columnType, '(') > 0) {
             return StringUtils.substringBefore(columnType, "(");
+        } else if (StrUtil.contains(columnType, "unsigned")) {
+            return columnType.replace(columnType, "unsigned").trim();
         } else {
             return columnType;
         }
@@ -275,9 +278,9 @@ public class GenUtils {
      * @return
      */
     public static String javaTypeToTypescript(String javaType) {
-        if (StringUtils.containsAnyIgnoreCase(javaType, "long", "Integer", "int", "short", "byte", "BigDecimal", "BigInteger")) {
+        if (StringUtils.containsAnyIgnoreCase(javaType, "Integer", "int", "short", "byte", "BigDecimal")) {
             return "number";
-        } else if (StringUtils.containsAny(javaType, "String", "CharSequence")) {
+        } else if (StringUtils.containsAnyIgnoreCase(javaType, "String", "CharSequence", "long", "BigInteger")) {
             return "string";
         } else if (StringUtils.containsAnyIgnoreCase(javaType, "boolean")) {
             return "boolean";

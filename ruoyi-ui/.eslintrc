@@ -23,7 +23,7 @@
     "sourceType": "module",
     "allowImportExportEverywhere": true,
     "ecmaFeatures": {
-      "jsx": true
+      "jsx": false
     }
   },
   "settings": {
