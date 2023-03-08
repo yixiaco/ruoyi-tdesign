@@ -239,8 +239,9 @@ public class GenUtils {
     public static String getDbType(String columnType) {
         if (StringUtils.indexOf(columnType, '(') > 0) {
             return StringUtils.substringBefore(columnType, "(");
-        } else if (StrUtil.contains(columnType, "unsigned")) {
-            return columnType.replace(columnType, "unsigned").trim();
+        }
+        if (StrUtil.contains(columnType, "unsigned")) {
+            return columnType.replace("unsigned", "").trim();
         } else {
             return columnType;
         }

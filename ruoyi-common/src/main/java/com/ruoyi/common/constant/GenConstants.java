@@ -72,7 +72,9 @@ public interface GenConstants {
      */
     String[] COLUMN_TYPE_TEXT = {"tinytext", "text", "mediumtext", "longtext"};
 
-    /** 数据库日期时间类型 */
+    /**
+     * 数据库日期时间类型
+     */
     String[] COLUMN_TYPE_DATE = {"datetime", "date", "timestamp"};
 
     /**
@@ -83,8 +85,11 @@ public interface GenConstants {
     /**
      * 数据库数字类型
      */
-    String[] COLUMN_TYPE_NUMBER = {"tinyint", "smallint", "mediumint", "int", "number", "integer",
-        "bit", "bigint", "float", "double", "decimal"};
+    String[] COLUMN_TYPE_NUMBER = {"tinyint", "smallint", "mediumint", "int", "number", "integer", "bit", "bigint", "float", "double", "decimal"};
+
+    String[] COLUMN_TYPE_DOUBLE = {"float", "double", "decimal"};
+
+    String[] COLUMN_TYPE_INTEGER = {"tinyint", "smallint", "mediumint", "int", "number", "integer", "bit", "tinyint unsigned", "smallint unsigned", "mediumint unsigned",};
 
     String[] COLUMN_TYPE_DOUBLE = {"float", "double", "decimal"};
 
@@ -94,8 +99,7 @@ public interface GenConstants {
     /**
      * BO对象 不需要添加字段
      */
-    String[] COLUMN_NAME_NOT_ADD = {"create_by", "create_time", "del_flag", "update_by",
-        "update_time", "version"};
+    String[] COLUMN_NAME_NOT_ADD = {"create_by", "create_time", "del_flag", "update_by", "update_time", "version"};
 
     /**
      * BO对象 不需要编辑字段
@@ -154,7 +158,9 @@ public interface GenConstants {
      */
     String HTML_DATETIME = "datetime";
 
-    /** 时间控件 */
+    /**
+     * 时间控件
+     */
     String HTML_TIME = "time";
 
     /**
@@ -197,7 +203,9 @@ public interface GenConstants {
      */
     String TYPE_BIGDECIMAL = "BigDecimal";
 
-    /** 时间类型 */
+    /**
+     * 时间类型
+     */
     String TYPE_TIME = "Time";
 
     /**

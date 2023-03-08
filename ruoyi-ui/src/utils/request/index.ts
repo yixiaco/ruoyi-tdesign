@@ -295,7 +295,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
           withToken: true,
           // 重试
           retry: {
-            count: 1,
+            count: 0,
             delay: 1000,
           },
           // 防止数据重复提交
