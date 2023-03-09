@@ -12,6 +12,7 @@ import com.ruoyi.common.core.page.TableDataInfo;
 import com.ruoyi.common.core.service.ConfigService;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
+import com.ruoyi.common.utils.funtion.BiOperator;
 import com.ruoyi.common.utils.redis.CacheUtils;
 import com.ruoyi.common.utils.spring.SpringUtils;
 import com.ruoyi.system.domain.SysConfig;
@@ -165,7 +166,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     public void loadingConfigCache() {
         List<SysConfig> configsList = selectConfigList(new SysConfig());
         configsList.forEach(config ->
-                                CacheUtils.put(CacheNames.SYS_CONFIG, config.getConfigKey(), config.getConfigValue()));
+            CacheUtils.put(CacheNames.SYS_CONFIG, config.getConfigKey(), config.getConfigValue()));
     }
 
     /**
@@ -210,7 +211,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     @Override
     public Map<String, Object> queryConfigs(List<String> keys) {
         List<SysConfig> list = lambdaQuery().in(SysConfig::getConfigKey, keys).list();
-        return list.stream().collect(Collectors.toMap(SysConfig::getConfigKey, SysConfig::getConfigValue));
+        return list.stream().collect(Collectors.toMap(SysConfig::getConfigKey, SysConfig::getConfigValue, BiOperator::last));
     }
 
     /**
@@ -222,7 +223,8 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     @Transactional(rollbackFor = Exception.class)
     public void updateConfigs(Map<String, String> configs) {
         List<SysConfig> list = lambdaQuery().in(SysConfig::getConfigKey, configs.keySet()).list();
-        Map<String, SysConfig> map = list.stream().collect(Collectors.toMap(SysConfig::getConfigKey, Function.identity()));
+        Map<String, SysConfig> map = list.stream()
+            .collect(Collectors.toMap(SysConfig::getConfigKey, Function.identity(), BiOperator::last));
         configs.forEach((key, value) -> {
             SysConfig config;
             if (map.containsKey(key)) {

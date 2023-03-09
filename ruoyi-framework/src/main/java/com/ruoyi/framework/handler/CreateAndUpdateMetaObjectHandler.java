@@ -30,10 +30,12 @@ public class CreateAndUpdateMetaObjectHandler implements MetaObjectHandler {
         try {
             TableInfo tableInfo = findTableInfo(metaObject);
             List<StrictFill<?, ?>> fieldFills = new ArrayList<>();
-            fieldFills.add(StrictFill.of("createTime" , Date::new, Date.class));
-            fieldFills.add(StrictFill.of("updateTime" , Date::new, Date.class));
-            fieldFills.add(StrictFill.of("createBy" , this::getLoginUsername, String.class));
-            fieldFills.add(StrictFill.of("updateBy" , this::getLoginUsername, String.class));
+            fieldFills.add(StrictFill.of("createTime", Date::new, Date.class));
+            fieldFills.add(StrictFill.of("updateTime", Date::new, Date.class));
+            fieldFills.add(StrictFill.of("createBy", this::getLoginUsername, String.class));
+            fieldFills.add(StrictFill.of("createBy", this::getLoginId, Long.class));
+            fieldFills.add(StrictFill.of("updateBy", this::getLoginUsername, String.class));
+            fieldFills.add(StrictFill.of("updateBy", this::getLoginId, Long.class));
 
             fillStrategy(true, metaObject, tableInfo, fieldFills);
         } catch (Exception e) {
@@ -46,8 +48,9 @@ public class CreateAndUpdateMetaObjectHandler implements MetaObjectHandler {
         try {
             TableInfo tableInfo = findTableInfo(metaObject);
             List<StrictFill<?, ?>> fieldFills = new ArrayList<>();
-            fieldFills.add(StrictFill.of("updateTime" , Date::new, Date.class));
-            fieldFills.add(StrictFill.of("updateBy" , this::getLoginUsername, String.class));
+            fieldFills.add(StrictFill.of("updateTime", Date::new, Date.class));
+            fieldFills.add(StrictFill.of("updateBy", this::getLoginUsername, String.class));
+            fieldFills.add(StrictFill.of("updateBy", this::getLoginId, Long.class));
 
             fillStrategy(false, metaObject, tableInfo, fieldFills);
         } catch (Exception e) {
@@ -63,10 +66,19 @@ public class CreateAndUpdateMetaObjectHandler implements MetaObjectHandler {
         try {
             loginUser = LoginHelper.getLoginUser();
         } catch (Exception e) {
-            log.warn("自动注入警告 => 用户未登录" );
+            log.warn("自动注入警告 => 用户未登录");
             return null;
         }
         return loginUser.getUsername();
+    }
+
+    /**
+     * 获取登录用户id
+     *
+     * @return
+     */
+    private Long getLoginId() {
+        return LoginHelper.getUserId();
     }
 
     /**

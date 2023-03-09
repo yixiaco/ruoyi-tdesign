@@ -22,6 +22,7 @@ import com.ruoyi.common.utils.DateUtils;
 import com.ruoyi.common.utils.JsonUtils;
 import com.ruoyi.common.utils.StringUtils;
 import com.ruoyi.common.utils.file.FileUtils;
+import com.ruoyi.common.utils.funtion.BiOperator;
 import com.ruoyi.generator.domain.GenTable;
 import com.ruoyi.generator.domain.GenTableColumn;
 import com.ruoyi.generator.mapper.GenTableColumnMapper;
@@ -306,7 +307,8 @@ public class GenTableServiceImpl implements IGenTableService {
     public void synchDb(String tableName) {
         GenTable table = baseMapper.selectGenTableByName(tableName);
         List<GenTableColumn> tableColumns = table.getColumns();
-        Map<String, GenTableColumn> tableColumnMap = tableColumns.stream().collect(Collectors.toMap(GenTableColumn::getColumnName, Function.identity()));
+        Map<String, GenTableColumn> tableColumnMap = tableColumns.stream()
+            .collect(Collectors.toMap(GenTableColumn::getColumnName, Function.identity(), BiOperator::last));
 
         List<GenTableColumn> dbTableColumns = genTableColumnMapper.selectDbTableColumnsByName(tableName);
         if (CollUtil.isEmpty(dbTableColumns)) {

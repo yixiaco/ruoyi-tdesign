@@ -2,6 +2,7 @@ package com.ruoyi.common.utils;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.map.MapUtil;
+import com.ruoyi.common.utils.funtion.BiOperator;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -87,7 +88,7 @@ public class StreamUtils {
         if (CollUtil.isEmpty(collection)) {
             return MapUtil.newHashMap();
         }
-        return collection.stream().collect(Collectors.toMap(key, Function.identity(), (l, r) -> l));
+        return collection.stream().collect(Collectors.toMap(key, Function.identity(), BiOperator::first));
     }
 
     /**
@@ -106,7 +107,7 @@ public class StreamUtils {
         if (CollUtil.isEmpty(collection)) {
             return MapUtil.newHashMap();
         }
-        return collection.stream().collect(Collectors.toMap(key, value, (l, r) -> l));
+        return collection.stream().collect(Collectors.toMap(key, value, BiOperator::first));
     }
 
     /**
@@ -167,7 +168,7 @@ public class StreamUtils {
         }
         return collection
             .stream()
-            .collect(Collectors.groupingBy(key1, LinkedHashMap::new, Collectors.toMap(key2, Function.identity(), (l, r) -> l)));
+            .collect(Collectors.groupingBy(key1, LinkedHashMap::new, Collectors.toMap(key2, Function.identity(), BiOperator::first)));
     }
 
     /**
