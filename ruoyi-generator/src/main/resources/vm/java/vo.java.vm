@@ -9,6 +9,8 @@ import com.ruoyi.common.annotation.ExcelDictFormat;
 import com.ruoyi.common.convert.ExcelDictConvert;
 import lombok.Data;
 import java.util.Date;
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * ${functionName}视图对象 ${tableName}
@@ -18,7 +20,10 @@ import java.util.Date;
  */
 @Data
 @ExcelIgnoreUnannotated
-public class ${ClassName}Vo {
+public class ${ClassName}Vo implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
 #foreach ($column in $columns)
 #if($column.isList == '1' || $column.isPk == '1' || $column.isEdit == '1' || $column.isInsert == '1' || $column.isDetail == '1')

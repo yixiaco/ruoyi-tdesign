@@ -2,7 +2,7 @@ package com.ruoyi.common.core.service;
 
 import cn.hutool.extra.mail.MailAccount;
 
-import javax.mail.Session;
+import jakarta.mail.Session;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;

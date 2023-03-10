@@ -12,7 +12,7 @@ import com.ruoyi.system.handle.MailContextHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.mail.Session;
+import jakarta.mail.Session;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;

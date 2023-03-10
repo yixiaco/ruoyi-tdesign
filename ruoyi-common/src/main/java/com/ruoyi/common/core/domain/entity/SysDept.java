@@ -9,10 +9,12 @@ import com.ruoyi.common.core.domain.TreeEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
+
+import java.io.Serial;
 import java.util.Date;
 
 /**
@@ -25,6 +27,8 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 @TableName("sys_dept")
 public class SysDept extends TreeEntity<SysDept, Long> {
+
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

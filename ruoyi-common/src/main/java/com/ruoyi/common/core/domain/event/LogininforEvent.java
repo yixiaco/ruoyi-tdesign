@@ -2,7 +2,9 @@ package com.ruoyi.common.core.domain.event;
 
 import lombok.Data;
 
-import javax.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletRequest;
+
+import java.io.Serial;
 import java.io.Serializable;
 
 /**
@@ -13,6 +15,7 @@ import java.io.Serializable;
 @Data
 public class LogininforEvent implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
     /**

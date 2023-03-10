@@ -3,7 +3,7 @@ package com.ruoyi.common.utils.spring;
 import org.aspectj.lang.JoinPoint;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.springframework.context.expression.BeanFactoryResolver;
-import org.springframework.core.LocalVariableTableParameterNameDiscoverer;
+import org.springframework.core.StandardReflectionParameterNameDiscoverer;
 import org.springframework.expression.BeanResolver;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.ParserContext;
@@ -50,14 +50,17 @@ public class SpringExpressionUtil {
      */
     public static String parseClassExpression(String expressionString, Method method, Object[] args) {
         //获取方法参数名列表
-        LocalVariableTableParameterNameDiscoverer discoverer = new LocalVariableTableParameterNameDiscoverer();
+        StandardReflectionParameterNameDiscoverer discoverer = new StandardReflectionParameterNameDiscoverer();
         String[] paramNameArr = discoverer.getParameterNames(method);
-        Map<String, Object> variable = new HashMap<>();
+        Map<String, Object> variable;
         if (paramNameArr != null) {
+            variable = new HashMap<>(paramNameArr.length);
             for (int i = 0; i < paramNameArr.length; i++) {
                 String param = paramNameArr[i];
                 variable.put(param, args[i]);
             }
+        } else {
+            variable = new HashMap<>(0);
         }
         return parseExpression(expressionString, variable);
     }

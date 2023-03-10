@@ -7,14 +7,13 @@ import cn.hutool.core.util.CharUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.mail.Mail;
 import cn.hutool.extra.mail.MailAccount;
-import cn.hutool.extra.mail.UserPassAuthenticator;
 import com.ruoyi.common.exception.ServiceException;
 import com.ruoyi.common.utils.StringUtils;
+import jakarta.mail.Authenticator;
+import jakarta.mail.Session;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
-import javax.mail.Authenticator;
-import javax.mail.Session;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
@@ -287,8 +286,10 @@ public class MailUtils {
             authenticator = new UserPassAuthenticator(mailAccount.getUser(), mailAccount.getPass());
         }
 
-        return isSingleton ? Session.getDefaultInstance(mailAccount.getSmtpProps(), authenticator) //
-            : Session.getInstance(mailAccount.getSmtpProps(), authenticator);
+        if (isSingleton) {
+            return Session.getDefaultInstance(mailAccount.getSmtpProps(), authenticator);
+        }
+        return Session.getInstance(mailAccount.getSmtpProps(), authenticator);
     }
 
     // ------------------------------------------------------------------------------------------------------------------------ Private method start

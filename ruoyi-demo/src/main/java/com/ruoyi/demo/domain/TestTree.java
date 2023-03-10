@@ -10,6 +10,7 @@ import com.ruoyi.common.core.domain.TreeEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
 import java.util.Date;
 
 /**
@@ -23,6 +24,7 @@ import java.util.Date;
 @TableName("test_tree")
 public class TestTree extends TreeEntity<TestTree, Long> {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
 

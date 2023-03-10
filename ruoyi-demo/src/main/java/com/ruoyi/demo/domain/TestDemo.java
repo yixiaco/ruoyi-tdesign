@@ -5,6 +5,7 @@ import com.ruoyi.common.core.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import java.io.Serial;
 import java.util.Date;
 
 /**
@@ -18,6 +19,7 @@ import java.util.Date;
 @TableName("test_demo")
 public class TestDemo extends BaseEntity {
 
+    @Serial
     private static final long serialVersionUID = 1L;
 
 
