@@ -14,11 +14,11 @@
 
     <properties>
         <revision>1.0.1-5.0.0</revision>
-        <spring-boot.version>3.0.2</spring-boot.version>
+        <spring-boot.version>3.0.4</spring-boot.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>17</java.version>
-        <spring-boot.mybatis>3.0.0</spring-boot.mybatis>
+        <spring-boot.mybatis>3.0.1</spring-boot.mybatis>
         <springdoc.version>2.0.3</springdoc.version>
         <therapi-javadoc.version>0.15.0</therapi-javadoc.version>
         <poi.version>5.2.3</poi.version>
@@ -85,18 +85,16 @@
         </profile>
     </profiles>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>3.0.4</version>
+        <relativePath/>
+    </parent>
+
     <!-- 依赖声明 -->
     <dependencyManagement>
         <dependencies>
-
-            <!-- SpringBoot的依赖配置-->
-            <dependency>
-                <groupId>org.springframework.boot</groupId>
-                <artifactId>spring-boot-dependencies</artifactId>
-                <version>${spring-boot.version}</version>
-                <type>pom</type>
-                <scope>import</scope>
-            </dependency>
 
             <!-- hutool 的依赖配置-->
             <dependency>
