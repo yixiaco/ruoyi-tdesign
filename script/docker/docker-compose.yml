@@ -10,7 +10,7 @@ services:
       # root 密码
       MYSQL_ROOT_PASSWORD: root
       # 初始化数据库(后续的初始化sql会在这个库执行)
-      MYSQL_DATABASE: ry-vue
+      MYSQL_DATABASE: ruoyi-tdesign
     ports:
       - "3306:3306"
     volumes:

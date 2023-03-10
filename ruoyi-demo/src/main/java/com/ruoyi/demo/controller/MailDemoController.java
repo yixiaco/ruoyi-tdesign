@@ -19,7 +19,7 @@ import java.io.File;
 @Validated
 @RestController
 @RequestMapping("/demo/mail")
-public class MailController {
+public class MailDemoController {
 
     @Autowired
     private MailService mailService;

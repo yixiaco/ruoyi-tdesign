@@ -91,11 +91,6 @@ public interface GenConstants {
 
     String[] COLUMN_TYPE_INTEGER = {"tinyint", "smallint", "mediumint", "int", "number", "integer", "bit", "tinyint unsigned", "smallint unsigned", "mediumint unsigned",};
 
-    String[] COLUMN_TYPE_DOUBLE = {"float", "double", "decimal"};
-
-    String[] COLUMN_TYPE_INTEGER = {"tinyint", "smallint", "mediumint", "int", "number", "integer",
-        "bit"};
-
     /**
      * BO对象 不需要添加字段
      */
