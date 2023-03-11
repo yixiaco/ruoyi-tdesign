@@ -6,7 +6,6 @@
         <t-select v-model="info.tplCategory" @change="tplSelectChange">
           <t-option label="单表（增删改查）" value="crud" />
           <t-option label="树表（增删改查）" value="tree" />
-          <!--<t-option label="主子表（增删改查）" value="sub" />-->
         </t-select>
       </t-form-item>
     </t-col>
@@ -15,7 +14,7 @@
       <t-form-item name="info.packageName">
         <template #label>
           生成包路径
-          <t-tooltip content="生成在哪个java包下，例如 com.ruoyi.system" placement="top">
+          <t-tooltip content="生成在哪个java包下，例如 com.example.system" placement="top">
             <help-circle-filled-icon />
           </t-tooltip>
         </template>
@@ -194,48 +193,6 @@
           <t-select v-model="info.treeName" placeholder="请选择">
             <t-option
               v-for="(column, index) in info.columns"
-              :key="index"
-              :label="column.columnName + '：' + column.columnComment"
-              :value="column.columnName"
-            ></t-option>
-          </t-select>
-        </t-form-item>
-      </t-col>
-    </t-row>
-  </template>
-
-  <template v-if="info.tplCategory === 'sub'">
-    <h4 class="form-header">关联信息</h4>
-    <t-row :gutter="[0, 20]">
-      <t-col :span="6">
-        <t-form-item>
-          <template #label>
-            关联子表的表名
-            <t-tooltip content="关联子表的表名， 如：sys_user" placement="top">
-              <help-circle-filled-icon />
-            </t-tooltip>
-          </template>
-          <t-select v-model="info.subTableName" placeholder="请选择" @change="subSelectChange">
-            <t-option
-              v-for="(table, index) in tables"
-              :key="index"
-              :label="table.tableName + '：' + table.tableComment"
-              :value="table.tableName"
-            ></t-option>
-          </t-select>
-        </t-form-item>
-      </t-col>
-      <t-col :span="6">
-        <t-form-item>
-          <template #label>
-            子表关联的外键名
-            <t-tooltip content="子表关联的外键名， 如：user_id" placement="top">
-              <help-circle-filled-icon />
-            </t-tooltip>
-          </template>
-          <t-select v-model="info.subTableFkName" placeholder="请选择">
-            <t-option
-              v-for="(column, index) in subColumns"
               :key="index"
               :label="column.columnName + '：' + column.columnComment"
               :value="column.columnName"
