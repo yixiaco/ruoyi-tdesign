@@ -2,7 +2,7 @@ package com.ruoyi.system.service;
 
 import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ruoyi.common.core.domain.entity.SysMenu;
+import com.ruoyi.system.domain.SysMenu;
 import com.ruoyi.system.domain.vo.RouterVo;
 
 import java.util.List;

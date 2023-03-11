@@ -1,4 +1,4 @@
-package com.ruoyi.web.controller.common;
+package com.ruoyi.web.controller;
 
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.service.MailService;
@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 import jakarta.validation.constraints.NotBlank;
 
 /**
+ * 邮件服务
  * @author hexm
  * @date 2023/02/03 14:33
  */
@@ -27,11 +28,11 @@ public class MailController {
     /**
      * 发送测试邮件
      *
-     * @param toMail
+     * @param toMail 收件人邮箱
      * @return
      */
     @PostMapping("/sendTestMail")
-    public R<Void> sendTestMail(@NotBlank(message = "收件人地址不能为空") String toMail) {
+    public R<Void> sendTestMail(@NotBlank(message = "收件人邮箱不能为空") String toMail) {
         mailService.sendText(toMail, "Mail配置测试邮件", "Mail配置测试邮件");
         return R.ok();
     }

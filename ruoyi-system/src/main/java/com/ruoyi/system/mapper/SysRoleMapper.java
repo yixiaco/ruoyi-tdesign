@@ -2,7 +2,7 @@ package com.ruoyi.system.mapper;
 
 import com.ruoyi.common.annotation.DataColumn;
 import com.ruoyi.common.annotation.DataPermission;
-import com.ruoyi.common.core.domain.entity.SysRole;
+import com.ruoyi.system.domain.SysRole;
 import com.ruoyi.common.core.mapper.BaseMapperPlus;
 
 import java.util.List;

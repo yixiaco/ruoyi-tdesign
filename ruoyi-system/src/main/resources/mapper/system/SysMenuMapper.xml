@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SysMenuMapper">
 
-    <resultMap id="SysMenuResult" autoMapping="true" type="com.ruoyi.common.core.domain.entity.SysMenu">
+    <resultMap id="SysMenuResult" autoMapping="true" type="com.ruoyi.system.domain.SysMenu">
         <id property="menuId" column="menu_id"/>
         <result property="menuName" column="menu_name"/>
         <result property="parentName" column="parent_name"/>
@@ -30,7 +30,7 @@
     <sql id="selectSysMenuVo">
         select sm.menu_id, sm.menu_name, sm.parent_id, sm.order_num, sm.path, sm.component, sm.query_param, sm.is_frame, sm.is_cache, sm.menu_type, sm.visible, sm.`status`, sm.perms, sm.icon, sm.create_by, sm.create_time, sm.update_by, sm.update_time, sm.remark from sys_menu sm
     </sql>
-    <select id="queryList" parameterType="com.ruoyi.common.core.domain.entity.SysMenu" resultMap="SysMenuResult">
+    <select id="queryList" parameterType="com.ruoyi.system.domain.SysMenu" resultMap="SysMenuResult">
         <include refid="selectSysMenuVo"/>
         <where>
             <if test="menuName != null and menuName != ''"> and sm.menu_name like concat('%', #{menuName}, '%')</if>
@@ -40,7 +40,7 @@
         order by parent_id, order_num
     </select>
 
-    <select id="selectMenuListByUserId" parameterType="com.ruoyi.common.core.domain.entity.SysMenu" resultMap="SysMenuResult">
+    <select id="selectMenuListByUserId" parameterType="com.ruoyi.system.domain.SysMenu" resultMap="SysMenuResult">
         select distinct m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.query_param, m.visible, m.status,
         m.perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time
         from sys_menu m

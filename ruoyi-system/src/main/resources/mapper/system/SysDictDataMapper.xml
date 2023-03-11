@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SysDictDataMapper">
 
-    <resultMap id="SysDictDataResult" autoMapping="true" type="com.ruoyi.common.core.domain.entity.SysDictData">
+    <resultMap id="SysDictDataResult" autoMapping="true" type="com.ruoyi.system.domain.SysDictData">
         <id property="dictCode" column="dict_code"/>
         <result property="dictSort" column="dict_sort"/>
         <result property="dictLabel" column="dict_label"/>
@@ -24,7 +24,7 @@
     <sql id="selectSysDictDataVo">
         select sdd.dict_code, sdd.dict_sort, sdd.dict_label, sdd.dict_value, sdd.dict_type, sdd.css_class, sdd.list_class, sdd.is_default, sdd.`status`, sdd.create_by, sdd.create_time, sdd.update_by, sdd.update_time, sdd.remark from sys_dict_data sdd
     </sql>
-    <select id="queryList" parameterType="com.ruoyi.common.core.domain.entity.SysDictData" resultMap="SysDictDataResult">
+    <select id="queryList" parameterType="com.ruoyi.system.domain.SysDictData" resultMap="SysDictDataResult">
         <include refid="selectSysDictDataVo"/>
         <where>
             <if test="dictLabel != null and dictLabel != ''"> and sdd.dict_label like concat('%', #{dictLabel}, '%')</if>

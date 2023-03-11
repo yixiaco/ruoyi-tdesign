@@ -1,7 +1,7 @@
 package com.ruoyi.system.service;
 
-import com.ruoyi.common.core.domain.entity.SysRole;
-import com.ruoyi.common.core.domain.entity.SysUser;
+import com.ruoyi.system.domain.SysRole;
+import com.ruoyi.system.domain.SysUser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 

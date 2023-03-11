@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SysDeptMapper">
 
-    <resultMap id="SysDeptResult" autoMapping="true" type="com.ruoyi.common.core.domain.entity.SysDept">
+    <resultMap id="SysDeptResult" autoMapping="true" type="com.ruoyi.system.domain.SysDept">
         <id property="deptId" column="dept_id"/>
         <result property="parentId" column="parent_id"/>
         <result property="ancestors" column="ancestors"/>
@@ -25,7 +25,7 @@
     <sql id="selectSysDeptVo">
         select sd.dept_id, sd.parent_id, sd.ancestors, sd.dept_name, sd.order_num, sd.leader, sd.phone, sd.email, sd.`status`, sd.del_flag, sd.create_by, sd.create_time, sd.update_by, sd.update_time from sys_dept sd
     </sql>
-    <select id="queryList" parameterType="com.ruoyi.common.core.domain.entity.SysDept" resultMap="SysDeptResult">
+    <select id="queryList" parameterType="com.ruoyi.system.domain.SysDept" resultMap="SysDeptResult">
         <include refid="selectSysDeptVo"/>
         <where>
             and del_flag = '0'
