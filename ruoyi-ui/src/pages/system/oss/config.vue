@@ -20,9 +20,10 @@
             @keyup.enter="handleQuery"
           />
         </t-form-item>
-        <t-form-item label="状态" name="status">
+        <t-form-item label="是否默认" name="status">
           <t-select v-model="queryParams.status" placeholder="请选择状态" clearable style="width: 200px">
-            <t-option v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.label" :value="dict.value" />
+            <t-option key="0" label="是" value="0" />
+            <t-option key="1" label="否" value="1" />
           </t-select>
         </t-form-item>
         <t-form-item label-width="0px">
@@ -189,7 +190,7 @@ import {
 import { SysOssConfigQuery, SysOssConfigVo } from '@/api/system/model/ossConfigModel';
 
 const { proxy } = getCurrentInstance();
-const { sys_yes_no, sys_normal_disable } = proxy.useDict('sys_yes_no', 'sys_normal_disable');
+const { sys_yes_no } = proxy.useDict('sys_yes_no');
 
 const ossConfigList = ref<SysOssConfigVo[]>([]);
 const open = ref(false);
@@ -215,7 +216,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `前缀`, colKey: 'prefix', align: 'center' },
   { title: `域`, colKey: 'region', align: 'center' },
   { title: `桶权限类型`, colKey: 'accessPolicy', align: 'center' },
-  { title: `状态`, colKey: 'status', align: 'center' },
+  { title: `是否默认`, colKey: 'status', align: 'center' },
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
 
