@@ -255,7 +255,6 @@ insert into sys_menu values('104',  '岗位管理', '1',   '5', 'post',       's
 insert into sys_menu values('105',  '字典管理', '1',   '6', 'dict',       'system/dict/index',        '', 1, 0, 'C', '0', '0', 'system:dict:list',        'dict',          'admin', sysdate, '', null, '字典管理菜单');
 insert into sys_menu values('106',  '参数设置', '1',   '7', 'config',     'system/config/index',      '', 1, 0, 'C', '0', '0', 'system:config:list',      'edit',          'admin', sysdate, '', null, '参数设置菜单');
 insert into sys_menu values('107',  '通知公告', '1',   '8', 'notice',     'system/notice/index',      '', 1, 0, 'C', '0', '0', 'system:notice:list',      'message',       'admin', sysdate, '', null, '通知公告菜单');
-insert into sys_menu values('108',  '日志管理', '1',   '9', 'log',        '',                         '', 1, 0, 'M', '0', '0', '',                        'log',           'admin', sysdate, '', null, '日志管理菜单');
 insert into sys_menu values('109',  '在线用户', '2',   '1', 'online',     'monitor/online/index',     '', 1, 0, 'C', '0', '0', 'monitor:online:list',     'online',        'admin', sysdate, '', null, '在线用户菜单');
 insert into sys_menu values('112',  '缓存列表', '2',   '6', 'cacheList',  'monitor/cache/list',       '', 1, 0, 'C', '0', '0', 'monitor:cache:list',      'redis-list',    'admin', sysdate, '', null, '缓存列表菜单');
 insert into sys_menu values('113',  '缓存监控', '2',   '5', 'cache',      'monitor/cache/index',      '', 1, 0, 'C', '0', '0', 'monitor:cache:list',      'redis',         'admin', sysdate, '', null, '缓存监控菜单');
@@ -267,10 +266,8 @@ insert into sys_menu values('117',  'Admin监控', '2',  '5', 'Admin',      'mon
 insert into sys_menu values('118',  '文件管理', '1', '10', 'oss', 'system/oss/index', '', 1, 0, 'C', '0', '0', 'system:oss:list', 'upload', 'admin', sysdate, '', null, '文件管理菜单');
 -- xxl-job-admin控制台
 insert into sys_menu values('120',  '任务调度中心', '2',  '5', 'XxlJob',      'monitor/xxljob/index',      '', 1, 0, 'C', '0', '0', 'monitor:xxljob:list',      'job',     'admin', sysdate, '', null, 'Xxl-Job控制台菜单');
-
--- 三级菜单
-insert into sys_menu values('500',  '操作日志', '108', '1', 'operlog',    'monitor/operlog/index',    '', 1, 0, 'C', '0', '0', 'monitor:operlog:list',    'form',          'admin', sysdate, '', null, '操作日志菜单');
-insert into sys_menu values('501',  '登录日志', '108', '2', 'logininfor', 'monitor/logininfor/index', '', 1, 0, 'C', '0', '0', 'monitor:logininfor:list', 'logininfor',    'admin', sysdate, '', null, '登录日志菜单');
+insert into sys_menu values('500',  '操作日志', '1', '1', 'operlog',    'monitor/operlog/index',    '', 1, 0, 'C', '0', '0', 'monitor:operlog:list',    'form',          'admin', sysdate, '', null, '操作日志菜单');
+insert into sys_menu values('501',  '登录日志', '1', '2', 'logininfor', 'monitor/logininfor/index', '', 1, 0, 'C', '0', '0', 'monitor:logininfor:list', 'logininfor',    'admin', sysdate, '', null, '登录日志菜单');
 -- 用户管理按钮
 insert into sys_menu values('1001', '用户查询', '100', '1',  '', '', '', 1, 0, 'F', '0', '0', 'system:user:query',          '#', 'admin', sysdate, '', null, '');
 insert into sys_menu values('1002', '用户新增', '100', '2',  '', '', '', 1, 0, 'F', '0', '0', 'system:user:add',            '#', 'admin', sysdate, '', null, '');
@@ -397,7 +394,6 @@ insert into sys_role_menu values ('2', '104');
 insert into sys_role_menu values ('2', '105');
 insert into sys_role_menu values ('2', '106');
 insert into sys_role_menu values ('2', '107');
-insert into sys_role_menu values ('2', '108');
 insert into sys_role_menu values ('2', '109');
 insert into sys_role_menu values ('2', '110');
 insert into sys_role_menu values ('2', '111');
@@ -662,7 +658,7 @@ create table sys_config (
   config_id         number(20)     not null,
   config_name       varchar2(100)  default '',
   config_key        varchar2(100)  default '',
-  config_value      varchar2(100)  default '',
+  config_value      varchar2(2000)  default '',
   config_type       char(1)        default 'N',
   create_by         varchar2(64)   default '',
   create_time       date,
@@ -765,8 +761,6 @@ create table gen_table (
   table_id          number(20)       not null,
   table_name        varchar2(200)    default '',
   table_comment     varchar2(500)    default '',
-  sub_table_name    varchar(64)      default null,
-  sub_table_fk_name varchar(64)      default null,
   class_name        varchar2(100)    default '',
   tpl_category      varchar2(200)    default 'crud',
   package_name      varchar2(100),
@@ -790,8 +784,6 @@ comment on table  gen_table                   is '代码生成业务表';
 comment on column gen_table.table_id          is '编号';
 comment on column gen_table.table_name        is '表名称';
 comment on column gen_table.table_comment     is '表描述';
-comment on column gen_table.sub_table_name    is '关联子表的表名';
-comment on column gen_table.sub_table_fk_name is '子表关联的外键名';
 comment on column gen_table.class_name        is '实体类名称';
 comment on column gen_table.tpl_category      is '使用的模板（crud单表操作 tree树表操作）';
 comment on column gen_table.package_name      is '生成包路径';
@@ -827,6 +819,7 @@ create table gen_table_column (
   is_edit           char(1),
   is_list           char(1),
   is_query          char(1),
+  is_detail         char(1),
   query_type        varchar(200)    default 'EQ',
   html_type         varchar(200),
   dict_type         varchar(200)    default '',
@@ -854,6 +847,7 @@ comment on column gen_table_column.is_insert      is '是否为插入字段（1�
 comment on column gen_table_column.is_edit        is '是否编辑字段（1是）';
 comment on column gen_table_column.is_list        is '是否列表字段（1是）';
 comment on column gen_table_column.is_query       is '是否查询字段（1是）';
+comment on column gen_table_column.is_detail      is '是否详情字段 (1是)';
 comment on column gen_table_column.query_type     is '查询方式（等于、不等于、大于、小于、范围）';
 comment on column gen_table_column.html_type      is '显示类型（文本框、文本域、下拉框、复选框、单选框、日期控件）';
 comment on column gen_table_column.dict_type      is '字典类型';
@@ -873,6 +867,7 @@ create table sys_oss (
   original_name   varchar(255)  not null,
   file_suffix     varchar(10)  not null,
   url             varchar(500) not null,
+  size            number(20)   not null,
   service         varchar(20)  default 'minio' not null,
   create_by       varchar(64)  default '',
   create_time     date,
@@ -888,6 +883,7 @@ comment on column sys_oss.file_name is '文件名';
 comment on column sys_oss.original_name is '原名';
 comment on column sys_oss.file_suffix is '文件后缀名';
 comment on column sys_oss.url is 'URL地址';
+comment on column sys_oss.size is '字节长度';
 comment on column sys_oss.service is '服务商';
 comment on column sys_oss.create_time is '创建时间';
 comment on column sys_oss.create_by is '上传者';
@@ -933,7 +929,7 @@ comment on column sys_oss_config.domain is '自定义域名';
 comment on column sys_oss_config.is_https is '是否https（Y=是,N=否）';
 comment on column sys_oss_config.region is '域';
 comment on column sys_oss_config.access_policy is '桶权限类型(0=private 1=public 2=custom)';
-comment on column sys_oss_config.status is '状态（0=正常,1=停用）';
+comment on column sys_oss_config.status is '是否默认（0=是,1=否）';
 comment on column sys_oss_config.ext1 is '扩展字段';
 comment on column sys_oss_config.remark is '备注';
 comment on column sys_oss_config.create_by is '创建者';

@@ -4,8 +4,6 @@ CREATE TABLE [gen_table]
     [table_id]          bigint                         NOT NULL,
     [table_name]        nvarchar(200) DEFAULT ''       NULL,
     [table_comment]     nvarchar(500) DEFAULT ''       NULL,
-    [sub_table_name]    nvarchar(64)                   NULL,
-    [sub_table_fk_name] nvarchar(64)                   NULL,
     [class_name]        nvarchar(100) DEFAULT ''       NULL,
     [tpl_category]      nvarchar(200) DEFAULT ('crud') NULL,
     [package_name]      nvarchar(100)                  NULL,
@@ -45,18 +43,6 @@ EXEC sys.sp_addextendedproperty
     'SCHEMA', N'dbo',
     'TABLE', N'gen_table',
     'COLUMN', N'table_comment'
-GO
-EXEC sys.sp_addextendedproperty
-    'MS_Description', N'关联子表的表名' ,
-    'SCHEMA', N'dbo',
-    'TABLE', N'gen_table',
-    'COLUMN', N'sub_table_name'
-GO
-EXEC sys.sp_addextendedproperty
-    'MS_Description', N'子表关联的外键名' ,
-    'SCHEMA', N'dbo',
-    'TABLE', N'gen_table',
-    'COLUMN', N'sub_table_fk_name'
 GO
 EXEC sys.sp_addextendedproperty
     'MS_Description', N'实体类名称' ,
@@ -170,6 +156,7 @@ CREATE TABLE [gen_table_column]
     [is_edit]        nchar(1)                     NULL,
     [is_list]        nchar(1)                     NULL,
     [is_query]       nchar(1)                     NULL,
+    [is_detail]      nchar(1)                     NULL,
     [query_type]     nvarchar(200) DEFAULT ('EQ') NULL,
     [html_type]      nvarchar(200)                NULL,
     [dict_type]      nvarchar(200) DEFAULT ''     NULL,
@@ -270,6 +257,12 @@ EXEC sys.sp_addextendedproperty
     'COLUMN', N'is_query'
 GO
 EXEC sys.sp_addextendedproperty
+    'MS_Description', N'是否详情字段 (1是)' ,
+    'SCHEMA', N'dbo',
+    'TABLE', N'gen_table_column',
+    'COLUMN', N'is_detail'
+GO
+EXEC sys.sp_addextendedproperty
     'MS_Description', N'查询方式（等于、不等于、大于、小于、范围）' ,
     'SCHEMA', N'dbo',
     'TABLE', N'gen_table_column',
@@ -325,16 +318,16 @@ GO
 
 CREATE TABLE [sys_config]
 (
-    [config_id]    bigint                      NOT NULL,
-    [config_name]  nvarchar(100) DEFAULT ''    NULL,
-    [config_key]   nvarchar(100) DEFAULT ''    NULL,
-    [config_value] nvarchar(500) DEFAULT ''    NULL,
-    [config_type]  nchar(1)      DEFAULT ('N') NULL,
-    [create_by]    nvarchar(64)  DEFAULT ''    NULL,
-    [create_time]  datetime2(7)                NULL,
-    [update_by]    nvarchar(64)  DEFAULT ''    NULL,
-    [update_time]  datetime2(7)                NULL,
-    [remark]       nvarchar(500)               NULL,
+    [config_id]    bigint                       NOT NULL,
+    [config_name]  nvarchar(100)  DEFAULT ''    NULL,
+    [config_key]   nvarchar(100)  DEFAULT ''    NULL,
+    [config_value] nvarchar(2000) DEFAULT ''    NULL,
+    [config_type]  nchar(1)       DEFAULT ('N') NULL,
+    [create_by]    nvarchar(64)   DEFAULT ''    NULL,
+    [create_time]  datetime2(7)                 NULL,
+    [update_by]    nvarchar(64)   DEFAULT ''    NULL,
+    [update_time]  datetime2(7)                 NULL,
+    [remark]       nvarchar(500)                NULL,
     CONSTRAINT [PK__sys_conf__4AD1BFF182643682] PRIMARY KEY CLUSTERED ([config_id])
         WITH (PAD_INDEX = OFF, STATISTICS_NORECOMPUTE = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS = ON, ALLOW_PAGE_LOCKS = ON)
         ON [PRIMARY]
@@ -1074,8 +1067,6 @@ INSERT [sys_menu] ([menu_id], [menu_name], [parent_id], [order_num], [path], [co
 GO
 INSERT [sys_menu] ([menu_id], [menu_name], [parent_id], [order_num], [path], [component], [query_param], [is_frame], [is_cache], [menu_type], [visible], [status], [perms], [icon], [create_by], [create_time], [update_by], [update_time], [remark]) VALUES (107, N'通知公告', 1, 8, N'notice', N'system/notice/index', N'', 1, 0, N'C', N'0', N'0', N'system:notice:list', N'message', N'admin', getdate(), N'', NULL, N'通知公告菜单')
 GO
-INSERT [sys_menu] ([menu_id], [menu_name], [parent_id], [order_num], [path], [component], [query_param], [is_frame], [is_cache], [menu_type], [visible], [status], [perms], [icon], [create_by], [create_time], [update_by], [update_time], [remark]) VALUES (108, N'日志管理', 1, 9, N'log', N'', N'', 1, 0, N'M', N'0', N'0', N'', N'log', N'admin', getdate(), N'', NULL, N'日志管理菜单')
-GO
 INSERT [sys_menu] ([menu_id], [menu_name], [parent_id], [order_num], [path], [component], [query_param], [is_frame], [is_cache], [menu_type], [visible], [status], [perms], [icon], [create_by], [create_time], [update_by], [update_time], [remark]) VALUES (109, N'在线用户', 2, 1, N'online', N'monitor/online/index', N'', 1, 0, N'C', N'0', N'0', N'monitor:online:list', N'online', N'admin', getdate(), N'', NULL, N'在线用户菜单')
 GO
 INSERT [sys_menu] ([menu_id], [menu_name], [parent_id], [order_num], [path], [component], [query_param], [is_frame], [is_cache], [menu_type], [visible], [status], [perms], [icon], [create_by], [create_time], [update_by], [update_time], [remark]) VALUES (112, N'缓存列表', 2, 6, N'cacheList', N'monitor/cache/list', N'', 1, 0, N'C', N'0', N'0', N'monitor:cache:list', N'redis-list', N'admin', getdate(), N'', NULL, N'缓存列表菜单')
@@ -1092,9 +1083,9 @@ INSERT [sys_menu] ([menu_id], [menu_name], [parent_id], [order_num], [path], [co
 GO
 INSERT [sys_menu] ([menu_id], [menu_name], [parent_id], [order_num], [path], [component], [query_param], [is_frame], [is_cache], [menu_type], [visible], [status], [perms], [icon], [create_by], [create_time], [update_by], [update_time], [remark]) VALUES (120, N'任务调度中心', 2, 5, N'XxlJob', N'monitor/xxljob/index', N'', 1, 0, N'C', N'0', N'0', N'monitor:xxljob:list', N'job', N'admin', getdate(), N'', NULL, N'Xxl-Job控制台菜单');
 GO
-INSERT [sys_menu] ([menu_id], [menu_name], [parent_id], [order_num], [path], [component], [query_param], [is_frame], [is_cache], [menu_type], [visible], [status], [perms], [icon], [create_by], [create_time], [update_by], [update_time], [remark]) VALUES (500, N'操作日志', 108, 1, N'operlog', N'monitor/operlog/index', N'', 1, 0, N'C', N'0', N'0', N'monitor:operlog:list', N'form', N'admin', getdate(), N'', NULL, N'操作日志菜单')
+INSERT [sys_menu] ([menu_id], [menu_name], [parent_id], [order_num], [path], [component], [query_param], [is_frame], [is_cache], [menu_type], [visible], [status], [perms], [icon], [create_by], [create_time], [update_by], [update_time], [remark]) VALUES (500, N'操作日志', 1, 1, N'operlog', N'monitor/operlog/index', N'', 1, 0, N'C', N'0', N'0', N'monitor:operlog:list', N'form', N'admin', getdate(), N'', NULL, N'操作日志菜单')
 GO
-INSERT [sys_menu] ([menu_id], [menu_name], [parent_id], [order_num], [path], [component], [query_param], [is_frame], [is_cache], [menu_type], [visible], [status], [perms], [icon], [create_by], [create_time], [update_by], [update_time], [remark]) VALUES (501, N'登录日志', 108, 2, N'logininfor', N'monitor/logininfor/index', N'', 1, 0, N'C', N'0', N'0', N'monitor:logininfor:list', N'logininfor', N'admin', getdate(), N'', NULL, N'登录日志菜单')
+INSERT [sys_menu] ([menu_id], [menu_name], [parent_id], [order_num], [path], [component], [query_param], [is_frame], [is_cache], [menu_type], [visible], [status], [perms], [icon], [create_by], [create_time], [update_by], [update_time], [remark]) VALUES (501, N'登录日志', 1, 2, N'logininfor', N'monitor/logininfor/index', N'', 1, 0, N'C', N'0', N'0', N'monitor:logininfor:list', N'logininfor', N'admin', getdate(), N'', NULL, N'登录日志菜单')
 GO
 INSERT [sys_menu] ([menu_id], [menu_name], [parent_id], [order_num], [path], [component], [query_param], [is_frame], [is_cache], [menu_type], [visible], [status], [perms], [icon], [create_by], [create_time], [update_by], [update_time], [remark]) VALUES (1001, N'用户查询', 100, 1, N'', N'', N'', 1, 0, N'F', N'0', N'0', N'system:user:query', N'#', N'admin', getdate(), N'', NULL, N'')
 GO
@@ -1737,8 +1728,6 @@ INSERT [sys_role_menu] ([role_id], [menu_id]) VALUES (2, 106)
 GO
 INSERT [sys_role_menu] ([role_id], [menu_id]) VALUES (2, 107)
 GO
-INSERT [sys_role_menu] ([role_id], [menu_id]) VALUES (2, 108)
-GO
 INSERT [sys_role_menu] ([role_id], [menu_id]) VALUES (2, 109)
 GO
 INSERT [sys_role_menu] ([role_id], [menu_id]) VALUES (2, 110)
@@ -2108,6 +2097,7 @@ CREATE TABLE [sys_oss]
     [original_name] nvarchar(255) DEFAULT ''        NOT NULL,
     [file_suffix]   nvarchar(10)  DEFAULT ''        NOT NULL,
     [url]           nvarchar(500)                   NOT NULL,
+    [size]          bigint                          NOT NULL,
     [create_time]   datetime2(7)                    NULL,
     [create_by]     nvarchar(64)  DEFAULT ''        NULL,
     [update_time]   datetime2(7)                    NULL,
@@ -2149,6 +2139,12 @@ EXEC sp_addextendedproperty
     'SCHEMA', N'dbo',
     'TABLE', N'sys_oss',
     'COLUMN', N'url'
+GO
+EXEC sp_addextendedproperty
+    'MS_Description', N'字节长度',
+    'SCHEMA', N'dbo',
+    'TABLE', N'sys_oss',
+    'COLUMN', N'size'
 GO
 EXEC sp_addextendedproperty
     'MS_Description', N'创建时间',
@@ -2280,7 +2276,7 @@ EXEC sp_addextendedproperty
      'COLUMN', N'access_policy'
 GO
 EXEC sp_addextendedproperty
-    'MS_Description', N'状态（0=正常,1=停用）',
+    'MS_Description', N'是否默认（0=是,1=否）',
     'SCHEMA', N'dbo',
     'TABLE', N'sys_oss_config',
     'COLUMN', N'status'
