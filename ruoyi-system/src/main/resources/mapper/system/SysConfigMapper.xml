@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SysConfigMapper">
 
-    <resultMap type="com.ruoyi.system.domain.SysConfig" id="SysConfigResult">
+    <resultMap id="SysConfigResult" autoMapping="true" type="com.ruoyi.system.domain.SysConfig">
         <id property="configId" column="config_id"/>
         <result property="configName" column="config_name"/>
         <result property="configKey" column="config_key"/>

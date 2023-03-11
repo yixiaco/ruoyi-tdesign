@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SysDictDataMapper">
 
-    <resultMap type="com.ruoyi.common.core.domain.entity.SysDictData" id="SysDictDataResult">
+    <resultMap id="SysDictDataResult" autoMapping="true" type="com.ruoyi.common.core.domain.entity.SysDictData">
         <id property="dictCode" column="dict_code"/>
         <result property="dictSort" column="dict_sort"/>
         <result property="dictLabel" column="dict_label"/>

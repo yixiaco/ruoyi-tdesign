@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SysRoleMenuMapper">
 
-    <resultMap type="SysRoleMenu" id="SysRoleMenuResult">
+    <resultMap id="SysRoleMenuResult" autoMapping="true" type="com.ruoyi.system.domain.SysRoleMenu">
         <result property="roleId" column="role_id"/>
         <result property="menuId" column="menu_id"/>
     </resultMap>

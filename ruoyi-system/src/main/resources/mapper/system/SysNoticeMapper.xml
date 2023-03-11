@@ -4,7 +4,7 @@
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="com.ruoyi.system.mapper.SysNoticeMapper">
 
-    <resultMap type="com.ruoyi.system.domain.SysNotice" id="SysNoticeResult">
+    <resultMap id="SysNoticeResult" autoMapping="true" type="com.ruoyi.system.domain.SysNotice">
         <id property="noticeId" column="notice_id"/>
         <result property="noticeTitle" column="notice_title"/>
         <result property="noticeType" column="notice_type"/>
