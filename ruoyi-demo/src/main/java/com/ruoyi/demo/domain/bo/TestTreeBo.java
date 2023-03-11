@@ -19,7 +19,7 @@ import java.util.Date;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TestTreeBo extends TreeEntity<TestTreeBo, Long> {
+public class TestTreeBo extends TreeEntity<TestTreeBo> {
 
     /**
      * 主键

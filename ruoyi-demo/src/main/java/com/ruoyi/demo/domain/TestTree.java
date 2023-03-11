@@ -22,7 +22,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("test_tree")
-public class TestTree extends TreeEntity<TestTree, Long> {
+public class TestTree extends TreeEntity<TestTree> {
 
     @Serial
     private static final long serialVersionUID = 1L;

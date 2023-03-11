@@ -16,7 +16,7 @@ import java.util.List;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public abstract class TreeEntity<T, ID> extends BaseEntity {
+public abstract class TreeEntity<T> extends BaseEntity {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -32,11 +32,4 @@ public abstract class TreeEntity<T, ID> extends BaseEntity {
      */
     @TableField(exist = false)
     private List<T> children = new ArrayList<>();
-
-    /**
-     * 父节点id
-     *
-     * @return
-     */
-    public abstract ID getParentId();
 }

@@ -28,7 +28,7 @@ import com.ruoyi.common.core.domain.TreeEntity;
 #if(!$tree)
     #set($Entity="BaseEntity")
 #else
-    #set($Entity="TreeEntity<${ClassName}, ${pkColumn.javaType}>")
+    #set($Entity="TreeEntity<${ClassName}>")
 #end
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -58,12 +58,6 @@ public class ${ClassName} extends ${Entity} {
     @TableId(value = "$column.columnName"#if($column.isIncrement == 1), type = IdType.AUTO#end)
 #end
     private $column.javaType $column.javaField;
-
-#end
-#if($tree && ${treeParentCode} != 'parentId')
-    public ${pkColumn.javaType} getParentId() {
-        return ${treeParentCode};
-    }
 
 #end
 }

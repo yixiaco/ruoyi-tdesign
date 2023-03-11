@@ -28,7 +28,7 @@ import com.ruoyi.common.core.domain.TreeEntity;
 #if(!$tree)
 #set($Entity="BaseEntity")
 #else
-#set($Entity="TreeEntity<${ClassName}Bo, ${pkColumn.javaType}>")
+#set($Entity="TreeEntity<${ClassName}Bo}>")
 #end
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -53,11 +53,5 @@ public class ${ClassName}Bo extends ${Entity} {
     private $column.javaType $column.javaField;
 
 #end
-#end
-#if($tree && ${treeParentCode} != 'parentId')
-    public ${pkColumn.javaType} getParentId() {
-        return ${treeParentCode};
-    }
-
 #end
 }
