@@ -34,6 +34,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import jakarta.servlet.http.HttpServletResponse;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -222,10 +223,10 @@ public class SysUserController extends BaseController {
     public R<Map<String, Object>> authRole(@PathVariable Long userId) {
         SysUser user = userService.selectUserById(userId);
         List<SysRole> roles = roleService.selectRolesByUserId(userId);
-        Map<String, Object> ajax = new HashMap<>();
-        ajax.put("user", user);
-        ajax.put("roles", LoginHelper.isAdmin(userId) ? roles : StreamUtils.filter(roles, r -> !r.isAdmin()));
-        return R.ok(ajax);
+        return R.ok(Map.of(
+            "user", user,
+            "roles", LoginHelper.isAdmin(userId) ? roles : StreamUtils.filter(roles, r -> !r.isAdmin())
+        ));
     }
 
     /**

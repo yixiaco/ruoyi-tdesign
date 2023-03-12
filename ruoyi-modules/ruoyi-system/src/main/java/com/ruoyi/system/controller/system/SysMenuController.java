@@ -22,7 +22,6 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -77,10 +76,10 @@ public class SysMenuController extends BaseController {
     @GetMapping(value = "/roleMenuTreeselect/{roleId}")
     public R<Map<String, Object>> roleMenuTreeselect(@PathVariable("roleId") Long roleId) {
         List<SysMenu> menus = menuService.selectMenuList(LoginHelper.getUserId());
-        Map<String, Object> ajax = new HashMap<>();
-        ajax.put("checkedKeys", menuService.selectMenuListByRoleId(roleId));
-        ajax.put("menus", menuService.buildMenuTreeSelect(menus));
-        return R.ok(ajax);
+        return R.ok(Map.of(
+                "checkedKeys", menuService.selectMenuListByRoleId(roleId),
+                "menus", menuService.buildMenuTreeSelect(menus)
+        ));
     }
 
     /**

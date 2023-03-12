@@ -5,10 +5,10 @@ import cn.hutool.core.collection.CollUtil;
 import com.ruoyi.common.core.constant.CacheConstants;
 import com.ruoyi.common.core.constant.CacheNames;
 import com.ruoyi.common.core.domain.R;
-import com.ruoyi.common.redis.utils.CacheUtils;
-import com.ruoyi.common.redis.utils.RedisUtils;
 import com.ruoyi.common.core.utils.JsonUtils;
 import com.ruoyi.common.core.utils.StringUtils;
+import com.ruoyi.common.redis.utils.CacheUtils;
+import com.ruoyi.common.redis.utils.RedisUtils;
 import com.ruoyi.system.domain.SysCache;
 import org.redisson.spring.data.connection.RedissonConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,7 +27,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 /**
  * 缓存监控
@@ -62,13 +61,7 @@ public class CacheController {
     @GetMapping()
     public R<Map<String, Object>> getInfo() throws Exception {
         RedisConnection connection = connectionFactory.getConnection();
-        Properties info = connection.commands().info();
         Properties commandStats = connection.commands().info("commandstats");
-        Long dbSize = connection.commands().dbSize();
-
-        Map<String, Object> result = new HashMap<>(3);
-        result.put("info", info);
-        result.put("dbSize", dbSize);
 
         List<Map<String, String>> pieList = new ArrayList<>();
         if (commandStats != null) {
@@ -80,8 +73,11 @@ public class CacheController {
                 pieList.add(data);
             });
         }
-        result.put("commandStats", pieList);
-        return R.ok(result);
+        return R.ok(Map.of(
+            "info", connection.commands().info(),
+            "dbSize", connection.commands().dbSize(),
+            "commandStats", pieList
+        ));
     }
 
     /**
