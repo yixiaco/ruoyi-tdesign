@@ -1,6 +1,6 @@
 package com.ruoyi.demo.domain.bo;
 
-import com.ruoyi.common.core.domain.TreeEntity;
+import com.ruoyi.common.core.web.domain.TreeEntity;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import lombok.Data;

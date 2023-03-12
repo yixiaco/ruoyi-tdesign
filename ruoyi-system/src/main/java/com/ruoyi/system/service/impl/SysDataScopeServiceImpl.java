@@ -2,7 +2,7 @@ package com.ruoyi.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
-import com.ruoyi.common.helper.DataBaseHelper;
+import com.ruoyi.common.mybatis.helper.DataBaseHelper;
 import com.ruoyi.system.service.ISysDataScopeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;

@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import java.io.Serial;
-import java.io.Serializable;
 import java.util.Date;
 import java.math.BigDecimal;
 
@@ -12,10 +11,10 @@ import java.math.BigDecimal;
 import ${import};
 #end
 #if($table.crud || $table.sub)
-import com.ruoyi.common.core.domain.BaseEntity;
+import com.ruoyi.common.core.web.domain.BaseEntity;
 #set($tree=false)
 #elseif($table.tree)
-import com.ruoyi.common.core.domain.TreeEntity;
+import com.ruoyi.common.core.web.domain.TreeEntity;
 #set($tree=true)
 #end
 

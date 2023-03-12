@@ -1,7 +1,7 @@
 package com.ruoyi.web.controller;
 
 import com.ruoyi.common.core.domain.R;
-import com.ruoyi.common.core.service.MailService;
+import com.ruoyi.common.mail.service.MailService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;

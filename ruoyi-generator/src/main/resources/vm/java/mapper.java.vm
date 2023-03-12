@@ -11,7 +11,7 @@ import ${packageName}.domain.dto.${ClassName}Query;
 #set($vo="${ClassName}Vo")
 #set($extend="BaseMapperPlus<${ClassName}Mapper, ${ClassName}, ${ClassName}Vo>")
 import ${packageName}.domain.vo.${ClassName}Vo;
-import com.ruoyi.common.core.mapper.BaseMapperPlus;
+import com.ruoyi.common.mybatis.core.mapper.BaseMapperPlus;
 #else
 #set($vo=$ClassName)
 #set($extend="BaseMapper<${ClassName}>")

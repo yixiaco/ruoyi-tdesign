@@ -2,13 +2,13 @@ package com.ruoyi.system.controller.monitor;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.collection.CollUtil;
-import com.ruoyi.common.constant.CacheConstants;
-import com.ruoyi.common.constant.CacheNames;
+import com.ruoyi.common.core.constant.CacheConstants;
+import com.ruoyi.common.core.constant.CacheNames;
 import com.ruoyi.common.core.domain.R;
-import com.ruoyi.common.utils.JsonUtils;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.redis.CacheUtils;
-import com.ruoyi.common.utils.redis.RedisUtils;
+import com.ruoyi.common.redis.utils.CacheUtils;
+import com.ruoyi.common.redis.utils.RedisUtils;
+import com.ruoyi.common.core.utils.JsonUtils;
+import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.system.domain.SysCache;
 import org.redisson.spring.data.connection.RedissonConnectionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,7 +19,14 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Properties;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**

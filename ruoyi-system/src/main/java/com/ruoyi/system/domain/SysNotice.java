@@ -4,8 +4,8 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.ruoyi.common.core.domain.BaseEntity;
-import com.ruoyi.common.xss.Xss;
+import com.ruoyi.common.core.web.domain.BaseEntity;
+import com.ruoyi.common.core.xss.Xss;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 

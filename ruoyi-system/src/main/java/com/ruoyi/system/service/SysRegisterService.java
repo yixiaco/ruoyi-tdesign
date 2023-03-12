@@ -1,25 +1,24 @@
 package com.ruoyi.system.service;
 
 import cn.dev33.satoken.secure.BCrypt;
-import com.ruoyi.common.constant.CacheConstants;
-import com.ruoyi.common.constant.Constants;
-import com.ruoyi.common.constant.UserConstants;
-import com.ruoyi.system.domain.SysUser;
-import com.ruoyi.common.core.domain.event.LogininforEvent;
+import com.ruoyi.common.core.constant.CacheConstants;
+import com.ruoyi.common.core.constant.Constants;
+import com.ruoyi.common.core.constant.UserConstants;
 import com.ruoyi.common.core.domain.model.RegisterBody;
-import com.ruoyi.common.enums.UserType;
-import com.ruoyi.common.exception.user.CaptchaException;
-import com.ruoyi.common.exception.user.CaptchaExpireException;
-import com.ruoyi.common.exception.user.UserException;
-import com.ruoyi.common.utils.MessageUtils;
-import com.ruoyi.common.utils.ServletUtils;
-import com.ruoyi.common.utils.StringUtils;
-import com.ruoyi.common.utils.redis.RedisUtils;
-import com.ruoyi.common.utils.spring.SpringUtils;
+import com.ruoyi.common.core.enums.UserType;
+import com.ruoyi.common.core.exception.user.CaptchaException;
+import com.ruoyi.common.core.exception.user.CaptchaExpireException;
+import com.ruoyi.common.core.exception.user.UserException;
+import com.ruoyi.common.log.event.LogininforEvent;
+import com.ruoyi.common.redis.utils.RedisUtils;
+import com.ruoyi.common.core.utils.MessageUtils;
+import com.ruoyi.common.core.utils.ServletUtils;
+import com.ruoyi.common.core.utils.StringUtils;
+import com.ruoyi.common.core.utils.spring.SpringUtils;
+import com.ruoyi.system.domain.SysUser;
+import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 /**
  * 注册校验方法
