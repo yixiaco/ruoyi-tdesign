@@ -31,7 +31,7 @@ public class StreamUtils {
         if (CollUtil.isEmpty(collection)) {
             return CollUtil.newArrayList();
         }
-        return collection.stream().filter(function).collect(Collectors.toList());
+        return collection.stream().filter(function).toList();
     }
 
     /**
@@ -71,7 +71,7 @@ public class StreamUtils {
         if (CollUtil.isEmpty(collection)) {
             return CollUtil.newArrayList();
         }
-        return collection.stream().sorted(comparing).collect(Collectors.toList());
+        return collection.stream().sorted(comparing).toList();
     }
 
     /**
@@ -189,7 +189,7 @@ public class StreamUtils {
             .stream()
             .map(function)
             .filter(Objects::nonNull)
-            .collect(Collectors.toList());
+            .toList();
     }
 
     /**
