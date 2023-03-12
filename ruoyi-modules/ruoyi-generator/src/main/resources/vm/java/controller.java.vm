@@ -1,7 +1,6 @@
 package ${packageName}.controller;
 
 import java.util.List;
-import java.util.Arrays;
 
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.*;
@@ -128,6 +127,6 @@ public class ${ClassName}Controller extends BaseController {
     @Log(title = "${functionName}", businessType = BusinessType.DELETE)
     @DeleteMapping("/{${pkColumn.javaField}s}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空") @PathVariable ${pkColumn.javaType}[] ${pkColumn.javaField}s) {
-        return toAjax(i${ClassName}Service.deleteWithValidByIds(Arrays.asList(${pkColumn.javaField}s)));
+        return toAjax(i${ClassName}Service.deleteWithValidByIds(List.of(${pkColumn.javaField}s)));
     }
 }
