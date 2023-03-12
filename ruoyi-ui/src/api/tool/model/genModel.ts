@@ -145,21 +145,6 @@ export interface GenTable extends BaseEntity {
   isUseVO?: boolean;
 
   /**
-   * 是否使用query对象
-   */
-  isUseQuery?: boolean;
-
-  /**
-   * 是否使用bo对象
-   */
-  isUseBO?: boolean;
-
-  /**
-   * 是否使用vo对象
-   */
-  isUseVO?: boolean;
-
-  /**
    * 创建者
    */
   createBy?: string;
