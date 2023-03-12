@@ -194,11 +194,13 @@
                 <artifactId>mybatis-plus-boot-starter</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
+
             <dependency>
                 <groupId>com.baomidou</groupId>
                 <artifactId>mybatis-plus-annotation</artifactId>
                 <version>${mybatis-plus.version}</version>
             </dependency>
+
             <!-- sql性能分析插件 -->
             <dependency>
                 <groupId>p6spy</groupId>
@@ -294,13 +296,6 @@
                 <version>${revision}</version>
             </dependency>
 
-            <!-- 核心模块-->
-            <dependency>
-                <groupId>com.ruoyi</groupId>
-                <artifactId>ruoyi-framework</artifactId>
-                <version>${revision}</version>
-            </dependency>
-
             <!-- 系统模块-->
             <dependency>
                 <groupId>com.ruoyi</groupId>
@@ -329,13 +324,9 @@
 
     <modules>
         <module>ruoyi-admin</module>
-        <module>ruoyi-system</module>
-        <module>ruoyi-job</module>
-        <module>ruoyi-generator</module>
         <module>ruoyi-common</module>
-        <module>ruoyi-demo</module>
         <module>ruoyi-extend</module>
-        <module>ruoyi-common</module>
+        <module>ruoyi-modules</module>
     </modules>
     <packaging>pom</packaging>
 

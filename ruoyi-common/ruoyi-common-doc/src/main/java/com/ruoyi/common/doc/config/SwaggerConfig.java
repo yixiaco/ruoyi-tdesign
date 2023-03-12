@@ -1,8 +1,8 @@
 package com.ruoyi.common.doc.config;
 
+import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.doc.config.properties.SwaggerProperties;
 import com.ruoyi.common.doc.handler.OpenApiHandler;
-import com.ruoyi.common.core.utils.StringUtils;
 import io.swagger.v3.oas.models.OpenAPI;
 import io.swagger.v3.oas.models.Paths;
 import io.swagger.v3.oas.models.info.Info;
@@ -17,7 +17,7 @@ import org.springdoc.core.service.OpenAPIService;
 import org.springdoc.core.service.SecurityService;
 import org.springdoc.core.utils.PropertyResolverUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.AutoConfigureBefore;
+import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.web.ServerProperties;
@@ -33,7 +33,7 @@ import java.util.Set;
  *
  * @author Lion Li
  */
-@AutoConfigureBefore(SpringDocConfiguration.class)
+@AutoConfiguration(before = SpringDocConfiguration.class)
 @ConditionalOnProperty(name = "swagger.enabled", havingValue = "true", matchIfMissing = true)
 public class SwaggerConfig {
 
@@ -106,7 +106,7 @@ public class SwaggerConfig {
                 return;
             }
             PlusPaths newPaths = new PlusPaths();
-            oldPaths.forEach((k,v) -> newPaths.addPathItem(finalContextPath + k, v));
+            oldPaths.forEach((k, v) -> newPaths.addPathItem(finalContextPath + k, v));
             openApi.setPaths(newPaths);
         };
     }
