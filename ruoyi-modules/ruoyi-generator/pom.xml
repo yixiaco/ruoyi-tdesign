@@ -13,7 +13,7 @@
     <artifactId>ruoyi-generator</artifactId>
 
     <description>
-        generator代码生成
+        generator 代码生成
     </description>
 
     <dependencies>
@@ -21,6 +21,11 @@
         <dependency>
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-common-core</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-common-doc</artifactId>
         </dependency>
 
         <dependency>
