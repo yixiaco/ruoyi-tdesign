@@ -20,7 +20,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 #if($useVO)
     <resultMap id="${ClassName}ResultVo" autoMapping="true" type="${packageName}.domain.vo.${ClassName}Vo">
 #foreach ($column in $columns)
-#if($column.isList)
+#if($column.isList || $column.isDetail == '1')
 #if($column.isPk==1)
         <id property="${column.javaField}" column="${column.columnName}"/>
 #else
