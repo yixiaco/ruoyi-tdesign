@@ -139,7 +139,12 @@
               </t-row>
             </template>
             <template #status="{ row }">
-              <t-switch v-model="row.status" :custom-value="['0', '1']" @change="handleStatusChange(row)"></t-switch>
+              <t-switch
+                v-model="row.status"
+                :custom-value="['0', '1']"
+                @click.stop
+                @change="handleStatusChange(row)"
+              ></t-switch>
             </template>
             <template #operation="{ row }">
               <t-space :size="8">
@@ -354,7 +359,7 @@ import {
   UploadIcon,
 } from 'tdesign-icons-vue-next';
 import { useRouter } from 'vue-router';
-import {FormInstanceFunctions, FormRule, PrimaryTableCol, UploadInstanceFunctions} from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PrimaryTableCol, UploadInstanceFunctions } from 'tdesign-vue-next';
 import { getToken } from '@/utils/auth';
 import {
   changeUserStatus,
@@ -526,15 +531,21 @@ function handleExport() {
 /** 用户状态修改  */
 function handleStatusChange(row) {
   const text = row.status === '0' ? '启用' : '停用';
-  proxy.$modal.confirm(`确认要"${text}""${row.userName}"用户吗?`, () => {
-    return changeUserStatus(row.userId, row.status)
-      .then(() => {
-        proxy.$modal.msgSuccess(`${text}成功`);
-      })
-      .catch(() => {
-        row.status = row.status === '0' ? '1' : '0';
-      });
-  });
+  proxy.$modal.confirm(
+    `确认要"${text}""${row.userName}"用户吗?`,
+    () => {
+      return changeUserStatus(row.userId, row.status)
+        .then(() => {
+          proxy.$modal.msgSuccess(`${text}成功`);
+        })
+        .catch(() => {
+          row.status = row.status === '0' ? '1' : '0';
+        });
+    },
+    () => {
+      row.status = row.status === '0' ? '1' : '0';
+    },
+  );
 }
 /** 跳转角色分配 */
 function handleAuthRole(row) {

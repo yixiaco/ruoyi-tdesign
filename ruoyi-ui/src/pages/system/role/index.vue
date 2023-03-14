@@ -105,7 +105,12 @@
           </t-row>
         </template>
         <template #status="{ row }">
-          <t-switch v-model="row.status" :custom-value="['0', '1']" @change="handleStatusChange(row)"></t-switch>
+          <t-switch
+            v-model="row.status"
+            :custom-value="['0', '1']"
+            @click.stop
+            @change="handleStatusChange(row)"
+          ></t-switch>
         </template>
         <template #operation="{ row }">
           <t-space :size="8">
@@ -424,15 +429,21 @@ function handleSelectionChange(selection) {
 /** 角色状态修改 */
 function handleStatusChange(row) {
   const text = row.status === '0' ? '启用' : '停用';
-  proxy.$modal.confirm(`确认要"${text}""${row.roleName}"角色吗?`, () => {
-    return changeRoleStatus(row.roleId, row.status)
-      .then(() => {
-        proxy.$modal.msgSuccess(`${text}成功`);
-      })
-      .catch(() => {
-        row.status = row.status === '0' ? '1' : '0';
-      });
-  });
+  proxy.$modal.confirm(
+    `确认要"${text}""${row.roleName}"角色吗?`,
+    () => {
+      return changeRoleStatus(row.roleId, row.status)
+        .then(() => {
+          proxy.$modal.msgSuccess(`${text}成功`);
+        })
+        .catch(() => {
+          row.status = row.status === '0' ? '1' : '0';
+        });
+    },
+    () => {
+      row.status = row.status === '0' ? '1' : '0';
+    },
+  );
 }
 /** 分配用户 */
 function handleAuthUser(row) {

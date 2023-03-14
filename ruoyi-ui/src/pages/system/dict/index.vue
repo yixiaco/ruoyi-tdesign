@@ -113,7 +113,7 @@
           </t-row>
         </template>
         <template #dictType="{ row }">
-          <router-link :to="'/system/dict-data/index/' + row.dictId" class="link-type">
+          <router-link :to="'/system/dict-data/index/' + row.dictId" class="link-type" @click.stop>
             <span>{{ row.dictType }}</span>
           </router-link>
         </template>

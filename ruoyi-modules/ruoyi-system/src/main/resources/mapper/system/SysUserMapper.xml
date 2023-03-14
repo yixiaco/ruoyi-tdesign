@@ -122,7 +122,7 @@
             <if test="phonenumber != null and phonenumber != ''"> and u.phonenumber like concat('%', #{phonenumber}, '%')</if>
             <if test="status != null and status != ''"> and u.`status` = #{status}</if>
         </where>
-        order u.create_time desc
+        order by u.create_time desc
     </select>
 
     <select id="selectUnallocatedList" resultMap="SysUserResult">
