@@ -101,7 +101,7 @@ import type { FormInstanceFunctions, FormRule } from 'tdesign-vue-next';
 import Cookies from 'js-cookie';
 import { SecuredIcon } from 'tdesign-icons-vue-next';
 import { useCounter } from '@/hooks';
-import { useUserStore } from '@/store';
+import {useTabsRouterStore, useUserStore} from '@/store';
 import { getCodeImg } from '@/api/login';
 import { encrypt, decrypt } from '@/utils/jsencrypt';
 import { LoginParam } from '@/api/model/loginModel';
@@ -138,8 +138,9 @@ const switchType = (val: string) => {
   type.value = val;
 };
 
-const router = useRouter();
+const tabsRouterStore = useTabsRouterStore();
 const route = useRoute();
+const router = useRouter();
 
 function getCode() {
   getCodeImg().then((res) => {
@@ -210,6 +211,9 @@ const onSubmit = async ({ validateResult }) => {
       }
 
       MessagePlugin.success('登陆成功');
+      // 登录时删除保留的菜单项
+      tabsRouterStore.removeTabRouterList();
+      // 重定向到保留的菜单
       const redirect = route.query.redirect as string;
       const redirectUrl = redirect ? decodeURIComponent(redirect) : '/';
       router.push(redirectUrl);

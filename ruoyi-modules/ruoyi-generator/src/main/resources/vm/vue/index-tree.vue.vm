@@ -284,7 +284,7 @@
     </t-dialog>
 
     <!-- ${functionName}详情 -->
-    <t-dialog v-model:visible="openView" header="${functionName}详情" width="700px" attach="body">
+    <t-dialog v-model:visible="openView" header="${functionName}详情" width="700px" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
         <t-form label-align="right" colon :data="form" label-width="calc(5em + 24px)">
           <t-row :gutter="[0, 20]">
