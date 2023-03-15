@@ -52,9 +52,12 @@ const rules = ref<Record<string, Array<FormRule>>>({
 /** 提交按钮 */
 function submit({ validateResult }) {
   if (validateResult === true) {
-    updateUserPwd(user.oldPassword, user.newPassword).then(() => {
-      proxy.$modal.msgSuccess('修改成功');
-    });
+    const msgLoading = proxy.$modal.msgLoading('提交中...');
+    updateUserPwd(user.oldPassword, user.newPassword)
+      .then(() => {
+        proxy.$modal.msgSuccess('修改成功');
+      })
+      .finally(() => proxy.$modal.msgClose(msgLoading));
   }
 }
 /** 关闭按钮 */

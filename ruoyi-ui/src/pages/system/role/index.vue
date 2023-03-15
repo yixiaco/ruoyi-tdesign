@@ -575,20 +575,25 @@ function confirm(type) {
 /** 提交按钮 */
 function submitForm({ validateResult, firstError }) {
   if (validateResult === true) {
+    const msgLoading = proxy.$modal.msgLoading('提交中...');
     if (form.value.roleId) {
       form.value.menuIds = getMenuAllCheckedKeys();
-      updateRole(form.value).then((response) => {
-        proxy.$modal.msgSuccess('修改成功');
-        open.value = false;
-        getList();
-      });
+      updateRole(form.value)
+        .then((response) => {
+          proxy.$modal.msgSuccess('修改成功');
+          open.value = false;
+          getList();
+        })
+        .finally(() => proxy.$modal.msgClose(msgLoading));
     } else {
       form.value.menuIds = getMenuAllCheckedKeys();
-      addRole(form.value).then((response) => {
-        proxy.$modal.msgSuccess('新增成功');
-        open.value = false;
-        getList();
-      });
+      addRole(form.value)
+        .then((response) => {
+          proxy.$modal.msgSuccess('新增成功');
+          open.value = false;
+          getList();
+        })
+        .finally(() => proxy.$modal.msgClose(msgLoading));
     }
   } else {
     proxy.$modal.msgError(firstError);
@@ -621,11 +626,14 @@ function handleDataScope(row) {
 function submitDataScope() {
   if (form.value.roleId) {
     form.value.deptIds = getDeptAllCheckedKeys();
-    dataScope(form.value).then((response) => {
-      proxy.$modal.msgSuccess('修改成功');
-      openDataScope.value = false;
-      getList();
-    });
+    const msgLoading = proxy.$modal.msgLoading('提交中...');
+    dataScope(form.value)
+      .then((response) => {
+        proxy.$modal.msgSuccess('修改成功');
+        openDataScope.value = false;
+        getList();
+      })
+      .finally(() => proxy.$modal.msgClose(msgLoading));
   }
 }
 /** 取消按钮（数据权限） */

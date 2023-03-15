@@ -9,25 +9,39 @@ import {
   DialogOptions,
 } from 'tdesign-vue-next';
 import { h, reactive, ref } from 'vue';
+import { TNode } from 'tdesign-vue-next/es/common';
+import { MessageInfoOptions, MessageInstance } from 'tdesign-vue-next/es/message/type';
 
 let loadingInstance;
 
 export default {
   // 消息提示
-  msg(content, duration?: number) {
-    return MessagePlugin.info(content, duration);
+  msg(message: string | MessageInfoOptions, duration?: number) {
+    return MessagePlugin.info(message, duration);
   },
   // 错误消息
-  msgError(content, duration?: number) {
-    return MessagePlugin.error(content, duration);
+  msgError(message: string | MessageInfoOptions, duration?: number) {
+    return MessagePlugin.error(message, duration);
   },
   // 成功消息
-  msgSuccess(content, duration?: number) {
-    return MessagePlugin.success(content, duration);
+  msgSuccess(message: string | MessageInfoOptions, duration?: number) {
+    return MessagePlugin.success(message, duration);
   },
   // 警告消息
-  msgWarning(content, duration?: number) {
-    return MessagePlugin.warning(content, duration);
+  msgWarning(message: string | MessageInfoOptions, duration?: number) {
+    return MessagePlugin.warning(message, duration);
+  },
+  // 消息类型的加载中
+  msgLoading(message: string | MessageInfoOptions, duration?: number) {
+    return MessagePlugin.loading(message, duration);
+  },
+  // 关闭消息
+  msgClose(options: Promise<MessageInstance>) {
+    MessagePlugin.close(options);
+  },
+  // 关闭所有消息
+  msgCloseAll() {
+    MessagePlugin.closeAll();
   },
   // 弹出提示
   alert(content: DialogOptions | string) {
@@ -163,7 +177,7 @@ export default {
       body: content,
       confirmBtn: btn,
       cancelBtn: '取消',
-      theme: 'warning',
+      theme: 'default',
       onCancel: () => onCancel && onCancel(),
     });
     return instance;
@@ -227,7 +241,7 @@ export default {
     return instance;
   },
   // 打开遮罩层
-  loading(content) {
+  loading(content: string | TNode) {
     loadingInstance = LoadingPlugin({
       text: content,
       attach: 'body',

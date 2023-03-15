@@ -302,18 +302,23 @@ function confirm() {
 /** 提交按钮 */
 function submitForm({ validateResult, firstError }) {
   if (validateResult === true) {
+    const msgLoading = proxy.$modal.msgLoading('提交中...');
     if (form.value.deptId) {
-      updateDept(form.value).then((response) => {
-        proxy.$modal.msgSuccess('修改成功');
-        open.value = false;
-        getList();
-      });
+      updateDept(form.value)
+        .then((response) => {
+          proxy.$modal.msgSuccess('修改成功');
+          open.value = false;
+          getList();
+        })
+        .finally(() => proxy.$modal.msgClose(msgLoading));
     } else {
-      addDept(form.value).then((response) => {
-        proxy.$modal.msgSuccess('新增成功');
-        open.value = false;
-        getList();
-      });
+      addDept(form.value)
+        .then((response) => {
+          proxy.$modal.msgSuccess('新增成功');
+          open.value = false;
+          getList();
+        })
+        .finally(() => proxy.$modal.msgClose(msgLoading));
     }
   } else {
     proxy.$modal.msgError(firstError);
@@ -322,10 +327,13 @@ function submitForm({ validateResult, firstError }) {
 /** 删除按钮操作 */
 function handleDelete(row) {
   proxy.$modal.confirm(`是否确认删除名称为"${row.deptName}"的数据项?`, () => {
-    return delDept(row.deptId).then(() => {
-      getList();
-      proxy.$modal.msgSuccess('删除成功');
-    });
+    const msgLoading = proxy.$modal.msgLoading('正在删除中...');
+    return delDept(row.deptId)
+      .then(() => {
+        getList();
+        proxy.$modal.msgSuccess('删除成功');
+      })
+      .finally(() => proxy.$modal.msgClose(msgLoading));
   });
 }
 

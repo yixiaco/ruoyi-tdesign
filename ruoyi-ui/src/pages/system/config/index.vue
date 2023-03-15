@@ -1,6 +1,6 @@
 <template>
   <t-card>
-    <t-tabs v-model="action">
+    <t-tabs v-model="action" @change="handleChange">
       <t-tab-panel :value="1" label="系统配置" :destroy-on-hide="false">
         <div class="panel-content">
           <system-config :action="action === 1" :disabled="disabled" />
@@ -26,14 +26,21 @@ export default {
 </script>
 <script lang="ts" setup>
 import { ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
 import SystemConfig from './components/SystemConfig.vue';
 import SystemMail from '@/pages/system/config/components/SystemMail.vue';
 import SystemSms from '@/pages/system/config/components/SystemSms.vue';
 import { useHasPermission } from '@/utils/auth';
 
-const action = ref(1);
+const route = useRoute();
+const router = useRouter();
+const action = ref(Number(route.query.action) || 1);
 // 表单禁用
 const disabled = !useHasPermission(['system:config:edit']);
+
+function handleChange(value) {
+  router.push({ path: route.path, query: { action: value } });
+}
 </script>
 <style lang="less" scoped>
 .panel-content {

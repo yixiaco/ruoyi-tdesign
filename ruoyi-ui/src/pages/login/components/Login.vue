@@ -93,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { getCurrentInstance, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 import QrcodeVue from 'qrcode.vue';
 import { MessagePlugin } from 'tdesign-vue-next';
@@ -101,7 +101,7 @@ import type { FormInstanceFunctions, FormRule } from 'tdesign-vue-next';
 import Cookies from 'js-cookie';
 import { SecuredIcon } from 'tdesign-icons-vue-next';
 import { useCounter } from '@/hooks';
-import {useTabsRouterStore, useUserStore} from '@/store';
+import { useTabsRouterStore, useUserStore } from '@/store';
 import { getCodeImg } from '@/api/login';
 import { encrypt, decrypt } from '@/utils/jsencrypt';
 import { LoginParam } from '@/api/model/loginModel';
@@ -141,6 +141,7 @@ const switchType = (val: string) => {
 const tabsRouterStore = useTabsRouterStore();
 const route = useRoute();
 const router = useRouter();
+const { proxy } = getCurrentInstance();
 
 function getCode() {
   getCodeImg().then((res) => {
@@ -197,7 +198,9 @@ const onSubmit = async ({ validateResult }) => {
         code: formData.value.code,
         uuid: formData.value.uuid,
       };
+      const msgLoading = proxy.$modal.msgLoading('登录中...');
       await userStore.login(loginParam);
+      proxy.$modal.msgClose(msgLoading);
       // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
       if (formData.value.rememberMe && type.value === 'password') {
         Cookies.set('account', formData.value.account, { expires: 30 });

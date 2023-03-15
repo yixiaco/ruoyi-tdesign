@@ -355,6 +355,7 @@ function onConfirm() {
 function submitForm({ validateResult, firstError }) {
   if (validateResult === true) {
     buttonLoading.value = true;
+    const msgLoading = proxy.$modal.msgLoading('提交中...');
     if (form.value.ossConfigId) {
       updateOssConfig(form.value)
         .then(() => {
@@ -364,6 +365,7 @@ function submitForm({ validateResult, firstError }) {
         })
         .finally(() => {
           buttonLoading.value = false;
+          proxy.$modal.msgClose(msgLoading);
         });
     } else {
       addOssConfig(this.form)
@@ -374,6 +376,7 @@ function submitForm({ validateResult, firstError }) {
         })
         .finally(() => {
           buttonLoading.value = false;
+          proxy.$modal.msgClose(msgLoading);
         });
     }
   } else {
@@ -386,6 +389,7 @@ function handleStatusChange(row) {
   proxy.$modal.confirm(
     `确认要"${text}""${row.configKey}"配置吗?`,
     () => {
+      const msgLoading = proxy.$modal.msgLoading('提交中...');
       return changeOssConfigStatus(row.ossConfigId, row.status, row.configKey)
         .then(() => {
           getList();
@@ -393,7 +397,8 @@ function handleStatusChange(row) {
         })
         .catch(() => {
           row.status = row.status === '0' ? '1' : '0';
-        });
+        })
+        .finally(() => proxy.$modal.msgClose(msgLoading));
     },
     () => {
       row.status = row.status === '0' ? '1' : '0';
@@ -405,6 +410,7 @@ function handleDelete(row) {
   const ossConfigIds = row.ossConfigId || ids.value;
   proxy.$modal.confirm(`是否确认删除OSS配置编号为"${ossConfigIds}"的数据项?`, () => {
     loading.value = true;
+    const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delOssConfig(ossConfigIds)
       .then(() => {
         loading.value = false;
@@ -413,6 +419,7 @@ function handleDelete(row) {
       })
       .finally(() => {
         loading.value = false;
+        proxy.$modal.msgClose(msgLoading);
       });
   });
 }

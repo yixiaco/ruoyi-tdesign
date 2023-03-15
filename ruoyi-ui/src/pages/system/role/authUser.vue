@@ -190,10 +190,13 @@ function openSelectUser() {
 /** 取消授权按钮操作 */
 function cancelAuthUser(row) {
   proxy.$modal.confirm(`确认要取消该用户"${row.userName}"角色吗？`, () => {
-    return authUserCancel({ userId: row.userId, roleId: queryParams.roleId }).then(() => {
-      getList();
-      proxy.$modal.msgSuccess('取消授权成功');
-    });
+    const msgLoading = proxy.$modal.msgLoading('提交中...');
+    return authUserCancel({ userId: row.userId, roleId: queryParams.roleId })
+      .then(() => {
+        getList();
+        proxy.$modal.msgSuccess('取消授权成功');
+      })
+      .finally(() => proxy.$modal.msgClose(msgLoading));
   });
 }
 /** 批量取消授权按钮操作 */
@@ -201,10 +204,13 @@ function cancelAuthUserAll(row) {
   const { roleId } = queryParams;
   const uIds = userIds.value.join(',');
   proxy.$modal.confirm('是否取消选中用户授权数据项?', () => {
-    return authUserCancelAll({ roleId, userIds: uIds }).then(() => {
-      getList();
-      proxy.$modal.msgSuccess('取消授权成功');
-    });
+    const msgLoading = proxy.$modal.msgLoading('提交中...');
+    return authUserCancelAll({ roleId, userIds: uIds })
+      .then(() => {
+        getList();
+        proxy.$modal.msgSuccess('取消授权成功');
+      })
+      .finally(() => proxy.$modal.msgClose(msgLoading));
   });
 }
 

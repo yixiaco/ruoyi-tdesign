@@ -103,10 +103,13 @@ function close() {
 function submitForm() {
   const { userId } = form.value;
   const rIds = roleIds.value.join(',');
-  updateAuthRole({ userId, roleIds: rIds }).then((response) => {
-    proxy.$modal.msgSuccess('授权成功');
-    close();
-  });
+  const msgLoading = proxy.$modal.msgLoading('提交中...');
+  updateAuthRole({ userId, roleIds: rIds })
+    .then((response) => {
+      proxy.$modal.msgSuccess('授权成功');
+      close();
+    })
+    .finally(() => proxy.$modal.msgClose(msgLoading));
 }
 
 (() => {

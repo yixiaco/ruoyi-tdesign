@@ -294,18 +294,23 @@ function onConfirm() {
 /** 提交按钮 */
 function submitForm({ validateResult, firstError }) {
   if (validateResult === true) {
+    const msgLoading = proxy.$modal.msgLoading('提交中...');
     if (form.value.noticeId) {
-      updateNotice(form.value).then((response) => {
-        proxy.$modal.msgSuccess('修改成功');
-        open.value = false;
-        getList();
-      });
+      updateNotice(form.value)
+        .then((response) => {
+          proxy.$modal.msgSuccess('修改成功');
+          open.value = false;
+          getList();
+        })
+        .finally(() => proxy.$modal.msgClose(msgLoading));
     } else {
-      addNotice(form.value).then((response) => {
-        proxy.$modal.msgSuccess('新增成功');
-        open.value = false;
-        getList();
-      });
+      addNotice(form.value)
+        .then((response) => {
+          proxy.$modal.msgSuccess('新增成功');
+          open.value = false;
+          getList();
+        })
+        .finally(() => proxy.$modal.msgClose(msgLoading));
     }
   } else {
     proxy.$modal.msgError(firstError);
@@ -315,10 +320,13 @@ function submitForm({ validateResult, firstError }) {
 function handleDelete(row) {
   const noticeIds = row.noticeId || ids.value;
   proxy.$modal.confirm(`是否确认删除公告编号为"${noticeIds}"的数据项？`, () => {
-    return delNotice(noticeIds).then(() => {
-      getList();
-      proxy.$modal.msgSuccess('删除成功');
-    });
+    const msgLoading = proxy.$modal.msgLoading('正在删除中...');
+    return delNotice(noticeIds)
+      .then(() => {
+        getList();
+        proxy.$modal.msgSuccess('删除成功');
+      })
+      .finally(() => proxy.$modal.msgClose(msgLoading));
   });
 }
 

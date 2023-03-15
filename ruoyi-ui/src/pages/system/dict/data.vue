@@ -350,20 +350,25 @@ function onConfirm() {
 /** 提交按钮 */
 function submitForm({ validateResult, firstError }) {
   if (validateResult === true) {
+    const msgLoading = proxy.$modal.msgLoading('提交中...');
     if (form.value.dictCode) {
-      updateData(form.value).then((response) => {
-        useDictStore().removeDict(queryParams.value.dictType);
-        proxy.$modal.msgSuccess('修改成功');
-        open.value = false;
-        getList();
-      });
+      updateData(form.value)
+        .then((response) => {
+          useDictStore().removeDict(queryParams.value.dictType);
+          proxy.$modal.msgSuccess('修改成功');
+          open.value = false;
+          getList();
+        })
+        .finally(() => proxy.$modal.msgClose(msgLoading));
     } else {
-      addData(form.value).then((response) => {
-        useDictStore().removeDict(queryParams.value.dictType);
-        proxy.$modal.msgSuccess('新增成功');
-        open.value = false;
-        getList();
-      });
+      addData(form.value)
+        .then((response) => {
+          useDictStore().removeDict(queryParams.value.dictType);
+          proxy.$modal.msgSuccess('新增成功');
+          open.value = false;
+          getList();
+        })
+        .finally(() => proxy.$modal.msgClose(msgLoading));
     }
   } else {
     proxy.$modal.msgError(firstError);
@@ -373,11 +378,14 @@ function submitForm({ validateResult, firstError }) {
 function handleDelete(row) {
   const dictCodes = row.dictCode || ids.value;
   proxy.$modal.confirm(`是否确认删除字典编码为"${dictCodes}"的数据项？`, () => {
-    return delData(dictCodes).then(() => {
-      getList();
-      proxy.$modal.msgSuccess('删除成功');
-      useDictStore().removeDict(queryParams.value.dictType);
-    });
+    const msgLoading = proxy.$modal.msgLoading('正在删除中...');
+    return delData(dictCodes)
+      .then(() => {
+        getList();
+        proxy.$modal.msgSuccess('删除成功');
+        useDictStore().removeDict(queryParams.value.dictType);
+      })
+      .finally(() => proxy.$modal.msgClose(msgLoading));
   });
 }
 /** 导出按钮操作 */

@@ -172,13 +172,16 @@ function uploadImg() {
   cropperRef.value.getCropBlob((data) => {
     const formData = new FormData();
     formData.append('avatarfile', data, options.filename);
-    uploadAvatar(formData).then((response) => {
-      open.value = false;
-      options.img = response.data.imgUrl;
-      userStore.avatar = options.img;
-      proxy.$modal.msgSuccess('修改成功');
-      visible.value = false;
-    });
+    const msgLoading = proxy.$modal.msgLoading('上传中...');
+    uploadAvatar(formData)
+      .then((response) => {
+        open.value = false;
+        options.img = response.data.imgUrl;
+        userStore.avatar = options.img;
+        proxy.$modal.msgSuccess('修改成功');
+        visible.value = false;
+      })
+      .finally(() => proxy.$modal.msgClose(msgLoading));
   });
 }
 /** 实时预览 */

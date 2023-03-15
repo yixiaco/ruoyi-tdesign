@@ -160,12 +160,14 @@ const signNameDoc = computed(() => {
 function submitForm({ validateResult, firstError }) {
   if (validateResult === true) {
     buttonLoading.value = true;
+    const msgLoading = proxy.$modal.msgLoading('提交中...');
     updateConfigs({ [key]: JSON.stringify(form.value) })
       .then(() => {
         proxy.$modal.msgSuccess('更新成功');
       })
       .finally(() => {
         buttonLoading.value = false;
+        proxy.$modal.msgClose(msgLoading);
       });
   } else {
     proxy.$modal.msgError(firstError);

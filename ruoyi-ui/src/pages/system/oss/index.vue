@@ -365,6 +365,7 @@ function handleDownload(row) {
 function handlePreviewListResource(previewListResource) {
   const text = previewListResource ? '启用' : '停用';
   proxy.$modal.confirm(`确认要"${text}""预览列表图片"配置吗?`, () => {
+    const msgLoading = proxy.$modal.msgLoading('提交中...');
     return proxy
       .updateConfigByKey('sys.oss.previewListResource', previewListResource)
       .then(() => {
@@ -373,17 +374,21 @@ function handlePreviewListResource(previewListResource) {
       })
       .catch(() => {
         previewListResource.value = previewListResource.value !== true;
-      });
+      })
+      .finally(() => proxy.$modal.msgClose(msgLoading));
   });
 }
 /** 删除按钮操作 */
 function handleDelete(row) {
   const ossIds = row.ossId || ids.value;
   proxy.$modal.confirm(`是否确认删除OSS对象存储编号为"${ossIds}"的数据项?`, () => {
-    return delOss(ossIds).then(() => {
-      getList();
-      proxy.$modal.msgSuccess('删除成功');
-    });
+    const msgLoading = proxy.$modal.msgLoading('正在删除中...');
+    return delOss(ossIds)
+      .then(() => {
+        getList();
+        proxy.$modal.msgSuccess('删除成功');
+      })
+      .finally(() => proxy.$modal.msgClose(msgLoading));
   });
 }
 

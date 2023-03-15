@@ -281,18 +281,23 @@ function onConfirm() {
 /** 提交按钮 */
 function submitForm({ validateResult, firstError }) {
   if (validateResult === true) {
+    const msgLoading = proxy.$modal.msgLoading('提交中...');
     if (form.value.postId) {
-      updatePost(form.value).then(() => {
-        proxy.$modal.msgSuccess('修改成功');
-        open.value = false;
-        getList();
-      });
+      updatePost(form.value)
+        .then(() => {
+          proxy.$modal.msgSuccess('修改成功');
+          open.value = false;
+          getList();
+        })
+        .finally(() => proxy.$modal.msgClose(msgLoading));
     } else {
-      addPost(form.value).then(() => {
-        proxy.$modal.msgSuccess('新增成功');
-        open.value = false;
-        getList();
-      });
+      addPost(form.value)
+        .then(() => {
+          proxy.$modal.msgSuccess('新增成功');
+          open.value = false;
+          getList();
+        })
+        .finally(() => proxy.$modal.msgClose(msgLoading));
     }
   } else {
     proxy.$modal.msgError(firstError);
@@ -302,10 +307,13 @@ function submitForm({ validateResult, firstError }) {
 function handleDelete(row) {
   const postIds = row.postId || ids.value;
   proxy.$modal.confirm(`是否确认删除岗位编号为"${postIds}"的数据项？`, () => {
-    return delPost(postIds).then(() => {
-      getList();
-      proxy.$modal.msgSuccess('删除成功');
-    });
+    const msgLoading = proxy.$modal.msgLoading('正在删除中...');
+    return delPost(postIds)
+      .then(() => {
+        getList();
+        proxy.$modal.msgSuccess('删除成功');
+      })
+      .finally(() => proxy.$modal.msgClose(msgLoading));
   });
 }
 /** 导出按钮操作 */

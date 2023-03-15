@@ -534,13 +534,15 @@ function handleStatusChange(row) {
   proxy.$modal.confirm(
     `确认要"${text}""${row.userName}"用户吗?`,
     () => {
+      const msgLoading = proxy.$modal.msgLoading('提交中...');
       return changeUserStatus(row.userId, row.status)
         .then(() => {
           proxy.$modal.msgSuccess(`${text}成功`);
         })
         .catch(() => {
           row.status = row.status === '0' ? '1' : '0';
-        });
+        })
+        .finally(() => proxy.$modal.msgClose(msgLoading));
     },
     () => {
       row.status = row.status === '0' ? '1' : '0';
@@ -561,9 +563,12 @@ function handleResetPwd(row) {
     inputPattern: /^.{5,20}$/,
     inputErrorMessage: '用户密码长度必须介于 5 和 20 之间',
     onConfirm: ({ value }) => {
-      return resetUserPwd(row.userId, value).then((response) => {
-        proxy.$modal.msgSuccess(`修改成功，新密码是：${value}`);
-      });
+      const msgLoading = proxy.$modal.msgLoading('提交中...');
+      return resetUserPwd(row.userId, value)
+        .then((response) => {
+          proxy.$modal.msgSuccess(`修改成功，新密码是：${value}`);
+        })
+        .finally(() => proxy.$modal.msgClose(msgLoading));
     },
   });
 }
@@ -668,6 +673,7 @@ function submitForm() {
 const onSubmit = ({ validateResult, firstError }) => {
   if (validateResult === true) {
     dLoading.value = true;
+    const msgLoading = proxy.$modal.msgLoading('提交中...');
     if (form.value.userId) {
       updateUser(form.value)
         .then((response) => {
@@ -677,6 +683,7 @@ const onSubmit = ({ validateResult, firstError }) => {
         })
         .finally(() => {
           dLoading.value = false;
+          proxy.$modal.msgClose(msgLoading);
         });
     } else {
       addUser(form.value)
@@ -687,6 +694,7 @@ const onSubmit = ({ validateResult, firstError }) => {
         })
         .finally(() => {
           dLoading.value = false;
+          proxy.$modal.msgClose(msgLoading);
         });
     }
   } else {
