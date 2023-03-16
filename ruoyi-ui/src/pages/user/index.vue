@@ -103,11 +103,11 @@ import { useSettingStore } from '@/store';
 
 import { LAST_7_DAYS } from '@/utils/date';
 import { USER_INFO_LIST, TEAM_MEMBERS, PRODUCT_LIST } from './constants';
-import { getFolderLineDataSet } from './index';
-import ProductAIcon from '@/assets/assets-product-1.svg';
-import ProductBIcon from '@/assets/assets-product-2.svg';
-import ProductCIcon from '@/assets/assets-product-3.svg';
-import ProductDIcon from '@/assets/assets-product-4.svg';
+import { getFolderLineDataSet } from './data';
+import ProductAIcon from '@/assets/icons/assets-product-1.svg';
+import ProductBIcon from '@/assets/icons/assets-product-2.svg';
+import ProductCIcon from '@/assets/icons/assets-product-3.svg';
+import ProductDIcon from '@/assets/icons/assets-product-4.svg';
 import { changeChartsTheme } from '@/utils/color';
 
 echarts.use([GridComponent, TooltipComponent, LineChart, CanvasRenderer, LegendComponent]);

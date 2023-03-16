@@ -293,7 +293,7 @@ function getList() {
   });
 }
 function checkFileSuffix(fileSuffix) {
-  const arr = ['png', 'jpg', 'jpeg', 'ico', 'bmp', 'webp', 'gif'];
+  const arr = ['png', 'jpg', 'jpeg', 'ico', 'bmp', 'webp', 'gif', 'svg'];
   return arr.some((type) => {
     return fileSuffix.indexOf(type) > -1;
   });

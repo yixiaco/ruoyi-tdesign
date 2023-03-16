@@ -6,8 +6,8 @@ import { getDicts } from '@/api/system/dict/data';
 export interface DictModel {
   label: string;
   value: string;
-  elTagType: string;
-  elTagClass: string;
+  elTagType?: 'primary' | 'warning' | 'danger' | 'default' | 'success' | '';
+  elTagClass?: string;
 }
 
 /**

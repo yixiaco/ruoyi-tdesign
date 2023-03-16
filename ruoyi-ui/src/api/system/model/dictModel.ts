@@ -37,7 +37,7 @@ export interface SysDictData extends BaseEntity {
   /**
    * 表格字典样式
    */
-  listClass?: string;
+  listClass?: 'primary' | 'warning' | 'danger' | 'default' | 'success' | '';
 
   /**
    * 是否默认（Y是 N否）

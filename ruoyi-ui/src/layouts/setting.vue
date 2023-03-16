@@ -95,7 +95,6 @@
 import { ref, computed, onMounted, watchEffect } from 'vue';
 import { MessagePlugin } from 'tdesign-vue-next';
 import type { PopupVisibleChangeContext } from 'tdesign-vue-next';
-import { Color } from 'tvision-color';
 import useClipboard from 'vue-clipboard3';
 
 import { useSettingStore } from '@/store';
@@ -104,7 +103,6 @@ import ColorContainer from '@/components/color/index.vue';
 
 import STYLE_CONFIG from '@/config/style';
 import { DEFAULT_COLOR_OPTIONS } from '@/config/color';
-import { insertThemeStylesheet, generateColorMap } from '@/utils/color';
 
 import SettingDarkIcon from '@/assets/icons/assets-setting-dark.svg';
 import SettingLightIcon from '@/assets/icons/assets-setting-light.svg';
@@ -150,19 +148,7 @@ const showSettingPanel = computed({
 });
 
 const changeColor = (hex: string) => {
-  const { colors: newPalette, primary: brandColorIndex } = Color.getColorGradations({
-    colors: [hex],
-    step: 10,
-    remainInput: false, // 是否保留输入 不保留会矫正不合适的主题色
-  })[0];
-  const { mode } = settingStore;
-
-  const colorMap = generateColorMap(hex, newPalette, mode as 'light' | 'dark', brandColorIndex);
-
-  settingStore.addColor({ [hex]: colorMap });
   formData.value.brandTheme = hex;
-  settingStore.updateConfig({ ...formData.value, brandTheme: hex });
-  insertThemeStylesheet(hex, colorMap, mode as 'light' | 'dark');
 };
 
 onMounted(() => {
@@ -214,7 +200,9 @@ watchEffect(() => {
   if (formData.value.brandTheme) settingStore.updateConfig(formData.value);
 });
 </script>
-<style lang="less" scoped>
+<!-- teleport导致drawer 内 scoped样式问题无法生效 先规避下 -->
+<!-- eslint-disable-next-line vue-scoped-css/enforce-style-type -->
+<style lang="less">
 .tdesign-setting {
   z-index: 100;
   position: fixed;
@@ -314,7 +302,7 @@ watchEffect(() => {
     align-items: center;
     margin-bottom: 16px;
 
-    :deep(.t-radio-button) {
+    .t-radio-button {
       display: inline-flex;
       max-height: 78px;
       padding: 8px;
@@ -325,22 +313,22 @@ watchEffect(() => {
       }
     }
 
-    :deep(.t-is-checked) {
+    .t-is-checked {
       border: 2px solid var(--td-brand-color) !important;
     }
 
-    :deep(.t-form__controls-content) {
+    .t-form__controls-content {
       justify-content: end;
     }
   }
 
-  :deep(.t-form__controls-content) {
+  .t-form__controls-content {
     justify-content: end;
   }
 }
 
 .setting-route-theme {
-  :deep(.t-form__label) {
+  .t-form__label {
     min-width: 310px !important;
     color: var(--td-text-color-secondary);
   }
@@ -348,7 +336,7 @@ watchEffect(() => {
 
 .setting-color-theme {
   .setting-layout-drawer {
-    :deep(.t-radio-button) {
+    .t-radio-button {
       height: 32px;
     }
 

@@ -6,7 +6,7 @@ export default {
   name: 'Redirect',
 };
 </script>
-<script setup>
+<script lang="ts" setup>
 import { useRoute, useRouter } from 'vue-router';
 
 const route = useRoute();

@@ -6,7 +6,6 @@ import { DialogPlugin, LoadingPlugin, MessagePlugin, NotifyPlugin } from 'tdesig
 import type { InternalAxiosRequestConfig } from 'axios';
 import type { AxiosTransform, CreateAxiosOptions } from './AxiosTransform';
 import { VAxios } from './Axios';
-import proxy from '@/config/proxy';
 import { joinTimestamp, formatRequestDate, setObjToUrlParams } from './utils';
 import { ContentTypeEnum } from '@/constants';
 import { getToken } from '@/utils/auth';
@@ -16,12 +15,12 @@ import { tansParams, blobValidate } from '@/utils/ruoyi';
 import cache from '@/plugins/cache';
 import { useUserStore } from '@/store/modules/user';
 
-const env = import.meta.env.MODE || 'development';
+// const env = import.meta.env.MODE || 'development';
 // 是否显示重新登录
 export const isRelogin = { show: false };
 
 // 如果是mock模式 或 没启用直连代理 就不配置host 会走本地Mock拦截 或 Vite 代理
-const host = env === 'mock' || !proxy.isRequestProxy ? '' : proxy[env].host;
+// const host = env === 'mock' || !proxy.isRequestProxy ? '' : proxy[env].host;
 
 // 数据处理，方便区分多种处理方式
 const transform: AxiosTransform = {
@@ -85,11 +84,11 @@ const transform: AxiosTransform = {
             isRelogin.show = false;
           },
         });
-      } else {
-        msg = '无效的会话，或者会话已过期，请重新登录。';
-        MessagePlugin.error(msg);
-        throw new Error(msg);
+        return res.data;
       }
+      msg = '无效的会话，或者会话已过期，请重新登录。';
+      MessagePlugin.error(msg);
+      throw new Error(msg);
     } else if (code === 500) {
       MessagePlugin.error(msg);
       throw new Error(msg);

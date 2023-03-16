@@ -6,7 +6,7 @@
       <div class="title-container">
         <h1 class="title margin-no">登录到</h1>
         <h1 class="title">{{ title }}</h1>
-        <div v-if="type === 'login' && registerOpen" class="sub-title">
+        <div v-if="registerOpen" class="sub-title">
           <p class="tip">{{ type === 'register' ? '已有账号?' : '没有账号吗?' }}</p>
           <p class="tip" @click="switchType(type === 'register' ? 'login' : 'register')">
             {{ type === 'register' ? '登录' : '注册新账号' }}

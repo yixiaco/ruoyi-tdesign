@@ -22,10 +22,10 @@ const props = defineProps({
   },
 });
 const emit = defineEmits(['update:modelValue']);
-const value = computed({
+const value = computed<boolean>({
   get() {
     if (props.modelValue instanceof Boolean) {
-      return props.modelValue;
+      return <boolean>props.modelValue;
     }
     return props.modelValue === props.trueLabel;
   },

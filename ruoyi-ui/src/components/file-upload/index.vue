@@ -28,7 +28,7 @@
 
 <script lang="ts" setup>
 import { computed, getCurrentInstance, PropType, ref, watch } from 'vue';
-import { SuccessContext, UploadFile, UploadValidateType } from 'tdesign-vue-next';
+import { SuccessContext, UploadFile, UploadRemoveContext, UploadValidateType } from 'tdesign-vue-next';
 import { getToken } from '@/utils/auth';
 import { listByIds, delOss, listByUrls } from '@/api/system/oss';
 
@@ -194,7 +194,7 @@ function handleUploadSuccess(context: SuccessContext) {
 }
 
 // 删除文件
-function handleDelete({ file }) {
+function handleDelete({ file }: UploadRemoveContext) {
   const { ossId, name } = file;
   delOss(ossId).then(() => {
     proxy.$modal.msgSuccess(`文件【${name}】删除成功！`);

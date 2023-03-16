@@ -13,7 +13,7 @@
           v-else
           :key="item.value + ''"
           :index="index"
-          :theme="item.elTagType"
+          :theme="item.elTagType || 'default'"
           variant="light"
           :class="item.elTagClass"
           >{{ item.label }}</t-tag
@@ -24,12 +24,13 @@
 </template>
 
 <script lang="ts" setup>
-import { computed } from 'vue';
+import { computed, PropType } from 'vue';
+import { DictModel } from '@/utils/dict';
 
 const props = defineProps({
   // 数据
   options: {
-    type: Array,
+    type: Array as PropType<Array<DictModel>>,
     default: null,
   },
   // 当前的值

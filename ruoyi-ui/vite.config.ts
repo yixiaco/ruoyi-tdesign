@@ -6,6 +6,7 @@ import svgLoader from 'vite-svg-loader';
 import AutoImport from 'unplugin-auto-import/vite';
 import Components from 'unplugin-vue-components/vite';
 import { TDesignResolver } from 'unplugin-vue-components/resolvers';
+import viteCompression from 'vite-plugin-compression';
 
 import path from 'path';
 
@@ -13,7 +14,7 @@ const CWD = process.cwd();
 
 // https://vitejs.dev/config/
 export default ({ mode }: ConfigEnv): UserConfig => {
-  const { VITE_APP_CONTEXT_PATH } = loadEnv(mode, CWD);
+  const { VITE_APP_CONTEXT_PATH, VITE_BUILD_COMPRESS } = loadEnv(mode, CWD);
   return {
     base: VITE_APP_CONTEXT_PATH,
     resolve: {
@@ -61,6 +62,16 @@ export default ({ mode }: ConfigEnv): UserConfig => {
         ],
       }),
       svgLoader(),
+      viteCompression({
+        // threshold: 1024000, // 对大于 1mb 的文件进行压缩
+        algorithm: VITE_BUILD_COMPRESS === 'brotli' ? 'brotliCompress' : 'gzip',
+        ext: VITE_BUILD_COMPRESS === 'brotli' ? '.br' : '.gz',
+        deleteOriginFile: false,
+        compressionOptions: {
+          level: 9,
+          memLevel: 9,
+        },
+      }),
     ],
 
     server: {
