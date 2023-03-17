@@ -36,6 +36,8 @@ public class CreateAndUpdateMetaObjectHandler implements MetaObjectHandler {
             fieldFills.add(StrictFill.of("createBy", this::getLoginId, Long.class));
             fieldFills.add(StrictFill.of("updateBy", this::getLoginUsername, String.class));
             fieldFills.add(StrictFill.of("updateBy", this::getLoginId, Long.class));
+            fieldFills.add(StrictFill.of("version", () -> 0L, Long.class));
+            fieldFills.add(StrictFill.of("version", () -> 0, Integer.class));
 
             fillStrategy(true, metaObject, tableInfo, fieldFills);
         } catch (Exception e) {

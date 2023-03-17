@@ -41,7 +41,10 @@ public class ${ClassName} extends ${Entity} {
     /**
      * $column.columnComment
      */
-#if($column.javaField=="createBy" || $column.javaField=="createTime")
+#if($column.javaField=='version')
+    @Version
+#end
+#if($column.javaField=="createBy" || $column.javaField=="createTime" || $column.javaField=="version")
     @TableField(fill = FieldFill.INSERT)
 #end
 #if($column.javaField=="updateBy" || $column.javaField=="updateTime")
@@ -49,9 +52,6 @@ public class ${ClassName} extends ${Entity} {
 #end
 #if($column.javaField=='delFlag')
     @TableLogic
-#end
-#if($column.javaField=='version')
-    @Version
 #end
 #if($column.isPk==1)
     @TableId(value = "$column.columnName"#if($column.isIncrement == 1), type = IdType.AUTO#end)
