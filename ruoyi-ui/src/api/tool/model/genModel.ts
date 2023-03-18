@@ -35,7 +35,7 @@ export interface GenTable extends BaseEntity {
   className?: string;
 
   /**
-   * 使用的模板（crud单表操作 tree树表操作 sub主子表操作）
+   * 使用的模板（crud单表操作 tree树表操作）
    */
   tplCategory?: string;
 
@@ -78,11 +78,6 @@ export interface GenTable extends BaseEntity {
    * 主键信息
    */
   pkColumn?: GenTableColumn;
-
-  /**
-   * 子表信息
-   */
-  subTable?: GenTable;
 
   /**
    * 表列信息

@@ -250,7 +250,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
   file: [{ required: true, message: '文件不能为空', trigger: 'blur' }],
 });
 
-const form = ref({});
+const form = ref<{ file?: any }>({});
 const queryParams = ref<SysOssQuery>({
   pageNum: 1,
   pageSize: 10,

@@ -351,7 +351,7 @@ import {
 } from 'tdesign-icons-vue-next';
 import { EnhancedTableInstanceFunctions, FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { list${BusinessName}, get${BusinessName}, del${BusinessName}, add${BusinessName}, update${BusinessName} } from '@/api/${moduleName}/${businessName}';
-import { #if(!$useBO || !$useQuery || !$useVO)${ClassName}#if($useBO || $useQuery || $useVO), #end#end#if(!$useVO && $useBO)${ClassName}Bo#if($useQuery || $useVO), #end#end#if($useQuery)${ClassName}Query#if($useVO), #end#end#if($useVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
+import { #if(!$useBO || !$useQuery || !$useVO)${ClassName}#if($useBO || $useQuery || $useVO), #end#end#if($useBO)${ClassName}Bo#if($useQuery || $useVO), #end#end#if($useQuery)${ClassName}Query#if($useVO), #end#end#if($useVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
 #if($useVO)
 #set($vo="${ClassName}Vo")
 #else
@@ -435,7 +435,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 240 },
 ]);
 // 提交表单对象
-const form = ref<#if($useVO)$vo#elseif($useBO)$bo#else$ClassName#end>({});
+const form = ref<#if($useVO && $useBO)$vo & $bo#elseif($useVO)$vo#elseif($useBO)$bo#else$ClassName#end>({});
 // 查询对象
 const queryParams = ref<${query}>({
   params: {
