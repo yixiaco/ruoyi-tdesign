@@ -6,6 +6,16 @@ import lombok.EqualsAndHashCode;
 import java.io.Serial;
 import java.util.Date;
 import java.math.BigDecimal;
+#if(!$useBO)
+#foreach ($column in $columns)
+#if($column.isRequired == 1)
+import com.ruoyi.common.core.validate.AddGroup;
+import com.ruoyi.common.core.validate.EditGroup;
+import jakarta.validation.constraints.*;
+    #break
+#end
+#end
+#end
 
 #foreach ($import in $importList)
 import ${import};
@@ -41,6 +51,17 @@ public class ${ClassName} extends ${Entity} {
     /**
      * $column.columnComment
      */
+#if(!$useBO && $column.isRequired == 1)
+#set($Group0 = [])
+#if($column.isInsert && $Group0.add('AddGroup.class'))#end
+#if(($column.isEdit || $column.isPk == '1') && $Group0.add('EditGroup.class'))#end
+#set($Group = $StringUtils.join($Group0, ", "))
+#if($column.javaType == 'String')
+    @NotBlank(message = "$column.columnComment不能为空"#if($Group), groups = {${Group}}#end)
+#else
+    @NotNull(message = "$column.columnComment不能为空"#if($Group), groups = {${Group}}#end)
+#end
+#end
 #if($column.javaField=='version')
     @Version
 #end

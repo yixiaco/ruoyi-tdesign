@@ -28,7 +28,7 @@ import com.ruoyi.common.core.web.domain.TreeEntity;
 #if(!$tree)
 #set($Entity="BaseEntity")
 #else
-#set($Entity="TreeEntity<${ClassName}Bo}>")
+#set($Entity="TreeEntity<${ClassName}Bo>")
 #end
 @Data
 @EqualsAndHashCode(callSuper = true)
