@@ -1,5 +1,5 @@
 import { SysDept } from '@/api/system/model/deptModel';
-import { BaseEntity } from '@/api/model/ResultModel';
+import { BaseEntity } from '@/api/model/resultModel';
 import { SysRole } from '@/api/system/model/roleModel';
 import { SysPost } from '@/api/system/model/postModel';
 

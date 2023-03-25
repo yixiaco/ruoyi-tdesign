@@ -1,6 +1,6 @@
 import { request } from '@/utils/request';
 import { CaptchaImage, LoginModel, RegisterBody, UserInfo } from '@/api/model/loginModel';
-import { R } from '@/api/model/ResultModel';
+import { R } from '@/api/model/resultModel';
 
 /**
  * 是否登录状态

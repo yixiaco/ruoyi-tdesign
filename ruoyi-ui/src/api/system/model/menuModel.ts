@@ -1,4 +1,4 @@
-import { TreeModel, TreeEntity } from '@/api/model/ResultModel';
+import { TreeModel, TreeEntity } from '@/api/model/resultModel';
 
 /**
  * 系统菜单

@@ -1,4 +1,4 @@
-import { BaseEntity, TreeModel } from '@/api/model/ResultModel';
+import { BaseEntity, TreeModel } from '@/api/model/resultModel';
 
 // 系统角色
 export interface SysRole extends BaseEntity {

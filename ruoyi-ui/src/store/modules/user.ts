@@ -4,7 +4,7 @@ import { getToken, setToken, removeToken } from '@/utils/auth';
 import { isLogin, login, getInfo, logout } from '@/api/login';
 import { LoginParam, UserInfo } from '@/api/model/loginModel';
 import defAva from '@/assets/images/profile.jpg';
-import { R } from '@/api/model/ResultModel';
+import { R } from '@/api/model/resultModel';
 
 export const useUserStore = defineStore('user', {
   state: () => ({

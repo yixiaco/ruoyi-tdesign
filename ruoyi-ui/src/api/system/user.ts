@@ -1,7 +1,7 @@
 import { request } from '@/utils/request';
 import { parseStrEmpty } from '@/utils/ruoyi';
 import { SysUser, SysUserInfo, UserAuthRole, UserAvatarResult, UserProfile } from '@/api/system/model/userModel';
-import { R, TableDataInfo, TreeModel } from '@/api/model/ResultModel';
+import { R, TableDataInfo, TreeModel } from '@/api/model/resultModel';
 
 // 查询用户列表
 export function listUser(query: SysUser) {

@@ -1,4 +1,4 @@
-import { TreeEntity } from '@/api/model/ResultModel';
+import { TreeEntity } from '@/api/model/resultModel';
 
 // 系统部门
 export interface SysDept extends TreeEntity<SysDept> {
