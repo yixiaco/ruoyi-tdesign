@@ -4,6 +4,7 @@ import cn.dev33.satoken.stp.StpInterface;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.enums.UserType;
 import com.ruoyi.common.satoken.utils.LoginHelper;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,6 +14,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
+@Component
 public class SaPermissionImpl implements StpInterface {
 
     /**
