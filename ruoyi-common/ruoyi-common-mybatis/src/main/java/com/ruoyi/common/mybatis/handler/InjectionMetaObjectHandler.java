@@ -23,7 +23,7 @@ import java.util.Objects;
  * @date 2021/4/25
  */
 @Slf4j
-public class CreateAndUpdateMetaObjectHandler implements MetaObjectHandler {
+public class InjectionMetaObjectHandler implements MetaObjectHandler {
 
     @Override
     public void insertFill(MetaObject metaObject) {

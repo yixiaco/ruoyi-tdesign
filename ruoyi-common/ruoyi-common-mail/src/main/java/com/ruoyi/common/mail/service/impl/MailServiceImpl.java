@@ -2,9 +2,9 @@ package com.ruoyi.common.mail.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.mail.MailAccount;
-import cn.hutool.json.JSONUtil;
 import com.ruoyi.common.core.service.ConfigService;
 import com.ruoyi.common.core.exception.ServiceException;
+import com.ruoyi.common.core.utils.JsonUtils;
 import com.ruoyi.common.mail.config.properties.MailProperties;
 import com.ruoyi.common.mail.handle.MailContextHolder;
 import com.ruoyi.common.mail.service.MailService;
@@ -45,8 +45,8 @@ public class MailServiceImpl implements MailService {
         if (StrUtil.isBlank(mailJson)) {
             throw new ServiceException("邮箱未配置！");
         }
-        MailProperties properties = JSONUtil.toBean(mailJson, MailProperties.class);
-        if (properties.getEnabled()) {
+        MailProperties properties = JsonUtils.parseObject(mailJson, MailProperties.class);
+        if (properties != null && properties.getEnabled()) {
             account = new MailAccount();
             account.setHost(properties.getHost());
             account.setPort(properties.getPort());

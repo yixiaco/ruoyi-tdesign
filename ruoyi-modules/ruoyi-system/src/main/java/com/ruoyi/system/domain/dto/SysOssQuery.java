@@ -1,11 +1,11 @@
 package com.ruoyi.system.domain.dto;
 
+import com.ruoyi.common.mybatis.core.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
 import java.util.Date;
 
-import com.ruoyi.common.core.web.domain.BaseEntity;
 
 /**
  * OSS对象存储业务对象 sys_oss

@@ -1,9 +1,9 @@
 package com.ruoyi.common.sms.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import com.ruoyi.common.core.service.ConfigService;
 import com.ruoyi.common.core.exception.ServiceException;
+import com.ruoyi.common.core.utils.JsonUtils;
 import com.ruoyi.common.sms.config.properties.SmsProperties;
 import com.ruoyi.common.sms.core.AliyunSmsTemplate;
 import com.ruoyi.common.sms.core.SmsTemplate;
@@ -42,8 +42,8 @@ public class SmsServiceImpl implements SmsService {
         if (StrUtil.isBlank(smsJson)) {
             throw new ServiceException("当前系统未配置短信功能！");
         }
-        SmsProperties properties = JSONUtil.toBean(smsJson, SmsProperties.class);
-        if (properties.getEnabled()) {
+        SmsProperties properties = JsonUtils.parseObject(smsJson, SmsProperties.class);
+        if (properties != null && properties.getEnabled()) {
             switch (properties.getEndpoint()) {
                 case "dysmsapi.aliyuncs.com":
                     template = new AliyunSmsTemplate(properties);
