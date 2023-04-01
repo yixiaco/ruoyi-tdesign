@@ -3,7 +3,7 @@ package com.ruoyi.system.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.system.domain.SysOss;
-import com.ruoyi.system.domain.bo.SysOssBo;
+import com.ruoyi.system.domain.dto.SysOssQuery;
 import com.ruoyi.system.domain.vo.SysOssVo;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.web.multipart.MultipartFile;
@@ -22,7 +22,7 @@ public interface ISysOssService extends IService<SysOss> {
     /**
      * 查询OSS对象存储列表
      */
-    TableDataInfo<SysOssVo> queryPageList(SysOssBo sysOss);
+    TableDataInfo<SysOssVo> queryPageList(SysOssQuery query);
 
     /**
      * 查询OSS对象基于id串

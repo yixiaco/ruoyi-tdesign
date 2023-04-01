@@ -65,7 +65,6 @@ export interface BaseEntity {
   params?: Record<string, any | undefined>;
 }
 
-
 /**
  * 树结构
  */

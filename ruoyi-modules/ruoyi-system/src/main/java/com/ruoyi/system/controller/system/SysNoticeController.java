@@ -7,6 +7,9 @@ import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.system.domain.SysNotice;
+import com.ruoyi.system.domain.bo.SysNoticeBo;
+import com.ruoyi.system.domain.dto.SysNoticeQuery;
+import com.ruoyi.system.domain.vo.SysNoticeVo;
 import com.ruoyi.system.service.ISysNoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -30,7 +33,7 @@ public class SysNoticeController extends BaseController {
      */
     @SaCheckPermission("system:notice:list")
     @GetMapping("/list")
-    public TableDataInfo<SysNotice> list(SysNotice notice) {
+    public TableDataInfo<SysNoticeVo> list(SysNoticeQuery notice) {
         return noticeService.selectPageNoticeList(notice);
     }
 
@@ -51,7 +54,7 @@ public class SysNoticeController extends BaseController {
     @SaCheckPermission("system:notice:add")
     @Log(title = "通知公告", businessType = BusinessType.INSERT)
     @PostMapping
-    public R<Void> add(@Validated @RequestBody SysNotice notice) {
+    public R<Void> add(@Validated @RequestBody SysNoticeBo notice) {
         return toAjax(noticeService.insertNotice(notice));
     }
 
@@ -61,7 +64,7 @@ public class SysNoticeController extends BaseController {
     @SaCheckPermission("system:notice:edit")
     @Log(title = "通知公告", businessType = BusinessType.UPDATE)
     @PutMapping
-    public R<Void> edit(@Validated @RequestBody SysNotice notice) {
+    public R<Void> edit(@Validated @RequestBody SysNoticeBo notice) {
         return toAjax(noticeService.updateNotice(notice));
     }
 

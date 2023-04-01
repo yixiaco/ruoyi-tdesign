@@ -11,9 +11,9 @@
             @keyup.enter="handleQuery"
           />
         </t-form-item>
-        <t-form-item label="操作人员" name="createBy">
+        <t-form-item label="操作人员" name="createByName">
           <t-input
-            v-model="queryParams.createBy"
+            v-model="queryParams.createByName"
             placeholder="请输入操作人员"
             clearable
             style="width: 200px"
@@ -179,7 +179,7 @@ import { computed, getCurrentInstance, ref } from 'vue';
 import { AddIcon, DeleteIcon, EditIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api/system/notice';
-import { SysNotice } from '@/api/system/model/noticeModel';
+import { SysNotice, SysNoticeBo, SysNoticeQuery, SysNoticeVo } from '@/api/system/model/noticeModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_notice_status, sys_notice_type } = proxy.useDict('sys_notice_status', 'sys_notice_type');
@@ -197,9 +197,6 @@ const total = ref(0);
 const title = ref('');
 const noticeRef = ref<FormInstanceFunctions>(null);
 
-const formInitValue = {
-  status: '0',
-};
 const rules = ref<Record<string, Array<FormRule>>>({
   noticeTitle: [{ required: true, message: '公告标题不能为空', trigger: 'blur' }],
   noticeType: [{ required: true, message: '公告类型不能为空', trigger: 'change' }],
@@ -211,17 +208,19 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `公告标题`, colKey: 'noticeTitle', align: 'center', ellipsis: true },
   { title: `公告类型`, colKey: 'noticeType', align: 'center', width: 100 },
   { title: `状态`, colKey: 'status', align: 'center', width: 100 },
-  { title: `创建者`, colKey: 'createBy', align: 'center', width: 100 },
+  { title: `创建者`, colKey: 'createByName', align: 'center', width: 100 },
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
 
-const form = ref<SysNotice>({ ...formInitValue });
-const queryParams = ref<SysNotice>({
+const form = ref<SysNoticeVo & SysNoticeBo>({
+  status: '0',
+});
+const queryParams = ref<SysNoticeQuery>({
   pageNum: 1,
   pageSize: 10,
   noticeTitle: undefined,
-  createBy: undefined,
+  createByName: undefined,
   status: undefined,
 });
 
@@ -251,7 +250,9 @@ function getList() {
 }
 /** 表单重置 */
 function reset() {
-  form.value = { ...formInitValue };
+  form.value = {
+    status: '0',
+  };
   proxy.resetForm('noticeRef');
 }
 /** 搜索按钮操作 */

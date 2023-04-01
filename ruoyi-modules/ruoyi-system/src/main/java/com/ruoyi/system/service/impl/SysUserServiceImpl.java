@@ -286,8 +286,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public boolean registerUser(SysUser user) {
-        user.setCreateBy(user.getUserName());
-        user.setUpdateBy(user.getUserName());
+        user.setCreateBy(user.getUserId());
+        user.setUpdateBy(user.getUserId());
         return baseMapper.insert(user) > 0;
     }
 

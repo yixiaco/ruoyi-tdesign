@@ -2,6 +2,8 @@ package com.ruoyi.system.mapper;
 
 import com.ruoyi.common.mybatis.core.mapper.BaseMapperPlus;
 import com.ruoyi.system.domain.SysNotice;
+import com.ruoyi.system.domain.dto.SysNoticeQuery;
+import com.ruoyi.system.domain.vo.SysNoticeVo;
 
 import java.util.List;
 
@@ -18,5 +20,5 @@ public interface SysNoticeMapper extends BaseMapperPlus<SysNoticeMapper, SysNoti
      * @param notice
      * @return {@link SysNotice}
      */
-    List<SysNotice> queryList(SysNotice notice);
+    List<SysNoticeVo> queryList(SysNoticeQuery notice);
 }

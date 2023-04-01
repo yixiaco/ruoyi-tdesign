@@ -1,9 +1,13 @@
 package com.ruoyi.system.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.common.core.utils.BeanCopyUtils;
 import com.ruoyi.common.mybatis.core.page.PageQuery;
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.system.domain.SysNotice;
+import com.ruoyi.system.domain.bo.SysNoticeBo;
+import com.ruoyi.system.domain.dto.SysNoticeQuery;
+import com.ruoyi.system.domain.vo.SysNoticeVo;
 import com.ruoyi.system.mapper.SysNoticeMapper;
 import com.ruoyi.system.service.ISysNoticeService;
 import org.springframework.stereotype.Service;
@@ -21,7 +25,7 @@ import java.util.List;
 public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice> implements ISysNoticeService {
 
     @Override
-    public TableDataInfo<SysNotice> selectPageNoticeList(SysNotice notice) {
+    public TableDataInfo<SysNoticeVo> selectPageNoticeList(SysNoticeQuery notice) {
         return PageQuery.of(() -> baseMapper.queryList(notice));
     }
 
@@ -43,7 +47,7 @@ public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice
      * @return 公告集合
      */
     @Override
-    public List<SysNotice> selectNoticeList(SysNotice notice) {
+    public List<SysNoticeVo> selectNoticeList(SysNoticeQuery notice) {
         return baseMapper.queryList(notice);
     }
 
@@ -54,8 +58,9 @@ public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice
      * @return 结果
      */
     @Override
-    public int insertNotice(SysNotice notice) {
-        return baseMapper.insert(notice);
+    public Boolean insertNotice(SysNoticeBo notice) {
+        SysNotice add = BeanCopyUtils.toBean(notice, SysNotice.class);
+        return save(add);
     }
 
     /**
@@ -65,8 +70,9 @@ public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice
      * @return 结果
      */
     @Override
-    public int updateNotice(SysNotice notice) {
-        return baseMapper.updateById(notice);
+    public Boolean updateNotice(SysNoticeBo notice) {
+        SysNotice update = BeanCopyUtils.toBean(notice, SysNotice.class);
+        return updateById(update);
     }
 
     /**

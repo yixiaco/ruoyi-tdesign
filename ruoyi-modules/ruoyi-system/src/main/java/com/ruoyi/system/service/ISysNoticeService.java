@@ -3,6 +3,9 @@ package com.ruoyi.system.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.system.domain.SysNotice;
+import com.ruoyi.system.domain.bo.SysNoticeBo;
+import com.ruoyi.system.domain.dto.SysNoticeQuery;
+import com.ruoyi.system.domain.vo.SysNoticeVo;
 
 import java.util.List;
 
@@ -14,7 +17,7 @@ import java.util.List;
 public interface ISysNoticeService extends IService<SysNotice> {
 
 
-    TableDataInfo<SysNotice> selectPageNoticeList(SysNotice notice);
+    TableDataInfo<SysNoticeVo> selectPageNoticeList(SysNoticeQuery notice);
 
     /**
      * 查询公告信息
@@ -30,7 +33,7 @@ public interface ISysNoticeService extends IService<SysNotice> {
      * @param notice 公告信息
      * @return 公告集合
      */
-    List<SysNotice> selectNoticeList(SysNotice notice);
+    List<SysNoticeVo> selectNoticeList(SysNoticeQuery notice);
 
     /**
      * 新增公告
@@ -38,7 +41,7 @@ public interface ISysNoticeService extends IService<SysNotice> {
      * @param notice 公告信息
      * @return 结果
      */
-    int insertNotice(SysNotice notice);
+    Boolean insertNotice(SysNoticeBo notice);
 
     /**
      * 修改公告
@@ -46,7 +49,7 @@ public interface ISysNoticeService extends IService<SysNotice> {
      * @param notice 公告信息
      * @return 结果
      */
-    int updateNotice(SysNotice notice);
+    Boolean updateNotice(SysNoticeBo notice);
 
     /**
      * 删除公告信息

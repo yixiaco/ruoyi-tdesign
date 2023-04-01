@@ -36,6 +36,7 @@ public class CreateAndUpdateMetaObjectHandler implements MetaObjectHandler {
             fieldFills.add(StrictFill.of("createBy", this::getLoginId, Long.class));
             fieldFills.add(StrictFill.of("updateBy", this::getLoginUsername, String.class));
             fieldFills.add(StrictFill.of("updateBy", this::getLoginId, Long.class));
+            fieldFills.add(StrictFill.of("deptId", this::getDeptId, Long.class));
             fieldFills.add(StrictFill.of("version", () -> 0L, Long.class));
             fieldFills.add(StrictFill.of("version", () -> 0, Integer.class));
 
@@ -57,6 +58,20 @@ public class CreateAndUpdateMetaObjectHandler implements MetaObjectHandler {
             fillStrategy(false, metaObject, tableInfo, fieldFills);
         } catch (Exception e) {
             throw new ServiceException("自动注入异常 => " + e.getMessage(), HttpStatus.HTTP_UNAUTHORIZED);
+        }
+    }
+
+    /**
+     * 获取部门id
+     *
+     * @return
+     */
+    private Long getDeptId() {
+        try {
+            return LoginHelper.getDeptId();
+        } catch (Exception e) {
+            log.warn("自动注入警告 => 用户未登录");
+            return null;
         }
     }
 
@@ -87,10 +102,10 @@ public class CreateAndUpdateMetaObjectHandler implements MetaObjectHandler {
      * insertFill为true时，需要判断是否为null，当为null时才填充数据
      * insertFill为false时，无需判断是否为null，覆盖数据
      *
-     * @param insertFill
-     * @param metaObject
-     * @param tableInfo
-     * @param fieldFills
+     * @param insertFill 是否插入时填充
+     * @param metaObject 元对象
+     * @param tableInfo  表信息对象
+     * @param fieldFills 字段填充脚本
      */
     private void fillStrategy(boolean insertFill, MetaObject metaObject, TableInfo tableInfo, List<StrictFill<?, ?>> fieldFills) {
         if ((insertFill && tableInfo.isWithInsertFill()) || (!insertFill && tableInfo.isWithUpdateFill())) {

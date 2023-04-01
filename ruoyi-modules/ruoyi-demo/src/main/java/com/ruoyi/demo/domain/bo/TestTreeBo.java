@@ -54,7 +54,7 @@ public class TestTreeBo extends TreeEntity<TestTreeBo> {
     /**
      * 创建者
      */
-    private String createBy;
+    private Long createBy;
 
     /**
      * 创建时间
@@ -64,7 +64,7 @@ public class TestTreeBo extends TreeEntity<TestTreeBo> {
     /**
      * 更新者
      */
-    private String updateBy;
+    private Long updateBy;
 
     /**
      * 更新时间

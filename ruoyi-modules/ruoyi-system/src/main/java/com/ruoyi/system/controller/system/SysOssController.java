@@ -11,7 +11,7 @@ import com.ruoyi.common.core.web.controller.BaseController;
 import com.ruoyi.common.log.annotation.Log;
 import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
-import com.ruoyi.system.domain.bo.SysOssBo;
+import com.ruoyi.system.domain.dto.SysOssQuery;
 import com.ruoyi.system.domain.vo.SysOssVo;
 import com.ruoyi.system.service.ISysOssService;
 import jakarta.servlet.http.HttpServletResponse;
@@ -51,7 +51,7 @@ public class SysOssController extends BaseController {
      */
     @SaCheckPermission("system:oss:list")
     @GetMapping("/list")
-    public TableDataInfo<SysOssVo> list(@Validated(QueryGroup.class) SysOssBo bo) {
+    public TableDataInfo<SysOssVo> list(@Validated(QueryGroup.class) SysOssQuery bo) {
         return iSysOssService.queryPageList(bo);
     }
 

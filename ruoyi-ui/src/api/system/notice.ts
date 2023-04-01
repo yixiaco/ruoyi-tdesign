@@ -1,9 +1,9 @@
 import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysNotice } from '@/api/system/model/noticeModel';
+import { SysNotice, SysNoticeBo, SysNoticeQuery } from '@/api/system/model/noticeModel';
 
 // 查询公告列表
-export function listNotice(query: SysNotice) {
+export function listNotice(query: SysNoticeQuery) {
   return request.get<TableDataInfo<SysNotice>>({
     url: '/system/notice/list',
     params: query,
@@ -18,7 +18,7 @@ export function getNotice(noticeId: number) {
 }
 
 // 新增公告
-export function addNotice(data: SysNotice) {
+export function addNotice(data: SysNoticeBo) {
   return request.post<R<void>>({
     url: '/system/notice',
     data,
@@ -26,7 +26,7 @@ export function addNotice(data: SysNotice) {
 }
 
 // 修改公告
-export function updateNotice(data: SysNotice) {
+export function updateNotice(data: SysNoticeBo) {
   return request.put<R<void>>({
     url: '/system/notice',
     data,

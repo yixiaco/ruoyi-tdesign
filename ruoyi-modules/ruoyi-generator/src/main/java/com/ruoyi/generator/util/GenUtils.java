@@ -4,6 +4,7 @@ import cn.hutool.core.collection.ListUtil;
 import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.core.constant.GenConstants;
 import com.ruoyi.common.core.utils.StringUtils;
+import com.ruoyi.common.satoken.utils.LoginHelper;
 import com.ruoyi.generator.config.GenConfig;
 import com.ruoyi.generator.domain.GenTable;
 import com.ruoyi.generator.domain.GenTableColumn;
@@ -51,7 +52,7 @@ public class GenUtils {
         genTable.setBusinessName(getBusinessName(genTable.getTableName()));
         genTable.setFunctionName(replaceText(genTable.getTableComment()));
         genTable.setFunctionAuthor(GenConfig.getAuthor());
-        genTable.setCreateBy(operName);
+        genTable.setCreateBy(LoginHelper.getUserId());
     }
 
     /**
@@ -264,6 +265,7 @@ public class GenUtils {
 
     /**
      * 判断是否是mysql关键字
+     * 在vm模板中使用
      *
      * @param key
      * @return
@@ -274,14 +276,15 @@ public class GenUtils {
 
     /**
      * java类型转typescript类型
+     * 在vm模板中使用
      *
      * @param javaType
      * @return
      */
     public static String javaTypeToTypescript(String javaType) {
-        if (StringUtils.containsAnyIgnoreCase(javaType, "Integer", "int", "short", "byte", "BigDecimal")) {
+        if (StringUtils.containsAnyIgnoreCase(javaType, "Integer", "int", "short", "byte", "long", "BigInteger", "BigDecimal")) {
             return "number";
-        } else if (StringUtils.containsAnyIgnoreCase(javaType, "String", "CharSequence", "long", "BigInteger")) {
+        } else if (StringUtils.containsAnyIgnoreCase(javaType, "String", "CharSequence")) {
             return "string";
         } else if (StringUtils.containsAnyIgnoreCase(javaType, "boolean")) {
             return "boolean";

@@ -39,7 +39,7 @@ public class SysOssBo extends BaseEntity {
     /**
      * 创建者
      */
-    private String createBy;
+    private Long createBy;
 
     /**
      * 创建时间
@@ -49,7 +49,7 @@ public class SysOssBo extends BaseEntity {
     /**
      * 更新者
      */
-    private String updateBy;
+    private Long updateBy;
 
     /**
      * 更新时间

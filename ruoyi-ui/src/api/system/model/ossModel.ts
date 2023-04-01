@@ -15,7 +15,7 @@ export interface SysOssQuery extends BaseEntity {
   /** 创建时间 */
   createTime?: any;
   /** 上传人 */
-  createBy?: string;
+  createByName?: string;
   /** 服务商 */
   service?: string;
 }

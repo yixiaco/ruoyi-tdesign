@@ -4,29 +4,29 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.constant.CacheNames;
-import com.ruoyi.common.mybatis.core.page.PageQuery;
-import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.common.core.exception.ServiceException;
-import com.ruoyi.common.oss.core.OssClient;
-import com.ruoyi.common.oss.entity.UploadResult;
-import com.ruoyi.common.oss.enumd.AccessPolicyType;
-import com.ruoyi.common.oss.factory.OssFactory;
 import com.ruoyi.common.core.utils.BeanCopyUtils;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.core.utils.file.FileUtils;
 import com.ruoyi.common.core.utils.spring.SpringUtils;
+import com.ruoyi.common.mybatis.core.page.PageQuery;
+import com.ruoyi.common.mybatis.core.page.TableDataInfo;
+import com.ruoyi.common.oss.core.OssClient;
+import com.ruoyi.common.oss.entity.UploadResult;
+import com.ruoyi.common.oss.enumd.AccessPolicyType;
+import com.ruoyi.common.oss.factory.OssFactory;
 import com.ruoyi.system.domain.SysOss;
-import com.ruoyi.system.domain.bo.SysOssBo;
+import com.ruoyi.system.domain.dto.SysOssQuery;
 import com.ruoyi.system.domain.vo.SysOssVo;
 import com.ruoyi.system.mapper.SysOssMapper;
 import com.ruoyi.system.service.ISysOssService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
-import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Collection;
@@ -41,8 +41,8 @@ import java.util.List;
 public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> implements ISysOssService {
 
     @Override
-    public TableDataInfo<SysOssVo> queryPageList(SysOssBo bo) {
-        return PageQuery.of(() -> baseMapper.queryList(bo));
+    public TableDataInfo<SysOssVo> queryPageList(SysOssQuery query) {
+        return PageQuery.of(() -> baseMapper.queryList(query));
     }
 
     @Override

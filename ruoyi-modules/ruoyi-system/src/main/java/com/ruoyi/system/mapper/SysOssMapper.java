@@ -3,6 +3,7 @@ package com.ruoyi.system.mapper;
 import com.ruoyi.common.mybatis.core.mapper.BaseMapperPlus;
 import com.ruoyi.system.domain.SysOss;
 import com.ruoyi.system.domain.bo.SysOssBo;
+import com.ruoyi.system.domain.dto.SysOssQuery;
 import com.ruoyi.system.domain.vo.SysOssVo;
 
 import java.util.List;
@@ -17,8 +18,8 @@ public interface SysOssMapper extends BaseMapperPlus<SysOssMapper, SysOss, SysOs
     /**
      * 查询OSS对象存储列表
      *
-     * @param bo bo对象
+     * @param query 查询对象
      * @return {@link SysOssVo}
      */
-    List<SysOssVo> queryList(SysOssBo bo);
+    List<SysOssVo> queryList(SysOssQuery query);
 }

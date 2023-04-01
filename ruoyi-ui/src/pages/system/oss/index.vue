@@ -38,9 +38,9 @@
             :placeholder="['开始日期', '结束日期']"
           />
         </t-form-item>
-        <t-form-item label="上传人" name="createBy">
+        <t-form-item label="上传人" name="createByName">
           <t-input
-            v-model="queryParams.createBy"
+            v-model="queryParams.createByName"
             placeholder="请输入上传人"
             clearable
             style="width: 200px"
@@ -259,7 +259,7 @@ const queryParams = ref<SysOssQuery>({
   fileSuffix: undefined,
   url: undefined,
   createTime: undefined,
-  createBy: undefined,
+  createByName: undefined,
   service: undefined,
   orderByColumn: undefined,
   isAsc: undefined,

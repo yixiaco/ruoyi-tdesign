@@ -1,26 +1,21 @@
-package com.ruoyi.system.domain.vo;
+package com.ruoyi.system.domain.dto;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.Date;
 
+import com.ruoyi.common.core.web.domain.BaseEntity;
+
 /**
- * OSS对象存储视图对象 sys_oss
+ * OSS对象存储业务对象 sys_oss
  *
- * @author Lion Li
+ * @author ruoyi
+ * @date 2023-04-01
  */
 @Data
-public class SysOssVo implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
-
-    /**
-     * 对象存储主键
-     */
-    private Long ossId;
+@EqualsAndHashCode(callSuper = true)
+public class SysOssQuery extends BaseEntity {
 
     /**
      * 文件名
@@ -43,11 +38,6 @@ public class SysOssVo implements Serializable {
     private String url;
 
     /**
-     * 字节长度
-     */
-    private Long size;
-
-    /**
      * 创建时间
      */
     private Date createTime;
@@ -55,16 +45,11 @@ public class SysOssVo implements Serializable {
     /**
      * 上传人
      */
-    private Long createBy;
+    private String createByName;
 
     /**
      * 服务商
      */
     private String service;
-
-    /**
-     * 上传人
-     */
-    private String createByName;
 
 }
