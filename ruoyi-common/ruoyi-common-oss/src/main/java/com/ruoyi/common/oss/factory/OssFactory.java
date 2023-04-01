@@ -7,7 +7,7 @@ import com.ruoyi.common.oss.exception.OssException;
 import com.ruoyi.common.oss.properties.OssProperties;
 import com.ruoyi.common.redis.utils.CacheUtils;
 import com.ruoyi.common.redis.utils.RedisUtils;
-import com.ruoyi.common.core.utils.JsonUtils;
+import com.ruoyi.common.json.utils.JsonUtils;
 import com.ruoyi.common.core.utils.StringUtils;
 import lombok.extern.slf4j.Slf4j;
 

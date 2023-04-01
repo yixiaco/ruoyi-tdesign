@@ -3,7 +3,7 @@ package com.ruoyi.common.web.interceptor;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.map.MapUtil;
 import com.alibaba.ttl.TransmittableThreadLocal;
-import com.ruoyi.common.core.utils.JsonUtils;
+import com.ruoyi.common.json.utils.JsonUtils;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.core.utils.spring.SpringUtils;
 import com.ruoyi.common.web.filter.RepeatedlyRequestWrapper;

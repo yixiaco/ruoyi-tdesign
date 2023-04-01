@@ -6,7 +6,7 @@ import cn.hutool.crypto.SecureUtil;
 import com.ruoyi.common.core.constant.CacheConstants;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.exception.ServiceException;
-import com.ruoyi.common.core.utils.JsonUtils;
+import com.ruoyi.common.json.utils.JsonUtils;
 import com.ruoyi.common.core.utils.MessageUtils;
 import com.ruoyi.common.core.utils.ServletUtils;
 import com.ruoyi.common.core.utils.StringUtils;

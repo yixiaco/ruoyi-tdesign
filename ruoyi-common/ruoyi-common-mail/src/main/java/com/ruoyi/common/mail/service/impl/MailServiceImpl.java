@@ -4,7 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.mail.MailAccount;
 import com.ruoyi.common.core.service.ConfigService;
 import com.ruoyi.common.core.exception.ServiceException;
-import com.ruoyi.common.core.utils.JsonUtils;
+import com.ruoyi.common.json.utils.JsonUtils;
 import com.ruoyi.common.mail.config.properties.MailProperties;
 import com.ruoyi.common.mail.handle.MailContextHolder;
 import com.ruoyi.common.mail.service.MailService;

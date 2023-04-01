@@ -5,7 +5,7 @@ import cn.hutool.core.util.ArrayUtil;
 import com.ruoyi.common.sms.config.properties.SmsProperties;
 import com.ruoyi.common.sms.entity.SmsResult;
 import com.ruoyi.common.sms.exception.SmsException;
-import com.ruoyi.common.core.utils.JsonUtils;
+import com.ruoyi.common.json.utils.JsonUtils;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.tencentcloudapi.common.Credential;
 import com.tencentcloudapi.common.profile.ClientProfile;

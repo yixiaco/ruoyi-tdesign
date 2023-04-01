@@ -3,7 +3,7 @@ package com.ruoyi.demo.controller;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.ruoyi.common.log.annotation.Log;
 import com.ruoyi.common.idempotent.annotation.RepeatSubmit;
-import com.ruoyi.common.core.web.controller.BaseController;
+import com.ruoyi.common.web.core.BaseController;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;

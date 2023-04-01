@@ -21,10 +21,10 @@ import jakarta.validation.constraints.*;
 import ${import};
 #end
 #if($table.crud || $table.sub)
-import com.ruoyi.common.core.web.domain.BaseEntity;
+import com.ruoyi.common.mybatis.core.domain.BaseEntity;
 #set($tree=false)
 #elseif($table.tree)
-import com.ruoyi.common.core.web.domain.TreeEntity;
+import com.ruoyi.common.mybatis.core.domain.TreeEntity;
 #set($tree=true)
 #end
 

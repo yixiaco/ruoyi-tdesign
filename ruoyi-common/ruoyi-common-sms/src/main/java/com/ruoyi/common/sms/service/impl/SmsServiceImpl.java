@@ -3,7 +3,7 @@ package com.ruoyi.common.sms.service.impl;
 import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.core.service.ConfigService;
 import com.ruoyi.common.core.exception.ServiceException;
-import com.ruoyi.common.core.utils.JsonUtils;
+import com.ruoyi.common.json.utils.JsonUtils;
 import com.ruoyi.common.sms.config.properties.SmsProperties;
 import com.ruoyi.common.sms.core.AliyunSmsTemplate;
 import com.ruoyi.common.sms.core.SmsTemplate;

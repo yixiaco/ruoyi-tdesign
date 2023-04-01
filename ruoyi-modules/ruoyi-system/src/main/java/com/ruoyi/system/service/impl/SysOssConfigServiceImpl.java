@@ -15,7 +15,7 @@ import com.ruoyi.common.oss.constant.OssConstant;
 import com.ruoyi.common.oss.factory.OssFactory;
 import com.ruoyi.common.redis.utils.CacheUtils;
 import com.ruoyi.common.redis.utils.RedisUtils;
-import com.ruoyi.common.core.utils.JsonUtils;
+import com.ruoyi.common.json.utils.JsonUtils;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.core.utils.spring.SpringUtils;
 import com.ruoyi.system.domain.SysOssConfig;

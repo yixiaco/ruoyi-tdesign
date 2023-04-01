@@ -45,16 +45,6 @@
             <artifactId>commons-lang3</artifactId>
         </dependency>
 
-        <!-- JSON工具类 -->
-        <dependency>
-            <groupId>com.fasterxml.jackson.core</groupId>
-            <artifactId>jackson-databind</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.fasterxml.jackson.datatype</groupId>
-            <artifactId>jackson-datatype-jsr310</artifactId>
-        </dependency>
-
         <!-- servlet包 -->
         <dependency>
             <groupId>jakarta.servlet</groupId>
@@ -74,6 +64,12 @@
         <dependency>
             <groupId>cn.hutool</groupId>
             <artifactId>hutool-extra</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-json</artifactId>
+            <scope>provided</scope>
         </dependency>
 
         <dependency>

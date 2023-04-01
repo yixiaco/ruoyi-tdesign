@@ -7,7 +7,7 @@ import cn.hutool.core.util.StrUtil;
 import com.ruoyi.common.core.constant.GenConstants;
 import com.ruoyi.common.mybatis.helper.DataBaseHelper;
 import com.ruoyi.common.core.utils.DateUtils;
-import com.ruoyi.common.core.utils.JsonUtils;
+import com.ruoyi.common.json.utils.JsonUtils;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.generator.domain.GenTable;
 import com.ruoyi.generator.domain.GenTableColumn;

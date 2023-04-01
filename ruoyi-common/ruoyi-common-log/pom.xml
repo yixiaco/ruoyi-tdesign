@@ -21,6 +21,11 @@
             <groupId>com.ruoyi</groupId>
             <artifactId>ruoyi-common-satoken</artifactId>
         </dependency>
+
+        <dependency>
+            <groupId>com.ruoyi</groupId>
+            <artifactId>ruoyi-common-json</artifactId>
+        </dependency>
     </dependencies>
 
 </project>
