@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Function;
 import java.util.stream.Collectors;
@@ -194,9 +195,9 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
      */
     @Override
     public String checkConfigKeyUnique(SysConfig config) {
-        Long configId = ObjectUtil.isNull(config.getConfigId()) ? -1L : config.getConfigId();
+        long configId = ObjectUtil.isNull(config.getConfigId()) ? -1L : config.getConfigId();
         SysConfig info = baseMapper.selectOne(new LambdaQueryWrapper<SysConfig>().eq(SysConfig::getConfigKey, config.getConfigKey()));
-        if (ObjectUtil.isNotNull(info) && info.getConfigId().longValue() != configId.longValue()) {
+        if (ObjectUtil.isNotNull(info) && !Objects.equals(info.getConfigId(), configId)) {
             return UserConstants.NOT_UNIQUE;
         }
         return UserConstants.UNIQUE;

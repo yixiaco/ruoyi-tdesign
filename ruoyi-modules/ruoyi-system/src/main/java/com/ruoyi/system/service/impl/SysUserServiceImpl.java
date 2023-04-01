@@ -203,7 +203,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * 校验手机号码是否唯一
      *
      * @param user 用户信息
-     * @return
      */
     @Override
     public String checkPhoneUnique(SysUser user) {
@@ -220,7 +219,6 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * 校验email是否唯一
      *
      * @param user 用户信息
-     * @return
      */
     @Override
     public String checkEmailUnique(SysUser user) {
@@ -409,13 +407,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         Long[] posts = user.getPostIds();
         if (ArrayUtil.isNotEmpty(posts)) {
             // 新增用户与岗位管理
-            List<SysUserPost> list = new ArrayList<>(posts.length);
-            for (Long postId : posts) {
+            List<SysUserPost> list = StreamUtils.toList(List.of(posts), postId -> {
                 SysUserPost up = new SysUserPost();
                 up.setUserId(user.getUserId());
                 up.setPostId(postId);
-                list.add(up);
-            }
+                return up;
+            });
             userPostMapper.insertBatch(list);
         }
     }
@@ -429,13 +426,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     public void insertUserRole(Long userId, Long[] roleIds) {
         if (ArrayUtil.isNotEmpty(roleIds)) {
             // 新增用户与角色管理
-            List<SysUserRole> list = new ArrayList<>(roleIds.length);
-            for (Long roleId : roleIds) {
+            List<SysUserRole> list = StreamUtils.toList(List.of(roleIds), roleId -> {
                 SysUserRole ur = new SysUserRole();
                 ur.setUserId(userId);
                 ur.setRoleId(roleId);
-                list.add(ur);
-            }
+                return ur;
+            });
             userRoleMapper.insertBatch(list);
         }
     }
@@ -469,7 +465,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             checkUserAllowed(new SysUser(userId));
             checkUserDataScope(userId);
         }
-        List<Long> ids = Arrays.asList(userIds);
+        List<Long> ids = List.of(userIds);
         // 删除用户与角色关联
         userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>().in(SysUserRole::getUserId, ids));
         // 删除用户与岗位表

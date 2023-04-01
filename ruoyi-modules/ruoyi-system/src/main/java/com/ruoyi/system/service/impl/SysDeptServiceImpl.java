@@ -252,7 +252,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             dept.setAncestors(child.getAncestors().replaceFirst(oldAncestors, newAncestors));
             list.add(dept);
         }
-        if (list.size() > 0) {
+        if (CollUtil.isNotEmpty(list)) {
             baseMapper.updateBatchById(list);
         }
     }

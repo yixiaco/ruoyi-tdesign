@@ -152,6 +152,6 @@ public class SysRole extends BaseEntity {
     }
 
     public boolean isAdmin() {
-        return UserConstants.ADMIN_ID.equals(this.roleId);
+        return UserConstants.SUPER_ADMIN_ID.equals(this.roleId);
     }
 }

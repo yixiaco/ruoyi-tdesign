@@ -127,7 +127,7 @@ public class LoginHelper {
      * @return 结果
      */
     public static boolean isAdmin(Long userId) {
-        return UserConstants.ADMIN_ID.equals(userId);
+        return UserConstants.SUPER_ADMIN_ID.equals(userId);
     }
 
     public static boolean isAdmin() {
