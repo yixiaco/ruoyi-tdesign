@@ -31,6 +31,12 @@ public interface ISysOssService extends IService<SysOss> {
      */
     List<SysOssVo> listVoByIds(Collection<Long> ossIds);
 
+    /**
+     * 通过id获取oss对象
+     *
+     * @param ossId
+     * @return
+     */
     SysOssVo getById(Long ossId);
 
     /**

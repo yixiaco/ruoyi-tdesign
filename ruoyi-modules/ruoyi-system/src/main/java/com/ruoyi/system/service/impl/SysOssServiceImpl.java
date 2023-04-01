@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.constant.CacheNames;
 import com.ruoyi.common.core.exception.ServiceException;
+import com.ruoyi.common.core.service.OssService;
 import com.ruoyi.common.core.utils.BeanCopyUtils;
 import com.ruoyi.common.core.utils.StreamUtils;
 import com.ruoyi.common.core.utils.StringUtils;
@@ -16,6 +17,7 @@ import com.ruoyi.common.oss.core.OssClient;
 import com.ruoyi.common.oss.entity.UploadResult;
 import com.ruoyi.common.oss.enumd.AccessPolicyType;
 import com.ruoyi.common.oss.factory.OssFactory;
+import com.ruoyi.common.redis.utils.CacheUtils;
 import com.ruoyi.system.domain.SysOss;
 import com.ruoyi.system.domain.dto.SysOssQuery;
 import com.ruoyi.system.domain.vo.SysOssVo;
@@ -30,6 +32,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -39,7 +42,7 @@ import java.util.List;
  * @author Lion Li
  */
 @Service
-public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> implements ISysOssService {
+public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> implements ISysOssService, OssService {
 
     @Override
     public TableDataInfo<SysOssVo> queryPageList(SysOssQuery query) {
@@ -48,7 +51,10 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
 
     @Override
     public List<SysOssVo> listVoByIds(Collection<Long> ossIds) {
-        List<SysOssVo> list = baseMapper.selectVoList(lambdaQuery().in(SysOss::getOssId, ossIds).getWrapper());
+        List<SysOssVo> list = CacheUtils.takeCache(CacheNames.SYS_OSS, ossIds, ids -> {
+            List<SysOssVo> ossVos = baseMapper.selectVoList(lambdaQuery().in(SysOss::getOssId, ossIds).getWrapper());
+            return StreamUtils.toIdentityMap(ossVos, SysOssVo::getOssId);
+        });
         return StreamUtils.toList(list, this::matchingUrl);
     }
 
@@ -65,6 +71,19 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
             matchingUrl(ossVo);
         }
         return ossVos;
+    }
+
+    /**
+     * 通过ossId查询对应的url
+     *
+     * @param ossIds ossId串逗号分隔
+     * @return
+     */
+    @Override
+    public String selectUrlByIds(String ossIds) {
+        List<Long> ids = Arrays.stream(ossIds.split(",")).map(Long::parseLong).toList();
+        List<SysOssVo> ossVos = listVoByIds(ids);
+        return StreamUtils.join(ossVos, SysOssVo::getUrl);
     }
 
     @Cacheable(cacheNames = CacheNames.SYS_OSS, key = "#ossId")

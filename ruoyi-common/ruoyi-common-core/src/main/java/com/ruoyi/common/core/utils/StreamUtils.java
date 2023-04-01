@@ -7,10 +7,12 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 import java.util.*;
+import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  * stream 流工具类
@@ -252,4 +254,191 @@ public class StreamUtils {
         return map;
     }
 
+    /**
+     * 过滤不存在的值
+     *
+     * @param data          需要过滤的数据
+     * @param compareValues 比较的数据
+     * @return
+     */
+    public static <T> List<T> filterNotExist(Collection<T> data, Collection<T> compareValues) {
+        return filterNotExist(data, compareValues, Function.identity());
+    }
+
+    /**
+     * 过滤不存在的值
+     *
+     * @param data          需要过滤的数据
+     * @param compareValues 比较的数据
+     * @param convert       转换
+     * @param <T>           过滤数据的类型
+     * @param <K>           输入数据的类型
+     * @return
+     */
+    public static <T, K> List<T> filterNotExist(Collection<T> data, Collection<K> compareValues, Function<K, T> convert) {
+        return filterNotExist(data, Function.identity(), compareValues, convert);
+    }
+
+    /**
+     * 过滤不存在的值
+     *
+     * @param data          需要过滤的数据
+     * @param compareValues 比较的数据
+     * @param convert       转换
+     * @param <T>           过滤数据的类型
+     * @param <K>           比较数据的类型
+     * @return
+     */
+    public static <T, K> List<T> filterNotExist(Collection<T> data, Function<T, K> convert, Collection<K> compareValues) {
+        return filterNotExist(data, convert, compareValues, Function.identity());
+    }
+
+    /**
+     * 过滤不存在的值
+     *
+     * @param data                 需要过滤的数据
+     * @param compareValues        比较的数据
+     * @param dataConvert          需要过滤的数据的转换
+     * @param compareValuesConvert 比较数据的转换
+     * @param <T>                  过滤数据的类型
+     * @param <K>                  比较数据的类型
+     * @param <R>                  输出结果的类型
+     * @return
+     */
+    public static <T, K, R> List<T> filterNotExist(Collection<T> data, Function<T, R> dataConvert, Collection<K> compareValues, Function<K, R> compareValuesConvert) {
+        Set<R> set = compareValues.stream()
+            .map(compareValuesConvert)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+        return data.stream().filter(t -> !set.contains(dataConvert.apply(t))).collect(Collectors.toList());
+    }
+
+    /**
+     * 过滤存在的值
+     *
+     * @param data          需要过滤的数据
+     * @param compareValues 比较的数据
+     * @return
+     */
+    public static <T> List<T> filterExist(Collection<T> data, Collection<T> compareValues) {
+        return filterExist(data, compareValues, Function.identity());
+    }
+
+    /**
+     * 过滤存在的值
+     *
+     * @param data          需要过滤的数据
+     * @param compareValues 比较的数据
+     * @param convert       转换
+     * @param <T>           过滤数据的类型
+     * @param <K>           输入数据的类型
+     * @return
+     */
+    public static <T, K> List<T> filterExist(Collection<T> data, Collection<K> compareValues, Function<K, T> convert) {
+        return filterExist(data, Function.identity(), compareValues, convert);
+    }
+
+    /**
+     * 过滤存在的值
+     *
+     * @param data          需要过滤的数据
+     * @param compareValues 比较的数据
+     * @param convert       转换
+     * @param <T>           过滤数据的类型
+     * @param <K>           比较数据的类型
+     * @return
+     */
+    public static <T, K> List<T> filterExist(Collection<T> data, Function<T, K> convert, Collection<K> compareValues) {
+        return filterExist(data, convert, compareValues, Function.identity());
+    }
+
+    /**
+     * 过滤存在的值
+     *
+     * @param data                 需要过滤的数据
+     * @param compareValues        比较的数据
+     * @param dataConvert          需要过滤的数据的转换
+     * @param compareValuesConvert 比较数据的转换
+     * @param <T>                  过滤数据的类型
+     * @param <K>                  比较数据的类型
+     * @param <R>                  输出结果的类型
+     * @return
+     */
+    public static <T, K, R> List<T> filterExist(Collection<T> data, Function<T, R> dataConvert, Collection<K> compareValues, Function<K, R> compareValuesConvert) {
+        Set<R> set = compareValues.stream()
+            .map(compareValuesConvert)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toSet());
+        return data.stream().filter(t -> set.contains(dataConvert.apply(t))).collect(Collectors.toList());
+    }
+
+    /**
+     * 字符串拆分
+     *
+     * @param str     字符串
+     * @param convert 转换流
+     * @param <T>
+     * @return
+     */
+    public static <T> List<T> split(String str, Function<Stream<String>, Stream<T>> convert) {
+        if (str != null) {
+            Stream<String> stream = Arrays.stream(str.split(","));
+            return convert.apply(stream).collect(Collectors.toList());
+        }
+        return new ArrayList<>(0);
+    }
+
+    /**
+     * 合并多个集合
+     *
+     * @param collections 集合
+     * @param <T>
+     * @return
+     */
+    @SafeVarargs
+    public static <T> List<T> merge(Collection<T>... collections) {
+        return Arrays.stream(collections).flatMap(Collection::stream).collect(Collectors.toList());
+    }
+
+    /**
+     * 比较两个集合之间的差异
+     *
+     * @param data1    数据源1
+     * @param data2    数据源2
+     * @param consumer 形参1：只有数据源1有的数据 形参2：只有数据源2有的数据
+     * @param <T>
+     */
+    public static <T> void diff(Collection<T> data1, Collection<T> data2, BiConsumer<List<T>, List<T>> consumer) {
+        consumer.accept(filterNotExist(data1, data2), filterNotExist(data2, data1));
+    }
+
+    /**
+     * 从方法中获取key的数据， 如果没有这个数据，则汇总后，从回调中获取
+     *
+     * @param keys       关键字，一般是一个id
+     * @param take       获取方法
+     * @param notPresent 没有值时的获取方法
+     * @param <K>
+     * @param <T>
+     * @return
+     */
+    public static <K, T> List<T> take(Collection<K> keys, Function<K, T> take, Function<Set<K>, Map<K, T>> notPresent) {
+        Map<K, T> temp = new LinkedHashMap<>();
+        Set<K> kSet = keys.stream().distinct().filter(k -> {
+            T t = take.apply(k);
+            if (t != null) {
+                temp.put(k, t);
+                return false;
+            }
+            return true;
+        }).collect(Collectors.toSet());
+        if (!kSet.isEmpty()) {
+            Map<K, T> ts = notPresent.apply(kSet);
+            if (ts != null && !ts.isEmpty()) {
+                temp.putAll(ts);
+            }
+        }
+        // 按照顺序，重新获取一遍
+        return keys.stream().map(temp::get).filter(Objects::nonNull).collect(Collectors.toList());
+    }
 }

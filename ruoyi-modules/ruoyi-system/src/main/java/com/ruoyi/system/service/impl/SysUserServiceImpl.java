@@ -9,7 +9,9 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ruoyi.common.core.constant.CacheNames;
 import com.ruoyi.common.core.constant.UserConstants;
+import com.ruoyi.common.core.service.UserService;
 import com.ruoyi.common.mybatis.core.page.PageQuery;
 import com.ruoyi.common.satoken.utils.LoginHelper;
 import com.ruoyi.system.domain.SysDept;
@@ -32,6 +34,7 @@ import com.ruoyi.system.service.ISysDeptService;
 import com.ruoyi.system.service.ISysUserService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -46,7 +49,7 @@ import java.util.List;
  */
 @Slf4j
 @Service
-public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements ISysUserService {
+public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> implements ISysUserService, UserService {
 
     @Autowired
     private ISysDeptService deptService;
@@ -473,4 +476,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return baseMapper.deleteBatchIds(ids);
     }
 
+    @Cacheable(cacheNames = CacheNames.SYS_USER_NAME, key = "#userId")
+    @Override
+    public String selectUserNameById(Long userId) {
+        SysUser sysUser = baseMapper.selectOne(new LambdaQueryWrapper<SysUser>()
+            .select(SysUser::getUserName).eq(SysUser::getUserId, userId));
+        return ObjectUtil.isNull(sysUser) ? null : sysUser.getUserName();
+    }
 }

@@ -1,5 +1,6 @@
 package com.ruoyi.common.redis.utils;
 
+import com.ruoyi.common.core.utils.StreamUtils;
 import com.ruoyi.common.core.utils.spring.SpringUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -7,7 +8,11 @@ import org.redisson.api.RMap;
 import org.springframework.cache.Cache;
 import org.springframework.cache.CacheManager;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import java.util.function.Function;
 
 /**
  * 缓存操作工具类 {@link }
@@ -72,4 +77,17 @@ public class CacheUtils {
         CACHE_MANAGER.getCache(cacheNames).clear();
     }
 
+    /**
+     * 从缓存中拿值，如果不存在的话，则从回调中取值
+     *
+     * @param cacheNames 缓存组名称
+     * @param keys       缓存keys
+     * @param notPresent 获取不存在的值的回调
+     * @param <K>
+     * @param <T>
+     * @return
+     */
+    public static <K, T> List<T> takeCache(String cacheNames, Collection<K> keys, Function<Set<K>, Map<K, T>> notPresent) {
+        return StreamUtils.take(keys, k -> get(cacheNames, k), notPresent);
+    }
 }
