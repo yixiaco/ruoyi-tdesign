@@ -31,6 +31,7 @@ public class StreamUtils {
         if (CollUtil.isEmpty(collection)) {
             return CollUtil.newArrayList();
         }
+        // 注意此处不要使用 .toList() 新语法 因为返回的是不可变List 会导致序列化问题
         return collection.stream().filter(function).collect(Collectors.toList());
     }
 
@@ -71,6 +72,7 @@ public class StreamUtils {
         if (CollUtil.isEmpty(collection)) {
             return CollUtil.newArrayList();
         }
+        // 注意此处不要使用 .toList() 新语法 因为返回的是不可变List 会导致序列化问题
         return collection.stream().sorted(comparing).collect(Collectors.toList());
     }
 
@@ -185,6 +187,7 @@ public class StreamUtils {
         if (CollUtil.isEmpty(collection)) {
             return CollUtil.newArrayList();
         }
+        // 注意此处不要使用 .toList() 新语法 因为返回的是不可变List 会导致序列化问题
         return collection
             .stream()
             .map(function)

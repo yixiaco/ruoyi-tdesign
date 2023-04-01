@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.constant.CacheNames;
 import com.ruoyi.common.core.exception.ServiceException;
 import com.ruoyi.common.core.utils.BeanCopyUtils;
+import com.ruoyi.common.core.utils.StreamUtils;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.core.utils.file.FileUtils;
 import com.ruoyi.common.core.utils.spring.SpringUtils;
@@ -42,16 +43,13 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
 
     @Override
     public TableDataInfo<SysOssVo> queryPageList(SysOssQuery query) {
-        return PageQuery.of(() -> baseMapper.queryList(query));
+        return PageQuery.of(() -> StreamUtils.toList(baseMapper.queryList(query), this::matchingUrl));
     }
 
     @Override
     public List<SysOssVo> listVoByIds(Collection<Long> ossIds) {
         List<SysOssVo> list = baseMapper.selectVoList(lambdaQuery().in(SysOss::getOssId, ossIds).getWrapper());
-        for (SysOssVo vo : list) {
-            matchingUrl(vo);
-        }
-        return list;
+        return StreamUtils.toList(list, this::matchingUrl);
     }
 
     /**
