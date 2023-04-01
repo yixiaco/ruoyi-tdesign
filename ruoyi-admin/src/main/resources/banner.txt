@@ -2,6 +2,6 @@
 ├┬┘│ ││ │└┬┘│   │  ││├┤ │ ┬│└─┐│││
 ┴└─└─┘└─┘ ┴ ┴   ┴ ─┴┘└─┘└─┘┴└─┘┘└┘
 ${Ansi.GREEN} :: Spring Boot ::                ${Ansi.DEFAULT}${spring-boot.formatted-version}
-${Ansi.GREEN} :: Application Name ::           ${Ansi.DEFAULT}${spring.application.name}(v${ruoyi-tdesign.version})
+${Ansi.GREEN} :: Application Name ::           ${Ansi.DEFAULT}${spring.application.name}(v${revision})
 
 ${AnsiColor.BLUE}${AnsiStyle.BOLD} >>>ruoyi-tdesign后台启动程序<<<${Ansi.DEFAULT}
