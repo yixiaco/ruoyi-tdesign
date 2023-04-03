@@ -5,22 +5,14 @@
 <mapper namespace="com.ruoyi.system.mapper.SysConfigMapper">
 
     <resultMap id="SysConfigResult" autoMapping="true" type="com.ruoyi.system.domain.SysConfig">
-        <id property="configId" column="config_id"/>
-        <result property="configName" column="config_name"/>
-        <result property="configKey" column="config_key"/>
-        <result property="configValue" column="config_value"/>
-        <result property="configType" column="config_type"/>
-        <result property="createBy" column="create_by"/>
-        <result property="createTime" column="create_time"/>
-        <result property="updateBy" column="update_by"/>
-        <result property="updateTime" column="update_time"/>
-        <result property="remark" column="remark"/>
+    </resultMap>
+    <resultMap id="SysConfigResultVo" autoMapping="true" type="com.ruoyi.system.domain.vo.SysConfigVo">
     </resultMap>
 
     <sql id="selectSysConfigVo">
         select sc.config_id, sc.config_name, sc.config_key, sc.config_value, sc.config_type, sc.create_by, sc.create_time, sc.update_by, sc.update_time, sc.remark from sys_config sc
     </sql>
-    <select id="queryList" parameterType="com.ruoyi.system.domain.SysConfig" resultMap="SysConfigResult">
+    <select id="queryList" parameterType="com.ruoyi.system.domain.bo.SysConfigBo" resultMap="SysConfigResultVo">
         <include refid="selectSysConfigVo"/>
         <where>
             <if test="configName != null and configName != ''"> and sc.config_name like concat('%', #{configName}, '%')</if>

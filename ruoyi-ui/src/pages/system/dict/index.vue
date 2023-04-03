@@ -184,12 +184,12 @@ import {
 import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import useDictStore from '@/store/modules/dict';
 import { listType, getType, delType, addType, updateType, refreshCache } from '@/api/system/dict/type';
-import { SysDictType } from '@/api/system/model/dictModel';
+import { SysDictTypeBo, SysDictTypeVo } from '@/api/system/model/dictModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
-const typeList = ref<SysDictType[]>([]);
+const typeList = ref<SysDictTypeVo[]>([]);
 const open = ref(false);
 const loading = ref(false);
 const eLoading = ref(false);
@@ -219,10 +219,10 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 160 },
 ]);
 
-const form = ref<SysDictType>({
+const form = ref<SysDictTypeBo & SysDictTypeVo>({
   status: '0',
 });
-const queryParams = ref<SysDictType>({
+const queryParams = ref<SysDictTypeBo>({
   pageNum: 1,
   pageSize: 10,
   dictName: undefined,

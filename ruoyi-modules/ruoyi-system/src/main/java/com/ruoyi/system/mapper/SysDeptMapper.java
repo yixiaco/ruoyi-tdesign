@@ -6,6 +6,8 @@ import com.ruoyi.common.mybatis.annotation.DataColumn;
 import com.ruoyi.common.mybatis.annotation.DataPermission;
 import com.ruoyi.system.domain.SysDept;
 import com.ruoyi.common.mybatis.core.mapper.BaseMapperPlus;
+import com.ruoyi.system.domain.bo.SysDeptBo;
+import com.ruoyi.system.domain.vo.SysDeptVo;
 import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
@@ -15,7 +17,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysDeptMapper extends BaseMapperPlus<SysDeptMapper, SysDept, SysDept> {
+public interface SysDeptMapper extends BaseMapperPlus<SysDeptMapper, SysDept, SysDeptVo> {
 
     /**
      * 查询部门列表
@@ -26,7 +28,7 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDeptMapper, SysDept, Sy
     @DataPermission({
         @DataColumn(key = "deptName", value = "dept_id")
     })
-    List<SysDept> queryList(SysDept dept);
+    List<SysDeptVo> queryList(SysDeptBo dept);
 
     /**
      * 查询部门管理数据
@@ -37,7 +39,7 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDeptMapper, SysDept, Sy
     @DataPermission({
         @DataColumn(key = "deptName", value = "dept_id")
     })
-    List<SysDept> selectDeptList(@Param(Constants.WRAPPER) Wrapper<SysDept> queryWrapper);
+    List<SysDeptVo> selectDeptList(@Param(Constants.WRAPPER) Wrapper<SysDept> queryWrapper);
 
     /**
      * 根据角色ID查询部门树信息

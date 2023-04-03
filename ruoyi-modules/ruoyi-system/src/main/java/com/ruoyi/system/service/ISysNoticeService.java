@@ -25,7 +25,7 @@ public interface ISysNoticeService extends IService<SysNotice> {
      * @param noticeId 公告ID
      * @return 公告信息
      */
-    SysNotice selectNoticeById(Long noticeId);
+    SysNoticeVo selectNoticeById(Long noticeId);
 
     /**
      * 查询公告列表
@@ -38,7 +38,7 @@ public interface ISysNoticeService extends IService<SysNotice> {
     /**
      * 新增公告
      *
-     * @param notice 公告信息
+     * @param bo 公告信息
      * @return 结果
      */
     Boolean insertNotice(SysNoticeBo notice);

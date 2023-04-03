@@ -11,20 +11,20 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.constant.CacheNames;
 import com.ruoyi.common.core.constant.UserConstants;
-import com.ruoyi.common.core.service.UserService;
-import com.ruoyi.common.mybatis.core.page.PageQuery;
-import com.ruoyi.common.satoken.utils.LoginHelper;
-import com.ruoyi.system.domain.SysDept;
-import com.ruoyi.system.domain.SysRole;
-import com.ruoyi.system.domain.SysUser;
-import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.common.core.exception.ServiceException;
-import com.ruoyi.common.mybatis.helper.DataBaseHelper;
+import com.ruoyi.common.core.service.UserService;
 import com.ruoyi.common.core.utils.StreamUtils;
 import com.ruoyi.common.core.utils.StringUtils;
-import com.ruoyi.system.domain.SysPost;
+import com.ruoyi.common.mybatis.core.page.PageQuery;
+import com.ruoyi.common.mybatis.core.page.TableDataInfo;
+import com.ruoyi.common.mybatis.helper.DataBaseHelper;
+import com.ruoyi.common.satoken.utils.LoginHelper;
+import com.ruoyi.system.domain.SysDept;
+import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.system.domain.SysUserPost;
 import com.ruoyi.system.domain.SysUserRole;
+import com.ruoyi.system.domain.vo.SysPostVo;
+import com.ruoyi.system.domain.vo.SysRoleVo;
 import com.ruoyi.system.mapper.SysPostMapper;
 import com.ruoyi.system.mapper.SysRoleMapper;
 import com.ruoyi.system.mapper.SysUserMapper;
@@ -38,8 +38,6 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -163,11 +161,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public String selectUserRoleGroup(String userName) {
-        List<SysRole> list = roleMapper.selectRolesByUserName(userName);
+        List<SysRoleVo> list = roleMapper.selectRolesByUserName(userName);
         if (CollUtil.isEmpty(list)) {
             return StringUtils.EMPTY;
         }
-        return StreamUtils.join(list, SysRole::getRoleName);
+        return StreamUtils.join(list, SysRoleVo::getRoleName);
     }
 
     /**
@@ -178,11 +176,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public String selectUserPostGroup(String userName) {
-        List<SysPost> list = postMapper.selectPostsByUserName(userName);
+        List<SysPostVo> list = postMapper.selectPostsByUserName(userName);
         if (CollUtil.isEmpty(list)) {
             return StringUtils.EMPTY;
         }
-        return StreamUtils.join(list, SysPost::getPostName);
+        return StreamUtils.join(list, SysPostVo::getPostName);
     }
 
     /**

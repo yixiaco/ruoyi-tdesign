@@ -188,12 +188,12 @@ import useDictStore from '@/store/modules/dict';
 import { optionselect as getDictOptionselect, getType } from '@/api/system/dict/type';
 import { listData, getData, delData, addData, updateData } from '@/api/system/dict/data';
 import { useTabsRouterStore } from '@/store';
-import { SysDictData, SysDictType } from '@/api/system/model/dictModel';
+import { SysDictDataBo, SysDictDataVo, SysDictTypeVo } from '@/api/system/model/dictModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
-const dataList = ref<SysDictData[]>([]);
+const dataList = ref<SysDictDataVo[]>([]);
 const open = ref(false);
 const loading = ref(false);
 const eLoading = ref(false);
@@ -204,7 +204,7 @@ const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
 const defaultDictType = ref('');
-const typeOptions = ref<SysDictType[]>([]);
+const typeOptions = ref<SysDictTypeVo[]>([]);
 const columnControllerVisible = ref(false);
 const dataRef = ref<FormInstanceFunctions>(null);
 const tabsRouterStore = useTabsRouterStore();
@@ -237,12 +237,12 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 160 },
 ]);
 
-const form = ref<SysDictData>({
+const form = ref<SysDictDataBo & SysDictDataVo>({
   listClass: 'default',
   dictSort: 0,
   status: '0',
 });
-const queryParams = ref<SysDictData>({
+const queryParams = ref<SysDictDataBo>({
   pageNum: 1,
   pageSize: 10,
   dictLabel: undefined,

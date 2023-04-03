@@ -5,8 +5,6 @@
 <mapper namespace="com.ruoyi.system.mapper.SysUserRoleMapper">
 
     <resultMap id="SysUserRoleResult" autoMapping="true" type="com.ruoyi.system.domain.SysUserRole">
-        <result property="userId" column="user_id"/>
-        <result property="roleId" column="role_id"/>
     </resultMap>
     <select id="selectUserIdsByRoleId" resultType="Long">
         select u.user_id from sys_user u

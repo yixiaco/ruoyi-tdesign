@@ -5,8 +5,6 @@
 <mapper namespace="com.ruoyi.system.mapper.SysRoleDeptMapper">
 
     <resultMap id="SysRoleDeptResult" autoMapping="true" type="com.ruoyi.system.domain.SysRoleDept">
-        <result property="roleId" column="role_id"/>
-        <result property="deptId" column="dept_id"/>
     </resultMap>
 
 </mapper>

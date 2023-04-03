@@ -2,9 +2,11 @@ package com.ruoyi.system.domain.bo;
 
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
+import com.ruoyi.common.core.xss.Xss;
 import com.ruoyi.common.mybatis.core.domain.BaseEntity;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -12,7 +14,7 @@ import lombok.EqualsAndHashCode;
  * 通知公告业务对象 sys_notice
  *
  * @author ruoyi
- * @date 2023-04-01
+ * @date 2023-02-01
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -21,19 +23,20 @@ public class SysNoticeBo extends BaseEntity {
     /**
      * 公告ID
      */
-    @NotNull(message = "公告ID不能为空", groups = {EditGroup.class})
+    @NotNull(message = "公告ID不能为空", groups = { EditGroup.class })
     private Long noticeId;
 
     /**
      * 公告标题
      */
-    @NotBlank(message = "公告标题不能为空", groups = {AddGroup.class, EditGroup.class})
+    @Xss(message = "公告标题不能包含脚本字符")
+    @NotBlank(message = "公告标题不能为空", groups = { AddGroup.class, EditGroup.class })
+    @Size(min = 0, max = 50, message = "公告标题不能超过{max}个字符")
     private String noticeTitle;
 
     /**
      * 公告类型（1通知 2公告）
      */
-    @NotBlank(message = "公告类型（1通知 2公告）不能为空", groups = {AddGroup.class, EditGroup.class})
     private String noticeType;
 
     /**

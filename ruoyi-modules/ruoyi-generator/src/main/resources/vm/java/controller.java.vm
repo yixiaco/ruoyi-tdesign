@@ -28,7 +28,7 @@ import ${packageName}.domain.bo.${ClassName}Bo;
 #end
 #if($useQuery)
 #set($query="${ClassName}Query")
-import ${packageName}.domain.dto.${ClassName}Query;
+import ${packageName}.domain.query.${ClassName}Query;
 #else
 #set($query=$ClassName)
 #end

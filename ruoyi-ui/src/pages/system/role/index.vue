@@ -293,14 +293,14 @@ import {
   deptTreeSelect,
 } from '@/api/system/role';
 import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
-import { SysRole } from '@/api/system/model/roleModel';
+import { SysRoleBo, SysRoleVo } from '@/api/system/model/roleModel';
 import { TreeModel } from '@/api/model/resultModel';
 
 const router = useRouter();
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
-const roleList = ref<SysRole[]>([]);
+const roleList = ref<SysRoleVo[]>([]);
 const open = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
@@ -352,13 +352,13 @@ const rules = ref<Record<string, Array<FormRule>>>({
   roleKey: [{ required: true, message: '权限字符不能为空', trigger: 'blur' }],
   roleSort: [{ required: true, message: '角色顺序不能为空', trigger: 'blur' }],
 });
-const form = ref<SysRole>({
+const form = ref<SysRoleBo & SysRoleVo>({
   roleSort: 0,
   status: '0',
   menuIds: [],
   deptIds: [],
 });
-const queryParams = ref<SysRole>({
+const queryParams = ref<SysRoleBo>({
   pageNum: 1,
   pageSize: 10,
   roleName: undefined,
@@ -496,7 +496,7 @@ function handleUpdate(row) {
   const roleId = row.roleId || ids.value;
   const roleMenu = getRoleMenuTreeselect(roleId);
   getRole(roleId).then((response) => {
-    form.value = { ...form.value, ...response.data };
+    form.value = response.data;
     form.value.roleSort = Number(form.value.roleSort);
     open.value = true;
     roleMenu.then((res) => {

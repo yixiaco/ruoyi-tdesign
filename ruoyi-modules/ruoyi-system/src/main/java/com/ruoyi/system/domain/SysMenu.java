@@ -34,8 +34,6 @@ public class SysMenu extends TreeEntity<SysMenu> {
     /**
      * 菜单名称
      */
-    @NotBlank(message = "菜单名称不能为空")
-    @Size(min = 0, max = 50, message = "菜单名称长度不能超过{max}个字符")
     private String menuName;
 
     /**
@@ -46,19 +44,16 @@ public class SysMenu extends TreeEntity<SysMenu> {
     /**
      * 显示顺序
      */
-    @NotNull(message = "显示顺序不能为空")
     private Integer orderNum;
 
     /**
      * 路由地址
      */
-    @Size(min = 0, max = 200, message = "路由地址不能超过{max}个字符")
     private String path;
 
     /**
      * 组件路径
      */
-    @Size(min = 0, max = 200, message = "组件路径不能超过{max}个字符")
     private String component;
 
     /**
@@ -69,17 +64,16 @@ public class SysMenu extends TreeEntity<SysMenu> {
     /**
      * 是否为外链（0是 1否）
      */
-    private String isFrame;
+    private Integer isFrame;
 
     /**
      * 是否缓存（0缓存 1不缓存）
      */
-    private String isCache;
+    private Integer isCache;
 
     /**
      * 类型（M目录 C菜单 F按钮）
      */
-    @NotBlank(message = "菜单类型不能为空")
     private String menuType;
 
     /**
@@ -95,8 +89,6 @@ public class SysMenu extends TreeEntity<SysMenu> {
     /**
      * 权限字符串
      */
-    @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Size(min = 0, max = 100, message = "权限标识长度不能超过{max}个字符")
     private String perms;
 
     /**

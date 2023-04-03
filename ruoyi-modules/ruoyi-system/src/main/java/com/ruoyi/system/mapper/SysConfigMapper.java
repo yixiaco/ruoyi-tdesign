@@ -2,6 +2,8 @@ package com.ruoyi.system.mapper;
 
 import com.ruoyi.common.mybatis.core.mapper.BaseMapperPlus;
 import com.ruoyi.system.domain.SysConfig;
+import com.ruoyi.system.domain.bo.SysConfigBo;
+import com.ruoyi.system.domain.vo.SysConfigVo;
 
 import java.util.List;
 
@@ -10,7 +12,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysConfigMapper extends BaseMapperPlus<SysConfigMapper, SysConfig, SysConfig> {
+public interface SysConfigMapper extends BaseMapperPlus<SysConfigMapper, SysConfig, SysConfigVo> {
 
     /**
      * 查询参数配置列表
@@ -18,5 +20,5 @@ public interface SysConfigMapper extends BaseMapperPlus<SysConfigMapper, SysConf
      * @param config
      * @return {@link SysConfig}
      */
-    List<SysConfig> queryList(SysConfig config);
+    List<SysConfigVo> queryList(SysConfigBo config);
 }

@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ObjectUtil;
@@ -16,8 +17,10 @@ import com.ruoyi.common.core.utils.TreeBuildUtils;
 import com.ruoyi.system.domain.SysMenu;
 import com.ruoyi.system.domain.SysRole;
 import com.ruoyi.system.domain.SysRoleMenu;
+import com.ruoyi.system.domain.bo.SysMenuBo;
 import com.ruoyi.system.domain.vo.MetaVo;
 import com.ruoyi.system.domain.vo.RouterVo;
+import com.ruoyi.system.domain.vo.SysMenuVo;
 import com.ruoyi.system.mapper.SysMenuMapper;
 import com.ruoyi.system.mapper.SysRoleMapper;
 import com.ruoyi.system.mapper.SysRoleMenuMapper;
@@ -30,6 +33,7 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 
 /**
@@ -162,7 +166,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             router.setPath(getRouterPath(menu));
             router.setComponent(getComponent(menu));
             router.setQuery(menu.getQueryParam());
-            router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), StringUtils.equals("1", menu.getIsCache()), menu.getPath()));
+            router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), Objects.equals(1, menu.getIsCache()), menu.getPath()));
             List<SysMenu> cMenus = menu.getChildren();
             if (!cMenus.isEmpty() && UserConstants.TYPE_DIR.equals(menu.getMenuType())) {
                 router.setAlwaysShow(true);
@@ -175,7 +179,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 children.setPath(menu.getPath());
                 children.setComponent(menu.getComponent());
                 children.setName(StringUtils.capitalize(menu.getPath()));
-                children.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), StringUtils.equals("1", menu.getIsCache()), menu.getPath()));
+                children.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), Objects.equals(1, menu.getIsCache()), menu.getPath()));
                 children.setQuery(menu.getQueryParam());
                 childrenList.add(children);
                 router.setChildren(childrenList);
@@ -222,8 +226,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @return 菜单信息
      */
     @Override
-    public SysMenu selectMenuById(Long menuId) {
-        return baseMapper.selectById(menuId);
+    public SysMenuVo selectMenuById(Long menuId) {
+        return baseMapper.selectVoById(menuId);
     }
 
     /**
@@ -251,22 +255,24 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     /**
      * 新增保存菜单信息
      *
-     * @param menu 菜单信息
+     * @param bo 菜单信息
      * @return 结果
      */
     @Override
-    public int insertMenu(SysMenu menu) {
+    public int insertMenu(SysMenuBo bo) {
+        SysMenu menu = BeanUtil.toBean(bo, SysMenu.class);
         return baseMapper.insert(menu);
     }
 
     /**
      * 修改保存菜单信息
      *
-     * @param menu 菜单信息
+     * @param bo 菜单信息
      * @return 结果
      */
     @Override
-    public int updateMenu(SysMenu menu) {
+    public int updateMenu(SysMenuBo bo) {
+        SysMenu menu = BeanUtil.toBean(bo, SysMenu.class);
         return baseMapper.updateById(menu);
     }
 
@@ -288,7 +294,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @return 结果
      */
     @Override
-    public String checkMenuNameUnique(SysMenu menu) {
+    public String checkMenuNameUnique(SysMenuBo menu) {
         boolean exist = baseMapper.exists(new LambdaQueryWrapper<SysMenu>()
                                               .eq(SysMenu::getMenuName, menu.getMenuName())
                                               .eq(SysMenu::getParentId, menu.getParentId())
@@ -364,7 +370,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     public boolean isMenuFrame(SysMenu menu) {
         return menu.getParentId().equals(0L) && UserConstants.TYPE_MENU.equals(menu.getMenuType())
-            && menu.getIsFrame().equals(UserConstants.NO_FRAME);
+            && UserConstants.NO_FRAME.equals(menu.getIsFrame());
     }
 
     /**
@@ -374,7 +380,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @return 结果
      */
     public boolean isInnerLink(SysMenu menu) {
-        return menu.getIsFrame().equals(UserConstants.NO_FRAME) && StringUtils.ishttp(menu.getPath());
+        return UserConstants.NO_FRAME.equals(menu.getIsFrame()) && StringUtils.ishttp(menu.getPath());
     }
 
     /**

@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.dynamic.datasource.annotation.DS;
@@ -7,15 +8,18 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.constant.CacheNames;
 import com.ruoyi.common.core.constant.UserConstants;
-import com.ruoyi.common.core.service.ConfigService;
 import com.ruoyi.common.core.exception.ServiceException;
-import com.ruoyi.common.mybatis.core.page.PageQuery;
-import com.ruoyi.common.mybatis.core.page.TableDataInfo;
-import com.ruoyi.common.redis.utils.CacheUtils;
+import com.ruoyi.common.core.service.ConfigService;
+import com.ruoyi.common.core.utils.StreamUtils;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.core.utils.funtion.BiOperator;
 import com.ruoyi.common.core.utils.spring.SpringUtils;
+import com.ruoyi.common.mybatis.core.page.PageQuery;
+import com.ruoyi.common.mybatis.core.page.TableDataInfo;
+import com.ruoyi.common.redis.utils.CacheUtils;
 import com.ruoyi.system.domain.SysConfig;
+import com.ruoyi.system.domain.bo.SysConfigBo;
+import com.ruoyi.system.domain.vo.SysConfigVo;
 import com.ruoyi.system.mapper.SysConfigMapper;
 import com.ruoyi.system.service.ISysConfigService;
 import org.springframework.cache.annotation.CachePut;
@@ -28,7 +32,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.function.Function;
 import java.util.stream.Collectors;
 
 /**
@@ -40,7 +43,7 @@ import java.util.stream.Collectors;
 public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig> implements ISysConfigService, ConfigService {
 
     @Override
-    public TableDataInfo<SysConfig> selectPageConfigList(SysConfig config) {
+    public TableDataInfo<SysConfigVo> selectPageConfigList(SysConfigBo config) {
         return PageQuery.of(() -> baseMapper.queryList(config));
     }
 
@@ -52,8 +55,8 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
      */
     @Override
     @DS("master")
-    public SysConfig selectConfigById(Long configId) {
-        return baseMapper.selectById(configId);
+    public SysConfigVo selectConfigById(Long configId) {
+        return baseMapper.selectVoById(configId);
     }
 
     /**
@@ -96,19 +99,20 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
      * @return 参数配置集合
      */
     @Override
-    public List<SysConfig> selectConfigList(SysConfig config) {
+    public List<SysConfigVo> selectConfigList(SysConfigBo config) {
         return baseMapper.queryList(config);
     }
 
     /**
      * 新增参数配置
      *
-     * @param config 参数配置信息
+     * @param bo 参数配置信息
      * @return 结果
      */
-    @CachePut(cacheNames = CacheNames.SYS_CONFIG, key = "#config.configKey")
+    @CachePut(cacheNames = CacheNames.SYS_CONFIG, key = "#bo.configKey")
     @Override
-    public String insertConfig(SysConfig config) {
+    public String insertConfig(SysConfigBo bo) {
+        SysConfig config = BeanUtil.toBean(bo, SysConfig.class);
         int row = baseMapper.insert(config);
         if (row > 0) {
             return config.getConfigValue();
@@ -119,13 +123,14 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     /**
      * 修改参数配置
      *
-     * @param config 参数配置信息
+     * @param bo 参数配置信息
      * @return 结果
      */
-    @CachePut(cacheNames = CacheNames.SYS_CONFIG, key = "#config.configKey")
+    @CachePut(cacheNames = CacheNames.SYS_CONFIG, key = "#bo.configKey")
     @Override
-    public String updateConfigs(SysConfig config) {
+    public String updateConfigs(SysConfigBo bo) {
         int row = 0;
+        SysConfig config = BeanUtil.toBean(bo, SysConfig.class);
         if (config.getConfigId() != null) {
             SysConfig temp = baseMapper.selectById(config.getConfigId());
             if (!StringUtils.equals(temp.getConfigKey(), config.getConfigKey())) {
@@ -151,7 +156,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     @Transactional(rollbackFor = Exception.class)
     public void deleteConfigByIds(Long[] configIds) {
         for (Long configId : configIds) {
-            SysConfig config = selectConfigById(configId);
+            SysConfig config = baseMapper.selectById(configId);
             if (StringUtils.equals(UserConstants.YES, config.getConfigType())) {
                 throw new ServiceException(String.format("内置参数【%1$s】不能删除 ", config.getConfigKey()));
             }
@@ -165,7 +170,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
      */
     @Override
     public void loadingConfigCache() {
-        List<SysConfig> configsList = selectConfigList(new SysConfig());
+        List<SysConfigVo> configsList = selectConfigList(new SysConfigBo());
         configsList.forEach(config ->
             CacheUtils.put(CacheNames.SYS_CONFIG, config.getConfigKey(), config.getConfigValue()));
     }
@@ -194,7 +199,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
      * @return 结果
      */
     @Override
-    public String checkConfigKeyUnique(SysConfig config) {
+    public String checkConfigKeyUnique(SysConfigBo config) {
         long configId = ObjectUtil.isNull(config.getConfigId()) ? -1L : config.getConfigId();
         SysConfig info = baseMapper.selectOne(new LambdaQueryWrapper<SysConfig>().eq(SysConfig::getConfigKey, config.getConfigKey()));
         if (ObjectUtil.isNotNull(info) && !Objects.equals(info.getConfigId(), configId)) {
@@ -224,8 +229,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     @Transactional(rollbackFor = Exception.class)
     public void updateConfigs(Map<String, String> configs) {
         List<SysConfig> list = lambdaQuery().in(SysConfig::getConfigKey, configs.keySet()).list();
-        Map<String, SysConfig> map = list.stream()
-            .collect(Collectors.toMap(SysConfig::getConfigKey, Function.identity(), BiOperator::last));
+        Map<String, SysConfig> map = StreamUtils.toIdentityMap(list, SysConfig::getConfigKey);
         configs.forEach((key, value) -> {
             SysConfig config;
             if (map.containsKey(key)) {

@@ -1,11 +1,11 @@
 import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
-import { DeptTreeSelect, SysRole, SysUserRole } from '@/api/system/model/roleModel';
+import { DeptTreeSelect, SysRoleBo, SysRoleVo, SysUserRole } from '@/api/system/model/roleModel';
 import { SysUser } from '@/api/system/model/userModel';
 
 // 查询角色列表
-export function listRole(query: SysRole) {
-  return request.get<TableDataInfo<SysRole>>({
+export function listRole(query: SysRoleBo) {
+  return request.get<TableDataInfo<SysRoleVo>>({
     url: '/system/role/list',
     params: query,
   });
@@ -13,13 +13,13 @@ export function listRole(query: SysRole) {
 
 // 查询角色详细
 export function getRole(roleId: number) {
-  return request.get<R<SysRole>>({
+  return request.get<R<SysRoleVo>>({
     url: `/system/role/${roleId}`,
   });
 }
 
 // 新增角色
-export function addRole(data: SysRole) {
+export function addRole(data: SysRoleBo) {
   return request.post<R<void>>({
     url: '/system/role',
     data,
@@ -27,7 +27,7 @@ export function addRole(data: SysRole) {
 }
 
 // 修改角色
-export function updateRole(data: SysRole) {
+export function updateRole(data: SysRoleBo) {
   return request.put<R<void>>({
     url: '/system/role',
     data,
@@ -35,7 +35,7 @@ export function updateRole(data: SysRole) {
 }
 
 // 角色数据权限
-export function dataScope(data: SysRole) {
+export function dataScope(data: SysRoleBo) {
   return request.put<R<void>>({
     url: '/system/role/dataScope',
     data,

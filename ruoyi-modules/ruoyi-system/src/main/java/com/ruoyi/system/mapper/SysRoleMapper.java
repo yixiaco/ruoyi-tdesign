@@ -2,8 +2,10 @@ package com.ruoyi.system.mapper;
 
 import com.ruoyi.common.mybatis.annotation.DataColumn;
 import com.ruoyi.common.mybatis.annotation.DataPermission;
-import com.ruoyi.system.domain.SysRole;
 import com.ruoyi.common.mybatis.core.mapper.BaseMapperPlus;
+import com.ruoyi.system.domain.SysRole;
+import com.ruoyi.system.domain.bo.SysRoleBo;
+import com.ruoyi.system.domain.vo.SysRoleVo;
 
 import java.util.List;
 
@@ -12,7 +14,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysRoleMapper extends BaseMapperPlus<SysRoleMapper, SysRole, SysRole> {
+public interface SysRoleMapper extends BaseMapperPlus<SysRoleMapper, SysRole, SysRoleVo> {
 
     /**
      * 根据用户ID查询角色
@@ -20,7 +22,7 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRoleMapper, SysRole, Sy
      * @param userId 用户ID
      * @return 角色列表
      */
-    List<SysRole> selectRolePermissionByUserId(Long userId);
+    List<SysRoleVo> selectRolePermissionByUserId(Long userId);
 
 
     /**
@@ -37,7 +39,7 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRoleMapper, SysRole, Sy
      * @param userName 用户名
      * @return 角色列表
      */
-    List<SysRole> selectRolesByUserName(String userName);
+    List<SysRoleVo> selectRolesByUserName(String userName);
 
     /**
      * 查询角色信息列表
@@ -48,5 +50,5 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRoleMapper, SysRole, Sy
     @DataPermission({
         @DataColumn(key = "deptName", value = "d.dept_id")
     })
-    List<SysRole> queryList(SysRole bo);
+    List<SysRoleVo> queryList(SysRoleBo bo);
 }

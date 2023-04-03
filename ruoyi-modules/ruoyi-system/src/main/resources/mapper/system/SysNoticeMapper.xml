@@ -5,29 +5,8 @@
 <mapper namespace="com.ruoyi.system.mapper.SysNoticeMapper">
 
     <resultMap id="SysNoticeResultVo" autoMapping="true" type="com.ruoyi.system.domain.vo.SysNoticeVo">
-        <id property="noticeId" column="notice_id"/>
-        <result property="noticeTitle" column="notice_title"/>
-        <result property="noticeType" column="notice_type"/>
-        <result property="noticeContent" column="notice_content"/>
-        <result property="status" column="status"/>
-        <result property="createBy" column="create_by"/>
-        <result property="createTime" column="create_time"/>
-        <result property="updateBy" column="update_by"/>
-        <result property="updateTime" column="update_time"/>
-        <result property="remark" column="remark"/>
-        <result property="createByName" column="create_by_name"/>
     </resultMap>
     <resultMap id="SysNoticeResult" autoMapping="true" type="com.ruoyi.system.domain.SysNotice">
-        <id property="noticeId" column="notice_id"/>
-        <result property="noticeTitle" column="notice_title"/>
-        <result property="noticeType" column="notice_type"/>
-        <result property="noticeContent" column="notice_content"/>
-        <result property="status" column="status"/>
-        <result property="createBy" column="create_by"/>
-        <result property="createTime" column="create_time"/>
-        <result property="updateBy" column="update_by"/>
-        <result property="updateTime" column="update_time"/>
-        <result property="remark" column="remark"/>
     </resultMap>
 
     <sql id="selectSysNoticeVo">

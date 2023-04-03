@@ -4,6 +4,9 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.system.domain.SysDictData;
 import com.ruoyi.system.domain.SysDictType;
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
+import com.ruoyi.system.domain.bo.SysDictTypeBo;
+import com.ruoyi.system.domain.vo.SysDictDataVo;
+import com.ruoyi.system.domain.vo.SysDictTypeVo;
 
 import java.util.List;
 
@@ -20,7 +23,7 @@ public interface ISysDictTypeService extends IService<SysDictType> {
      * @param dictType 字典类型信息
      * @return 字典类型集合信息
      */
-    TableDataInfo<SysDictType> selectPageDictTypeList(SysDictType dictType);
+    TableDataInfo<SysDictTypeVo> selectPageDictTypeList(SysDictTypeBo dictType);
 
     /**
      * 根据条件分页查询字典类型
@@ -28,7 +31,7 @@ public interface ISysDictTypeService extends IService<SysDictType> {
      * @param dictType 字典类型信息
      * @return 字典类型集合信息
      */
-    List<SysDictType> selectDictTypeList(SysDictType dictType);
+    List<SysDictTypeVo> selectDictTypeList(SysDictTypeBo dictType);
 
     /**
      * 根据所有字典类型
@@ -43,7 +46,7 @@ public interface ISysDictTypeService extends IService<SysDictType> {
      * @param dictType 字典类型
      * @return 字典数据集合信息
      */
-    List<SysDictData> selectDictDataByType(String dictType);
+    List<SysDictDataVo> selectDictDataByType(String dictType);
 
     /**
      * 根据字典类型ID查询信息
@@ -51,7 +54,7 @@ public interface ISysDictTypeService extends IService<SysDictType> {
      * @param dictId 字典类型ID
      * @return 字典类型
      */
-    SysDictType selectDictTypeById(Long dictId);
+    SysDictTypeVo selectDictTypeById(Long dictId);
 
     /**
      * 根据字典类型查询信息
@@ -59,7 +62,7 @@ public interface ISysDictTypeService extends IService<SysDictType> {
      * @param dictType 字典类型
      * @return 字典类型
      */
-    SysDictType selectDictTypeByType(String dictType);
+    SysDictTypeVo selectDictTypeByType(String dictType);
 
     /**
      * 批量删除字典信息
@@ -86,18 +89,18 @@ public interface ISysDictTypeService extends IService<SysDictType> {
     /**
      * 新增保存字典类型信息
      *
-     * @param dictType 字典类型信息
+     * @param bo 字典类型信息
      * @return 结果
      */
-    List<SysDictData> insertDictType(SysDictType dictType);
+    List<SysDictTypeVo> insertDictType(SysDictTypeBo bo);
 
     /**
      * 修改保存字典类型信息
      *
-     * @param dictType 字典类型信息
+     * @param bo 字典类型信息
      * @return 结果
      */
-    List<SysDictData> updateDictType(SysDictType dictType);
+    List<SysDictDataVo> updateDictType(SysDictTypeBo bo);
 
     /**
      * 校验字典类型称是否唯一
@@ -105,5 +108,5 @@ public interface ISysDictTypeService extends IService<SysDictType> {
      * @param dictType 字典类型
      * @return 结果
      */
-    String checkDictTypeUnique(SysDictType dictType);
+    String checkDictTypeUnique(SysDictTypeBo dictType);
 }

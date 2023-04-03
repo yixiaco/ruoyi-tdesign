@@ -3,6 +3,8 @@ package com.ruoyi.system.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.system.domain.SysPost;
+import com.ruoyi.system.domain.bo.SysPostBo;
+import com.ruoyi.system.domain.vo.SysPostVo;
 
 import java.util.List;
 
@@ -19,7 +21,7 @@ public interface ISysPostService extends IService<SysPost> {
      * @param post 岗位信息
      * @return 岗位列表
      */
-    TableDataInfo<SysPost> selectPagePostList(SysPost post);
+    TableDataInfo<SysPostVo> selectPagePostList(SysPostBo post);
 
     /**
      * 查询岗位信息集合
@@ -27,14 +29,14 @@ public interface ISysPostService extends IService<SysPost> {
      * @param post 岗位信息
      * @return 岗位列表
      */
-    List<SysPost> selectPostList(SysPost post);
+    List<SysPostVo> selectPostList(SysPostBo post);
 
     /**
      * 查询所有岗位
      *
      * @return 岗位列表
      */
-    List<SysPost> selectPostAll();
+    List<SysPostVo> selectPostAll();
 
     /**
      * 通过岗位ID查询岗位信息
@@ -42,7 +44,7 @@ public interface ISysPostService extends IService<SysPost> {
      * @param postId 岗位ID
      * @return 角色对象信息
      */
-    SysPost selectPostById(Long postId);
+    SysPostVo selectPostById(Long postId);
 
     /**
      * 根据用户ID获取岗位选择框列表
@@ -58,7 +60,7 @@ public interface ISysPostService extends IService<SysPost> {
      * @param post 岗位信息
      * @return 结果
      */
-    String checkPostNameUnique(SysPost post);
+    String checkPostNameUnique(SysPostBo post);
 
     /**
      * 校验岗位编码
@@ -66,7 +68,7 @@ public interface ISysPostService extends IService<SysPost> {
      * @param post 岗位信息
      * @return 结果
      */
-    String checkPostCodeUnique(SysPost post);
+    String checkPostCodeUnique(SysPostBo post);
 
     /**
      * 通过岗位ID查询岗位使用数量
@@ -95,16 +97,16 @@ public interface ISysPostService extends IService<SysPost> {
     /**
      * 新增保存岗位信息
      *
-     * @param post 岗位信息
+     * @param bo 岗位信息
      * @return 结果
      */
-    int insertPost(SysPost post);
+    int insertPost(SysPostBo bo);
 
     /**
      * 修改保存岗位信息
      *
-     * @param post 岗位信息
+     * @param bo 岗位信息
      * @return 结果
      */
-    int updatePost(SysPost post);
+    int updatePost(SysPostBo bo);
 }

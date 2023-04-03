@@ -1,9 +1,9 @@
 import { request } from '@/utils/request';
-import { RoleMenuTreeselect, SysMenu } from '@/api/system/model/menuModel';
+import { RoleMenuTreeselect, SysMenu, SysMenuBo, SysMenuVo } from '@/api/system/model/menuModel';
 import { R, TreeModel } from '@/api/model/resultModel';
 
 // 查询菜单列表
-export function listMenu(query?: Partial<SysMenu>) {
+export function listMenu(query?: SysMenu) {
   return request.get<R<Array<SysMenu>>>({
     url: '/system/menu/list',
     params: query,
@@ -12,7 +12,7 @@ export function listMenu(query?: Partial<SysMenu>) {
 
 // 查询菜单详细
 export function getMenu(menuId: number) {
-  return request.get<R<SysMenu>>({
+  return request.get<R<SysMenuVo>>({
     url: `/system/menu/${menuId}`,
   });
 }
@@ -32,7 +32,7 @@ export function roleMenuTreeselect(roleId: number) {
 }
 
 // 新增菜单
-export function addMenu(data: SysMenu) {
+export function addMenu(data: SysMenuBo) {
   return request.post<R<void>>({
     url: '/system/menu',
     data,
@@ -40,7 +40,7 @@ export function addMenu(data: SysMenu) {
 }
 
 // 修改菜单
-export function updateMenu(data: SysMenu) {
+export function updateMenu(data: SysMenuBo) {
   return request.put<R<void>>({
     url: '/system/menu',
     data,

@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysNoticeMapper extends BaseMapperPlus<SysNoticeMapper, SysNotice, SysNotice> {
+public interface SysNoticeMapper extends BaseMapperPlus<SysNoticeMapper, SysNotice, SysNoticeVo> {
 
     /**
      * 查询通知公告列表

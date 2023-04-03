@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.constant.CacheNames;
@@ -8,6 +9,8 @@ import com.ruoyi.common.mybatis.core.page.PageQuery;
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.common.redis.utils.CacheUtils;
 import com.ruoyi.system.domain.SysDictData;
+import com.ruoyi.system.domain.bo.SysDictDataBo;
+import com.ruoyi.system.domain.vo.SysDictDataVo;
 import com.ruoyi.system.mapper.SysDictDataMapper;
 import com.ruoyi.system.service.ISysDictDataService;
 import org.springframework.cache.annotation.CachePut;
@@ -25,7 +28,7 @@ import java.util.List;
 public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDictData> implements ISysDictDataService {
 
     @Override
-    public TableDataInfo<SysDictData> selectPageDictDataList(SysDictData dictData) {
+    public TableDataInfo<SysDictDataVo> selectPageDictDataList(SysDictDataBo dictData) {
         return PageQuery.of(() -> baseMapper.queryList(dictData));
     }
 
@@ -36,7 +39,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
      * @return 字典数据集合信息
      */
     @Override
-    public List<SysDictData> selectDictDataList(SysDictData dictData) {
+    public List<SysDictDataVo> selectDictDataList(SysDictDataBo dictData) {
         return baseMapper.queryList(dictData);
     }
 
@@ -63,8 +66,8 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
      * @return 字典数据
      */
     @Override
-    public SysDictData selectDictDataById(Long dictCode) {
-        return baseMapper.selectById(dictCode);
+    public SysDictDataVo selectDictDataById(Long dictCode) {
+        return baseMapper.selectVoById(dictCode);
     }
 
     /**
@@ -76,7 +79,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     @Transactional(rollbackFor = Exception.class)
     public void deleteDictDataByIds(Long[] dictCodes) {
         for (Long dictCode : dictCodes) {
-            SysDictData data = selectDictDataById(dictCode);
+            SysDictData data = baseMapper.selectById(dictCode);
             baseMapper.deleteById(dictCode);
             CacheUtils.evict(CacheNames.SYS_DICT, data.getDictType());
         }
@@ -85,12 +88,13 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     /**
      * 新增保存字典数据信息
      *
-     * @param data 字典数据信息
+     * @param bo 字典数据信息
      * @return 结果
      */
-    @CachePut(cacheNames = CacheNames.SYS_DICT, key = "#data.dictType")
+    @CachePut(cacheNames = CacheNames.SYS_DICT, key = "#bo.dictType")
     @Override
-    public List<SysDictData> insertDictData(SysDictData data) {
+    public List<SysDictDataVo> insertDictData(SysDictDataBo bo) {
+        SysDictData data = BeanUtil.toBean(bo, SysDictData.class);
         int row = baseMapper.insert(data);
         if (row > 0) {
             return baseMapper.selectDictDataByType(data.getDictType());
@@ -101,12 +105,13 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     /**
      * 修改保存字典数据信息
      *
-     * @param data 字典数据信息
+     * @param bo 字典数据信息
      * @return 结果
      */
-    @CachePut(cacheNames = CacheNames.SYS_DICT, key = "#data.dictType")
+    @CachePut(cacheNames = CacheNames.SYS_DICT, key = "#bo.dictType")
     @Override
-    public List<SysDictData> updateDictData(SysDictData data) {
+    public List<SysDictDataVo> updateDictData(SysDictDataBo bo) {
+        SysDictData data = BeanUtil.toBean(bo, SysDictData.class);
         int row = baseMapper.updateById(data);
         if (row > 0) {
             return baseMapper.selectDictDataByType(data.getDictType());

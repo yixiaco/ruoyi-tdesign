@@ -2,6 +2,8 @@ package com.ruoyi.system.mapper;
 
 import com.ruoyi.common.mybatis.core.mapper.BaseMapperPlus;
 import com.ruoyi.system.domain.SysPost;
+import com.ruoyi.system.domain.bo.SysPostBo;
+import com.ruoyi.system.domain.vo.SysPostVo;
 
 import java.util.List;
 
@@ -10,7 +12,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysPostMapper extends BaseMapperPlus<SysPostMapper, SysPost, SysPost> {
+public interface SysPostMapper extends BaseMapperPlus<SysPostMapper, SysPost, SysPostVo> {
 
     /**
      * 根据用户ID获取岗位选择框列表
@@ -26,7 +28,7 @@ public interface SysPostMapper extends BaseMapperPlus<SysPostMapper, SysPost, Sy
      * @param userName 用户名
      * @return 结果
      */
-    List<SysPost> selectPostsByUserName(String userName);
+    List<SysPostVo> selectPostsByUserName(String userName);
 
     /**
      * 查询岗位信息列表
@@ -34,5 +36,5 @@ public interface SysPostMapper extends BaseMapperPlus<SysPostMapper, SysPost, Sy
      * @param bo bo对象
      * @return {@link SysPost}
      */
-    List<SysPost> queryList(SysPost bo);
+    List<SysPostVo> queryList(SysPostBo bo);
 }

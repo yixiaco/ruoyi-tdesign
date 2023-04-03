@@ -3,7 +3,7 @@ package ${packageName}.mapper;
 import ${packageName}.domain.${ClassName};
 #if($useQuery)
 #set($query="${ClassName}Query")
-import ${packageName}.domain.dto.${ClassName}Query;
+import ${packageName}.domain.query.${ClassName}Query;
 #else
 #set($query=$ClassName)
 #end

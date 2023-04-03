@@ -65,12 +65,12 @@ public interface UserConstants {
     /**
      * 是否菜单外链（是）
      */
-    String YES_FRAME = "0";
+    Integer YES_FRAME = 0;
 
     /**
      * 是否菜单外链（否）
      */
-    String NO_FRAME = "1";
+    Integer NO_FRAME = 1;
 
     /**
      * 菜单正常状态

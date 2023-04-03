@@ -3,6 +3,8 @@ package com.ruoyi.system.service;
 import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.system.domain.SysDept;
+import com.ruoyi.system.domain.bo.SysDeptBo;
+import com.ruoyi.system.domain.vo.SysDeptVo;
 
 import java.util.List;
 
@@ -18,7 +20,7 @@ public interface ISysDeptService extends IService<SysDept> {
      * @param dept 部门信息
      * @return 部门信息集合
      */
-    List<SysDept> selectDeptList(SysDept dept);
+    List<SysDeptVo> selectDeptList(SysDeptBo dept);
 
     /**
      * 查询部门树结构信息
@@ -50,7 +52,7 @@ public interface ISysDeptService extends IService<SysDept> {
      * @param deptId 部门ID
      * @return 部门信息
      */
-    SysDept selectDeptById(Long deptId);
+    SysDeptVo selectDeptById(Long deptId);
 
     /**
      * 根据ID查询所有子部门数（正常状态）
@@ -82,7 +84,7 @@ public interface ISysDeptService extends IService<SysDept> {
      * @param dept 部门信息
      * @return 结果
      */
-    String checkDeptNameUnique(SysDept dept);
+    String checkDeptNameUnique(SysDeptBo dept);
 
     /**
      * 校验部门是否有数据权限
@@ -94,18 +96,18 @@ public interface ISysDeptService extends IService<SysDept> {
     /**
      * 新增保存部门信息
      *
-     * @param dept 部门信息
+     * @param bo 部门信息
      * @return 结果
      */
-    int insertDept(SysDept dept);
+    int insertDept(SysDeptBo bo);
 
     /**
      * 修改保存部门信息
      *
-     * @param dept 部门信息
+     * @param bo 部门信息
      * @return 结果
      */
-    int updateDept(SysDept dept);
+    int updateDept(SysDeptBo bo);
 
     /**
      * 删除部门管理信息

@@ -8,6 +8,8 @@ import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.system.domain.SysNotice;
 import com.ruoyi.system.domain.bo.SysNoticeBo;
+import com.ruoyi.system.domain.vo.SysNoticeVo;
+import com.ruoyi.system.domain.bo.SysNoticeBo;
 import com.ruoyi.system.domain.dto.SysNoticeQuery;
 import com.ruoyi.system.domain.vo.SysNoticeVo;
 import com.ruoyi.system.service.ISysNoticeService;
@@ -44,7 +46,7 @@ public class SysNoticeController extends BaseController {
      */
     @SaCheckPermission("system:notice:query")
     @GetMapping(value = "/{noticeId}")
-    public R<SysNotice> getInfo(@PathVariable Long noticeId) {
+    public R<SysNoticeVo> getInfo(@PathVariable Long noticeId) {
         return R.ok(noticeService.selectNoticeById(noticeId));
     }
 

@@ -1,7 +1,9 @@
 package com.ruoyi.system.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.constant.UserConstants;
 import com.ruoyi.common.mybatis.core.page.PageQuery;
@@ -9,6 +11,8 @@ import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.common.core.exception.ServiceException;
 import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.SysUserPost;
+import com.ruoyi.system.domain.bo.SysPostBo;
+import com.ruoyi.system.domain.vo.SysPostVo;
 import com.ruoyi.system.mapper.SysPostMapper;
 import com.ruoyi.system.mapper.SysUserPostMapper;
 import com.ruoyi.system.service.ISysPostService;
@@ -30,7 +34,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     private SysUserPostMapper userPostMapper;
 
     @Override
-    public TableDataInfo<SysPost> selectPagePostList(SysPost post) {
+    public TableDataInfo<SysPostVo> selectPagePostList(SysPostBo post) {
         return PageQuery.of(() -> baseMapper.queryList(post));
     }
 
@@ -41,7 +45,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      * @return 岗位信息集合
      */
     @Override
-    public List<SysPost> selectPostList(SysPost post) {
+    public List<SysPostVo> selectPostList(SysPostBo post) {
         return baseMapper.queryList(post);
     }
 
@@ -51,8 +55,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      * @return 岗位列表
      */
     @Override
-    public List<SysPost> selectPostAll() {
-        return baseMapper.selectList();
+    public List<SysPostVo> selectPostAll() {
+        return baseMapper.selectVoList(new QueryWrapper<>());
     }
 
     /**
@@ -62,8 +66,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      * @return 角色对象信息
      */
     @Override
-    public SysPost selectPostById(Long postId) {
-        return baseMapper.selectById(postId);
+    public SysPostVo selectPostById(Long postId) {
+        return baseMapper.selectVoById(postId);
     }
 
     /**
@@ -84,7 +88,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      * @return 结果
      */
     @Override
-    public String checkPostNameUnique(SysPost post) {
+    public String checkPostNameUnique(SysPostBo post) {
         boolean exist = baseMapper.exists(new LambdaQueryWrapper<SysPost>()
             .eq(SysPost::getPostName, post.getPostName())
             .ne(ObjectUtil.isNotNull(post.getPostId()), SysPost::getPostId, post.getPostId()));
@@ -101,7 +105,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      * @return 结果
      */
     @Override
-    public String checkPostCodeUnique(SysPost post) {
+    public String checkPostCodeUnique(SysPostBo post) {
         boolean exist = baseMapper.exists(new LambdaQueryWrapper<SysPost>()
             .eq(SysPost::getPostCode, post.getPostCode())
             .ne(ObjectUtil.isNotNull(post.getPostId()), SysPost::getPostId, post.getPostId()));
@@ -142,7 +146,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     @Override
     public int deletePostByIds(Long[] postIds) {
         for (Long postId : postIds) {
-            SysPost post = selectPostById(postId);
+            SysPost post = baseMapper.selectById(postId);
             if (countUserPostById(postId) > 0) {
                 throw new ServiceException(String.format("%1$s已分配,不能删除", post.getPostName()));
             }
@@ -153,22 +157,24 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     /**
      * 新增保存岗位信息
      *
-     * @param post 岗位信息
+     * @param bo 岗位信息
      * @return 结果
      */
     @Override
-    public int insertPost(SysPost post) {
+    public int insertPost(SysPostBo bo) {
+        SysPost post = BeanUtil.toBean(bo, SysPost.class);
         return baseMapper.insert(post);
     }
 
     /**
      * 修改保存岗位信息
      *
-     * @param post 岗位信息
+     * @param bo 岗位信息
      * @return 结果
      */
     @Override
-    public int updatePost(SysPost post) {
+    public int updatePost(SysPostBo bo) {
+        SysPost post = BeanUtil.toBean(bo, SysPost.class);
         return baseMapper.updateById(post);
     }
 }

@@ -1,10 +1,10 @@
 import { request } from '@/utils/request';
-import { SysPost } from '@/api/system/model/postModel';
+import { SysPostBo, SysPostVo } from '@/api/system/model/postModel';
 import { R, TableDataInfo } from '@/api/model/resultModel';
 
 // 查询岗位列表
-export function listPost(query: SysPost) {
-  return request.get<TableDataInfo<SysPost>>({
+export function listPost(query: SysPostBo) {
+  return request.get<TableDataInfo<SysPostVo>>({
     url: '/system/post/list',
     params: query,
   });
@@ -12,13 +12,13 @@ export function listPost(query: SysPost) {
 
 // 查询岗位详细
 export function getPost(postId: number) {
-  return request.get<R<SysPost>>({
+  return request.get<R<SysPostVo>>({
     url: `/system/post/${postId}`,
   });
 }
 
 // 新增岗位
-export function addPost(data: SysPost) {
+export function addPost(data: SysPostBo) {
   return request.post<R<void>>({
     url: '/system/post',
     data,
@@ -26,7 +26,7 @@ export function addPost(data: SysPost) {
 }
 
 // 修改岗位
-export function updatePost(data: SysPost) {
+export function updatePost(data: SysPostBo) {
   return request.put<R<void>>({
     url: '/system/post',
     data,

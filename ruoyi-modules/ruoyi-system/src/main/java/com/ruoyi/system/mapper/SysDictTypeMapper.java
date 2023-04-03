@@ -1,7 +1,9 @@
 package com.ruoyi.system.mapper;
 
-import com.ruoyi.system.domain.SysDictType;
 import com.ruoyi.common.mybatis.core.mapper.BaseMapperPlus;
+import com.ruoyi.system.domain.SysDictType;
+import com.ruoyi.system.domain.bo.SysDictTypeBo;
+import com.ruoyi.system.domain.vo.SysDictTypeVo;
 
 import java.util.List;
 
@@ -10,7 +12,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysDictTypeMapper extends BaseMapperPlus<SysDictTypeMapper, SysDictType, SysDictType> {
+public interface SysDictTypeMapper extends BaseMapperPlus<SysDictTypeMapper, SysDictType, SysDictTypeVo> {
 
     /**
      * 查询字典类型列表
@@ -18,5 +20,5 @@ public interface SysDictTypeMapper extends BaseMapperPlus<SysDictTypeMapper, Sys
      * @param dictType
      * @return {@link SysDictType}
      */
-    List<SysDictType> queryList(SysDictType dictType);
+    List<SysDictTypeVo> queryList(SysDictTypeBo dictType);
 }

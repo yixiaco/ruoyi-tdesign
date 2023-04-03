@@ -9,6 +9,8 @@ import com.ruoyi.system.domain.SysDictType;
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.common.excel.utils.ExcelUtil;
+import com.ruoyi.system.domain.bo.SysDictTypeBo;
+import com.ruoyi.system.domain.vo.SysDictTypeVo;
 import com.ruoyi.system.service.ISysDictTypeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -35,7 +37,7 @@ public class SysDictTypeController extends BaseController {
      */
     @SaCheckPermission("system:dict:list")
     @GetMapping("/list")
-    public TableDataInfo<SysDictType> list(SysDictType dictType) {
+    public TableDataInfo<SysDictTypeVo> list(SysDictTypeBo dictType) {
         return dictTypeService.selectPageDictTypeList(dictType);
     }
 
@@ -45,9 +47,9 @@ public class SysDictTypeController extends BaseController {
     @Log(title = "字典类型", businessType = BusinessType.EXPORT)
     @SaCheckPermission("system:dict:export")
     @PostMapping("/export")
-    public void export(SysDictType dictType, HttpServletResponse response) {
-        List<SysDictType> list = dictTypeService.selectDictTypeList(dictType);
-        ExcelUtil.exportExcel(list, "字典类型", SysDictType.class, response);
+    public void export(SysDictTypeBo dictType, HttpServletResponse response) {
+        List<SysDictTypeVo> list = dictTypeService.selectDictTypeList(dictType);
+        ExcelUtil.exportExcel(list, "字典类型", SysDictTypeVo.class, response);
     }
 
     /**
@@ -57,7 +59,7 @@ public class SysDictTypeController extends BaseController {
      */
     @SaCheckPermission("system:dict:query")
     @GetMapping(value = "/{dictId}")
-    public R<SysDictType> getInfo(@PathVariable Long dictId) {
+    public R<SysDictTypeVo> getInfo(@PathVariable Long dictId) {
         return R.ok(dictTypeService.selectDictTypeById(dictId));
     }
 
@@ -67,7 +69,7 @@ public class SysDictTypeController extends BaseController {
     @SaCheckPermission("system:dict:add")
     @Log(title = "字典类型", businessType = BusinessType.INSERT)
     @PostMapping
-    public R<Void> add(@Validated @RequestBody SysDictType dict) {
+    public R<Void> add(@Validated @RequestBody SysDictTypeBo dict) {
         if (UserConstants.NOT_UNIQUE.equals(dictTypeService.checkDictTypeUnique(dict))) {
             return R.fail("新增字典'" + dict.getDictName() + "'失败，字典类型已存在");
         }
@@ -81,7 +83,7 @@ public class SysDictTypeController extends BaseController {
     @SaCheckPermission("system:dict:edit")
     @Log(title = "字典类型", businessType = BusinessType.UPDATE)
     @PutMapping
-    public R<Void> edit(@Validated @RequestBody SysDictType dict) {
+    public R<Void> edit(@Validated @RequestBody SysDictTypeBo dict) {
         if (UserConstants.NOT_UNIQUE.equals(dictTypeService.checkDictTypeUnique(dict))) {
             return R.fail("修改字典'" + dict.getDictName() + "'失败，字典类型已存在");
         }

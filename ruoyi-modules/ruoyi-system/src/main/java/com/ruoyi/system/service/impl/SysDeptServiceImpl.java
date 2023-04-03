@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.tree.Tree;
@@ -16,6 +17,8 @@ import com.ruoyi.common.core.utils.TreeBuildUtils;
 import com.ruoyi.system.domain.SysDept;
 import com.ruoyi.system.domain.SysRole;
 import com.ruoyi.system.domain.SysUser;
+import com.ruoyi.system.domain.bo.SysDeptBo;
+import com.ruoyi.system.domain.vo.SysDeptVo;
 import com.ruoyi.system.mapper.SysDeptMapper;
 import com.ruoyi.system.mapper.SysRoleMapper;
 import com.ruoyi.system.mapper.SysUserMapper;
@@ -47,7 +50,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      * @return 部门信息集合
      */
     @Override
-    public List<SysDept> selectDeptList(SysDept dept) {
+    public List<SysDeptVo> selectDeptList(SysDeptBo dept) {
         return baseMapper.queryList(dept);
     }
 
@@ -59,8 +62,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      */
     @Override
     public List<Tree<Long>> selectDeptTreeList(SysDept dept) {
-        List<SysDept> depts = this.selectDeptList(dept);
-        return buildDeptTreeSelect(depts);
+        SysDeptBo bo = BeanUtil.toBean(dept, SysDeptBo.class);
+        List<SysDeptVo> depts = this.selectDeptList(bo);
+        return buildDeptTreeSelect(BeanUtil.copyToList(depts, SysDept.class));
     }
 
     /**
@@ -100,9 +104,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      * @return 部门信息
      */
     @Override
-    public SysDept selectDeptById(Long deptId) {
-        SysDept dept = baseMapper.selectById(deptId);
-        SysDept parentDept = baseMapper.selectOne(new LambdaQueryWrapper<SysDept>()
+    public SysDeptVo selectDeptById(Long deptId) {
+        SysDeptVo dept = baseMapper.selectVoById(deptId);
+        SysDeptVo parentDept = baseMapper.selectVoOne(new LambdaQueryWrapper<SysDept>()
             .select(SysDept::getDeptName).eq(SysDept::getDeptId, dept.getParentId()));
         dept.setParentName(ObjectUtil.isNotNull(parentDept) ? parentDept.getDeptName() : null);
         return dept;
@@ -152,7 +156,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      * @return 结果
      */
     @Override
-    public String checkDeptNameUnique(SysDept dept) {
+    public String checkDeptNameUnique(SysDeptBo dept) {
         boolean exist = baseMapper.exists(new LambdaQueryWrapper<SysDept>()
             .eq(SysDept::getDeptName, dept.getDeptName())
             .eq(SysDept::getParentId, dept.getParentId())
@@ -171,9 +175,9 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @Override
     public void checkDeptDataScope(Long deptId) {
         if (!LoginHelper.isAdmin()) {
-            SysDept dept = new SysDept();
+            SysDeptBo dept = new SysDeptBo();
             dept.setDeptId(deptId);
-            List<SysDept> depts = this.selectDeptList(dept);
+            List<SysDeptVo> depts = this.selectDeptList(dept);
             if (CollUtil.isEmpty(depts)) {
                 throw new ServiceException("没有权限访问部门数据！");
             }
@@ -183,16 +187,17 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     /**
      * 新增保存部门信息
      *
-     * @param dept 部门信息
+     * @param bo 部门信息
      * @return 结果
      */
     @Override
-    public int insertDept(SysDept dept) {
-        SysDept info = baseMapper.selectById(dept.getParentId());
+    public int insertDept(SysDeptBo bo) {
+        SysDept info = baseMapper.selectById(bo.getParentId());
         // 如果父节点不为正常状态,则不允许新增子节点
         if (!UserConstants.DEPT_NORMAL.equals(info.getStatus())) {
             throw new ServiceException("部门停用，不允许新增");
         }
+        SysDept dept = BeanUtil.toBean(bo, SysDept.class);
         dept.setAncestors(info.getAncestors() + "," + dept.getParentId());
         return baseMapper.insert(dept);
     }
@@ -200,11 +205,12 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     /**
      * 修改保存部门信息
      *
-     * @param dept 部门信息
+     * @param bo 部门信息
      * @return 结果
      */
     @Override
-    public int updateDept(SysDept dept) {
+    public int updateDept(SysDeptBo bo) {
+        SysDept dept = BeanUtil.toBean(bo, SysDept.class);
         SysDept newParentDept = baseMapper.selectById(dept.getParentId());
         SysDept oldDept = baseMapper.selectById(dept.getDeptId());
         if (ObjectUtil.isNotNull(newParentDept) && ObjectUtil.isNotNull(oldDept)) {

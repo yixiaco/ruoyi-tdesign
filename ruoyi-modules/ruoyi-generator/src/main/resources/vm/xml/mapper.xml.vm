@@ -10,35 +10,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 #end
 #if($useQuery)
 #set($query="${ClassName}Query")
-#set($className = $packageName + ".domain.dto." + ${query})
+#set($className = $packageName + ".domain.query." + ${query})
 #else
 #set($query=$ClassName)
 #set($className = $packageName + ".domain." + ${query})
 #end
 
 #set($result = ${ClassName} + "Result")
+    <resultMap id="$result" autoMapping="true" type="${packageName}.domain.${ClassName}">
+    </resultMap>
 #if($useVO)
     <resultMap id="${ClassName}ResultVo" autoMapping="true" type="${packageName}.domain.vo.${ClassName}Vo">
-#foreach ($column in $columns)
-#if($column.isList == '1' || $column.isDetail == '1')
-#if($column.isPk==1)
-        <id property="${column.javaField}" column="${column.columnName}"/>
-#else
-        <result property="${column.javaField}" column="${column.columnName}"/>
-#end
-#end
-#end
     </resultMap>
 #end
-    <resultMap id="$result" autoMapping="true" type="${packageName}.domain.${ClassName}">
-#foreach ($column in $columns)
-#if($column.isPk==1)
-        <id property="${column.javaField}" column="${column.columnName}"/>
-#else
-        <result property="${column.javaField}" column="${column.columnName}"/>
-#end
-#end
-    </resultMap>
 
     <sql id="select${vo}">
         select#foreach($column in $columns) ${dbName}.#if($GenUtil.isMysqlKeyword($column.columnName))`$column.columnName`#else$column.columnName#end#if($foreach.hasNext),#end#end from $tableName $dbName

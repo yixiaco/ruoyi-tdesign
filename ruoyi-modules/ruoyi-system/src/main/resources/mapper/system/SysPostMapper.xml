@@ -5,16 +5,8 @@
 <mapper namespace="com.ruoyi.system.mapper.SysPostMapper">
 
     <resultMap id="SysPostResult" autoMapping="true" type="com.ruoyi.system.domain.SysPost">
-        <id property="postId" column="post_id"/>
-        <result property="postCode" column="post_code"/>
-        <result property="postName" column="post_name"/>
-        <result property="postSort" column="post_sort"/>
-        <result property="status" column="status"/>
-        <result property="createBy" column="create_by"/>
-        <result property="createTime" column="create_time"/>
-        <result property="updateBy" column="update_by"/>
-        <result property="updateTime" column="update_time"/>
-        <result property="remark" column="remark"/>
+    </resultMap>
+    <resultMap id="SysPostResultVo" autoMapping="true" type="com.ruoyi.system.domain.vo.SysPostVo">
     </resultMap>
 
     <select id="selectPostListByUserId" parameterType="Long" resultType="Long">
@@ -25,7 +17,7 @@
         where u.user_id = #{userId}
     </select>
 
-    <select id="selectPostsByUserName" parameterType="String" resultMap="SysPostResult">
+    <select id="selectPostsByUserName" parameterType="String" resultMap="SysPostResultVo">
         select p.post_id, p.post_name, p.post_code
         from sys_post p
                  left join sys_user_post up on up.post_id = p.post_id
@@ -36,7 +28,7 @@
     <sql id="selectSysPostVo">
         select sp.post_id, sp.post_code, sp.post_name, sp.post_sort, sp.`status`, sp.create_by, sp.create_time, sp.update_by, sp.update_time, sp.remark from sys_post sp
     </sql>
-    <select id="queryList" parameterType="com.ruoyi.system.domain.SysPost" resultMap="SysPostResult">
+    <select id="queryList" parameterType="com.ruoyi.system.domain.bo.SysPostBo" resultMap="SysPostResultVo">
         <include refid="selectSysPostVo"/>
         <where>
             <if test="postCode != null and postCode != ''"> and sp.post_code like concat('%', #{postCode}, '%')</if>

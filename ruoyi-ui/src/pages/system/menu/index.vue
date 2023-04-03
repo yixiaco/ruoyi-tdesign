@@ -152,8 +152,8 @@
                   </span>
                 </template>
                 <t-radio-group v-model="form.isFrame">
-                  <t-radio value="0">是</t-radio>
-                  <t-radio value="1">否</t-radio>
+                  <t-radio :value="0">是</t-radio>
+                  <t-radio :value="1">否</t-radio>
                 </t-radio-group>
               </t-form-item>
             </t-col>
@@ -229,8 +229,8 @@
                   </span>
                 </template>
                 <t-radio-group v-model="form.isCache">
-                  <t-radio value="0">缓存</t-radio>
-                  <t-radio value="1">不缓存</t-radio>
+                  <t-radio :value="0">缓存</t-radio>
+                  <t-radio :value="1">不缓存</t-radio>
                 </t-radio-group>
               </t-form-item>
             </t-col>
@@ -294,7 +294,7 @@ import { getCurrentInstance, ref } from 'vue';
 import { EnhancedTableInstanceFunctions, FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { addMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu';
 import IconSelect from '@/components/icon-select/index.vue';
-import { SysMenu } from '@/api/system/model/menuModel';
+import { SysMenu, SysMenuBo, SysMenuVo } from '@/api/system/model/menuModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_show_hide, sys_normal_disable } = proxy.useDict('sys_show_hide', 'sys_normal_disable');
@@ -311,18 +311,6 @@ const isExpandAll = ref(false);
 const tableRef = ref<EnhancedTableInstanceFunctions>(null);
 const menuRef = ref<FormInstanceFunctions>(null);
 
-const formInitValue = {
-  menuId: undefined,
-  parentId: 0,
-  menuName: undefined,
-  icon: undefined,
-  menuType: 'M',
-  orderNum: 0,
-  isFrame: '1',
-  isCache: '0',
-  visible: '0',
-  status: '0',
-};
 const rules = ref<Record<string, Array<FormRule>>>({
   menuName: [{ required: true, message: '菜单名称不能为空', trigger: 'blur' }],
   orderNum: [{ required: true, message: '菜单顺序不能为空', trigger: 'blur' }],
@@ -340,7 +328,18 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 
-const form = ref<SysMenu>({ ...formInitValue });
+const form = ref<SysMenu & SysMenuBo & SysMenuVo>({
+  menuId: undefined,
+  parentId: 0,
+  menuName: undefined,
+  icon: undefined,
+  menuType: 'M',
+  orderNum: 0,
+  isFrame: 1,
+  isCache: 0,
+  visible: '0',
+  status: '0',
+});
 
 const queryParams = ref<SysMenu>({
   menuName: undefined,
@@ -368,7 +367,18 @@ function getTreeselect() {
 }
 /** 表单重置 */
 function reset() {
-  form.value = { ...formInitValue };
+  form.value = {
+    menuId: undefined,
+    parentId: 0,
+    menuName: undefined,
+    icon: undefined,
+    menuType: 'M',
+    orderNum: 0,
+    isFrame: 1,
+    isCache: 0,
+    visible: '0',
+    status: '0',
+  };
   proxy.resetForm('menuRef');
 }
 /** 搜索按钮操作 */

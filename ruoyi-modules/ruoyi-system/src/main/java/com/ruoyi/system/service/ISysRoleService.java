@@ -1,9 +1,11 @@
 package com.ruoyi.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ruoyi.system.domain.SysRole;
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
+import com.ruoyi.system.domain.SysRole;
 import com.ruoyi.system.domain.SysUserRole;
+import com.ruoyi.system.domain.bo.SysRoleBo;
+import com.ruoyi.system.domain.vo.SysRoleVo;
 
 import java.util.List;
 import java.util.Set;
@@ -21,7 +23,7 @@ public interface ISysRoleService extends IService<SysRole> {
      * @param role 角色信息
      * @return 角色数据集合信息
      */
-    TableDataInfo<SysRole> selectPageRoleList(SysRole role);
+    TableDataInfo<SysRoleVo> selectPageRoleList(SysRoleBo role);
 
     /**
      * 根据条件分页查询角色数据
@@ -29,7 +31,7 @@ public interface ISysRoleService extends IService<SysRole> {
      * @param role 角色信息
      * @return 角色数据集合信息
      */
-    List<SysRole> selectRoleList(SysRole role);
+    List<SysRoleVo> selectRoleList(SysRoleBo role);
 
     /**
      * 根据用户ID查询角色列表
@@ -37,7 +39,7 @@ public interface ISysRoleService extends IService<SysRole> {
      * @param userId 用户ID
      * @return 角色列表
      */
-    List<SysRole> selectRolesByUserId(Long userId);
+    List<SysRoleVo> selectRolesByUserId(Long userId);
 
     /**
      * 根据用户ID查询角色权限
@@ -52,7 +54,7 @@ public interface ISysRoleService extends IService<SysRole> {
      *
      * @return 角色列表
      */
-    List<SysRole> selectRoleAll();
+    List<SysRoleVo> selectRoleAll();
 
     /**
      * 根据用户ID获取角色选择框列表
@@ -68,7 +70,7 @@ public interface ISysRoleService extends IService<SysRole> {
      * @param roleId 角色ID
      * @return 角色对象信息
      */
-    SysRole selectRoleById(Long roleId);
+    SysRoleVo selectRoleById(Long roleId);
 
     /**
      * 校验角色名称是否唯一
@@ -76,7 +78,7 @@ public interface ISysRoleService extends IService<SysRole> {
      * @param role 角色信息
      * @return 结果
      */
-    String checkRoleNameUnique(SysRole role);
+    String checkRoleNameUnique(SysRoleBo role);
 
     /**
      * 校验角色权限是否唯一
@@ -84,14 +86,14 @@ public interface ISysRoleService extends IService<SysRole> {
      * @param role 角色信息
      * @return 结果
      */
-    String checkRoleKeyUnique(SysRole role);
+    String checkRoleKeyUnique(SysRoleBo role);
 
     /**
      * 校验角色是否允许操作
      *
      * @param role 角色信息
      */
-    void checkRoleAllowed(SysRole role);
+    void checkRoleAllowed(SysRoleBo role);
 
     /**
      * 校验角色是否有数据权限
@@ -111,34 +113,34 @@ public interface ISysRoleService extends IService<SysRole> {
     /**
      * 新增保存角色信息
      *
-     * @param role 角色信息
+     * @param bo 角色信息
      * @return 结果
      */
-    int insertRole(SysRole role);
+    int insertRole(SysRoleBo bo);
 
     /**
      * 修改保存角色信息
      *
-     * @param role 角色信息
+     * @param bo 角色信息
      * @return 结果
      */
-    int updateRole(SysRole role);
+    int updateRole(SysRoleBo bo);
 
     /**
      * 修改角色状态
      *
-     * @param role 角色信息
+     * @param bo 角色信息
      * @return 结果
      */
-    int updateRoleStatus(SysRole role);
+    int updateRoleStatus(SysRoleBo bo);
 
     /**
      * 修改数据权限信息
      *
-     * @param role 角色信息
+     * @param bo 角色信息
      * @return 结果
      */
-    int authDataScope(SysRole role);
+    int authDataScope(SysRoleBo bo);
 
     /**
      * 通过角色ID删除角色

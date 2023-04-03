@@ -5,15 +5,6 @@
 <mapper namespace="com.ruoyi.system.mapper.SysLogininforMapper">
 
     <resultMap id="SysLogininforResult" autoMapping="true" type="com.ruoyi.system.domain.SysLogininfor">
-        <id property="infoId" column="info_id"/>
-        <result property="userName" column="user_name"/>
-        <result property="ipaddr" column="ipaddr"/>
-        <result property="loginLocation" column="login_location"/>
-        <result property="browser" column="browser"/>
-        <result property="os" column="os"/>
-        <result property="status" column="status"/>
-        <result property="msg" column="msg"/>
-        <result property="loginTime" column="login_time"/>
     </resultMap>
 
     <sql id="selectSysLogininforVo">

@@ -1,9 +1,9 @@
 import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysConfig } from '@/api/system/model/configModel';
+import { SysConfig, SysConfigBo } from '@/api/system/model/configModel';
 
 // 查询参数列表
-export function listConfig(query) {
+export function listConfig(query: SysConfigBo) {
   return request.get<TableDataInfo<SysConfig>>({
     url: '/system/config/list',
     params: query,
@@ -11,21 +11,21 @@ export function listConfig(query) {
 }
 
 // 查询参数详细
-export function getConfig(configId) {
+export function getConfig(configId: number) {
   return request.get<R<SysConfig>>({
     url: `/system/config/${configId}`,
   });
 }
 
 // 根据参数键名查询参数值
-export function getConfigKey(configKey) {
+export function getConfigKey(configKey: string) {
   return request.get<R<string>>({
     url: `/system/config/configKey/${configKey}`,
   });
 }
 
 // 新增参数配置
-export function addConfig(data) {
+export function addConfig(data: SysConfigBo) {
   return request.post<R<void>>({
     url: '/system/config',
     data,
@@ -33,7 +33,7 @@ export function addConfig(data) {
 }
 
 // 修改参数配置
-export function updateConfig(data) {
+export function updateConfig(data: SysConfigBo) {
   return request.put<R<void>>({
     url: '/system/config',
     data,
@@ -41,7 +41,7 @@ export function updateConfig(data) {
 }
 
 // 修改参数配置
-export function updateConfigByKey(key, value) {
+export function updateConfigByKey(key: string, value: string) {
   return request.put<R<void>>({
     url: '/system/config/updateByKey',
     data: {
@@ -52,7 +52,7 @@ export function updateConfigByKey(key, value) {
 }
 
 // 删除参数配置
-export function delConfig(configId) {
+export function delConfig(configId: number) {
   return request.delete<R<void>>({
     url: `/system/config/${configId}`,
   });
@@ -74,7 +74,7 @@ export function getConfigByKeys(keys: string) {
 }
 
 // 修改BBS网站参数配置
-export function updateConfigs(configs) {
+export function updateConfigs(configs: Record<string, string>) {
   return request.put<R<void>>({
     url: '/system/config/updateConfigs',
     data: configs,

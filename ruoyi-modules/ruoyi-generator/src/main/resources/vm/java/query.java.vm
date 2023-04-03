@@ -1,4 +1,4 @@
-package ${packageName}.domain.dto;
+package ${packageName}.domain.query;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

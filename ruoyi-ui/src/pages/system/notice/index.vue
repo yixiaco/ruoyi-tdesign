@@ -179,12 +179,12 @@ import { computed, getCurrentInstance, ref } from 'vue';
 import { AddIcon, DeleteIcon, EditIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api/system/notice';
-import { SysNotice, SysNoticeBo, SysNoticeQuery, SysNoticeVo } from '@/api/system/model/noticeModel';
+import { SysNoticeBo, SysNoticeQuery, SysNoticeVo } from '@/api/system/model/noticeModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_notice_status, sys_notice_type } = proxy.useDict('sys_notice_status', 'sys_notice_type');
 
-const noticeList = ref<SysNotice[]>([]);
+const noticeList = ref<SysNoticeVo[]>([]);
 const open = ref(false);
 const loading = ref(false);
 const eLoading = ref(false);

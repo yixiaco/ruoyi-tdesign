@@ -1,10 +1,10 @@
 import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysNotice, SysNoticeBo, SysNoticeQuery } from '@/api/system/model/noticeModel';
+import { SysNoticeBo, SysNoticeQuery, SysNoticeVo } from '@/api/system/model/noticeModel';
 
 // 查询公告列表
 export function listNotice(query: SysNoticeQuery) {
-  return request.get<TableDataInfo<SysNotice>>({
+  return request.get<TableDataInfo<SysNoticeVo>>({
     url: '/system/notice/list',
     params: query,
   });
@@ -12,7 +12,7 @@ export function listNotice(query: SysNoticeQuery) {
 
 // 查询公告详细
 export function getNotice(noticeId: number) {
-  return request.get<R<SysNotice>>({
+  return request.get<R<SysNoticeVo>>({
     url: `/system/notice/${noticeId}`,
   });
 }

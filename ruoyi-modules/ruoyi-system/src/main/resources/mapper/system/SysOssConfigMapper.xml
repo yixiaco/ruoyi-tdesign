@@ -5,28 +5,14 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="com.ruoyi.system.mapper.SysOssConfigMapper">
 
     <resultMap id="SysOssConfigResult" autoMapping="true" type="com.ruoyi.system.domain.SysOssConfig">
-        <result property="ossConfigId" column="oss_config_id"/>
-        <result property="configKey" column="config_key"/>
-        <result property="accessKey" column="access_key"/>
-        <result property="secretKey" column="secret_key"/>
-        <result property="bucketName" column="bucket_name"/>
-        <result property="prefix" column="prefix"/>
-        <result property="endpoint" column="endpoint"/>
-        <result property="isHttps" column="is_https"/>
-        <result property="region" column="region"/>
-        <result property="status" column="status"/>
-        <result property="ext1" column="ext1"/>
-        <result property="createBy" column="create_by"/>
-        <result property="createTime" column="create_time"/>
-        <result property="updateBy" column="update_by"/>
-        <result property="updateTime" column="update_time"/>
-        <result property="remark" column="remark"/>
+    </resultMap>
+    <resultMap id="SysOssConfigResultVo" autoMapping="true" type="com.ruoyi.system.domain.vo.SysOssConfigVo">
     </resultMap>
 
     <sql id="selectSysOssConfigVo">
         select soc.oss_config_id, soc.config_key, soc.access_key, soc.secret_key, soc.bucket_name, soc.prefix, soc.endpoint, soc.domain, soc.is_https, soc.region, soc.access_policy, soc.`status`, soc.ext1, soc.create_by, soc.create_time, soc.update_by, soc.update_time, soc.remark from sys_oss_config soc
     </sql>
-    <select id="queryList" parameterType="com.ruoyi.system.domain.bo.SysOssConfigBo" resultType="com.ruoyi.system.domain.vo.SysOssConfigVo">
+    <select id="queryList" parameterType="com.ruoyi.system.domain.bo.SysOssConfigBo" resultMap="SysOssConfigResultVo">
         <include refid="selectSysOssConfigVo"/>
         <where>
             <if test="configKey != null and configKey != ''"> and soc.config_key = #{configKey}</if>

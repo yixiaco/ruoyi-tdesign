@@ -1,96 +1,99 @@
 import { BaseEntity, TreeModel } from '@/api/model/resultModel';
 
+/**
+ * 角色信息业务对象
+ */
+export interface SysRoleBo extends BaseEntity {
+  /** 角色ID */
+  roleId?: number;
+  /** 角色名称 */
+  roleName?: string;
+  /** 角色权限字符串 */
+  roleKey?: string;
+  /** 显示顺序 */
+  roleSort?: number;
+  /** 数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限） */
+  dataScope?: string;
+  /** 菜单树选择项是否关联显示 */
+  menuCheckStrictly?: boolean;
+  /** 部门树选择项是否关联显示 */
+  deptCheckStrictly?: boolean;
+  /** 角色状态（0正常 1停用） */
+  status?: string;
+  /** 备注 */
+  remark?: string;
+  /** 菜单组 */
+  menuIds?: Array<number>;
+  /** 部门组（数据权限） */
+  deptIds?: Array<number>;
+  /** 角色菜单权限 */
+  permissions?: Array<string>;
+}
 // 系统角色
 export interface SysRole extends BaseEntity {
-  /**
-   * 角色ID
-   */
+  /** 角色ID */
   roleId?: number;
-
-  /**
-   * 角色名称
-   */
+  /** 角色名称 */
   roleName?: string;
-
-  /**
-   * 角色权限
-   */
+  /** 角色权限 */
   roleKey?: string;
-
-  /**
-   * 角色排序
-   */
+  /** 角色排序 */
   roleSort?: number;
-
-  /**
-   * 数据范围（1：所有数据权限；2：自定义数据权限；3：本部门数据权限；4：本部门及以下数据权限；5：仅本人数据权限）
-   */
+  /** 数据范围（1：所有数据权限；2：自定义数据权限；3：本部门数据权限；4：本部门及以下数据权限；5：仅本人数据权限） */
   dataScope?: string;
-
-  /**
-   * 菜单树选择项是否关联显示（ 0：父子不互相关联显示 1：父子互相关联显示）
-   */
+  /** 菜单树选择项是否关联显示（ 0：父子不互相关联显示 1：父子互相关联显示） */
   menuCheckStrictly?: boolean;
-
-  /**
-   * 部门树选择项是否关联显示（0：父子不互相关联显示 1：父子互相关联显示 ）
-   */
+  /** 部门树选择项是否关联显示（0：父子不互相关联显示 1：父子互相关联显示 ） */
   deptCheckStrictly?: boolean;
-
-  /**
-   * 角色状态（0正常 1停用）
-   */
+  /** 角色状态（0正常 1停用） */
   status?: string;
-
-  /**
-   * 删除标志（0代表存在 2代表删除）
-   */
+  /** 删除标志（0代表存在 2代表删除） */
   delFlag?: string;
-
-  /**
-   * 备注
-   */
+  /** 备注 */
   remark?: string;
-
-  /**
-   * 用户是否存在此角色标识 默认不存在
-   */
+  /** 用户是否存在此角色标识 默认不存在 */
   flag?: boolean;
-
-  /**
-   * 菜单组
-   */
+  /** 菜单组 */
   menuIds?: Array<number>;
-
-  /**
-   * 部门组（数据权限）
-   */
+  /** 部门组（数据权限） */
   deptIds?: Array<number>;
-
-  /**
-   * 角色菜单权限
-   */
+  /** 角色菜单权限 */
   permissions?: Array<string>;
-
-  /**
-   * 创建者
-   */
+  /** 创建者 */
   createBy?: string;
-
-  /**
-   * 创建时间
-   */
+  /** 创建时间 */
   createTime?: object;
-
-  /**
-   * 更新者
-   */
+  /** 更新者 */
   updateBy?: string;
-
-  /**
-   * 更新时间
-   */
+  /** 更新时间 */
   updateTime?: object;
+}
+/**
+ * 角色信息视图对象
+ */
+export interface SysRoleVo {
+  /** 角色ID */
+  roleId?: number;
+  /** 角色名称 */
+  roleName?: string;
+  /** 角色权限字符串 */
+  roleKey?: string;
+  /** 显示顺序 */
+  roleSort?: number;
+  /** 数据范围（1：全部数据权限 2：自定数据权限 3：本部门数据权限 4：本部门及以下数据权限） */
+  dataScope?: string;
+  /** 菜单树选择项是否关联显示 */
+  menuCheckStrictly?: boolean;
+  /** 部门树选择项是否关联显示 */
+  deptCheckStrictly?: boolean;
+  /** 角色状态（0正常 1停用） */
+  status?: string;
+  /** 创建时间 */
+  createTime?: any;
+  /** 备注 */
+  remark?: string;
+  /** 角色菜单权限 */
+  permissions?: Array<string>;
 }
 
 /**

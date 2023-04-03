@@ -202,7 +202,7 @@ public class VelocityUtils {
             fileName = StringUtils.format("{}/domain/{}.java", javaPath, className);
         }
         if (template.contains("query.java.vm")) {
-            fileName = StringUtils.format("{}/domain/dto/{}Query.java", javaPath, className);
+            fileName = StringUtils.format("{}/domain/query/{}Query.java", javaPath, className);
         }
         if (template.contains("vo.java.vm")) {
             fileName = StringUtils.format("{}/domain/vo/{}Vo.java", javaPath, className);

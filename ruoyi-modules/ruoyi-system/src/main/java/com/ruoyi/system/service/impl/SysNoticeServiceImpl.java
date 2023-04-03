@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.utils.BeanCopyUtils;
 import com.ruoyi.common.mybatis.core.page.PageQuery;
@@ -36,8 +37,8 @@ public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice
      * @return 公告信息
      */
     @Override
-    public SysNotice selectNoticeById(Long noticeId) {
-        return baseMapper.selectById(noticeId);
+    public SysNoticeVo selectNoticeById(Long noticeId) {
+        return baseMapper.selectVoById(noticeId);
     }
 
     /**
@@ -54,25 +55,25 @@ public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice
     /**
      * 新增公告
      *
-     * @param notice 公告信息
+     * @param bo 公告信息
      * @return 结果
      */
     @Override
-    public Boolean insertNotice(SysNoticeBo notice) {
-        SysNotice add = BeanCopyUtils.toBean(notice, SysNotice.class);
-        return save(add);
+    public Boolean insertNotice(SysNoticeBo bo) {
+        SysNotice notice = BeanUtil.toBean(bo, SysNotice.class);
+        return save(notice);
     }
 
     /**
      * 修改公告
      *
-     * @param notice 公告信息
+     * @param bo 公告信息
      * @return 结果
      */
     @Override
-    public Boolean updateNotice(SysNoticeBo notice) {
-        SysNotice update = BeanCopyUtils.toBean(notice, SysNotice.class);
-        return updateById(update);
+    public Boolean updateNotice(SysNoticeBo bo) {
+        SysNotice notice = BeanCopyUtils.toBean(bo, SysNotice.class);
+        return updateById(notice);
     }
 
     /**

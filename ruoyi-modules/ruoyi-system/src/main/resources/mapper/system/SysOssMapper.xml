@@ -3,28 +3,8 @@
 <mapper namespace="com.ruoyi.system.mapper.SysOssMapper">
 
     <resultMap id="SysOssResult" autoMapping="true" type="com.ruoyi.system.domain.SysOss">
-        <result property="ossId" column="oss_id"/>
-        <result property="fileName" column="file_name"/>
-        <result property="fileSuffix" column="file_suffix"/>
-        <result property="url" column="url"/>
-        <result property="size" column="size"/>
-        <result property="createTime" column="create_time"/>
-        <result property="createBy" column="create_by"/>
-        <result property="updateTime" column="update_time"/>
-        <result property="updateBy" column="update_by"/>
-        <result property="service" column="service"/>
     </resultMap>
     <resultMap id="SysOssResultVo" autoMapping="true" type="com.ruoyi.system.domain.vo.SysOssVo">
-        <id property="ossId" column="oss_id"/>
-        <result property="fileName" column="file_name"/>
-        <result property="originalName" column="original_name"/>
-        <result property="fileSuffix" column="file_suffix"/>
-        <result property="url" column="url"/>
-        <result property="size" column="size"/>
-        <result property="createTime" column="create_time"/>
-        <result property="createBy" column="create_by"/>
-        <result property="service" column="service"/>
-        <result property="createByName" column="create_by_name"/>
     </resultMap>
 
     <sql id="selectSysOssVo">
