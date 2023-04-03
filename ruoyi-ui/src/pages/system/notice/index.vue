@@ -208,7 +208,8 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `公告标题`, colKey: 'noticeTitle', align: 'center', ellipsis: true },
   { title: `公告类型`, colKey: 'noticeType', align: 'center', width: 100 },
   { title: `状态`, colKey: 'status', align: 'center', width: 100 },
-  { title: `创建者`, colKey: 'createByName', align: 'center', width: 100 },
+  { title: `创建人`, colKey: 'createByName', align: 'center', width: 100 },
+  { title: `更新人`, colKey: 'updateByName', align: 'center', width: 100 },
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
