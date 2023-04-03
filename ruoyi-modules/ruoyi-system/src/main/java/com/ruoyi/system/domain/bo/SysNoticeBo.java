@@ -54,4 +54,9 @@ public class SysNoticeBo extends BaseEntity {
      */
     private String remark;
 
+    /**
+     * 创建人名称
+     */
+    private String createByName;
+
 }
