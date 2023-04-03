@@ -10,6 +10,7 @@ import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.common.satoken.utils.LoginHelper;
 import com.ruoyi.common.web.core.BaseController;
 import com.ruoyi.system.domain.bo.SysMenuBo;
+import com.ruoyi.system.domain.vo.MenuTreeSelectVo;
 import com.ruoyi.system.domain.vo.SysMenuVo;
 import com.ruoyi.system.service.ISysMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,7 +25,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
-import java.util.Map;
 
 /**
  * 菜单信息
@@ -75,12 +75,12 @@ public class SysMenuController extends BaseController {
      * @param roleId 角色ID
      */
     @GetMapping(value = "/roleMenuTreeselect/{roleId}")
-    public R<Map<String, Object>> roleMenuTreeselect(@PathVariable("roleId") Long roleId) {
+    public R<MenuTreeSelectVo> roleMenuTreeselect(@PathVariable("roleId") Long roleId) {
         List<SysMenuVo> menus = menuService.selectMenuList(LoginHelper.getUserId());
-        return R.ok(Map.of(
-                "checkedKeys", menuService.selectMenuListByRoleId(roleId),
-                "menus", menuService.buildMenuTreeSelect(menus)
-        ));
+        MenuTreeSelectVo selectVo = new MenuTreeSelectVo();
+        selectVo.setCheckedKeys(menuService.selectMenuListByRoleId(roleId));
+        selectVo.setMenus(menuService.buildMenuTreeSelect(menus));
+        return R.ok(selectVo);
     }
 
     /**
