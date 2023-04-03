@@ -1,4 +1,4 @@
-import { SysUser } from '@/api/system/model/userModel';
+import { SysUserVo } from '@/api/system/model/userModel';
 
 // 登录返回
 export interface LoginModel {
@@ -7,7 +7,7 @@ export interface LoginModel {
 
 // 登录用户信息
 export interface UserInfo {
-  user: SysUser;
+  user: SysUserVo;
   roles: Array<string>;
   permissions: Array<string>;
 }

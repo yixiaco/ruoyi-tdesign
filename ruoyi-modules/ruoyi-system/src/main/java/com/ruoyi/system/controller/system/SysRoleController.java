@@ -16,8 +16,10 @@ import com.ruoyi.system.domain.SysDept;
 import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.system.domain.SysUserRole;
 import com.ruoyi.system.domain.bo.SysRoleBo;
+import com.ruoyi.system.domain.bo.SysUserBo;
 import com.ruoyi.system.domain.vo.DeptTreeSelectVo;
 import com.ruoyi.system.domain.vo.SysRoleVo;
+import com.ruoyi.system.domain.vo.SysUserVo;
 import com.ruoyi.system.service.ISysDeptService;
 import com.ruoyi.system.service.ISysRoleService;
 import com.ruoyi.system.service.ISysUserService;
@@ -120,9 +122,9 @@ public class SysRoleController extends BaseController {
         if (roleService.updateRole(role) > 0) {
             // 更新缓存用户权限
             LoginUser loginUser = LoginHelper.getLoginUser();
-            SysUser sysUser = userService.selectUserById(loginUser.getUserId());
+            SysUserVo sysUser = userService.selectUserById(loginUser.getUserId());
             if (ObjectUtil.isNotNull(sysUser) && !LoginHelper.isAdmin()) {
-                loginUser.setMenuPermission(permissionService.getMenuPermission(sysUser));
+                loginUser.setMenuPermission(permissionService.getMenuPermission(sysUser.getUserId(), sysUser.isAdmin()));
                 LoginHelper.setLoginUser(loginUser);
             }
             return R.ok();
@@ -180,7 +182,7 @@ public class SysRoleController extends BaseController {
      */
     @SaCheckPermission("system:role:list")
     @GetMapping("/authUser/allocatedList")
-    public TableDataInfo<SysUser> allocatedList(SysUser user) {
+    public TableDataInfo<SysUserVo> allocatedList(SysUserBo user) {
         return userService.selectAllocatedList(user);
     }
 
@@ -189,7 +191,7 @@ public class SysRoleController extends BaseController {
      */
     @SaCheckPermission("system:role:list")
     @GetMapping("/authUser/unallocatedList")
-    public TableDataInfo<SysUser> unallocatedList(SysUser user, PageQuery pageQuery) {
+    public TableDataInfo<SysUserVo> unallocatedList(SysUserBo user, PageQuery pageQuery) {
         return userService.selectUnallocatedList(user, pageQuery);
     }
 

@@ -371,7 +371,7 @@ import {
   addUser,
   deptTreeSelect,
 } from '@/api/system/user';
-import { SysUser } from '@/api/system/model/userModel';
+import { SysUserBo, SysUserVo } from '@/api/system/model/userModel';
 
 const router = useRouter();
 const { proxy } = getCurrentInstance();
@@ -437,12 +437,12 @@ const rules = ref<Record<string, Array<FormRule>>>({
   email: [{ email: true, message: '请输入正确的邮箱地址', trigger: 'change' }],
   phonenumber: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
 });
-const form = ref<SysUser>({
+const form = ref<SysUserBo & SysUserVo>({
   status: '0',
   postIds: [],
   roleIds: [],
 });
-const queryParams = ref<SysUser>({
+const queryParams = ref<SysUserBo>({
   pageNum: 1,
   pageSize: 10,
   userName: undefined,

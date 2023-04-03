@@ -92,6 +92,12 @@ export interface SysRoleVo {
   createTime?: any;
   /** 备注 */
   remark?: string;
+  /** 用户是否存在此角色标识 默认不存在 */
+  flag?: boolean;
+  /** 菜单组 */
+  menuIds?: Array<number>;
+  /** 部门组（数据权限） */
+  deptIds?: Array<number>;
   /** 角色菜单权限 */
   permissions?: Array<string>;
 }
@@ -113,5 +119,5 @@ export interface SysUserRole {
   /**
    * 角色ID
    */
-  roleId?: number;
+  roleId?: number | string;
 }

@@ -1,7 +1,7 @@
-import { SysDept, SysDeptVo } from '@/api/system/model/deptModel';
+import { SysDeptVo } from '@/api/system/model/deptModel';
 import { BaseEntity } from '@/api/model/resultModel';
-import { SysRole, SysRoleVo } from '@/api/system/model/roleModel';
-import { SysPost } from '@/api/system/model/postModel';
+import { SysRoleVo } from '@/api/system/model/roleModel';
+import { SysPostVo } from '@/api/system/model/postModel';
 
 /**
  * 用户信息业务对象
@@ -37,13 +37,18 @@ export interface SysUserBo extends BaseEntity {
   remark?: string;
   /** 创建部门 */
   createDept?: number;
+  /** 部门对象 */
+  dept?: SysDeptVo;
+  /** 角色对象 */
+  roles?: Array<SysRoleVo>;
   /** 角色组 */
-  roleIds?: number[];
+  roleIds?: Array<number>;
   /** 岗位组 */
-  postIds?: number[];
+  postIds?: Array<number>;
   /** 数据权限 当前角色ID */
-  roleId?: number;
+  roleId?: number | string;
 }
+
 // 系统用户
 export interface SysUser extends BaseEntity {
   /** 用户ID */
@@ -76,16 +81,6 @@ export interface SysUser extends BaseEntity {
   loginDate?: object;
   /** 备注 */
   remark?: string;
-  /** 部门对象 */
-  dept?: SysDept;
-  /** 角色对象 */
-  roles?: Array<SysRole>;
-  /** 角色组 */
-  roleIds?: Array<number>;
-  /** 岗位组 */
-  postIds?: Array<number>;
-  /** 数据权限 当前角色ID */
-  roleId?: number;
   /** 创建者 */
   createBy?: string;
   /** 创建时间 */
@@ -95,6 +90,7 @@ export interface SysUser extends BaseEntity {
   /** 更新时间 */
   updateTime?: object;
 }
+
 /**
  * 用户信息视图对象
  */
@@ -136,35 +132,35 @@ export interface SysUserVo {
   /** 角色对象 */
   roles?: SysRoleVo[];
   /** 角色组 */
-  roleIds: number[];
+  roleIds?: number[];
   /** 岗位组 */
-  postIds: number[];
+  postIds?: number[];
   /** 数据权限 当前角色ID */
-  roleId: number;
+  roleId?: number;
 }
 
-export interface UserProfile {
+export interface ProfileVo {
   /** 用户信息 */
-  user?: SysUser;
+  user?: SysUserVo;
   /** 用户所属角色组 */
   roleGroup?: string;
   /** 用户所属岗位组 */
   postGroup?: string;
 }
 
-export interface UserAvatarResult {
+export interface AvatarVo {
   imgUrl?: string;
 }
 
 export interface UserAuthRole {
-  user?: SysUser;
-  roles?: Array<SysRole>;
+  user?: SysUserVo;
+  roles?: Array<SysRoleVo>;
 }
 
-export interface SysUserInfo {
-  roles?: Array<SysRole>;
-  posts?: Array<SysPost>;
-  user?: SysUser;
+export interface SysUserInfoVo {
+  roles?: Array<SysRoleVo>;
+  posts?: Array<SysPostVo>;
+  user?: SysUserVo;
   postIds?: Array<number>;
   roleIds?: Array<number>;
 }

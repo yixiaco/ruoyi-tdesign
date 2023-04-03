@@ -208,11 +208,11 @@
 import { getCurrentInstance, PropType, ref, toRefs, watch } from 'vue';
 import { ChevronDownIcon, HelpCircleFilledIcon } from 'tdesign-icons-vue-next';
 import { listMenu } from '@/api/system/menu';
-import { SysMenu } from '@/api/system/model/menuModel';
+import { SysMenuVo } from '@/api/system/model/menuModel';
 import { GenTable } from '@/api/tool/model/genModel';
 
 const subColumns = ref([]);
-const menuOptions = ref<SysMenu[]>([]);
+const menuOptions = ref<SysMenuVo[]>([]);
 const { proxy } = getCurrentInstance();
 
 const props = defineProps({
@@ -225,11 +225,8 @@ const props = defineProps({
     default: null,
   },
 });
-const { info, tables } = toRefs(props);
+const { info } = toRefs(props);
 
-function subSelectChange(value) {
-  info.value.subTableFkName = '';
-}
 function tplSelectChange(value) {
   if (value !== 'sub') {
     info.value.subTableName = '';

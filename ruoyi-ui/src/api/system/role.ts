@@ -1,7 +1,7 @@
 import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
 import { DeptTreeSelect, SysRoleBo, SysRoleVo, SysUserRole } from '@/api/system/model/roleModel';
-import { SysUser } from '@/api/system/model/userModel';
+import { SysUserBo, SysUserVo } from '@/api/system/model/userModel';
 
 // 查询角色列表
 export function listRole(query: SysRoleBo) {
@@ -62,16 +62,16 @@ export function delRole(roleId: number) {
 }
 
 // 查询角色已授权用户列表
-export function allocatedUserList(query: SysUser) {
-  return request.get<TableDataInfo<SysUser>>({
+export function allocatedUserList(query: SysUserBo) {
+  return request.get<TableDataInfo<SysUserVo>>({
     url: '/system/role/authUser/allocatedList',
     params: query,
   });
 }
 
 // 查询角色未授权用户列表
-export function unallocatedUserList(query: SysUser) {
-  return request.get<TableDataInfo<SysUser>>({
+export function unallocatedUserList(query: SysUserBo) {
+  return request.get<TableDataInfo<SysUserVo>>({
     url: '/system/role/authUser/unallocatedList',
     params: query,
   });
@@ -86,7 +86,7 @@ export function authUserCancel(data: SysUserRole) {
 }
 
 // 批量取消用户授权角色
-export function authUserCancelAll(data: { roleId: number; userIds: string }) {
+export function authUserCancelAll(data: { roleId: number | string; userIds: string }) {
   return request.put<R<void>>({
     url: '/system/role/authUser/cancelAll',
     params: data,

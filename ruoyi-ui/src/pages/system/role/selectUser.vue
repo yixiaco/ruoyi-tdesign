@@ -68,7 +68,7 @@ import { computed, getCurrentInstance, reactive, ref } from 'vue';
 import { RefreshIcon, SearchIcon } from 'tdesign-icons-vue-next';
 import { PrimaryTableCol } from 'tdesign-vue-next';
 import { authUserSelectAll, unallocatedUserList } from '@/api/system/role';
-import { SysUser } from '@/api/system/model/userModel';
+import { SysUserVo } from '@/api/system/model/userModel';
 
 const props = defineProps({
   roleId: {
@@ -79,7 +79,7 @@ const props = defineProps({
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
-const userList = ref<SysUser[]>([]);
+const userList = ref<SysUserVo[]>([]);
 const visible = ref(false);
 const loading = ref(false);
 const total = ref(0);

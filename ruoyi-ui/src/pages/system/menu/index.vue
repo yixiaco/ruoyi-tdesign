@@ -294,12 +294,12 @@ import { getCurrentInstance, ref } from 'vue';
 import { EnhancedTableInstanceFunctions, FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { addMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu';
 import IconSelect from '@/components/icon-select/index.vue';
-import { SysMenu, SysMenuBo, SysMenuVo } from '@/api/system/model/menuModel';
+import { SysMenuBo, SysMenuVo } from '@/api/system/model/menuModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_show_hide, sys_normal_disable } = proxy.useDict('sys_show_hide', 'sys_normal_disable');
 
-const menuList = ref<SysMenu[]>([]);
+const menuList = ref<SysMenuVo[]>([]);
 const open = ref(false);
 const loading = ref(true);
 const eLoading = ref(true);

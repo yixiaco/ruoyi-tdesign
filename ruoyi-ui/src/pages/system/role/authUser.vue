@@ -105,7 +105,7 @@ import { AddIcon, CloseCircleIcon, CloseIcon, RefreshIcon, SearchIcon, SettingIc
 import { allocatedUserList, authUserCancel, authUserCancelAll } from '@/api/system/role';
 import { useTabsRouterStore } from '@/store';
 import SelectUser from '@/pages/system/role/selectUser.vue';
-import { SysUser } from '@/api/system/model/userModel';
+import { SysUserBo, SysUserVo } from '@/api/system/model/userModel';
 
 const tabsRouterStore = useTabsRouterStore();
 const route = useRoute();
@@ -113,7 +113,7 @@ const router = useRouter();
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
-const userList = ref<SysUser[]>([]);
+const userList = ref<SysUserVo[]>([]);
 const loading = ref(true);
 const showSearch = ref(true);
 const multiple = ref(true);
@@ -133,10 +133,10 @@ const columns = ref([
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: '180' },
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
-const queryParams = reactive<SysUser>({
+const queryParams = reactive<SysUserBo>({
   pageNum: 1,
   pageSize: 10,
-  roleId: Number(route.params.roleId),
+  roleId: route.params.roleId as string,
   userName: undefined,
   phonenumber: undefined,
 });

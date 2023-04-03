@@ -2,8 +2,10 @@ package com.ruoyi.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.common.mybatis.core.page.PageQuery;
-import com.ruoyi.system.domain.SysUser;
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
+import com.ruoyi.system.domain.SysUser;
+import com.ruoyi.system.domain.bo.SysUserBo;
+import com.ruoyi.system.domain.vo.SysUserVo;
 
 import java.util.List;
 
@@ -20,7 +22,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param user 用户信息
      * @return 用户信息集合信息
      */
-    TableDataInfo<SysUser> selectPageUserList(SysUser user);
+    TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user);
 
     /**
      * 根据条件分页查询用户列表
@@ -28,7 +30,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param user 用户信息
      * @return 用户信息集合信息
      */
-    List<SysUser> selectUserList(SysUser user);
+    List<SysUserVo> selectUserList(SysUserBo user);
 
     /**
      * 根据条件分页查询已分配用户角色列表
@@ -36,7 +38,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param user 用户信息
      * @return 用户信息集合信息
      */
-    TableDataInfo<SysUser> selectAllocatedList(SysUser user);
+    TableDataInfo<SysUserVo> selectAllocatedList(SysUserBo user);
 
     /**
      * 根据条件分页查询未分配用户角色列表
@@ -44,7 +46,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param user 用户信息
      * @return 用户信息集合信息
      */
-    TableDataInfo<SysUser> selectUnallocatedList(SysUser user, PageQuery pageQuery);
+    TableDataInfo<SysUserVo> selectUnallocatedList(SysUserBo user, PageQuery pageQuery);
 
     /**
      * 通过用户名查询用户
@@ -52,7 +54,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param userName 用户名
      * @return 用户对象信息
      */
-    SysUser selectUserByUserName(String userName);
+    SysUserVo selectUserByUserName(String userName);
 
     /**
      * 通过手机号查询用户
@@ -60,7 +62,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param phonenumber 手机号
      * @return 用户对象信息
      */
-    SysUser selectUserByPhonenumber(String phonenumber);
+    SysUserVo selectUserByPhonenumber(String phonenumber);
 
     /**
      * 通过用户ID查询用户
@@ -68,7 +70,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param userId 用户ID
      * @return 用户对象信息
      */
-    SysUser selectUserById(Long userId);
+    SysUserVo selectUserById(Long userId);
 
     /**
      * 根据用户ID查询用户所属角色组
@@ -92,7 +94,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param user 用户信息
      * @return 结果
      */
-    String checkUserNameUnique(SysUser user);
+    String checkUserNameUnique(SysUserBo user);
 
     /**
      * 校验手机号码是否唯一
@@ -100,7 +102,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param user 用户信息
      * @return 结果
      */
-    String checkPhoneUnique(SysUser user);
+    String checkPhoneUnique(SysUserBo user);
 
     /**
      * 校验email是否唯一
@@ -108,14 +110,14 @@ public interface ISysUserService extends IService<SysUser> {
      * @param user 用户信息
      * @return 结果
      */
-    String checkEmailUnique(SysUser user);
+    String checkEmailUnique(SysUserBo user);
 
     /**
      * 校验用户是否允许操作
      *
      * @param user 用户信息
      */
-    void checkUserAllowed(SysUser user);
+    void checkUserAllowed(SysUserBo user);
 
     /**
      * 校验用户是否有数据权限
@@ -130,7 +132,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param user 用户信息
      * @return 结果
      */
-    int insertUser(SysUser user);
+    int insertUser(SysUserBo user);
 
     /**
      * 注册用户信息
@@ -138,7 +140,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param user 用户信息
      * @return 结果
      */
-    boolean registerUser(SysUser user);
+    boolean registerUser(SysUserBo user);
 
     /**
      * 修改用户信息
@@ -146,7 +148,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param user 用户信息
      * @return 结果
      */
-    int updateUser(SysUser user);
+    int updateUser(SysUserBo user);
 
     /**
      * 用户授权角色
@@ -162,7 +164,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param user 用户信息
      * @return 结果
      */
-    int updateUserStatus(SysUser user);
+    int updateUserStatus(SysUserBo user);
 
     /**
      * 修改用户基本信息
@@ -170,7 +172,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param user 用户信息
      * @return 结果
      */
-    int updateUserProfile(SysUser user);
+    int updateUserProfile(SysUserBo user);
 
     /**
      * 修改用户头像
@@ -187,7 +189,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param user 用户信息
      * @return 结果
      */
-    int resetPwd(SysUser user);
+    int resetPwd(SysUserBo user);
 
     /**
      * 重置用户密码

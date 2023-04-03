@@ -49,8 +49,8 @@ import { useRoute, useRouter } from 'vue-router';
 import { PrimaryTableCol } from 'tdesign-vue-next';
 import { getAuthRole, updateAuthRole } from '@/api/system/user';
 import { useTabsRouterStore } from '@/store';
-import { SysUser } from '@/api/system/model/userModel';
-import { SysRole } from '@/api/system/model/roleModel';
+import { SysUserVo } from '@/api/system/model/userModel';
+import { SysRoleVo } from '@/api/system/model/roleModel';
 
 const { proxy } = getCurrentInstance();
 
@@ -59,12 +59,12 @@ const total = ref(0);
 const pageNum = ref(1);
 const pageSize = ref(10);
 const roleIds = ref<number[]>([]);
-const roles = ref<SysRole[]>([]);
+const roles = ref<SysRoleVo[]>([]);
 const roleRef = ref(null);
 const tabsRouterStore = useTabsRouterStore();
 const route = useRoute();
 const router = useRouter();
-const form = ref<SysUser>({
+const form = ref<SysUserVo>({
   nickName: undefined,
   userName: undefined,
   userId: undefined,
@@ -116,7 +116,7 @@ function submitForm() {
   const userId = route.params && route.params.userId;
   if (userId) {
     loading.value = true;
-    getAuthRole(Number(userId)).then((response) => {
+    getAuthRole(userId as string).then((response) => {
       handleSelectionChange([]);
       form.value = response.data.user;
       roles.value = response.data.roles;

@@ -9,13 +9,13 @@ import com.ruoyi.common.core.enums.UserType;
 import com.ruoyi.common.core.exception.user.CaptchaException;
 import com.ruoyi.common.core.exception.user.CaptchaExpireException;
 import com.ruoyi.common.core.exception.user.UserException;
-import com.ruoyi.common.log.event.LogininforEvent;
-import com.ruoyi.common.redis.utils.RedisUtils;
 import com.ruoyi.common.core.utils.MessageUtils;
 import com.ruoyi.common.core.utils.ServletUtils;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.core.utils.spring.SpringUtils;
-import com.ruoyi.system.domain.SysUser;
+import com.ruoyi.common.log.event.LogininforEvent;
+import com.ruoyi.common.redis.utils.RedisUtils;
+import com.ruoyi.system.domain.bo.SysUserBo;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -48,7 +48,7 @@ public class SysRegisterService {
         if (captchaEnabled) {
             validateCaptcha(username, registerBody.getCode(), registerBody.getUuid(), request);
         }
-        SysUser sysUser = new SysUser();
+        SysUserBo sysUser = new SysUserBo();
         sysUser.setUserName(username);
         sysUser.setNickName(username);
         sysUser.setPassword(BCrypt.hashpw(password));

@@ -1,10 +1,10 @@
 import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysConfig, SysConfigBo } from '@/api/system/model/configModel';
+import { SysConfigBo, SysConfigVo } from '@/api/system/model/configModel';
 
 // 查询参数列表
 export function listConfig(query: SysConfigBo) {
-  return request.get<TableDataInfo<SysConfig>>({
+  return request.get<TableDataInfo<SysConfigVo>>({
     url: '/system/config/list',
     params: query,
   });
@@ -12,7 +12,7 @@ export function listConfig(query: SysConfigBo) {
 
 // 查询参数详细
 export function getConfig(configId: number) {
-  return request.get<R<SysConfig>>({
+  return request.get<R<SysConfigVo>>({
     url: `/system/config/${configId}`,
   });
 }

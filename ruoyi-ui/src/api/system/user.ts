@@ -1,11 +1,11 @@
 import { request } from '@/utils/request';
 import { parseStrEmpty } from '@/utils/ruoyi';
-import { SysUser, SysUserInfo, UserAuthRole, UserAvatarResult, UserProfile } from '@/api/system/model/userModel';
+import { AvatarVo, ProfileVo, SysUserBo, SysUserInfoVo, SysUserVo, UserAuthRole } from '@/api/system/model/userModel';
 import { R, TableDataInfo, TreeModel } from '@/api/model/resultModel';
 
 // 查询用户列表
-export function listUser(query: SysUser) {
-  return request.get<TableDataInfo<SysUser>>({
+export function listUser(query: SysUserBo) {
+  return request.get<TableDataInfo<SysUserVo>>({
     url: '/system/user/list',
     params: query,
   });
@@ -13,13 +13,13 @@ export function listUser(query: SysUser) {
 
 // 查询用户详细
 export function getUser(userId?: number) {
-  return request.get<R<SysUserInfo>>({
+  return request.get<R<SysUserInfoVo>>({
     url: `/system/user/${parseStrEmpty(userId)}`,
   });
 }
 
 // 新增用户
-export function addUser(data: SysUser) {
+export function addUser(data: SysUserBo) {
   return request.post<R<void>>({
     url: '/system/user',
     data,
@@ -27,7 +27,7 @@ export function addUser(data: SysUser) {
 }
 
 // 修改用户
-export function updateUser(data: SysUser) {
+export function updateUser(data: SysUserBo) {
   return request.put<R<void>>({
     url: '/system/user',
     data,
@@ -68,13 +68,13 @@ export function changeUserStatus(userId: number, status: string) {
 
 // 查询用户个人信息
 export function getUserProfile() {
-  return request.get<R<UserProfile>>({
+  return request.get<R<ProfileVo>>({
     url: '/system/user/profile',
   });
 }
 
 // 修改用户个人信息
-export function updateUserProfile(data: SysUser) {
+export function updateUserProfile(data: SysUserBo) {
   return request.put<R<void>>({
     url: '/system/user/profile',
     data,
@@ -95,7 +95,7 @@ export function updateUserPwd(oldPassword: string, newPassword: string) {
 
 // 用户头像上传
 export function uploadAvatar(data: FormData) {
-  return request.post<R<UserAvatarResult>>({
+  return request.post<R<AvatarVo>>({
     url: '/system/user/profile/avatar',
     headers: {
       'content-type': 'multipart/form-data',
@@ -105,7 +105,7 @@ export function uploadAvatar(data: FormData) {
 }
 
 // 查询授权角色
-export function getAuthRole(userId: number) {
+export function getAuthRole(userId: number | string) {
   return request.get<R<UserAuthRole>>({
     url: `/system/user/authRole/${userId}`,
   });
