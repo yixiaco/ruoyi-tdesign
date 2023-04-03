@@ -72,8 +72,8 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
      * @return 字典类型集合信息
      */
     @Override
-    public List<SysDictType> selectDictTypeAll() {
-        return baseMapper.selectList();
+    public List<SysDictTypeVo> selectDictTypeAll() {
+        return baseMapper.selectVoList();
     }
 
     /**

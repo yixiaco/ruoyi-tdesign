@@ -1,9 +1,8 @@
 package com.ruoyi.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import com.ruoyi.system.domain.SysDictData;
-import com.ruoyi.system.domain.SysDictType;
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
+import com.ruoyi.system.domain.SysDictType;
 import com.ruoyi.system.domain.bo.SysDictTypeBo;
 import com.ruoyi.system.domain.vo.SysDictDataVo;
 import com.ruoyi.system.domain.vo.SysDictTypeVo;
@@ -38,7 +37,7 @@ public interface ISysDictTypeService extends IService<SysDictType> {
      *
      * @return 字典类型集合信息
      */
-    List<SysDictType> selectDictTypeAll();
+    List<SysDictTypeVo> selectDictTypeAll();
 
     /**
      * 根据字典类型查询字典数据

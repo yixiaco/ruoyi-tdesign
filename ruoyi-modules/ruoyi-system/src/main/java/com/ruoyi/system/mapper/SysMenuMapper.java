@@ -4,8 +4,9 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import com.ruoyi.common.core.constant.UserConstants;
-import com.ruoyi.system.domain.SysMenu;
 import com.ruoyi.common.mybatis.core.mapper.BaseMapperPlus;
+import com.ruoyi.system.domain.SysMenu;
+import com.ruoyi.system.domain.bo.SysMenuBo;
 import com.ruoyi.system.domain.vo.SysMenuVo;
 import org.apache.ibatis.annotations.Param;
 
@@ -24,7 +25,7 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenuMapper, SysMenu, Sy
      * @param menu
      * @return {@link SysMenu}
      */
-    List<SysMenu> queryList(SysMenu menu);
+    List<SysMenuVo> queryList(SysMenuBo menu);
 
     /**
      * 根据用户所有权限
