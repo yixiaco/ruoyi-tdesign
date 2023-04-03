@@ -116,6 +116,8 @@ export interface SysMenuVo {
   updateTime?: any;
   /** 备注 */
   remark?: string;
+  /** 子菜单 */
+  children?: SysMenuVo[];
 }
 
 /**

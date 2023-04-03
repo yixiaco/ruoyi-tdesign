@@ -1,10 +1,10 @@
 import { request } from '@/utils/request';
-import { RoleMenuTreeselect, SysMenu, SysMenuBo, SysMenuVo } from '@/api/system/model/menuModel';
+import { RoleMenuTreeselect, SysMenuBo, SysMenuVo } from '@/api/system/model/menuModel';
 import { R, TreeModel } from '@/api/model/resultModel';
 
 // 查询菜单列表
-export function listMenu(query?: SysMenu) {
-  return request.get<R<Array<SysMenu>>>({
+export function listMenu(query?: SysMenuBo) {
+  return request.get<R<Array<SysMenuVo>>>({
     url: '/system/menu/list',
     params: query,
   });

@@ -328,7 +328,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 
-const form = ref<SysMenu & SysMenuBo & SysMenuVo>({
+const form = ref<SysMenuBo & SysMenuVo>({
   menuId: undefined,
   parentId: 0,
   menuName: undefined,
@@ -341,7 +341,7 @@ const form = ref<SysMenu & SysMenuBo & SysMenuVo>({
   status: '0',
 });
 
-const queryParams = ref<SysMenu>({
+const queryParams = ref<SysMenuBo>({
   menuName: undefined,
   visible: undefined,
 });
