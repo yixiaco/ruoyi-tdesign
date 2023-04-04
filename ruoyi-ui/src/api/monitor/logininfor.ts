@@ -1,10 +1,10 @@
 import { request } from '@/utils/request';
-import { SysLogininfor } from '@/api/monitor/model/logininforModel';
+import { SysLogininforBo, SysLogininforVo } from '@/api/monitor/model/logininforModel';
 import { R, TableDataInfo } from '@/api/model/resultModel';
 
 // 查询登录日志列表
-export function list(query: SysLogininfor) {
-  return request.get<TableDataInfo<SysLogininfor>>({
+export function list(query: SysLogininforBo) {
+  return request.get<TableDataInfo<SysLogininforVo>>({
     url: '/monitor/logininfor/list',
     params: query,
   });

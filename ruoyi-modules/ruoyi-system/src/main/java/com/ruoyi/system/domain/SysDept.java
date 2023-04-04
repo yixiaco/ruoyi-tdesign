@@ -5,14 +5,9 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableLogic;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.ruoyi.common.mybatis.core.domain.TreeEntity;
+import com.ruoyi.common.tenant.core.TenantEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
 
 import java.io.Serial;
 import java.util.Date;
@@ -26,7 +21,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("sys_dept")
-public class SysDept extends TreeEntity<SysDept> {
+public class SysDept extends TenantEntity {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -38,14 +33,14 @@ public class SysDept extends TreeEntity<SysDept> {
     private Long deptId;
 
     /**
+     * 父部门ID
+     */
+    private Long parentId;
+
+    /**
      * 部门名称
      */
     private String deptName;
-
-    /**
-     * 上级部门id
-     */
-    private Long parentId;
 
     /**
      * 显示顺序

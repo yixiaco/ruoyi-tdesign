@@ -3,54 +3,52 @@
  */
 import { BaseEntity } from '@/api/model/resultModel';
 
-export interface SysLogininfor extends BaseEntity {
-  /**
-   * ID
-   */
+/**
+ * 系统访问记录业务对象
+ */
+
+export interface SysLogininforBo extends BaseEntity {
+  /**  访问ID */
   infoId?: number;
-
-  /**
-   * 用户账号
-   */
+  /**  租户编号 */
+  tenantId?: string;
+  /**  用户账号 */
   userName?: string;
-
-  /**
-   * 登录状态 0成功 1失败
-   */
-  status?: string;
-
-  /**
-   * 登录IP地址
-   */
+  /**  登录IP地址 */
   ipaddr?: string;
-
-  /**
-   * 登录地点
-   */
+  /**  登录地点 */
   loginLocation?: string;
-
-  /**
-   * 浏览器类型
-   */
+  /**  浏览器类型 */
   browser?: string;
-
-  /**
-   * 操作系统
-   */
+  /**  操作系统 */
   os?: string;
-
-  /**
-   * 提示消息
-   */
+  /**  登录状态（0成功 1失败） */
+  status?: string;
+  /**  提示消息 */
   msg?: string;
-
-  /**
-   * 访问时间
-   */
-  loginTime?: object;
-
-  /**
-   * 请求参数
-   */
-  params?: Map<string, object>;
+  /**  访问时间 */
+  loginTime?: any;
+}
+/** 统访问记录视图对象 */
+export interface SysLogininforVo {
+  /**  访问ID */
+  infoId?: number;
+  /**  租户编号 */
+  tenantId?: string;
+  /**  用户账号 */
+  userName?: string;
+  /**  登录状态（0成功 1失败） */
+  status?: string;
+  /**  登录IP地址 */
+  ipaddr?: string;
+  /**  登录地点 */
+  loginLocation?: string;
+  /**  浏览器类型 */
+  browser?: string;
+  /**  操作系统 */
+  os?: string;
+  /**  提示消息 */
+  msg?: string;
+  /**  访问时间 */
+  loginTime?: any;
 }

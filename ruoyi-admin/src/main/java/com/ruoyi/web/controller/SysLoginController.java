@@ -2,19 +2,27 @@ package com.ruoyi.web.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.collection.CollUtil;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.domain.model.LoginBody;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.domain.model.SmsLoginBody;
+import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.satoken.utils.LoginHelper;
 import com.ruoyi.system.domain.SysMenu;
+import com.ruoyi.system.domain.bo.SysTenantBo;
 import com.ruoyi.system.domain.vo.RouterVo;
+import com.ruoyi.system.domain.vo.SysTenantVo;
 import com.ruoyi.system.domain.vo.SysUserVo;
 import com.ruoyi.system.service.ISysMenuService;
+import com.ruoyi.system.service.ISysTenantService;
 import com.ruoyi.system.service.ISysUserService;
-import com.ruoyi.system.service.SysLoginService;
+import com.ruoyi.web.service.SysLoginService;
 import com.ruoyi.web.domain.vo.LoginVo;
+import com.ruoyi.web.domain.vo.TenantListVo;
 import com.ruoyi.web.domain.vo.UserInfoVo;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -23,6 +31,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.net.URL;
 import java.util.List;
 
 /**
@@ -40,6 +49,8 @@ public class SysLoginController {
     private ISysMenuService menuService;
     @Autowired
     private ISysUserService userService;
+    @Autowired
+    private ISysTenantService tenantService;
 
     /**
      * 当前是否登录状态
@@ -55,15 +66,18 @@ public class SysLoginController {
     /**
      * 登录方法
      *
-     * @param loginBody 登录信息
+     * @param body 登录信息
      * @return 结果
      */
     @SaIgnore
     @PostMapping("/login")
-    public R<LoginVo> login(@Validated @RequestBody LoginBody loginBody) {
+    public R<LoginVo> login(@Validated @RequestBody LoginBody body) {
         LoginVo loginVo = new LoginVo();
         // 生成令牌
-        String token = loginService.login(loginBody.getUsername(), loginBody.getPassword(), loginBody.getCode(), loginBody.getUuid());
+        String token = loginService.login(
+            body.getTenantId(),
+            body.getUsername(), body.getPassword(),
+            body.getCode(), body.getUuid());
         loginVo.setToken(token);
         return R.ok(loginVo);
     }
@@ -71,15 +85,15 @@ public class SysLoginController {
     /**
      * 短信登录(示例)
      *
-     * @param smsLoginBody 登录信息
+     * @param body 登录信息
      * @return 结果
      */
     @SaIgnore
     @PostMapping("/smsLogin")
-    public R<LoginVo> smsLogin(@Validated @RequestBody SmsLoginBody smsLoginBody) {
+    public R<LoginVo> smsLogin(@Validated @RequestBody SmsLoginBody body) {
         LoginVo loginVo = new LoginVo();
         // 生成令牌
-        String token = loginService.smsLogin(smsLoginBody.getPhonenumber(), smsLoginBody.getSmsCode());
+        String token = loginService.smsLogin(body.getTenantId(), body.getPhonenumber(), body.getSmsCode());
         loginVo.setToken(token);
         return R.ok(loginVo);
     }
@@ -108,6 +122,23 @@ public class SysLoginController {
     public R<Void> logout() {
         loginService.logout();
         return R.msg("退出成功");
+    }
+
+    /**
+     * 登录页面租户下拉框
+     *
+     * @return 租户列表
+     */
+    @SaIgnore
+    @GetMapping("/tenant/list")
+    public R<List<TenantListVo>> tenantList(HttpServletRequest request) throws Exception {
+        List<SysTenantVo> tenantList = tenantService.queryList(new SysTenantBo());
+        List<TenantListVo> voList = BeanUtil.copyToList(tenantList, TenantListVo.class);
+        // 获取域名
+        String host = new URL(request.getRequestURL().toString()).getHost();
+        // 根据域名进行筛选
+        List<TenantListVo> list = voList.stream().filter(vo -> StringUtils.equals(vo.getDomain(), host)).toList();
+        return R.ok(CollUtil.isNotEmpty(list) ? list : voList);
     }
 
     /**

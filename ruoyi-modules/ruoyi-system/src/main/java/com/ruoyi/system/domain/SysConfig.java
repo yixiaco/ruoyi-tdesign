@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.ruoyi.common.mybatis.core.domain.BaseEntity;
+import com.ruoyi.common.tenant.core.TenantEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -19,7 +19,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("sys_config")
-public class SysConfig extends BaseEntity {
+public class SysConfig extends TenantEntity {
 
     /**
      * 参数主键

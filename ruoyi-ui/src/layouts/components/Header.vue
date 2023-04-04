@@ -20,6 +20,9 @@
           <!-- 搜索框 -->
           <search v-if="layout !== 'side'" :layout="layout" />
 
+          <!-- 选择租户 -->
+          <dynamic-tenant />
+
           <!-- 全局通知 -->
           <notice />
 
@@ -84,6 +87,7 @@ import type { MenuRoute } from '@/types/interface';
 import Notice from './Notice.vue';
 import Search from './Search.vue';
 import MenuContent from './MenuContent.vue';
+import DynamicTenant from './DynamicTenant.vue';
 
 const userStore = useUserStore();
 

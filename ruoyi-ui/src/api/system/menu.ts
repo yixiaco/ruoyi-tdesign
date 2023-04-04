@@ -1,5 +1,5 @@
 import { request } from '@/utils/request';
-import { RoleMenuTreeselect, SysMenuBo, SysMenuVo } from '@/api/system/model/menuModel';
+import { MenuTreeSelectVo, RoleMenuTreeselect, SysMenuBo, SysMenuVo } from '@/api/system/model/menuModel';
 import { R, TreeModel } from '@/api/model/resultModel';
 
 // 查询菜单列表
@@ -28,6 +28,13 @@ export function treeselect() {
 export function roleMenuTreeselect(roleId: number) {
   return request.get<R<RoleMenuTreeselect>>({
     url: `/system/menu/roleMenuTreeselect/${roleId}`,
+  });
+}
+
+// 根据角色ID查询菜单下拉树结构
+export function tenantPackageMenuTreeselect(packageId) {
+  return request.get<R<MenuTreeSelectVo>>({
+    url: `/system/menu/tenantPackageMenuTreeselect/${packageId}`,
   });
 }
 

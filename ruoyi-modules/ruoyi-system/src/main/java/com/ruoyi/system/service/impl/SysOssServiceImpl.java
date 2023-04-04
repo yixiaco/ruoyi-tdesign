@@ -1,5 +1,6 @@
 package com.ruoyi.system.service.impl;
 
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -32,7 +33,6 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -81,7 +81,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
      */
     @Override
     public String selectUrlByIds(String ossIds) {
-        List<Long> ids = Arrays.stream(ossIds.split(",")).map(Long::parseLong).toList();
+        List<Long> ids = StringUtils.splitTo(ossIds, Convert::toLong);
         List<SysOssVo> ossVos = listVoByIds(ids);
         return StreamUtils.join(ossVos, SysOssVo::getUrl);
     }

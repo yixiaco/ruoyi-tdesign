@@ -3,6 +3,8 @@ package com.ruoyi.system.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.system.domain.SysLogininfor;
+import com.ruoyi.system.domain.bo.SysLogininforBo;
+import com.ruoyi.system.domain.vo.SysLogininforVo;
 
 import java.util.List;
 
@@ -19,14 +21,14 @@ public interface ISysLogininforService extends IService<SysLogininfor> {
      * @param logininfor 访问日志对象
      * @return
      */
-    TableDataInfo<SysLogininfor> selectPageLogininforList(SysLogininfor logininfor);
+    TableDataInfo<SysLogininforVo> selectPageLogininforList(SysLogininforBo logininfor);
 
     /**
      * 新增系统登录日志
      *
-     * @param logininfor 访问日志对象
+     * @param bo 访问日志对象
      */
-    void insertLogininfor(SysLogininfor logininfor);
+    void insertLogininfor(SysLogininforBo bo);
 
     /**
      * 查询系统登录日志集合
@@ -34,7 +36,7 @@ public interface ISysLogininforService extends IService<SysLogininfor> {
      * @param logininfor 访问日志对象
      * @return 登录记录集合
      */
-    List<SysLogininfor> selectLogininforList(SysLogininfor logininfor);
+    List<SysLogininforVo> selectLogininforList(SysLogininforBo logininfor);
 
     /**
      * 批量删除系统登录日志

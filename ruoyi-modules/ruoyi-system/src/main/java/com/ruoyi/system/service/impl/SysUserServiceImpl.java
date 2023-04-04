@@ -242,7 +242,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public void checkUserAllowed(SysUserBo user) {
-        if (ObjectUtil.isNotNull(user.getUserId()) && user.isAdmin()) {
+        if (ObjectUtil.isNotNull(user.getUserId()) && user.isSuperAdmin()) {
             throw new ServiceException("不允许操作超级管理员用户");
         }
     }
@@ -254,7 +254,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public void checkUserDataScope(Long userId) {
-        if (!LoginHelper.isAdmin()) {
+        if (!LoginHelper.isSuperAdmin()) {
             SysUserBo user = new SysUserBo();
             user.setUserId(userId);
             List<SysUserVo> users = this.selectUserList(user);
@@ -290,10 +290,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return 结果
      */
     @Override
-    public boolean registerUser(SysUserBo user) {
+    public boolean registerUser(SysUserBo user, String tenantId) {
         user.setCreateBy(user.getUserId());
         user.setUpdateBy(user.getUserId());
         SysUser sysUser = BeanUtil.copyProperties(user, SysUser.class);
+        sysUser.setTenantId(tenantId);
         return baseMapper.insert(sysUser) > 0;
     }
 

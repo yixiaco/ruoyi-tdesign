@@ -166,30 +166,11 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     }
 
     /**
-     * 加载参数缓存数据
-     */
-    @Override
-    public void loadingConfigCache() {
-        List<SysConfigVo> configsList = selectConfigList(new SysConfigBo());
-        configsList.forEach(config ->
-            CacheUtils.put(CacheNames.SYS_CONFIG, config.getConfigKey(), config.getConfigValue()));
-    }
-
-    /**
-     * 清空参数缓存数据
-     */
-    @Override
-    public void clearConfigCache() {
-        CacheUtils.clear(CacheNames.SYS_CONFIG);
-    }
-
-    /**
      * 重置参数缓存数据
      */
     @Override
     public void resetConfigCache() {
-        clearConfigCache();
-        loadingConfigCache();
+        CacheUtils.clear(CacheNames.SYS_CONFIG);
     }
 
     /**

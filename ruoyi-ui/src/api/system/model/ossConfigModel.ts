@@ -13,94 +13,41 @@ export interface SysOssConfigQuery extends BaseEntity {
 }
 
 export interface SysOssConfigBo extends BaseEntity {
-  /**
-   * 主建
-   */
+  /** 主建 */
   ossConfigId?: number;
-
-  /**
-   * 配置key
-   */
+  /** 配置key */
   configKey?: string;
-
-  /**
-   * accessKey
-   */
+  /** accessKey */
   accessKey?: string;
-
-  /**
-   * 秘钥
-   */
+  /** 秘钥 */
   secretKey?: string;
-
-  /**
-   * 桶名称
-   */
+  /** 桶名称 */
   bucketName?: string;
-
-  /**
-   * 前缀
-   */
+  /** 前缀 */
   prefix?: string;
-
-  /**
-   * 访问站点
-   */
+  /** 访问站点 */
   endpoint?: string;
-
-  /**
-   * 自定义域名
-   */
+  /** 自定义域名 */
   domain?: string;
-
-  /**
-   * 是否https（Y=是,N=否）
-   */
+  /** 是否https（Y=是,N=否） */
   isHttps?: string;
-
-  /**
-   * 状态（0=正常,1=停用）
-   */
+  /** 状态（0=正常,1=停用） */
   status?: string;
-
-  /**
-   * 域
-   */
+  /** 域 */
   region?: string;
-
-  /**
-   * 扩展字段
-   */
+  /** 扩展字段 */
   ext1?: string;
-
-  /**
-   * 备注
-   */
+  /** 备注 */
   remark?: string;
-
-  /**
-   * 桶权限类型(0private 1public 2custom)
-   */
+  /** 桶权限类型(0private 1public 2custom) */
   accessPolicy?: string;
-
-  /**
-   * 创建者
-   */
+  /** 创建者 */
   createBy?: string;
-
-  /**
-   * 创建时间
-   */
+  /** 创建时间 */
   createTime?: string;
-
-  /**
-   * 更新者
-   */
+  /** 更新者 */
   updateBy?: string;
-
-  /**
-   * 更新时间
-   */
+  /** 更新时间 */
   updateTime?: string;
 }
 
@@ -108,73 +55,32 @@ export interface SysOssConfigBo extends BaseEntity {
  * oss配置
  */
 export interface SysOssConfigVo {
-  /**
-   * 主建
-   */
+  /** 主建 */
   ossConfigId?: number;
-
-  /**
-   * 配置key
-   */
+  /** 配置key */
   configKey?: string;
-
-  /**
-   * accessKey
-   */
+  /** accessKey */
   accessKey?: string;
-
-  /**
-   * 秘钥
-   */
+  /** 秘钥 */
   secretKey?: string;
-
-  /**
-   * 桶名称
-   */
+  /** 桶名称 */
   bucketName?: string;
-
-  /**
-   * 前缀
-   */
+  /** 前缀 */
   prefix?: string;
-
-  /**
-   * 访问站点
-   */
+  /** 访问站点 */
   endpoint?: string;
-
-  /**
-   * 自定义域名
-   */
+  /** 自定义域名 */
   domain?: string;
-
-  /**
-   * 是否https（Y=是,N=否）
-   */
+  /** 是否https（Y=是,N=否） */
   isHttps?: string;
-
-  /**
-   * 域
-   */
+  /** 域 */
   region?: string;
-
-  /**
-   * 状态（0=正常,1=停用）
-   */
+  /** 状态（0=正常,1=停用） */
   status?: string;
-
-  /**
-   * 扩展字段
-   */
+  /** 扩展字段 */
   ext1?: string;
-
-  /**
-   * 备注
-   */
+  /** 备注 */
   remark?: string;
-
-  /**
-   * 桶权限类型(01public 2custom)
-   */
+  /** 桶权限类型(01public 2custom) */
   accessPolicy?: string;
 }

@@ -11,8 +11,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 
-import java.util.Set;
-
 /**
  * 角色信息业务对象 sys_role
  *
@@ -80,22 +78,16 @@ public class SysRoleBo extends BaseEntity {
      */
     private Long[] menuIds;
 
-
     /**
      * 部门组（数据权限）
      */
     private Long[] deptIds;
 
-    /**
-     * 角色菜单权限
-     */
-    private Set<String> permissions;
-
     public SysRoleBo(Long roleId) {
         this.roleId = roleId;
     }
 
-    public boolean isAdmin() {
+    public boolean isSuperAdmin() {
         return UserConstants.SUPER_ADMIN_ID.equals(this.roleId);
     }
 

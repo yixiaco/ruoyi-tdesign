@@ -1,26 +1,29 @@
 package com.ruoyi.system.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.constant.Constants;
-import com.ruoyi.common.mybatis.core.page.PageQuery;
-import com.ruoyi.common.log.event.LogininforEvent;
-import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.common.core.utils.ServletUtils;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.core.utils.ip.AddressUtils;
+import com.ruoyi.common.log.event.LogininforEvent;
+import com.ruoyi.common.mybatis.core.page.PageQuery;
+import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.system.domain.SysLogininfor;
+import com.ruoyi.system.domain.bo.SysLogininforBo;
+import com.ruoyi.system.domain.vo.SysLogininforVo;
 import com.ruoyi.system.mapper.SysLogininforMapper;
 import com.ruoyi.system.service.ISysLogininforService;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import jakarta.servlet.http.HttpServletRequest;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -60,7 +63,8 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
         // 获取客户端浏览器
         String browser = userAgent.getBrowser().getName();
         // 封装对象
-        SysLogininfor logininfor = new SysLogininfor();
+        SysLogininforBo logininfor = new SysLogininforBo();
+        logininfor.setTenantId(logininforEvent.getTenantId());
         logininfor.setUserName(logininforEvent.getUsername());
         logininfor.setIpaddr(ip);
         logininfor.setLoginLocation(address);
@@ -85,17 +89,18 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
     }
 
     @Override
-    public TableDataInfo<SysLogininfor> selectPageLogininforList(SysLogininfor logininfor) {
+    public TableDataInfo<SysLogininforVo> selectPageLogininforList(SysLogininforBo logininfor) {
         return PageQuery.of(() -> baseMapper.queryList(logininfor));
     }
 
     /**
      * 新增系统登录日志
      *
-     * @param logininfor 访问日志对象
+     * @param bo 访问日志对象
      */
     @Override
-    public void insertLogininfor(SysLogininfor logininfor) {
+    public void insertLogininfor(SysLogininforBo bo) {
+        SysLogininfor logininfor = BeanUtil.toBean(bo, SysLogininfor.class);
         logininfor.setLoginTime(new Date());
         baseMapper.insert(logininfor);
     }
@@ -107,7 +112,7 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
      * @return 登录记录集合
      */
     @Override
-    public List<SysLogininfor> selectLogininforList(SysLogininfor logininfor) {
+    public List<SysLogininforVo> selectLogininforList(SysLogininforBo logininfor) {
         return baseMapper.queryList(logininfor);
     }
 

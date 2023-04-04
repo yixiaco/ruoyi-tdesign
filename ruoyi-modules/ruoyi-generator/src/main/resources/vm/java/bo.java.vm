@@ -1,23 +1,16 @@
 package ${packageName}.domain.bo;
 
+import com.ruoyi.common.mybatis.core.domain.BaseEntity;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import jakarta.validation.constraints.*;
-
-import java.util.Date;
-
 #foreach ($import in $importList)
 import ${import};
 #end
-#if($table.crud || $table.sub)
-import com.ruoyi.common.mybatis.core.domain.BaseEntity;
-#set($tree=false)
-#elseif($table.tree)
-import com.ruoyi.common.mybatis.core.domain.TreeEntity;
-#set($tree=true)
-#end
+
+import java.util.Date;
 
 /**
  * ${functionName}业务对象 ${tableName}
@@ -25,14 +18,9 @@ import com.ruoyi.common.mybatis.core.domain.TreeEntity;
  * @author ${author}
  * @date ${datetime}
  */
-#if(!$tree)
-#set($Entity="BaseEntity")
-#else
-#set($Entity="TreeEntity<${ClassName}Bo>")
-#end
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ${ClassName}Bo extends ${Entity} {
+public class ${ClassName}Bo extends BaseEntity {
 
 #foreach ($column in $columns)
 #if(($column.isPk == '1' || $column.isInsert == '1' || $column.isEdit == '1'))

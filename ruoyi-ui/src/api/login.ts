@@ -1,5 +1,5 @@
 import { request } from '@/utils/request';
-import { CaptchaImage, LoginModel, RegisterBody, UserInfo } from '@/api/model/loginModel';
+import {CaptchaImage, LoginModel, RegisterBody, TenantListVo, UserInfo} from '@/api/model/loginModel';
 import { R } from '@/api/model/resultModel';
 
 /**
@@ -12,8 +12,9 @@ export function isLogin() {
 }
 
 // 登录方法
-export function login(username: string, password: string, code: string, uuid: string) {
+export function login(tenantId: string, username: string, password: string, code: string, uuid: string) {
   const data = {
+    tenantId,
     username,
     password,
     code,
@@ -63,6 +64,18 @@ export function getCodeImg() {
     {
       url: '/captchaImage',
       timeout: 20000,
+    },
+    {
+      withToken: false,
+    },
+  );
+}
+
+// 获取租户列表
+export function getTenantList() {
+  return request.get<R<Array<TenantListVo>>>(
+    {
+      url: '/tenant/list',
     },
     {
       withToken: false,

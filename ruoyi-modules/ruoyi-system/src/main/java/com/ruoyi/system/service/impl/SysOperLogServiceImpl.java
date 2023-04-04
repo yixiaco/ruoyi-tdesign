@@ -3,11 +3,13 @@ package com.ruoyi.system.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ruoyi.common.mybatis.core.page.PageQuery;
-import com.ruoyi.common.log.event.OperLogEvent;
-import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.common.core.utils.ip.AddressUtils;
+import com.ruoyi.common.log.event.OperLogEvent;
+import com.ruoyi.common.mybatis.core.page.PageQuery;
+import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.system.domain.SysOperLog;
+import com.ruoyi.system.domain.bo.SysOperLogBo;
+import com.ruoyi.system.domain.vo.SysOperLogVo;
 import com.ruoyi.system.mapper.SysOperLogMapper;
 import com.ruoyi.system.service.ISysOperLogService;
 import org.springframework.context.event.EventListener;
@@ -35,24 +37,25 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
     @Async
     @EventListener
     public void recordOper(OperLogEvent operLogEvent) {
-        SysOperLog operLog = BeanUtil.toBean(operLogEvent, SysOperLog.class);
+        SysOperLogBo operLog = BeanUtil.toBean(operLogEvent, SysOperLogBo.class);
         // 远程查询操作地点
         operLog.setOperLocation(AddressUtils.getRealAddressByIP(operLog.getOperIp()));
         insertOperlog(operLog);
     }
 
     @Override
-    public TableDataInfo<SysOperLog> selectPageOperLogList(SysOperLog operLog) {
+    public TableDataInfo<SysOperLogVo> selectPageOperLogList(SysOperLogBo operLog) {
         return PageQuery.of(() -> baseMapper.queryList(operLog));
     }
 
     /**
      * 新增操作日志
      *
-     * @param operLog 操作日志对象
+     * @param bo 操作日志对象
      */
     @Override
-    public void insertOperlog(SysOperLog operLog) {
+    public void insertOperlog(SysOperLogBo bo) {
+        SysOperLog operLog = BeanUtil.toBean(bo, SysOperLog.class);
         operLog.setOperTime(new Date());
         baseMapper.insert(operLog);
     }
@@ -64,7 +67,7 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
      * @return 操作日志集合
      */
     @Override
-    public List<SysOperLog> selectOperLogList(SysOperLog operLog) {
+    public List<SysOperLogVo> selectOperLogList(SysOperLogBo operLog) {
         return baseMapper.queryList(operLog);
     }
 
@@ -87,8 +90,8 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
      * @return 操作日志对象
      */
     @Override
-    public SysOperLog selectOperLogById(Long operId) {
-        return baseMapper.selectById(operId);
+    public SysOperLogVo selectOperLogById(Long operId) {
+        return baseMapper.selectVoById(operId);
     }
 
     /**

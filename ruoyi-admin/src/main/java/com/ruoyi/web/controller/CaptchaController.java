@@ -5,17 +5,17 @@ import cn.hutool.captcha.AbstractCaptcha;
 import cn.hutool.captcha.generator.CodeGenerator;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
-import com.ruoyi.common.core.constant.CacheConstants;
 import com.ruoyi.common.core.constant.Constants;
+import com.ruoyi.common.core.constant.GlobalConstants;
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.core.utils.StringUtils;
+import com.ruoyi.common.core.utils.reflect.ReflectUtils;
+import com.ruoyi.common.core.utils.spring.SpringUtils;
 import com.ruoyi.common.redis.utils.RedisUtils;
 import com.ruoyi.common.sms.aspectj.SmsContextCache;
 import com.ruoyi.common.sms.constants.SmsTemplateKeyConstants;
 import com.ruoyi.common.sms.entity.SmsResult;
 import com.ruoyi.common.sms.service.SmsService;
-import com.ruoyi.common.core.utils.StringUtils;
-import com.ruoyi.common.core.utils.reflect.ReflectUtils;
-import com.ruoyi.common.core.utils.spring.SpringUtils;
 import com.ruoyi.common.web.config.properties.CaptchaProperties;
 import com.ruoyi.common.web.enums.CaptchaType;
 import com.ruoyi.system.service.ISysConfigService;
@@ -61,7 +61,7 @@ public class CaptchaController {
     @GetMapping("/captchaSms")
     public R<Void> smsCaptcha(@NotBlank(message = "{user.phonenumber.not.blank}")
                               String phonenumber) {
-        String key = CacheConstants.CAPTCHA_CODE_KEY + phonenumber;
+        String key = GlobalConstants.CAPTCHA_CODE_KEY + phonenumber;
         String code = RandomUtil.randomNumbers(4);
         RedisUtils.setCacheObject(key, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
         // 验证码模板id 自行处理 (查数据库或写死均可)
@@ -82,14 +82,14 @@ public class CaptchaController {
     @GetMapping("/captchaImage")
     public R<CaptchaVo> getCode() {
         CaptchaVo captchaVo = new CaptchaVo();
-        boolean captchaEnabled = configService.selectCaptchaEnabled();
+        boolean captchaEnabled = captchaProperties.getEnable();
         if (!captchaEnabled) {
             captchaVo.setCaptchaEnabled(false);
             return R.ok(captchaVo);
         }
         // 保存验证码信息
         String uuid = IdUtil.simpleUUID();
-        String verifyKey = CacheConstants.CAPTCHA_CODE_KEY + uuid;
+        String verifyKey = GlobalConstants.CAPTCHA_CODE_KEY + uuid;
         // 生成验证码
         CaptchaType captchaType = captchaProperties.getType();
         boolean isMath = CaptchaType.MATH == captchaType;

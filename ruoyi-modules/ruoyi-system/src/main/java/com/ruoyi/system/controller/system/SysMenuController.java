@@ -1,7 +1,10 @@
 package com.ruoyi.system.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.lang.tree.Tree;
+import com.ruoyi.common.core.constant.TenantConstants;
 import com.ruoyi.common.core.constant.UserConstants;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.utils.StringUtils;
@@ -42,6 +45,10 @@ public class SysMenuController extends BaseController {
     /**
      * 获取菜单列表
      */
+    @SaCheckRole(value = {
+            TenantConstants.SUPER_ADMIN_ROLE_KEY,
+            TenantConstants.TENANT_ADMIN_ROLE_KEY
+    }, mode = SaMode.OR)
     @SaCheckPermission("system:menu:list")
     @GetMapping("/list")
     public R<List<SysMenuVo>> list(SysMenuBo menu) {
@@ -54,6 +61,10 @@ public class SysMenuController extends BaseController {
      *
      * @param menuId 菜单ID
      */
+    @SaCheckRole(value = {
+            TenantConstants.SUPER_ADMIN_ROLE_KEY,
+            TenantConstants.TENANT_ADMIN_ROLE_KEY
+    }, mode = SaMode.OR)
     @SaCheckPermission("system:menu:query")
     @GetMapping(value = "/{menuId}")
     public R<SysMenuVo> getInfo(@PathVariable Long menuId) {
@@ -63,6 +74,11 @@ public class SysMenuController extends BaseController {
     /**
      * 获取菜单下拉树列表
      */
+    @SaCheckRole(value = {
+            TenantConstants.SUPER_ADMIN_ROLE_KEY,
+            TenantConstants.TENANT_ADMIN_ROLE_KEY
+    }, mode = SaMode.OR)
+    @SaCheckPermission("system:menu:query")
     @GetMapping("/treeselect")
     public R<List<Tree<Long>>> treeselect(SysMenuBo menu) {
         List<SysMenuVo> menus = menuService.selectMenuList(menu, LoginHelper.getUserId());
@@ -74,6 +90,11 @@ public class SysMenuController extends BaseController {
      *
      * @param roleId 角色ID
      */
+    @SaCheckRole(value = {
+            TenantConstants.SUPER_ADMIN_ROLE_KEY,
+            TenantConstants.TENANT_ADMIN_ROLE_KEY
+    }, mode = SaMode.OR)
+    @SaCheckPermission("system:menu:query")
     @GetMapping(value = "/roleMenuTreeselect/{roleId}")
     public R<MenuTreeSelectVo> roleMenuTreeselect(@PathVariable("roleId") Long roleId) {
         List<SysMenuVo> menus = menuService.selectMenuList(LoginHelper.getUserId());
@@ -84,8 +105,25 @@ public class SysMenuController extends BaseController {
     }
 
     /**
+     * 加载对应租户套餐菜单列表树
+     *
+     * @param packageId 租户套餐ID
+     */
+    @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
+    @SaCheckPermission("system:menu:query")
+    @GetMapping(value = "/tenantPackageMenuTreeselect/{packageId}")
+    public R<MenuTreeSelectVo> tenantPackageMenuTreeselect(@PathVariable("packageId") Long packageId) {
+        List<SysMenuVo> menus = menuService.selectMenuList(LoginHelper.getUserId());
+        MenuTreeSelectVo selectVo = new MenuTreeSelectVo();
+        selectVo.setCheckedKeys(menuService.selectMenuListByPackageId(packageId));
+        selectVo.setMenus(menuService.buildMenuTreeSelect(menus));
+        return R.ok(selectVo);
+    }
+
+    /**
      * 新增菜单
      */
+    @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @SaCheckPermission("system:menu:add")
     @Log(title = "菜单管理", businessType = BusinessType.INSERT)
     @PostMapping
@@ -101,6 +139,7 @@ public class SysMenuController extends BaseController {
     /**
      * 修改菜单
      */
+    @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @SaCheckPermission("system:menu:edit")
     @Log(title = "菜单管理", businessType = BusinessType.UPDATE)
     @PutMapping
@@ -120,6 +159,7 @@ public class SysMenuController extends BaseController {
      *
      * @param menuId 菜单ID
      */
+    @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @SaCheckPermission("system:menu:remove")
     @Log(title = "菜单管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{menuId}")
@@ -132,4 +172,5 @@ public class SysMenuController extends BaseController {
         }
         return toAjax(menuService.deleteMenuById(menuId));
     }
+
 }

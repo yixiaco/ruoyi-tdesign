@@ -172,12 +172,12 @@ import { computed, getCurrentInstance, ref } from 'vue';
 import { BrowseIcon, DeleteIcon, DownloadIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import { PrimaryTableCol } from 'tdesign-vue-next';
 import { list, delOperlog, cleanOperlog } from '@/api/monitor/operlog';
-import { SysOperLog } from '@/api/monitor/model/operlogModel';
+import { SysOperLogBo, SysOperLogVo } from '@/api/monitor/model/operlogModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_oper_type, sys_common_status } = proxy.useDict('sys_oper_type', 'sys_common_status');
 
-const operlogList = ref([]);
+const operlogList = ref<SysOperLogVo[]>([]);
 const open = ref(false);
 const loading = ref(false);
 const columnControllerVisible = ref(false);
@@ -203,8 +203,8 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
 
-const form = ref<SysOperLog>({});
-const queryParams = ref<SysOperLog>({
+const form = ref<SysOperLogBo & SysOperLogVo>({});
+const queryParams = ref<SysOperLogBo>({
   pageNum: 1,
   pageSize: 10,
   title: undefined,

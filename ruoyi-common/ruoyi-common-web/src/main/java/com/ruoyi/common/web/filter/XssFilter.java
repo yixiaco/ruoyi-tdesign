@@ -31,7 +31,7 @@ public class XssFilter implements Filter {
     public void init(FilterConfig filterConfig) throws ServletException {
         String tempExcludes = filterConfig.getInitParameter("excludes");
         if (StringUtils.isNotEmpty(tempExcludes)) {
-            String[] url = tempExcludes.split(",");
+            String[] url = tempExcludes.split(StringUtils.SEPARATOR);
             excludes.addAll(Arrays.asList(url));
         }
     }

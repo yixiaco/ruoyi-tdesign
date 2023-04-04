@@ -2,6 +2,8 @@ package com.ruoyi.system.mapper;
 
 import com.ruoyi.common.mybatis.core.mapper.BaseMapperPlus;
 import com.ruoyi.system.domain.SysLogininfor;
+import com.ruoyi.system.domain.bo.SysLogininforBo;
+import com.ruoyi.system.domain.vo.SysLogininforVo;
 
 import java.util.List;
 
@@ -10,7 +12,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysLogininforMapper extends BaseMapperPlus<SysLogininforMapper, SysLogininfor, SysLogininfor> {
+public interface SysLogininforMapper extends BaseMapperPlus<SysLogininforMapper, SysLogininfor, SysLogininforVo> {
 
     /**
      * 查询系统访问记录列表
@@ -18,5 +20,5 @@ public interface SysLogininforMapper extends BaseMapperPlus<SysLogininforMapper,
      * @param logininfor
      * @return {@link SysLogininfor}
      */
-    List<SysLogininfor> queryList(SysLogininfor logininfor);
+    List<SysLogininforVo> queryList(SysLogininforBo logininfor);
 }

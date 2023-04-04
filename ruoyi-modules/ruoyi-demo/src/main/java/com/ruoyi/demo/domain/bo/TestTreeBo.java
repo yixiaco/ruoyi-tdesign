@@ -2,12 +2,12 @@ package com.ruoyi.demo.domain.bo;
 
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
-import com.ruoyi.common.mybatis.core.domain.TreeEntity;
+import com.ruoyi.common.mybatis.core.domain.BaseEntity;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
 import java.util.Date;
 
 /**
@@ -19,7 +19,7 @@ import java.util.Date;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class TestTreeBo extends TreeEntity<TestTreeBo> {
+public class TestTreeBo extends BaseEntity {
 
     /**
      * 主键

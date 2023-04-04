@@ -6,6 +6,7 @@ import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
+import com.ruoyi.common.core.constant.TenantConstants;
 import com.ruoyi.common.core.constant.UserConstants;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.utils.StreamUtils;
@@ -16,6 +17,7 @@ import com.ruoyi.common.log.annotation.Log;
 import com.ruoyi.common.log.enums.BusinessType;
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.common.satoken.utils.LoginHelper;
+import com.ruoyi.common.tenant.helper.TenantHelper;
 import com.ruoyi.common.web.core.BaseController;
 import com.ruoyi.system.domain.SysDept;
 import com.ruoyi.system.domain.SysRole;
@@ -31,6 +33,7 @@ import com.ruoyi.system.listener.SysUserImportListener;
 import com.ruoyi.system.service.ISysDeptService;
 import com.ruoyi.system.service.ISysPostService;
 import com.ruoyi.system.service.ISysRoleService;
+import com.ruoyi.system.service.ISysTenantService;
 import com.ruoyi.system.service.ISysUserService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -68,6 +71,8 @@ public class SysUserController extends BaseController {
     private ISysPostService postService;
     @Autowired
     private ISysDeptService deptService;
+    @Autowired
+    private ISysTenantService tenantService;
 
     /**
      * 获取用户列表
@@ -131,7 +136,7 @@ public class SysUserController extends BaseController {
         userService.checkUserDataScope(userId);
         SysUserInfoVo userInfoVo = new SysUserInfoVo();
         List<SysRoleVo> roles = roleService.selectRoleAll();
-        userInfoVo.setRoles(LoginHelper.isAdmin(userId) ? roles : StreamUtils.filter(roles, r -> !r.isAdmin()));
+        userInfoVo.setRoles(LoginHelper.isSuperAdmin(userId) ? roles : StreamUtils.filter(roles, r -> !r.isSuperAdmin()));
         userInfoVo.setPosts(postService.selectPostAll());
         if (ObjectUtil.isNotNull(userId)) {
             SysUserVo sysUser = userService.selectUserById(userId);
@@ -157,6 +162,12 @@ public class SysUserController extends BaseController {
         } else if (StringUtils.isNotEmpty(user.getEmail())
             && UserConstants.NOT_UNIQUE.equals(userService.checkEmailUnique(user))) {
             return R.fail("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
+        }
+        if (TenantHelper.isEnable()) {
+            String status = tenantService.checkAccountBalance(LoginHelper.getTenantId());
+            if (TenantConstants.NOT_PASS.equals(status)) {
+                return R.fail("当前租户下用户名额不足，请联系管理员");
+            }
         }
         user.setPassword(BCrypt.hashpw(user.getPassword()));
         return toAjax(userService.insertUser(user));
@@ -235,7 +246,7 @@ public class SysUserController extends BaseController {
         List<SysRoleVo> roles = roleService.selectRolesByUserId(userId);
         SysUserInfoVo userInfoVo = new SysUserInfoVo();
         userInfoVo.setUser(user);
-        userInfoVo.setRoles(LoginHelper.isAdmin(userId) ? roles : StreamUtils.filter(roles, r -> !r.isAdmin()));
+        userInfoVo.setRoles(LoginHelper.isSuperAdmin(userId) ? roles : StreamUtils.filter(roles, r -> !r.isSuperAdmin()));
         return R.ok(userInfoVo);
     }
 

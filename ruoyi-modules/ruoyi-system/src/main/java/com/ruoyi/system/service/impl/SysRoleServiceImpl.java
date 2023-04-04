@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.constant.UserConstants;
 import com.ruoyi.common.core.exception.ServiceException;
 import com.ruoyi.common.core.utils.StreamUtils;
+import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.mybatis.core.page.PageQuery;
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.common.satoken.utils.LoginHelper;
@@ -96,7 +97,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         Set<String> permsSet = new HashSet<>();
         for (SysRoleVo perm : perms) {
             if (ObjectUtil.isNotNull(perm)) {
-                permsSet.addAll(Arrays.asList(perm.getRoleKey().trim().split(",")));
+                permsSet.addAll(StringUtils.splitList(perm.getRoleKey().trim()));
             }
         }
         return permsSet;
@@ -175,7 +176,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     @Override
     public void checkRoleAllowed(SysRoleBo role) {
-        if (ObjectUtil.isNotNull(role.getRoleId()) && role.isAdmin()) {
+        if (ObjectUtil.isNotNull(role.getRoleId()) && role.isSuperAdmin()) {
             throw new ServiceException("不允许操作超级管理员角色");
         }
     }
@@ -187,7 +188,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     @Override
     public void checkRoleDataScope(Long roleId) {
-        if (!LoginHelper.isAdmin()) {
+        if (!LoginHelper.isSuperAdmin()) {
             SysRoleBo role = new SysRoleBo();
             role.setRoleId(roleId);
             List<SysRoleVo> roles = this.selectRoleList(role);
@@ -300,7 +301,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     public int insertRoleDept(SysRoleBo role) {
         int rows = 1;
         // 新增角色与部门（数据权限）管理
-        List<SysRoleDept> list = new ArrayList<SysRoleDept>();
+        List<SysRoleDept> list = new ArrayList<>();
         for (Long deptId : role.getDeptIds()) {
             SysRoleDept rd = new SysRoleDept();
             rd.setRoleId(role.getRoleId());

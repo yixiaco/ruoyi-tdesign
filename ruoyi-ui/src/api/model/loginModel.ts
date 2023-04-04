@@ -21,6 +21,7 @@ export interface CaptchaImage {
 
 // 登录参数
 export interface LoginParam {
+  tenantId: string;
   username: string;
   password: string;
   code: string;
@@ -57,4 +58,12 @@ export interface LoginBody {
  */
 export interface RegisterBody extends LoginBody {
   userType: string;
+}
+/**
+ * 租户列表
+ */
+export interface TenantListVo {
+  tenantId?: string;
+  companyName?: string;
+  domain?: string;
 }

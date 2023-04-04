@@ -74,7 +74,7 @@ export const useTabsRouterStore = defineStore('tabsRouter', {
       this.tabRouterList = routeIdx === homeIdx ? homeRoute : homeRoute.concat([this.tabRouterList?.[routeIdx]]);
     },
     removeTabRouterList() {
-      this.tabRouterList = [];
+      this.tabRouterList = homeRoute;
     },
     initTabRouterList(newRoutes: TRouterInfo[]) {
       newRoutes?.forEach((route: TRouterInfo) => this.appendTabRouterList(route));

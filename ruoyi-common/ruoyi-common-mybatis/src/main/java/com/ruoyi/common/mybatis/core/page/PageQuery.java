@@ -114,12 +114,12 @@ public class PageQuery implements Serializable {
         orderBy = StringUtils.toUnderScoreCase(orderBy);
 
         // 兼容前端排序类型
-        isAsc = StringUtils.replaceEach(isAsc, new String[]{"ascending" , "descending" }, new String[]{"asc" , "desc" });
+        isAsc = StringUtils.replaceEach(isAsc, new String[]{"ascending", "descending"}, new String[]{"asc", "desc"});
 
-        String[] orderByArr = orderBy.split("," );
-        String[] isAscArr = isAsc.split("," );
+        String[] orderByArr = orderBy.split(StringUtils.SEPARATOR);
+        String[] isAscArr = isAsc.split(StringUtils.SEPARATOR);
         if (isAscArr.length != 1 && isAscArr.length != orderByArr.length) {
-            throw new ServiceException("排序参数有误" );
+            throw new ServiceException("排序参数有误");
         }
 
         List<OrderItem> list = new ArrayList<>();
@@ -132,7 +132,7 @@ public class PageQuery implements Serializable {
             } else if ("desc".equals(isAscStr)) {
                 list.add(OrderItem.desc(orderByStr));
             } else {
-                throw new ServiceException("排序参数有误" );
+                throw new ServiceException("排序参数有误");
             }
         }
         return list;
@@ -160,8 +160,8 @@ public class PageQuery implements Serializable {
                 if (orderItems != null) {
                     orderBy = orderItems
                         .stream()
-                        .map(orderItem -> orderItem.getColumn() + (orderItem.isAsc() ? " asc" : " desc" ))
-                        .collect(Collectors.joining("," ));
+                        .map(orderItem -> orderItem.getColumn() + (orderItem.isAsc() ? " asc" : " desc"))
+                        .collect(Collectors.joining(","));
                 }
                 PageHelper.startPage(pageNum, pageSize, orderBy);
             } else {
@@ -170,7 +170,7 @@ public class PageQuery implements Serializable {
             PageInfo<T> pageInfo = new PageInfo<>(supplier.get());
             TableDataInfo<T> rspData = new TableDataInfo<>();
             rspData.setCode(HttpStatus.HTTP_OK);
-            rspData.setMsg("查询成功" );
+            rspData.setMsg("查询成功");
             rspData.setRows(pageInfo.getList());
             rspData.setTotal(pageInfo.getTotal());
             return rspData;

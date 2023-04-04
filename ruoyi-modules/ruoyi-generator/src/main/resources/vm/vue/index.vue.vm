@@ -404,6 +404,7 @@ const daterange${AttrName} = ref([]);
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
 #foreach ($column in $columns)
+#if($column.isInsert || $column.isEdit)
 #if($column.required)
 #set($parentheseIndex=$column.columnComment.indexOf("（"))
 #if($parentheseIndex != -1)
@@ -412,6 +413,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
 #set($comment=$column.columnComment)
 #end
   $column.javaField: [{ required: true, message: '$comment不能为空', trigger: #if($column.htmlType == "select")'change'#else'blur'#end }],
+#end
 #end
 #end
 });
@@ -514,7 +516,15 @@ function getList() {
 
 // 表单重置
 function reset() {
-  form.value = {};
+  form.value = {
+#foreach ($column in $columns)
+#if($column.isInsert || $column.isEdit)
+#if($column.htmlType == "checkbox")
+    $column.javaField: []#if($foreach.count != $columns.size()),#end
+#end
+#end
+#end
+  };
   proxy.resetForm('${businessName}Ref');
 }
 

@@ -4,18 +4,16 @@ import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
-import com.fasterxml.jackson.annotation.JsonInclude;
 import com.ruoyi.common.core.constant.Constants;
 import com.ruoyi.common.core.constant.UserConstants;
 import com.ruoyi.common.core.utils.StringUtils;
-import com.ruoyi.common.mybatis.core.domain.TreeEntity;
+import com.ruoyi.common.mybatis.core.domain.BaseEntity;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Size;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 /**
  * 菜单权限表 sys_menu
@@ -26,7 +24,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("sys_menu")
-public class SysMenu extends TreeEntity<SysMenu> {
+public class SysMenu extends BaseEntity {
 
     /**
      * 菜单ID
@@ -103,6 +101,18 @@ public class SysMenu extends TreeEntity<SysMenu> {
      * 备注
      */
     private String remark;
+
+    /**
+     * 父菜单名称
+     */
+    @TableField(exist = false)
+    private String parentName;
+
+    /**
+     * 子菜单
+     */
+    @TableField(exist = false)
+    private List<SysMenu> children = new ArrayList<>();
 
     /**
      * 创建者

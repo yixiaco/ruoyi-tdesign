@@ -3,6 +3,8 @@ package com.ruoyi.system.service;
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.system.domain.SysOperLog;
+import com.ruoyi.system.domain.bo.SysOperLogBo;
+import com.ruoyi.system.domain.vo.SysOperLogVo;
 
 import java.util.List;
 
@@ -19,14 +21,14 @@ public interface ISysOperLogService extends IService<SysOperLog> {
      * @param operLog 操作日志对象
      * @return 操作日志集合
      */
-    TableDataInfo<SysOperLog> selectPageOperLogList(SysOperLog operLog);
+    TableDataInfo<SysOperLogVo> selectPageOperLogList(SysOperLogBo operLog);
 
     /**
      * 新增操作日志
      *
-     * @param operLog 操作日志对象
+     * @param bo 操作日志对象
      */
-    void insertOperlog(SysOperLog operLog);
+    void insertOperlog(SysOperLogBo bo);
 
     /**
      * 查询系统操作日志集合
@@ -34,7 +36,7 @@ public interface ISysOperLogService extends IService<SysOperLog> {
      * @param operLog 操作日志对象
      * @return 操作日志集合
      */
-    List<SysOperLog> selectOperLogList(SysOperLog operLog);
+    List<SysOperLogVo> selectOperLogList(SysOperLogBo operLog);
 
     /**
      * 批量删除系统操作日志
@@ -50,7 +52,7 @@ public interface ISysOperLogService extends IService<SysOperLog> {
      * @param operId 操作ID
      * @return 操作日志对象
      */
-    SysOperLog selectOperLogById(Long operId);
+    SysOperLogVo selectOperLogById(Long operId);
 
     /**
      * 清空操作日志

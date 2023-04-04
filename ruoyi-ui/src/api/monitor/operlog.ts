@@ -1,10 +1,10 @@
 import { request } from '@/utils/request';
-import { SysOperLog } from '@/api/monitor/model/operlogModel';
+import { SysOperLogBo, SysOperLogVo } from '@/api/monitor/model/operlogModel';
 import { R, TableDataInfo } from '@/api/model/resultModel';
 
 // 查询操作日志列表
-export function list(query: SysOperLog) {
-  return request.get<TableDataInfo<SysOperLog>>({
+export function list(query: SysOperLogBo) {
+  return request.get<TableDataInfo<SysOperLogVo>>({
     url: '/monitor/operlog/list',
     params: query,
   });

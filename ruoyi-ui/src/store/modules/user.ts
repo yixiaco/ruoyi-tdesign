@@ -8,6 +8,7 @@ import { R } from '@/api/model/resultModel';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
+    userId: undefined,
     token: getToken(),
     name: '',
     avatar: '',
@@ -29,12 +30,13 @@ export const useUserStore = defineStore('user', {
       });
     },
     login(userInfo: LoginParam) {
+      const tenantId = userInfo.tenantId.trim();
       const username = userInfo.username.trim();
       const { password } = userInfo;
       const { code } = userInfo;
       const { uuid } = userInfo;
       return new Promise<void>((resolve, reject) => {
-        login(username, password, code, uuid)
+        login(tenantId, username, password, code, uuid)
           .then((res) => {
             setToken(res.data.token);
             this.token = res.data.token;
@@ -59,6 +61,7 @@ export const useUserStore = defineStore('user', {
             } else {
               this.roles = ['ROLE_DEFAULT'];
             }
+            this.userId = user.userId;
             this.name = user.userName;
             this.avatar = avatar;
             resolve(res);

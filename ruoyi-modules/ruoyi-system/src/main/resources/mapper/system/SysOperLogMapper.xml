@@ -6,11 +6,13 @@
 
     <resultMap id="SysOperLogResult" autoMapping="true" type="com.ruoyi.system.domain.SysOperLog">
     </resultMap>
+    <resultMap id="SysOperLogResultVo" autoMapping="true" type="com.ruoyi.system.domain.vo.SysOperLogVo">
+    </resultMap>
 
     <sql id="selectSysOperLogVo">
         select sol.oper_id, sol.title, sol.business_type, sol.method, sol.request_method, sol.operator_type, sol.oper_name, sol.dept_name, sol.oper_url, sol.oper_ip, sol.oper_location, sol.oper_param, sol.json_result, sol.`status`, sol.error_msg, sol.oper_time from sys_oper_log sol
     </sql>
-    <select id="queryList" parameterType="com.ruoyi.system.domain.SysOperLog" resultMap="SysOperLogResult">
+    <select id="queryList" parameterType="com.ruoyi.system.domain.bo.SysOperLogBo" resultMap="SysOperLogResultVo">
         <include refid="selectSysOperLogVo"/>
         <where>
             <if test="title != null and title != ''"> and sol.title like concat('%', #{title}, '%')</if>

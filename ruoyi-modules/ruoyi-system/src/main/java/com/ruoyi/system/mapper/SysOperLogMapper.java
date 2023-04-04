@@ -2,6 +2,8 @@ package com.ruoyi.system.mapper;
 
 import com.ruoyi.common.mybatis.core.mapper.BaseMapperPlus;
 import com.ruoyi.system.domain.SysOperLog;
+import com.ruoyi.system.domain.bo.SysOperLogBo;
+import com.ruoyi.system.domain.vo.SysOperLogVo;
 
 import java.util.List;
 
@@ -10,7 +12,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysOperLogMapper extends BaseMapperPlus<SysOperLogMapper, SysOperLog, SysOperLog> {
+public interface SysOperLogMapper extends BaseMapperPlus<SysOperLogMapper, SysOperLog, SysOperLogVo> {
 
     /**
      * 查询操作日志记录列表
@@ -18,5 +20,5 @@ public interface SysOperLogMapper extends BaseMapperPlus<SysOperLogMapper, SysOp
      * @param operLog
      * @return {@link SysOperLog}
      */
-    List<SysOperLog> queryList(SysOperLog operLog);
+    List<SysOperLogVo> queryList(SysOperLogBo operLog);
 }

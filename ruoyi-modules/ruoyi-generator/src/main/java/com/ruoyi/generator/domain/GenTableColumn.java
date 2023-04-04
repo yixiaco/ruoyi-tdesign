@@ -7,11 +7,11 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.mybatis.core.domain.BaseEntity;
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.ibatis.type.JdbcType;
 
-import jakarta.validation.constraints.NotBlank;
 import java.util.Date;
 
 /**
@@ -253,7 +253,7 @@ public class GenTableColumn extends BaseEntity {
                 if (StringUtils.isNotEmpty(value)) {
                     Object startStr = value.subSequence(0, 1);
                     String endStr = value.substring(1);
-                    sb.append(startStr).append("=").append(endStr).append(",");
+                    sb.append(startStr).append("=").append(endStr).append(StringUtils.SEPARATOR);
                 }
             }
             return sb.deleteCharAt(sb.length() - 1).toString();

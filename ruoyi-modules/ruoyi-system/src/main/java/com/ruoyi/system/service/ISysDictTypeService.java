@@ -71,16 +71,6 @@ public interface ISysDictTypeService extends IService<SysDictType> {
     void deleteDictTypeByIds(Long[] dictIds);
 
     /**
-     * 加载字典缓存数据
-     */
-    void loadingDictCache();
-
-    /**
-     * 清空字典缓存数据
-     */
-    void clearDictCache();
-
-    /**
      * 重置字典缓存数据
      */
     void resetDictCache();
