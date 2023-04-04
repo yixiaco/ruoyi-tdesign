@@ -360,16 +360,16 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     /**
      * 修改用户头像
      *
-     * @param userName 用户名
-     * @param avatar   头像地址
+     * @param userId 用户名
+     * @param avatar 头像地址
      * @return 结果
      */
     @Override
-    public boolean updateUserAvatar(String userName, String avatar) {
+    public boolean updateUserAvatar(Long userId, Long avatar) {
         return baseMapper.update(null,
                                  new LambdaUpdateWrapper<SysUser>()
                                      .set(SysUser::getAvatar, avatar)
-                                     .eq(SysUser::getUserName, userName)) > 0;
+                                     .eq(SysUser::getUserId, userId)) > 0;
     }
 
     /**

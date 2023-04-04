@@ -124,7 +124,7 @@ public class SysProfileController extends BaseController {
             }
             SysOssVo oss = iSysOssService.upload(avatarfile);
             String avatar = oss.getUrl();
-            if (userService.updateUserAvatar(LoginHelper.getUsername(), avatar)) {
+            if (userService.updateUserAvatar(LoginHelper.getUserId(), oss.getOssId())) {
                 AvatarVo avatarVo = new AvatarVo();
                 avatarVo.setImgUrl(avatar);
                 return R.ok(avatarVo);

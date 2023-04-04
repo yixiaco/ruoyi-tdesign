@@ -97,7 +97,12 @@
           <t-tag v-if="row.accessPolicy === '2'" type="info">custom</t-tag>
         </template>
         <template #status="{ row }">
-          <t-switch v-model="row.status" :custom-value="['0', '1']" @change="handleStatusChange(row)"></t-switch>
+          <t-switch
+            v-model="row.status"
+            :custom-value="['0', '1']"
+            @change="handleStatusChange(row)"
+            @click.stop
+          ></t-switch>
         </template>
         <template #operation="{ row }">
           <t-space :size="8">

@@ -158,7 +158,7 @@ export default {
     });
   },
   // 确认窗体
-  confirm(content, onConfirm: Function, onCancel?: Function) {
+  confirm(content, onConfirm: Function, onClose?: Function) {
     const btn = reactive({
       content: '确定',
       loading: false,
@@ -178,7 +178,12 @@ export default {
       confirmBtn: btn,
       cancelBtn: '取消',
       theme: 'default',
-      onCancel: () => onCancel && onCancel(),
+      onClose: () => {
+        if (onClose != null) {
+          onClose();
+        }
+        instance.destroy();
+      },
     });
     return instance;
   },
