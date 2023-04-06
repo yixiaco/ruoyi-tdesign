@@ -6,6 +6,7 @@ import com.ruoyi.common.mybatis.core.mapper.BaseMapperPlus;
 import com.ruoyi.system.domain.SysRole;
 import com.ruoyi.system.domain.bo.SysRoleBo;
 import com.ruoyi.system.domain.vo.SysRoleVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -22,7 +23,7 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRoleMapper, SysRole, Sy
      * @param userId 用户ID
      * @return 角色列表
      */
-    List<SysRoleVo> selectRolePermissionByUserId(Long userId);
+    List<SysRoleVo> selectRolePermissionByUserId(@Param("userId") Long userId);
 
 
     /**
@@ -31,7 +32,7 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRoleMapper, SysRole, Sy
      * @param userId 用户ID
      * @return 选中角色ID列表
      */
-    List<Long> selectRoleListByUserId(Long userId);
+    List<Long> selectRoleListByUserId(@Param("userId") Long userId);
 
     /**
      * 根据用户ID查询角色
@@ -39,7 +40,7 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRoleMapper, SysRole, Sy
      * @param userName 用户名
      * @return 角色列表
      */
-    List<SysRoleVo> selectRolesByUserName(String userName);
+    List<SysRoleVo> selectRolesByUserName(@Param("userName") String userName);
 
     /**
      * 查询角色信息列表

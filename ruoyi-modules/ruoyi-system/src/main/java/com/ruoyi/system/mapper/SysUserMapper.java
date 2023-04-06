@@ -63,7 +63,7 @@ public interface SysUserMapper extends BaseMapperPlus<SysUserMapper, SysUser, Sy
      * @param userName 用户名
      * @return 用户对象信息
      */
-    SysUserVo selectUserByUserName(String userName);
+    SysUserVo selectUserByUserName(@Param("userName") String userName);
 
     /**
      * 通过手机号查询用户
@@ -71,7 +71,7 @@ public interface SysUserMapper extends BaseMapperPlus<SysUserMapper, SysUser, Sy
      * @param phonenumber 手机号
      * @return 用户对象信息
      */
-    SysUserVo selectUserByPhonenumber(String phonenumber);
+    SysUserVo selectUserByPhonenumber(@Param("phonenumber") String phonenumber);
 
     /**
      * 通过用户名查询用户(不走租户插件)
@@ -81,7 +81,7 @@ public interface SysUserMapper extends BaseMapperPlus<SysUserMapper, SysUser, Sy
      * @return 用户对象信息
      */
     @InterceptorIgnore(tenantLine = "true")
-    SysUserVo selectTenantUserByUserName(String userName, String tenantId);
+    SysUserVo selectTenantUserByUserName(@Param("userName") String userName, @Param("tenantId") String tenantId);
 
     /**
      * 通过手机号查询用户(不走租户插件)
@@ -91,7 +91,7 @@ public interface SysUserMapper extends BaseMapperPlus<SysUserMapper, SysUser, Sy
      * @return 用户对象信息
      */
     @InterceptorIgnore(tenantLine = "true")
-    SysUserVo selectTenantUserByPhonenumber(String phonenumber, String tenantId);
+    SysUserVo selectTenantUserByPhonenumber(@Param("phonenumber") String phonenumber, @Param("tenantId") String tenantId);
 
     /**
      * 通过用户ID查询用户
@@ -99,6 +99,6 @@ public interface SysUserMapper extends BaseMapperPlus<SysUserMapper, SysUser, Sy
      * @param userId 用户ID
      * @return 用户对象信息
      */
-    SysUserVo selectUserById(Long userId);
+    SysUserVo selectUserById(@Param("userId") Long userId);
 
 }

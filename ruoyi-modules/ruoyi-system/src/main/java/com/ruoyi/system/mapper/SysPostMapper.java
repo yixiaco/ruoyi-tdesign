@@ -4,6 +4,7 @@ import com.ruoyi.common.mybatis.core.mapper.BaseMapperPlus;
 import com.ruoyi.system.domain.SysPost;
 import com.ruoyi.system.domain.bo.SysPostBo;
 import com.ruoyi.system.domain.vo.SysPostVo;
+import org.apache.ibatis.annotations.Param;
 
 import java.util.List;
 
@@ -20,7 +21,7 @@ public interface SysPostMapper extends BaseMapperPlus<SysPostMapper, SysPost, Sy
      * @param userId 用户ID
      * @return 选中岗位ID列表
      */
-    List<Long> selectPostListByUserId(Long userId);
+    List<Long> selectPostListByUserId(@Param("userId") Long userId);
 
     /**
      * 查询用户所属岗位组
@@ -28,7 +29,7 @@ public interface SysPostMapper extends BaseMapperPlus<SysPostMapper, SysPost, Sy
      * @param userName 用户名
      * @return 结果
      */
-    List<SysPostVo> selectPostsByUserName(String userName);
+    List<SysPostVo> selectPostsByUserName(@Param("userName") String userName);
 
     /**
      * 查询岗位信息列表
