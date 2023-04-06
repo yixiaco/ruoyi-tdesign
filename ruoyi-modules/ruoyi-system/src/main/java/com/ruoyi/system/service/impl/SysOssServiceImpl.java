@@ -130,8 +130,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
         oss.setService(storage.getConfigKey());
         oss.setSize(file.getSize());
         baseMapper.insert(oss);
-        SysOssVo sysOssVo = new SysOssVo();
-        MapstructUtils.convert(oss, sysOssVo);
+        SysOssVo sysOssVo = MapstructUtils.convert(oss, SysOssVo.class);
         return this.matchingUrl(sysOssVo);
     }
 

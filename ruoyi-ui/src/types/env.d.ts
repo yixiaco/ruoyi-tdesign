@@ -3,6 +3,8 @@ export interface ImportMetaEnv {
   readonly VITE_BASE_URL: string;
   /** 页面标题 */
   readonly VITE_APP_TITLE: string;
+  /** 企业名称 */
+  readonly VITE_APP_COMPANY_NAME: string;
   /** 应用访问路径 例如使用前缀 /admin/ */
   readonly VITE_APP_CONTEXT_PATH: string;
   /** Admin监控地址 */

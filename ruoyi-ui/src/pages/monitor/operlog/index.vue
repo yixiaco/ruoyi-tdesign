@@ -107,6 +107,7 @@
         <template #status="{ row }">
           <dict-tag :options="sys_common_status" :value="row.status" />
         </template>
+        <template #costTime="{ row }"> {{ row.costTime }} ms </template>
         <template #operation="{ row, index }">
           <t-space :size="8">
             <t-link
@@ -128,13 +129,19 @@
         <t-row :gutter="[0, 20]">
           <t-col :span="6">
             <t-form-item label="操作模块">{{ form.title }} / {{ typeFormat(form) }}</t-form-item>
-            <t-form-item label="登录信息"
-              >{{ form.operName }} / {{ form.operIp }} / {{ form.operLocation }}</t-form-item
-            >
+            <t-form-item label="登录信息">
+              {{ form.operName }} / {{ form.operIp }} / {{ form.operLocation }}
+            </t-form-item>
           </t-col>
           <t-col :span="6">
             <t-form-item label="请求地址">{{ form.operUrl }}</t-form-item>
             <t-form-item label="请求方式">{{ form.requestMethod }}</t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="操作类别">{{ form.operatorType }}</t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="业务类型"><dict-tag :options="sys_oper_type" :value="form.businessType" /></t-form-item>
           </t-col>
           <t-col :span="12">
             <t-form-item label="操作方法">{{ form.method }}</t-form-item>
@@ -153,6 +160,12 @@
           </t-col>
           <t-col :span="6">
             <t-form-item label="操作时间">{{ parseTime(form.operTime) }}</t-form-item>
+          </t-col>
+          <t-col :span="12">
+            <t-col :span="6">
+              <t-form-item label="消耗时间">{{ form.costTime }}ms</t-form-item>
+            </t-col>
+            <t-form-item label="错误消息">{{ form.errorMsg }}</t-form-item>
           </t-col>
           <t-col :span="12">
             <t-form-item v-if="form.status === 1" label="异常信息">{{ form.errorMsg }}</t-form-item>
@@ -199,6 +212,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作人员`, colKey: 'operName', align: 'center', ellipsis: true, width: 100, sorter: true },
   { title: `主机`, colKey: 'operIp', align: 'center', ellipsis: true, width: 130 },
   { title: `操作状态`, colKey: 'status', align: 'center' },
+  { title: `消耗时间`, colKey: 'costTime', align: 'center' },
   { title: `操作日期`, colKey: 'operTime', align: 'center', sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);

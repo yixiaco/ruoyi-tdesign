@@ -89,7 +89,7 @@ public interface ISysConfigService extends IService<SysConfig> {
      * @param config 参数信息
      * @return 结果
      */
-    String checkConfigKeyUnique(SysConfigBo config);
+    boolean checkConfigKeyUnique(SysConfigBo config);
 
     /**
      * 查询多个参数

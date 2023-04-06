@@ -180,13 +180,13 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
      * @return 结果
      */
     @Override
-    public String checkConfigKeyUnique(SysConfigBo config) {
+    public boolean checkConfigKeyUnique(SysConfigBo config) {
         long configId = ObjectUtil.isNull(config.getConfigId()) ? -1L : config.getConfigId();
         SysConfig info = baseMapper.selectOne(new LambdaQueryWrapper<SysConfig>().eq(SysConfig::getConfigKey, config.getConfigKey()));
         if (ObjectUtil.isNotNull(info) && !Objects.equals(info.getConfigId(), configId)) {
-            return UserConstants.NOT_UNIQUE;
+            return false;
         }
-        return UserConstants.UNIQUE;
+        return true;
     }
 
     /**

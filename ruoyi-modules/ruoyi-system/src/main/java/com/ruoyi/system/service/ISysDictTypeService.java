@@ -97,5 +97,5 @@ public interface ISysDictTypeService extends IService<SysDictType> {
      * @param dictType 字典类型
      * @return 结果
      */
-    String checkDictTypeUnique(SysDictTypeBo dictType);
+    boolean checkDictTypeUnique(SysDictTypeBo dictType);
 }

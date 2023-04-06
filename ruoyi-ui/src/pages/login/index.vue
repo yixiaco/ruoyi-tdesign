@@ -19,7 +19,9 @@
       <tdesign-setting />
     </div>
 
-    <footer class="copyright">Copyright @ 2021-2022 Tencent. All Rights Reserved</footer>
+    <footer class="copyright">
+      Copyright @ 2021-{{ new Date().getFullYear() }} {{ companyName }} All Rights Reserved
+    </footer>
   </div>
 </template>
 <script lang="ts">
@@ -36,6 +38,7 @@ import LoginHeader from './components/Header.vue';
 import TdesignSetting from '@/layouts/setting.vue';
 
 const title = ref(import.meta.env.VITE_APP_TITLE);
+const companyName = ref(import.meta.env.VITE_APP_COMPANY_NAME);
 // 注册开关
 const registerOpen = ref(false);
 const type = ref('login');

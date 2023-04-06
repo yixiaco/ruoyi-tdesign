@@ -20,9 +20,9 @@ export default {
       responseType: 'blob',
       headers: { Authorization: `Bearer ${getToken()}` },
     })
-      .then(async (res) => {
-        const isLogin = await blobValidate(res.data);
-        if (isLogin) {
+      .then((res) => {
+        const isBlob = blobValidate(res.data);
+        if (isBlob) {
           const blob = new Blob([res.data], { type: 'application/octet-stream' });
           this.saveAs(blob, decodeURI(res.headers['download-filename']));
         } else {
@@ -46,9 +46,9 @@ export default {
         Authorization: `Bearer ${getToken()}`,
         datasource: localStorage.getItem('dataName'),
       },
-    }).then(async (res) => {
-      const isLogin = await blobValidate(res.data);
-      if (isLogin) {
+    }).then((res) => {
+      const isBlob = blobValidate(res.data);
+      if (isBlob) {
         const blob = new Blob([res.data], { type: 'application/zip' });
         this.saveAs(blob, name);
       } else {

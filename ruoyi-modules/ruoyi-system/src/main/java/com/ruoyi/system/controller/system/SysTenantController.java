@@ -4,7 +4,6 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import com.baomidou.lock.annotation.Lock4j;
 import com.ruoyi.common.core.constant.TenantConstants;
-import com.ruoyi.common.core.constant.UserConstants;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.exception.ServiceException;
 import com.ruoyi.common.core.validate.AddGroup;
@@ -28,7 +27,14 @@ import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
@@ -91,13 +97,13 @@ public class SysTenantController extends BaseController {
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody SysTenantBo bo) {
-        if (TenantConstants.NOT_PASS.equals(sysTenantService.checkCompanyNameUnique(bo))) {
+        if (!sysTenantService.checkCompanyNameUnique(bo)) {
             throw new ServiceException("新增租户'" + bo.getCompanyName() + "'失败，企业名称已存在");
         }
         SysUserBo userBo = new SysUserBo();
         userBo.setUserName(bo.getUsername());
         // 判断用户名是否重复
-        if (UserConstants.NOT_UNIQUE.equals(sysUserService.checkUserNameUnique(userBo))) {
+        if (!sysUserService.checkUserNameUnique(userBo)) {
             throw new ServiceException("新增用户'" + bo.getUsername() + "'失败，登录账号已存在");
         }
         return toAjax(sysTenantService.insertByBo(bo));
@@ -112,7 +118,7 @@ public class SysTenantController extends BaseController {
     @RepeatSubmit()
     @PutMapping()
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody SysTenantBo bo) {
-        if (UserConstants.NOT_UNIQUE.equals(sysTenantService.checkCompanyNameUnique(bo))) {
+        if (!sysTenantService.checkCompanyNameUnique(bo)) {
             throw new ServiceException("修改租户'" + bo.getCompanyName() + "'失败，公司名称已存在");
         }
         return toAjax(sysTenantService.updateByBo(bo));

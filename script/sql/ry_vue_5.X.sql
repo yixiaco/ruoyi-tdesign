@@ -512,7 +512,11 @@ create table sys_oper_log (
   status            int(1)          default 0                  comment '操作状态（0正常 1异常）',
   error_msg         varchar(2000)   default ''                 comment '错误消息',
   oper_time         datetime                                   comment '操作时间',
-  primary key (oper_id)
+  cost_time         bigint(20)      default 0                  comment '消耗时间',
+  primary key (oper_id),
+  key idx_sys_oper_log_bt (business_type),
+  key idx_sys_oper_log_s  (status),
+  key idx_sys_oper_log_ot (oper_time)
 ) engine=innodb comment = '操作日志记录';
 
 
@@ -585,9 +589,9 @@ insert into sys_dict_data values(14, '000000', 1,  '通知',     '1',       'sys
 insert into sys_dict_data values(15, '000000', 2,  '公告',     '2',       'sys_notice_type',     '',   'success', 'N', '0', 103, 1, sysdate(), null, null, '公告');
 insert into sys_dict_data values(16, '000000', 1,  '正常',     '0',       'sys_notice_status',   '',   'primary', 'Y', '0', 103, 1, sysdate(), null, null, '正常状态');
 insert into sys_dict_data values(17, '000000', 2,  '关闭',     '1',       'sys_notice_status',   '',   'danger',  'N', '0', 103, 1, sysdate(), null, null, '关闭状态');
-insert into sys_dict_data values(29, '000000', 99, '其他',     '0',       'sys_oper_type',       '',   'info',    'N', '0', 103, 1, sysdate(), null, null, '其他操作');
-insert into sys_dict_data values(18, '000000', 1,  '新增',     '1',       'sys_oper_type',       '',   'info',    'N', '0', 103, 1, sysdate(), null, null, '新增操作');
-insert into sys_dict_data values(19, '000000', 2,  '修改',     '2',       'sys_oper_type',       '',   'info',    'N', '0', 103, 1, sysdate(), null, null, '修改操作');
+insert into sys_dict_data values(29, '000000', 99, '其他',     '0',       'sys_oper_type',       '',   'primary', 'N', '0', 103, 1, sysdate(), null, null, '其他操作');
+insert into sys_dict_data values(18, '000000', 1,  '新增',     '1',       'sys_oper_type',       '',   'primary', 'N', '0', 103, 1, sysdate(), null, null, '新增操作');
+insert into sys_dict_data values(19, '000000', 2,  '修改',     '2',       'sys_oper_type',       '',   'primary', 'N', '0', 103, 1, sysdate(), null, null, '修改操作');
 insert into sys_dict_data values(20, '000000', 3,  '删除',     '3',       'sys_oper_type',       '',   'danger',  'N', '0', 103, 1, sysdate(), null, null, '删除操作');
 insert into sys_dict_data values(21, '000000', 4,  '授权',     '4',       'sys_oper_type',       '',   'primary', 'N', '0', 103, 1, sysdate(), null, null, '授权操作');
 insert into sys_dict_data values(22, '000000', 5,  '导出',     '5',       'sys_oper_type',       '',   'warning', 'N', '0', 103, 1, sysdate(), null, null, '导出操作');
@@ -641,7 +645,9 @@ create table sys_logininfor (
   status         char(1)        default '0'               comment '登录状态（0成功 1失败）',
   msg            varchar(255)   default ''                comment '提示消息',
   login_time     datetime                                 comment '访问时间',
-  primary key (info_id)
+  primary key (info_id),
+  key idx_sys_logininfor_s  (status),
+  key idx_sys_logininfor_lt (login_time)
 ) engine=innodb comment = '系统访问记录';
 
 
@@ -777,7 +783,7 @@ create table sys_oss_config (
   create_time     datetime                default null    comment '创建时间',
   update_by       bigint(20)              default null    comment '更新者',
   update_time     datetime                default null    comment '更新时间',
-  remark           varchar(500)           default null    comment '备注',
+  remark          varchar(500)           default null    comment '备注',
   primary key (oss_config_id)
 ) engine=innodb comment='对象存储配置表';
 

@@ -60,7 +60,7 @@ public interface ISysPostService extends IService<SysPost> {
      * @param post 岗位信息
      * @return 结果
      */
-    String checkPostNameUnique(SysPostBo post);
+    boolean checkPostNameUnique(SysPostBo post);
 
     /**
      * 校验岗位编码
@@ -68,7 +68,7 @@ public interface ISysPostService extends IService<SysPost> {
      * @param post 岗位信息
      * @return 结果
      */
-    String checkPostCodeUnique(SysPostBo post);
+    boolean checkPostCodeUnique(SysPostBo post);
 
     /**
      * 通过岗位ID查询岗位使用数量

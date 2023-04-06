@@ -144,5 +144,5 @@ public interface ISysMenuService extends IService<SysMenu> {
      * @param menu 菜单信息
      * @return 结果
      */
-    String checkMenuNameUnique(SysMenuBo menu);
+    boolean checkMenuNameUnique(SysMenuBo menu);
 }

@@ -11,7 +11,7 @@ const modules = import.meta.glob('./../../pages/**/*.vue');
 
 export const usePermissionStore = defineStore('permission', {
   state: () => ({
-    whiteListRouters: ['/login', '/auth-redirect', '/bind', '/register'],
+    whiteListRouters: ['/login', '/register'],
     routers: [],
     addRoutes: [],
     defaultRoutes: [],

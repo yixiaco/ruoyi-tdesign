@@ -3,7 +3,9 @@
     <t-row :gutter="[20, 20]">
       <t-col :span="12">
         <t-card hover-shadow>
-          <template #header><span>基本信息</span></template>
+          <template #header>
+            <t-space :size="4"><desktop-icon />基本信息</t-space>
+          </template>
           <t-form layout="inline">
             <t-row>
               <t-col :span="3">
@@ -75,7 +77,9 @@
 
       <t-col :span="6">
         <t-card hover-shadow>
-          <template #header><span>命令统计</span></template>
+          <template #header>
+            <t-space :size="4"><chart-pie-icon />命令统计</t-space>
+          </template>
           <div class="el-table el-table--enable-row-hover el-table--medium">
             <div ref="commandstats" style="height: 420px" />
           </div>
@@ -85,7 +89,7 @@
       <t-col :span="6">
         <t-card hover-shadow>
           <template #header>
-            <span>内存信息</span>
+            <t-space :size="4"><dashboard-icon />内存信息</t-space>
           </template>
           <div class="el-table el-table--enable-row-hover el-table--medium">
             <div ref="usedmemory" style="height: 420px" />
@@ -103,6 +107,7 @@ export default {
 <script lang="ts" setup>
 import * as echarts from 'echarts';
 import { getCurrentInstance, ref } from 'vue';
+import { ChartPieIcon, DashboardIcon, DesktopIcon } from 'tdesign-icons-vue-next';
 import { getCache } from '@/api/monitor/cache';
 import { SysCacheInfo } from '@/api/monitor/model/cacheModel';
 

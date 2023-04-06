@@ -136,5 +136,9 @@ public class SysOperLogVo implements Serializable {
     @ExcelProperty(value = "操作时间")
     private Date operTime;
 
-
+    /**
+     * 消耗时间
+     */
+    @ExcelProperty(value = "消耗时间")
+    private Long costTime;
 }

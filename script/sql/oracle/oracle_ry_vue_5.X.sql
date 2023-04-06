@@ -646,10 +646,14 @@ create table sys_oper_log (
   json_result       varchar2(2100)  default '',
   status            number(1)       default 0,
   error_msg         varchar2(2100)  default '',
-  oper_time         date
+  oper_time         date,
+  cost_time         number(20)      default 0
 );
 
 alter table sys_oper_log add constraint pk_sys_oper_log primary key (oper_id);
+create unique index idx_sys_oper_log_bt on sys_oper_log (business_type);
+create unique index idx_sys_oper_log_s on sys_oper_log (status);
+create unique index idx_sys_oper_log_ot on sys_oper_log (oper_time);
 
 comment on table  sys_oper_log                is '操作日志记录';
 comment on column sys_oper_log.oper_id        is '日志主键';
@@ -669,6 +673,7 @@ comment on column sys_oper_log.json_result    is '返回参数';
 comment on column sys_oper_log.status         is '操作状态（0正常 1异常）';
 comment on column sys_oper_log.error_msg      is '错误消息';
 comment on column sys_oper_log.oper_time      is '操作时间';
+comment on column sys_oper_log.cost_time      is '消耗时间';
 
 
 -- ----------------------------
@@ -769,9 +774,9 @@ insert into sys_dict_data values(14, '000000', 1,  '通知',     '1',       'sys
 insert into sys_dict_data values(15, '000000', 2,  '公告',     '2',       'sys_notice_type',     '',   'success', 'N', '0', 103, 1, sysdate, null, null, '公告');
 insert into sys_dict_data values(16, '000000', 1,  '正常',     '0',       'sys_notice_status',   '',   'primary', 'Y', '0', 103, 1, sysdate, null, null, '正常状态');
 insert into sys_dict_data values(17, '000000', 2,  '关闭',     '1',       'sys_notice_status',   '',   'danger',  'N', '0', 103, 1, sysdate, null, null, '关闭状态');
-insert into sys_dict_data values(29, '000000', 99, '其他',     '0',       'sys_oper_type',       '',   'info',    'N', '0', 103, 1, sysdate, null, null, '其他操作');
-insert into sys_dict_data values(18, '000000', 1,  '新增',     '1',       'sys_oper_type',       '',   'info',    'N', '0', 103, 1, sysdate, null, null, '新增操作');
-insert into sys_dict_data values(19, '000000', 2,  '修改',     '2',       'sys_oper_type',       '',   'info',    'N', '0', 103, 1, sysdate, null, null, '修改操作');
+insert into sys_dict_data values(29, '000000', 99, '其他',     '0',       'sys_oper_type',       '',   'primary', 'N', '0', 103, 1, sysdate, null, null, '其他操作');
+insert into sys_dict_data values(18, '000000', 1,  '新增',     '1',       'sys_oper_type',       '',   'primary', 'N', '0', 103, 1, sysdate, null, null, '新增操作');
+insert into sys_dict_data values(19, '000000', 2,  '修改',     '2',       'sys_oper_type',       '',   'primary', 'N', '0', 103, 1, sysdate, null, null, '修改操作');
 insert into sys_dict_data values(20, '000000', 3,  '删除',     '3',       'sys_oper_type',       '',   'danger',  'N', '0', 103, 1, sysdate, null, null, '删除操作');
 insert into sys_dict_data values(21, '000000', 4,  '授权',     '4',       'sys_oper_type',       '',   'primary', 'N', '0', 103, 1, sysdate, null, null, '授权操作');
 insert into sys_dict_data values(22, '000000', 5,  '导出',     '5',       'sys_oper_type',       '',   'warning', 'N', '0', 103, 1, sysdate, null, null, '导出操作');
@@ -840,6 +845,8 @@ create table sys_logininfor (
 );
 
 alter table sys_logininfor add constraint pk_sys_logininfor primary key (info_id);
+create unique index idx_sys_logininfor_s on sys_logininfor (status);
+create unique index idx_sys_logininfor_lt on sys_logininfor (login_time);
 
 comment on table  sys_logininfor                is '系统访问记录';
 comment on column sys_logininfor.info_id        is '访问ID';
