@@ -3,15 +3,13 @@ package com.ruoyi.common.satoken.utils;
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.json.JSONObject;
 import com.ruoyi.common.core.constant.TenantConstants;
 import com.ruoyi.common.core.constant.UserConstants;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.enums.DeviceType;
 import com.ruoyi.common.core.enums.UserType;
-import com.ruoyi.common.core.exception.UtilException;
-import com.ruoyi.common.core.utils.StringUtils;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
@@ -32,8 +30,9 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginHelper {
 
-    public static final String JOIN_CODE = ":";
     public static final String LOGIN_USER_KEY = "loginUser";
+    public static final String TENANT_KEY = "tenantId";
+    public static final String USER_KEY = "userId";
 
     /**
      * 登录系统
@@ -41,8 +40,7 @@ public class LoginHelper {
      * @param loginUser 登录用户信息
      */
     public static void login(LoginUser loginUser) {
-        SaHolder.getStorage().set(LOGIN_USER_KEY, loginUser);
-        StpUtil.login(loginUser.getLoginId(), new SaLoginModel().setExtra(LOGIN_USER_KEY, loginUser));
+        loginByDevice(loginUser, null);
     }
 
     /**
@@ -53,9 +51,14 @@ public class LoginHelper {
      */
     public static void loginByDevice(LoginUser loginUser, DeviceType deviceType) {
         SaHolder.getStorage().set(LOGIN_USER_KEY, loginUser);
-        StpUtil.login(loginUser.getLoginId(), new SaLoginModel()
-            .setDevice(deviceType.getDevice())
-            .setExtra(LOGIN_USER_KEY, loginUser));
+        SaLoginModel model = new SaLoginModel();
+        if (ObjectUtil.isNotNull(deviceType)) {
+            model.setDevice(deviceType.getDevice());
+        }
+        StpUtil.login(loginUser.getLoginId(),
+            model.setExtra(TENANT_KEY, loginUser.getTenantId())
+                .setExtra(USER_KEY, loginUser.getUserId()));
+        StpUtil.getTokenSession().set(LOGIN_USER_KEY, loginUser);
     }
 
     /**
@@ -66,45 +69,42 @@ public class LoginHelper {
         if (loginUser != null) {
             return loginUser;
         }
-        loginUser = ((JSONObject) StpUtil.getExtra(LOGIN_USER_KEY)).toBean(LoginUser.class);
+        loginUser = (LoginUser) StpUtil.getTokenSession().get(LOGIN_USER_KEY);
         SaHolder.getStorage().set(LOGIN_USER_KEY, loginUser);
         return loginUser;
+    }
+
+    /**
+     * 获取用户基于token
+     */
+    public static LoginUser getLoginUser(String token) {
+        return (LoginUser) StpUtil.getTokenSessionByToken(token).get(LOGIN_USER_KEY);
     }
 
     /**
      * 获取用户id
      */
     public static Long getUserId() {
-        LoginUser loginUser = getLoginUser();
-        if (ObjectUtil.isNull(loginUser)) {
-            String loginId = StpUtil.getLoginIdAsString();
-            String userId = null;
-            for (UserType value : UserType.values()) {
-                if (StringUtils.contains(loginId, value.getUserType())) {
-                    String[] strs = StringUtils.split(loginId, JOIN_CODE);
-                    // 用户id在总是在最后
-                    userId = strs[strs.length - 1];
-                }
-            }
-            if (StringUtils.isBlank(userId)) {
-                throw new UtilException("登录用户: LoginId异常 => " + loginId);
-            }
-            return Long.parseLong(userId);
+        Long userId;
+        try {
+            userId = Convert.toLong(StpUtil.getExtra(USER_KEY));
+        } catch (Exception e) {
+            return null;
         }
-        return loginUser.getUserId();
+        return userId;
     }
 
     /**
      * 获取租户ID
      */
     public static String getTenantId() {
-        LoginUser loginUser;
+        String tenantId;
         try {
-            loginUser = getLoginUser();
+            tenantId = (String) StpUtil.getExtra(TENANT_KEY);
         } catch (Exception e) {
             return null;
         }
-        return loginUser.getTenantId();
+        return tenantId;
     }
 
     /**

@@ -34,9 +34,10 @@ export function updateTenant(data: SysTenantBo) {
 }
 
 // 租户状态修改
-export function changeTenantStatus(id: number, status: '1' | '0') {
+export function changeTenantStatus(id: number, tenantId: string, status: string) {
   const data = {
     id,
+    tenantId,
     status,
   };
   return request.put({

@@ -19,9 +19,11 @@ import java.lang.annotation.Target;
 @Documented
 public @interface RateLimiter {
     /**
-     * 限流key,支持EL表达式
+     * 限流key
+     * 限流key,支持使用Spring el表达式来动态获取方法上的参数值
+     * 格式类似于  #code.id #{#code}
      */
-    String key() default GlobalConstants.RATE_LIMIT_KEY;
+    String key() default "";
 
     /**
      * 限流时间,单位秒

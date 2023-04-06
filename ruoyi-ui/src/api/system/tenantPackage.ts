@@ -34,7 +34,7 @@ export function updateTenantPackage(data: SysTenantPackageBo) {
 }
 
 // 租户套餐状态修改
-export function changePackageStatus(packageId: number, status: '1' | '0') {
+export function changePackageStatus(packageId: number, status: string) {
   const data = {
     packageId,
     status,

@@ -11,7 +11,6 @@ import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.core.utils.spring.SpringUtils;
 import com.ruoyi.common.redis.utils.RedisUtils;
 import com.ruoyi.common.satoken.utils.LoginHelper;
-import com.ruoyi.common.tenant.properties.TenantProperties;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

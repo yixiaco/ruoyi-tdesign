@@ -197,6 +197,9 @@ const sendCode = () => {
 function initTenantList() {
   getTenantList().then((res) => {
     tenantList.value = res.data;
+    if (tenantList.value != null && tenantList.value.length !== 0) {
+      formData.value.tenantId = tenantList.value[0].tenantId;
+    }
   });
 }
 

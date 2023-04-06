@@ -5,17 +5,15 @@ import com.ruoyi.common.translation.annotation.TranslationType;
 import com.ruoyi.common.translation.constant.TransConstant;
 import com.ruoyi.common.translation.core.TranslationInterface;
 import lombok.AllArgsConstructor;
-import org.springframework.stereotype.Component;
 
 /**
  * 部门翻译实现
  *
  * @author Lion Li
  */
-@Component
 @AllArgsConstructor
 @TranslationType(type = TransConstant.DEPT_ID_TO_NAME)
-public class DeptNameTranslationImpl implements TranslationInterface {
+public class DeptNameTranslationImpl implements TranslationInterface<String> {
 
     private final DeptService deptService;
 
