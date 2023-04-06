@@ -3,7 +3,7 @@ import { R, TableDataInfo } from '@/api/model/resultModel';
 import { SysTenantPackageBo, SysTenantPackageVo } from '@/api/system/model/tenantPackageModel';
 
 // 查询租户套餐列表
-export function listTenantPackage(query: SysTenantPackageBo) {
+export function listTenantPackage(query?: SysTenantPackageBo) {
   return request.get<TableDataInfo<SysTenantPackageVo>>({
     url: '/system/tenant/package/list',
     params: query,

@@ -108,5 +108,17 @@ public class SysTenantVo implements Serializable {
     @ExcelDictFormat(readConverterExp = "0=正常,1=停用")
     private String status;
 
+    /**
+     * 更新时间
+     */
+    @ExcelProperty(value = "更新时间")
+    private Date updateTime;
+
+    /**
+     * 创建时间
+     */
+    @ExcelProperty(value = "创建时间")
+    private Date createTime;
+
 
 }

@@ -113,6 +113,12 @@ public class SysUser extends TenantEntity {
     private String remark;
 
     /**
+     * 创建部门
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private Long createDept;
+
+    /**
      * 创建者
      */
     @TableField(fill = FieldFill.INSERT)

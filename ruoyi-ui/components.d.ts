@@ -32,6 +32,7 @@ declare module '@vue/runtime-core' {
     TCol: typeof import('tdesign-vue-next')['Col']
     TColorPickerPanel: typeof import('tdesign-vue-next')['ColorPickerPanel']
     TContent: typeof import('tdesign-vue-next')['Content']
+    TDatePicker: typeof import('tdesign-vue-next')['DatePicker']
     TDateRangePicker: typeof import('tdesign-vue-next')['DateRangePicker']
     TDialog: typeof import('tdesign-vue-next')['Dialog']
     TDivider: typeof import('tdesign-vue-next')['Divider']

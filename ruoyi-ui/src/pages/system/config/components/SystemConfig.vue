@@ -35,12 +35,6 @@
             <t-option label="浅色主题" value="theme-light" />
           </t-select>
         </t-form-item>
-        <t-form-item label="账号自助-验证码开关" name="sys.account.captchaEnabled">
-          <t-select v-model="form['sys.account.captchaEnabled']" auto-width>
-            <t-option label="开启" value="true" />
-            <t-option label="关闭" value="false" />
-          </t-select>
-        </t-form-item>
         <t-form-item label="账号自助-是否开启用户注册功能" name="sys.account.registerUser">
           <t-select v-model="form['sys.account.registerUser']" auto-width>
             <t-option label="开启" value="true" />
@@ -99,7 +93,6 @@ const form = ref<Record<string, string>>({
   'sys.index.skinName': 'skin-blue',
   'sys.user.initPassword': '123456',
   'sys.index.sideTheme': 'theme-dark',
-  'sys.account.captchaEnabled': 'true',
   'sys.account.registerUser': 'false',
   'sys.oss.previewListResource': 'true',
 });

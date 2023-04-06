@@ -115,6 +115,12 @@ public class SysMenu extends BaseEntity {
     private List<SysMenu> children = new ArrayList<>();
 
     /**
+     * 创建部门
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private Long createDept;
+
+    /**
      * 创建者
      */
     @TableField(fill = FieldFill.INSERT)

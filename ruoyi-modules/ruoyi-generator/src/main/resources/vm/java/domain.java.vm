@@ -68,7 +68,7 @@ public class ${ClassName} extends ${Entity} {
 #if($column.javaField=='version')
     @Version
 #end
-#if($column.javaField=="createBy" || $column.javaField=="createTime" || $column.javaField=="version")
+#if($column.javaField=="createBy" || $column.javaField=="createTime" || $column.javaField=="version" || $column.javaField=="createDept")
     @TableField(fill = FieldFill.INSERT)
 #end
 #if($column.javaField=="updateBy" || $column.javaField=="updateTime")
