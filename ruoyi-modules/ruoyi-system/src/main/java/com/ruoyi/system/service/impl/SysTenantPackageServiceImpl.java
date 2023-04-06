@@ -1,29 +1,29 @@
 package com.ruoyi.system.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
-import com.ruoyi.common.core.exception.ServiceException;
-import com.ruoyi.common.core.utils.StringUtils;
-import com.ruoyi.common.mybatis.core.page.TableDataInfo;
-import com.ruoyi.common.mybatis.core.page.PageQuery;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ruoyi.common.core.exception.ServiceException;
+import com.ruoyi.common.core.utils.MapstructUtils;
+import com.ruoyi.common.core.utils.StringUtils;
+import com.ruoyi.common.mybatis.core.page.PageQuery;
+import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.system.domain.SysTenant;
-import com.ruoyi.system.mapper.SysTenantMapper;
-import lombok.RequiredArgsConstructor;
-import org.springframework.stereotype.Service;
+import com.ruoyi.system.domain.SysTenantPackage;
 import com.ruoyi.system.domain.bo.SysTenantPackageBo;
 import com.ruoyi.system.domain.vo.SysTenantPackageVo;
-import com.ruoyi.system.domain.SysTenantPackage;
+import com.ruoyi.system.mapper.SysTenantMapper;
 import com.ruoyi.system.mapper.SysTenantPackageMapper;
 import com.ruoyi.system.service.ISysTenantPackageService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.util.Collection;
 
 /**
  * 租户套餐Service业务层处理
@@ -41,7 +41,7 @@ public class SysTenantPackageServiceImpl implements ISysTenantPackageService {
      * 查询租户套餐
      */
     @Override
-    public SysTenantPackageVo queryById(Long packageId){
+    public SysTenantPackageVo queryById(Long packageId) {
         return baseMapper.selectVoById(packageId);
     }
 
@@ -78,7 +78,7 @@ public class SysTenantPackageServiceImpl implements ISysTenantPackageService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean insertByBo(SysTenantPackageBo bo) {
-        SysTenantPackage add = BeanUtil.toBean(bo, SysTenantPackage.class);
+        SysTenantPackage add = MapstructUtils.convert(bo, SysTenantPackage.class);
         // 保存菜单id
         List<Long> menuIds = Arrays.asList(bo.getMenuIds());
         if (CollUtil.isNotEmpty(menuIds)) {
@@ -99,7 +99,7 @@ public class SysTenantPackageServiceImpl implements ISysTenantPackageService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateByBo(SysTenantPackageBo bo) {
-        SysTenantPackage update = BeanUtil.toBean(bo, SysTenantPackage.class);
+        SysTenantPackage update = MapstructUtils.convert(bo, SysTenantPackage.class);
         // 保存菜单id
         List<Long> menuIds = Arrays.asList(bo.getMenuIds());
         if (CollUtil.isNotEmpty(menuIds)) {
@@ -118,7 +118,7 @@ public class SysTenantPackageServiceImpl implements ISysTenantPackageService {
      */
     @Override
     public int updatePackageStatus(SysTenantPackageBo bo) {
-        SysTenantPackage tenantPackage = BeanUtil.toBean(bo, SysTenantPackage.class);
+        SysTenantPackage tenantPackage = MapstructUtils.convert(bo, SysTenantPackage.class);
         return baseMapper.updateById(tenantPackage);
     }
 
@@ -128,7 +128,7 @@ public class SysTenantPackageServiceImpl implements ISysTenantPackageService {
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if(isValid){
+        if (isValid) {
             boolean exists = tenantMapper.exists(new LambdaQueryWrapper<SysTenant>().in(SysTenant::getPackageId, ids));
             if (exists) {
                 throw new ServiceException("租户套餐已被使用");

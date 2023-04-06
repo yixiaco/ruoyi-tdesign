@@ -1,8 +1,10 @@
 package ${packageName}.domain.bo;
 
+import ${packageName}.domain.${ClassName};
 import com.ruoyi.common.mybatis.core.domain.BaseEntity;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
+import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import jakarta.validation.constraints.*;
@@ -20,6 +22,7 @@ import java.util.Date;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
+@AutoMapper(target = ${ClassName}.class, reverseConvertGenerate = false)
 public class ${ClassName}Bo extends BaseEntity {
 
 #foreach ($column in $columns)

@@ -1,12 +1,12 @@
 package com.ruoyi.system.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.constant.UserConstants;
 import com.ruoyi.common.core.exception.ServiceException;
+import com.ruoyi.common.core.utils.MapstructUtils;
 import com.ruoyi.common.core.utils.StreamUtils;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.mybatis.core.page.PageQuery;
@@ -218,7 +218,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int insertRole(SysRoleBo bo) {
-        SysRole role = BeanUtil.toBean(bo, SysRole.class);
+        SysRole role = MapstructUtils.convert(bo, SysRole.class);
         // 新增角色信息
         save(role);
         bo.setRoleId(role.getRoleId());
@@ -234,7 +234,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int updateRole(SysRoleBo bo) {
-        SysRole role = BeanUtil.toBean(bo, SysRole.class);
+        SysRole role = MapstructUtils.convert(bo, SysRole.class);
         // 修改角色信息
         baseMapper.updateById(role);
         // 删除角色与菜单关联
@@ -250,7 +250,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     @Override
     public int updateRoleStatus(SysRoleBo bo) {
-        SysRole role = BeanUtil.toBean(bo, SysRole.class);
+        SysRole role = MapstructUtils.convert(bo, SysRole.class);
         return baseMapper.updateById(role);
     }
 
@@ -263,7 +263,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int authDataScope(SysRoleBo bo) {
-        SysRole role = BeanUtil.toBean(bo, SysRole.class);
+        SysRole role = MapstructUtils.convert(bo, SysRole.class);
         // 修改角色信息
         baseMapper.updateById(role);
         // 删除角色与部门关联

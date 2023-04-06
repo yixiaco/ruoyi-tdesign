@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ruoyi.common.core.constant.CacheNames;
 import com.ruoyi.common.core.exception.ServiceException;
+import com.ruoyi.common.core.utils.MapstructUtils;
 import com.ruoyi.common.mybatis.core.page.PageQuery;
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.common.redis.utils.CacheUtils;
@@ -94,7 +95,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     @CachePut(cacheNames = CacheNames.SYS_DICT, key = "#bo.dictType")
     @Override
     public List<SysDictDataVo> insertDictData(SysDictDataBo bo) {
-        SysDictData data = BeanUtil.toBean(bo, SysDictData.class);
+        SysDictData data = MapstructUtils.convert(bo, SysDictData.class);
         int row = baseMapper.insert(data);
         if (row > 0) {
             return baseMapper.selectDictDataByType(data.getDictType());
@@ -111,7 +112,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     @CachePut(cacheNames = CacheNames.SYS_DICT, key = "#bo.dictType")
     @Override
     public List<SysDictDataVo> updateDictData(SysDictDataBo bo) {
-        SysDictData data = BeanUtil.toBean(bo, SysDictData.class);
+        SysDictData data = MapstructUtils.convert(bo, SysDictData.class);
         int row = baseMapper.updateById(data);
         if (row > 0) {
             return baseMapper.selectDictDataByType(data.getDictType());

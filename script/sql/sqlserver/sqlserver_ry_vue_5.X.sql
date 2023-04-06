@@ -1381,7 +1381,7 @@ GO
 
 INSERT sys_menu VALUES (1, N'系统管理', 0, 1, N'system', NULL, N'', 1, 0, N'M', N'0', N'0', N'', N'system', 103, 1, getdate(), NULL, NULL, N'系统管理目录')
 GO
-INSERT sys_menu VALUES (6, N'租户管理', 0, 2, N'tenant', NULL, N'', 1, 0, N'M', N'0', N'0', N'', N'chart', 103, 1, getdate(), NULL, NULL, N'租户管理目录')
+INSERT sys_menu VALUES (6, N'租户管理', 0, 2, N'tenant', NULL, N'', 1, 0, N'M', N'0', N'0', N'', N'chart-bar', 103, 1, getdate(), NULL, NULL, N'租户管理目录')
 GO
 INSERT sys_menu VALUES (2, N'系统监控', 0, 3, N'monitor', NULL, N'', 1, 0, N'M', N'0', N'0', N'', N'monitor', 103, 1, getdate(), NULL, NULL, N'系统监控目录')
 GO
@@ -1411,9 +1411,9 @@ INSERT sys_menu VALUES (114, N'表单构建', 3, 1, N'build', N'tool/build/index
 GO
 INSERT sys_menu VALUES (115, N'代码生成', 3, 2, N'gen', N'tool/gen/index', N'', 1, 0, N'C', N'0', N'0', N'tool:gen:list', N'code', 103, 1, getdate(), NULL, NULL, N'代码生成菜单')
 GO
-INSERT sys_menu VALUES (121, N'租户管理', 6, 1, N'tenant', N'system/tenant/index', N'', 1, 0, N'C', N'0', N'0', N'system:tenant:list', N'code', 103, 1, getdate(), NULL, NULL, N'租户管理菜单')
+INSERT sys_menu VALUES (121, N'租户管理', 6, 1, N'tenant', N'system/tenant/index', N'', 1, 0, N'C', N'0', N'0', N'system:tenant:list', N'bulletpoint', 103, 1, getdate(), NULL, NULL, N'租户管理菜单')
 GO
-INSERT sys_menu VALUES (122, N'租户套餐管理', 6, 2, N'tenantPackage', N'system/tenantPackage/index', N'', 1, 0, N'C', N'0', N'0', N'system:tenantPackage:list', N'code', 103, 1, getdate(), NULL, NULL, N'租户套餐管理菜单')
+INSERT sys_menu VALUES (122, N'租户套餐管理', 6, 2, N'tenantPackage', N'system/tenantPackage/index', N'', 1, 0, N'C', N'0', N'0', N'system:tenantPackage:list', N'edit-1', 103, 1, getdate(), NULL, NULL, N'租户套餐管理菜单')
 GO
 INSERT sys_menu VALUES (117, N'Admin监控', 2, 5, N'Admin', N'monitor/admin/index', N'', 1, 0, N'C', N'0', N'0', N'monitor:admin:list', N'dashboard', 103, 1, getdate(), NULL, NULL, N'Admin监控菜单');
 GO

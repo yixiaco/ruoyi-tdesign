@@ -1,6 +1,6 @@
 package ${packageName}.service.impl;
 
-import com.ruoyi.common.core.utils.BeanCopyUtils;
+import com.ruoyi.common.core.utils.MapstructUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 #if($table.crud || $table.sub)
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
@@ -11,9 +11,11 @@ import org.springframework.transaction.annotation.Transactional;
 import ${packageName}.domain.${ClassName};
 #if($useBO)
 #set($bo="${ClassName}Bo")
+#set($boObjName="bo")
 import ${packageName}.domain.bo.${ClassName}Bo;
 #else
 #set($bo=$ClassName)
+#set($boObjName="${className}")
 #end
 #if($useQuery)
 #set($query="${ClassName}Query")
@@ -84,34 +86,34 @@ public class ${ClassName}ServiceImpl extends ServiceImpl<${ClassName}Mapper, ${C
     /**
      * 根据新增业务对象插入${functionName}
      *
-     * @param bo ${functionName}新增业务对象
+     * @param ${boObjName} ${functionName}新增业务对象
      * @return Boolean
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean insertByBo(${bo} bo) {
+    public Boolean insertByBo(${bo} ${boObjName}) {
 #if($useBO)
-        ${ClassName} add = BeanCopyUtils.toBean(bo, ${ClassName}.class);
+        ${ClassName} add = MapstructUtils.convert(${boObjName}, ${ClassName}.class);
         return save(add);
 #else
-        return save(bo);
+        return save(${boObjName});
 #end
     }
 
     /**
      * 根据编辑业务对象修改${functionName}
      *
-     * @param bo ${functionName}编辑业务对象
+     * @param ${boObjName} ${functionName}编辑业务对象
      * @return Boolean
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean updateByBo(${bo} bo) {
+    public Boolean updateByBo(${bo} ${boObjName}) {
 #if($useBO)
-        ${ClassName} update = BeanCopyUtils.toBean(bo, ${ClassName}.class);
+        ${ClassName} update = MapstructUtils.convert(${boObjName}, ${ClassName}.class);
         return updateById(update);
 #else
-        return updateById(bo);
+        return updateById(${boObjName});
 #end
     }
 

@@ -2,12 +2,13 @@ package com.ruoyi.web.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
 import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.domain.model.LoginBody;
 import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.domain.model.SmsLoginBody;
+import com.ruoyi.common.core.utils.MapstructUtils;
+import com.ruoyi.common.core.utils.StreamUtils;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.satoken.utils.LoginHelper;
 import com.ruoyi.common.tenant.helper.TenantHelper;
@@ -19,10 +20,10 @@ import com.ruoyi.system.domain.vo.SysUserVo;
 import com.ruoyi.system.service.ISysMenuService;
 import com.ruoyi.system.service.ISysTenantService;
 import com.ruoyi.system.service.ISysUserService;
-import com.ruoyi.web.service.SysLoginService;
 import com.ruoyi.web.domain.vo.LoginVo;
 import com.ruoyi.web.domain.vo.TenantListVo;
 import com.ruoyi.web.domain.vo.UserInfoVo;
+import com.ruoyi.web.service.SysLoginService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -134,11 +135,11 @@ public class SysLoginController {
     @GetMapping("/tenant/list")
     public R<List<TenantListVo>> tenantList(HttpServletRequest request) throws Exception {
         List<SysTenantVo> tenantList = tenantService.queryList(new SysTenantBo());
-        List<TenantListVo> voList = BeanUtil.copyToList(tenantList, TenantListVo.class);
+        List<TenantListVo> voList = MapstructUtils.convert(tenantList, TenantListVo.class);
         // 获取域名
         String host = new URL(request.getRequestURL().toString()).getHost();
         // 根据域名进行筛选
-        List<TenantListVo> list = voList.stream().filter(vo -> StringUtils.equals(vo.getDomain(), host)).toList();
+        List<TenantListVo> list = StreamUtils.filter(voList, vo -> StringUtils.equals(vo.getDomain(), host));
         return R.ok(CollUtil.isNotEmpty(list) ? list : voList);
     }
 

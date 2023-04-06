@@ -12,6 +12,7 @@ import com.ruoyi.common.core.constant.CacheNames;
 import com.ruoyi.common.core.constant.UserConstants;
 import com.ruoyi.common.core.exception.ServiceException;
 import com.ruoyi.common.core.service.DeptService;
+import com.ruoyi.common.core.utils.MapstructUtils;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.core.utils.TreeBuildUtils;
 import com.ruoyi.common.core.utils.spring.SpringUtils;
@@ -63,12 +64,11 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     /**
      * 查询部门树结构信息
      *
-     * @param dept 部门信息
+     * @param bo 部门信息
      * @return 部门树信息集合
      */
     @Override
-    public List<Tree<Long>> selectDeptTreeList(SysDept dept) {
-        SysDeptBo bo = BeanUtil.toBean(dept, SysDeptBo.class);
+    public List<Tree<Long>> selectDeptTreeList(SysDeptBo bo) {
         List<SysDeptVo> depts = this.selectDeptList(bo);
         return buildDeptTreeSelect(BeanUtil.copyToList(depts, SysDept.class));
     }
@@ -226,7 +226,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         if (!UserConstants.DEPT_NORMAL.equals(info.getStatus())) {
             throw new ServiceException("部门停用，不允许新增");
         }
-        SysDept dept = BeanUtil.toBean(bo, SysDept.class);
+        SysDept dept = MapstructUtils.convert(bo, SysDept.class);
         dept.setAncestors(info.getAncestors() + StringUtils.SEPARATOR + dept.getParentId());
         return baseMapper.insert(dept);
     }
@@ -240,7 +240,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @CacheEvict(cacheNames = CacheNames.SYS_DEPT, key = "#bo.deptId")
     @Override
     public int updateDept(SysDeptBo bo) {
-        SysDept dept = BeanUtil.toBean(bo, SysDept.class);
+        SysDept dept = MapstructUtils.convert(bo, SysDept.class);
         SysDept newParentDept = baseMapper.selectById(dept.getParentId());
         SysDept oldDept = baseMapper.selectById(dept.getDeptId());
         if (ObjectUtil.isNotNull(newParentDept) && ObjectUtil.isNotNull(oldDept)) {

@@ -3,6 +3,8 @@ package com.ruoyi.demo.domain.bo;
 import com.ruoyi.common.core.validate.AddGroup;
 import com.ruoyi.common.core.validate.EditGroup;
 import com.ruoyi.common.mybatis.core.domain.BaseEntity;
+import com.ruoyi.demo.domain.TestTree;
+import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -19,6 +21,7 @@ import java.util.Date;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
+@AutoMapper(target = TestTree.class, reverseConvertGenerate = false)
 public class TestTreeBo extends BaseEntity {
 
     /**

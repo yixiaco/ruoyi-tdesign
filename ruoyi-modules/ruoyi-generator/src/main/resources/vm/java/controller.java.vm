@@ -22,9 +22,11 @@ import ${packageName}.domain.${ClassName};
 #end
 #if($useBO)
 #set($bo="${ClassName}Bo")
+#set($boObjName="bo")
 import ${packageName}.domain.bo.${ClassName}Bo;
 #else
 #set($bo=$ClassName)
+#set($boObjName="${className}")
 #end
 #if($useQuery)
 #set($query="${ClassName}Query")
@@ -103,8 +105,8 @@ public class ${ClassName}Controller extends BaseController {
     @Log(title = "${functionName}", businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping()
-    public R<Void> add(@Validated(AddGroup.class) @RequestBody ${bo} bo) {
-        return toAjax(${className}Service.insertByBo(bo));
+    public R<Void> add(@Validated(AddGroup.class) @RequestBody ${bo} $boObjName) {
+        return toAjax(${className}Service.insertByBo($boObjName));
     }
 
     /**
@@ -114,8 +116,8 @@ public class ${ClassName}Controller extends BaseController {
     @Log(title = "${functionName}", businessType = BusinessType.UPDATE)
     @RepeatSubmit()
     @PutMapping()
-    public R<Void> edit(@Validated(EditGroup.class) @RequestBody ${bo} bo) {
-        return toAjax(${className}Service.updateByBo(bo));
+    public R<Void> edit(@Validated(EditGroup.class) @RequestBody ${bo} $boObjName) {
+        return toAjax(${className}Service.updateByBo($boObjName));
     }
 
     /**

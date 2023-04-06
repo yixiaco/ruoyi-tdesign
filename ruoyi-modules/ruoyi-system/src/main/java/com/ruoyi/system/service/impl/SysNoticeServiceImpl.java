@@ -1,8 +1,7 @@
 package com.ruoyi.system.service.impl;
 
-import cn.hutool.core.bean.BeanUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.ruoyi.common.core.utils.BeanCopyUtils;
+import com.ruoyi.common.core.utils.MapstructUtils;
 import com.ruoyi.common.mybatis.core.page.PageQuery;
 import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.system.domain.SysNotice;
@@ -60,7 +59,7 @@ public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice
      */
     @Override
     public Boolean insertNotice(SysNoticeBo bo) {
-        SysNotice notice = BeanUtil.toBean(bo, SysNotice.class);
+        SysNotice notice = MapstructUtils.convert(bo, SysNotice.class);
         return save(notice);
     }
 
@@ -72,7 +71,7 @@ public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice
      */
     @Override
     public Boolean updateNotice(SysNoticeBo bo) {
-        SysNotice notice = BeanCopyUtils.toBean(bo, SysNotice.class);
+        SysNotice notice = MapstructUtils.convert(bo, SysNotice.class);
         return updateById(notice);
     }
 
