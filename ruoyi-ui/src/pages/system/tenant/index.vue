@@ -109,6 +109,14 @@
             <t-link v-hasPermi="['system:tenant:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
               <edit-icon />修改
             </t-link>
+            <t-link
+              v-hasPermi="['system:tenant:edit']"
+              theme="primary"
+              hover="color"
+              @click.stop="handleSyncTenantPackage(row)"
+            >
+              <edit-icon />同步套餐
+            </t-link>
             <t-link v-hasPermi="['system:tenant:remove']" theme="danger" hover="color" @click.stop="handleDelete(row)">
               <delete-icon />删除
             </t-link>
@@ -299,7 +307,15 @@ import {
   SettingIcon,
 } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
-import { listTenant, getTenant, delTenant, addTenant, updateTenant, changeTenantStatus } from '@/api/system/tenant';
+import {
+  listTenant,
+  getTenant,
+  delTenant,
+  addTenant,
+  updateTenant,
+  changeTenantStatus,
+  syncTenantPackage,
+} from '@/api/system/tenant';
 import { SysTenantBo, SysTenantVo } from '@/api/system/model/tenantModel';
 import { listTenantPackage } from '@/api/system/tenantPackage';
 import { SysTenantPackageVo } from '@/api/system/model/tenantPackageModel';
@@ -350,7 +366,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `租户状态`, colKey: 'status', align: 'center' },
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
   { title: `更新时间`, colKey: 'updateTime', align: 'center', width: 180 },
-  { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
+  { title: `操作`, colKey: 'operation', align: 'center', width: 260 },
 ]);
 // 提交表单对象
 const form = ref<SysTenantVo & SysTenantBo>({});
@@ -529,6 +545,23 @@ function handleDelete(row) {
       .then(() => {
         getList();
         proxy.$modal.msgSuccess('删除成功');
+      })
+      .finally(() => {
+        loading.value = false;
+        proxy.$modal.msgClose(msgLoading);
+      });
+  });
+}
+
+/** 同步租户套餐按钮操作 */
+function handleSyncTenantPackage(row) {
+  proxy.$modal.confirm(`是否确认同步租户套餐租户编号为"${row.tenantId}"的数据项？`, () => {
+    loading.value = true;
+    const msgLoading = proxy.$modal.msgLoading('正在同步中...');
+    return syncTenantPackage(row.tenantId, row.packageId)
+      .then(() => {
+        getList();
+        proxy.$modal.msgSuccess('同步成功');
       })
       .finally(() => {
         loading.value = false;
