@@ -55,7 +55,12 @@ export function resetForm(refName) {
   }
 }
 
-// 添加日期范围
+/**
+ * 添加日期范围,时间会自动填充时间后缀
+ * @param params
+ * @param dateRange
+ * @param propName
+ */
 export function addDateRange(params, dateRange: Array<any>, propName?) {
   const search = params;
   search.params =
@@ -69,6 +74,25 @@ export function addDateRange(params, dateRange: Array<any>, propName?) {
     [search.params[`begin${propName}`], search.params[`end${propName}`]] = dateRange.map(
       (item, index) => item && `${parseTime(item, '{y}-{m}-{d}')} ${index === 0 ? '00:00:00' : '23:59:59'}`,
     );
+  }
+  return search;
+}
+
+/**
+ * 添加日期范围（时间不会自动填充）
+ * @param params
+ * @param dateRange
+ * @param propName
+ */
+export function addDateRangeTime(params, dateRange: Array<any>, propName?) {
+  const search = params;
+  search.params =
+    typeof search.params === 'object' && search.params !== null && !Array.isArray(search.params) ? search.params : {};
+  dateRange = Array.isArray(dateRange) ? dateRange : [];
+  if (typeof propName === 'undefined') {
+    [search.params.beginTime, search.params.endTime] = dateRange;
+  } else {
+    [search.params[`begin${propName}`], search.params[`end${propName}`]] = dateRange;
   }
   return search;
 }
