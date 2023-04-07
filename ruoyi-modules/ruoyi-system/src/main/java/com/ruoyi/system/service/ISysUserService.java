@@ -115,9 +115,9 @@ public interface ISysUserService extends IService<SysUser> {
     /**
      * 校验用户是否允许操作
      *
-     * @param user 用户信息
+     * @param userId 用户ID
      */
-    void checkUserAllowed(SysUserBo user);
+    void checkUserAllowed(Long userId);
 
     /**
      * 校验用户是否有数据权限
@@ -161,10 +161,11 @@ public interface ISysUserService extends IService<SysUser> {
     /**
      * 修改用户状态
      *
-     * @param user 用户信息
+     * @param userId 用户ID
+     * @param status 帐号状态
      * @return 结果
      */
-    int updateUserStatus(SysUserBo user);
+    int updateUserStatus(Long userId, String status);
 
     /**
      * 修改用户基本信息
@@ -177,7 +178,7 @@ public interface ISysUserService extends IService<SysUser> {
     /**
      * 修改用户头像
      *
-     * @param userId 用户名
+     * @param userId 用户ID
      * @param avatar 头像地址
      * @return 结果
      */
@@ -186,19 +187,11 @@ public interface ISysUserService extends IService<SysUser> {
     /**
      * 重置用户密码
      *
-     * @param user 用户信息
-     * @return 结果
-     */
-    int resetPwd(SysUserBo user);
-
-    /**
-     * 重置用户密码
-     *
-     * @param userName 用户名
+     * @param userId   用户ID
      * @param password 密码
      * @return 结果
      */
-    int resetUserPwd(String userName, String password);
+    int resetUserPwd(Long userId, String password);
 
     /**
      * 通过用户ID删除用户

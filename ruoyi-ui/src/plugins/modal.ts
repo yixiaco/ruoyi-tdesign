@@ -7,6 +7,7 @@ import {
   FormItem,
   Input,
   DialogOptions,
+  DialogInstance,
 } from 'tdesign-vue-next';
 import { h, reactive, ref } from 'vue';
 import { TNode } from 'tdesign-vue-next/es/common';
@@ -45,7 +46,7 @@ export default {
   },
   // 弹出提示
   alert(content: DialogOptions | string) {
-    let instance;
+    let instance: DialogInstance;
     if (content instanceof Object) {
       instance = DialogPlugin.alert({
         onConfirm: () => {

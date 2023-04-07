@@ -16,6 +16,7 @@ import org.apache.ibatis.plugin.*;
 
 import java.lang.reflect.Field;
 import java.sql.Statement;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -60,7 +61,7 @@ public class MybatisDecryptInterceptor implements Interceptor {
             return;
         }
         if (sourceObject instanceof Map<?, ?> map) {
-            map.values().forEach(this::decryptHandler);
+            new HashSet<>(map.values()).forEach(this::decryptHandler);
             return;
         }
         if (sourceObject instanceof List<?> list) {

@@ -200,13 +200,15 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      */
     @Override
     public void checkDeptDataScope(Long deptId) {
-        if (!LoginHelper.isSuperAdmin()) {
-            SysDeptBo dept = new SysDeptBo();
-            dept.setDeptId(deptId);
-            List<SysDeptVo> depts = this.selectDeptList(dept);
-            if (CollUtil.isEmpty(depts)) {
-                throw new ServiceException("没有权限访问部门数据！");
-            }
+        if (ObjectUtil.isNull(deptId)) {
+            return;
+        }
+        if (LoginHelper.isSuperAdmin()) {
+            return;
+        }
+        SysDeptVo dept = baseMapper.selectDeptById(deptId);
+        if (ObjectUtil.isNull(dept)) {
+            throw new ServiceException("没有权限访问部门数据！");
         }
     }
 

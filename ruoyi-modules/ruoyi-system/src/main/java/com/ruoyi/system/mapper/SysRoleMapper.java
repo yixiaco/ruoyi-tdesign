@@ -34,6 +34,11 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRoleMapper, SysRole, Sy
      */
     List<Long> selectRoleListByUserId(@Param("userId") Long userId);
 
+    @DataPermission({
+        @DataColumn(key = "deptName", value = "d.dept_id")
+    })
+    SysRoleVo selectRoleById(@Param("roleId") Long roleId);
+
     /**
      * 根据用户ID查询角色
      *

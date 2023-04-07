@@ -21,7 +21,7 @@
           <search v-if="layout !== 'side'" :layout="layout" />
 
           <!-- 选择租户 -->
-          <dynamic-tenant />
+          <dynamic-tenant @dynamic-change="(value) => (dynamic = value)" />
 
           <!-- 全局通知 -->
           <notice />
@@ -39,7 +39,11 @@
           <t-dropdown :min-column-width="120" trigger="click">
             <template #dropdown>
               <t-dropdown-menu>
-                <t-dropdown-item class="operations-dropdown-container-item" @click="handleNav('/user/profile')">
+                <t-dropdown-item
+                  v-if="!dynamic"
+                  class="operations-dropdown-container-item"
+                  @click="handleNav('/user/profile')"
+                >
                   <t-icon name="user-circle"></t-icon>个人中心
                 </t-dropdown-item>
                 <t-dropdown-item class="operations-dropdown-container-item" @click="handleLogout">
@@ -75,7 +79,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
 import type { PropType } from 'vue';
 import { useRouter } from 'vue-router';
 import { getUserStore, useSettingStore, useUserStore } from '@/store';
@@ -124,6 +128,7 @@ const props = defineProps({
 
 const router = useRouter();
 const settingStore = useSettingStore();
+const dynamic = ref(false);
 
 const toggleSettingPanel = () => {
   settingStore.updateConfig({

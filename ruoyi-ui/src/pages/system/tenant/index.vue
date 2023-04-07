@@ -538,7 +538,7 @@ function submitForm({ validateResult, firstError }) {
 /** 删除按钮操作 */
 function handleDelete(row) {
   const $ids = row.id || ids.value;
-  proxy.$modal.confirm(`是否确认删除租户编号为${$ids}的数据项？`, () => {
+  proxy.$modal.confirm(`是否确认删除租户编号为${row.tenantId}的数据项？`, () => {
     loading.value = true;
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delTenant($ids)

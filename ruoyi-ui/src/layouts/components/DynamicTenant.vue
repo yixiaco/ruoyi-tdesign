@@ -30,18 +30,27 @@ const tenantList = ref([]);
 const tabsRouterStore = useTabsRouterStore();
 const router = useRouter();
 
-// 动态切换
+const emit = defineEmits(['dynamicChange']);
+
+/**
+ * 动态切换租户
+ */
 function dynamicTenantEvent() {
   if (tenantId.value != null && tenantId.value !== '') {
     dynamicTenant(tenantId.value).then(() => {
+      emit('dynamicChange', true);
       tabsRouterStore.removeTabRouterList();
       router.push('/');
     });
   }
 }
 
+/**
+ * 清理动态租户
+ */
 function dynamicClearEvent() {
   dynamicClear().then(() => {
+    emit('dynamicChange', false);
     tabsRouterStore.removeTabRouterList();
     router.push('/');
   });

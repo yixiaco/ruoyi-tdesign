@@ -507,7 +507,7 @@ function handleDelete(row) {
 /** 导出按钮操作 */
 function handleExport() {
   proxy.download(
-    'system/tenantPackage/export',
+    'system/tenant/package/export',
     {
       ...queryParams.value,
     },

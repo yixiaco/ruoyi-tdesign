@@ -19,6 +19,7 @@ import org.apache.ibatis.plugin.Signature;
 
 import java.lang.reflect.Field;
 import java.sql.PreparedStatement;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
@@ -69,7 +70,7 @@ public class MybatisEncryptInterceptor implements Interceptor {
             return;
         }
         if (sourceObject instanceof Map<?, ?> map) {
-            map.values().forEach(this::encryptHandler);
+            new HashSet<>(map.values()).forEach(this::encryptHandler);
             return;
         }
         if (sourceObject instanceof List<?> list) {
