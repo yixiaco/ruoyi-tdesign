@@ -45,7 +45,7 @@
 #elseif($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
         <t-form-item label="${comment}">
           <t-date-range-picker
-            v-model="daterange${AttrName}"
+            v-model="dateRange${AttrName}"
             style="width: 240px"
             allow-input
             clearable
@@ -397,7 +397,7 @@ const title = ref('');
 #foreach ($column in $columns)
 #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
-const daterange${AttrName} = ref([]);
+const dateRange${AttrName} = ref([]);
 #end
 #end
 
@@ -447,15 +447,6 @@ const form = ref<#if($useVO && $useBO)$vo & $bo#elseif($useVO)$vo#elseif($useBO)
 const queryParams = ref<${query}>({
   pageNum: 1,
   pageSize: 10,
-  params: {
-#foreach ($column in $columns)
-#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
-#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
-    begin${AttrName}: undefined,
-    end${AttrName}: undefined,
-#end
-#end
-  },
 #foreach ($column in $columns)
 #if($column.query)
   $column.javaField: undefined,
@@ -483,28 +474,8 @@ function getList() {
   loading.value = true;
 #foreach ($column in $columns)
 #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
-#set($existDatetime = true)
-#break
-#end
-#end
-#if($existDatetime)
-  queryParams.value.params = {
-#foreach ($column in $columns)
-#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
-    begin${AttrName}: undefined,
-    end${AttrName}: undefined,
-#end
-#end
-  };
-#end
-#foreach ($column in $columns)
-#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
-#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
-  if (daterange${AttrName}.value !== null && daterange${AttrName}.value.length !== 0) {
-    queryParams.value.params.begin${AttrName} = daterange${AttrName}.value[0];
-    queryParams.value.params.end${AttrName} = daterange${AttrName}.value[1];
-  }
+  proxy.addDateRange(queryParams.value, dateRange${AttrName}.value, '${AttrName}');
 #end
 #end
   list${BusinessName}(queryParams.value).then((response) => {
@@ -539,7 +510,7 @@ function resetQuery() {
 #foreach ($column in $columns)
 #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
-  daterange${AttrName}.value = [];
+  dateRange${AttrName}.value = [];
 #end
 #end
   proxy.resetForm('queryRef');

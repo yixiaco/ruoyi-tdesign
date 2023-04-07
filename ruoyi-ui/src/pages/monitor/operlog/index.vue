@@ -32,7 +32,7 @@
         </t-form-item>
         <t-form-item label="操作时间" style="width: 308px">
           <t-date-range-picker
-            v-model="dateRange"
+            v-model="dateRangeOperTime"
             allow-input
             clearable
             separator="-"
@@ -107,7 +107,7 @@
         <template #status="{ row }">
           <dict-tag :options="sys_common_status" :value="row.status" />
         </template>
-        <template #costTime="{ row }"> {{ row.costTime }} ms </template>
+        <template #costTime="{ row }"> {{ row.costTime }}毫秒 </template>
         <template #operation="{ row, index }">
           <t-space :size="8">
             <t-link
@@ -163,7 +163,7 @@
           </t-col>
           <t-col :span="12">
             <t-col :span="6">
-              <t-form-item label="消耗时间">{{ form.costTime }}ms</t-form-item>
+              <t-form-item label="消耗时间">{{ form.costTime }}毫秒</t-form-item>
             </t-col>
             <t-form-item label="错误消息">{{ form.errorMsg }}</t-form-item>
           </t-col>
@@ -198,7 +198,7 @@ const showSearch = ref(true);
 const ids = ref([]);
 const multiple = ref(true);
 const total = ref(0);
-const dateRange = ref([]);
+const dateRangeOperTime = ref([]);
 const defaultSort = ref({ sortBy: 'operTime', descending: true });
 const sort = ref({ ...defaultSort.value });
 
@@ -212,7 +212,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作人员`, colKey: 'operName', align: 'center', ellipsis: true, width: 100, sorter: true },
   { title: `主机`, colKey: 'operIp', align: 'center', ellipsis: true, width: 130 },
   { title: `操作状态`, colKey: 'status', align: 'center' },
-  { title: `消耗时间`, colKey: 'costTime', align: 'center' },
+  { title: `消耗时间`, colKey: 'costTime', align: 'center', sorter: true },
   { title: `操作日期`, colKey: 'operTime', align: 'center', sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
@@ -244,10 +244,11 @@ const pagination = computed(() => {
   };
 });
 
-/** 查询登录日志 */
+/** 查询操作日志 */
 function getList() {
   loading.value = true;
-  list(proxy.addDateRange(queryParams.value, dateRange.value)).then((response) => {
+  proxy.addDateRange(queryParams.value, dateRangeOperTime.value, 'OperTime');
+  list(queryParams.value).then((response) => {
     operlogList.value = response.rows;
     total.value = response.total;
     loading.value = false;
@@ -264,7 +265,7 @@ function handleQuery() {
 }
 /** 重置按钮操作 */
 function resetQuery() {
-  dateRange.value = [];
+  dateRangeOperTime.value = [];
   proxy.resetForm('queryRef');
   queryParams.value.pageNum = 1;
   handleSortChange({ ...defaultSort.value });

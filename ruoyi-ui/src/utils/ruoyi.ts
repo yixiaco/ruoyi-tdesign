@@ -56,15 +56,19 @@ export function resetForm(refName) {
 }
 
 // 添加日期范围
-export function addDateRange(params, dateRange, propName?) {
+export function addDateRange(params, dateRange: Array<any>, propName?) {
   const search = params;
   search.params =
     typeof search.params === 'object' && search.params !== null && !Array.isArray(search.params) ? search.params : {};
   dateRange = Array.isArray(dateRange) ? dateRange : [];
   if (typeof propName === 'undefined') {
-    [search.params.beginTime, search.params.endTime] = dateRange;
+    [search.params.beginTime, search.params.endTime] = dateRange.map(
+      (item, index) => item && `${parseTime(item, '{y}-{m}-{d}')} ${index === 0 ? '00:00:00' : '23:59:59'}`,
+    );
   } else {
-    [search.params[`begin${propName}`], search.params[`end${propName}`]] = dateRange;
+    [search.params[`begin${propName}`], search.params[`end${propName}`]] = dateRange.map(
+      (item, index) => item && `${parseTime(item, '{y}-{m}-{d}')} ${index === 0 ? '00:00:00' : '23:59:59'}`,
+    );
   }
   return search;
 }

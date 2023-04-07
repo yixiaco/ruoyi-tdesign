@@ -45,7 +45,7 @@
 #elseif($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
         <t-form-item label="${comment}">
           <t-date-range-picker
-            v-model="daterange${AttrName}"
+            v-model="dateRange${AttrName}"
             style="width: 240px"
             allow-input
             clearable
@@ -390,7 +390,7 @@ const ${businessName}Ref = ref<FormInstanceFunctions>(null);
 #foreach ($column in $columns)
 #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
-const daterange${AttrName} = ref([]);
+const dateRange${AttrName} = ref([]);
 #end
 #end
 const rules = ref<Record<string, Array<FormRule>>>({
@@ -479,9 +479,9 @@ function getList() {
 #foreach ($column in $columns)
 #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
-  if (daterange${AttrName}.value !== null && daterange${AttrName}.value.length !== 0) {
-    queryParams.value.params.begin${AttrName} = daterange${AttrName}.value[0];
-    queryParams.value.params.end${AttrName} = daterange${AttrName}.value[1];
+  if (dateRange${AttrName}.value !== null && dateRange${AttrName}.value.length !== 0) {
+    queryParams.value.params.begin${AttrName} = dateRange${AttrName}.value[0];
+    queryParams.value.params.end${AttrName} = dateRange${AttrName}.value[1];
   }
 #end
 #end
@@ -527,7 +527,7 @@ function resetQuery() {
 #foreach ($column in $columns)
 #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
-  daterange${AttrName}.value = [];
+  dateRange${AttrName}.value = [];
 #end
 #end
   proxy.resetForm('queryRef');
