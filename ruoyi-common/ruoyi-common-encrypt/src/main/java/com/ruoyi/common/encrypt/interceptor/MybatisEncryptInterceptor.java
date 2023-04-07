@@ -65,11 +65,17 @@ public class MybatisEncryptInterceptor implements Interceptor {
      * @param sourceObject 待加密对象
      */
     private void encryptHandler(Object sourceObject) {
+        if (ObjectUtil.isNull(sourceObject)) {
+            return;
+        }
         if (sourceObject instanceof Map<?, ?> map) {
             map.values().forEach(this::encryptHandler);
             return;
         }
         if (sourceObject instanceof List<?> list) {
+            if(CollectionUtil.isEmpty(list)) {
+                return;
+            }
             // 判断第一个元素是否含有注解。如果没有直接返回，提高效率
             Object firstItem = list.get(0);
             if (CollectionUtil.isEmpty(encryptorManager.getFieldCache(firstItem.getClass()))) {
