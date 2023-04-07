@@ -5,25 +5,19 @@ import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.domain.model.LoginBody;
-import com.ruoyi.common.core.domain.model.LoginUser;
+import com.ruoyi.common.core.domain.model.RegisterBody;
 import com.ruoyi.common.core.domain.model.SmsLoginBody;
 import com.ruoyi.common.core.utils.MapstructUtils;
 import com.ruoyi.common.core.utils.StreamUtils;
 import com.ruoyi.common.core.utils.StringUtils;
-import com.ruoyi.common.satoken.utils.LoginHelper;
-import com.ruoyi.common.tenant.helper.TenantHelper;
-import com.ruoyi.system.domain.SysMenu;
 import com.ruoyi.system.domain.bo.SysTenantBo;
-import com.ruoyi.system.domain.vo.RouterVo;
 import com.ruoyi.system.domain.vo.SysTenantVo;
-import com.ruoyi.system.domain.vo.SysUserVo;
-import com.ruoyi.system.service.ISysMenuService;
+import com.ruoyi.system.service.ISysConfigService;
 import com.ruoyi.system.service.ISysTenantService;
-import com.ruoyi.system.service.ISysUserService;
 import com.ruoyi.web.domain.vo.LoginVo;
 import com.ruoyi.web.domain.vo.TenantListVo;
-import com.ruoyi.web.domain.vo.UserInfoVo;
 import com.ruoyi.web.service.SysLoginService;
+import com.ruoyi.web.service.SysRegisterService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,26 +25,29 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URL;
 import java.util.List;
 
 /**
- * 登录验证
+ * 认证
  *
  * @author Lion Li
  */
+@SaIgnore
 @Validated
 @RestController
-public class SysLoginController {
+@RequestMapping("/auth")
+public class AuthController {
 
     @Autowired
     private SysLoginService loginService;
     @Autowired
-    private ISysMenuService menuService;
+    private SysRegisterService registerService;
     @Autowired
-    private ISysUserService userService;
+    private ISysConfigService configService;
     @Autowired
     private ISysTenantService tenantService;
 
@@ -71,7 +68,6 @@ public class SysLoginController {
      * @param body 登录信息
      * @return 结果
      */
-    @SaIgnore
     @PostMapping("/login")
     public R<LoginVo> login(@Validated @RequestBody LoginBody body) {
         LoginVo loginVo = new LoginVo();
@@ -90,7 +86,6 @@ public class SysLoginController {
      * @param body 登录信息
      * @return 结果
      */
-    @SaIgnore
     @PostMapping("/smsLogin")
     public R<LoginVo> smsLogin(@Validated @RequestBody SmsLoginBody body) {
         LoginVo loginVo = new LoginVo();
@@ -106,7 +101,6 @@ public class SysLoginController {
      * @param xcxCode 小程序code
      * @return 结果
      */
-    @SaIgnore
     @PostMapping("/xcxLogin")
     public R<LoginVo> xcxLogin(@NotBlank(message = "{xcx.code.not.blank}") String xcxCode) {
         LoginVo loginVo = new LoginVo();
@@ -119,7 +113,6 @@ public class SysLoginController {
     /**
      * 退出登录
      */
-    @SaIgnore
     @PostMapping("/logout")
     public R<Void> logout() {
         loginService.logout();
@@ -127,11 +120,22 @@ public class SysLoginController {
     }
 
     /**
+     * 用户注册
+     */
+    @PostMapping("/register")
+    public R<Void> register(@Validated @RequestBody RegisterBody user) {
+        if (!configService.selectRegisterEnabled(user.getTenantId())) {
+            return R.fail("当前系统没有开启注册功能！");
+        }
+        registerService.register(user);
+        return R.ok();
+    }
+
+    /**
      * 登录页面租户下拉框
      *
      * @return 租户列表
      */
-    @SaIgnore
     @GetMapping("/tenant/list")
     public R<List<TenantListVo>> tenantList(HttpServletRequest request) throws Exception {
         List<SysTenantVo> tenantList = tenantService.queryList(new SysTenantBo());
@@ -143,34 +147,4 @@ public class SysLoginController {
         return R.ok(CollUtil.isNotEmpty(list) ? list : voList);
     }
 
-    /**
-     * 获取用户信息
-     *
-     * @return 用户信息
-     */
-    @GetMapping("getInfo")
-    public R<UserInfoVo> getInfo() {
-        UserInfoVo userInfoVo = new UserInfoVo();
-        LoginUser loginUser = LoginHelper.getLoginUser();
-        if (TenantHelper.isEnable() && LoginHelper.isSuperAdmin()) {
-            // 超级管理员 如果重新加载用户信息需清除动态租户
-            TenantHelper.clearDynamic();
-        }
-        SysUserVo user = userService.selectUserById(loginUser.getUserId());
-        userInfoVo.setUser(user);
-        userInfoVo.setPermissions(loginUser.getMenuPermission());
-        userInfoVo.setRoles(loginUser.getRolePermission());
-        return R.ok(userInfoVo);
-    }
-
-    /**
-     * 获取路由信息
-     *
-     * @return 路由信息
-     */
-    @GetMapping("getRouters")
-    public R<List<RouterVo>> getRouters() {
-        List<SysMenu> menus = menuService.selectMenuTreeByUserId(LoginHelper.getUserId());
-        return R.ok(menuService.buildMenus(menus));
-    }
 }

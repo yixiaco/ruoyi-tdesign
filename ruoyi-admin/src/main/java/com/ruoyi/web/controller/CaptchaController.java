@@ -58,7 +58,7 @@ public class CaptchaController {
      * @param phonenumber 用户手机号
      */
     @SmsContextCache
-    @GetMapping("/captchaSms")
+    @GetMapping("/sms/code")
     public R<Void> smsCaptcha(@NotBlank(message = "{user.phonenumber.not.blank}")
                               String phonenumber) {
         String key = GlobalConstants.CAPTCHA_CODE_KEY + phonenumber;
@@ -79,7 +79,7 @@ public class CaptchaController {
     /**
      * 生成验证码
      */
-    @GetMapping("/captchaImage")
+    @GetMapping("/code")
     public R<CaptchaVo> getCode() {
         CaptchaVo captchaVo = new CaptchaVo();
         boolean captchaEnabled = captchaProperties.getEnable();

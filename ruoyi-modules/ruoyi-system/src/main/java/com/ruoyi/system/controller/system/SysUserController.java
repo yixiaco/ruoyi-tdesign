@@ -5,9 +5,8 @@ import cn.dev33.satoken.secure.BCrypt;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.ruoyi.common.core.constant.TenantConstants;
-import com.ruoyi.common.core.constant.UserConstants;
 import com.ruoyi.common.core.domain.R;
+import com.ruoyi.common.core.domain.model.LoginUser;
 import com.ruoyi.common.core.utils.MapstructUtils;
 import com.ruoyi.common.core.utils.StreamUtils;
 import com.ruoyi.common.core.utils.StringUtils;
@@ -19,7 +18,6 @@ import com.ruoyi.common.mybatis.core.page.TableDataInfo;
 import com.ruoyi.common.satoken.utils.LoginHelper;
 import com.ruoyi.common.tenant.helper.TenantHelper;
 import com.ruoyi.common.web.core.BaseController;
-import com.ruoyi.system.domain.SysDept;
 import com.ruoyi.system.domain.bo.SysDeptBo;
 import com.ruoyi.system.domain.bo.SysUserBo;
 import com.ruoyi.system.domain.vo.SysRoleVo;
@@ -27,6 +25,7 @@ import com.ruoyi.system.domain.vo.SysUserExportVo;
 import com.ruoyi.system.domain.vo.SysUserImportVo;
 import com.ruoyi.system.domain.vo.SysUserInfoVo;
 import com.ruoyi.system.domain.vo.SysUserVo;
+import com.ruoyi.system.domain.vo.UserInfoVo;
 import com.ruoyi.system.listener.SysUserImportListener;
 import com.ruoyi.system.service.ISysDeptService;
 import com.ruoyi.system.service.ISysPostService;
@@ -113,6 +112,26 @@ public class SysUserController extends BaseController {
     @PostMapping("/importTemplate")
     public void importTemplate(HttpServletResponse response) {
         ExcelUtil.exportExcel(new ArrayList<>(), "用户数据", SysUserImportVo.class, response);
+    }
+
+    /**
+     * 获取用户信息
+     *
+     * @return 用户信息
+     */
+    @GetMapping("/getInfo")
+    public R<UserInfoVo> getInfo() {
+        UserInfoVo userInfoVo = new UserInfoVo();
+        LoginUser loginUser = LoginHelper.getLoginUser();
+        if (TenantHelper.isEnable() && LoginHelper.isSuperAdmin()) {
+            // 超级管理员 如果重新加载用户信息需清除动态租户
+            TenantHelper.clearDynamic();
+        }
+        SysUserVo user = userService.selectUserById(loginUser.getUserId());
+        userInfoVo.setUser(user);
+        userInfoVo.setPermissions(loginUser.getMenuPermission());
+        userInfoVo.setRoles(loginUser.getRolePermission());
+        return R.ok(userInfoVo);
     }
 
     /**

@@ -1,5 +1,5 @@
 import { request } from '@/utils/request';
-import {CaptchaImage, LoginModel, RegisterBody, TenantListVo, UserInfo} from '@/api/model/loginModel';
+import { CaptchaImage, LoginModel, RegisterBody, TenantListVo, UserInfo } from '@/api/model/loginModel';
 import { R } from '@/api/model/resultModel';
 
 /**
@@ -7,7 +7,7 @@ import { R } from '@/api/model/resultModel';
  */
 export function isLogin() {
   return request.get<R<boolean>>({
-    url: '/isLogin',
+    url: '/auth/isLogin',
   });
 }
 
@@ -22,7 +22,7 @@ export function login(tenantId: string, username: string, password: string, code
   };
   return request.post<R<LoginModel>>(
     {
-      url: '/login',
+      url: '/auth/login',
       data,
     },
     {
@@ -35,7 +35,7 @@ export function login(tenantId: string, username: string, password: string, code
 export function register(data: RegisterBody) {
   return request.post<R<void>>(
     {
-      url: '/register',
+      url: '/auth/register',
       data,
     },
     {
@@ -47,14 +47,14 @@ export function register(data: RegisterBody) {
 // 获取用户详细信息
 export function getInfo() {
   return request.get<R<UserInfo>>({
-    url: '/getInfo',
+    url: '/system/user/getInfo',
   });
 }
 
 // 退出方法
 export function logout() {
   return request.post<R<void>>({
-    url: '/logout',
+    url: '/auth/logout',
   });
 }
 
@@ -62,7 +62,20 @@ export function logout() {
 export function getCodeImg() {
   return request.get<R<CaptchaImage>>(
     {
-      url: '/captchaImage',
+      url: '/code',
+      timeout: 20000,
+    },
+    {
+      withToken: false,
+    },
+  );
+}
+
+// 短信验证码
+export function getCodeSms() {
+  return request.get<R<void>>(
+    {
+      url: '/sms/code',
       timeout: 20000,
     },
     {
@@ -75,7 +88,7 @@ export function getCodeImg() {
 export function getTenantList() {
   return request.get<R<Array<TenantListVo>>>(
     {
-      url: '/tenant/list',
+      url: '/auth/tenant/list',
     },
     {
       withToken: false,
