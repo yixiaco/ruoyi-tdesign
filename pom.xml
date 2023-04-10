@@ -10,7 +10,7 @@
 
     <name>ruoyi-tdesign</name>
     <url>https://gitee.com/yixiacoco/ruoyi-tdesign</url>
-    <description>ruoyi-tdesign后台管理系统</description>
+    <description>ruoyi-tdesign多租户管理系统</description>
 
     <properties>
         <revision>1.0.0-5.0.0</revision>

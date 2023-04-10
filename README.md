@@ -18,7 +18,7 @@
 |----------|---------------------|-------------------------------------------------------------------------------------------------|-------------------------------|
 | 当前框架     | ruoyi-tdesign       | [ruoyi-tdesign文档](https://gitee.com/yixiacoco/ruoyi-tdesign/wikis/pages)                        | 重写RuoYi-Vue-Plus全方位升级(不兼容原框架) |
 | 原框架      | RuoYi-Vue-Plus      | [RuoYi-Vue-Plus](https://gitee.com/JavaLionLi/RuoYi-Vue-Plus)                                                             | 定期同步需要的功能                     |
-| 前端开发框架   | Vue、Tdesign UI      | [Tdesign UI官网](https://tdesign.tencent.com/vue-next/overview)                                   |                               |
+| 前端开发框架   | Vue3、Tdesign UI     | [Tdesign UI官网](https://tdesign.tencent.com/vue-next/overview)                                   |                               |
 | 后端开发框架   | SpringBoot          | [SpringBoot官网](https://spring.io/projects/spring-boot/#learn)                                   |                               |
 | 容器框架     | Undertow            | [Undertow官网](https://undertow.io/)                                                              | 基于 XNIO 的高性能容器                |
 | 权限认证框架   | Sa-Token、Jwt        | [Sa-Token官网](https://sa-token.dev33.cn/)                                                        | 强解耦、强扩展                       |
@@ -74,16 +74,18 @@
 
 欢迎各路英雄豪杰 `PR` 代码 请提交到 `dev` 开发分支 统一测试发版
 
-框架定位为 `通用后台管理系统(分布式集群强化)` 原则上不接受业务 `PR`
+框架定位为 `多租户管理系统(分布式集群强化)` 原则上不接受业务 `PR`
 
 ### 其他
 
 * 同步升级 RuoYi-Vue-Plus
+* 同步升级 tdesign-vue-next-starter
 
 ## 业务功能
 
 | 功能 | 介绍 |
 |---|---|
+| 租户管理 | 配置系统租户，支持 SaaS 场景下的多租户功能。             |
 | 用户管理 | 用户是系统操作者，该功能主要完成系统用户配置。 |
 | 部门管理 | 配置系统组织机构（公司、部门、小组），树结构展现支持数据权限。 |
 | 岗位管理 | 配置系统用户所属担任职务。 |
