@@ -321,14 +321,13 @@ public class GenTableServiceImpl implements IGenTableService {
                 prevColumn.setIsIncrement(column.getIsIncrement());
                 prevColumn.setSort(column.getSort());
                 prevColumn.setUpdateTime(DateUtils.getNowDate());
-                genTableColumnMapper.updateById(prevColumn);
             } else {
                 GenUtils.initColumnField(column, table);
-                saveColumns.add(column);
             }
+            saveColumns.add(column);
         });
         if (CollUtil.isNotEmpty(saveColumns)) {
-            genTableColumnMapper.insertBatch(saveColumns);
+            genTableColumnMapper.insertOrUpdateBatch(saveColumns);
         }
 
         // 数据库中不存在的字段，待删除
