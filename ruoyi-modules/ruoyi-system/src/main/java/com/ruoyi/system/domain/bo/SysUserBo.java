@@ -125,6 +125,7 @@ public class SysUserBo extends BaseEntity {
     /**
      * 角色组
      */
+    @Size(min = 1, message = "用户角色不能为空")
     private Long[] roleIds;
 
     /**
