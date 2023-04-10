@@ -33,7 +33,7 @@ public class ${ClassName}Bo extends BaseEntity {
 #if($column.isRequired == 1)
 #set($Group0 = [])
 #if($column.isInsert && $Group0.add('AddGroup.class'))#end
-#if(($column.isEdit || $column.isPk == '1') && $Group0.add('EditGroup.class'))#end
+#if(($column.isEdit == '1' || $column.isPk == '1') && $Group0.add('EditGroup.class'))#end
 #set($Group = $StringUtils.join($Group0, ", "))
 #if($column.javaType == 'String')
     @NotBlank(message = "$column.columnComment不能为空"#if($Group), groups = {${Group}}#end)

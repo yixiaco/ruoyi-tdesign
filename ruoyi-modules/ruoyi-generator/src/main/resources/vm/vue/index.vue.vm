@@ -404,7 +404,7 @@ const dateRange${AttrName} = ref([]);
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
 #foreach ($column in $columns)
-#if($column.isInsert || $column.isEdit)
+#if($column.isInsert == '1' || $column.isEdit == '1')
 #if($column.required)
 #set($parentheseIndex=$column.columnComment.indexOf("（"))
 #if($parentheseIndex != -1)
@@ -489,7 +489,7 @@ function getList() {
 function reset() {
   form.value = {
 #foreach ($column in $columns)
-#if($column.isInsert || $column.isEdit)
+#if($column.isInsert == '1' || $column.isEdit == '1')
 #if($column.htmlType == "checkbox")
     $column.javaField: []#if($foreach.count != $columns.size()),#end
 #end
