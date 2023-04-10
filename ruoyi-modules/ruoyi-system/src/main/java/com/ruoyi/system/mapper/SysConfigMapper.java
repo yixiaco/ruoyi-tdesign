@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysConfigMapper extends BaseMapperPlus<SysConfigMapper, SysConfig, SysConfigVo> {
+public interface SysConfigMapper extends BaseMapperPlus<SysConfig, SysConfigVo> {
 
     /**
      * 查询参数配置列表

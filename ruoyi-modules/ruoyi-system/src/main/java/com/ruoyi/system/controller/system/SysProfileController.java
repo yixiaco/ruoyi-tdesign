@@ -45,7 +45,7 @@ public class SysProfileController extends BaseController {
     @Autowired
     private ISysUserService userService;
     @Autowired
-    private ISysOssService sysOssService;
+    private ISysOssService ossService;
 
     /**
      * 个人信息
@@ -117,7 +117,7 @@ public class SysProfileController extends BaseController {
             if (!StringUtils.equalsAnyIgnoreCase(extension, MimeTypeUtils.IMAGE_EXTENSION)) {
                 return R.fail("文件格式不正确，请上传" + Arrays.toString(MimeTypeUtils.IMAGE_EXTENSION) + "格式");
             }
-            SysOssVo oss = sysOssService.upload(avatarfile);
+            SysOssVo oss = ossService.upload(avatarfile);
             String avatar = oss.getUrl();
             if (userService.updateUserAvatar(LoginHelper.getUserId(), oss.getOssId())) {
                 AvatarVo avatarVo = new AvatarVo();

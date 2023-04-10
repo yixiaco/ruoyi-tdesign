@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysOperLogMapper extends BaseMapperPlus<SysOperLogMapper, SysOperLog, SysOperLogVo> {
+public interface SysOperLogMapper extends BaseMapperPlus<SysOperLog, SysOperLogVo> {
 
     /**
      * 查询操作日志记录列表

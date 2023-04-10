@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysLogininforMapper extends BaseMapperPlus<SysLogininforMapper, SysLogininfor, SysLogininforVo> {
+public interface SysLogininforMapper extends BaseMapperPlus<SysLogininfor, SysLogininforVo> {
 
     /**
      * 查询系统访问记录列表

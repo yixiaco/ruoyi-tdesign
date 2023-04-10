@@ -48,8 +48,7 @@ import java.util.List;
 @RequestMapping("/system/tenant")
 public class SysTenantController extends BaseController {
 
-    private final ISysTenantService sysTenantService;
-    private final ISysUserService sysUserService;
+    private final ISysTenantService tenantService;
 
     /**
      * 查询租户列表
@@ -58,7 +57,7 @@ public class SysTenantController extends BaseController {
     @SaCheckPermission("system:tenant:list")
     @GetMapping("/list")
     public TableDataInfo<SysTenantVo> list(SysTenantBo bo, PageQuery pageQuery) {
-        return sysTenantService.queryPageList(bo, pageQuery);
+        return tenantService.queryPageList(bo, pageQuery);
     }
 
     /**
@@ -69,7 +68,7 @@ public class SysTenantController extends BaseController {
     @Log(title = "租户", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(SysTenantBo bo, HttpServletResponse response) {
-        List<SysTenantVo> list = sysTenantService.queryList(bo);
+        List<SysTenantVo> list = tenantService.queryList(bo);
         ExcelUtil.exportExcel(list, "租户", SysTenantVo.class, response);
     }
 
@@ -83,7 +82,7 @@ public class SysTenantController extends BaseController {
     @GetMapping("/{id}")
     public R<SysTenantVo> getInfo(@NotNull(message = "主键不能为空")
                                      @PathVariable Long id) {
-        return R.ok(sysTenantService.queryById(id));
+        return R.ok(tenantService.queryById(id));
     }
 
     /**
@@ -96,10 +95,10 @@ public class SysTenantController extends BaseController {
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody SysTenantBo bo) {
-        if (!sysTenantService.checkCompanyNameUnique(bo)) {
-            throw new ServiceException("新增租户'" + bo.getCompanyName() + "'失败，企业名称已存在");
+        if (!tenantService.checkCompanyNameUnique(bo)) {
+            return R.fail("新增租户'" + bo.getCompanyName() + "'失败，企业名称已存在");
         }
-        return toAjax(sysTenantService.insertByBo(bo));
+        return toAjax(tenantService.insertByBo(bo));
     }
 
     /**
@@ -111,11 +110,11 @@ public class SysTenantController extends BaseController {
     @RepeatSubmit()
     @PutMapping()
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody SysTenantBo bo) {
-        sysTenantService.checkTenantAllowed(bo.getTenantId());
-        if (!sysTenantService.checkCompanyNameUnique(bo)) {
-            throw new ServiceException("修改租户'" + bo.getCompanyName() + "'失败，公司名称已存在");
+        tenantService.checkTenantAllowed(bo.getTenantId());
+        if (!tenantService.checkCompanyNameUnique(bo)) {
+            return R.fail("修改租户'" + bo.getCompanyName() + "'失败，公司名称已存在");
         }
-        return toAjax(sysTenantService.updateByBo(bo));
+        return toAjax(tenantService.updateByBo(bo));
     }
 
     /**
@@ -126,8 +125,8 @@ public class SysTenantController extends BaseController {
     @Log(title = "租户", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
     public R<Void> changeStatus(@RequestBody SysTenantBo bo) {
-        sysTenantService.checkTenantAllowed(bo.getTenantId());
-        return toAjax(sysTenantService.updateTenantStatus(bo));
+        tenantService.checkTenantAllowed(bo.getTenantId());
+        return toAjax(tenantService.updateTenantStatus(bo));
     }
 
     /**
@@ -141,7 +140,7 @@ public class SysTenantController extends BaseController {
     @DeleteMapping("/{ids}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
                           @PathVariable Long[] ids) {
-        return toAjax(sysTenantService.deleteWithValidByIds(List.of(ids), true));
+        return toAjax(tenantService.deleteWithValidByIds(List.of(ids), true));
     }
 
     /**
@@ -177,7 +176,7 @@ public class SysTenantController extends BaseController {
     @Log(title = "租户", businessType = BusinessType.UPDATE)
     @GetMapping("/syncTenantPackage")
     public R<Void> syncTenantPackage(@NotBlank(message = "租户ID不能为空") String tenantId, @NotBlank(message = "套餐ID不能为空") String packageId) {
-        return toAjax(sysTenantService.syncTenantPackage(tenantId, packageId));
+        return toAjax(tenantService.syncTenantPackage(tenantId, packageId));
     }
 
 }

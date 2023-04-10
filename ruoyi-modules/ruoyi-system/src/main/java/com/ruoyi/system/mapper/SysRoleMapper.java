@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysRoleMapper extends BaseMapperPlus<SysRoleMapper, SysRole, SysRoleVo> {
+public interface SysRoleMapper extends BaseMapperPlus<SysRole, SysRoleVo> {
 
     /**
      * 根据用户ID查询角色

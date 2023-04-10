@@ -44,7 +44,7 @@ import java.util.List;
 public class SysOssController extends BaseController {
 
     @Autowired
-    private ISysOssService sysOssService;
+    private ISysOssService ossService;
 
     /**
      * 查询OSS对象存储列表
@@ -52,7 +52,7 @@ public class SysOssController extends BaseController {
     @SaCheckPermission("system:oss:list")
     @GetMapping("/list")
     public TableDataInfo<SysOssVo> list(@Validated(QueryGroup.class) SysOssQuery bo) {
-        return sysOssService.queryPageList(bo);
+        return ossService.queryPageList(bo);
     }
 
     /**
@@ -64,7 +64,7 @@ public class SysOssController extends BaseController {
     @GetMapping("/listByIds/{ossIds}")
     public R<List<SysOssVo>> listByIds(@NotEmpty(message = "主键不能为空")
                                        @PathVariable Long[] ossIds) {
-        List<SysOssVo> list = sysOssService.listVoByIds(List.of(ossIds));
+        List<SysOssVo> list = ossService.listVoByIds(List.of(ossIds));
         return R.ok(list);
     }
 
@@ -77,7 +77,7 @@ public class SysOssController extends BaseController {
     @GetMapping("/listByUrls")
     public R<List<SysOssVo>> listByUrls(@NotEmpty(message = "url不能为空") String urls) {
         String[] urlArray = URLDecoder.decode(String.valueOf(urls), StandardCharsets.UTF_8).split(",");
-        List<SysOssVo> list = sysOssService.listVoByUrls(List.of(urlArray));
+        List<SysOssVo> list = ossService.listVoByUrls(List.of(urlArray));
         return R.ok(list);
     }
 
@@ -91,9 +91,9 @@ public class SysOssController extends BaseController {
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public R<SysOssUploadVo> upload(@RequestPart("file") MultipartFile file) {
         if (ObjectUtil.isNull(file)) {
-            throw new ServiceException("上传文件不能为空");
+            return R.fail("上传文件不能为空");
         }
-        SysOssVo oss = sysOssService.upload(file);
+        SysOssVo oss = ossService.upload(file);
         SysOssUploadVo uploadVo = new SysOssUploadVo();
         uploadVo.setUrl(oss.getUrl());
         uploadVo.setFileName(oss.getOriginalName());
@@ -109,7 +109,7 @@ public class SysOssController extends BaseController {
     @SaCheckPermission("system:oss:download")
     @GetMapping("/download/{ossId}")
     public void download(@PathVariable Long ossId, HttpServletResponse response) throws IOException {
-        sysOssService.download(ossId, response);
+        ossService.download(ossId, response);
     }
 
     /**
@@ -122,7 +122,7 @@ public class SysOssController extends BaseController {
     @DeleteMapping("/{ossIds}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
                           @PathVariable Long[] ossIds) {
-        return toAjax(sysOssService.deleteWithValidByIds(List.of(ossIds), true));
+        return toAjax(ossService.deleteWithValidByIds(List.of(ossIds), true));
     }
 
 }

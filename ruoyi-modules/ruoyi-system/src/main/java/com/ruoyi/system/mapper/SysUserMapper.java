@@ -19,7 +19,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysUserMapper extends BaseMapperPlus<SysUserMapper, SysUser, SysUserVo> {
+public interface SysUserMapper extends BaseMapperPlus<SysUser, SysUserVo> {
 
     /**
      * 查询用户信息列表

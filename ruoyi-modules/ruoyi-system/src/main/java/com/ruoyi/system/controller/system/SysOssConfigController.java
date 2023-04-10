@@ -41,7 +41,7 @@ import java.util.List;
 public class SysOssConfigController extends BaseController {
 
     @Autowired
-    private ISysOssConfigService sysOssConfigService;
+    private ISysOssConfigService ossConfigService;
 
     /**
      * 查询对象存储配置列表
@@ -49,7 +49,7 @@ public class SysOssConfigController extends BaseController {
     @SaCheckPermission("system:oss:list")
     @GetMapping("/list")
     public TableDataInfo<SysOssConfigVo> list(@Validated(QueryGroup.class) SysOssConfigBo bo) {
-        return sysOssConfigService.queryPageList(bo);
+        return ossConfigService.queryPageList(bo);
     }
 
     /**
@@ -61,7 +61,7 @@ public class SysOssConfigController extends BaseController {
     @GetMapping("/{ossConfigId}")
     public R<SysOssConfigVo> getInfo(@NotNull(message = "主键不能为空")
                                      @PathVariable Long ossConfigId) {
-        return R.ok(sysOssConfigService.queryById(ossConfigId));
+        return R.ok(ossConfigService.queryById(ossConfigId));
     }
 
     /**
@@ -72,7 +72,7 @@ public class SysOssConfigController extends BaseController {
     @RepeatSubmit()
     @PostMapping()
     public R<Void> add(@Validated(AddGroup.class) @RequestBody SysOssConfigBo bo) {
-        return toAjax(sysOssConfigService.insertByBo(bo));
+        return toAjax(ossConfigService.insertByBo(bo));
     }
 
     /**
@@ -83,7 +83,7 @@ public class SysOssConfigController extends BaseController {
     @RepeatSubmit()
     @PutMapping()
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody SysOssConfigBo bo) {
-        return toAjax(sysOssConfigService.updateByBo(bo));
+        return toAjax(ossConfigService.updateByBo(bo));
     }
 
     /**
@@ -96,7 +96,7 @@ public class SysOssConfigController extends BaseController {
     @DeleteMapping("/{ossConfigIds}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
                           @PathVariable Long[] ossConfigIds) {
-        return toAjax(sysOssConfigService.deleteWithValidByIds(List.of(ossConfigIds), true));
+        return toAjax(ossConfigService.deleteWithValidByIds(List.of(ossConfigIds), true));
     }
 
     /**
@@ -106,6 +106,6 @@ public class SysOssConfigController extends BaseController {
     @Log(title = "对象存储状态修改", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
     public R<Void> changeStatus(@RequestBody SysOssConfigBo bo) {
-        return toAjax(sysOssConfigService.updateOssConfigStatus(bo));
+        return toAjax(ossConfigService.updateOssConfigStatus(bo));
     }
 }

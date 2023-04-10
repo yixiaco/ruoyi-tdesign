@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysDictTypeMapper extends BaseMapperPlus<SysDictTypeMapper, SysDictType, SysDictTypeVo> {
+public interface SysDictTypeMapper extends BaseMapperPlus<SysDictType, SysDictTypeVo> {
 
     /**
      * 查询字典类型列表

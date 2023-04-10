@@ -50,7 +50,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Autowired
     private SysRoleMenuMapper roleMenuMapper;
     @Autowired
-    private SysTenantPackageMapper sysTenantPackageMapper;
+    private SysTenantPackageMapper tenantPackageMapper;
 
     /**
      * 根据用户查询系统菜单列表
@@ -162,7 +162,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public List<Long> selectMenuListByPackageId(Long packageId) {
-        SysTenantPackage tenantPackage = sysTenantPackageMapper.selectById(packageId);
+        SysTenantPackage tenantPackage = tenantPackageMapper.selectById(packageId);
         List<Long> menuIds = StringUtils.splitTo(tenantPackage.getMenuIds(), Convert::toLong);
         if (CollUtil.isEmpty(menuIds)) {
             return List.of();

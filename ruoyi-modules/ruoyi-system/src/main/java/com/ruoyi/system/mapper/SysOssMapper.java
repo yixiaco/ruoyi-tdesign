@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysOssMapper extends BaseMapperPlus<SysOssMapper, SysOss, SysOssVo> {
+public interface SysOssMapper extends BaseMapperPlus<SysOss, SysOssVo> {
 
     /**
      * 查询OSS对象存储列表

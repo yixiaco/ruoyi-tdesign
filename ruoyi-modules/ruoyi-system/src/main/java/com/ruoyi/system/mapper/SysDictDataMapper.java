@@ -14,7 +14,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysDictDataMapper extends BaseMapperPlus<SysDictDataMapper, SysDictData, SysDictDataVo> {
+public interface SysDictDataMapper extends BaseMapperPlus<SysDictData, SysDictDataVo> {
 
     /**
      * 查询字典数据列表
