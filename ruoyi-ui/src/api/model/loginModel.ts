@@ -67,3 +67,12 @@ export interface TenantListVo {
   companyName?: string;
   domain?: string;
 }
+/**
+ * 登录租户对象
+ */
+export interface LoginTenantVo {
+  /** 租户开关 */
+  tenantEnabled?: boolean;
+  /** 租户对象列表 */
+  voList?: Array<TenantListVo>;
+}

@@ -7,7 +7,7 @@
     label-width="0"
     @submit="onSubmit"
   >
-    <t-form-item name="tenantId">
+    <t-form-item v-if="tenantEnabled" name="tenantId">
       <t-select v-model="formData.tenantId" size="large" filterable placeholder="请选择/输入公司名称">
         <template #prefixIcon>
           <company class="t-icon" />
@@ -126,7 +126,10 @@ const FORM_RULES: Record<string, FormRule[]> = {
 };
 
 const type = ref('password');
+// 租户列表
 const tenantList = ref<TenantListVo[]>([]);
+// 租户开关
+const tenantEnabled = ref(true);
 const form = ref<FormInstanceFunctions>();
 const formData = ref({
   tenantId: '000000',
@@ -196,9 +199,13 @@ const sendCode = () => {
  */
 function initTenantList() {
   getTenantList().then((res) => {
-    tenantList.value = res.data;
-    if (tenantList.value != null && tenantList.value.length !== 0) {
-      formData.value.tenantId = tenantList.value[0].tenantId;
+    const vo = res.data;
+    tenantEnabled.value = !!vo.tenantEnabled;
+    if (tenantEnabled.value) {
+      tenantList.value = vo.voList;
+      if (tenantList.value != null && tenantList.value.length !== 0) {
+        formData.value.tenantId = tenantList.value[0].tenantId;
+      }
     }
   });
 }

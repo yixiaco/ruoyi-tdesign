@@ -1,6 +1,6 @@
 <template>
   <t-select
-    v-if="userId === 1"
+    v-if="userId === 1 && tenantEnabled"
     v-model="tenantId"
     clearable
     filterable
@@ -23,12 +23,16 @@ import { getTenantList } from '@/api/login';
 import { dynamicClear, dynamicTenant } from '@/api/system/tenant';
 import { useTabsRouterStore, useUserStore } from '@/store';
 import Company from '@/assets/icons/svg/company.svg?component';
+import { TenantListVo } from '@/api/model/loginModel';
 
 const { userId } = toRefs(useUserStore());
 const tenantId = ref(undefined);
-const tenantList = ref([]);
 const tabsRouterStore = useTabsRouterStore();
 const router = useRouter();
+// 租户列表
+const tenantList = ref<TenantListVo[]>([]);
+// 租户开关
+const tenantEnabled = ref(false);
 
 const emit = defineEmits(['dynamicChange']);
 
@@ -59,7 +63,11 @@ function dynamicClearEvent() {
 // 租户列表
 function initTenantList() {
   getTenantList().then((res) => {
-    tenantList.value = res.data;
+    const vo = res.data;
+    tenantEnabled.value = !!vo.tenantEnabled;
+    if (tenantEnabled.value) {
+      tenantList.value = vo.voList;
+    }
   });
 }
 

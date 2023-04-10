@@ -1,5 +1,5 @@
 import { request } from '@/utils/request';
-import { CaptchaImage, LoginModel, RegisterBody, TenantListVo, UserInfo } from '@/api/model/loginModel';
+import { CaptchaImage, LoginModel, LoginTenantVo, RegisterBody, UserInfo } from '@/api/model/loginModel';
 import { R } from '@/api/model/resultModel';
 
 /**
@@ -86,7 +86,7 @@ export function getCodeSms() {
 
 // 获取租户列表
 export function getTenantList() {
-  return request.get<R<Array<TenantListVo>>>(
+  return request.get<R<LoginTenantVo>>(
     {
       url: '/auth/tenant/list',
     },

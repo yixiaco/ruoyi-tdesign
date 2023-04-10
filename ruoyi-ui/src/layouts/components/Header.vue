@@ -128,6 +128,7 @@ const props = defineProps({
 
 const router = useRouter();
 const settingStore = useSettingStore();
+// 是否切换了租户
 const dynamic = ref(false);
 
 const toggleSettingPanel = () => {
