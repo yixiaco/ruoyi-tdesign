@@ -203,6 +203,11 @@
             </t-form-item>
           </t-col>
           <t-col :span="6">
+            <t-form-item label="域名" name="domain">
+              <t-input v-model="form.domain" placeholder="请输入域名" />
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
             <t-form-item label="地址" name="address">
               <t-input v-model="form.address" placeholder="请输入地址" />
             </t-form-item>
@@ -217,11 +222,6 @@
               <t-textarea v-model="form.intro" placeholder="请输入企业简介" />
             </t-form-item>
           </t-col>
-          <!-- <t-col :span="6">
-            <t-form-item label="域名" name="domain">
-          <t-input v-model="form.domain" placeholder="请输入域名" />
-        </t-form-item>
-          </t-col>-->
           <t-col :span="6">
             <t-form-item label="备注" name="remark">
               <t-textarea v-model="form.remark" placeholder="请输入备注" />
