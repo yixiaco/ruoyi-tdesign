@@ -345,6 +345,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
   contactUserName: [{ required: true, message: '联系人不能为空', trigger: 'blur' }],
   contactPhone: [{ required: true, message: '联系电话不能为空', trigger: 'blur' }],
   companyName: [{ required: true, message: '企业名称不能为空', trigger: 'blur' }],
+  packageId: [{ required: true, message: '租户套餐不能为空', trigger: 'blur' }],
   username: [
     { required: true, message: '用户名不能为空', trigger: 'blur' },
     { min: 2, max: 20, message: '用户名称长度必须介于 2 和 20 之间', trigger: 'blur' },
