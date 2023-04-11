@@ -2,17 +2,16 @@ package com.ruoyi.common.mail.service.impl;
 
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.extra.mail.MailAccount;
-import com.ruoyi.common.core.service.ConfigService;
 import com.ruoyi.common.core.exception.ServiceException;
+import com.ruoyi.common.core.helper.SysConfigHelper;
 import com.ruoyi.common.json.utils.JsonUtils;
 import com.ruoyi.common.mail.config.properties.MailProperties;
 import com.ruoyi.common.mail.handle.MailContextHolder;
 import com.ruoyi.common.mail.service.MailService;
 import com.ruoyi.common.mail.utils.MailUtils;
-import org.springframework.beans.factory.annotation.Autowired;
+import jakarta.mail.Session;
 import org.springframework.stereotype.Service;
 
-import jakarta.mail.Session;
 import java.io.File;
 import java.io.InputStream;
 import java.util.Collection;
@@ -29,11 +28,6 @@ import java.util.Map;
 @Service
 public class MailServiceImpl implements MailService {
 
-    /** 存储key常量 */
-    public static final String SYS_MAIL_KEY = "sys.mail";
-    @Autowired
-    private ConfigService configService;
-
     @Override
     public MailAccount getAccount() {
         // 优先从上下文中获取
@@ -41,7 +35,7 @@ public class MailServiceImpl implements MailService {
         if (account != null) {
             return account;
         }
-        String mailJson = configService.getConfigValue(SYS_MAIL_KEY);
+        String mailJson = SysConfigHelper.getSysMail();
         if (StrUtil.isBlank(mailJson)) {
             throw new ServiceException("邮箱未配置！");
         }
@@ -61,7 +55,7 @@ public class MailServiceImpl implements MailService {
             account.setConnectionTimeout(properties.getConnectionTimeout());
             return account;
         }
-        throw new ServiceException("邮箱未启用！");
+        throw new ServiceException("当前系统没有开启邮箱功能！");
     }
 
     /**

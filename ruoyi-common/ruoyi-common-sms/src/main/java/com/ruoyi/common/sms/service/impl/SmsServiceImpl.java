@@ -1,8 +1,8 @@
 package com.ruoyi.common.sms.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import com.ruoyi.common.core.service.ConfigService;
 import com.ruoyi.common.core.exception.ServiceException;
+import com.ruoyi.common.core.helper.SysConfigHelper;
 import com.ruoyi.common.json.utils.JsonUtils;
 import com.ruoyi.common.sms.config.properties.SmsProperties;
 import com.ruoyi.common.sms.core.AliyunSmsTemplate;
@@ -11,7 +11,6 @@ import com.ruoyi.common.sms.core.TencentSmsTemplate;
 import com.ruoyi.common.sms.entity.SmsResult;
 import com.ruoyi.common.sms.handle.SmsContextHolder;
 import com.ruoyi.common.sms.service.SmsService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Map;
@@ -26,11 +25,6 @@ import java.util.Map;
 @Service
 public class SmsServiceImpl implements SmsService {
 
-    /** 存储key常量 */
-    public static final String SYS_MAIL_KEY = "sys.sms";
-    @Autowired
-    private ConfigService configService;
-
     @Override
     public SmsTemplate getSmsTemplate() {
         // 优先从上下文中获取
@@ -38,22 +32,17 @@ public class SmsServiceImpl implements SmsService {
         if (template != null) {
             return template;
         }
-        String smsJson = configService.getConfigValue(SYS_MAIL_KEY);
+        String smsJson = SysConfigHelper.getSysSms();
         if (StrUtil.isBlank(smsJson)) {
             throw new ServiceException("当前系统未配置短信功能！");
         }
         SmsProperties properties = JsonUtils.parseObject(smsJson, SmsProperties.class);
         if (properties != null && properties.getEnabled()) {
-            switch (properties.getEndpoint()) {
-                case "dysmsapi.aliyuncs.com":
-                    template = new AliyunSmsTemplate(properties);
-                    break;
-                case "sms.tencentcloudapi.com":
-                    template = new TencentSmsTemplate(properties);
-                    break;
-                default:
-                    throw new ServiceException("未找到对应的短信平台！");
-            }
+            template = switch (properties.getEndpoint()) {
+                case "dysmsapi.aliyuncs.com" -> new AliyunSmsTemplate(properties);
+                case "sms.tencentcloudapi.com" -> new TencentSmsTemplate(properties);
+                default -> throw new ServiceException("未找到对应的短信平台！");
+            };
             return template;
         }
         throw new ServiceException("当前系统没有开启短信功能！");

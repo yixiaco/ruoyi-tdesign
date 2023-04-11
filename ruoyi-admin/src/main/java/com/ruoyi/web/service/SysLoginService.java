@@ -94,10 +94,18 @@ public class SysLoginService {
         LoginHelper.loginByDevice(loginUser, DeviceType.PC);
 
         recordLogininfor(loginUser.getTenantId(), username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"));
-        recordLoginInfo(user.getUserId(), username);
+        recordLoginInfo(user.getUserId());
         return StpUtil.getTokenValue();
     }
 
+    /**
+     * 短信登录
+     *
+     * @param tenantId
+     * @param phonenumber
+     * @param smsCode
+     * @return
+     */
     public String smsLogin(String tenantId, String phonenumber, String smsCode) {
         // 校验租户
         checkTenant(tenantId);
@@ -111,11 +119,42 @@ public class SysLoginService {
         LoginHelper.loginByDevice(loginUser, DeviceType.APP);
 
         recordLogininfor(loginUser.getTenantId(), user.getUserName(), Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"));
-        recordLoginInfo(user.getUserId(), user.getUserName());
+        recordLoginInfo(user.getUserId());
+        return StpUtil.getTokenValue();
+    }
+
+    /**
+     * 邮箱登录
+     *
+     * @param tenantId
+     * @param email
+     * @param emailCode
+     * @return
+     */
+    public String emailLogin(String tenantId, String email, String emailCode) {
+        // 校验租户
+        checkTenant(tenantId);
+        // 通过邮箱查找用户
+        SysUserVo user = loadUserByEmail(tenantId, email);
+
+        checkLogin(LoginType.EMAIL, tenantId, user.getUserName(), () -> !validateEmailCode(tenantId, email, emailCode));
+        // 此处可根据登录用户的数据不同 自行创建 loginUser
+        LoginUser loginUser = buildLoginUser(user);
+        // 生成token
+        LoginHelper.loginByDevice(loginUser, DeviceType.APP);
+
+        recordLogininfor(loginUser.getTenantId(), user.getUserName(), Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"));
+        recordLoginInfo(user.getUserId());
         return StpUtil.getTokenValue();
     }
 
 
+    /**
+     * 小程序登录
+     *
+     * @param xcxCode
+     * @return
+     */
     public String xcxLogin(String xcxCode) {
         // xcxCode 为 小程序调用 wx.login 授权后获取
         // todo 以下自行实现
@@ -136,7 +175,7 @@ public class SysLoginService {
         LoginHelper.loginByDevice(loginUser, DeviceType.XCX);
 
         recordLogininfor(loginUser.getTenantId(), user.getUserName(), Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"));
-        recordLoginInfo(user.getUserId(), user.getUserName());
+        recordLoginInfo(user.getUserId());
         return StpUtil.getTokenValue();
     }
 
@@ -187,6 +226,18 @@ public class SysLoginService {
             throw new CaptchaExpireException();
         }
         return code.equals(smsCode);
+    }
+
+    /**
+     * 校验邮箱验证码
+     */
+    private boolean validateEmailCode(String tenantId, String email, String emailCode) {
+        String code = RedisUtils.getCacheObject(GlobalConstants.CAPTCHA_CODE_KEY + email);
+        if (StringUtils.isBlank(code)) {
+            recordLogininfor(tenantId, email, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.expire"));
+            throw new CaptchaExpireException();
+        }
+        return code.equals(emailCode);
     }
 
     /**
@@ -246,6 +297,24 @@ public class SysLoginService {
         return userMapper.selectUserByPhonenumber(phonenumber);
     }
 
+    private SysUserVo loadUserByEmail(String tenantId, String email) {
+        SysUser user = userMapper.selectOne(new LambdaQueryWrapper<SysUser>()
+            .select(SysUser::getPhonenumber, SysUser::getStatus)
+            .eq(TenantHelper.isEnable(), SysUser::getTenantId, tenantId)
+            .eq(SysUser::getEmail, email));
+        if (ObjectUtil.isNull(user)) {
+            log.info("登录用户：{} 不存在.", email);
+            throw new UserException("user.not.exists", email);
+        } else if (UserStatus.DISABLE.getCode().equals(user.getStatus())) {
+            log.info("登录用户：{} 已被停用.", email);
+            throw new UserException("user.blocked", email);
+        }
+        if (TenantHelper.isEnable()) {
+            return userMapper.selectTenantUserByEmail(email, tenantId);
+        }
+        return userMapper.selectUserByEmail(email);
+    }
+
     private SysUserVo loadUserByOpenid(String openid) {
         // 使用 openid 查询绑定用户 如未绑定用户 则根据业务自行处理 例如 创建默认用户
         // todo 自行实现 userService.selectUserByOpenid(openid);
@@ -283,12 +352,12 @@ public class SysLoginService {
      *
      * @param userId 用户ID
      */
-    public void recordLoginInfo(Long userId, String username) {
+    public void recordLoginInfo(Long userId) {
         SysUser sysUser = new SysUser();
         sysUser.setUserId(userId);
         sysUser.setLoginIp(ServletUtils.getClientIP());
         sysUser.setLoginDate(DateUtils.getNowDate());
-        sysUser.setUpdateBy(LoginHelper.getUserId());
+        sysUser.setUpdateBy(userId);
         userMapper.updateById(sysUser);
     }
 
@@ -344,7 +413,7 @@ public class SysLoginService {
             log.info("登录租户：{} 已被停用.", tenantId);
             throw new TenantException("tenant.blocked");
         } else if (ObjectUtil.isNotNull(tenant.getExpireTime())
-                && new Date().after(tenant.getExpireTime())) {
+            && new Date().after(tenant.getExpireTime())) {
             log.info("登录租户：{} 已超过有效期.", tenantId);
             throw new TenantException("tenant.expired");
         }

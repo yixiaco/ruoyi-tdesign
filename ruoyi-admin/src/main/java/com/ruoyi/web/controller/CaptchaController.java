@@ -5,12 +5,15 @@ import cn.hutool.captcha.AbstractCaptcha;
 import cn.hutool.captcha.generator.CodeGenerator;
 import cn.hutool.core.util.IdUtil;
 import cn.hutool.core.util.RandomUtil;
+import cn.hutool.extra.mail.MailAccount;
 import com.ruoyi.common.core.constant.Constants;
 import com.ruoyi.common.core.constant.GlobalConstants;
 import com.ruoyi.common.core.domain.R;
 import com.ruoyi.common.core.utils.StringUtils;
 import com.ruoyi.common.core.utils.reflect.ReflectUtils;
 import com.ruoyi.common.core.utils.spring.SpringUtils;
+import com.ruoyi.common.mail.service.MailService;
+import com.ruoyi.common.mail.utils.MailUtils;
 import com.ruoyi.common.redis.utils.RedisUtils;
 import com.ruoyi.common.sms.aspectj.SmsContextCache;
 import com.ruoyi.common.sms.constants.SmsTemplateKeyConstants;
@@ -51,6 +54,8 @@ public class CaptchaController {
     private SmsService smsService;
     @Autowired
     private ISysConfigService configService;
+    @Autowired
+    private MailService mailService;
 
     /**
      * 短信验证码
@@ -59,8 +64,7 @@ public class CaptchaController {
      */
     @SmsContextCache
     @GetMapping("/sms/code")
-    public R<Void> smsCaptcha(@NotBlank(message = "{user.phonenumber.not.blank}")
-                              String phonenumber) {
+    public R<Void> smsCode(@NotBlank(message = "{user.phonenumber.not.blank}") String phonenumber) {
         String key = GlobalConstants.CAPTCHA_CODE_KEY + phonenumber;
         String code = RandomUtil.randomNumbers(4);
         RedisUtils.setCacheObject(key, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
@@ -72,6 +76,25 @@ public class CaptchaController {
         if (!result.isSuccess()) {
             log.error("验证码短信发送异常 => {}", result);
             return R.fail(result.getMessage());
+        }
+        return R.ok();
+    }
+
+    /**
+     * 邮箱验证码
+     *
+     * @param email 邮箱
+     */
+    @GetMapping("/email/code")
+    public R<Void> emailCode(@NotBlank(message = "{user.email.not.blank}") String email) {
+        String key = GlobalConstants.CAPTCHA_CODE_KEY + email;
+        String code = RandomUtil.randomNumbers(4);
+        try {
+            mailService.sendText(email, "登录验证码", "您本次验证码为：" + code + "，有效性为" + Constants.CAPTCHA_EXPIRATION + "分钟，请尽快填写。");
+            RedisUtils.setCacheObject(key, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
+        } catch (Exception e) {
+            log.error("验证码邮箱发送异常 => {}", e.getMessage());
+            return R.fail(e.getMessage());
         }
         return R.ok();
     }
