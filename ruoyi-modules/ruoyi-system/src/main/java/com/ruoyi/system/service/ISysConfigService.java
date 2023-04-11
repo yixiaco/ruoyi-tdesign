@@ -48,13 +48,6 @@ public interface ISysConfigService extends IService<SysConfig> {
     boolean selectRegisterEnabled(String tenantId);
 
     /**
-     * 获取验证码开关
-     *
-     * @return true开启，false关闭
-     */
-    boolean selectCaptchaEnabled();
-
-    /**
      * 查询参数配置列表
      *
      * @param config 参数配置信息
