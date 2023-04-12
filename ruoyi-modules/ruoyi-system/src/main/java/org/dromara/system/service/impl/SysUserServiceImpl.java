@@ -323,9 +323,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void insertUserAuth(Long userId, Long[] roleIds) {
-        userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>()
-            .eq(SysUserRole::getUserId, userId));
-        insertUserRole(userId, roleIds, false);
+        insertUserRole(userId, roleIds, true);
     }
 
     /**
