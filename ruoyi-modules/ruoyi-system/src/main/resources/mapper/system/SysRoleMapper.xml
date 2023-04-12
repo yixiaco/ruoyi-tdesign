@@ -36,7 +36,7 @@
             <if test="status != null and status != ''"> and r.`status` = #{status}</if>
             <if test="params.beginTime != null and params.endTime != null">and r.create_time between #{params.beginTime} and #{params.endTime}</if>
         </where>
-        order by r.role_sort
+        order by r.role_sort, r.create_time desc
     </select>
 
     <select id="selectRolePermissionByUserId" parameterType="Long" resultMap="SysRoleResultVo">
