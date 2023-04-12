@@ -6,9 +6,9 @@ package ${packageName}.domain;
 #end
 #end
 #if($IsTenant==1)
-import com.ruoyi.common.tenant.core.TenantEntity;
+import org.dromara.common.tenant.core.TenantEntity;
 #else
-import com.ruoyi.common.mybatis.core.domain.BaseEntity;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
 #end
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
@@ -16,8 +16,8 @@ import lombok.EqualsAndHashCode;
 #if(!$useBO)
 #foreach ($column in $columns)
 #if($column.isRequired == 1)
-import com.ruoyi.common.core.validate.AddGroup;
-import com.ruoyi.common.core.validate.EditGroup;
+import org.dromara.common.core.validate.AddGroup;
+import org.dromara.common.core.validate.EditGroup;
 import jakarta.validation.constraints.*;
     #break
 #end

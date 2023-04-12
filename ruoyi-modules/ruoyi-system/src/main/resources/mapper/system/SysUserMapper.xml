@@ -2,19 +2,19 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.system.mapper.SysUserMapper">
+<mapper namespace="org.dromara.system.mapper.SysUserMapper">
 
-    <resultMap id="SysUserResult" autoMapping="true" type="com.ruoyi.system.domain.vo.SysUserVo">
+    <resultMap id="SysUserResult" autoMapping="true" type="org.dromara.system.domain.vo.SysUserVo">
         <id property="userId" column="user_id"/>
         <result property="deptId" column="dept_id"/>
-        <association property="dept" column="dept_id" javaType="com.ruoyi.system.domain.SysDept" resultMap="deptResult"/>
+        <association property="dept" column="dept_id" javaType="org.dromara.system.domain.SysDept" resultMap="deptResult"/>
         <collection property="roles" javaType="java.util.List" resultMap="RoleResult"/>
     </resultMap>
 
-    <resultMap autoMapping="true" id="deptResult" type="com.ruoyi.system.domain.vo.SysDeptVo">
+    <resultMap autoMapping="true" id="deptResult" type="org.dromara.system.domain.vo.SysDeptVo">
     </resultMap>
 
-    <resultMap autoMapping="true" id="RoleResult" type="com.ruoyi.system.domain.vo.SysRoleVo">
+    <resultMap autoMapping="true" id="RoleResult" type="org.dromara.system.domain.vo.SysRoleVo">
     </resultMap>
 
     <sql id="selectUserVo">
@@ -58,7 +58,7 @@
     <sql id="selectSysUserVo">
         select su.user_id, su.dept_id, su.user_name, su.nick_name, su.user_type, su.email, su.phonenumber, su.sex, su.avatar, su.password, su.`status`, su.del_flag, su.login_ip, su.login_date, su.create_by, su.create_time, su.update_by, su.update_time, su.remark from sys_user su
     </sql>
-    <select id="queryList" parameterType="com.ruoyi.system.domain.SysUser" resultMap="SysUserResult">
+    <select id="queryList" parameterType="org.dromara.system.domain.SysUser" resultMap="SysUserResult">
         select u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.sex,
         u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark, d.dept_name, d.leader from
         sys_user u

@@ -4,7 +4,7 @@
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
         <artifactId>ruoyi-modules</artifactId>
-        <groupId>com.ruoyi</groupId>
+        <groupId>org.dromara</groupId>
         <version>${revision}</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
@@ -20,13 +20,13 @@
 
         <!-- 通用工具-->
         <dependency>
-            <groupId>com.ruoyi</groupId>
+            <groupId>org.dromara</groupId>
             <artifactId>ruoyi-common-core</artifactId>
         </dependency>
 
         <!-- 调度模块 -->
         <dependency>
-            <groupId>com.ruoyi</groupId>
+            <groupId>org.dromara</groupId>
             <artifactId>ruoyi-common-job</artifactId>
         </dependency>
 

@@ -2,11 +2,11 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.system.mapper.SysRoleMapper">
+<mapper namespace="org.dromara.system.mapper.SysRoleMapper">
 
-    <resultMap id="SysRoleResult" autoMapping="true" type="com.ruoyi.system.domain.SysRole">
+    <resultMap id="SysRoleResult" autoMapping="true" type="org.dromara.system.domain.SysRole">
     </resultMap>
-    <resultMap id="SysRoleResultVo" autoMapping="true" type="com.ruoyi.system.domain.vo.SysRoleVo">
+    <resultMap id="SysRoleResultVo" autoMapping="true" type="org.dromara.system.domain.vo.SysRoleVo">
     </resultMap>
 
     <sql id="selectRoleVo">
@@ -26,7 +26,7 @@
                  left join sys_user u on u.user_id = sur.user_id
                  left join sys_dept d on u.dept_id = d.dept_id
     </sql>
-    <select id="queryList" parameterType="com.ruoyi.system.domain.SysRole" resultMap="SysRoleResultVo">
+    <select id="queryList" parameterType="org.dromara.system.domain.SysRole" resultMap="SysRoleResultVo">
         <include refid="selectRoleVo"/>
         <where>
             and r.del_flag = '0'

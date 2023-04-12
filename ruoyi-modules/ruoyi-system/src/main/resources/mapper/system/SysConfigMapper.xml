@@ -2,17 +2,17 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.system.mapper.SysConfigMapper">
+<mapper namespace="org.dromara.system.mapper.SysConfigMapper">
 
-    <resultMap id="SysConfigResult" autoMapping="true" type="com.ruoyi.system.domain.SysConfig">
+    <resultMap id="SysConfigResult" autoMapping="true" type="org.dromara.system.domain.SysConfig">
     </resultMap>
-    <resultMap id="SysConfigResultVo" autoMapping="true" type="com.ruoyi.system.domain.vo.SysConfigVo">
+    <resultMap id="SysConfigResultVo" autoMapping="true" type="org.dromara.system.domain.vo.SysConfigVo">
     </resultMap>
 
     <sql id="selectSysConfigVo">
         select sc.config_id, sc.config_name, sc.config_key, sc.config_value, sc.config_type, sc.create_by, sc.create_time, sc.update_by, sc.update_time, sc.remark from sys_config sc
     </sql>
-    <select id="queryList" parameterType="com.ruoyi.system.domain.bo.SysConfigBo" resultMap="SysConfigResultVo">
+    <select id="queryList" parameterType="org.dromara.system.domain.bo.SysConfigBo" resultMap="SysConfigResultVo">
         <include refid="selectSysConfigVo"/>
         <where>
             <if test="configName != null and configName != ''"> and sc.config_name like concat('%', #{configName}, '%')</if>

@@ -2,17 +2,17 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.system.mapper.SysOperLogMapper">
+<mapper namespace="org.dromara.system.mapper.SysOperLogMapper">
 
-    <resultMap id="SysOperLogResult" autoMapping="true" type="com.ruoyi.system.domain.SysOperLog">
+    <resultMap id="SysOperLogResult" autoMapping="true" type="org.dromara.system.domain.SysOperLog">
     </resultMap>
-    <resultMap id="SysOperLogResultVo" autoMapping="true" type="com.ruoyi.system.domain.vo.SysOperLogVo">
+    <resultMap id="SysOperLogResultVo" autoMapping="true" type="org.dromara.system.domain.vo.SysOperLogVo">
     </resultMap>
 
     <sql id="selectSysOperLogVo">
         select sol.oper_id, sol.tenant_id, sol.title, sol.business_type, sol.method, sol.request_method, sol.operator_type, sol.oper_name, sol.dept_name, sol.oper_url, sol.oper_ip, sol.oper_location, sol.oper_param, sol.json_result, sol.`status`, sol.error_msg, sol.oper_time, sol.cost_time from sys_oper_log sol
     </sql>
-    <select id="queryList" parameterType="com.ruoyi.system.domain.bo.SysOperLogBo" resultMap="SysOperLogResultVo">
+    <select id="queryList" parameterType="org.dromara.system.domain.bo.SysOperLogBo" resultMap="SysOperLogResultVo">
         <include refid="selectSysOperLogVo"/>
         <where>
             <if test="title != null and title != ''"> and sol.title like concat('%', #{title}, '%')</if>

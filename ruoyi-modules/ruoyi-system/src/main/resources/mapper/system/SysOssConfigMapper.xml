@@ -2,17 +2,17 @@
 <!DOCTYPE mapper
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.system.mapper.SysOssConfigMapper">
+<mapper namespace="org.dromara.system.mapper.SysOssConfigMapper">
 
-    <resultMap id="SysOssConfigResult" autoMapping="true" type="com.ruoyi.system.domain.SysOssConfig">
+    <resultMap id="SysOssConfigResult" autoMapping="true" type="org.dromara.system.domain.SysOssConfig">
     </resultMap>
-    <resultMap id="SysOssConfigResultVo" autoMapping="true" type="com.ruoyi.system.domain.vo.SysOssConfigVo">
+    <resultMap id="SysOssConfigResultVo" autoMapping="true" type="org.dromara.system.domain.vo.SysOssConfigVo">
     </resultMap>
 
     <sql id="selectSysOssConfigVo">
         select soc.oss_config_id, soc.config_key, soc.access_key, soc.secret_key, soc.bucket_name, soc.prefix, soc.endpoint, soc.domain, soc.is_https, soc.region, soc.access_policy, soc.`status`, soc.ext1, soc.create_by, soc.create_time, soc.update_by, soc.update_time, soc.remark from sys_oss_config soc
     </sql>
-    <select id="queryList" parameterType="com.ruoyi.system.domain.bo.SysOssConfigBo" resultMap="SysOssConfigResultVo">
+    <select id="queryList" parameterType="org.dromara.system.domain.bo.SysOssConfigBo" resultMap="SysOssConfigResultVo">
         <include refid="selectSysOssConfigVo"/>
         <where>
             <if test="configKey != null and configKey != ''"> and soc.config_key = #{configKey}</if>

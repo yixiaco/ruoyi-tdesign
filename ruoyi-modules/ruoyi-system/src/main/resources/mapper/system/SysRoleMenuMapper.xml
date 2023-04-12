@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.system.mapper.SysRoleMenuMapper">
+<mapper namespace="org.dromara.system.mapper.SysRoleMenuMapper">
 
-    <resultMap id="SysRoleMenuResult" autoMapping="true" type="com.ruoyi.system.domain.SysRoleMenu">
+    <resultMap id="SysRoleMenuResult" autoMapping="true" type="org.dromara.system.domain.SysRoleMenu">
     </resultMap>
 
 </mapper>

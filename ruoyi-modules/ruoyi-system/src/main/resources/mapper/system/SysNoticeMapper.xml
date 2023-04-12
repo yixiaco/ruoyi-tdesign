@@ -2,17 +2,17 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.system.mapper.SysNoticeMapper">
+<mapper namespace="org.dromara.system.mapper.SysNoticeMapper">
 
-    <resultMap id="SysNoticeResultVo" autoMapping="true" type="com.ruoyi.system.domain.vo.SysNoticeVo">
+    <resultMap id="SysNoticeResultVo" autoMapping="true" type="org.dromara.system.domain.vo.SysNoticeVo">
     </resultMap>
-    <resultMap id="SysNoticeResult" autoMapping="true" type="com.ruoyi.system.domain.SysNotice">
+    <resultMap id="SysNoticeResult" autoMapping="true" type="org.dromara.system.domain.SysNotice">
     </resultMap>
 
     <sql id="selectSysNoticeVo">
         select sn.notice_id, sn.notice_title, sn.notice_type, sn.notice_content, sn.`status`, sn.create_by, sn.create_time, sn.update_by, sn.update_time, sn.remark from sys_notice sn
     </sql>
-    <select id="queryList" parameterType="com.ruoyi.system.domain.dto.SysNoticeQuery" resultMap="SysNoticeResultVo">
+    <select id="queryList" parameterType="org.dromara.system.domain.dto.SysNoticeQuery" resultMap="SysNoticeResultVo">
         select sn.notice_id,
                sn.notice_title,
                sn.notice_type,

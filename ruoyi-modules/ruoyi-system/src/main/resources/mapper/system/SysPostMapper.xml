@@ -2,11 +2,11 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.system.mapper.SysPostMapper">
+<mapper namespace="org.dromara.system.mapper.SysPostMapper">
 
-    <resultMap id="SysPostResult" autoMapping="true" type="com.ruoyi.system.domain.SysPost">
+    <resultMap id="SysPostResult" autoMapping="true" type="org.dromara.system.domain.SysPost">
     </resultMap>
-    <resultMap id="SysPostResultVo" autoMapping="true" type="com.ruoyi.system.domain.vo.SysPostVo">
+    <resultMap id="SysPostResultVo" autoMapping="true" type="org.dromara.system.domain.vo.SysPostVo">
     </resultMap>
 
     <select id="selectPostListByUserId" parameterType="Long" resultType="Long">
@@ -28,7 +28,7 @@
     <sql id="selectSysPostVo">
         select sp.post_id, sp.post_code, sp.post_name, sp.post_sort, sp.`status`, sp.create_by, sp.create_time, sp.update_by, sp.update_time, sp.remark from sys_post sp
     </sql>
-    <select id="queryList" parameterType="com.ruoyi.system.domain.bo.SysPostBo" resultMap="SysPostResultVo">
+    <select id="queryList" parameterType="org.dromara.system.domain.bo.SysPostBo" resultMap="SysPostResultVo">
         <include refid="selectSysPostVo"/>
         <where>
             <if test="postCode != null and postCode != ''"> and sp.post_code like concat('%', #{postCode}, '%')</if>

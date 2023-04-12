@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="UTF-8" ?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.system.mapper.SysOssMapper">
+<mapper namespace="org.dromara.system.mapper.SysOssMapper">
 
-    <resultMap id="SysOssResult" autoMapping="true" type="com.ruoyi.system.domain.SysOss">
+    <resultMap id="SysOssResult" autoMapping="true" type="org.dromara.system.domain.SysOss">
     </resultMap>
-    <resultMap id="SysOssResultVo" autoMapping="true" type="com.ruoyi.system.domain.vo.SysOssVo">
+    <resultMap id="SysOssResultVo" autoMapping="true" type="org.dromara.system.domain.vo.SysOssVo">
     </resultMap>
 
     <sql id="selectSysOssVo">
         select so.oss_id, so.file_name, so.original_name, so.file_suffix, so.url, so.size, so.create_time, so.create_by, so.update_time, so.update_by, so.service from sys_oss so
     </sql>
-    <select id="queryList" parameterType="com.ruoyi.system.domain.dto.SysOssQuery" resultMap="SysOssResultVo">
+    <select id="queryList" parameterType="org.dromara.system.domain.dto.SysOssQuery" resultMap="SysOssResultVo">
         select so.oss_id,
                so.file_name,
                so.original_name,

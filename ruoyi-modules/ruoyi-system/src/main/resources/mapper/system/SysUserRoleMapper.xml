@@ -2,9 +2,9 @@
 <!DOCTYPE mapper
         PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.ruoyi.system.mapper.SysUserRoleMapper">
+<mapper namespace="org.dromara.system.mapper.SysUserRoleMapper">
 
-    <resultMap id="SysUserRoleResult" autoMapping="true" type="com.ruoyi.system.domain.SysUserRole">
+    <resultMap id="SysUserRoleResult" autoMapping="true" type="org.dromara.system.domain.SysUserRole">
     </resultMap>
     <select id="selectUserIdsByRoleId" resultType="Long">
         select u.user_id from sys_user u
