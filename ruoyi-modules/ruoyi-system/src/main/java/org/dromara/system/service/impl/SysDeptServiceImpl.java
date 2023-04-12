@@ -23,6 +23,7 @@ import org.dromara.system.domain.SysDept;
 import org.dromara.system.domain.SysRole;
 import org.dromara.system.domain.SysUser;
 import org.dromara.system.domain.bo.SysDeptBo;
+import org.dromara.system.domain.query.SysDeptQuery;
 import org.dromara.system.domain.vo.SysDeptVo;
 import org.dromara.system.mapper.SysDeptMapper;
 import org.dromara.system.mapper.SysRoleMapper;
@@ -57,7 +58,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      * @return 部门信息集合
      */
     @Override
-    public List<SysDeptVo> selectDeptList(SysDeptBo dept) {
+    public List<SysDeptVo> selectDeptList(SysDeptQuery dept) {
         return baseMapper.queryList(dept);
     }
 
@@ -68,7 +69,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      * @return 部门树信息集合
      */
     @Override
-    public List<Tree<Long>> selectDeptTreeList(SysDeptBo bo) {
+    public List<Tree<Long>> selectDeptTreeList(SysDeptQuery bo) {
         List<SysDeptVo> depts = this.selectDeptList(bo);
         return buildDeptTreeSelect(BeanUtil.copyToList(depts, SysDept.class));
     }

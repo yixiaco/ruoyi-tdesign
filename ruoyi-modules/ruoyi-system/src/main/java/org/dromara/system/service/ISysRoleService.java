@@ -5,6 +5,7 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysRole;
 import org.dromara.system.domain.SysUserRole;
 import org.dromara.system.domain.bo.SysRoleBo;
+import org.dromara.system.domain.query.SysRoleQuery;
 import org.dromara.system.domain.vo.SysRoleVo;
 
 import java.util.List;
@@ -23,7 +24,7 @@ public interface ISysRoleService extends IService<SysRole> {
      * @param role 角色信息
      * @return 角色数据集合信息
      */
-    TableDataInfo<SysRoleVo> selectPageRoleList(SysRoleBo role);
+    TableDataInfo<SysRoleVo> selectPageRoleList(SysRoleQuery role);
 
     /**
      * 根据条件分页查询角色数据
@@ -31,7 +32,7 @@ public interface ISysRoleService extends IService<SysRole> {
      * @param role 角色信息
      * @return 角色数据集合信息
      */
-    List<SysRoleVo> selectRoleList(SysRoleBo role);
+    List<SysRoleVo> selectRoleList(SysRoleQuery role);
 
     /**
      * 根据用户ID查询角色列表

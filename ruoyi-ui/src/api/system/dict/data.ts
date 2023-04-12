@@ -1,9 +1,9 @@
 import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysDictDataBo, SysDictDataVo } from '@/api/system/model/dictModel';
+import { SysDictDataForm, SysDictDataQuery, SysDictDataVo } from '@/api/system/model/dictModel';
 
 // 查询字典数据列表
-export function listData(query: SysDictDataBo) {
+export function listData(query: SysDictDataQuery) {
   return request.get<TableDataInfo<SysDictDataVo>>({
     url: '/system/dict/data/list',
     params: query,
@@ -25,7 +25,7 @@ export function getDicts(dictType: string) {
 }
 
 // 新增字典数据
-export function addData(data: SysDictDataBo) {
+export function addData(data: SysDictDataForm) {
   return request.post<R<void>>({
     url: '/system/dict/data',
     data,
@@ -33,7 +33,7 @@ export function addData(data: SysDictDataBo) {
 }
 
 // 修改字典数据
-export function updateData(data: SysDictDataBo) {
+export function updateData(data: SysDictDataForm) {
   return request.put<R<void>>({
     url: '/system/dict/data',
     data,

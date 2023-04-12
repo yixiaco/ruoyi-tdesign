@@ -230,7 +230,7 @@ import {
   updateTenantPackage,
   changePackageStatus,
 } from '@/api/system/tenantPackage';
-import { SysTenantPackageBo, SysTenantPackageVo } from '@/api/system/model/tenantPackageModel';
+import { SysTenantPackageForm, SysTenantPackageVo } from '@/api/system/model/tenantPackageModel';
 import { tenantPackageMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
 import { TreeModel } from '@/api/model/resultModel';
 
@@ -273,11 +273,11 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 // 提交表单对象
-const form = ref<SysTenantPackageVo & SysTenantPackageBo>({
+const form = ref<SysTenantPackageVo & SysTenantPackageForm>({
   menuIds: [],
 });
 // 查询对象
-const queryParams = ref<SysTenantPackageBo>({
+const queryParams = ref<SysTenantPackageForm>({
   pageNum: 1,
   pageSize: 10,
   params: {},

@@ -293,7 +293,7 @@ import {
   deptTreeSelect,
 } from '@/api/system/role';
 import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
-import { SysRoleBo, SysRoleVo } from '@/api/system/model/roleModel';
+import { SysRoleForm, SysRoleVo } from '@/api/system/model/roleModel';
 import { TreeModel } from '@/api/model/resultModel';
 
 const router = useRouter();
@@ -352,13 +352,13 @@ const rules = ref<Record<string, Array<FormRule>>>({
   roleKey: [{ required: true, message: '权限字符不能为空', trigger: 'blur' }],
   roleSort: [{ required: true, message: '角色顺序不能为空', trigger: 'blur' }],
 });
-const form = ref<SysRoleBo & SysRoleVo>({
+const form = ref<SysRoleForm & SysRoleVo>({
   roleSort: 0,
   status: '0',
   menuIds: [],
   deptIds: [],
 });
-const queryParams = ref<SysRoleBo>({
+const queryParams = ref<SysRoleForm>({
   pageNum: 1,
   pageSize: 10,
   roleName: undefined,

@@ -1,0 +1,32 @@
+package org.dromara.system.domain.query;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
+
+/**
+ * 菜单权限查询对象 sys_menu
+ *
+ * @author hexm
+ * @date 2023-04-12
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class SysMenuQuery extends BaseEntity {
+
+    /**
+     * 菜单名称
+     */
+    private String menuName;
+
+    /**
+     * 显示状态
+     */
+    private String visible;
+
+    /**
+     * 菜单状态
+     */
+    private String status;
+
+}

@@ -1,9 +1,9 @@
 import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysTenantPackageBo, SysTenantPackageVo } from '@/api/system/model/tenantPackageModel';
+import { SysTenantPackageForm, SysTenantPackageVo } from '@/api/system/model/tenantPackageModel';
 
 // 查询租户套餐列表
-export function listTenantPackage(query?: SysTenantPackageBo) {
+export function listTenantPackage(query?: SysTenantPackageForm) {
   return request.get<TableDataInfo<SysTenantPackageVo>>({
     url: '/system/tenant/package/list',
     params: query,
@@ -18,7 +18,7 @@ export function getTenantPackage(packageId: number) {
 }
 
 // 新增租户套餐
-export function addTenantPackage(data: SysTenantPackageBo) {
+export function addTenantPackage(data: SysTenantPackageForm) {
   return request.post<R<void>>({
     url: '/system/tenant/package',
     data,
@@ -26,7 +26,7 @@ export function addTenantPackage(data: SysTenantPackageBo) {
 }
 
 // 修改租户套餐
-export function updateTenantPackage(data: SysTenantPackageBo) {
+export function updateTenantPackage(data: SysTenantPackageForm) {
   return request.put<R<void>>({
     url: '/system/tenant/package',
     data,

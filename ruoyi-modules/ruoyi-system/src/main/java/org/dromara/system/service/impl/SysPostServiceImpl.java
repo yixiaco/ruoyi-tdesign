@@ -11,6 +11,7 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysPost;
 import org.dromara.system.domain.SysUserPost;
 import org.dromara.system.domain.bo.SysPostBo;
+import org.dromara.system.domain.query.SysPostQuery;
 import org.dromara.system.domain.vo.SysPostVo;
 import org.dromara.system.mapper.SysPostMapper;
 import org.dromara.system.mapper.SysUserPostMapper;
@@ -33,7 +34,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     private SysUserPostMapper userPostMapper;
 
     @Override
-    public TableDataInfo<SysPostVo> selectPagePostList(SysPostBo post) {
+    public TableDataInfo<SysPostVo> selectPagePostList(SysPostQuery post) {
         return PageQuery.of(() -> baseMapper.queryList(post));
     }
 
@@ -44,7 +45,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      * @return 岗位信息集合
      */
     @Override
-    public List<SysPostVo> selectPostList(SysPostBo post) {
+    public List<SysPostVo> selectPostList(SysPostQuery post) {
         return baseMapper.queryList(post);
     }
 

@@ -1,9 +1,20 @@
 import { BaseEntity, TreeModel } from '@/api/model/resultModel';
 
 /**
+ * 菜单权限查询对象
+ */
+export interface SysMenuQuery extends BaseEntity {
+  /** 菜单名称 */
+  menuName?: string;
+  /** 显示状态 */
+  visible?: string;
+  /** 菜单状态 */
+  status?: string;
+}
+/**
  * 菜单权限业务对象
  */
-export interface SysMenuBo extends BaseEntity {
+export interface SysMenuForm extends BaseEntity {
   /** 菜单ID */
   menuId?: number;
   /** 菜单名称 */

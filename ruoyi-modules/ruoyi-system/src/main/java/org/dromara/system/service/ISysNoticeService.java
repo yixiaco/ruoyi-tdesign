@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysNotice;
 import org.dromara.system.domain.bo.SysNoticeBo;
-import org.dromara.system.domain.dto.SysNoticeQuery;
+import org.dromara.system.domain.query.SysNoticeQuery;
 import org.dromara.system.domain.vo.SysNoticeVo;
 
 import java.util.List;

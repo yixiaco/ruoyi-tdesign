@@ -26,7 +26,7 @@
                  left join sys_user u on u.user_id = sur.user_id
                  left join sys_dept d on u.dept_id = d.dept_id
     </sql>
-    <select id="queryList" parameterType="org.dromara.system.domain.SysRole" resultMap="SysRoleResultVo">
+    <select id="queryList" parameterType="org.dromara.system.domain.query.SysRoleQuery" resultMap="SysRoleResultVo">
         <include refid="selectRoleVo"/>
         <where>
             and r.del_flag = '0'
@@ -57,7 +57,7 @@
         WHERE r.del_flag = '0' and u.user_name = #{userName}
     </select>
 
-    <select id="selectRoleById" resultMap="SysRoleResult">
+    <select id="selectRoleById" resultMap="SysRoleResultVo">
         <include refid="selectRoleVo"/>
         WHERE r.del_flag = '0' and r.role_id = #{roleId}
     </select>

@@ -1,8 +1,20 @@
 import { BaseEntity } from '@/api/model/resultModel';
+
+/**
+ * 字典数据查询对象
+ */
+export interface SysDictDataQuery extends BaseEntity {
+  /** 字典标签 */
+  dictLabel?: string;
+  /** 字典类型 */
+  dictType?: string;
+  /** 状态 */
+  status?: string;
+}
 /**
  * 字典数据业务对象
  */
-export interface SysDictDataBo extends BaseEntity {
+export interface SysDictDataForm extends BaseEntity {
   /** 字典编码 */
   dictCode?: number;
   /** 字典排序 */
@@ -53,10 +65,22 @@ export interface SysDictDataVo {
   /** 备注 */
   remark?: string;
 }
+
+/**
+ * 字典类型查询对象
+ */
+export interface SysDictTypeQuery extends BaseEntity {
+  /** 字典名称 */
+  dictName?: string;
+  /** 字典类型 */
+  dictType?: string;
+  /** 状态 */
+  status?: string;
+}
 /**
  * 字典类型业务对象
  */
-export interface SysDictTypeBo extends BaseEntity {
+export interface SysDictTypeForm extends BaseEntity {
   /** 字典主键 */
   dictId?: number;
   /** 字典名称 */

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import org.dromara.common.core.constant.UserConstants;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysDictData;
-import org.dromara.system.domain.bo.SysDictDataBo;
+import org.dromara.system.domain.query.SysDictDataQuery;
 import org.dromara.system.domain.vo.SysDictDataVo;
 
 import java.util.List;
@@ -22,7 +22,7 @@ public interface SysDictDataMapper extends BaseMapperPlus<SysDictData, SysDictDa
      * @param dictData
      * @return {@link SysDictData}
      */
-    List<SysDictDataVo> queryList(SysDictDataBo dictData);
+    List<SysDictDataVo> queryList(SysDictDataQuery dictData);
 
     default List<SysDictDataVo> selectDictDataByType(String dictType) {
         return selectVoList(

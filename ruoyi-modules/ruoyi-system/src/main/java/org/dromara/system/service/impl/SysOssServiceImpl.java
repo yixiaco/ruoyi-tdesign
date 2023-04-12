@@ -21,7 +21,7 @@ import org.dromara.common.oss.enumd.AccessPolicyType;
 import org.dromara.common.oss.factory.OssFactory;
 import org.dromara.common.redis.utils.CacheUtils;
 import org.dromara.system.domain.SysOss;
-import org.dromara.system.domain.dto.SysOssQuery;
+import org.dromara.system.domain.query.SysOssQuery;
 import org.dromara.system.domain.vo.SysOssVo;
 import org.dromara.system.mapper.SysOssMapper;
 import org.dromara.system.service.ISysOssService;

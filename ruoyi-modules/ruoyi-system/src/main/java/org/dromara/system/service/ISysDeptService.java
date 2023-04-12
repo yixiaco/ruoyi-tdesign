@@ -4,6 +4,7 @@ import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.dromara.system.domain.SysDept;
 import org.dromara.system.domain.bo.SysDeptBo;
+import org.dromara.system.domain.query.SysDeptQuery;
 import org.dromara.system.domain.vo.SysDeptVo;
 
 import java.util.List;
@@ -20,7 +21,7 @@ public interface ISysDeptService extends IService<SysDept> {
      * @param dept 部门信息
      * @return 部门信息集合
      */
-    List<SysDeptVo> selectDeptList(SysDeptBo dept);
+    List<SysDeptVo> selectDeptList(SysDeptQuery dept);
 
     /**
      * 查询部门树结构信息
@@ -28,7 +29,7 @@ public interface ISysDeptService extends IService<SysDept> {
      * @param dept 部门信息
      * @return 部门树信息集合
      */
-    List<Tree<Long>> selectDeptTreeList(SysDeptBo dept);
+    List<Tree<Long>> selectDeptTreeList(SysDeptQuery dept);
 
     /**
      * 构建前端所需要下拉树结构

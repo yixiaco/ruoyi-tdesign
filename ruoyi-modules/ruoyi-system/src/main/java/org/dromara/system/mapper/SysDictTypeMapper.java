@@ -2,7 +2,7 @@ package org.dromara.system.mapper;
 
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysDictType;
-import org.dromara.system.domain.bo.SysDictTypeBo;
+import org.dromara.system.domain.query.SysDictTypeQuery;
 import org.dromara.system.domain.vo.SysDictTypeVo;
 
 import java.util.List;
@@ -20,5 +20,5 @@ public interface SysDictTypeMapper extends BaseMapperPlus<SysDictType, SysDictTy
      * @param dictType
      * @return {@link SysDictType}
      */
-    List<SysDictTypeVo> queryList(SysDictTypeBo dictType);
+    List<SysDictTypeVo> queryList(SysDictTypeQuery dictType);
 }

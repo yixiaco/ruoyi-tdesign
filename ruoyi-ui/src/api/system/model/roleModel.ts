@@ -1,9 +1,22 @@
 import { BaseEntity, TreeModel } from '@/api/model/resultModel';
 
 /**
+ * 角色信息查询对象
+ */
+export interface SysRoleQuery extends BaseEntity {
+  /** 角色ID */
+  roleId?: number;
+  /** 角色名称 */
+  roleName?: string;
+  /** 角色权限字符串 */
+  roleKey?: string;
+  /** 角色状态（0正常 1停用） */
+  status?: string;
+}
+/**
  * 角色信息业务对象
  */
-export interface SysRoleBo extends BaseEntity {
+export interface SysRoleForm extends BaseEntity {
   /** 角色ID */
   roleId?: number;
   /** 角色名称 */

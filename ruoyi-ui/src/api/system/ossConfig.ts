@@ -1,5 +1,5 @@
 import { request } from '@/utils/request';
-import { SysOssConfigBo, SysOssConfigQuery, SysOssConfigVo } from '@/api/system/model/ossConfigModel';
+import { SysOssConfigForm, SysOssConfigQuery, SysOssConfigVo } from '@/api/system/model/ossConfigModel';
 import { R, TableDataInfo } from '@/api/model/resultModel';
 
 // 查询对象存储配置列表
@@ -18,7 +18,7 @@ export function getOssConfig(ossConfigId: number) {
 }
 
 // 新增对象存储配置
-export function addOssConfig(data: SysOssConfigBo) {
+export function addOssConfig(data: SysOssConfigForm) {
   return request.post<R<void>>({
     url: '/system/oss/config',
     data,
@@ -26,7 +26,7 @@ export function addOssConfig(data: SysOssConfigBo) {
 }
 
 // 修改对象存储配置
-export function updateOssConfig(data: SysOssConfigBo) {
+export function updateOssConfig(data: SysOssConfigForm) {
   return request.put<R<void>>({
     url: '/system/oss/config',
     data,

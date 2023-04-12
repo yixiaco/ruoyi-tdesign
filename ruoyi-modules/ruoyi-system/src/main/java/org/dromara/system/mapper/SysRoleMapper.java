@@ -5,7 +5,7 @@ import org.dromara.common.mybatis.annotation.DataColumn;
 import org.dromara.common.mybatis.annotation.DataPermission;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysRole;
-import org.dromara.system.domain.bo.SysRoleBo;
+import org.dromara.system.domain.query.SysRoleQuery;
 import org.dromara.system.domain.vo.SysRoleVo;
 
 import java.util.List;
@@ -50,11 +50,11 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole, SysRoleVo> {
     /**
      * 查询角色信息列表
      *
-     * @param bo bo对象
-     * @return {@link SysRole}
+     * @param query 查询对象
+     * @return {@link SysRoleVo}
      */
     @DataPermission({
         @DataColumn(key = "deptName", value = "d.dept_id")
     })
-    List<SysRoleVo> queryList(SysRoleBo bo);
+    List<SysRoleVo> queryList(SysRoleQuery query);
 }

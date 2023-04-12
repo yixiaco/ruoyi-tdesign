@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysDictData;
 import org.dromara.system.domain.bo.SysDictDataBo;
+import org.dromara.system.domain.query.SysDictDataQuery;
 import org.dromara.system.domain.vo.SysDictDataVo;
 
 import java.util.List;
@@ -21,15 +22,15 @@ public interface ISysDictDataService extends IService<SysDictData> {
      * @param dictData 字典数据信息
      * @return 字典数据集合信息
      */
-    TableDataInfo<SysDictDataVo> selectPageDictDataList(SysDictDataBo dictData);
+    TableDataInfo<SysDictDataVo> selectPageDictDataList(SysDictDataQuery dictData);
 
     /**
-     * 根据条件分页查询字典数据
+     * 根据条件查询字典数据
      *
      * @param dictData 字典数据信息
      * @return 字典数据集合信息
      */
-    List<SysDictDataVo> selectDictDataList(SysDictDataBo dictData);
+    List<SysDictDataVo> selectDictDataList(SysDictDataQuery dictData);
 
     /**
      * 根据字典类型和字典键值查询字典数据信息

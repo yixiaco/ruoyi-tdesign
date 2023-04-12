@@ -179,7 +179,7 @@ import {
 } from 'tdesign-icons-vue-next';
 import { EnhancedTableInstanceFunctions, FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from '@/api/system/dept';
-import { SysDeptBo, SysDeptVo } from '@/api/system/model/deptModel';
+import { SysDeptForm, SysDeptQuery, SysDeptVo } from '@/api/system/model/deptModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
@@ -218,8 +218,8 @@ const rules = ref<Record<string, Array<FormRule>>>({
   phone: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
 });
 
-const form = ref<SysDeptBo & SysDeptVo>({ ...formInitValue });
-const queryParams = ref<SysDeptBo>({
+const form = ref<SysDeptForm & SysDeptVo>({ ...formInitValue });
+const queryParams = ref<SysDeptQuery>({
   deptName: undefined,
   status: undefined,
 });

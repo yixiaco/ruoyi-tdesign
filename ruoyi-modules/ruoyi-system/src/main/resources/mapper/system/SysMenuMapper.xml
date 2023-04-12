@@ -12,7 +12,7 @@
     <sql id="selectSysMenuVo">
         select sm.menu_id, sm.menu_name, sm.parent_id, sm.order_num, sm.path, sm.component, sm.query_param, sm.is_frame, sm.is_cache, sm.menu_type, sm.visible, sm.`status`, sm.perms, sm.icon, sm.create_by, sm.create_time, sm.update_by, sm.update_time, sm.remark from sys_menu sm
     </sql>
-    <select id="queryList" parameterType="org.dromara.system.domain.bo.SysMenuBo" resultMap="SysMenuResultVo">
+    <select id="queryList" parameterType="org.dromara.system.domain.query.SysMenuQuery" resultMap="SysMenuResultVo">
         <include refid="selectSysMenuVo"/>
         <where>
             <if test="menuName != null and menuName != ''"> and sm.menu_name like concat('%', #{menuName}, '%')</if>

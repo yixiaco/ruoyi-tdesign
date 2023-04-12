@@ -8,11 +8,11 @@ export interface SysOssConfigQuery extends BaseEntity {
   configKey?: string;
   /** 桶名称 */
   bucketName?: string;
-  /** 状态（0=正常,1=停用） */
+  /** 是否默认 */
   status?: string;
 }
 
-export interface SysOssConfigBo extends BaseEntity {
+export interface SysOssConfigForm extends BaseEntity {
   /** 主建 */
   ossConfigId?: number;
   /** 配置key */
@@ -31,7 +31,7 @@ export interface SysOssConfigBo extends BaseEntity {
   domain?: string;
   /** 是否https（Y=是,N=否） */
   isHttps?: string;
-  /** 状态（0=正常,1=停用） */
+  /** 是否默认 */
   status?: string;
   /** 域 */
   region?: string;
@@ -75,7 +75,7 @@ export interface SysOssConfigVo {
   isHttps?: string;
   /** 域 */
   region?: string;
-  /** 状态（0=正常,1=停用） */
+  /** 是否默认（0=是,1=否） */
   status?: string;
   /** 扩展字段 */
   ext1?: string;

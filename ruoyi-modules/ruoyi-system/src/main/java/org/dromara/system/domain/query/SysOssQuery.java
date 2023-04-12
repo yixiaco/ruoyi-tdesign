@@ -1,4 +1,4 @@
-package org.dromara.system.domain.dto;
+package org.dromara.system.domain.query;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -6,11 +6,10 @@ import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 import java.util.Date;
 
-
 /**
- * OSS对象存储业务对象 sys_oss
+ * OSS对象存储查询对象 sys_oss
  *
- * @author ruoyi
+ * @author hexm
  * @date 2023-04-01
  */
 @Data

@@ -4,7 +4,7 @@
  */
 import { BaseEntity } from '@/api/model/resultModel';
 
-export interface SysTenantPackageBo extends BaseEntity {
+export interface SysTenantPackageForm extends BaseEntity {
   /** 租户套餐id */
   packageId?: number;
   /** 套餐名称 */

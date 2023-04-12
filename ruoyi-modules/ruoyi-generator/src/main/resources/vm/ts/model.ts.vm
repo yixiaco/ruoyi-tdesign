@@ -14,7 +14,7 @@ import {#if($useQuery) BaseEntity,#end TreeEntity } from '@/api/model/ResultMode
  */
 export interface ${ClassName}Query extends BaseEntity {
 #foreach ($column in $columns)
-#if($column.isQuery == '1')
+#if($column.isQuery == '1' && $column.queryType != "BETWEEN")
   /** $column.columnComment */
   $column.javaField?: ${GenUtil.javaTypeToTypescript($column.javaType)};
 #end
@@ -26,7 +26,7 @@ export interface ${ClassName}Query extends BaseEntity {
 /**
  * ${functionName}业务对象
  */
-export interface ${ClassName}Bo extends ${BoEntity} {
+export interface ${ClassName}Form extends ${BoEntity} {
 #foreach ($column in $columns)
 #if(($column.isPk == '1' || $column.isInsert == '1' || $column.isEdit == '1'))
   /** $column.columnComment */

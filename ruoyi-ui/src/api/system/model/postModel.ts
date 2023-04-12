@@ -1,9 +1,20 @@
 import { BaseEntity } from '@/api/model/resultModel';
 
 /**
+ * 岗位信息查询对象
+ */
+export interface SysPostQuery extends BaseEntity {
+  /** 岗位编码 */
+  postCode?: string;
+  /** 岗位名称 */
+  postName?: string;
+  /** 状态（0正常 1停用） */
+  status?: string;
+}
+/**
  * 岗位信息业务对象
  */
-export interface SysPostBo extends BaseEntity {
+export interface SysPostForm extends BaseEntity {
   /** 岗位ID */
   postId?: number;
   /** 岗位编码 */

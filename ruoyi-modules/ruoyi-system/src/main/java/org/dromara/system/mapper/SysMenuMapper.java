@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import org.dromara.common.core.constant.UserConstants;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysMenu;
-import org.dromara.system.domain.bo.SysMenuBo;
+import org.dromara.system.domain.query.SysMenuQuery;
 import org.dromara.system.domain.vo.SysMenuVo;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenu, SysMenuVo> {
      * @param menu
      * @return {@link SysMenu}
      */
-    List<SysMenuVo> queryList(SysMenuBo menu);
+    List<SysMenuVo> queryList(SysMenuQuery menu);
 
     /**
      * 根据用户所有权限

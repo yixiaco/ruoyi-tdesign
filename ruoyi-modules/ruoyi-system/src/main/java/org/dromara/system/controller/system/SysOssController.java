@@ -7,12 +7,11 @@ import cn.hutool.core.util.ObjectUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import org.dromara.common.core.domain.R;
-import org.dromara.common.core.validate.QueryGroup;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.web.core.BaseController;
-import org.dromara.system.domain.dto.SysOssQuery;
+import org.dromara.system.domain.query.SysOssQuery;
 import org.dromara.system.domain.vo.SysOssUploadVo;
 import org.dromara.system.domain.vo.SysOssVo;
 import org.dromara.system.service.ISysOssService;
@@ -50,8 +49,8 @@ public class SysOssController extends BaseController {
      */
     @SaCheckPermission("system:oss:list")
     @GetMapping("/list")
-    public TableDataInfo<SysOssVo> list(@Validated(QueryGroup.class) SysOssQuery bo) {
-        return ossService.queryPageList(bo);
+    public TableDataInfo<SysOssVo> list(SysOssQuery query) {
+        return ossService.queryPageList(query);
     }
 
     /**

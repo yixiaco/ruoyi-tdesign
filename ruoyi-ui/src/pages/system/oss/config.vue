@@ -192,7 +192,7 @@ import {
   updateOssConfig,
   changeOssConfigStatus,
 } from '@/api/system/ossConfig';
-import { SysOssConfigBo, SysOssConfigQuery, SysOssConfigVo } from '@/api/system/model/ossConfigModel';
+import { SysOssConfigForm, SysOssConfigQuery, SysOssConfigVo } from '@/api/system/model/ossConfigModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_yes_no } = proxy.useDict('sys_yes_no');
@@ -266,7 +266,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
   accessPolicy: [{ required: true, message: 'accessPolicy不能为空', trigger: 'blur' }],
 });
 
-const form = ref<SysOssConfigVo & SysOssConfigBo>({});
+const form = ref<SysOssConfigVo & SysOssConfigForm>({});
 // 查询参数
 const queryParams = ref<SysOssConfigQuery>({
   pageNum: 1,

@@ -25,8 +25,8 @@ import org.dromara.system.domain.SysDept;
 import org.dromara.system.domain.SysUser;
 import org.dromara.system.domain.SysUserPost;
 import org.dromara.system.domain.SysUserRole;
-import org.dromara.system.domain.bo.SysRoleBo;
 import org.dromara.system.domain.bo.SysUserBo;
+import org.dromara.system.domain.query.SysRoleQuery;
 import org.dromara.system.domain.vo.SysPostVo;
 import org.dromara.system.domain.vo.SysRoleVo;
 import org.dromara.system.domain.vo.SysUserVo;
@@ -432,7 +432,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private void insertUserRole(Long userId, Long[] roleIds, boolean clear) {
         if (ArrayUtil.isNotEmpty(roleIds)) {
             // 判断是否具有此角色的操作权限
-            List<SysRoleVo> roles = roleMapper.queryList(new SysRoleBo());
+            List<SysRoleVo> roles = roleMapper.queryList(new SysRoleQuery());
             if (CollUtil.isEmpty(roles)) {
                 throw new ServiceException("没有权限访问角色的数据");
             }

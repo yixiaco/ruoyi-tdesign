@@ -294,7 +294,7 @@ import { getCurrentInstance, ref } from 'vue';
 import { EnhancedTableInstanceFunctions, FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { addMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu';
 import IconSelect from '@/components/icon-select/index.vue';
-import { SysMenuBo, SysMenuVo } from '@/api/system/model/menuModel';
+import { SysMenuForm, SysMenuQuery, SysMenuVo } from '@/api/system/model/menuModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_show_hide, sys_normal_disable } = proxy.useDict('sys_show_hide', 'sys_normal_disable');
@@ -328,7 +328,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 
-const form = ref<SysMenuBo & SysMenuVo>({
+const form = ref<SysMenuForm & SysMenuVo>({
   menuId: undefined,
   parentId: 0,
   menuName: undefined,
@@ -341,7 +341,7 @@ const form = ref<SysMenuBo & SysMenuVo>({
   status: '0',
 });
 
-const queryParams = ref<SysMenuBo>({
+const queryParams = ref<SysMenuQuery>({
   menuName: undefined,
   visible: undefined,
 });

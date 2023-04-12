@@ -12,7 +12,7 @@
     <sql id="selectSysDictTypeVo">
         select sdt.dict_id, sdt.dict_name, sdt.dict_type, sdt.`status`, sdt.create_by, sdt.create_time, sdt.update_by, sdt.update_time, sdt.remark from sys_dict_type sdt
     </sql>
-    <select id="queryList" parameterType="org.dromara.system.domain.bo.SysDictTypeBo" resultMap="SysDictTypeResultVo">
+    <select id="queryList" parameterType="org.dromara.system.domain.query.SysDictTypeQuery" resultMap="SysDictTypeResultVo">
         <include refid="selectSysDictTypeVo"/>
         <where>
             <if test="dictName != null and dictName != ''"> and sdt.dict_name like concat('%', #{dictName}, '%')</if>

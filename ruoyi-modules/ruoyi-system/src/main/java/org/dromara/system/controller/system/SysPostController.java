@@ -9,6 +9,7 @@ import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.bo.SysPostBo;
+import org.dromara.system.domain.query.SysPostQuery;
 import org.dromara.system.domain.vo.SysPostVo;
 import org.dromara.system.service.ISysPostService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class SysPostController extends BaseController {
      */
     @SaCheckPermission("system:post:list")
     @GetMapping("/list")
-    public TableDataInfo<SysPostVo> list(SysPostBo post) {
+    public TableDataInfo<SysPostVo> list(SysPostQuery post) {
         return postService.selectPagePostList(post);
     }
 
@@ -52,7 +53,7 @@ public class SysPostController extends BaseController {
     @Log(title = "岗位管理", businessType = BusinessType.EXPORT)
     @SaCheckPermission("system:post:export")
     @PostMapping("/export")
-    public void export(SysPostBo post, HttpServletResponse response) {
+    public void export(SysPostQuery post, HttpServletResponse response) {
         List<SysPostVo> list = postService.selectPostList(post);
         ExcelUtil.exportExcel(list, "岗位数据", SysPostVo.class, response);
     }

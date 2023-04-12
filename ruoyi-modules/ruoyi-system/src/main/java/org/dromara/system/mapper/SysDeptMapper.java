@@ -7,7 +7,7 @@ import org.dromara.common.mybatis.annotation.DataColumn;
 import org.dromara.common.mybatis.annotation.DataPermission;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysDept;
-import org.dromara.system.domain.bo.SysDeptBo;
+import org.dromara.system.domain.query.SysDeptQuery;
 import org.dromara.system.domain.vo.SysDeptVo;
 
 import java.util.List;
@@ -28,7 +28,7 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept, SysDeptVo> {
     @DataPermission({
         @DataColumn(key = "deptName", value = "dept_id")
     })
-    List<SysDeptVo> queryList(SysDeptBo dept);
+    List<SysDeptVo> queryList(SysDeptQuery dept);
 
     /**
      * 查询部门管理数据

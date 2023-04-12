@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysDictType;
 import org.dromara.system.domain.bo.SysDictTypeBo;
+import org.dromara.system.domain.query.SysDictTypeQuery;
 import org.dromara.system.domain.vo.SysDictDataVo;
 import org.dromara.system.domain.vo.SysDictTypeVo;
 
@@ -22,7 +23,7 @@ public interface ISysDictTypeService extends IService<SysDictType> {
      * @param dictType 字典类型信息
      * @return 字典类型集合信息
      */
-    TableDataInfo<SysDictTypeVo> selectPageDictTypeList(SysDictTypeBo dictType);
+    TableDataInfo<SysDictTypeVo> selectPageDictTypeList(SysDictTypeQuery dictType);
 
     /**
      * 根据条件分页查询字典类型
@@ -30,7 +31,7 @@ public interface ISysDictTypeService extends IService<SysDictType> {
      * @param dictType 字典类型信息
      * @return 字典类型集合信息
      */
-    List<SysDictTypeVo> selectDictTypeList(SysDictTypeBo dictType);
+    List<SysDictTypeVo> selectDictTypeList(SysDictTypeQuery dictType);
 
     /**
      * 根据所有字典类型

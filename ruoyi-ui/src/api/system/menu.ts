@@ -1,9 +1,15 @@
 import { request } from '@/utils/request';
-import { MenuTreeSelectVo, RoleMenuTreeselect, SysMenuBo, SysMenuVo } from '@/api/system/model/menuModel';
+import {
+  MenuTreeSelectVo,
+  RoleMenuTreeselect,
+  SysMenuForm,
+  SysMenuQuery,
+  SysMenuVo,
+} from '@/api/system/model/menuModel';
 import { R, TreeModel } from '@/api/model/resultModel';
 
 // 查询菜单列表
-export function listMenu(query?: SysMenuBo) {
+export function listMenu(query?: SysMenuQuery) {
   return request.get<R<Array<SysMenuVo>>>({
     url: '/system/menu/list',
     params: query,
@@ -39,7 +45,7 @@ export function tenantPackageMenuTreeselect(packageId) {
 }
 
 // 新增菜单
-export function addMenu(data: SysMenuBo) {
+export function addMenu(data: SysMenuForm) {
   return request.post<R<void>>({
     url: '/system/menu',
     data,
@@ -47,7 +53,7 @@ export function addMenu(data: SysMenuBo) {
 }
 
 // 修改菜单
-export function updateMenu(data: SysMenuBo) {
+export function updateMenu(data: SysMenuForm) {
   return request.put<R<void>>({
     url: '/system/menu',
     data,

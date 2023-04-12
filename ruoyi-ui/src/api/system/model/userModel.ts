@@ -6,7 +6,7 @@ import { SysPostVo } from '@/api/system/model/postModel';
 /**
  * 用户信息业务对象
  */
-export interface SysUserBo extends BaseEntity {
+export interface SysUserForm extends BaseEntity {
   /** 用户ID */
   userId?: number;
   /** 部门ID */

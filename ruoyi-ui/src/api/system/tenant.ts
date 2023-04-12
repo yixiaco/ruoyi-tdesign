@@ -1,9 +1,9 @@
 import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysTenantBo, SysTenantVo } from '@/api/system/model/tenantModel';
+import { SysTenantForm, SysTenantVo } from '@/api/system/model/tenantModel';
 
 // 查询租户列表
-export function listTenant(query: SysTenantBo) {
+export function listTenant(query: SysTenantForm) {
   return request.get<TableDataInfo<SysTenantVo>>({
     url: '/system/tenant/list',
     params: query,
@@ -18,7 +18,7 @@ export function getTenant(id) {
 }
 
 // 新增租户
-export function addTenant(data: SysTenantBo) {
+export function addTenant(data: SysTenantForm) {
   return request.post<R<void>>({
     url: '/system/tenant',
     data,
@@ -26,7 +26,7 @@ export function addTenant(data: SysTenantBo) {
 }
 
 // 修改租户
-export function updateTenant(data: SysTenantBo) {
+export function updateTenant(data: SysTenantForm) {
   return request.put<R<void>>({
     url: '/system/tenant',
     data,

@@ -1,9 +1,9 @@
 import { request } from '@/utils/request';
-import { SysDeptBo, SysDeptVo } from '@/api/system/model/deptModel';
+import { SysDeptForm, SysDeptQuery, SysDeptVo } from '@/api/system/model/deptModel';
 import { R } from '@/api/model/resultModel';
 
 // 查询部门列表
-export function listDept(query?: SysDeptBo) {
+export function listDept(query?: SysDeptQuery) {
   return request.get<R<Array<SysDeptVo>>>({
     url: '/system/dept/list',
     params: query,
@@ -25,7 +25,7 @@ export function getDept(deptId: number) {
 }
 
 // 新增部门
-export function addDept(data: SysDeptBo) {
+export function addDept(data: SysDeptForm) {
   return request.post<R<void>>({
     url: '/system/dept',
     data,
@@ -33,7 +33,7 @@ export function addDept(data: SysDeptBo) {
 }
 
 // 修改部门
-export function updateDept(data: SysDeptBo) {
+export function updateDept(data: SysDeptForm) {
   return request.put<R<void>>({
     url: '/system/dept',
     data,

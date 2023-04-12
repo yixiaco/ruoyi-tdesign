@@ -1,6 +1,6 @@
 import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysNoticeBo, SysNoticeQuery, SysNoticeVo } from '@/api/system/model/noticeModel';
+import { SysNoticeForm, SysNoticeQuery, SysNoticeVo } from '@/api/system/model/noticeModel';
 
 // 查询公告列表
 export function listNotice(query: SysNoticeQuery) {
@@ -18,7 +18,7 @@ export function getNotice(noticeId: number) {
 }
 
 // 新增公告
-export function addNotice(data: SysNoticeBo) {
+export function addNotice(data: SysNoticeForm) {
   return request.post<R<void>>({
     url: '/system/notice',
     data,
@@ -26,7 +26,7 @@ export function addNotice(data: SysNoticeBo) {
 }
 
 // 修改公告
-export function updateNotice(data: SysNoticeBo) {
+export function updateNotice(data: SysNoticeForm) {
   return request.put<R<void>>({
     url: '/system/notice',
     data,

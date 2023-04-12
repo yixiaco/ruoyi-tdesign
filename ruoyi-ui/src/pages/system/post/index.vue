@@ -163,7 +163,7 @@ import {
 } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { listPost, addPost, delPost, getPost, updatePost } from '@/api/system/post';
-import { SysPostBo, SysPostVo } from '@/api/system/model/postModel';
+import { SysPostForm, SysPostQuery, SysPostVo } from '@/api/system/model/postModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
@@ -196,8 +196,8 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
-const form = ref<SysPostBo & SysPostVo>({});
-const queryParams = ref<SysPostBo>({
+const form = ref<SysPostForm & SysPostVo>({});
+const queryParams = ref<SysPostQuery>({
   pageNum: 1,
   pageSize: 10,
   postCode: undefined,

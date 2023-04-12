@@ -16,14 +16,14 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.SysUserRole;
-import org.dromara.system.domain.bo.SysDeptBo;
 import org.dromara.system.domain.bo.SysRoleBo;
 import org.dromara.system.domain.bo.SysUserBo;
+import org.dromara.system.domain.query.SysDeptQuery;
+import org.dromara.system.domain.query.SysRoleQuery;
 import org.dromara.system.domain.vo.DeptTreeSelectVo;
 import org.dromara.system.domain.vo.SysRoleVo;
 import org.dromara.system.domain.vo.SysUserVo;
 import org.dromara.system.service.ISysDeptService;
-import org.dromara.system.service.ISysPermissionService;
 import org.dromara.system.service.ISysRoleService;
 import org.dromara.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,15 +55,13 @@ public class SysRoleController extends BaseController {
     private ISysUserService userService;
     @Autowired
     private ISysDeptService deptService;
-    @Autowired
-    private ISysPermissionService permissionService;
 
     /**
      * 获取角色信息列表
      */
     @SaCheckPermission("system:role:list")
     @GetMapping("/list")
-    public TableDataInfo<SysRoleVo> list(SysRoleBo role) {
+    public TableDataInfo<SysRoleVo> list(SysRoleQuery role) {
         return roleService.selectPageRoleList(role);
     }
 
@@ -73,7 +71,7 @@ public class SysRoleController extends BaseController {
     @Log(title = "角色管理", businessType = BusinessType.EXPORT)
     @SaCheckPermission("system:role:export")
     @PostMapping("/export")
-    public void export(SysRoleBo role, HttpServletResponse response) {
+    public void export(SysRoleQuery role, HttpServletResponse response) {
         List<SysRoleVo> list = roleService.selectRoleList(role);
         ExcelUtil.exportExcel(list, "角色数据", SysRoleVo.class, response);
     }
@@ -255,7 +253,7 @@ public class SysRoleController extends BaseController {
     public R<DeptTreeSelectVo> roleDeptTreeselect(@PathVariable("roleId") Long roleId) {
         DeptTreeSelectVo selectVo = new DeptTreeSelectVo();
         selectVo.setCheckedKeys(deptService.selectDeptListByRoleId(roleId));
-        selectVo.setDepts(deptService.selectDeptTreeList(new SysDeptBo()));
+        selectVo.setDepts(deptService.selectDeptTreeList(new SysDeptQuery()));
         return R.ok(selectVo);
     }
 }

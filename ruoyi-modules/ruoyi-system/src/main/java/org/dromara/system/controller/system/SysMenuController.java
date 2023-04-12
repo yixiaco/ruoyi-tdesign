@@ -14,6 +14,7 @@ import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.SysMenu;
 import org.dromara.system.domain.bo.SysMenuBo;
+import org.dromara.system.domain.query.SysMenuQuery;
 import org.dromara.system.domain.vo.MenuTreeSelectVo;
 import org.dromara.system.domain.vo.RouterVo;
 import org.dromara.system.domain.vo.SysMenuVo;
@@ -64,7 +65,7 @@ public class SysMenuController extends BaseController {
     }, mode = SaMode.OR)
     @SaCheckPermission("system:menu:list")
     @GetMapping("/list")
-    public R<List<SysMenuVo>> list(SysMenuBo menu) {
+    public R<List<SysMenuVo>> list(SysMenuQuery menu) {
         List<SysMenuVo> menus = menuService.selectMenuList(menu, LoginHelper.getUserId());
         return R.ok(menus);
     }
@@ -93,7 +94,7 @@ public class SysMenuController extends BaseController {
     }, mode = SaMode.OR)
     @SaCheckPermission("system:menu:query")
     @GetMapping("/treeselect")
-    public R<List<Tree<Long>>> treeselect(SysMenuBo menu) {
+    public R<List<Tree<Long>>> treeselect(SysMenuQuery menu) {
         List<SysMenuVo> menus = menuService.selectMenuList(menu, LoginHelper.getUserId());
         return R.ok(menuService.buildMenuTreeSelect(menus));
     }

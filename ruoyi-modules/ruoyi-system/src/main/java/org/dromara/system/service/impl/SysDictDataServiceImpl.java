@@ -10,6 +10,7 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.redis.utils.CacheUtils;
 import org.dromara.system.domain.SysDictData;
 import org.dromara.system.domain.bo.SysDictDataBo;
+import org.dromara.system.domain.query.SysDictDataQuery;
 import org.dromara.system.domain.vo.SysDictDataVo;
 import org.dromara.system.mapper.SysDictDataMapper;
 import org.dromara.system.service.ISysDictDataService;
@@ -28,7 +29,7 @@ import java.util.List;
 public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDictData> implements ISysDictDataService {
 
     @Override
-    public TableDataInfo<SysDictDataVo> selectPageDictDataList(SysDictDataBo dictData) {
+    public TableDataInfo<SysDictDataVo> selectPageDictDataList(SysDictDataQuery dictData) {
         return PageQuery.of(() -> baseMapper.queryList(dictData));
     }
 
@@ -39,7 +40,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
      * @return 字典数据集合信息
      */
     @Override
-    public List<SysDictDataVo> selectDictDataList(SysDictDataBo dictData) {
+    public List<SysDictDataVo> selectDictDataList(SysDictDataQuery dictData) {
         return baseMapper.queryList(dictData);
     }
 

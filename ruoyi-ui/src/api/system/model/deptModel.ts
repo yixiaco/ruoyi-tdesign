@@ -1,9 +1,23 @@
 import { BaseEntity } from '@/api/model/resultModel';
 
 /**
+ * 部门查询对象
+ */
+export interface SysDeptQuery extends BaseEntity {
+  /** 部门id */
+  deptId?: number;
+  /** 父部门id */
+  parentId?: number;
+  /** 部门名称 */
+  deptName?: string;
+  /** 部门状态 */
+  status?: string;
+}
+
+/**
  * 部门业务对象
  */
-export interface SysDeptBo extends BaseEntity {
+export interface SysDeptForm extends BaseEntity {
   /** 部门id */
   deptId?: number;
   /** 父部门id */

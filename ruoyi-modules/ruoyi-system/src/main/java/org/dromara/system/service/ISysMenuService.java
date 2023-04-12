@@ -4,6 +4,7 @@ import cn.hutool.core.lang.tree.Tree;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.dromara.system.domain.SysMenu;
 import org.dromara.system.domain.bo.SysMenuBo;
+import org.dromara.system.domain.query.SysMenuQuery;
 import org.dromara.system.domain.vo.RouterVo;
 import org.dromara.system.domain.vo.SysMenuVo;
 
@@ -32,7 +33,7 @@ public interface ISysMenuService extends IService<SysMenu> {
      * @param userId 用户ID
      * @return 菜单列表
      */
-    List<SysMenuVo> selectMenuList(SysMenuBo menu, Long userId);
+    List<SysMenuVo> selectMenuList(SysMenuQuery menu, Long userId);
 
     /**
      * 根据用户ID查询权限

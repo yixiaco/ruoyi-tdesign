@@ -17,6 +17,7 @@ import org.dromara.system.domain.SysRoleDept;
 import org.dromara.system.domain.SysRoleMenu;
 import org.dromara.system.domain.SysUserRole;
 import org.dromara.system.domain.bo.SysRoleBo;
+import org.dromara.system.domain.query.SysRoleQuery;
 import org.dromara.system.domain.vo.SysRoleVo;
 import org.dromara.system.mapper.SysRoleDeptMapper;
 import org.dromara.system.mapper.SysRoleMapper;
@@ -49,7 +50,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     private SysRoleDeptMapper roleDeptMapper;
 
     @Override
-    public TableDataInfo<SysRoleVo> selectPageRoleList(SysRoleBo role) {
+    public TableDataInfo<SysRoleVo> selectPageRoleList(SysRoleQuery role) {
         return PageQuery.of(() -> baseMapper.queryList(role));
     }
 
@@ -60,7 +61,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      * @return 角色数据集合信息
      */
     @Override
-    public List<SysRoleVo> selectRoleList(SysRoleBo role) {
+    public List<SysRoleVo> selectRoleList(SysRoleQuery role) {
         return baseMapper.queryList(role);
     }
 
@@ -110,7 +111,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     @Override
     public List<SysRoleVo> selectRoleAll() {
-        return this.selectRoleList(new SysRoleBo());
+        return this.selectRoleList(new SysRoleQuery());
     }
 
     /**
@@ -188,7 +189,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         if (LoginHelper.isSuperAdmin()) {
             return;
         }
-        List<SysRoleVo> roles = this.selectRoleList(new SysRoleBo(roleId));
+        List<SysRoleVo> roles = this.selectRoleList(new SysRoleQuery(roleId));
         if (CollUtil.isEmpty(roles)) {
             throw new ServiceException("没有权限访问角色数据！");
         }

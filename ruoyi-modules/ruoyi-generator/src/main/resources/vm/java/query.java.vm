@@ -11,7 +11,7 @@ import ${import};
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 /**
- * ${functionName}业务对象 ${tableName}
+ * ${functionName}查询对象 ${tableName}
  *
  * @author ${author}
  * @date ${datetime}
@@ -21,7 +21,7 @@ import org.dromara.common.mybatis.core.domain.BaseEntity;
 public class ${ClassName}Query extends BaseEntity {
 
 #foreach ($column in $columns)
-#if($column.isQuery == '1')
+#if($column.isQuery == '1' && $column.queryType != "BETWEEN")
     /**
      * $column.columnComment
      */

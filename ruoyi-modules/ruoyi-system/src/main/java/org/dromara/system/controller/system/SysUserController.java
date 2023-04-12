@@ -21,6 +21,7 @@ import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.bo.SysDeptBo;
 import org.dromara.system.domain.bo.SysUserBo;
+import org.dromara.system.domain.query.SysDeptQuery;
 import org.dromara.system.domain.vo.SysRoleVo;
 import org.dromara.system.domain.vo.SysUserExportVo;
 import org.dromara.system.domain.vo.SysUserImportVo;
@@ -274,7 +275,7 @@ public class SysUserController extends BaseController {
      */
     @SaCheckPermission("system:user:list")
     @GetMapping("/deptTree")
-    public R<List<Tree<Long>>> deptTree(SysDeptBo dept) {
+    public R<List<Tree<Long>>> deptTree(SysDeptQuery dept) {
         return R.ok(deptService.selectDeptTreeList(dept));
     }
 

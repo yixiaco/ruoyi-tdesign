@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysOssConfig;
 import org.dromara.system.domain.bo.SysOssConfigBo;
+import org.dromara.system.domain.query.SysOssConfigQuery;
 import org.dromara.system.domain.vo.SysOssConfigVo;
 
 import java.util.Collection;
@@ -30,7 +31,7 @@ public interface ISysOssConfigService extends IService<SysOssConfig> {
     /**
      * 查询列表
      */
-    TableDataInfo<SysOssConfigVo> queryPageList(SysOssConfigBo bo);
+    TableDataInfo<SysOssConfigVo> queryPageList(SysOssConfigQuery query);
 
 
     /**

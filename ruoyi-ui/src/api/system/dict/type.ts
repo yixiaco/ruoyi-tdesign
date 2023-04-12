@@ -1,9 +1,9 @@
 import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysDictTypeBo, SysDictTypeVo } from '@/api/system/model/dictModel';
+import { SysDictTypeForm, SysDictTypeQuery, SysDictTypeVo } from '@/api/system/model/dictModel';
 
 // 查询字典类型列表
-export function listType(query: SysDictTypeBo) {
+export function listType(query: SysDictTypeQuery) {
   return request.get<TableDataInfo<SysDictTypeVo>>({
     url: '/system/dict/type/list',
     params: query,
@@ -18,7 +18,7 @@ export function getType(dictId: number) {
 }
 
 // 新增字典类型
-export function addType(data: SysDictTypeBo) {
+export function addType(data: SysDictTypeForm) {
   return request.post<R<void>>({
     url: '/system/dict/type',
     data,
@@ -26,7 +26,7 @@ export function addType(data: SysDictTypeBo) {
 }
 
 // 修改字典类型
-export function updateType(data: SysDictTypeBo) {
+export function updateType(data: SysDictTypeForm) {
   return request.put<R<void>>({
     url: '/system/dict/type',
     data,

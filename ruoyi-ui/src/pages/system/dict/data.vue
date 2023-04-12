@@ -188,7 +188,7 @@ import useDictStore from '@/store/modules/dict';
 import { optionselect as getDictOptionselect, getType } from '@/api/system/dict/type';
 import { listData, getData, delData, addData, updateData } from '@/api/system/dict/data';
 import { useTabsRouterStore } from '@/store';
-import { SysDictDataBo, SysDictDataVo, SysDictTypeVo } from '@/api/system/model/dictModel';
+import { SysDictDataForm, SysDictDataQuery, SysDictDataVo, SysDictTypeVo } from '@/api/system/model/dictModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
@@ -237,12 +237,12 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 160 },
 ]);
 
-const form = ref<SysDictDataBo & SysDictDataVo>({
+const form = ref<SysDictDataForm & SysDictDataVo>({
   listClass: 'default',
   dictSort: 0,
   status: '0',
 });
-const queryParams = ref<SysDictDataBo>({
+const queryParams = ref<SysDictDataQuery>({
   pageNum: 1,
   pageSize: 10,
   dictLabel: undefined,

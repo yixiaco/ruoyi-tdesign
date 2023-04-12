@@ -105,7 +105,7 @@ import { AddIcon, CloseCircleIcon, CloseIcon, RefreshIcon, SearchIcon, SettingIc
 import { allocatedUserList, authUserCancel, authUserCancelAll } from '@/api/system/role';
 import { useTabsRouterStore } from '@/store';
 import SelectUser from '@/pages/system/role/selectUser.vue';
-import { SysUserBo, SysUserVo } from '@/api/system/model/userModel';
+import { SysUserForm, SysUserVo } from '@/api/system/model/userModel';
 
 const tabsRouterStore = useTabsRouterStore();
 const route = useRoute();
@@ -133,7 +133,7 @@ const columns = ref([
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: '180' },
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
-const queryParams = reactive<SysUserBo>({
+const queryParams = reactive<SysUserForm>({
   pageNum: 1,
   pageSize: 10,
   roleId: route.params.roleId as string,

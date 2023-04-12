@@ -1,10 +1,10 @@
 import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
-import { DeptTreeSelect, SysRoleBo, SysRoleVo, SysUserRole } from '@/api/system/model/roleModel';
-import { SysUserBo, SysUserVo } from '@/api/system/model/userModel';
+import { DeptTreeSelect, SysRoleForm, SysRoleQuery, SysRoleVo, SysUserRole } from '@/api/system/model/roleModel';
+import { SysUserForm, SysUserVo } from '@/api/system/model/userModel';
 
 // 查询角色列表
-export function listRole(query: SysRoleBo) {
+export function listRole(query: SysRoleQuery) {
   return request.get<TableDataInfo<SysRoleVo>>({
     url: '/system/role/list',
     params: query,
@@ -19,7 +19,7 @@ export function getRole(roleId: number) {
 }
 
 // 新增角色
-export function addRole(data: SysRoleBo) {
+export function addRole(data: SysRoleForm) {
   return request.post<R<void>>({
     url: '/system/role',
     data,
@@ -27,7 +27,7 @@ export function addRole(data: SysRoleBo) {
 }
 
 // 修改角色
-export function updateRole(data: SysRoleBo) {
+export function updateRole(data: SysRoleForm) {
   return request.put<R<void>>({
     url: '/system/role',
     data,
@@ -35,7 +35,7 @@ export function updateRole(data: SysRoleBo) {
 }
 
 // 角色数据权限
-export function dataScope(data: SysRoleBo) {
+export function dataScope(data: SysRoleForm) {
   return request.put<R<void>>({
     url: '/system/role/dataScope',
     data,
@@ -62,7 +62,7 @@ export function delRole(roleId: number) {
 }
 
 // 查询角色已授权用户列表
-export function allocatedUserList(query: SysUserBo) {
+export function allocatedUserList(query: SysUserForm) {
   return request.get<TableDataInfo<SysUserVo>>({
     url: '/system/role/authUser/allocatedList',
     params: query,
@@ -70,7 +70,7 @@ export function allocatedUserList(query: SysUserBo) {
 }
 
 // 查询角色未授权用户列表
-export function unallocatedUserList(query: SysUserBo) {
+export function unallocatedUserList(query: SysUserForm) {
   return request.get<TableDataInfo<SysUserVo>>({
     url: '/system/role/authUser/unallocatedList',
     params: query,

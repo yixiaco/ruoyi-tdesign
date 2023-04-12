@@ -20,6 +20,7 @@ import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.system.domain.SysOssConfig;
 import org.dromara.system.domain.bo.SysOssConfigBo;
+import org.dromara.system.domain.query.SysOssConfigQuery;
 import org.dromara.system.domain.vo.SysOssConfigVo;
 import org.dromara.system.mapper.SysOssConfigMapper;
 import org.dromara.system.service.ISysOssConfigService;
@@ -71,8 +72,8 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
     }
 
     @Override
-    public TableDataInfo<SysOssConfigVo> queryPageList(SysOssConfigBo bo) {
-        return PageQuery.of(() -> baseMapper.queryList(bo));
+    public TableDataInfo<SysOssConfigVo> queryPageList(SysOssConfigQuery query) {
+        return PageQuery.of(() -> baseMapper.queryList(query));
     }
 
     @Override

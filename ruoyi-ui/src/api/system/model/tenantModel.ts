@@ -4,7 +4,7 @@ import { BaseEntity } from '@/api/model/resultModel';
  * 租户业务对象
  *
  */
-export interface SysTenantBo extends BaseEntity {
+export interface SysTenantForm extends BaseEntity {
   /** id */
   id?: number;
   /** 租户编号 */

@@ -4,7 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysOss;
-import org.dromara.system.domain.dto.SysOssQuery;
+import org.dromara.system.domain.query.SysOssQuery;
 import org.dromara.system.domain.vo.SysOssVo;
 import org.springframework.web.multipart.MultipartFile;
 

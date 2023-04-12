@@ -10,7 +10,7 @@ import { request } from '@/utils/request';
 #set($query=$ClassName)
 #end
 #if($useBO)
-#set($bo="${ClassName}Bo")
+#set($bo="${ClassName}Form")
 #else
 #set($bo=$ClassName)
 #end
@@ -21,7 +21,7 @@ import { R, TableDataInfo } from '@/api/model/resultModel';
 #set($Result="R<Array<$vo>>")
 import { R } from '@/api/model/resultModel';
 #end
-import { #if(!$useBO || !$useQuery || !$useVO)${ClassName}#if($useBO || $useQuery || $useVO), #end#end#if($useBO)${ClassName}Bo#if($useQuery || $useVO), #end#end#if($useQuery)${ClassName}Query#if($useVO), #end#end#if($useVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
+import { #if(!$useBO || !$useQuery || !$useVO)${ClassName}#if($useBO || $useQuery || $useVO), #end#end#if($useBO)${ClassName}Form#if($useQuery || $useVO), #end#end#if($useQuery)${ClassName}Query#if($useVO), #end#end#if($useVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
 
 // 查询${functionName}列表
 export function list${BusinessName}(query?: ${query}) {

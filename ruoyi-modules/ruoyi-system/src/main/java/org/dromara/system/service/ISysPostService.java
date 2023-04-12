@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysPost;
 import org.dromara.system.domain.bo.SysPostBo;
+import org.dromara.system.domain.query.SysPostQuery;
 import org.dromara.system.domain.vo.SysPostVo;
 
 import java.util.List;
@@ -21,7 +22,7 @@ public interface ISysPostService extends IService<SysPost> {
      * @param post 岗位信息
      * @return 岗位列表
      */
-    TableDataInfo<SysPostVo> selectPagePostList(SysPostBo post);
+    TableDataInfo<SysPostVo> selectPagePostList(SysPostQuery post);
 
     /**
      * 查询岗位信息集合
@@ -29,7 +30,7 @@ public interface ISysPostService extends IService<SysPost> {
      * @param post 岗位信息
      * @return 岗位列表
      */
-    List<SysPostVo> selectPostList(SysPostBo post);
+    List<SysPostVo> selectPostList(SysPostQuery post);
 
     /**
      * 查询所有岗位

@@ -12,7 +12,7 @@
     <sql id="selectSysNoticeVo">
         select sn.notice_id, sn.notice_title, sn.notice_type, sn.notice_content, sn.`status`, sn.create_by, sn.create_time, sn.update_by, sn.update_time, sn.remark from sys_notice sn
     </sql>
-    <select id="queryList" parameterType="org.dromara.system.domain.dto.SysNoticeQuery" resultMap="SysNoticeResultVo">
+    <select id="queryList" parameterType="org.dromara.system.domain.query.SysNoticeQuery" resultMap="SysNoticeResultVo">
         select sn.notice_id,
                sn.notice_title,
                sn.notice_type,

@@ -7,7 +7,7 @@ import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.bo.SysNoticeBo;
-import org.dromara.system.domain.dto.SysNoticeQuery;
+import org.dromara.system.domain.query.SysNoticeQuery;
 import org.dromara.system.domain.vo.SysNoticeVo;
 import org.dromara.system.service.ISysNoticeService;
 import org.springframework.beans.factory.annotation.Autowired;

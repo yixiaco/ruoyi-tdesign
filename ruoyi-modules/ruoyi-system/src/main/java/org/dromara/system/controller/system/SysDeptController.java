@@ -9,6 +9,7 @@ import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.bo.SysDeptBo;
+import org.dromara.system.domain.query.SysDeptQuery;
 import org.dromara.system.domain.vo.SysDeptVo;
 import org.dromara.system.service.ISysDeptService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +43,7 @@ public class SysDeptController extends BaseController {
      */
     @SaCheckPermission("system:dept:list")
     @GetMapping("/list")
-    public R<List<SysDeptVo>> list(SysDeptBo dept) {
+    public R<List<SysDeptVo>> list(SysDeptQuery dept) {
         List<SysDeptVo> depts = deptService.selectDeptList(dept);
         return R.ok(depts);
     }
@@ -55,7 +56,7 @@ public class SysDeptController extends BaseController {
     @SaCheckPermission("system:dept:list")
     @GetMapping("/list/exclude/{deptId}")
     public R<List<SysDeptVo>> excludeChild(@PathVariable(value = "deptId", required = false) Long deptId) {
-        List<SysDeptVo> depts = deptService.selectDeptList(new SysDeptBo());
+        List<SysDeptVo> depts = deptService.selectDeptList(new SysDeptQuery());
         depts.removeIf(d -> d.getDeptId().equals(deptId)
             || StringUtils.splitList(d.getAncestors()).contains(Convert.toStr(deptId)));
         return R.ok(depts);

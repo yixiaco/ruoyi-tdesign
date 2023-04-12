@@ -179,7 +179,7 @@ import { computed, getCurrentInstance, ref } from 'vue';
 import { AddIcon, DeleteIcon, EditIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api/system/notice';
-import { SysNoticeBo, SysNoticeQuery, SysNoticeVo } from '@/api/system/model/noticeModel';
+import { SysNoticeForm, SysNoticeQuery, SysNoticeVo } from '@/api/system/model/noticeModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_notice_status, sys_notice_type } = proxy.useDict('sys_notice_status', 'sys_notice_type');
@@ -214,7 +214,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
 
-const form = ref<SysNoticeVo & SysNoticeBo>({
+const form = ref<SysNoticeVo & SysNoticeForm>({
   status: '0',
 });
 const queryParams = ref<SysNoticeQuery>({

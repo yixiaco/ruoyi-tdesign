@@ -20,7 +20,7 @@ export interface SysOssQuery extends BaseEntity {
   service?: string;
 }
 
-export interface SysOssBo extends BaseEntity {
+export interface SysOssForm extends BaseEntity {
   /** 文件名 */
   fileName?: string;
   /** 原名 */

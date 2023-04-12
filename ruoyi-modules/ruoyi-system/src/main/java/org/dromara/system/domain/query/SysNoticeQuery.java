@@ -1,11 +1,11 @@
-package org.dromara.system.domain.dto;
+package org.dromara.system.domain.query;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 /**
- * 通知公告业务对象 sys_notice
+ * 通知公告查询对象 sys_notice
  *
  * @author ruoyi
  * @date 2023-04-01

@@ -3,7 +3,7 @@ import { BaseEntity } from '@/api/model/resultModel';
 /**
  * 参数配置业务对象
  */
-export interface SysConfigBo extends BaseEntity {
+export interface SysConfigForm extends BaseEntity {
   /** 参数主键 */
   configId?: number;
   /** 参数名称 */

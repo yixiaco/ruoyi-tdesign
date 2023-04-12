@@ -19,6 +19,7 @@ import org.dromara.system.domain.SysRole;
 import org.dromara.system.domain.SysRoleMenu;
 import org.dromara.system.domain.SysTenantPackage;
 import org.dromara.system.domain.bo.SysMenuBo;
+import org.dromara.system.domain.query.SysMenuQuery;
 import org.dromara.system.domain.vo.MetaVo;
 import org.dromara.system.domain.vo.RouterVo;
 import org.dromara.system.domain.vo.SysMenuVo;
@@ -60,7 +61,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public List<SysMenuVo> selectMenuList(Long userId) {
-        return selectMenuList(new SysMenuBo(), userId);
+        return selectMenuList(new SysMenuQuery(), userId);
     }
 
     /**
@@ -70,7 +71,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @return 菜单列表
      */
     @Override
-    public List<SysMenuVo> selectMenuList(SysMenuBo menu, Long userId) {
+    public List<SysMenuVo> selectMenuList(SysMenuQuery menu, Long userId) {
         List<SysMenuVo> menuList;
         // 管理员显示所有菜单信息
         if (LoginHelper.isSuperAdmin(userId)) {

@@ -1,10 +1,10 @@
 import { request } from '@/utils/request';
 import { parseStrEmpty } from '@/utils/ruoyi';
-import { AvatarVo, ProfileVo, SysUserBo, SysUserInfoVo, SysUserVo, UserAuthRole } from '@/api/system/model/userModel';
+import { AvatarVo, ProfileVo, SysUserForm, SysUserInfoVo, SysUserVo, UserAuthRole } from '@/api/system/model/userModel';
 import { R, TableDataInfo, TreeModel } from '@/api/model/resultModel';
 
 // 查询用户列表
-export function listUser(query: SysUserBo) {
+export function listUser(query: SysUserForm) {
   return request.get<TableDataInfo<SysUserVo>>({
     url: '/system/user/list',
     params: query,
@@ -19,7 +19,7 @@ export function getUser(userId?: number) {
 }
 
 // 新增用户
-export function addUser(data: SysUserBo) {
+export function addUser(data: SysUserForm) {
   return request.post<R<void>>({
     url: '/system/user',
     data,
@@ -27,7 +27,7 @@ export function addUser(data: SysUserBo) {
 }
 
 // 修改用户
-export function updateUser(data: SysUserBo) {
+export function updateUser(data: SysUserForm) {
   return request.put<R<void>>({
     url: '/system/user',
     data,
@@ -74,7 +74,7 @@ export function getUserProfile() {
 }
 
 // 修改用户个人信息
-export function updateUserProfile(data: SysUserBo) {
+export function updateUserProfile(data: SysUserForm) {
   return request.put<R<void>>({
     url: '/system/user/profile',
     data,

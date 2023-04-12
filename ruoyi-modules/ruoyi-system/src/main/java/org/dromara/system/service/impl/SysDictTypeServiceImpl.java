@@ -20,6 +20,7 @@ import org.dromara.common.redis.utils.CacheUtils;
 import org.dromara.system.domain.SysDictData;
 import org.dromara.system.domain.SysDictType;
 import org.dromara.system.domain.bo.SysDictTypeBo;
+import org.dromara.system.domain.query.SysDictTypeQuery;
 import org.dromara.system.domain.vo.SysDictDataVo;
 import org.dromara.system.domain.vo.SysDictTypeVo;
 import org.dromara.system.mapper.SysDictDataMapper;
@@ -49,7 +50,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     private SysDictDataMapper dictDataMapper;
 
     @Override
-    public TableDataInfo<SysDictTypeVo> selectPageDictTypeList(SysDictTypeBo dictType) {
+    public TableDataInfo<SysDictTypeVo> selectPageDictTypeList(SysDictTypeQuery dictType) {
         return PageQuery.of(() -> baseMapper.queryList(dictType));
     }
 
@@ -60,7 +61,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
      * @return 字典类型集合信息
      */
     @Override
-    public List<SysDictTypeVo> selectDictTypeList(SysDictTypeBo dictType) {
+    public List<SysDictTypeVo> selectDictTypeList(SysDictTypeQuery dictType) {
         return baseMapper.queryList(dictType);
     }
 

@@ -179,7 +179,7 @@ import {
 } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { listConfig, getConfig, delConfig, addConfig, updateConfig, refreshCache } from '@/api/system/config';
-import { SysConfigBo, SysConfigVo } from '@/api/system/model/configModel';
+import { SysConfigForm, SysConfigVo } from '@/api/system/model/configModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_yes_no } = proxy.useDict('sys_yes_no');
@@ -216,8 +216,8 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 150 },
 ]);
 
-const form = ref<SysConfigVo & SysConfigBo>({ configType: 'Y' });
-const queryParams = ref<SysConfigBo>({
+const form = ref<SysConfigVo & SysConfigForm>({ configType: 'Y' });
+const queryParams = ref<SysConfigForm>({
   pageNum: 1,
   pageSize: 10,
   configName: undefined,

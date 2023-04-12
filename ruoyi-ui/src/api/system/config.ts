@@ -1,9 +1,9 @@
 import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysConfigBo, SysConfigVo } from '@/api/system/model/configModel';
+import { SysConfigForm, SysConfigVo } from '@/api/system/model/configModel';
 
 // 查询参数列表
-export function listConfig(query: SysConfigBo) {
+export function listConfig(query: SysConfigForm) {
   return request.get<TableDataInfo<SysConfigVo>>({
     url: '/system/config/list',
     params: query,
@@ -25,7 +25,7 @@ export function getConfigKey(configKey: string) {
 }
 
 // 新增参数配置
-export function addConfig(data: SysConfigBo) {
+export function addConfig(data: SysConfigForm) {
   return request.post<R<void>>({
     url: '/system/config',
     data,
@@ -33,7 +33,7 @@ export function addConfig(data: SysConfigBo) {
 }
 
 // 修改参数配置
-export function updateConfig(data: SysConfigBo) {
+export function updateConfig(data: SysConfigForm) {
   return request.put<R<void>>({
     url: '/system/config',
     data,

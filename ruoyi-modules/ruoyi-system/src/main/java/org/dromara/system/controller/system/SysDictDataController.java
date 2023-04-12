@@ -10,6 +10,7 @@ import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.bo.SysDictDataBo;
+import org.dromara.system.domain.query.SysDictDataQuery;
 import org.dromara.system.domain.vo.SysDictDataVo;
 import org.dromara.system.service.ISysDictDataService;
 import org.dromara.system.service.ISysDictTypeService;
@@ -47,7 +48,7 @@ public class SysDictDataController extends BaseController {
      */
     @SaCheckPermission("system:dict:list")
     @GetMapping("/list")
-    public TableDataInfo<SysDictDataVo> list(SysDictDataBo dictData) {
+    public TableDataInfo<SysDictDataVo> list(SysDictDataQuery dictData) {
         return dictDataService.selectPageDictDataList(dictData);
     }
 
@@ -57,7 +58,7 @@ public class SysDictDataController extends BaseController {
     @Log(title = "字典数据", businessType = BusinessType.EXPORT)
     @SaCheckPermission("system:dict:export")
     @PostMapping("/export")
-    public void export(SysDictDataBo dictData, HttpServletResponse response) {
+    public void export(SysDictDataQuery dictData, HttpServletResponse response) {
         List<SysDictDataVo> list = dictDataService.selectDictDataList(dictData);
         ExcelUtil.exportExcel(list, "字典数据", SysDictDataVo.class, response);
     }
