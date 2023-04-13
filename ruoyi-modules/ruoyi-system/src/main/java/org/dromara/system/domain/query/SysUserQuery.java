@@ -1,0 +1,57 @@
+package org.dromara.system.domain.query;
+
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
+
+/**
+ * 用户信息查询对象 sys_user
+ *
+ * @author hexm
+ * @date 2023-04-13
+ */
+@Data
+@EqualsAndHashCode(callSuper = true)
+public class SysUserQuery extends BaseEntity {
+
+    /**
+     * 用户ID
+     */
+    private Long userId;
+
+    /**
+     * 部门ID
+     */
+    private Long deptId;
+
+    /**
+     * 用户账号
+     */
+    private String userName;
+
+    /**
+     * 用户昵称
+     */
+    private String nickName;
+
+    /**
+     * 用户邮箱
+     */
+    private String email;
+
+    /**
+     * 手机号码
+     */
+    private String phonenumber;
+
+    /**
+     * 帐号状态（0正常 1停用）
+     */
+    private String status;
+
+    /**
+     * 部门组
+     */
+    private Long[] deptIds;
+
+}

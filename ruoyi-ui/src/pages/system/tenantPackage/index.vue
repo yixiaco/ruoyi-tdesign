@@ -230,7 +230,7 @@ import {
   updateTenantPackage,
   changePackageStatus,
 } from '@/api/system/tenantPackage';
-import { SysTenantPackageForm, SysTenantPackageVo } from '@/api/system/model/tenantPackageModel';
+import { SysTenantPackageForm, SysTenantPackageQuery, SysTenantPackageVo } from '@/api/system/model/tenantPackageModel';
 import { tenantPackageMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
 import { TreeModel } from '@/api/model/resultModel';
 
@@ -277,7 +277,7 @@ const form = ref<SysTenantPackageVo & SysTenantPackageForm>({
   menuIds: [],
 });
 // 查询对象
-const queryParams = ref<SysTenantPackageForm>({
+const queryParams = ref<SysTenantPackageQuery>({
   pageNum: 1,
   pageSize: 10,
   params: {},

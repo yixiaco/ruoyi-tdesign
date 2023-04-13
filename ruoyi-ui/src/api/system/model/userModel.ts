@@ -4,6 +4,25 @@ import { SysRoleVo } from '@/api/system/model/roleModel';
 import { SysPostVo } from '@/api/system/model/postModel';
 
 /**
+ * 用户信息查询对象
+ */
+export interface SysUserQuery extends BaseEntity {
+  /** 用户ID */
+  userId?: number;
+  /** 部门ID */
+  deptId?: number;
+  /** 用户账号 */
+  userName?: string;
+  /** 用户昵称 */
+  nickName?: string;
+  /** 用户邮箱 */
+  email?: string;
+  /** 手机号码 */
+  phonenumber?: string;
+  /** 帐号状态（0正常 1停用） */
+  status?: string;
+}
+/**
  * 用户信息业务对象
  */
 export interface SysUserForm extends BaseEntity {

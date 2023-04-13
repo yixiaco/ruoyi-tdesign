@@ -4,6 +4,15 @@
  */
 import { BaseEntity } from '@/api/model/resultModel';
 
+/**
+ * 租户套餐查询对象
+ */
+export interface SysTenantPackageQuery extends BaseEntity {
+  /** 套餐名称 */
+  packageName?: string;
+  /** 状态（0正常 1停用） */
+  status?: string;
+}
 export interface SysTenantPackageForm extends BaseEntity {
   /** 租户套餐id */
   packageId?: number;

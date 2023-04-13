@@ -4,4 +4,30 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.dromara.system.mapper.SysTenantMapper">
 
+    <resultMap id="SysTenantResult" autoMapping="true" type="org.dromara.system.domain.SysTenant">
+    </resultMap>
+    <resultMap id="SysTenantResultVo" autoMapping="true" type="org.dromara.system.domain.vo.SysTenantVo">
+    </resultMap>
+
+    <sql id="selectSysTenantVo">
+        select st.id, st.tenant_id, st.contact_user_name, st.contact_phone, st.company_name, st.license_number, st.address, st.intro, st.domain, st.remark, st.package_id, st.expire_time, st.account_count, st.`status`, st.del_flag, st.create_dept, st.create_by, st.create_time, st.update_by, st.update_time from sys_tenant st
+    </sql>
+    <select id="queryList" parameterType="org.dromara.system.domain.query.SysTenantQuery" resultMap="SysTenantResultVo">
+        <include refid="selectSysTenantVo"/>
+        <where>
+            and st.del_flag = '0'
+            <if test="tenantId != null and tenantId != ''"> and st.tenant_id = #{tenantId}</if>
+            <if test="contactUserName != null and contactUserName != ''"> and st.contact_user_name like concat('%', #{contactUserName}, '%')</if>
+            <if test="contactPhone != null and contactPhone != ''"> and st.contact_phone like concat('%', #{contactPhone}, '%')</if>
+            <if test="companyName != null and companyName != ''"> and st.company_name like concat('%', #{companyName}, '%')</if>
+            <if test="licenseNumber != null and licenseNumber != ''"> and st.license_number like concat('%', #{licenseNumber}, '%')</if>
+            <if test="address != null and address != ''"> and st.address like concat('%', #{address}, '%')</if>
+            <if test="domain != null and domain != ''"> and st.domain like concat('%', #{domain}, '%')</if>
+            <if test="packageId != null "> and st.package_id = #{packageId}</if>
+            <if test="params.beginExpireTime != null and params.endExpireTime != null">
+                and st.expire_time between #{params.beginExpireTime} and #{params.endExpireTime}
+            </if>
+            <if test="status != null and status != ''"> and st.`status` = #{status}</if>
+        </where>
+    </select>
 </mapper>

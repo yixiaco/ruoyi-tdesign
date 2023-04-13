@@ -41,6 +41,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 #else
 #set($columnName=$column.columnName)
 #end
+#if($columnName == 'del_flag')
+            and $dbName.$columnName =#if($javaType == $string) '0'#else 0#end
+#end
 #if($column.isQuery == "1")
 #if($column.queryType == "EQ")
             <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName = #{$javaField}</if>

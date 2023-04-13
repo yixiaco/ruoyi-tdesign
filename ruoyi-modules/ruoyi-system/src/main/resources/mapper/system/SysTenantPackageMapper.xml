@@ -4,4 +4,20 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.dromara.system.mapper.SysTenantPackageMapper">
 
+    <resultMap id="SysTenantPackageResult" autoMapping="true" type="org.dromara.system.domain.SysTenantPackage">
+    </resultMap>
+    <resultMap id="SysTenantPackageResultVo" autoMapping="true" type="org.dromara.system.domain.vo.SysTenantPackageVo">
+    </resultMap>
+
+    <sql id="selectSysTenantPackageVo">
+        select stp.package_id, stp.package_name, stp.menu_ids, stp.remark, stp.menu_check_strictly, stp.`status`, stp.del_flag, stp.create_dept, stp.create_by, stp.create_time, stp.update_by, stp.update_time from sys_tenant_package stp
+    </sql>
+    <select id="queryList" parameterType="org.dromara.system.domain.query.SysTenantPackageQuery" resultMap="SysTenantPackageResultVo">
+        <include refid="selectSysTenantPackageVo"/>
+        <where>
+            and stp.del_flag = '0'
+            <if test="packageName != null and packageName != ''"> and stp.package_name like concat('%', #{packageName}, '%')</if>
+            <if test="status != null and status != ''"> and stp.`status` = #{status}</if>
+        </where>
+    </select>
 </mapper>

@@ -1,8 +1,10 @@
 package org.dromara.system.service;
 
-import org.dromara.common.mybatis.core.page.PageQuery;
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.system.domain.SysTenant;
 import org.dromara.system.domain.bo.SysTenantBo;
+import org.dromara.system.domain.query.SysTenantQuery;
 import org.dromara.system.domain.vo.SysTenantVo;
 
 import java.util.Collection;
@@ -13,7 +15,7 @@ import java.util.List;
  *
  * @author Michelle.Chung
  */
-public interface ISysTenantService {
+public interface ISysTenantService extends IService<SysTenant> {
 
     /**
      * 查询租户
@@ -28,12 +30,12 @@ public interface ISysTenantService {
     /**
      * 查询租户列表
      */
-    TableDataInfo<SysTenantVo> queryPageList(SysTenantBo bo, PageQuery pageQuery);
+    TableDataInfo<SysTenantVo> queryPageList(SysTenantQuery query);
 
     /**
      * 查询租户列表
      */
-    List<SysTenantVo> queryList(SysTenantBo bo);
+    List<SysTenantVo> queryList(SysTenantQuery query);
 
     /**
      * 新增租户

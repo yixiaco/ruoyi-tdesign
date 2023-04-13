@@ -10,6 +10,7 @@ import org.dromara.common.mybatis.annotation.DataPermission;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysUser;
 import org.dromara.system.domain.bo.SysUserBo;
+import org.dromara.system.domain.query.SysUserQuery;
 import org.dromara.system.domain.vo.SysUserVo;
 
 import java.util.List;
@@ -24,14 +25,14 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser, SysUserVo> {
     /**
      * 查询用户信息列表
      *
-     * @param bo bo对象
+     * @param query 查询对象
      * @return {@link SysUser}
      */
     @DataPermission({
-        @DataColumn(key = "deptName", value = "d.dept_id"),
-        @DataColumn(key = "userName", value = "u.user_id")
+        @DataColumn(key = "deptName", value = "sd.dept_id"),
+        @DataColumn(key = "userName", value = "su.user_id")
     })
-    List<SysUserVo> queryList(SysUserBo bo);
+    List<SysUserVo> queryList(SysUserQuery query);
 
     /**
      * 根据条件分页查询已配用户角色列表

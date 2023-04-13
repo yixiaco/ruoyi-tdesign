@@ -19,9 +19,9 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.common.web.core.BaseController;
-import org.dromara.system.domain.bo.SysDeptBo;
 import org.dromara.system.domain.bo.SysUserBo;
 import org.dromara.system.domain.query.SysDeptQuery;
+import org.dromara.system.domain.query.SysUserQuery;
 import org.dromara.system.domain.vo.SysRoleVo;
 import org.dromara.system.domain.vo.SysUserExportVo;
 import org.dromara.system.domain.vo.SysUserImportVo;
@@ -77,7 +77,7 @@ public class SysUserController extends BaseController {
      */
     @SaCheckPermission("system:user:list")
     @GetMapping("/list")
-    public TableDataInfo<SysUserVo> list(SysUserBo user) {
+    public TableDataInfo<SysUserVo> list(SysUserQuery user) {
         return userService.selectPageUserList(user);
     }
 
@@ -87,7 +87,7 @@ public class SysUserController extends BaseController {
     @Log(title = "用户管理", businessType = BusinessType.EXPORT)
     @SaCheckPermission("system:user:export")
     @PostMapping("/export")
-    public void export(SysUserBo user, HttpServletResponse response) {
+    public void export(SysUserQuery user, HttpServletResponse response) {
         List<SysUserVo> list = userService.selectUserList(user);
         List<SysUserExportVo> listVo = MapstructUtils.convert(list, SysUserExportVo.class);
         ExcelUtil.exportExcel(listVo, "用户数据", SysUserExportVo.class, response);

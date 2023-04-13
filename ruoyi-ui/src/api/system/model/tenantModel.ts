@@ -1,6 +1,29 @@
 import { BaseEntity } from '@/api/model/resultModel';
 
 /**
+ * 租户查询对象
+ */
+export interface SysTenantQuery extends BaseEntity {
+  /** 租户编号 */
+  tenantId?: string;
+  /** 联系人 */
+  contactUserName?: string;
+  /** 联系电话 */
+  contactPhone?: string;
+  /** 企业名称 */
+  companyName?: string;
+  /** 统一社会信用代码 */
+  licenseNumber?: string;
+  /** 地址 */
+  address?: string;
+  /** 域名 */
+  domain?: string;
+  /** 租户套餐编号 */
+  packageId?: number;
+  /** 租户状态 */
+  status?: string;
+}
+/**
  * 租户业务对象
  *
  */

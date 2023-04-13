@@ -27,6 +27,7 @@ import org.dromara.system.domain.SysUserPost;
 import org.dromara.system.domain.SysUserRole;
 import org.dromara.system.domain.bo.SysUserBo;
 import org.dromara.system.domain.query.SysRoleQuery;
+import org.dromara.system.domain.query.SysUserQuery;
 import org.dromara.system.domain.vo.SysPostVo;
 import org.dromara.system.domain.vo.SysRoleVo;
 import org.dromara.system.domain.vo.SysUserVo;
@@ -65,7 +66,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     private SysUserPostMapper userPostMapper;
 
     @Override
-    public TableDataInfo<SysUserVo> selectPageUserList(SysUserBo user) {
+    public TableDataInfo<SysUserVo> selectPageUserList(SysUserQuery user) {
         if (user.getDeptId() != null) {
             List<SysDept> deptList = deptService.lambdaQuery()
                 .select(SysDept::getDeptId)
@@ -83,7 +84,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return 用户信息集合信息
      */
     @Override
-    public List<SysUserVo> selectUserList(SysUserBo user) {
+    public List<SysUserVo> selectUserList(SysUserQuery user) {
         if (user.getDeptId() != null) {
             List<SysDept> deptList = deptService.lambdaQuery()
                 .select(SysDept::getDeptId)

@@ -293,7 +293,7 @@
     <!-- ${functionName}详情 -->
     <t-dialog v-model:visible="openView" header="${functionName}详情" width="700px" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon :data="form" label-width="calc(5em + 24px)">
+        <t-form label-align="right" colon label-width="calc(5em + 24px)">
           <t-row :gutter="[0, 20]">
 #foreach($column in $columns)
 #set($javaField=$column.javaField)
@@ -536,8 +536,8 @@ function handleDetail(row) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const $${pkColumn.javaField} = row.${pkColumn.javaField} || ids.value;
-  get${BusinessName}($${pkColumn.javaField}).then((response) => {
+  const ${pkColumn.javaField} = row.${pkColumn.javaField} || ids.value;
+  get${BusinessName}(${pkColumn.javaField}).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
   });
@@ -549,8 +549,8 @@ function handleUpdate(row) {
   reset();
   open.value = true;
   title.value = '修改${functionName}';
-  const $${pkColumn.javaField} = row.${pkColumn.javaField} || ids.value;
-  get${BusinessName}($${pkColumn.javaField}).then((response) => {
+  const ${pkColumn.javaField} = row.${pkColumn.javaField} || ids.value;
+  get${BusinessName}(${pkColumn.javaField}).then((response) => {
     buttonLoading.value = false;
     form.value = response.data;
 #foreach ($column in $columns)
@@ -606,11 +606,11 @@ function submitForm({ validateResult, firstError }) {
 
 /** 删除按钮操作 */
 function handleDelete(row) {
-  const $${pkColumn.javaField}s = row.${pkColumn.javaField} || ids.value;
-  proxy.#[[$modal]]#.confirm(`是否确认删除${functionName}编号为${$${pkColumn.javaField}s}的数据项？`, () => {
+  const ${pkColumn.javaField}s = row.${pkColumn.javaField} || ids.value;
+  proxy.#[[$modal]]#.confirm(`是否确认删除${functionName}编号为${${pkColumn.javaField}s}的数据项？`, () => {
     loading.value = true;
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
-    return del${BusinessName}($${pkColumn.javaField}s)
+    return del${BusinessName}(${pkColumn.javaField}s)
       .then(() => {
         getList();
         proxy.#[[$modal]]#.msgSuccess('删除成功');

@@ -37,6 +37,14 @@
                 @keyup.enter="handleQuery"
               />
             </t-form-item>
+            <t-form-item label="用户昵称" name="nickName">
+              <t-input
+                v-model="queryParams.nickName"
+                placeholder="请输入用户昵称"
+                clearable
+                @keyup.enter="handleQuery"
+              />
+            </t-form-item>
             <t-form-item label="手机号码" name="phonenumber">
               <t-input
                 v-model="queryParams.phonenumber"
@@ -45,6 +53,9 @@
                 style="width: 240px"
                 @keyup.enter="handleQuery"
               />
+            </t-form-item>
+            <t-form-item label="用户邮箱" name="email">
+              <t-input v-model="queryParams.email" placeholder="请输入用户邮箱" clearable @keyup.enter="handleQuery" />
             </t-form-item>
             <t-form-item label="状态" name="status">
               <t-select v-model="queryParams.status" placeholder="用户状态" clearable style="width: 240px">
@@ -148,6 +159,16 @@
             </template>
             <template #operation="{ row }">
               <t-space :size="8">
+                <t-tooltip content="详情" placement="top">
+                  <t-link
+                    v-hasPermi="['system:user:query']"
+                    theme="primary"
+                    hover="color"
+                    @click.stop="handleDetail(row)"
+                  >
+                    <browse-icon />
+                  </t-link>
+                </t-tooltip>
                 <t-tooltip v-if="row.userId !== 1" content="修改" placement="top">
                   <t-link
                     v-hasPermi="['system:user:edit']"
@@ -269,9 +290,9 @@
             <t-col :span="6">
               <t-form-item label="状态">
                 <t-radio-group v-model="form.status">
-                  <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{
-                    dict.label
-                  }}</t-radio>
+                  <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">
+                    {{ dict.label }}
+                  </t-radio>
                 </t-radio-group>
               </t-form-item>
             </t-col>
@@ -338,6 +359,65 @@
       <div><t-checkbox v-model="upload.updateSupport" />是否更新已经存在的用户数据</div>
       <t-link hover="color" style="font-size: 12px; vertical-align: baseline" @click="importTemplate">下载模板</t-link>
     </t-dialog>
+
+    <!-- 用户信息详情 -->
+    <t-dialog v-model:visible="openView" header="用户信息详情" width="700px" attach="body" :footer="false">
+      <t-loading :loading="openViewLoading">
+        <t-form label-align="right" colon label-width="calc(5em + 24px)">
+          <t-row :gutter="[0, 20]">
+            <t-col :span="6">
+              <t-form-item label="用户ID">{{ formView.userId }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="部门">{{ formView.dept?.deptName }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="用户账号">{{ formView.userName }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="用户昵称">{{ formView.nickName }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="用户类型">{{ formView.userType }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="用户邮箱">{{ formView.email }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="手机号码">{{ formView.phonenumber }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="用户性别">
+                <dict-tag :options="sys_user_sex" :value="formView.sex" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="头像地址">{{ formView.avatar }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="帐号状态">
+                <dict-tag :options="sys_normal_disable" :value="formView.status" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="最后登录IP">{{ formView.loginIp }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="最后登录时间">{{ parseTime(formView.loginDate) }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="创建时间">{{ parseTime(formView.createTime) }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="更新时间">{{ parseTime(formView.updateTime) }}</t-form-item>
+            </t-col>
+            <t-col :span="12">
+              <t-form-item label="备注">{{ formView.remark }}</t-form-item>
+            </t-col>
+          </t-row>
+        </t-form>
+      </t-loading>
+    </t-dialog>
   </t-card>
 </template>
 <script lang="ts">
@@ -357,6 +437,7 @@ import {
   CheckCircleIcon,
   SettingIcon,
   UploadIcon,
+  BrowseIcon,
 } from 'tdesign-icons-vue-next';
 import { useRouter } from 'vue-router';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol, UploadInstanceFunctions } from 'tdesign-vue-next';
@@ -371,7 +452,7 @@ import {
   addUser,
   deptTreeSelect,
 } from '@/api/system/user';
-import { SysUserForm, SysUserVo } from '@/api/system/model/userModel';
+import { SysUserForm, SysUserQuery, SysUserVo } from '@/api/system/model/userModel';
 
 const router = useRouter();
 const { proxy } = getCurrentInstance();
@@ -381,6 +462,8 @@ const uploadRef = ref<UploadInstanceFunctions>(null);
 const userRef = ref<FormInstanceFunctions>(null);
 const userList = ref([]);
 const open = ref(false);
+const openView = ref(false);
+const openViewLoading = ref(false);
 const loading = ref(true);
 const dLoading = ref(false);
 const showSearch = ref(true);
@@ -442,11 +525,14 @@ const form = ref<SysUserForm & SysUserVo>({
   postIds: [],
   roleIds: [],
 });
-const queryParams = ref<SysUserForm>({
+const formView = ref<SysUserVo>({});
+const queryParams = ref<SysUserQuery>({
   pageNum: 1,
   pageSize: 10,
   userName: undefined,
+  nickName: undefined,
   phonenumber: undefined,
+  email: undefined,
   status: undefined,
   deptId: undefined,
 });
@@ -628,6 +714,17 @@ function reset() {
 function cancel() {
   open.value = false;
   reset();
+}
+/** 详情按钮操作 */
+function handleDetail(row) {
+  reset();
+  openView.value = true;
+  openViewLoading.value = true;
+  const userId = row.userId || ids.value;
+  getUser(userId).then((response) => {
+    formView.value = response.data?.user;
+    openViewLoading.value = false;
+  });
 }
 /** 新增按钮操作 */
 function handleAdd() {

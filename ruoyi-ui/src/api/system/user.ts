@@ -1,10 +1,18 @@
 import { request } from '@/utils/request';
 import { parseStrEmpty } from '@/utils/ruoyi';
-import { AvatarVo, ProfileVo, SysUserForm, SysUserInfoVo, SysUserVo, UserAuthRole } from '@/api/system/model/userModel';
+import {
+  AvatarVo,
+  ProfileVo,
+  SysUserForm,
+  SysUserInfoVo,
+  SysUserQuery,
+  SysUserVo,
+  UserAuthRole,
+} from '@/api/system/model/userModel';
 import { R, TableDataInfo, TreeModel } from '@/api/model/resultModel';
 
 // 查询用户列表
-export function listUser(query: SysUserForm) {
+export function listUser(query: SysUserQuery) {
   return request.get<TableDataInfo<SysUserVo>>({
     url: '/system/user/list',
     params: query,

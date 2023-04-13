@@ -16,11 +16,11 @@ import org.dromara.common.excel.utils.ExcelUtil;
 import org.dromara.common.idempotent.annotation.RepeatSubmit;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
-import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.bo.SysTenantBo;
+import org.dromara.system.domain.query.SysTenantQuery;
 import org.dromara.system.domain.vo.SysTenantVo;
 import org.dromara.system.service.ISysTenantService;
 import org.springframework.validation.annotation.Validated;
@@ -54,8 +54,8 @@ public class SysTenantController extends BaseController {
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @SaCheckPermission("system:tenant:list")
     @GetMapping("/list")
-    public TableDataInfo<SysTenantVo> list(SysTenantBo bo, PageQuery pageQuery) {
-        return tenantService.queryPageList(bo, pageQuery);
+    public TableDataInfo<SysTenantVo> list(SysTenantQuery query) {
+        return tenantService.queryPageList(query);
     }
 
     /**
@@ -65,8 +65,8 @@ public class SysTenantController extends BaseController {
     @SaCheckPermission("system:tenant:export")
     @Log(title = "租户", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(SysTenantBo bo, HttpServletResponse response) {
-        List<SysTenantVo> list = tenantService.queryList(bo);
+    public void export(SysTenantQuery query, HttpServletResponse response) {
+        List<SysTenantVo> list = tenantService.queryList(query);
         ExcelUtil.exportExcel(list, "租户", SysTenantVo.class, response);
     }
 

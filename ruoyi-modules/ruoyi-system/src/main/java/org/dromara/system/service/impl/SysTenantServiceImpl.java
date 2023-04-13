@@ -5,8 +5,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.constant.Constants;
@@ -20,6 +19,7 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.system.domain.*;
 import org.dromara.system.domain.bo.SysTenantBo;
+import org.dromara.system.domain.query.SysTenantQuery;
 import org.dromara.system.domain.vo.SysTenantVo;
 import org.dromara.system.mapper.*;
 import org.dromara.system.service.ISysTenantService;
@@ -40,9 +40,8 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @Service
-public class SysTenantServiceImpl implements ISysTenantService {
+public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant> implements ISysTenantService {
 
-    private final SysTenantMapper baseMapper;
     private final SysTenantPackageMapper tenantPackageMapper;
     private final SysUserMapper userMapper;
     private final SysDeptMapper deptMapper;
@@ -75,36 +74,16 @@ public class SysTenantServiceImpl implements ISysTenantService {
      * 查询租户列表
      */
     @Override
-    public TableDataInfo<SysTenantVo> queryPageList(SysTenantBo bo, PageQuery pageQuery) {
-        LambdaQueryWrapper<SysTenant> lqw = buildQueryWrapper(bo);
-        Page<SysTenantVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
-        return TableDataInfo.build(result);
+    public TableDataInfo<SysTenantVo> queryPageList(SysTenantQuery query) {
+        return PageQuery.of(() -> baseMapper.queryList(query));
     }
 
     /**
      * 查询租户列表
      */
     @Override
-    public List<SysTenantVo> queryList(SysTenantBo bo) {
-        LambdaQueryWrapper<SysTenant> lqw = buildQueryWrapper(bo);
-        return baseMapper.selectVoList(lqw);
-    }
-
-    private LambdaQueryWrapper<SysTenant> buildQueryWrapper(SysTenantBo bo) {
-        LambdaQueryWrapper<SysTenant> lqw = Wrappers.lambdaQuery();
-        lqw.eq(StringUtils.isNotBlank(bo.getTenantId()), SysTenant::getTenantId, bo.getTenantId());
-        lqw.like(StringUtils.isNotBlank(bo.getContactUserName()), SysTenant::getContactUserName, bo.getContactUserName());
-        lqw.eq(StringUtils.isNotBlank(bo.getContactPhone()), SysTenant::getContactPhone, bo.getContactPhone());
-        lqw.like(StringUtils.isNotBlank(bo.getCompanyName()), SysTenant::getCompanyName, bo.getCompanyName());
-        lqw.eq(StringUtils.isNotBlank(bo.getLicenseNumber()), SysTenant::getLicenseNumber, bo.getLicenseNumber());
-        lqw.eq(StringUtils.isNotBlank(bo.getAddress()), SysTenant::getAddress, bo.getAddress());
-        lqw.eq(StringUtils.isNotBlank(bo.getIntro()), SysTenant::getIntro, bo.getIntro());
-        lqw.like(StringUtils.isNotBlank(bo.getDomain()), SysTenant::getDomain, bo.getDomain());
-        lqw.eq(bo.getPackageId() != null, SysTenant::getPackageId, bo.getPackageId());
-        lqw.eq(bo.getExpireTime() != null, SysTenant::getExpireTime, bo.getExpireTime());
-        lqw.eq(bo.getAccountCount() != null, SysTenant::getAccountCount, bo.getAccountCount());
-        lqw.eq(StringUtils.isNotBlank(bo.getStatus()), SysTenant::getStatus, bo.getStatus());
-        return lqw;
+    public List<SysTenantVo> queryList(SysTenantQuery query) {
+        return baseMapper.queryList(query);
     }
 
     /**

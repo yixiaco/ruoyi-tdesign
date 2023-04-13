@@ -316,7 +316,7 @@ import {
   changeTenantStatus,
   syncTenantPackage,
 } from '@/api/system/tenant';
-import { SysTenantForm, SysTenantVo } from '@/api/system/model/tenantModel';
+import { SysTenantForm, SysTenantQuery, SysTenantVo } from '@/api/system/model/tenantModel';
 import { listTenantPackage } from '@/api/system/tenantPackage';
 import { SysTenantPackageVo } from '@/api/system/model/tenantPackageModel';
 
@@ -372,7 +372,7 @@ const columns = ref<Array<PrimaryTableCol>>([
 // 提交表单对象
 const form = ref<SysTenantVo & SysTenantForm>({});
 // 查询对象
-const queryParams = ref<SysTenantForm>({
+const queryParams = ref<SysTenantQuery>({
   pageNum: 1,
   pageSize: 10,
   params: {},

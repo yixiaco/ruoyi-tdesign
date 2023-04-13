@@ -286,7 +286,7 @@
     <!-- ${functionName}详情 -->
     <t-dialog v-model:visible="openView" header="${functionName}详情" width="700px" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon :data="form" label-width="calc(5em + 24px)">
+        <t-form label-align="right" colon label-width="calc(5em + 24px)">
           <t-row :gutter="[0, 20]">
 #foreach($column in $columns)
 #set($javaField=$column.javaField)
@@ -569,8 +569,8 @@ function handleDetail(row) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const $${pkColumn.javaField} = row.${pkColumn.javaField};
-  get${BusinessName}($${pkColumn.javaField}).then((response) => {
+  const ${pkColumn.javaField} = row.${pkColumn.javaField};
+  get${BusinessName}(${pkColumn.javaField}).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
   });

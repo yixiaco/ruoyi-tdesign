@@ -1,9 +1,9 @@
 import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysTenantForm, SysTenantVo } from '@/api/system/model/tenantModel';
+import { SysTenantForm, SysTenantQuery, SysTenantVo } from '@/api/system/model/tenantModel';
 
 // 查询租户列表
-export function listTenant(query: SysTenantForm) {
+export function listTenant(query: SysTenantQuery) {
   return request.get<TableDataInfo<SysTenantVo>>({
     url: '/system/tenant/list',
     params: query,

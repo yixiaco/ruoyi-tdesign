@@ -14,7 +14,7 @@ import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.tenant.helper.TenantHelper;
-import org.dromara.system.domain.bo.SysTenantBo;
+import org.dromara.system.domain.query.SysTenantQuery;
 import org.dromara.system.domain.vo.SysTenantVo;
 import org.dromara.system.service.ISysConfigService;
 import org.dromara.system.service.ISysTenantService;
@@ -156,7 +156,7 @@ public class AuthController {
      */
     @GetMapping("/tenant/list")
     public R<LoginTenantVo> tenantList(HttpServletRequest request) throws Exception {
-        List<SysTenantVo> tenantList = tenantService.queryList(new SysTenantBo());
+        List<SysTenantVo> tenantList = tenantService.queryList(new SysTenantQuery());
         List<TenantListVo> voList = MapstructUtils.convert(tenantList, TenantListVo.class);
         // 获取域名
         String host = new URL(request.getRequestURL().toString()).getHost();

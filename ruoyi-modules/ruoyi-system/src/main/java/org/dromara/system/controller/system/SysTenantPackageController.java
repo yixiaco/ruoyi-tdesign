@@ -14,10 +14,10 @@ import org.dromara.common.excel.utils.ExcelUtil;
 import org.dromara.common.idempotent.annotation.RepeatSubmit;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
-import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.bo.SysTenantPackageBo;
+import org.dromara.system.domain.query.SysTenantPackageQuery;
 import org.dromara.system.domain.vo.SysTenantPackageVo;
 import org.dromara.system.service.ISysTenantPackageService;
 import org.springframework.validation.annotation.Validated;
@@ -51,8 +51,8 @@ public class SysTenantPackageController extends BaseController {
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @SaCheckPermission("system:tenantPackage:list")
     @GetMapping("/list")
-    public TableDataInfo<SysTenantPackageVo> list(SysTenantPackageBo bo, PageQuery pageQuery) {
-        return tenantPackageService.queryPageList(bo, pageQuery);
+    public TableDataInfo<SysTenantPackageVo> list(SysTenantPackageQuery query) {
+        return tenantPackageService.queryPageList(query);
     }
 
     /**
@@ -62,8 +62,8 @@ public class SysTenantPackageController extends BaseController {
     @SaCheckPermission("system:tenantPackage:export")
     @Log(title = "租户套餐", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(SysTenantPackageBo bo, HttpServletResponse response) {
-        List<SysTenantPackageVo> list = tenantPackageService.queryList(bo);
+    public void export(SysTenantPackageQuery query, HttpServletResponse response) {
+        List<SysTenantPackageVo> list = tenantPackageService.queryList(query);
         ExcelUtil.exportExcel(list, "租户套餐", SysTenantPackageVo.class, response);
     }
 
