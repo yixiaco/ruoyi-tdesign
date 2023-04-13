@@ -3,7 +3,7 @@
     <t-menu
       :class="menuCls"
       :theme="theme"
-      :value="active"
+      :value="activeMenu"
       :collapsed="collapsed"
       expand-mutex
       :default-expanded="defaultExpanded"
@@ -25,14 +25,14 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
 import type { PropType } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import union from 'lodash/union';
 
 import { useSettingStore } from '@/store';
 import { prefix } from '@/config/global';
 import pgk from '../../../package.json';
 import type { MenuRoute } from '@/types/interface';
-import { getActive, getRoutesExpanded } from '@/router';
+import { getRoutesExpanded } from '@/router';
 
 import AssetLogo from '@/assets/icons/assets-t-logo.svg?component';
 import AssetLogoFull from '@/assets/icons/assets-logo-full.svg?component';
@@ -71,12 +71,23 @@ const props = defineProps({
   },
 });
 
+const route = useRoute();
+
+const activeMenu = computed(() => {
+  const { meta, path } = route;
+  // if set path, the sidebar will highlight the path you set
+  if (meta.activeMenu) {
+    return meta.activeMenu as string;
+  }
+  return path;
+});
+
 const collapsed = computed(() => useSettingStore().isSidebarCompact);
 
-const active = computed(() => getActive());
+// const active = computed(() => getActive());
 
 const defaultExpanded = computed(() => {
-  const path = getActive();
+  const path = activeMenu.value;
   const parentPath = path.substring(0, path.lastIndexOf('/'));
   const expanded = getRoutesExpanded();
   return union(expanded, parentPath === '' ? [] : [parentPath]);

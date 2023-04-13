@@ -1,7 +1,6 @@
 import NProgress from 'nprogress'; // progress bar
 import 'nprogress/nprogress.css'; // progress bar style
-
-import { getPermissionStore, getUserStore } from '@/store';
+import { getUserStore, usePermissionStoreHook } from '@/store';
 import router from '@/router';
 import { isRelogin } from '@/utils/request';
 import { isHttp } from '@/utils/validate';
@@ -11,7 +10,7 @@ NProgress.configure({ showSpinner: false });
 router.beforeEach(async (to, from, next) => {
   NProgress.start();
 
-  const permissionStore = getPermissionStore();
+  const permissionStore = usePermissionStoreHook();
   const { whiteListRouters } = permissionStore;
 
   const userStore = getUserStore();
@@ -33,7 +32,7 @@ router.beforeEach(async (to, from, next) => {
 
         isRelogin.show = false;
 
-        const accessRoutes = await permissionStore.initRoutes();
+        const accessRoutes = await permissionStore.generateRoutes();
         // 根据roles权限生成可访问的路由表
         accessRoutes.forEach((route) => {
           if (!isHttp(route.path)) {

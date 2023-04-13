@@ -20,7 +20,7 @@ import LSideNav from './SideNav.vue';
 const route = useRoute();
 const permissionStore = usePermissionStore();
 const settingStore = useSettingStore();
-const { routers: menuRouters } = storeToRefs(permissionStore);
+const { sidebarRouters: menuRouters } = storeToRefs(permissionStore);
 
 const sideMenu = computed(() => {
   const { layout, splitMenu } = settingStore;
@@ -28,7 +28,11 @@ const sideMenu = computed(() => {
   if (layout === 'mix' && splitMenu) {
     newMenuRouters.forEach((menu) => {
       if (route.path.indexOf(menu.path) === 0) {
-        newMenuRouters = menu.children.map((subMenu) => ({ ...subMenu, path: `${menu.path}/${subMenu.path}` }));
+        if (menu.children) {
+          newMenuRouters = menu.children.map((subMenu) => ({ ...subMenu, path: `${menu.path}/${subMenu.path}` }));
+        } else {
+          newMenuRouters = [];
+        }
       }
     });
   }

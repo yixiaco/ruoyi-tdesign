@@ -81,7 +81,7 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue';
 import type { PropType } from 'vue';
-import { useRouter } from 'vue-router';
+import { useRoute, useRouter } from 'vue-router';
 import { getUserStore, useSettingStore, useUserStore } from '@/store';
 import { getActive } from '@/router';
 import { prefix } from '@/config/global';
@@ -127,6 +127,7 @@ const props = defineProps({
 });
 
 const router = useRouter();
+const route = useRoute();
 const settingStore = useSettingStore();
 // 是否切换了租户
 const dynamic = ref(false);
@@ -137,7 +138,19 @@ const toggleSettingPanel = () => {
   });
 };
 
-const active = computed(() => getActive());
+// const active = computed(() => getActive());
+const active = computed(() => {
+  const { path } = route;
+  if (settingStore.layout === 'mix') {
+    if (settingStore.splitMenu) {
+      if (path && path.lastIndexOf('/') > 0) {
+        const tmpPath = path.substring(1, path.length);
+        return `/${tmpPath.substring(0, tmpPath.indexOf('/'))}`;
+      }
+    }
+  }
+  return getActive();
+});
 
 const layoutCls = computed(() => [`${prefix}-header-layout`]);
 
