@@ -3,7 +3,7 @@ import isString from 'lodash/isString';
 import merge from 'lodash/merge';
 import { saveAs } from 'file-saver';
 import { DialogPlugin, LoadingPlugin, MessagePlugin, NotifyPlugin } from 'tdesign-vue-next';
-import type { InternalAxiosRequestConfig } from 'axios';
+import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
 import type { AxiosTransform, CreateAxiosOptions } from './AxiosTransform';
 import { VAxios } from './Axios';
 import { joinTimestamp, formatRequestDate, setObjToUrlParams } from './utils';
@@ -213,7 +213,7 @@ const transform: AxiosTransform = {
   },
 
   // 响应错误处理
-  responseInterceptorsCatch: (error: any) => {
+  responseInterceptorsCatch: (error: any, instance: AxiosInstance) => {
     const { config } = error;
     console.log(`err${error}`);
     let { message } = error;
@@ -244,7 +244,7 @@ const transform: AxiosTransform = {
       }, config.requestOptions.retry.delay || 1);
     });
     // config.headers = { ...config.headers, 'Content-Type': 'application/json;charset=UTF-8' };
-    return backoff.then((config) => request.request(config));
+    return backoff.then((config) => instance.request(config));
   },
 };
 

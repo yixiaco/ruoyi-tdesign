@@ -2,13 +2,13 @@
   <div>
     <template v-for="item in list" :key="item.path">
       <template v-if="!item.children || !item.children.length || item.meta?.single">
-        <t-menu-item v-if="getHref(item)" :name="item.path" :value="item.path" @click="openHref(getHref(item)[0])">
+        <t-menu-item v-if="getHref(item)" :name="item.path" :value="getPath(item)" @click="openHref(getHref(item)[0])">
           <template #icon>
             <component :is="menuIcon(item)" class="t-icon"></component>
           </template>
           {{ item.title }}
         </t-menu-item>
-        <t-menu-item v-else :name="item.path" :value="item.path" :to="item.path">
+        <t-menu-item v-else :name="item.path" :value="getPath(item)" :to="item.path">
           <template #icon>
             <component :is="menuIcon(item)" class="t-icon"></component>
           </template>
@@ -38,7 +38,6 @@ const props = defineProps({
     default: () => [],
   },
 });
-
 const active = computed(() => getActive());
 
 const list = computed(() => {
@@ -86,9 +85,16 @@ const getHref = (item: MenuRoute) => {
 };
 
 const getPath = (item: ListItemType) => {
+  const activeLevel = active.value.split('/').length;
+  const pathLevel = item.path.split('/').length;
+  if (activeLevel > pathLevel && active.value.startsWith(item.path)) {
+    return active.value;
+  }
+
   if (active.value === item.path) {
     return active.value;
   }
+
   return item.meta?.single ? item.redirect : item.path;
 };
 
