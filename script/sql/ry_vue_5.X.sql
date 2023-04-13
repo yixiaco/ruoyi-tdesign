@@ -241,8 +241,7 @@ insert into sys_menu values('104',  '岗位管理',     '1',   '5', 'post',     
 insert into sys_menu values('105',  '字典管理',     '1',   '6', 'dict',             'system/dict/index',            '', 1, 0, 'C', '0', '0', 'system:dict:list',            'books',          103, 1, sysdate(), null, null, '字典管理菜单');
 insert into sys_menu values('106',  '参数设置',     '1',   '7', 'config',           'system/config/index',          '', 1, 0, 'C', '0', '0', 'system:config:list',          'edit',          103, 1, sysdate(), null, null, '参数设置菜单');
 insert into sys_menu values('107',  '通知公告',     '1',   '8', 'notice',           'system/notice/index',          '', 1, 0, 'C', '0', '0', 'system:notice:list',          'mail',       103, 1, sysdate(), null, null, '通知公告菜单');
-insert into sys_menu values('500',  '操作日志', '1', '11', 'operlog',    'monitor/operlog/index',    '', 1, 0, 'C', '0', '0', 'monitor:operlog:list',    'edit-1',          103, 1, sysdate(), null, null, '操作日志菜单');
-insert into sys_menu values('501',  '登录日志', '1', '12', 'logininfor', 'monitor/logininfor/index', '', 1, 0, 'C', '0', '0', 'monitor:logininfor:list', 'swap',    103, 1, sysdate(), null, null, '登录日志菜单');
+insert into sys_menu values('108',  '日志管理',     '1',   '9', 'log',              '',                             '', 1, 0, 'M', '0', '0', '',                            'root-list',    103, 1, sysdate(), null, null, '日志管理菜单');
 insert into sys_menu values('109',  '在线用户',     '2',   '1', 'online',           'monitor/online/index',         '', 1, 0, 'C', '0', '0', 'monitor:online:list',         'user-talk',        103, 1, sysdate(), null, null, '在线用户菜单');
 insert into sys_menu values('113',  '缓存监控',     '2',   '5', 'cache',            'monitor/cache/index',          '', 1, 0, 'C', '0', '0', 'monitor:cache:list',          'layers',         103, 1, sysdate(), null, null, '缓存监控菜单');
 insert into sys_menu values('114',  '表单构建',     '3',   '1', 'build',            'tool/build/index',             '', 1, 0, 'C', '0', '0', 'tool:build:list',             'logo-windows-filled',         103, 1, sysdate(), null, null, '表单构建菜单');
@@ -257,6 +256,9 @@ insert into sys_menu values('118',  '文件管理',     '1',   '10', 'oss',     
 -- xxl-job-admin控制台
 insert into sys_menu values('120',  '任务调度中心',  '2',   '5',  'XxlJob',           'monitor/xxljob/index',        '', 1, 0, 'C', '0', '0', 'monitor:xxljob:list',          'video',           103, 1, sysdate(), null, null, 'Xxl-Job控制台菜单');
 
+-- 三级菜单
+insert into sys_menu values('500',  '操作日志', '108', '1', 'operlog',    'monitor/operlog/index',    '', 1, 0, 'C', '0', '0', 'monitor:operlog:list',    'edit-1',          103, 1, sysdate(), null, null, '操作日志菜单');
+insert into sys_menu values('501',  '登录日志', '108', '2', 'logininfor', 'monitor/logininfor/index', '', 1, 0, 'C', '0', '0', 'monitor:logininfor:list', 'swap',    103, 1, sysdate(), null, null, '登录日志菜单');
 -- 用户管理按钮
 insert into sys_menu values('1001', '用户查询', '100', '1',  '', '', '', 1, 0, 'F', '0', '0', 'system:user:query',          '#', 103, 1, sysdate(), null, null, '');
 insert into sys_menu values('1002', '用户新增', '100', '2',  '', '', '', 1, 0, 'F', '0', '0', 'system:user:add',            '#', 103, 1, sysdate(), null, null, '');
@@ -387,6 +389,7 @@ insert into sys_role_menu values ('2', '104');
 insert into sys_role_menu values ('2', '105');
 insert into sys_role_menu values ('2', '106');
 insert into sys_role_menu values ('2', '107');
+insert into sys_role_menu values ('2', '108');
 insert into sys_role_menu values ('2', '109');
 insert into sys_role_menu values ('2', '110');
 insert into sys_role_menu values ('2', '111');
