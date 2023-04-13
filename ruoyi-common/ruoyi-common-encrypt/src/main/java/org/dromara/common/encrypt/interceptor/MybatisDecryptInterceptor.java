@@ -1,6 +1,6 @@
 package org.dromara.common.encrypt.interceptor;
 
-import cn.hutool.core.collection.CollectionUtil;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -69,12 +69,12 @@ public class MybatisDecryptInterceptor implements Interceptor {
             return;
         }
         if (sourceObject instanceof List<?> list) {
-            if(CollectionUtil.isEmpty(list)) {
+            if(CollUtil.isEmpty(list)) {
                 return;
             }
             // 判断第一个元素是否含有注解。如果没有直接返回，提高效率
             Object firstItem = list.get(0);
-            if (CollectionUtil.isEmpty(encryptorManager.getFieldCache(firstItem.getClass()))) {
+            if (ObjectUtil.isNull(firstItem) || CollUtil.isEmpty(encryptorManager.getFieldCache(firstItem.getClass()))) {
                 return;
             }
             list.forEach(this::decryptHandler);
@@ -98,6 +98,9 @@ public class MybatisDecryptInterceptor implements Interceptor {
      * @return 加密后结果
      */
     private String decryptField(String value, Field field) {
+        if (ObjectUtil.isNull(value)) {
+            return null;
+        }
         EncryptField encryptField = field.getAnnotation(EncryptField.class);
         EncryptContext encryptContext = new EncryptContext();
         encryptContext.setAlgorithm(encryptField.algorithm() == AlgorithmType.DEFAULT ? defaultProperties.getAlgorithm() : encryptField.algorithm());
