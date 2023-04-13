@@ -99,13 +99,14 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { useRoute, useRouter } from 'vue-router';
-import { computed, getCurrentInstance, reactive, ref } from 'vue';
 import { AddIcon, CloseCircleIcon, CloseIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { allocatedUserList, authUserCancel, authUserCancelAll } from '@/api/system/role';
-import { useTabsRouterStore } from '@/store';
-import SelectUser from '@/pages/system/role/selectUser.vue';
+import { computed, getCurrentInstance, reactive, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
 import { SysUserForm, SysUserVo } from '@/api/system/model/userModel';
+import { allocatedUserList, authUserCancel, authUserCancelAll } from '@/api/system/role';
+import SelectUser from '@/pages/system/role/selectUser.vue';
+import { useTabsRouterStore } from '@/store';
 
 const tabsRouterStore = useTabsRouterStore();
 const route = useRoute();

@@ -106,8 +106,9 @@ export default {
 </script>
 <script lang="ts" setup>
 import * as echarts from 'echarts';
-import { getCurrentInstance, ref } from 'vue';
 import { ChartPieIcon, DashboardIcon, DesktopIcon } from 'tdesign-icons-vue-next';
+import { getCurrentInstance, ref } from 'vue';
+
 import { getCache } from '@/api/monitor/cache';
 import { SysCacheInfo } from '@/api/monitor/model/cacheModel';
 

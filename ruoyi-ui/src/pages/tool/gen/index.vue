@@ -176,8 +176,9 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { useRoute } from 'vue-router';
-import { computed, getCurrentInstance, onActivated, ref } from 'vue';
+import 'highlight.js/styles/github.css';
+import 'highlight.js/lib/common';
+
 import {
   BrowseIcon,
   DeleteIcon,
@@ -190,12 +191,14 @@ import {
   UploadIcon,
 } from 'tdesign-icons-vue-next';
 import { PrimaryTableCol } from 'tdesign-vue-next';
-import { listTable, previewTable, delTable, genCode, synchDb } from '@/api/tool/gen';
-import router from '@/router';
-import ImportTable from './importTable.vue';
-import 'highlight.js/styles/github.css';
-import 'highlight.js/lib/common';
+import { computed, getCurrentInstance, onActivated, ref } from 'vue';
+import { useRoute } from 'vue-router';
+
+import { delTable, genCode, listTable, previewTable, synchDb } from '@/api/tool/gen';
 import { GenTable } from '@/api/tool/model/genModel';
+import router from '@/router';
+
+import ImportTable from './importTable.vue';
 
 const route = useRoute();
 const { proxy } = getCurrentInstance();

@@ -181,11 +181,12 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, getCurrentInstance, ref } from 'vue';
 import { BrowseIcon, DeleteIcon, DownloadIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import { PrimaryTableCol } from 'tdesign-vue-next';
-import { list, delOperlog, cleanOperlog } from '@/api/monitor/operlog';
+import { computed, getCurrentInstance, ref } from 'vue';
+
 import { SysOperLogBo, SysOperLogVo } from '@/api/monitor/model/operlogModel';
+import { cleanOperlog, delOperlog, list } from '@/api/monitor/operlog';
 
 const { proxy } = getCurrentInstance();
 const { sys_oper_type, sys_common_status } = proxy.useDict('sys_oper_type', 'sys_common_status');

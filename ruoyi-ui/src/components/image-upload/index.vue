@@ -26,10 +26,11 @@
 </template>
 
 <script lang="ts" setup>
-import {computed, getCurrentInstance, PropType, ref, watch} from 'vue';
 import { SuccessContext, UploadFile, UploadRemoveContext, UploadValidateType } from 'tdesign-vue-next';
+import { computed, getCurrentInstance, PropType, ref, watch } from 'vue';
+
+import { delOss, listByIds, listByUrls } from '@/api/system/oss';
 import { getToken } from '@/utils/auth';
-import { listByIds, delOss, listByUrls } from '@/api/system/oss';
 
 const props = defineProps({
   modelValue: [String, Object, Array],

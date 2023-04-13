@@ -1,7 +1,9 @@
-import NProgress from 'nprogress'; // progress bar
 import 'nprogress/nprogress.css'; // progress bar style
-import { getUserStore, usePermissionStoreHook } from '@/store';
+
+import NProgress from 'nprogress'; // progress bar
+
 import router from '@/router';
+import { getUserStore, usePermissionStoreHook } from '@/store';
 import { isRelogin } from '@/utils/request';
 import { isHttp } from '@/utils/validate';
 

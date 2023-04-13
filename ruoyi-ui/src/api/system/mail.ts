@@ -1,5 +1,5 @@
-import { request } from '@/utils/request';
 import { R } from '@/api/model/resultModel';
+import { request } from '@/utils/request';
 
 // 发送测试邮件
 export function sendTestMail(toMail: string) {

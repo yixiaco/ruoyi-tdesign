@@ -101,19 +101,20 @@
 </template>
 
 <script setup lang="ts">
+import Cookies from 'js-cookie';
+import QrcodeVue from 'qrcode.vue';
+import { SecuredIcon } from 'tdesign-icons-vue-next';
+import type { FormInstanceFunctions, FormRule } from 'tdesign-vue-next';
+import { MessagePlugin } from 'tdesign-vue-next';
 import { getCurrentInstance, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import QrcodeVue from 'qrcode.vue';
-import { MessagePlugin } from 'tdesign-vue-next';
-import type { FormInstanceFunctions, FormRule } from 'tdesign-vue-next';
-import Cookies from 'js-cookie';
-import { SecuredIcon } from 'tdesign-icons-vue-next';
-import { useCounter } from '@/hooks';
-import { useTabsRouterStore, useUserStore } from '@/store';
+
 import { getCodeImg, getTenantList } from '@/api/login';
-import { encrypt, decrypt } from '@/utils/jsencrypt';
 import { LoginParam, TenantListVo } from '@/api/model/loginModel';
 import Company from '@/assets/icons/svg/company.svg?component';
+import { useCounter } from '@/hooks';
+import { useTabsRouterStore, useUserStore } from '@/store';
+import { decrypt, encrypt } from '@/utils/jsencrypt';
 
 const userStore = useUserStore();
 

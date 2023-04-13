@@ -1,7 +1,7 @@
-import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
 import { DeptTreeSelect, SysRoleForm, SysRoleQuery, SysRoleVo, SysUserRole } from '@/api/system/model/roleModel';
 import { SysUserForm, SysUserVo } from '@/api/system/model/userModel';
+import { request } from '@/utils/request';
 
 // 查询角色列表
 export function listRole(query: SysRoleQuery) {

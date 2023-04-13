@@ -295,7 +295,6 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, getCurrentInstance, ref } from 'vue';
 import {
   AddIcon,
   BrowseIcon,
@@ -307,18 +306,20 @@ import {
   SettingIcon,
 } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
-import {
-  listTenant,
-  getTenant,
-  delTenant,
-  addTenant,
-  updateTenant,
-  changeTenantStatus,
-  syncTenantPackage,
-} from '@/api/system/tenant';
+import { computed, getCurrentInstance, ref } from 'vue';
+
 import { SysTenantForm, SysTenantQuery, SysTenantVo } from '@/api/system/model/tenantModel';
-import { listTenantPackage } from '@/api/system/tenantPackage';
 import { SysTenantPackageVo } from '@/api/system/model/tenantPackageModel';
+import {
+  addTenant,
+  changeTenantStatus,
+  delTenant,
+  getTenant,
+  listTenant,
+  syncTenantPackage,
+  updateTenant,
+} from '@/api/system/tenant';
+import { listTenantPackage } from '@/api/system/tenantPackage';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');

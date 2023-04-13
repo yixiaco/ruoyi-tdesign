@@ -44,13 +44,14 @@ export default {
 };
 </script>
 <script lang="ts" setup>
+import { PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, nextTick, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { PrimaryTableCol } from 'tdesign-vue-next';
+
+import { SysRoleVo } from '@/api/system/model/roleModel';
+import { SysUserVo } from '@/api/system/model/userModel';
 import { getAuthRole, updateAuthRole } from '@/api/system/user';
 import { useTabsRouterStore } from '@/store';
-import { SysUserVo } from '@/api/system/model/userModel';
-import { SysRoleVo } from '@/api/system/model/roleModel';
 
 const { proxy } = getCurrentInstance();
 

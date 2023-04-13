@@ -1,6 +1,6 @@
-import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
 import { SysDictTypeForm, SysDictTypeQuery, SysDictTypeVo } from '@/api/system/model/dictModel';
+import { request } from '@/utils/request';
 
 // 查询字典类型列表
 export function listType(query: SysDictTypeQuery) {

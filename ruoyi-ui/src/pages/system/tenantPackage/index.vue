@@ -210,7 +210,6 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, getCurrentInstance, ref } from 'vue';
 import {
   AddIcon,
   BrowseIcon,
@@ -222,17 +221,19 @@ import {
   SettingIcon,
 } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol, TreeInstanceFunctions } from 'tdesign-vue-next';
-import {
-  listTenantPackage,
-  getTenantPackage,
-  delTenantPackage,
-  addTenantPackage,
-  updateTenantPackage,
-  changePackageStatus,
-} from '@/api/system/tenantPackage';
-import { SysTenantPackageForm, SysTenantPackageQuery, SysTenantPackageVo } from '@/api/system/model/tenantPackageModel';
-import { tenantPackageMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
+import { computed, getCurrentInstance, ref } from 'vue';
+
 import { TreeModel } from '@/api/model/resultModel';
+import { tenantPackageMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
+import { SysTenantPackageForm, SysTenantPackageQuery, SysTenantPackageVo } from '@/api/system/model/tenantPackageModel';
+import {
+  addTenantPackage,
+  changePackageStatus,
+  delTenantPackage,
+  getTenantPackage,
+  listTenantPackage,
+  updateTenantPackage,
+} from '@/api/system/tenantPackage';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');

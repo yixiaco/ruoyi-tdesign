@@ -25,6 +25,7 @@
 
 <script lang="ts" setup>
 import { computed, PropType } from 'vue';
+
 import { DictModel } from '@/utils/dict';
 
 const props = defineProps({

@@ -1,37 +1,36 @@
-import { createApp } from 'vue';
+import '@/style/index.less';
+import './permission';
 
 import HljsVuePlugin from '@highlightjs/vue-plugin';
-import { useDict } from '@/utils/dict';
+import { createApp } from 'vue';
 
-// 注册指令
-import plugins from './plugins'; // plugins
-import { download } from '@/utils/request';
-import directive from './directive'; // directive
-import {
-  parseTime,
-  bytesToSize,
-  resetForm,
-  addDateRange,
-  handleTree,
-  selectDictLabel,
-  selectDictLabels,
-} from '@/utils/ruoyi';
 import { getConfigKey, updateConfigByKey } from '@/api/system/config';
-
 // 字典标签组件
 import DictTag from '@/components/dict-tag/index.vue';
 // 文件上传组件
 import FileUpload from '@/components/file-upload/index.vue';
-// 图片上传组件
-import ImageUpload from '@/components/image-upload/index.vue';
 // 图片预览组件
 import ImagePreview from '@/components/image-preview/index.vue';
+// 图片上传组件
+import ImageUpload from '@/components/image-upload/index.vue';
+import { useDict } from '@/utils/dict';
+import { download } from '@/utils/request';
+import {
+  addDateRange,
+  bytesToSize,
+  handleTree,
+  parseTime,
+  resetForm,
+  selectDictLabel,
+  selectDictLabels,
+} from '@/utils/ruoyi';
 
-import { store } from './store';
-import router from './router';
-import '@/style/index.less';
-import './permission';
 import App from './App.vue';
+import directive from './directive'; // directive
+// 注册指令
+import plugins from './plugins'; // plugins
+import router from './router';
+import { store } from './store';
 
 const app = createApp(App);
 

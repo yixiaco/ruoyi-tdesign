@@ -1,5 +1,6 @@
-import { useRoute, createRouter, RouteRecordRaw, createWebHistory } from 'vue-router';
 import uniq from 'lodash/uniq';
+import { createRouter, createWebHistory, RouteRecordRaw, useRoute } from 'vue-router';
+
 import Layout from '@/layouts/index.vue';
 
 // 自动导入modules文件夹下所有ts文件

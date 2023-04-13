@@ -1,6 +1,6 @@
-import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
 import { SysConfigForm, SysConfigVo } from '@/api/system/model/configModel';
+import { request } from '@/utils/request';
 
 // 查询参数列表
 export function listConfig(query: SysConfigForm) {

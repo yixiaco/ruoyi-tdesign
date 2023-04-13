@@ -79,19 +79,20 @@
 </template>
 
 <script setup lang="ts">
-import { computed, ref } from 'vue';
 import type { PropType } from 'vue';
+import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { getUserStore, useSettingStore, useUserStore } from '@/store';
-import { getActive } from '@/router';
-import { prefix } from '@/config/global';
+
 import LogoFull from '@/assets/icons/assets-logo-full.svg?component';
+import { prefix } from '@/config/global';
+import { getActive } from '@/router';
+import { getUserStore, useSettingStore, useUserStore } from '@/store';
 import type { MenuRoute } from '@/types/interface';
 
+import DynamicTenant from './DynamicTenant.vue';
+import MenuContent from './MenuContent.vue';
 import Notice from './Notice.vue';
 import Search from './Search.vue';
-import MenuContent from './MenuContent.vue';
-import DynamicTenant from './DynamicTenant.vue';
 
 const userStore = useUserStore();
 

@@ -1,7 +1,7 @@
 import auth from '@/plugins/auth';
 import cache from '@/plugins/cache';
-import modal from '@/plugins/modal';
 import $download from '@/plugins/download';
+import modal from '@/plugins/modal';
 
 declare module 'vue' {
   interface ComponentCustomProperties {

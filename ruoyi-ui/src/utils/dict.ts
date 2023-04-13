@@ -1,7 +1,8 @@
 import { ref, toRefs } from 'vue';
+
+import { getDicts } from '@/api/system/dict/data';
 // @ts-ignore
 import useDictStore from '@/store/modules/dict';
-import { getDicts } from '@/api/system/dict/data';
 
 export interface DictModel {
   label: string;

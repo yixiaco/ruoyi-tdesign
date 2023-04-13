@@ -20,8 +20,8 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { ref } from 'vue';
 import { manifest } from 'tdesign-icons-vue-next/lib/manifest';
+import { ref } from 'vue';
 
 defineProps({
   modelValue: String,

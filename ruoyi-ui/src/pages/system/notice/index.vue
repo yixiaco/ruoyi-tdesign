@@ -175,11 +175,12 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, getCurrentInstance, ref } from 'vue';
 import { AddIcon, DeleteIcon, EditIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
-import { listNotice, getNotice, delNotice, addNotice, updateNotice } from '@/api/system/notice';
+import { computed, getCurrentInstance, ref } from 'vue';
+
 import { SysNoticeForm, SysNoticeQuery, SysNoticeVo } from '@/api/system/model/noticeModel';
+import { addNotice, delNotice, getNotice, listNotice, updateNotice } from '@/api/system/notice';
 
 const { proxy } = getCurrentInstance();
 const { sys_notice_status, sys_notice_type } = proxy.useDict('sys_notice_status', 'sys_notice_type');

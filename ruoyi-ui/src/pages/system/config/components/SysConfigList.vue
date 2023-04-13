@@ -167,7 +167,6 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, getCurrentInstance, ref } from 'vue';
 import {
   AddIcon,
   DeleteIcon,
@@ -178,7 +177,9 @@ import {
   SettingIcon,
 } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
-import { listConfig, getConfig, delConfig, addConfig, updateConfig, refreshCache } from '@/api/system/config';
+import { computed, getCurrentInstance, ref } from 'vue';
+
+import { addConfig, delConfig, getConfig, listConfig, refreshCache, updateConfig } from '@/api/system/config';
 import { SysConfigForm, SysConfigVo } from '@/api/system/model/configModel';
 
 const { proxy } = getCurrentInstance();

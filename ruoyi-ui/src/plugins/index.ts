@@ -1,7 +1,7 @@
 import auth from './auth';
 import cache from './cache';
-import modal from './modal';
 import download from './download';
+import modal from './modal';
 
 export default function installPlugins(app) {
   // 认证对象

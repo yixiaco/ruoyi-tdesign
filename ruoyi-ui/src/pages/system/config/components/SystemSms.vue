@@ -88,9 +88,11 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { getCurrentInstance, watch, ref, computed } from 'vue';
 import { FormRule } from 'tdesign-vue-next';
+import { computed, getCurrentInstance, ref, watch } from 'vue';
+
 import { getConfigByKeys, refreshCache, updateConfigs } from '@/api/system/config';
+
 import SystemSmsTemplate from './SystemSmsTemplate.vue';
 
 const props = defineProps({

@@ -203,14 +203,15 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
+import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
-import { listOss, delOss } from '@/api/system/oss';
-import ImagePreview from '@/components/image-preview/index.vue';
-import FileUpload from '@/components/file-upload/index.vue';
-import ImageUpload from '@/components/image-upload/index.vue';
+
 import { SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
+import { delOss, listOss } from '@/api/system/oss';
+import FileUpload from '@/components/file-upload/index.vue';
+import ImagePreview from '@/components/image-preview/index.vue';
+import ImageUpload from '@/components/image-upload/index.vue';
 
 const router = useRouter();
 const { proxy } = getCurrentInstance();

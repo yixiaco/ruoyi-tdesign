@@ -118,16 +118,18 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { useRoute, useRouter } from 'vue-router';
-import { getCurrentInstance, reactive, ref, toRefs } from 'vue';
 import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
-import { getGenTable, updateGenTable } from '@/api/tool/gen';
+import { getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
 import { optionselect as getDictOptionselect } from '@/api/system/dict/type';
-import BasicInfoForm from './basicInfoForm.vue';
-import GenInfoForm from './genInfoForm.vue';
-import TCustomCheckbox from './components/checkbox.vue';
-import { useTabsRouterStore } from '@/store';
+import { getGenTable, updateGenTable } from '@/api/tool/gen';
 import { GenTable, GenTableColumn } from '@/api/tool/model/genModel';
+import { useTabsRouterStore } from '@/store';
+
+import BasicInfoForm from './basicInfoForm.vue';
+import TCustomCheckbox from './components/checkbox.vue';
+import GenInfoForm from './genInfoForm.vue';
 
 const tabsRouterStore = useTabsRouterStore();
 const route = useRoute();

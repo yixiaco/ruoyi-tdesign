@@ -121,8 +121,9 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { getCurrentInstance, watch, ref } from 'vue';
 import { FormRule } from 'tdesign-vue-next';
+import { getCurrentInstance, ref, watch } from 'vue';
+
 import { getConfigByKeys, refreshCache, updateConfigs } from '@/api/system/config';
 import { sendTestMail } from '@/api/system/mail';
 

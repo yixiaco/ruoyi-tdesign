@@ -1,6 +1,6 @@
-import { request } from '@/utils/request';
-import { SysOssConfigForm, SysOssConfigQuery, SysOssConfigVo } from '@/api/system/model/ossConfigModel';
 import { R, TableDataInfo } from '@/api/model/resultModel';
+import { SysOssConfigForm, SysOssConfigQuery, SysOssConfigVo } from '@/api/system/model/ossConfigModel';
+import { request } from '@/utils/request';
 
 // 查询对象存储配置列表
 export function listOssConfig(query: SysOssConfigQuery) {

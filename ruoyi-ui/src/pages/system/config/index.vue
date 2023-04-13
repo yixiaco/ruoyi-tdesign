@@ -27,10 +27,12 @@ export default {
 <script lang="ts" setup>
 import { ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import SystemConfig from './components/SystemConfig.vue';
+
 import SystemMail from '@/pages/system/config/components/SystemMail.vue';
 import SystemSms from '@/pages/system/config/components/SystemSms.vue';
 import { useHasPermission } from '@/utils/auth';
+
+import SystemConfig from './components/SystemConfig.vue';
 
 const route = useRoute();
 const router = useRouter();

@@ -267,8 +267,6 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { useRouter } from 'vue-router';
-import { computed, getCurrentInstance, ref } from 'vue';
 import {
   AddIcon,
   CheckCircleIcon,
@@ -282,19 +280,22 @@ import {
   UserIcon,
 } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol, TreeInstanceFunctions } from 'tdesign-vue-next';
+import { computed, getCurrentInstance, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+import { TreeModel } from '@/api/model/resultModel';
+import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
+import { SysRoleForm, SysRoleVo } from '@/api/system/model/roleModel';
 import {
   addRole,
   changeRoleStatus,
   dataScope,
   delRole,
+  deptTreeSelect,
   getRole,
   listRole,
   updateRole,
-  deptTreeSelect,
 } from '@/api/system/role';
-import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
-import { SysRoleForm, SysRoleVo } from '@/api/system/model/roleModel';
-import { TreeModel } from '@/api/model/resultModel';
 
 const router = useRouter();
 const { proxy } = getCurrentInstance();

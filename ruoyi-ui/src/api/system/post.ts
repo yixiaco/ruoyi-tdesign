@@ -1,6 +1,6 @@
-import { request } from '@/utils/request';
-import { SysPostForm, SysPostQuery, SysPostVo } from '@/api/system/model/postModel';
 import { R, TableDataInfo } from '@/api/model/resultModel';
+import { SysPostForm, SysPostQuery, SysPostVo } from '@/api/system/model/postModel';
+import { request } from '@/utils/request';
 
 // 查询岗位列表
 export function listPost(query: SysPostQuery) {

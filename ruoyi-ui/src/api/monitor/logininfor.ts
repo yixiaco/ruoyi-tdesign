@@ -1,6 +1,6 @@
-import { request } from '@/utils/request';
-import { SysLogininforBo, SysLogininforVo } from '@/api/monitor/model/logininforModel';
 import { R, TableDataInfo } from '@/api/model/resultModel';
+import { SysLogininforBo, SysLogininforVo } from '@/api/monitor/model/logininforModel';
+import { request } from '@/utils/request';
 
 // 查询登录日志列表
 export function list(query: SysLogininforBo) {

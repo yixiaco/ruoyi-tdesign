@@ -1,6 +1,6 @@
-import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
 import { GenTable, GenTableInfo } from '@/api/tool/model/genModel';
+import { request } from '@/utils/request';
 
 // 查询生成表数据
 export function listTable(query: GenTable) {

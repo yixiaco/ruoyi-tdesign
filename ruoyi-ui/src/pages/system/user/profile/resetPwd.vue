@@ -17,9 +17,10 @@
 </template>
 
 <script lang="ts" setup>
+import { FormRule } from 'tdesign-vue-next';
 import { getCurrentInstance, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import { FormRule } from 'tdesign-vue-next';
+
 import { updateUserPwd } from '@/api/system/user';
 import { useTabsRouterStore } from '@/store';
 

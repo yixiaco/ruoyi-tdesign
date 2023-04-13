@@ -1,6 +1,6 @@
-import { request } from '@/utils/request';
-import { SysOperLogBo, SysOperLogVo } from '@/api/monitor/model/operlogModel';
 import { R, TableDataInfo } from '@/api/model/resultModel';
+import { SysOperLogBo, SysOperLogVo } from '@/api/monitor/model/operlogModel';
+import { request } from '@/utils/request';
 
 // 查询操作日志列表
 export function list(query: SysOperLogBo) {

@@ -1,6 +1,6 @@
-import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
 import { SysTenantPackageForm, SysTenantPackageQuery, SysTenantPackageVo } from '@/api/system/model/tenantPackageModel';
+import { request } from '@/utils/request';
 
 // 查询租户套餐列表
 export function listTenantPackage(query?: SysTenantPackageQuery) {

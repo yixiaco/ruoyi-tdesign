@@ -32,10 +32,11 @@ export default {
 <script setup lang="ts">
 import { ref } from 'vue';
 
+import TdesignSetting from '@/layouts/setting.vue';
+
+import LoginHeader from './components/Header.vue';
 import Login from './components/Login.vue';
 import Register from './components/Register.vue';
-import LoginHeader from './components/Header.vue';
-import TdesignSetting from '@/layouts/setting.vue';
 
 const title = ref(import.meta.env.VITE_APP_TITLE);
 const companyName = ref(import.meta.env.VITE_APP_COMPANY_NAME);

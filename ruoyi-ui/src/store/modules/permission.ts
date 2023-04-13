@@ -1,13 +1,14 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
 import { RouteRecordRaw } from 'vue-router';
+
+import { getRouters } from '@/api/menu';
+import ParentView from '@/components/ParentView/index.vue';
+import InnerLink from '@/layouts/components/InnerLink.vue';
+import Layout from '@/layouts/index.vue';
 import auth from '@/plugins/auth';
 import router, { defaultRouterList, dynamicRoutes } from '@/router';
 import { store } from '@/store';
-import { getRouters } from '@/api/menu';
-import Layout from '@/layouts/index.vue';
-import ParentView from '@/components/ParentView/index.vue';
-import InnerLink from '@/layouts/components/InnerLink.vue';
 
 const modules = import.meta.glob('./../../pages/**/*.vue');
 

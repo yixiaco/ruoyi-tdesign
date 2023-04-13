@@ -171,7 +171,6 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, getCurrentInstance, ref } from 'vue';
 import {
   AddIcon,
   DeleteIcon,
@@ -182,9 +181,11 @@ import {
   SettingIcon,
 } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
-import useDictStore from '@/store/modules/dict';
-import { listType, getType, delType, addType, updateType, refreshCache } from '@/api/system/dict/type';
+import { computed, getCurrentInstance, ref } from 'vue';
+
+import { addType, delType, getType, listType, refreshCache, updateType } from '@/api/system/dict/type';
 import { SysDictTypeForm, SysDictTypeQuery, SysDictTypeVo } from '@/api/system/model/dictModel';
+import useDictStore from '@/store/modules/dict';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');

@@ -1,5 +1,4 @@
-import { request } from '@/utils/request';
-import { parseStrEmpty } from '@/utils/ruoyi';
+import { R, TableDataInfo, TreeModel } from '@/api/model/resultModel';
 import {
   AvatarVo,
   ProfileVo,
@@ -9,7 +8,8 @@ import {
   SysUserVo,
   UserAuthRole,
 } from '@/api/system/model/userModel';
-import { R, TableDataInfo, TreeModel } from '@/api/model/resultModel';
+import { request } from '@/utils/request';
+import { parseStrEmpty } from '@/utils/ruoyi';
 
 // 查询用户列表
 export function listUser(query: SysUserQuery) {

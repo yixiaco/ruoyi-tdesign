@@ -69,13 +69,14 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { reactive, ref } from 'vue';
 import { CalendarIcon, MailIcon, MobileIcon, SecuredIcon, UsergroupIcon, UserIcon } from 'tdesign-icons-vue-next';
+import { reactive, ref } from 'vue';
+
+import { ProfileVo } from '@/api/system/model/userModel';
 import { getUserProfile } from '@/api/system/user';
-import UserInfo from '@/pages/system/user/profile/userInfo.vue';
 import ResetPwd from '@/pages/system/user/profile/resetPwd.vue';
 import UserAvatar from '@/pages/system/user/profile/userAvatar.vue';
-import { ProfileVo } from '@/api/system/model/userModel';
+import UserInfo from '@/pages/system/user/profile/userInfo.vue';
 
 const activeTab = ref('userinfo');
 const state = reactive<ProfileVo>({

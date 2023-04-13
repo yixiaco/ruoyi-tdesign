@@ -1,19 +1,21 @@
 // axios配置  可自行根据项目进行更改，只需更改该文件即可，其他文件可以不动
+import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+import { saveAs } from 'file-saver';
 import isString from 'lodash/isString';
 import merge from 'lodash/merge';
-import { saveAs } from 'file-saver';
 import { DialogPlugin, LoadingPlugin, MessagePlugin, NotifyPlugin } from 'tdesign-vue-next';
-import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
-import type { AxiosTransform, CreateAxiosOptions } from './AxiosTransform';
-import { VAxios } from './Axios';
-import { joinTimestamp, formatRequestDate, setObjToUrlParams } from './utils';
+
 import { ContentTypeEnum } from '@/constants';
+import cache from '@/plugins/cache';
+import { useUserStore } from '@/store/modules/user';
 import { getToken } from '@/utils/auth';
 // @ts-ignore
 import errorCode from '@/utils/errorCode';
-import { tansParams, blobValidate } from '@/utils/ruoyi';
-import cache from '@/plugins/cache';
-import { useUserStore } from '@/store/modules/user';
+import { blobValidate, tansParams } from '@/utils/ruoyi';
+
+import { VAxios } from './Axios';
+import type { AxiosTransform, CreateAxiosOptions } from './AxiosTransform';
+import { formatRequestDate, joinTimestamp, setObjToUrlParams } from './utils';
 
 // const env = import.meta.env.MODE || 'development';
 // 是否显示重新登录

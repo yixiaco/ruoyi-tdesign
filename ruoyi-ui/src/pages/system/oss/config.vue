@@ -182,17 +182,18 @@ export default {
 </script>
 <script lang="ts" setup>
 import { AddIcon, DeleteIcon, EditIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { computed, getCurrentInstance, ref } from 'vue';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
-import {
-  listOssConfig,
-  getOssConfig,
-  delOssConfig,
-  addOssConfig,
-  updateOssConfig,
-  changeOssConfigStatus,
-} from '@/api/system/ossConfig';
+import { computed, getCurrentInstance, ref } from 'vue';
+
 import { SysOssConfigForm, SysOssConfigQuery, SysOssConfigVo } from '@/api/system/model/ossConfigModel';
+import {
+  addOssConfig,
+  changeOssConfigStatus,
+  delOssConfig,
+  getOssConfig,
+  listOssConfig,
+  updateOssConfig,
+} from '@/api/system/ossConfig';
 
 const { proxy } = getCurrentInstance();
 const { sys_yes_no } = proxy.useDict('sys_yes_no');

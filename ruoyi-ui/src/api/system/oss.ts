@@ -1,6 +1,6 @@
-import { request } from '@/utils/request';
-import { SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
 import { R, TableDataInfo } from '@/api/model/resultModel';
+import { SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
+import { request } from '@/utils/request';
 
 // 查询OSS对象存储列表
 export function listOss(query: SysOssQuery) {

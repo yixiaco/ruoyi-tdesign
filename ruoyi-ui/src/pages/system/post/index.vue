@@ -151,7 +151,6 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, getCurrentInstance, ref } from 'vue';
 import {
   AddIcon,
   DeleteIcon,
@@ -162,8 +161,10 @@ import {
   SettingIcon,
 } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
-import { listPost, addPost, delPost, getPost, updatePost } from '@/api/system/post';
+import { computed, getCurrentInstance, ref } from 'vue';
+
 import { SysPostForm, SysPostQuery, SysPostVo } from '@/api/system/model/postModel';
+import { addPost, delPost, getPost, listPost, updatePost } from '@/api/system/post';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');

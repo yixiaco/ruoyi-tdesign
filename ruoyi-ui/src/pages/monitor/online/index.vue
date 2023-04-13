@@ -66,10 +66,11 @@ export default {
 </script>
 <script lang="ts" setup>
 import { DeleteIcon, RefreshIcon, SearchIcon } from 'tdesign-icons-vue-next';
-import { computed, getCurrentInstance, ref } from 'vue';
 import { PrimaryTableCol } from 'tdesign-vue-next';
-import { forceLogout, list as initData } from '@/api/monitor/online';
+import { computed, getCurrentInstance, ref } from 'vue';
+
 import { SysUserOnlineQuery } from '@/api/monitor/model/userOnlineModel';
+import { forceLogout, list as initData } from '@/api/monitor/online';
 
 const { proxy } = getCurrentInstance();
 

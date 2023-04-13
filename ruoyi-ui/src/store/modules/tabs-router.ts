@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia';
 import { RouteLocationNormalizedLoaded, Router } from 'vue-router';
-import type { TRouterInfo, TTabRouterType } from '@/types/interface';
+
 import { store } from '@/store';
+import type { TRouterInfo, TTabRouterType } from '@/types/interface';
 
 const homeRoute: Array<TRouterInfo> = [
   {

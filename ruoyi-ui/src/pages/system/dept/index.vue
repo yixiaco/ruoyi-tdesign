@@ -167,7 +167,6 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { getCurrentInstance, ref } from 'vue';
 import {
   AddIcon,
   DeleteIcon,
@@ -178,7 +177,9 @@ import {
   UnfoldMoreIcon,
 } from 'tdesign-icons-vue-next';
 import { EnhancedTableInstanceFunctions, FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
-import { listDept, getDept, delDept, addDept, updateDept, listDeptExcludeChild } from '@/api/system/dept';
+import { getCurrentInstance, ref } from 'vue';
+
+import { addDept, delDept, getDept, listDept, listDeptExcludeChild, updateDept } from '@/api/system/dept';
 import { SysDeptForm, SysDeptQuery, SysDeptVo } from '@/api/system/model/deptModel';
 
 const { proxy } = getCurrentInstance();

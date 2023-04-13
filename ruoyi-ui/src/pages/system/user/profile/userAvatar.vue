@@ -91,8 +91,7 @@
 
 <script lang="ts" setup>
 import 'vue-cropper/dist/index.css';
-import { VueCropper } from 'vue-cropper';
-import { getCurrentInstance, reactive, ref } from 'vue';
+
 import {
   PhotoIcon,
   RectangleIcon,
@@ -103,6 +102,9 @@ import {
   ZoomOutIcon,
 } from 'tdesign-icons-vue-next';
 import { UploadFile } from 'tdesign-vue-next';
+import { getCurrentInstance, reactive, ref } from 'vue';
+import { VueCropper } from 'vue-cropper';
+
 import { uploadAvatar } from '@/api/system/user';
 import { useUserStore } from '@/store/modules/user';
 

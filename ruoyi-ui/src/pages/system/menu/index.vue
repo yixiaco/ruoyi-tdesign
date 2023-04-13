@@ -290,11 +290,12 @@ import {
   SettingIcon,
   UnfoldMoreIcon,
 } from 'tdesign-icons-vue-next';
-import { getCurrentInstance, ref } from 'vue';
 import { EnhancedTableInstanceFunctions, FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { getCurrentInstance, ref } from 'vue';
+
 import { addMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu';
-import IconSelect from '@/components/icon-select/index.vue';
 import { SysMenuForm, SysMenuQuery, SysMenuVo } from '@/api/system/model/menuModel';
+import IconSelect from '@/components/icon-select/index.vue';
 
 const { proxy } = getCurrentInstance();
 const { sys_show_hide, sys_normal_disable } = proxy.useDict('sys_show_hide', 'sys_normal_disable');

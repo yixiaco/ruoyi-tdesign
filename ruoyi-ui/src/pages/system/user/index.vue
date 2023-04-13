@@ -426,33 +426,34 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, createVNode, getCurrentInstance, reactive, ref } from 'vue';
 import {
-  SearchIcon,
-  RefreshIcon,
-  DownloadIcon,
   AddIcon,
-  EditIcon,
-  DeleteIcon,
+  BrowseIcon,
   CheckCircleIcon,
+  DeleteIcon,
+  DownloadIcon,
+  EditIcon,
+  RefreshIcon,
+  SearchIcon,
   SettingIcon,
   UploadIcon,
-  BrowseIcon,
 } from 'tdesign-icons-vue-next';
-import { useRouter } from 'vue-router';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol, UploadInstanceFunctions } from 'tdesign-vue-next';
-import { getToken } from '@/utils/auth';
+import { computed, createVNode, getCurrentInstance, reactive, ref } from 'vue';
+import { useRouter } from 'vue-router';
+
+import { SysUserForm, SysUserQuery, SysUserVo } from '@/api/system/model/userModel';
 import {
+  addUser,
   changeUserStatus,
+  delUser,
+  deptTreeSelect,
+  getUser,
   listUser,
   resetUserPwd,
-  delUser,
-  getUser,
   updateUser,
-  addUser,
-  deptTreeSelect,
 } from '@/api/system/user';
-import { SysUserForm, SysUserQuery, SysUserVo } from '@/api/system/model/userModel';
+import { getToken } from '@/utils/auth';
 
 const router = useRouter();
 const { proxy } = getCurrentInstance();

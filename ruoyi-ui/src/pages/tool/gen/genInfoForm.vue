@@ -205,8 +205,9 @@
 </template>
 
 <script lang="ts" setup>
-import { getCurrentInstance, PropType, ref, toRefs, watch } from 'vue';
 import { ChevronDownIcon, HelpCircleFilledIcon } from 'tdesign-icons-vue-next';
+import { getCurrentInstance, PropType, ref, toRefs, watch } from 'vue';
+
 import { listMenu } from '@/api/system/menu';
 import { SysMenuVo } from '@/api/system/model/menuModel';
 import { GenTable } from '@/api/tool/model/genModel';

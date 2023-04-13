@@ -64,11 +64,12 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, getCurrentInstance, reactive, ref } from 'vue';
 import { RefreshIcon, SearchIcon } from 'tdesign-icons-vue-next';
 import { PrimaryTableCol } from 'tdesign-vue-next';
-import { authUserSelectAll, unallocatedUserList } from '@/api/system/role';
+import { computed, getCurrentInstance, reactive, ref } from 'vue';
+
 import { SysUserVo } from '@/api/system/model/userModel';
+import { authUserSelectAll, unallocatedUserList } from '@/api/system/role';
 
 const props = defineProps({
   roleId: {

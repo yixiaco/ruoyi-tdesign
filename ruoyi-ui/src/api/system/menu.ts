@@ -1,4 +1,4 @@
-import { request } from '@/utils/request';
+import { R, TreeModel } from '@/api/model/resultModel';
 import {
   MenuTreeSelectVo,
   RoleMenuTreeselect,
@@ -6,7 +6,7 @@ import {
   SysMenuQuery,
   SysMenuVo,
 } from '@/api/system/model/menuModel';
-import { R, TreeModel } from '@/api/model/resultModel';
+import { request } from '@/utils/request';
 
 // 查询菜单列表
 export function listMenu(query?: SysMenuQuery) {

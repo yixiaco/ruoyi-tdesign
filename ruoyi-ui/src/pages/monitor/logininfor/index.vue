@@ -128,9 +128,10 @@ export default {
 </script>
 <script lang="ts" setup>
 import { DeleteIcon, DownloadIcon, LockOffIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { computed, getCurrentInstance, ref } from 'vue';
 import { PrimaryTableCol } from 'tdesign-vue-next';
-import { list, delLogininfor, cleanLogininfor, unlockLogininfor } from '@/api/monitor/logininfor';
+import { computed, getCurrentInstance, ref } from 'vue';
+
+import { cleanLogininfor, delLogininfor, list, unlockLogininfor } from '@/api/monitor/logininfor';
 import { SysLogininforBo, SysLogininforVo } from '@/api/monitor/model/logininforModel';
 
 const { proxy } = getCurrentInstance();

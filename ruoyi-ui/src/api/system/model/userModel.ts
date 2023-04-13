@@ -1,7 +1,7 @@
-import { SysDeptVo } from '@/api/system/model/deptModel';
 import { BaseEntity } from '@/api/model/resultModel';
-import { SysRoleVo } from '@/api/system/model/roleModel';
+import { SysDeptVo } from '@/api/system/model/deptModel';
 import { SysPostVo } from '@/api/system/model/postModel';
+import { SysRoleVo } from '@/api/system/model/roleModel';
 
 /**
  * 用户信息查询对象

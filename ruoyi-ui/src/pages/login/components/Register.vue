@@ -92,13 +92,14 @@
 </template>
 
 <script setup lang="ts">
-import { getCurrentInstance, ref } from 'vue';
-import { MessagePlugin, FormRule } from 'tdesign-vue-next';
 import { SecuredIcon } from 'tdesign-icons-vue-next';
-import { useCounter } from '@/hooks';
+import { FormRule, MessagePlugin } from 'tdesign-vue-next';
+import { getCurrentInstance, ref } from 'vue';
+
+import { getCodeImg, getTenantList, register } from '@/api/login';
 import { RegisterBody, TenantListVo } from '@/api/model/loginModel';
-import { getCodeImg, register, getTenantList } from '@/api/login';
 import Company from '@/assets/icons/svg/company.svg?component';
+import { useCounter } from '@/hooks';
 
 const equalToPassword = (value) => {
   return formData.value.password === value;

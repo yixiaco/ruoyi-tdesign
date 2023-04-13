@@ -59,10 +59,11 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, getCurrentInstance, reactive, ref } from 'vue';
 import { RefreshIcon, SearchIcon } from 'tdesign-icons-vue-next';
 import { PrimaryTableCol } from 'tdesign-vue-next';
-import { listDbTable, importTable } from '@/api/tool/gen';
+import { computed, getCurrentInstance, reactive, ref } from 'vue';
+
+import { importTable, listDbTable } from '@/api/tool/gen';
 import { GenTable } from '@/api/tool/model/genModel';
 
 const total = ref(0);

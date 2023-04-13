@@ -171,8 +171,6 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, getCurrentInstance, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
 import {
   AddIcon,
   CloseIcon,
@@ -184,11 +182,14 @@ import {
   SettingIcon,
 } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
-import useDictStore from '@/store/modules/dict';
-import { optionselect as getDictOptionselect, getType } from '@/api/system/dict/type';
-import { listData, getData, delData, addData, updateData } from '@/api/system/dict/data';
-import { useTabsRouterStore } from '@/store';
+import { computed, getCurrentInstance, ref } from 'vue';
+import { useRoute, useRouter } from 'vue-router';
+
+import { addData, delData, getData, listData, updateData } from '@/api/system/dict/data';
+import { getType, optionselect as getDictOptionselect } from '@/api/system/dict/type';
 import { SysDictDataForm, SysDictDataQuery, SysDictDataVo, SysDictTypeVo } from '@/api/system/model/dictModel';
+import { useTabsRouterStore } from '@/store';
+import useDictStore from '@/store/modules/dict';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');

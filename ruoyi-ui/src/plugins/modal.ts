@@ -1,17 +1,17 @@
 import {
+  DialogInstance,
+  DialogOptions,
   DialogPlugin,
-  MessagePlugin,
-  NotifyPlugin,
-  LoadingPlugin,
   Form,
   FormItem,
   Input,
-  DialogOptions,
-  DialogInstance,
+  LoadingPlugin,
+  MessagePlugin,
+  NotifyPlugin,
 } from 'tdesign-vue-next';
-import { h, reactive, ref } from 'vue';
 import { TNode } from 'tdesign-vue-next/es/common';
 import { MessageInfoOptions, MessageInstance } from 'tdesign-vue-next/es/message/type';
+import { h, reactive, ref } from 'vue';
 
 let loadingInstance;
 

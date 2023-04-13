@@ -1,14 +1,13 @@
-import { ConfigEnv, UserConfig, loadEnv } from 'vite';
-import { viteMockServe } from 'vite-plugin-mock';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
-import svgLoader from 'vite-svg-loader';
-import AutoImport from 'unplugin-auto-import/vite';
-import Components from 'unplugin-vue-components/vite';
-import { TDesignResolver } from 'unplugin-vue-components/resolvers';
-import viteCompression from 'vite-plugin-compression';
-
 import path from 'path';
+import AutoImport from 'unplugin-auto-import/vite';
+import { TDesignResolver } from 'unplugin-vue-components/resolvers';
+import Components from 'unplugin-vue-components/vite';
+import { ConfigEnv, loadEnv, UserConfig } from 'vite';
+import viteCompression from 'vite-plugin-compression';
+import { viteMockServe } from 'vite-plugin-mock';
+import svgLoader from 'vite-svg-loader';
 
 const CWD = process.cwd();
 

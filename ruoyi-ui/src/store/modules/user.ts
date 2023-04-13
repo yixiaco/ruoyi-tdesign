@@ -1,10 +1,11 @@
 import { defineStore } from 'pinia';
-import { store } from '@/store';
-import { getToken, setToken, removeToken } from '@/utils/auth';
-import { isLogin, login, getInfo, logout } from '@/api/login';
+
+import { getInfo, isLogin, login, logout } from '@/api/login';
 import { LoginParam, UserInfo } from '@/api/model/loginModel';
-import defAva from '@/assets/images/profile.jpg';
 import { R } from '@/api/model/resultModel';
+import defAva from '@/assets/images/profile.jpg';
+import { store } from '@/store';
+import { getToken, removeToken, setToken } from '@/utils/auth';
 
 export const useUserStore = defineStore('user', {
   state: () => ({

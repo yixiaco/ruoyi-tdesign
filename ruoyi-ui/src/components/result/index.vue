@@ -10,12 +10,13 @@
 </template>
 <script setup lang="ts">
 import { computed } from 'vue';
+
 import Result403Icon from '@/assets/icons/assets-result-403.svg?component';
 import Result404Icon from '@/assets/icons/assets-result-404.svg?component';
 import Result500Icon from '@/assets/icons/assets-result-500.svg?component';
 import ResultIeIcon from '@/assets/icons/assets-result-ie.svg?component';
-import ResultWifiIcon from '@/assets/icons/assets-result-wifi.svg?component';
 import ResultMaintenanceIcon from '@/assets/icons/assets-result-maintenance.svg?component';
+import ResultWifiIcon from '@/assets/icons/assets-result-wifi.svg?component';
 
 const props = defineProps({
   bgUrl: String,

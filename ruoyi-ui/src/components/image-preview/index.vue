@@ -33,8 +33,9 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, watch, ref } from 'vue';
 import { BrowseIcon, ImageErrorIcon } from 'tdesign-icons-vue-next';
+import { computed, ref, watch } from 'vue';
+
 import { listByIds } from '@/api/system/oss';
 
 const props = defineProps({
