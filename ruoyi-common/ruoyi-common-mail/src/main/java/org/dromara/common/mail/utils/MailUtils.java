@@ -5,7 +5,6 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.map.MapUtil;
 import cn.hutool.core.util.CharUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.mail.MailAccount;
 import jakarta.mail.Authenticator;
 import jakarta.mail.Session;
 import lombok.AccessLevel;
@@ -308,7 +307,7 @@ public class MailUtils {
      */
     private static String send(MailAccount mailAccount, boolean useGlobalSession, Collection<String> tos, Collection<String> ccs, Collection<String> bccs, String subject, String content,
                                Map<String, InputStream> imageMap, boolean isHtml, File... files) {
-        final org.dromara.common.mail.utils.Mail mail = Mail.create(mailAccount).setUseGlobalSession(useGlobalSession);
+        final Mail mail = Mail.create(mailAccount).setUseGlobalSession(useGlobalSession);
 
         // 可选抄送人
         if (CollUtil.isNotEmpty(ccs)) {

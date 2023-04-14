@@ -1,7 +1,7 @@
 package org.dromara.common.mail.service;
 
-import cn.hutool.extra.mail.MailAccount;
 import jakarta.mail.Session;
+import org.dromara.common.mail.utils.MailAccount;
 
 import java.io.File;
 import java.io.InputStream;

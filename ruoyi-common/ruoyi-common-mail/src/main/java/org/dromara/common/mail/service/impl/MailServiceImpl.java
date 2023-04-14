@@ -1,7 +1,7 @@
 package org.dromara.common.mail.service.impl;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.extra.mail.MailAccount;
+import org.dromara.common.mail.utils.MailAccount;
 import jakarta.mail.Session;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.helper.SysConfigHelper;

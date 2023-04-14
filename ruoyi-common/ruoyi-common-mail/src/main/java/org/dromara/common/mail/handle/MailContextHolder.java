@@ -1,6 +1,6 @@
 package org.dromara.common.mail.handle;
 
-import cn.hutool.extra.mail.MailAccount;
+import org.dromara.common.mail.utils.MailAccount;
 
 /**
  * mail邮件认证对象上下文持有者
