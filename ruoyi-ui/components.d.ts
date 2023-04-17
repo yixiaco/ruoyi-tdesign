@@ -11,6 +11,7 @@ declare module '@vue/runtime-core' {
   export interface GlobalComponents {
     Color: typeof import('./src/components/color/index.vue')['default']
     DictTag: typeof import('./src/components/dict-tag/index.vue')['default']
+    Editor: typeof import('./src/components/editor/index.vue')['default']
     FileUpload: typeof import('./src/components/file-upload/index.vue')['default']
     IconSelect: typeof import('./src/components/icon-select/index.vue')['default']
     IFrame: typeof import('./src/components/i-frame/index.vue')['default']
