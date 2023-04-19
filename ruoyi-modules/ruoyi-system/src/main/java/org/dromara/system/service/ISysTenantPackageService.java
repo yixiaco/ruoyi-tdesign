@@ -28,6 +28,11 @@ public interface ISysTenantPackageService extends IService<SysTenantPackage> {
     TableDataInfo<SysTenantPackageVo> queryPageList(SysTenantPackageQuery query);
 
     /**
+     * 查询租户套餐已启用列表
+     */
+    List<SysTenantPackageVo> selectList();
+
+    /**
      * 查询租户套餐列表
      */
     List<SysTenantPackageVo> queryList(SysTenantPackageQuery query);
