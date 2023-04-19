@@ -14,22 +14,21 @@
   </a>
 </p>
 
-English | [简体中文](./README-zh_CN.md) 
 ### Introduction
 
-TDesign Vue Next Starter is a TDesign-based developed with `Vue3`, `Vite2`, `Pinia`, `TypeScript`. It can be customized theme configuration, and aims to provide project out-of-the-box, configuration-style middle and background projects.
+TDesign Vue Next Starter 是一个基于 TDesign，使用 `Vue3`、`Vite2`、`Pinia`、`TypeScript` 开发，可进行个性化主题配置，旨在提供项目开箱即用的、配置式的中后台项目。
 
 <p>
-  <a href="http://tdesign.tencent.com/starter/vue-next/">Live Preview</a>
+  <a href="http://tdesign.tencent.com/starter/vue-next/">在线预览</a>
   ·
-  <a href="https://tdesign.tencent.com/starter/">Documentation</a>
+  <a href="https://tdesign.tencent.com/starter/">使用文档</a>
 </p>
 
 <img src="docs/starter.png">
 
 ```shell
 # 克隆项目
-git clone https://gitee.com/y_project/RuoYi-Vue
+git clone https://gitee.com/y_project/RuoYi-Tdesign
 
 # 进入项目目录
 cd ruoyi-ui
