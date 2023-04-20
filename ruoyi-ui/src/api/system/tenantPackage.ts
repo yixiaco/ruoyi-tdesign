@@ -10,6 +10,13 @@ export function listTenantPackage(query?: SysTenantPackageQuery) {
   });
 }
 
+// 查询租户套餐下拉选列表
+export function selectTenantPackage() {
+  return request.get<R<Array<SysTenantPackageVo>>>({
+    url: '/system/tenant/package/selectList',
+  });
+}
+
 // 查询租户套餐详细
 export function getTenantPackage(packageId: number) {
   return request.get<R<SysTenantPackageVo>>({

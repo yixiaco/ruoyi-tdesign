@@ -319,7 +319,7 @@ import {
   syncTenantPackage,
   updateTenant,
 } from '@/api/system/tenant';
-import { listTenantPackage } from '@/api/system/tenantPackage';
+import { selectTenantPackage } from '@/api/system/tenantPackage';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
@@ -418,8 +418,8 @@ function reset() {
 
 /** 查询所有租户套餐 */
 function getTenantPackage() {
-  listTenantPackage().then((res) => {
-    packageList.value = res.rows;
+  selectTenantPackage().then((res) => {
+    packageList.value = res.data;
   });
 }
 
