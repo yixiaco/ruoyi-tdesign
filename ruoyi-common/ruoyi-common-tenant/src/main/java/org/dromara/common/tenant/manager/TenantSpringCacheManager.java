@@ -18,7 +18,7 @@ public class TenantSpringCacheManager extends PlusSpringCacheManager {
 
     @Override
     public Cache getCache(String name) {
-        if (StringUtils.contains(name, GlobalConstants.GLOBAL_REDIS_KEY)) {
+        if (StringUtils.contains(name, GlobalConstants.GLOBAL_REDIS_KEY) || TenantHelper.isIgnoreCache()) {
             return super.getCache(name);
         }
         String tenantId = TenantHelper.getTenantId();

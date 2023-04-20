@@ -435,7 +435,7 @@ function handleCheckedTreeExpand(value, type) {
 function handleCheckedTreeNodeAll(value, type) {
   if (type === 'menu') {
     if (value) {
-      menuIds.value = menuRef.value.getItems().map((item) => Number(item.value));
+      menuIds.value = menuRef.value.getItems().map((item) => item.value as number);
     } else {
       menuIds.value = [];
     }
@@ -444,7 +444,7 @@ function handleCheckedTreeNodeAll(value, type) {
 /** 所有菜单节点数据 */
 function getMenuAllCheckedKeys() {
   const items = menuRef.value.getItems();
-  return items.filter((item) => item.checked || item.indeterminate).map((item) => Number(item.value));
+  return items.filter((item) => item.checked || item.indeterminate).map((item) => item.value as number);
 }
 
 /** 提交按钮 */

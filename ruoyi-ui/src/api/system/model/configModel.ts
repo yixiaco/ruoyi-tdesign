@@ -14,6 +14,8 @@ export interface SysConfigForm extends BaseEntity {
   configValue?: string;
   /** 系统内置（Y是 N否） */
   configType?: string;
+  /** 是否是全局配置 1是 0否 */
+  isGlobal?: number;
   /** 备注 */
   remark?: string;
 }
@@ -31,6 +33,8 @@ export interface SysConfigVo {
   configValue?: string;
   /** 系统内置（Y是 N否） */
   configType?: string;
+  /** 是否是全局配置 1是 0否 */
+  isGlobal?: number;
   /** 创建时间 */
   createTime?: any;
   /** 备注 */

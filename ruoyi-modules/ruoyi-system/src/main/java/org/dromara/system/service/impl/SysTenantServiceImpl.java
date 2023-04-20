@@ -16,6 +16,7 @@ import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.tenant.annotation.IgnoreTenant;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.system.domain.*;
 import org.dromara.system.domain.bo.SysTenantBo;
@@ -90,9 +91,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      * 新增租户
      */
     @Override
+    @IgnoreTenant
     @Transactional(rollbackFor = Exception.class)
     public Boolean insertByBo(SysTenantBo bo) {
-        TenantHelper.enableIgnore();
 
         SysTenant add = MapstructUtils.convert(bo, SysTenant.class);
 
@@ -103,7 +104,6 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         add.setTenantId(tenantId);
         boolean flag = baseMapper.insert(add) > 0;
         if (!flag) {
-            TenantHelper.disableIgnore();
             throw new ServiceException("创建租户失败");
         }
         bo.setId(add.getId());
@@ -159,14 +159,15 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         dictDataMapper.insertBatch(dictDataList);
 
         List<SysConfig> sysConfigList = configMapper.selectList(
-            new LambdaQueryWrapper<SysConfig>().eq(SysConfig::getTenantId, defaultTenantId));
+            new LambdaQueryWrapper<SysConfig>()
+                .eq(SysConfig::getTenantId, defaultTenantId)
+                .eq(SysConfig::getIsGlobal, 0)
+        );
         for (SysConfig config : sysConfigList) {
             config.setConfigId(null);
             config.setTenantId(tenantId);
         }
         configMapper.insertBatch(sysConfigList);
-
-        TenantHelper.disableIgnore();
         return true;
     }
 
@@ -318,9 +319,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      * 同步租户套餐
      */
     @Override
+    @IgnoreTenant
     @Transactional(rollbackFor = Exception.class)
     public Boolean syncTenantPackage(String tenantId, String packageId) {
-        TenantHelper.enableIgnore();
         SysTenantPackage tenantPackage = tenantPackageMapper.selectById(packageId);
         List<SysRole> roles = roleMapper.selectList(
             new LambdaQueryWrapper<SysRole>().eq(SysRole::getTenantId, tenantId));
@@ -345,7 +346,6 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
             roleMenuMapper.delete(
                 new LambdaQueryWrapper<SysRoleMenu>().in(SysRoleMenu::getRoleId, roleIds).notIn(!menuIds.isEmpty(), SysRoleMenu::getMenuId, menuIds));
         }
-        TenantHelper.disableIgnore();
         return true;
     }
 }

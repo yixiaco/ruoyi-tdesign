@@ -147,7 +147,7 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
     component: Layout,
     meta: {
       hidden: true,
-      permissions: ['monitor:job:list'],
+      permissions: ['system:ossConfig:list'],
     },
     children: [
       {

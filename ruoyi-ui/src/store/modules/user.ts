@@ -9,6 +9,7 @@ import { getToken, removeToken, setToken } from '@/utils/auth';
 
 export const useUserStore = defineStore('user', {
   state: () => ({
+    tenantId: undefined,
     userId: undefined,
     token: getToken(),
     name: '',
@@ -41,6 +42,7 @@ export const useUserStore = defineStore('user', {
           .then((res) => {
             setToken(res.data.token);
             this.token = res.data.token;
+            this.tenantId = tenantId;
             resolve();
           })
           .catch((error) => {
@@ -77,6 +79,8 @@ export const useUserStore = defineStore('user', {
         logout()
           .then(() => {
             this.token = '';
+            this.tenantId = undefined;
+            this.userId = undefined;
             this.roles = [];
             this.permissions = [];
             removeToken();

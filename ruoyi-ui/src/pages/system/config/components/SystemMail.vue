@@ -126,6 +126,7 @@ import { getCurrentInstance, ref, watch } from 'vue';
 
 import { getConfigByKeys, refreshCache, updateConfigs } from '@/api/system/config';
 import { sendTestMail } from '@/api/system/mail';
+import { SysConfigForm, SysConfigVo } from '@/api/system/model/configModel';
 
 const props = defineProps({
   action: {
@@ -156,6 +157,15 @@ const form = ref<Record<string, string>>({
   timeout: '0',
   connectionTimeout: '0',
 });
+const configs = ref<Record<string, SysConfigForm & SysConfigVo>>({
+  [key]: {
+    configKey: key,
+    configName: '邮箱配置',
+    configType: 'Y',
+    configValue: JSON.stringify(form.value),
+    isGlobal: 1,
+  },
+});
 
 const rules = ref<Record<string, Array<FormRule>>>({
   host: [{ required: true, message: 'SMTP服务器域名不能为空', trigger: 'blur' }],
@@ -184,7 +194,8 @@ function submitForm({ validateResult, firstError }) {
   if (validateResult === true) {
     buttonLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');
-    updateConfigs({ [key]: JSON.stringify(form.value) })
+    configs.value[key].configValue = JSON.stringify(form.value);
+    updateConfigs(Object.values(configs.value))
       .then(() => {
         proxy.$modal.msgSuccess('更新成功');
       })
@@ -202,11 +213,15 @@ function submitForm({ validateResult, firstError }) {
  */
 function init() {
   loading.value = true;
-  getConfigByKeys(key).then((res) => {
+  const keys = Object.keys(configs.value);
+  getConfigByKeys(keys.join(',')).then((res) => {
     loading.value = false;
+    keys.forEach((key) => {
+      configs.value[key] = { ...configs.value[key], ...res.data[key] };
+    });
     const result = res.data[key];
     if (result) {
-      form.value = JSON.parse(result);
+      form.value = JSON.parse(result.configValue);
     }
   });
 }

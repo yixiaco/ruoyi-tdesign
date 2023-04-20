@@ -67,16 +67,30 @@ export function refreshCache() {
 
 // 查询BBS网站参数配置详细
 export function getConfigByKeys(keys: string) {
-  return request.get<R<Record<string, string>>>({
+  return request.get<R<Record<string, SysConfigVo>>>({
     url: `/system/config/configKeys`,
     params: { keys },
   });
 }
 
 // 修改BBS网站参数配置
-export function updateConfigs(configs: Record<string, string>) {
+export function updateConfigs(configs: Array<SysConfigForm>) {
   return request.put<R<void>>({
     url: '/system/config/updateConfigs',
     data: configs,
+  });
+}
+
+// 获取注册用户开关配置
+export function getRegisterUserConfig() {
+  return request.get<R<boolean>>({
+    url: `/system/config/getRegisterUserConfig`,
+  });
+}
+
+// 获取OSS预览列表资源开关配置
+export function getPreviewListResourceConfig() {
+  return request.get<R<boolean>>({
+    url: `/system/config/getPreviewListResourceConfig`,
   });
 }

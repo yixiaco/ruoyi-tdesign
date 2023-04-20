@@ -58,6 +58,12 @@ public class SysConfigVo implements Serializable {
     private String configType;
 
     /**
+     * 是否是全局配置 1是 0否
+     */
+    @ExcelProperty(value = "是否是全局配置 1是 0否")
+    private Integer isGlobal;
+
+    /**
      * 备注
      */
     @ExcelProperty(value = "备注")

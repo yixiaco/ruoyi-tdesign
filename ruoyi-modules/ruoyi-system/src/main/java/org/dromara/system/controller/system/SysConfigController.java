@@ -4,6 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import jakarta.servlet.http.HttpServletResponse;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.helper.SysConfigHelper;
 import org.dromara.common.excel.utils.ExcelUtil;
 import org.dromara.common.idempotent.annotation.RepeatSubmit;
 import org.dromara.common.log.annotation.Log;
@@ -147,12 +148,13 @@ public class SysConfigController extends BaseController {
 
     /**
      * 查询多个参数
+     *
      * @return
      */
     @SaCheckPermission(value = {"system:config:list", "system:config:query", "system:config:edit"}, mode = SaMode.OR)
     @GetMapping("/configKeys")
-    public R<Map<String, Object>> queryConfigs(String[] keys) {
-        Map<String, Object> result = configService.queryConfigs(Arrays.asList(keys));
+    public R<Map<String, SysConfigVo>> queryConfigs(String[] keys) {
+        Map<String, SysConfigVo> result = configService.queryConfigs(Arrays.asList(keys));
         return R.ok(result);
     }
 
@@ -163,8 +165,24 @@ public class SysConfigController extends BaseController {
     @Log(title = "参数管理", businessType = BusinessType.UPDATE)
     @RepeatSubmit()
     @PutMapping("/updateConfigs")
-    public R<Void> updateConfigs(@RequestBody Map<String, String> configs) {
+    public R<Void> updateConfigs(@RequestBody List<SysConfigBo> configs) {
         configService.updateConfigs(configs);
         return R.ok();
+    }
+
+    /**
+     * 获取注册用户开关配置
+     */
+    @GetMapping(value = "/getRegisterUserConfig")
+    public R<Boolean> getRegisterUserConfig() {
+        return R.ok(SysConfigHelper.getSysAccountRegisterUser());
+    }
+
+    /**
+     * 获取OSS预览列表资源开关配置
+     */
+    @GetMapping(value = "/getPreviewListResourceConfig")
+    public R<Boolean> getPreviewListResourceConfig() {
+        return R.ok(SysConfigHelper.getSysOssPreviewListResource());
     }
 }

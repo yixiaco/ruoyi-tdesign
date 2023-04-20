@@ -47,10 +47,10 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
      */
     @Override
     public void init() {
-        TenantHelper.enableIgnore();
-        List<SysOssConfig> list = baseMapper.selectList(
+        List<SysOssConfig> list = TenantHelper.ignore(() -> {
+            return baseMapper.selectList(
                 new LambdaQueryWrapper<SysOssConfig>().orderByAsc(SysOssConfig::getTenantId));
-        TenantHelper.disableIgnore();
+        });
         Map<String, List<SysOssConfig>> map = StreamUtils.groupByKey(list, SysOssConfig::getTenantId);
         for (String tenantId : map.keySet()) {
             TenantHelper.setDynamic(tenantId);
@@ -130,7 +130,7 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
         boolean flag = baseMapper.deleteBatchIds(ids) > 0;
         if (flag) {
             list.forEach(sysOssConfig ->
-                             CacheUtils.evict(CacheNames.SYS_OSS_CONFIG, sysOssConfig.getConfigKey()));
+                CacheUtils.evict(CacheNames.SYS_OSS_CONFIG, sysOssConfig.getConfigKey()));
         }
         return flag;
     }
@@ -141,8 +141,8 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
     private boolean checkConfigKeyUnique(SysOssConfig sysOssConfig) {
         long ossConfigId = ObjectUtil.isNull(sysOssConfig.getOssConfigId()) ? -1L : sysOssConfig.getOssConfigId();
         SysOssConfig info = baseMapper.selectOne(new LambdaQueryWrapper<SysOssConfig>()
-                                                     .select(SysOssConfig::getOssConfigId, SysOssConfig::getConfigKey)
-                                                     .eq(SysOssConfig::getConfigKey, sysOssConfig.getConfigKey()));
+            .select(SysOssConfig::getOssConfigId, SysOssConfig::getConfigKey)
+            .eq(SysOssConfig::getConfigKey, sysOssConfig.getConfigKey()));
         if (ObjectUtil.isNotNull(info) && info.getOssConfigId() != ossConfigId) {
             return false;
         }

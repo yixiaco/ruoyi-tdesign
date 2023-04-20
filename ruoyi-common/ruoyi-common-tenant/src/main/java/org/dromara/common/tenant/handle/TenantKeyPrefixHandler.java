@@ -24,7 +24,7 @@ public class TenantKeyPrefixHandler extends KeyPrefixHandler {
         if (StringUtils.isBlank(name)) {
             return null;
         }
-        if (StringUtils.contains(name, GlobalConstants.GLOBAL_REDIS_KEY)) {
+        if (StringUtils.contains(name, GlobalConstants.GLOBAL_REDIS_KEY) || TenantHelper.isIgnoreCache()) {
             return super.map(name);
         }
         String tenantId = TenantHelper.getTenantId();

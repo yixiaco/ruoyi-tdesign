@@ -185,4 +185,11 @@ public interface ISysRoleService extends IService<SysRole> {
      * @return 结果
      */
     int insertAuthUsers(Long roleId, Long[] userIds);
+
+    /**
+     * 清理角色关联的在线用户登录状态
+     *
+     * @param roleId 角色id
+     */
+    void cleanOnlineUserByRole(Long roleId);
 }

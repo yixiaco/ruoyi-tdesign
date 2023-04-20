@@ -46,7 +46,7 @@ public class SysOssConfigController extends BaseController {
     /**
      * 查询对象存储配置列表
      */
-    @SaCheckPermission("system:oss:list")
+    @SaCheckPermission("system:ossConfig:list")
     @GetMapping("/list")
     public TableDataInfo<SysOssConfigVo> list(SysOssConfigQuery query) {
         return ossConfigService.queryPageList(query);
@@ -57,7 +57,7 @@ public class SysOssConfigController extends BaseController {
      *
      * @param ossConfigId OSS配置ID
      */
-    @SaCheckPermission("system:oss:query")
+    @SaCheckPermission("system:ossConfig:query")
     @GetMapping("/{ossConfigId}")
     public R<SysOssConfigVo> getInfo(@NotNull(message = "主键不能为空")
                                      @PathVariable Long ossConfigId) {
@@ -67,7 +67,7 @@ public class SysOssConfigController extends BaseController {
     /**
      * 新增对象存储配置
      */
-    @SaCheckPermission("system:oss:add")
+    @SaCheckPermission("system:ossConfig:add")
     @Log(title = "对象存储配置", businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping()
@@ -78,7 +78,7 @@ public class SysOssConfigController extends BaseController {
     /**
      * 修改对象存储配置
      */
-    @SaCheckPermission("system:oss:edit")
+    @SaCheckPermission("system:ossConfig:edit")
     @Log(title = "对象存储配置", businessType = BusinessType.UPDATE)
     @RepeatSubmit()
     @PutMapping()
@@ -91,7 +91,7 @@ public class SysOssConfigController extends BaseController {
      *
      * @param ossConfigIds OSS配置ID串
      */
-    @SaCheckPermission("system:oss:remove")
+    @SaCheckPermission("system:ossConfig:remove")
     @Log(title = "对象存储配置", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ossConfigIds}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
@@ -102,7 +102,7 @@ public class SysOssConfigController extends BaseController {
     /**
      * 状态修改
      */
-    @SaCheckPermission("system:oss:edit")
+    @SaCheckPermission("system:ossConfig:edit")
     @Log(title = "对象存储状态修改", businessType = BusinessType.UPDATE)
     @PutMapping("/changeStatus")
     public R<Void> changeStatus(@RequestBody SysOssConfigBo bo) {

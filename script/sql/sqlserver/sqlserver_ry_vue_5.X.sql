@@ -585,11 +585,12 @@ GO
 CREATE TABLE sys_config
 (
     config_id    bigint                       NOT NULL,
-    tenant_id    nvarchar(20)  DEFAULT '000000'  NULL,
+    tenant_id    nvarchar(20)   DEFAULT '000000'  NULL,
     config_name  nvarchar(100)  DEFAULT ''    NULL,
     config_key   nvarchar(100)  DEFAULT ''    NULL,
     config_value nvarchar(2000) DEFAULT ''    NULL,
-    config_type  nchar(1)      DEFAULT ('N')  NULL,
+    config_type  nchar(1)       DEFAULT ('N')  NULL,
+    is_global    smallint       NOT NULL,
     create_dept  bigint                       NULL,
     create_by    bigint                       NULL,
     create_time  datetime2(7)                 NULL,
@@ -640,6 +641,12 @@ EXEC sys.sp_addextendedproperty
     'COLUMN', N'config_type'
 GO
 EXEC sys.sp_addextendedproperty
+    'MS_Description', N'是否是全局配置 1是 0否' ,
+    'SCHEMA', N'dbo',
+    'TABLE', N'sys_config',
+    'COLUMN', N'is_global'
+GO
+EXEC sys.sp_addextendedproperty
     'MS_Description', N'创建部门' ,
     'SCHEMA', N'dbo',
     'TABLE', N'sys_config',
@@ -681,15 +688,15 @@ EXEC sys.sp_addextendedproperty
     'TABLE', N'sys_config'
 GO
 
-INSERT sys_config VALUES (1, N'000000', N'主框架页-默认皮肤样式名称', N'sys.index.skinName', N'skin-blue', N'Y', 103, 1, getdate(), NULL, NULL, N'蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow')
+INSERT sys_config VALUES (1, N'000000', N'主框架页-默认皮肤样式名称', N'sys.index.skinName', N'skin-blue', N'Y', 0, 103, 1, getdate(), NULL, NULL, N'蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow')
 GO
-INSERT sys_config VALUES (2, N'000000', N'用户管理-账号初始密码', N'sys.user.initPassword', N'123456', N'Y', 103, 1, getdate(), NULL, NULL, N'初始化密码 123456')
+INSERT sys_config VALUES (2, N'000000', N'用户管理-账号初始密码', N'sys.user.initPassword', N'123456', N'Y', 0, 103, 1, getdate(), NULL, NULL, N'初始化密码 123456')
 GO
-INSERT sys_config VALUES (3, N'000000', N'主框架页-侧边栏主题', N'sys.index.sideTheme', N'theme-dark', N'Y', 103, 1, getdate(), NULL, NULL, N'深色主题theme-dark，浅色主题theme-light')
+INSERT sys_config VALUES (3, N'000000', N'主框架页-侧边栏主题', N'sys.index.sideTheme', N'theme-dark', N'Y', 0, 103, 1, getdate(), NULL, NULL, N'深色主题theme-dark，浅色主题theme-light')
 GO
-INSERT sys_config VALUES (5, N'000000', N'账号自助-是否开启用户注册功能', N'sys.account.registerUser', N'false', N'Y', 103, 1, getdate(), NULL, NULL, N'是否开启注册用户功能（true开启，false关闭）')
+INSERT sys_config VALUES (5, N'000000', N'账号自助-是否开启用户注册功能', N'sys.account.registerUser', N'false', N'Y', 1, 103, 1, getdate(), NULL, NULL, N'是否开启注册用户功能（true开启，false关闭）')
 GO
-INSERT sys_config VALUES (11, N'000000', N'OSS预览列表资源开关', N'sys.oss.previewListResource', N'true', N'Y', 103, 1, getdate(), NULL, NULL, N'true:开启, false:关闭');
+INSERT sys_config VALUES (11, N'000000', N'OSS预览列表资源开关', N'sys.oss.previewListResource', N'true', N'Y', 1, 103, 1, getdate(), NULL, NULL, N'true:开启, false:关闭');
 GO
 
 CREATE TABLE sys_dept
@@ -1555,10 +1562,10 @@ GO
 INSERT sys_menu VALUES (1602, N'文件下载', 118, 3, N'#', N'', N'', 1, 0, N'F', N'0', N'0', N'system:oss:download', N'#', 103, 1, getdate(), NULL, NULL, N'');
 GO
 INSERT sys_menu VALUES (1603, N'文件删除', 118, 4, N'#', N'', N'', 1, 0, N'F', N'0', N'0', N'system:oss:remove', N'#', 103, 1, getdate(), NULL, NULL, N'');
-GO
-INSERT sys_menu VALUES (1604, N'配置添加', 118, 5, N'#', N'', N'', 1, 0, N'F', N'0', N'0', N'system:oss:add', N'#', 103, 1, getdate(), NULL, NULL, N'');
-GO
-INSERT sys_menu VALUES (1605, N'配置编辑', 118, 6, N'#', N'', N'', 1, 0, N'F', N'0', N'0', N'system:oss:edit', N'#', 103, 1, getdate(), NULL, NULL, N'');
+INSERT sys_menu VALUES (1500, N'OSS配置管理', 118, 5, N'#', N'', N'', 1, 0, N'F', N'0', N'0', N'system:ossConfig:list',N'#', 103, 1, getdate(), null, null, N'');
+INSERT sys_menu VALUES (1501, N'配置添加', 1500, 1, N'#', N'', N'', 1, 0, N'F', N'0', N'0', N'system:ossConfig:add',  N'#', 103, 1, getdate(), null, null, N'');
+INSERT sys_menu VALUES (1502, N'配置编辑', 1500, 2, N'#', N'', N'', 1, 0, N'F', N'0', N'0', N'system:ossConfig:edit', N'#', 103, 1, getdate(), null, null, N'');
+INSERT sys_menu VALUES (1503, N'配置删除', 1500, 3, N'#', N'', N'', 1, 0, N'F', N'0', N'0', N'system:ossConfig:remove',N'#', 103, 1, getdate(), null, null, N'');
 GO
 -- 租户管理相关按钮
 INSERT sys_menu VALUES (1606, N'租户查询', 121, 1, N'#', N'', N'', 1, 0, N'F', N'0', N'0', N'system:tenant:query', N'#', 103, 1, getdate(), NULL, NULL, N'');

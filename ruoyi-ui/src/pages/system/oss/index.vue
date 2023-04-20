@@ -107,6 +107,7 @@
                 删除
               </t-button>
               <t-button
+                v-if="isSystem"
                 v-hasPermi="['system:oss:edit']"
                 :theme="previewListResource ? 'danger' : 'warning'"
                 variant="outline"
@@ -114,7 +115,12 @@
               >
                 预览开关 : {{ previewListResource ? '禁用' : '启用' }}
               </t-button>
-              <t-button v-hasPermi="['system:oss:list']" theme="default" variant="outline" @click="handleOssConfig">
+              <t-button
+                v-hasPermi="['system:ossConfig:list']"
+                theme="default"
+                variant="outline"
+                @click="handleOssConfig"
+              >
                 <template #icon> <setting-icon /> </template>
                 配置管理
               </t-button>
@@ -204,17 +210,21 @@ import {
   SettingIcon,
 } from 'tdesign-icons-vue-next';
 import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
-import { computed, getCurrentInstance, ref } from 'vue';
+import { computed, getCurrentInstance, ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 
+import { getPreviewListResourceConfig } from '@/api/system/config';
 import { SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
 import { delOss, listOss } from '@/api/system/oss';
 import FileUpload from '@/components/file-upload/index.vue';
 import ImagePreview from '@/components/image-preview/index.vue';
 import ImageUpload from '@/components/image-upload/index.vue';
+import { useUserStore } from '@/store';
 
 const router = useRouter();
 const { proxy } = getCurrentInstance();
+const { tenantId } = toRefs(useUserStore());
+const isSystem = computed(() => tenantId.value === '000000');
 
 const ossList = ref<SysOssVo[]>([]);
 const open = ref(false);
@@ -284,8 +294,8 @@ const pagination = computed(() => {
 /** 查询OSS对象存储列表 */
 function getList() {
   loading.value = true;
-  proxy.getConfigKey('sys.oss.previewListResource').then((response) => {
-    previewListResource.value = response.data === undefined ? true : response.data === 'true';
+  getPreviewListResourceConfig().then((response) => {
+    previewListResource.value = response.data === undefined ? true : response.data;
   });
   listOss(proxy.addDateRange(queryParams.value, daterangeCreateTime.value, 'CreateTime')).then((response) => {
     ossList.value = response.rows;

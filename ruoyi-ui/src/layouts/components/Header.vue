@@ -58,7 +58,8 @@
                   size="small"
                   style="margin-right: var(--td-size-2); color: var(--td-text-color-primary); background: transparent"
                   :image="userStore.avatar"
-                  :hide-on-load-failed="true"
+                  hide-on-load-failed
+                  :alt="userStore.name"
                 >
                   <template #icon><t-icon class="header-user-avatar" name="user-circle" /></template>
                 </t-avatar>

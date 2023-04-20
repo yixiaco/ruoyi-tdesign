@@ -55,12 +55,12 @@
         <template #topContent>
           <t-row>
             <t-col flex="auto">
-              <t-button v-hasPermi="['system:oss:add']" theme="primary" @click="handleAdd">
+              <t-button v-hasPermi="['system:ossConfig:add']" theme="primary" @click="handleAdd">
                 <template #icon> <add-icon /></template>
                 新增
               </t-button>
               <t-button
-                v-hasPermi="['system:oss:edit']"
+                v-hasPermi="['system:ossConfig:edit']"
                 theme="default"
                 variant="outline"
                 :disabled="single"
@@ -70,7 +70,7 @@
                 修改
               </t-button>
               <t-button
-                v-hasPermi="['system:oss:remove']"
+                v-hasPermi="['system:ossConfig:remove']"
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
@@ -106,10 +106,20 @@
         </template>
         <template #operation="{ row }">
           <t-space :size="8">
-            <t-link v-hasPermi="['system:oss:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
+            <t-link
+              v-hasPermi="['system:ossConfig:edit']"
+              theme="primary"
+              hover="color"
+              @click.stop="handleUpdate(row)"
+            >
               <edit-icon />修改
             </t-link>
-            <t-link v-hasPermi="['system:oss:remove']" theme="danger" hover="color" @click.stop="handleDelete(row)">
+            <t-link
+              v-hasPermi="['system:ossConfig:remove']"
+              theme="danger"
+              hover="color"
+              @click.stop="handleDelete(row)"
+            >
               <delete-icon />删除
             </t-link>
           </t-space>

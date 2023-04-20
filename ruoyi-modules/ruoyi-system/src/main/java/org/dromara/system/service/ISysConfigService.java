@@ -97,12 +97,12 @@ public interface ISysConfigService extends IService<SysConfig> {
      * @param keys
      * @return
      */
-    Map<String, Object> queryConfigs(List<String> keys);
+    Map<String, SysConfigVo> queryConfigs(List<String> keys);
 
     /**
      * 更新配置
      *
      * @param configs
      */
-    void updateConfigs(Map<String, String> configs);
+    void updateConfigs(List<SysConfigBo> configs);
 }

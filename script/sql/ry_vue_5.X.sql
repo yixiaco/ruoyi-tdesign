@@ -331,8 +331,10 @@ insert into sys_menu values('1600', '文件查询', '118', '1', '#', '', '', 1, 
 insert into sys_menu values('1601', '文件上传', '118', '2', '#', '', '', 1, 0, 'F', '0', '0', 'system:oss:upload',       '#', 103, 1, sysdate(), null, null, '');
 insert into sys_menu values('1602', '文件下载', '118', '3', '#', '', '', 1, 0, 'F', '0', '0', 'system:oss:download',     '#', 103, 1, sysdate(), null, null, '');
 insert into sys_menu values('1603', '文件删除', '118', '4', '#', '', '', 1, 0, 'F', '0', '0', 'system:oss:remove',       '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1604', '配置添加', '118', '5', '#', '', '', 1, 0, 'F', '0', '0', 'system:oss:add',          '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1605', '配置编辑', '118', '6', '#', '', '', 1, 0, 'F', '0', '0', 'system:oss:edit',         '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1500', 'OSS配置管理', '118', '5', '#', '', '', 1, 0, 'F', '0', '0', 'system:ossConfig:list',          '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1501', '配置添加', '1500', '1', '#', '', '', 1, 0, 'F', '0', '0', 'system:ossConfig:add',          '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1502', '配置编辑', '1500', '2', '#', '', '', 1, 0, 'F', '0', '0', 'system:ossConfig:edit',          '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1503', '配置删除', '1500', '3', '#', '', '', 1, 0, 'F', '0', '0', 'system:ossConfig:remove',         '#', 103, 1, sysdate(), null, null, '');
 -- 租户管理相关按钮
 insert into sys_menu values ('1606', '租户查询', '121', '1', '#', '', '', 1, 0, 'F', '0', '0', 'system:tenant:query',   '#', 103, 1, sysdate(), null, null, '');
 insert into sys_menu values ('1607', '租户新增', '121', '2', '#', '', '', 1, 0, 'F', '0', '0', 'system:tenant:add',     '#', 103, 1, sysdate(), null, null, '');
@@ -617,6 +619,7 @@ create table sys_config (
   config_key        varchar(100)    default ''                 comment '参数键名',
   config_value      varchar(2000)    default ''                comment '参数键值',
   config_type       char(1)         default 'N'                comment '系统内置（Y是 N否）',
+  is_global         tinyint(1)      not null                   comment '是否是全局配置 1是 0否',
   create_dept       bigint(20)      default null               comment '创建部门',
   create_by         bigint(20)      default null               comment '创建者',
   create_time       datetime                                   comment '创建时间',
@@ -626,11 +629,11 @@ create table sys_config (
   primary key (config_id)
 ) engine=innodb comment = '参数配置表';
 
-insert into sys_config values(1, '000000', '主框架页-默认皮肤样式名称',     'sys.index.skinName',            'skin-blue',     'Y', 103, 1, sysdate(), null, null, '蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow' );
-insert into sys_config values(2, '000000', '用户管理-账号初始密码',        'sys.user.initPassword',         '123456',        'Y', 103, 1, sysdate(), null, null, '初始化密码 123456' );
-insert into sys_config values(3, '000000', '主框架页-侧边栏主题',          'sys.index.sideTheme',           'theme-dark',    'Y', 103, 1, sysdate(), null, null, '深色主题theme-dark，浅色主题theme-light' );
-insert into sys_config values(5, '000000', '账号自助-是否开启用户注册功能',  'sys.account.registerUser',      'false',         'Y', 103, 1, sysdate(), null, null, '是否开启注册用户功能（true开启，false关闭）');
-insert into sys_config values(11, '000000', 'OSS预览列表资源开关',         'sys.oss.previewListResource',   'true',          'Y', 103, 1, sysdate(), null, null, 'true:开启, false:关闭');
+insert into sys_config values(1, '000000', '主框架页-默认皮肤样式名称',     'sys.index.skinName',            'skin-blue',     'Y', 0, 103, 1, sysdate(), null, null, '蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow' );
+insert into sys_config values(2, '000000', '用户管理-账号初始密码',        'sys.user.initPassword',         '123456',        'Y', 0, 103, 1, sysdate(), null, null, '初始化密码 123456' );
+insert into sys_config values(3, '000000', '主框架页-侧边栏主题',          'sys.index.sideTheme',           'theme-dark',    'Y', 0, 103, 1, sysdate(), null, null, '深色主题theme-dark，浅色主题theme-light' );
+insert into sys_config values(5, '000000', '账号自助-是否开启用户注册功能',  'sys.account.registerUser',      'false',         'Y', 1, 103, 1, sysdate(), null, null, '是否开启注册用户功能（true开启，false关闭）');
+insert into sys_config values(11, '000000', 'OSS预览列表资源开关',         'sys.oss.previewListResource',   'true',          'Y', 1, 103, 1, sysdate(), null, null, 'true:开启, false:关闭');
 
 
 -- ----------------------------

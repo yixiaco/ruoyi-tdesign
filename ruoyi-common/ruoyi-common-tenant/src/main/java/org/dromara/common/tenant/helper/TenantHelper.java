@@ -11,9 +11,15 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.core.utils.funtion.Apply;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.satoken.utils.LoginHelper;
+
+import java.util.Objects;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * 租户助手
@@ -27,6 +33,16 @@ public class TenantHelper {
     private static final String DYNAMIC_TENANT_KEY = GlobalConstants.GLOBAL_REDIS_KEY + "dynamicTenant";
 
     private static final ThreadLocal<String> TEMP_DYNAMIC_TENANT = new TransmittableThreadLocal<>();
+    private static final ThreadLocal<Boolean> IGNORE_CACHE_TENANT = new TransmittableThreadLocal<>();
+
+    /**
+     * 是否启用了缓存忽略租户
+     *
+     * @return
+     */
+    public static boolean isIgnoreCache() {
+        return Objects.equals(true, IGNORE_CACHE_TENANT.get());
+    }
 
     /**
      * 租户功能是否启用
@@ -47,6 +63,78 @@ public class TenantHelper {
      */
     public static void disableIgnore() {
         InterceptorIgnoreHelper.clearIgnoreStrategy();
+    }
+
+    /**
+     * 开启缓存忽略租户(开启后需手动调用 {@link #disableIgnore()} 关闭)
+     */
+    public static void enableIgnoreCache() {
+        IGNORE_CACHE_TENANT.set(true);
+    }
+
+    /**
+     * 关闭缓存忽略租户
+     */
+    public static void disableIgnoreCache() {
+        IGNORE_CACHE_TENANT.remove();
+    }
+
+    /**
+     * 在忽略租户中执行
+     *
+     * @param handle 处理执行方法
+     */
+    public static void ignore(Apply handle) {
+        enableIgnore();
+        try {
+            handle.apply();
+        } finally {
+            disableIgnore();
+        }
+    }
+
+    /**
+     * 在忽略租户中执行
+     *
+     * @param handle 处理执行方法
+     */
+    public static <T> T ignore(Supplier<T> handle) {
+        enableIgnore();
+        try {
+            return handle.get();
+        } finally {
+            disableIgnore();
+        }
+    }
+
+    /**
+     * 在忽略租户中执行
+     *
+     * @param handle 处理执行方法
+     */
+    public static void ignore(Consumer<String> handle) {
+        String tenantId = getTenantId();
+        enableIgnore();
+        try {
+            handle.accept(tenantId);
+        } finally {
+            disableIgnore();
+        }
+    }
+
+    /**
+     * 在忽略租户中执行
+     *
+     * @param handle 处理执行方法
+     */
+    public static <T> T ignore(Function<String, T> handle) {
+        String tenantId = getTenantId();
+        enableIgnore();
+        try {
+            return handle.apply(tenantId);
+        } finally {
+            disableIgnore();
+        }
     }
 
     /**

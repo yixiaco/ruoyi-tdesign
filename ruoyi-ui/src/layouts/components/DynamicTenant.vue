@@ -6,6 +6,7 @@
     filterable
     reserve-keyword
     placeholder="请选择租户"
+    style="max-width: 180px; margin: 0 8px"
     @change="dynamicTenantEvent"
     @clear="dynamicClearEvent"
   >

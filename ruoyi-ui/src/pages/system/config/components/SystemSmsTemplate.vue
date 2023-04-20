@@ -12,9 +12,9 @@
         :disabled="disabled"
         @submit="submitForm"
       >
-        <t-form-item label="登录模板ID" name="captchaTemplateId">
+        <t-form-item :label="form[captchaTemplateId].configName" :name="`['${captchaTemplateId}'].configValue`">
           <t-input
-            v-model="form['sys.sms.captchaTemplateId']"
+            v-model="form[captchaTemplateId].configValue"
             placeholder="请输入登录模板ID"
             :maxlength="50"
             show-limit-number
@@ -45,6 +45,7 @@ import { FormRule } from 'tdesign-vue-next';
 import { getCurrentInstance, ref, watch } from 'vue';
 
 import { getConfigByKeys, refreshCache, updateConfigs } from '@/api/system/config';
+import { SysConfigForm, SysConfigVo } from '@/api/system/model/configModel';
 
 const props = defineProps({
   action: {
@@ -58,14 +59,27 @@ const props = defineProps({
   },
 });
 
+// 登录模板ID key
+const captchaTemplateId = 'sys.sms.captchaTemplateId';
+
 const isInit = ref(false);
 const loading = ref(false);
 const buttonLoading = ref(false);
-const form = ref<Record<string, string>>({
-  'sys.sms.captchaTemplateId': '',
+const form = ref<Record<string, SysConfigForm & SysConfigVo>>({
+  [captchaTemplateId]: {
+    configKey: captchaTemplateId,
+    configName: '登录模板ID',
+    configType: 'Y',
+    configValue: '',
+    isGlobal: 1,
+    // eslint-disable-next-line no-template-curly-in-string
+    remark: '需要验证码场景，例如：注册、登录、修改密码、修改绑定手机号（阿里云模板固定参数${code}）',
+  },
 });
 
-const rules = ref<Record<string, Array<FormRule>>>({});
+const rules = ref<Record<string, Array<FormRule>>>({
+  [`['${captchaTemplateId}'].configValue`]: [{ required: true, message: '登录模板ID不能为空', trigger: 'blur' }],
+});
 
 const { proxy } = getCurrentInstance();
 
@@ -78,7 +92,7 @@ function submitForm({ validateResult, firstError }) {
   if (validateResult === true) {
     buttonLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');
-    updateConfigs(form.value)
+    updateConfigs(Object.values(form.value))
       .then(() => {
         proxy.$modal.msgSuccess('更新成功');
       })
@@ -96,8 +110,11 @@ function submitForm({ validateResult, firstError }) {
  */
 function init() {
   loading.value = true;
-  getConfigByKeys(Object.keys(form.value).join(',')).then((res) => {
-    form.value = res.data;
+  const keys = Object.keys(form.value);
+  getConfigByKeys(keys.join(',')).then((res) => {
+    keys.forEach((key) => {
+      form.value[key] = { ...form.value[key], ...res.data[key] };
+    });
     loading.value = false;
   });
 }

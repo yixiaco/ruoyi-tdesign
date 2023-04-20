@@ -92,6 +92,7 @@ import { FormRule } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref, watch } from 'vue';
 
 import { getConfigByKeys, refreshCache, updateConfigs } from '@/api/system/config';
+import { SysConfigForm, SysConfigVo } from '@/api/system/model/configModel';
 
 import SystemSmsTemplate from './SystemSmsTemplate.vue';
 
@@ -118,6 +119,15 @@ const form = ref({
   accessKeySecret: 'xxxxxxx',
   signName: '',
   sdkAppId: '',
+});
+const configs = ref<Record<string, SysConfigForm & SysConfigVo>>({
+  [key]: {
+    configKey: key,
+    configName: '短信配置',
+    configType: 'Y',
+    configValue: JSON.stringify(form.value),
+    isGlobal: 1,
+  },
 });
 
 const rules = ref<Record<string, Array<FormRule>>>({
@@ -163,7 +173,8 @@ function submitForm({ validateResult, firstError }) {
   if (validateResult === true) {
     buttonLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');
-    updateConfigs({ [key]: JSON.stringify(form.value) })
+    configs.value[key].configValue = JSON.stringify(form.value);
+    updateConfigs(Object.values(configs.value))
       .then(() => {
         proxy.$modal.msgSuccess('更新成功');
       })
@@ -181,11 +192,15 @@ function submitForm({ validateResult, firstError }) {
  */
 function init() {
   loading.value = true;
-  getConfigByKeys(key).then((res) => {
+  const keys = Object.keys(configs.value);
+  getConfigByKeys(keys.join(',')).then((res) => {
     loading.value = false;
+    keys.forEach((key) => {
+      configs.value[key] = { ...configs.value[key], ...res.data[key] };
+    });
     const result = res.data[key];
     if (result) {
-      form.value = JSON.parse(result);
+      form.value = JSON.parse(result.configValue);
     }
   });
 }

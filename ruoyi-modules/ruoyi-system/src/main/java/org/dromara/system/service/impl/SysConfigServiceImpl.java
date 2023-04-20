@@ -6,16 +6,17 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.CacheNames;
+import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.constant.UserConstants;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.service.ConfigService;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.core.utils.funtion.BiOperator;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.redis.utils.CacheUtils;
+import org.dromara.common.tenant.annotation.IgnoreTenant;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.system.domain.SysConfig;
 import org.dromara.system.domain.bo.SysConfigBo;
@@ -32,7 +33,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 /**
  * 参数配置 服务层实现
@@ -199,9 +199,9 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
      * @return
      */
     @Override
-    public Map<String, Object> queryConfigs(List<String> keys) {
+    public Map<String, SysConfigVo> queryConfigs(List<String> keys) {
         List<SysConfig> list = lambdaQuery().in(SysConfig::getConfigKey, keys).list();
-        return list.stream().collect(Collectors.toMap(SysConfig::getConfigKey, SysConfig::getConfigValue, BiOperator::last));
+        return StreamUtils.toMap(list, SysConfig::getConfigKey, sysConfig -> MapstructUtils.convert(sysConfig, SysConfigVo.class));
     }
 
     /**
@@ -211,25 +211,28 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateConfigs(Map<String, String> configs) {
-        List<SysConfig> list = lambdaQuery().in(SysConfig::getConfigKey, configs.keySet()).list();
-        Map<String, SysConfig> map = StreamUtils.toIdentityMap(list, SysConfig::getConfigKey);
-        configs.forEach((key, value) -> {
-            SysConfig config;
-            if (map.containsKey(key)) {
-                config = map.get(key);
-            } else {
-                config = new SysConfig();
-                config.setConfigKey(key);
-                list.add(config);
-            }
-            config.setConfigValue(value);
-        });
-        saveOrUpdateBatch(list);
+    public void updateConfigs(List<SysConfigBo> configs) {
+        List<SysConfig> sysConfigs = MapstructUtils.convert(configs, SysConfig.class);
+        // 全局配置
+        List<SysConfig> globalConfigs = StreamUtils.filter(sysConfigs, sysConfig -> Objects.equals(1, sysConfig.getIsGlobal()));
+        // 租户配置
+        List<SysConfig> tenantConfigs = StreamUtils.filter(sysConfigs, sysConfig -> Objects.equals(0, sysConfig.getIsGlobal()));
+
+        // 更新租户配置
+        saveOrUpdateBatch(tenantConfigs);
         // 更新缓存
-        for (SysConfig sysConfig : list) {
+        for (SysConfig sysConfig : tenantConfigs) {
             CacheUtils.put(CacheNames.SYS_CONFIG, sysConfig.getConfigKey(), sysConfig.getConfigValue());
         }
+
+        // 更新全局配置
+        TenantHelper.ignore(() -> {
+            saveOrUpdateBatch(globalConfigs);
+            // 更新缓存
+            for (SysConfig sysConfig : globalConfigs) {
+                CacheUtils.put(GlobalConstants.GLOBAL_REDIS_KEY + CacheNames.SYS_CONFIG, sysConfig.getConfigKey(), sysConfig.getConfigValue());
+            }
+        });
     }
 
     /**
@@ -244,4 +247,24 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
         return selectConfigByKey(configKey);
     }
 
+    /**
+     * 根据参数 key 获取全局参数值
+     *
+     * @param configKey 参数 key
+     * @return 参数值
+     */
+    @Override
+    @IgnoreTenant
+    @Cacheable(cacheNames = GlobalConstants.GLOBAL_REDIS_KEY + CacheNames.SYS_CONFIG, key = "#configKey")
+    public String getGlobalConfigValue(String configKey) {
+        Optional<SysConfig> oneOpt = lambdaQuery()
+            .eq(SysConfig::getConfigKey, configKey)
+            .select(SysConfig::getConfigId, SysConfig::getConfigValue)
+            .eq(SysConfig::getIsGlobal, 1)
+            .oneOpt();
+        if (oneOpt.isPresent()) {
+            return oneOpt.get().getConfigValue();
+        }
+        return StringUtils.EMPTY;
+    }
 }

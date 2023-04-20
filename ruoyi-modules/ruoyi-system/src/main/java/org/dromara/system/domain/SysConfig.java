@@ -15,7 +15,6 @@ import java.util.Date;
  *
  * @author Lion Li
  */
-
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("sys_config")
@@ -46,6 +45,11 @@ public class SysConfig extends TenantEntity {
      * 系统内置（Y是 N否）
      */
     private String configType;
+
+    /**
+     * 是否是全局配置 1是 0否
+     */
+    private Integer isGlobal;
 
     /**
      * 备注

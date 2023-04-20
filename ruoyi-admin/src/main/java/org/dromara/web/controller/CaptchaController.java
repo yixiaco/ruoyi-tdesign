@@ -10,18 +10,17 @@ import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.Constants;
 import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.helper.SysConfigHelper;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.reflect.ReflectUtils;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.mail.service.MailService;
 import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.sms.aspectj.SmsContextCache;
-import org.dromara.common.sms.constants.SmsTemplateKeyConstants;
 import org.dromara.common.sms.entity.SmsResult;
 import org.dromara.common.sms.service.SmsService;
 import org.dromara.common.web.config.properties.CaptchaProperties;
 import org.dromara.common.web.enums.CaptchaType;
-import org.dromara.system.service.ISysConfigService;
 import org.dromara.web.domain.vo.CaptchaVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.Expression;
@@ -51,8 +50,6 @@ public class CaptchaController {
     @Autowired
     private SmsService smsService;
     @Autowired
-    private ISysConfigService configService;
-    @Autowired
     private MailService mailService;
 
     /**
@@ -66,8 +63,8 @@ public class CaptchaController {
         String key = GlobalConstants.CAPTCHA_CODE_KEY + phonenumber;
         String code = RandomUtil.randomNumbers(4);
         RedisUtils.setCacheObject(key, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
-        // 验证码模板id 自行处理 (查数据库或写死均可)
-        String loginTemplateId = configService.selectConfigByKey(SmsTemplateKeyConstants.CAPTCHA);
+        // 验证码模板id
+        String loginTemplateId = SysConfigHelper.getSysSmsCaptchaTemplateId();
         Map<String, String> map = new HashMap<>(1);
         map.put("code", code);
         SmsResult result = smsService.send(phonenumber, loginTemplateId, map);

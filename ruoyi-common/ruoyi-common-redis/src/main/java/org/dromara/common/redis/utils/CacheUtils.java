@@ -13,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * 缓存操作工具类 {@link }
@@ -45,6 +46,23 @@ public class CacheUtils {
     public static <T> T get(String cacheNames, Object key) {
         Cache.ValueWrapper wrapper = CACHE_MANAGER.getCache(cacheNames).get(key);
         return wrapper != null ? (T) wrapper.get() : null;
+    }
+
+    /**
+     * 获取缓存值, 如果不存在则获取值回调后重新保存
+     *
+     * @param cacheNames 缓存组名称
+     * @param key        缓存key
+     * @param cacheValue 缓存值
+     */
+    public static <T> T get(String cacheNames, Object key, Supplier<T> cacheValue) {
+        Cache.ValueWrapper wrapper = CACHE_MANAGER.getCache(cacheNames).get(key);
+        if (wrapper != null) {
+            return (T) wrapper.get();
+        }
+        T t = cacheValue.get();
+        put(cacheNames, key, t);
+        return t;
     }
 
     /**
