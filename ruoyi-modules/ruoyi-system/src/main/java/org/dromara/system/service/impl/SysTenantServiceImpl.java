@@ -17,11 +17,11 @@ import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.tenant.annotation.IgnoreTenant;
-import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.system.domain.*;
 import org.dromara.system.domain.bo.SysTenantBo;
 import org.dromara.system.domain.query.SysTenantQuery;
 import org.dromara.system.domain.vo.SysTenantVo;
+import org.dromara.system.events.TenantNewEvent;
 import org.dromara.system.mapper.*;
 import org.dromara.system.service.ISysTenantService;
 import org.springframework.cache.annotation.CacheEvict;
@@ -168,6 +168,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
             config.setTenantId(tenantId);
         }
         configMapper.insertBatch(sysConfigList);
+
+        // 发布创建事件
+        SpringUtils.context().publishEvent(new TenantNewEvent(add));
         return true;
     }
 

@@ -2,7 +2,7 @@ version: '3'
 
 services:
   mysql:
-    image: mysql:8.0.31
+    image: mysql:8.0.33
     container_name: mysql
     environment:
       # 时区上海
@@ -69,7 +69,7 @@ services:
     network_mode: "host"
 
   minio:
-    image: minio/minio:RELEASE.2023-03-24T21-41-23Z
+    image: minio/minio:RELEASE.2023-04-13T03-08-07Z
     container_name: minio
     ports:
       # api 端口

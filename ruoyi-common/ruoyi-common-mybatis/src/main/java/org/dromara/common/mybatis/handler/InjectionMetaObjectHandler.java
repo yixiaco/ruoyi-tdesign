@@ -1,5 +1,6 @@
 package org.dromara.common.mybatis.handler;
 
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.http.HttpStatus;
 import com.baomidou.mybatisplus.core.handlers.MetaObjectHandler;
 import com.baomidou.mybatisplus.core.handlers.StrictFill;
@@ -39,6 +40,15 @@ public class InjectionMetaObjectHandler implements MetaObjectHandler {
             fieldFills.add(StrictFill.of("createDept", this::getDeptId, Long.class));
             fieldFills.add(StrictFill.of("version", () -> 0L, Long.class));
             fieldFills.add(StrictFill.of("version", () -> 0, Integer.class));
+
+            // 填充删除
+            TableFieldInfo deleteFieldInfo = tableInfo.getLogicDeleteFieldInfo();
+            if (deleteFieldInfo != null) {
+                String property = deleteFieldInfo.getProperty();
+                String notDeleteValue = deleteFieldInfo.getLogicNotDeleteValue();
+                fieldFills.add(StrictFill.of(property, () -> notDeleteValue, String.class));
+                fieldFills.add(StrictFill.of(property, () -> NumberUtil.parseInt(notDeleteValue), Integer.class));
+            }
 
             fillStrategy(true, metaObject, tableInfo, fieldFills);
         } catch (Exception e) {
