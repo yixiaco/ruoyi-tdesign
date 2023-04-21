@@ -13,7 +13,7 @@
             placeholder="请输入字典标签"
             clearable
             style="width: 200px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="状态" name="status">

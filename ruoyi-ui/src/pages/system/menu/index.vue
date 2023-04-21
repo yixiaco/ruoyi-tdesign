@@ -8,7 +8,7 @@
             placeholder="请输入菜单名称"
             clearable
             style="width: 200px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="状态" name="status">

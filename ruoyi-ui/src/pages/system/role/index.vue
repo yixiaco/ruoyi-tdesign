@@ -8,7 +8,7 @@
             placeholder="请输入角色名称"
             clearable
             style="width: 240px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="权限字符" name="roleKey">
@@ -17,7 +17,7 @@
             placeholder="请输入权限字符"
             clearable
             style="width: 240px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="状态" name="status">

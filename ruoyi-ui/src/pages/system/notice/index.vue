@@ -8,7 +8,7 @@
             placeholder="请输入公告标题"
             clearable
             style="width: 200px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="操作人员" name="createByName">
@@ -17,7 +17,7 @@
             placeholder="请输入操作人员"
             clearable
             style="width: 200px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="类型" name="noticeType">

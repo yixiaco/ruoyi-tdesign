@@ -7,7 +7,7 @@
             v-model="queryParams.packageName"
             placeholder="请输入套餐名称"
             clearable
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label-width="0px">

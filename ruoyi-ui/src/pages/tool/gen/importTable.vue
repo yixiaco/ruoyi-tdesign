@@ -18,7 +18,7 @@
             style="width: 150px"
             placeholder="请输入表名称"
             clearable
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="表描述" name="tableComment">
@@ -27,7 +27,7 @@
             style="width: 150px"
             placeholder="请输入表描述"
             clearable
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label-width="0px">

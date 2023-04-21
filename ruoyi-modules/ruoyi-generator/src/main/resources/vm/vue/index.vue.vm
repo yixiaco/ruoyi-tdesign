@@ -14,7 +14,7 @@
 #end
 #if($column.htmlType == "input" || $column.htmlType == "textarea")
         <t-form-item label="${comment}" name="${column.javaField}">
-          <t-input v-model="queryParams.${column.javaField}" placeholder="请输入${comment}" clearable @keyup.enter="handleQuery" />
+          <t-input v-model="queryParams.${column.javaField}" placeholder="请输入${comment}" clearable @enter="handleQuery" />
         </t-form-item>
 #elseif(($column.htmlType == "select" || $column.htmlType == "radio") && "" != $dictType)
         <t-form-item label="${comment}" name="${column.javaField}">

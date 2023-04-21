@@ -8,7 +8,7 @@
             placeholder="请输入字典名称"
             clearable
             style="width: 240px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="字典类型" name="dictType">
@@ -17,7 +17,7 @@
             placeholder="请输入字典类型"
             clearable
             style="width: 240px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="状态" name="status">

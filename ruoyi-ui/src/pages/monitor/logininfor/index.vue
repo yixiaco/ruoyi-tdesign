@@ -8,7 +8,7 @@
             placeholder="请输入登录地址"
             clearable
             style="width: 240px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="用户名称" name="userName">
@@ -17,7 +17,7 @@
             placeholder="请输入用户名称"
             clearable
             style="width: 240px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="状态" name="status">

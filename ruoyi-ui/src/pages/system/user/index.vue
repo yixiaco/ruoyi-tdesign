@@ -34,7 +34,7 @@
                 placeholder="请输入用户名称"
                 clearable
                 style="width: 240px"
-                @keyup.enter="handleQuery"
+                @enter="handleQuery"
               />
             </t-form-item>
             <t-form-item label="用户昵称" name="nickName">
@@ -42,7 +42,7 @@
                 v-model="queryParams.nickName"
                 placeholder="请输入用户昵称"
                 clearable
-                @keyup.enter="handleQuery"
+                @enter="handleQuery"
               />
             </t-form-item>
             <t-form-item label="手机号码" name="phonenumber">
@@ -51,11 +51,11 @@
                 placeholder="请输入手机号码"
                 clearable
                 style="width: 240px"
-                @keyup.enter="handleQuery"
+                @enter="handleQuery"
               />
             </t-form-item>
             <t-form-item label="用户邮箱" name="email">
-              <t-input v-model="queryParams.email" placeholder="请输入用户邮箱" clearable @keyup.enter="handleQuery" />
+              <t-input v-model="queryParams.email" placeholder="请输入用户邮箱" clearable @enter="handleQuery" />
             </t-form-item>
             <t-form-item label="状态" name="status">
               <t-select v-model="queryParams.status" placeholder="用户状态" clearable style="width: 240px">

@@ -3,14 +3,14 @@
     <t-space direction="vertical">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
         <t-form-item label="租户编号" name="tenantId">
-          <t-input v-model="queryParams.tenantId" placeholder="请输入租户编号" clearable @keyup.enter="handleQuery" />
+          <t-input v-model="queryParams.tenantId" placeholder="请输入租户编号" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="联系人" name="contactUserName">
           <t-input
             v-model="queryParams.contactUserName"
             placeholder="请输入联系人"
             clearable
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="联系电话" name="contactPhone">
@@ -18,7 +18,7 @@
             v-model="queryParams.contactPhone"
             placeholder="请输入联系电话"
             clearable
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="企业名称" name="companyName">
@@ -26,7 +26,7 @@
             v-model="queryParams.companyName"
             placeholder="请输入企业名称"
             clearable
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label-width="0px">

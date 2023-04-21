@@ -8,7 +8,7 @@
             placeholder="请输入文件名"
             clearable
             style="width: 200px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="原名" name="originalName">
@@ -17,7 +17,7 @@
             placeholder="请输入原名"
             clearable
             style="width: 200px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="文件后缀" name="fileSuffix">
@@ -26,7 +26,7 @@
             placeholder="请输入文件后缀"
             clearable
             style="width: 200px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="创建时间">
@@ -44,7 +44,7 @@
             placeholder="请输入上传人"
             clearable
             style="width: 200px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="服务商" name="service">
@@ -53,7 +53,7 @@
             placeholder="请输入服务商"
             clearable
             style="width: 200px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label-width="0px">

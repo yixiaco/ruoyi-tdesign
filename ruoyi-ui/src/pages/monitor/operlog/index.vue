@@ -8,7 +8,7 @@
             placeholder="请输入系统模块"
             clearable
             style="width: 240px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="操作人员" name="operName">
@@ -17,7 +17,7 @@
             placeholder="请输入操作人员"
             clearable
             style="width: 240px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="类型" name="businessType">

@@ -8,7 +8,7 @@
             placeholder="配置key"
             clearable
             style="width: 200px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="桶名称" name="bucketName">
@@ -17,7 +17,7 @@
             placeholder="请输入桶名称"
             clearable
             style="width: 200px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="是否默认" name="status">

@@ -17,7 +17,7 @@
             placeholder="请输入用户名称"
             clearable
             style="width: 200px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label="手机号码" name="phonenumber">
@@ -26,7 +26,7 @@
             placeholder="请输入手机号码"
             clearable
             style="width: 200px"
-            @keyup.enter="handleQuery"
+            @enter="handleQuery"
           />
         </t-form-item>
         <t-form-item label-width="0px">
