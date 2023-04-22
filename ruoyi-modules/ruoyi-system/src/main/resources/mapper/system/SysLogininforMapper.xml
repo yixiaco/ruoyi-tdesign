@@ -12,7 +12,7 @@
     <sql id="selectSysLogininforVo">
         select sl.info_id, sl.user_name, sl.ipaddr, sl.login_location, sl.browser, sl.os, sl.`status`, sl.msg, sl.login_time from sys_logininfor sl
     </sql>
-    <select id="queryList" parameterType="org.dromara.system.domain.bo.SysLogininforBo" resultMap="SysLogininforResult">
+    <select id="queryList" parameterType="org.dromara.system.domain.bo.SysLogininforBo" resultMap="SysLogininforResultVo">
         <include refid="selectSysLogininforVo"/>
         <where>
             <if test="userName != null and userName != ''"> and sl.user_name like concat('%', #{userName}, '%')</if>

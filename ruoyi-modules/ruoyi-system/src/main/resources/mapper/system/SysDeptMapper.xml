@@ -29,7 +29,7 @@
         select * from sys_dept ${ew.getCustomSqlSegment}
     </select>
 
-    <select id="selectDeptById" resultMap="SysDeptResult">
+    <select id="selectDeptById" resultMap="SysDeptResultVo">
         select * from sys_dept where del_flag = '0' and dept_id = #{deptId}
     </select>
 
