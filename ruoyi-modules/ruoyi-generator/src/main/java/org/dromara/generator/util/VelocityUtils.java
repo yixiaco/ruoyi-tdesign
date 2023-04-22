@@ -288,9 +288,11 @@ public class VelocityUtils {
      */
     public static void addDicts(Set<String> dicts, List<GenTableColumn> columns) {
         for (GenTableColumn column : columns) {
-            if (!column.isSuperColumn() && StringUtils.isNotEmpty(column.getDictType()) && StringUtils.equalsAny(
-                column.getHtmlType(),
-                new String[]{GenConstants.HTML_SELECT, GenConstants.HTML_RADIO, GenConstants.HTML_CHECKBOX})) {
+            if (column.isSuperColumn() || StringUtils.isEmpty(column.getDictType())) {
+                continue;
+            }
+            if (StringUtils.equalsAny(column.getHtmlType(), new String[]{GenConstants.HTML_SELECT, GenConstants.HTML_RADIO, GenConstants.HTML_CHECKBOX})
+                || column.isDetail()) {
                 dicts.add("'" + column.getDictType() + "'");
             }
         }
