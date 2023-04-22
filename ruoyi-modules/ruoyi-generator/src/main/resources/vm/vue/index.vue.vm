@@ -198,7 +198,7 @@
 #set($dictType=$column.dictType)
 #if($column.htmlType == "input")
         <t-form-item label="${comment}" name="${field}">
-          <t-input v-model="form.${field}" placeholder="请输入${comment}" />
+          <t-input v-model="form.${field}" placeholder="请输入${comment}" clearable />
         </t-form-item>
 #elseif($column.htmlType == "imageUpload")
         <t-form-item label="${comment}" name="${field}">
@@ -214,7 +214,7 @@
         </t-form-item>
 #elseif($column.htmlType == "select" && "" != $dictType)
         <t-form-item label="${comment}" name="${field}">
-          <t-select v-model="form.${field}" placeholder="请选择${comment}">
+          <t-select v-model="form.${field}" placeholder="请选择${comment}" clearable>
             <t-option
               v-for="dict in ${dictType}"
               :key="dict.value"
@@ -229,7 +229,7 @@
         </t-form-item>
 #elseif($column.htmlType == "select" && $dictType)
         <t-form-item label="${comment}" name="${field}">
-          <t-select v-model="form.${field}" placeholder="请选择${comment}">
+          <t-select v-model="form.${field}" placeholder="请选择${comment}" clearable>
             <t-option label="请选择字典生成" value="" />
           </t-select>
         </t-form-item>
