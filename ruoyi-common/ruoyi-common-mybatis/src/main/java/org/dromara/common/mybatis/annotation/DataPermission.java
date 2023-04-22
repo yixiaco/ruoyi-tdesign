@@ -11,6 +11,9 @@ import java.lang.annotation.Target;
  *
  * @author Lion Li
  * @version 3.5.0
+ * @see org.dromara.common.mybatis.annotation.DataColumn
+ * @see org.dromara.common.mybatis.enums.DataScopeType
+ * @see org.dromara.common.mybatis.handler.PlusDataPermissionHandler
  */
 @Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
