@@ -1,6 +1,8 @@
 import '@/style/index.less';
 import './permission';
 
+// 富文本
+import CKEditor from '@ckeditor/ckeditor5-vue';
 import HljsVuePlugin from '@highlightjs/vue-plugin';
 import { createApp } from 'vue';
 
@@ -57,6 +59,7 @@ app.use(store);
 app.use(router);
 app.use(plugins);
 app.use(HljsVuePlugin);
+app.use(CKEditor);
 
 directive(app);
 
