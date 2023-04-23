@@ -24,19 +24,6 @@ export const asyncRouterList: Array<RouteRecordRaw> = [...routeModuleList];
 // 存放固定的路由
 export const defaultRouterList: Array<RouteRecordRaw> = [
   {
-    path: '/redirect',
-    component: Layout,
-    meta: {
-      hidden: true,
-    },
-    children: [
-      {
-        path: '/redirect/:path(.*)',
-        component: () => import('@/pages/redirect/index.vue'),
-      },
-    ],
-  },
-  {
     path: '/login',
     name: 'login',
     component: () => import('@/pages/login/index.vue'),

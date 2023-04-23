@@ -6,28 +6,13 @@
           <t-input v-model="queryParams.tenantId" placeholder="请输入租户编号" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="联系人" name="contactUserName">
-          <t-input
-            v-model="queryParams.contactUserName"
-            placeholder="请输入联系人"
-            clearable
-            @enter="handleQuery"
-          />
+          <t-input v-model="queryParams.contactUserName" placeholder="请输入联系人" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="联系电话" name="contactPhone">
-          <t-input
-            v-model="queryParams.contactPhone"
-            placeholder="请输入联系电话"
-            clearable
-            @enter="handleQuery"
-          />
+          <t-input v-model="queryParams.contactPhone" placeholder="请输入联系电话" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="企业名称" name="companyName">
-          <t-input
-            v-model="queryParams.companyName"
-            placeholder="请输入企业名称"
-            clearable
-            @enter="handleQuery"
-          />
+          <t-input v-model="queryParams.companyName" placeholder="请输入企业名称" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label-width="0px">
           <t-button theme="primary" @click="handleQuery">

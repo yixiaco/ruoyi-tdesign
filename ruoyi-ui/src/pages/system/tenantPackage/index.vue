@@ -3,12 +3,7 @@
     <t-space direction="vertical">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
         <t-form-item label="套餐名称" name="packageName">
-          <t-input
-            v-model="queryParams.packageName"
-            placeholder="请输入套餐名称"
-            clearable
-            @enter="handleQuery"
-          />
+          <t-input v-model="queryParams.packageName" placeholder="请输入套餐名称" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label-width="0px">
           <t-button theme="primary" @click="handleQuery">

@@ -38,12 +38,7 @@
               />
             </t-form-item>
             <t-form-item label="用户昵称" name="nickName">
-              <t-input
-                v-model="queryParams.nickName"
-                placeholder="请输入用户昵称"
-                clearable
-                @enter="handleQuery"
-              />
+              <t-input v-model="queryParams.nickName" placeholder="请输入用户昵称" clearable @enter="handleQuery" />
             </t-form-item>
             <t-form-item label="手机号码" name="phonenumber">
               <t-input
