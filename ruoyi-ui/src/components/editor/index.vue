@@ -12,10 +12,36 @@ export default {
 import CKEditor from '@ckeditor/ckeditor5-vue';
 import Editor from 'ckeditor5-overall-build/dist/ckeditor.js';
 
+const uploadUrl = `${import.meta.env.VITE_APP_BASE_API}/system/oss/upload`;
 const Ckeditor = CKEditor.component;
-import { ref } from 'vue';
+import { getCurrentInstance, ref } from 'vue';
 
-const editorConfig = ref({});
+import { getToken } from '@/utils/auth';
+
+const { proxy } = getCurrentInstance();
+
+const editorConfig = ref({
+  customUpload: {
+    uploadUrl,
+    withCredentials: true,
+    headers: {
+      Authorization: `Bearer ${getToken()}`,
+    },
+    beforeUpload(data, file) {
+      const formData = new FormData();
+      formData.set('file', file);
+      return formData;
+    },
+    success(response) {
+      return { default: response.data.url };
+    },
+    error(response) {
+      const message = response && response.error && response.error.message;
+      proxy.$modal.msgError(message);
+      return message;
+    },
+  },
+});
 </script>
 <!-- eslint-disable-next-line vue-scoped-css/enforce-style-type -->
 <style lang="less">
