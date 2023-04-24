@@ -4,7 +4,6 @@ import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.context.model.SaStorage;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.SaLoginModel;
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.AccessLevel;
@@ -60,10 +59,10 @@ public class LoginHelper {
         if (ObjectUtil.isNotNull(deviceType)) {
             model.setDevice(deviceType.getDevice());
         }
-        StpUtil.login(loginUser.getLoginId(),
+        MultipleStpUtil.SYSTEM.login(loginUser.getLoginId(),
             model.setExtra(TENANT_KEY, loginUser.getTenantId())
                 .setExtra(USER_KEY, loginUser.getUserId()));
-        StpUtil.getTokenSession().set(LOGIN_USER_KEY, loginUser);
+        MultipleStpUtil.SYSTEM.getTokenSession().set(LOGIN_USER_KEY, loginUser);
     }
 
     /**
@@ -74,7 +73,7 @@ public class LoginHelper {
         if (loginUser != null) {
             return loginUser;
         }
-        SaSession session = StpUtil.getTokenSession();
+        SaSession session = MultipleStpUtil.SYSTEM.getTokenSession();
         if (session != null) {
             loginUser = (LoginUser) session.get(LOGIN_USER_KEY);
             SaHolder.getStorage().set(LOGIN_USER_KEY, loginUser);
@@ -86,7 +85,7 @@ public class LoginHelper {
      * 获取用户基于token
      */
     public static LoginUser getLoginUser(String token) {
-        return (LoginUser) StpUtil.getTokenSessionByToken(token).get(LOGIN_USER_KEY);
+        return (LoginUser) MultipleStpUtil.SYSTEM.getTokenSessionByToken(token).get(LOGIN_USER_KEY);
     }
 
     /**
@@ -97,7 +96,7 @@ public class LoginHelper {
         try {
             userId = Convert.toLong(SaHolder.getStorage().get(USER_KEY));
             if (ObjectUtil.isNull(userId)) {
-                userId = Convert.toLong(StpUtil.getExtra(USER_KEY));
+                userId = Convert.toLong(MultipleStpUtil.SYSTEM.getExtra(USER_KEY));
                 SaHolder.getStorage().set(USER_KEY, userId);
             }
         } catch (Exception e) {
@@ -114,7 +113,7 @@ public class LoginHelper {
         try {
             tenantId = (String) SaHolder.getStorage().get(TENANT_KEY);
             if (ObjectUtil.isNull(tenantId)) {
-                tenantId = (String) StpUtil.getExtra(TENANT_KEY);
+                tenantId = (String) MultipleStpUtil.SYSTEM.getExtra(TENANT_KEY);
                 SaHolder.getStorage().set(TENANT_KEY, tenantId);
             }
         } catch (Exception e) {
@@ -141,7 +140,7 @@ public class LoginHelper {
      * 获取用户类型
      */
     public static UserType getUserType() {
-        String loginId = StpUtil.getLoginIdAsString();
+        String loginId = MultipleStpUtil.SYSTEM.getLoginIdAsString();
         return UserType.getUserType(loginId);
     }
 

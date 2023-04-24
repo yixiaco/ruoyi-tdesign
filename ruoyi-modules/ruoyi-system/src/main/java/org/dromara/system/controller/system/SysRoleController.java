@@ -1,20 +1,13 @@
 package org.dromara.system.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
-import cn.dev33.satoken.exception.NotLoginException;
-import cn.dev33.satoken.stp.StpUtil;
-import cn.hutool.core.collection.CollUtil;
 import jakarta.servlet.http.HttpServletResponse;
-import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.domain.R;
-import org.dromara.common.core.domain.model.LoginUser;
-import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.excel.utils.ExcelUtil;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
-import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.SysUserRole;
 import org.dromara.system.domain.bo.SysRoleBo;

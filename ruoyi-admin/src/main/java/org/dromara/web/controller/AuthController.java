@@ -1,7 +1,6 @@
 package org.dromara.web.controller;
 
 import cn.dev33.satoken.annotation.SaIgnore;
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.constraints.NotBlank;
@@ -13,6 +12,7 @@ import org.dromara.common.core.domain.model.SmsLoginBody;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.system.domain.query.SysTenantQuery;
 import org.dromara.system.domain.vo.SysTenantVo;
@@ -35,7 +35,7 @@ import java.net.URL;
 import java.util.List;
 
 /**
- * 认证
+ * 系统认证
  *
  * @author Lion Li
  */
@@ -62,7 +62,7 @@ public class AuthController {
     @SaIgnore
     @GetMapping("/isLogin")
     public R<Boolean> isLogin() {
-        return R.ok(StpUtil.isLogin());
+        return R.ok(MultipleStpUtil.SYSTEM.isLogin());
     }
 
     /**

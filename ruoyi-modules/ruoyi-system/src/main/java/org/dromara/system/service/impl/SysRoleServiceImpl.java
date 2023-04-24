@@ -1,7 +1,6 @@
 package org.dromara.system.service.impl;
 
 import cn.dev33.satoken.exception.NotLoginException;
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -15,6 +14,7 @@ import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.satoken.utils.LoginHelper;
+import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.dromara.system.domain.SysRole;
 import org.dromara.system.domain.SysRoleDept;
 import org.dromara.system.domain.SysRoleMenu;
@@ -427,7 +427,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     @Override
     public void cleanOnlineUserByRole(Long roleId) {
-        List<String> keys = StpUtil.searchTokenValue("", 0, -1, false);
+        List<String> keys = MultipleStpUtil.SYSTEM.searchTokenValue("", 0, -1, false);
         if (CollUtil.isEmpty(keys)) {
             return;
         }
@@ -435,13 +435,13 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
         keys.parallelStream().forEach(key -> {
             String token = StringUtils.substringAfterLast(key, ":");
             // 如果已经过期则跳过
-            if (StpUtil.stpLogic.getTokenActivityTimeoutByToken(token) < -1) {
+            if (MultipleStpUtil.SYSTEM.getTokenActivityTimeoutByToken(token) < -1) {
                 return;
             }
             LoginUser loginUser = LoginHelper.getLoginUser(token);
             if (loginUser.getRoles().stream().anyMatch(r -> r.getRoleId().equals(roleId))) {
                 try {
-                    StpUtil.logoutByTokenValue(token);
+                    MultipleStpUtil.SYSTEM.logoutByTokenValue(token);
                 } catch (NotLoginException ignored) {
                 }
             }

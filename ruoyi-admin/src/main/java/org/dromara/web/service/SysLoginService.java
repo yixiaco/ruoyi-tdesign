@@ -2,7 +2,6 @@ package org.dromara.web.service;
 
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.secure.BCrypt;
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -29,6 +28,7 @@ import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.log.event.LogininforEvent;
 import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.satoken.utils.LoginHelper;
+import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.dromara.common.tenant.exception.TenantException;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.common.web.config.properties.CaptchaProperties;
@@ -93,7 +93,7 @@ public class SysLoginService {
 
         recordLogininfor(loginUser.getTenantId(), username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"));
         recordLoginInfo(user.getUserId());
-        return StpUtil.getTokenValue();
+        return MultipleStpUtil.SYSTEM.getTokenValue();
     }
 
     /**
@@ -118,7 +118,7 @@ public class SysLoginService {
 
         recordLogininfor(loginUser.getTenantId(), user.getUserName(), Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"));
         recordLoginInfo(user.getUserId());
-        return StpUtil.getTokenValue();
+        return MultipleStpUtil.SYSTEM.getTokenValue();
     }
 
     /**
@@ -143,7 +143,7 @@ public class SysLoginService {
 
         recordLogininfor(loginUser.getTenantId(), user.getUserName(), Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"));
         recordLoginInfo(user.getUserId());
-        return StpUtil.getTokenValue();
+        return MultipleStpUtil.SYSTEM.getTokenValue();
     }
 
 
@@ -174,7 +174,7 @@ public class SysLoginService {
 
         recordLogininfor(loginUser.getTenantId(), user.getUserName(), Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"));
         recordLoginInfo(user.getUserId());
-        return StpUtil.getTokenValue();
+        return MultipleStpUtil.SYSTEM.getTokenValue();
     }
 
     /**
@@ -188,7 +188,7 @@ public class SysLoginService {
                     // 超级管理员 登出清除动态租户
                     TenantHelper.clearDynamic();
                 }
-                StpUtil.logout();
+                MultipleStpUtil.SYSTEM.logout();
                 recordLogininfor(loginUser.getTenantId(), loginUser.getUsername(), Constants.LOGOUT, MessageUtils.message("user.logout.success"));
             }
         } catch (NotLoginException ignored) {

@@ -1,5 +1,6 @@
 package org.dromara.web.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
 import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.domain.R;
@@ -12,13 +13,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 /**
  * 邮件服务
+ *
  * @author hexm
  * @date 2023/02/03 14:33
  */
 @Slf4j
 @Validated
 @RestController
-@RequestMapping("/mail")
+@RequestMapping("/system/config/mail")
+@SaCheckLogin
 public class MailController {
 
     @Autowired

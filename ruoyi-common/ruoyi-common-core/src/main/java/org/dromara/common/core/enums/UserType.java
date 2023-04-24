@@ -32,6 +32,6 @@ public enum UserType {
                 return value;
             }
         }
-        throw new RuntimeException("'UserType' not found By " + str);
+        return null;
     }
 }
