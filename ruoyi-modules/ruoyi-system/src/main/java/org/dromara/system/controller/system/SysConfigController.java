@@ -1,6 +1,5 @@
 package org.dromara.system.controller.system;
 
-import cn.dev33.satoken.annotation.SaCheckLogin;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import jakarta.servlet.http.HttpServletResponse;
@@ -36,7 +35,6 @@ import java.util.Map;
  * @author Lion Li
  */
 @Validated
-@SaCheckLogin
 @RestController
 @RequestMapping("/system/config")
 public class SysConfigController extends BaseController {
