@@ -43,6 +43,21 @@ public class LogininforEvent implements Serializable {
     private HttpServletRequest request;
 
     /**
+     * ip
+     */
+    private String ip;
+
+    /**
+     * 客户端操作系统
+     */
+    private String os;
+
+    /**
+     * 客户端浏览器
+     */
+    private String browser;
+
+    /**
      * 其他参数
      */
     private Object[] args;

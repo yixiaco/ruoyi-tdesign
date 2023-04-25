@@ -21,6 +21,7 @@ import { getToken } from '@/utils/auth';
 const { proxy } = getCurrentInstance();
 
 const editorConfig = ref({
+  mediaEmbed: { previewsInData: true },
   customUpload: {
     uploadUrl,
     withCredentials: true,

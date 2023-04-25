@@ -1,13 +1,11 @@
 package org.dromara.common.core.domain.model;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.dromara.common.core.domain.dto.RoleDTO;
 
-import java.io.Serial;
-import java.io.Serializable;
 import java.util.List;
-import java.util.Set;
 
 /**
  * 登录用户身份权限
@@ -16,21 +14,14 @@ import java.util.Set;
  */
 
 @Data
+@EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class LoginUser implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class LoginUser extends TokenUser {
 
     /**
-     * 租户ID
+     * 用户类型
      */
-    private String tenantId;
-
-    /**
-     * 用户ID
-     */
-    private Long userId;
+    private String userType;
 
     /**
      * 部门ID
@@ -43,61 +34,6 @@ public class LoginUser implements Serializable {
     private String deptName;
 
     /**
-     * 用户唯一标识
-     */
-    private String token;
-
-    /**
-     * 用户类型
-     */
-    private String userType;
-
-    /**
-     * 登录时间
-     */
-    private Long loginTime;
-
-    /**
-     * 过期时间
-     */
-    private Long expireTime;
-
-    /**
-     * 登录IP地址
-     */
-    private String ipaddr;
-
-    /**
-     * 登录地点
-     */
-    private String loginLocation;
-
-    /**
-     * 浏览器类型
-     */
-    private String browser;
-
-    /**
-     * 操作系统
-     */
-    private String os;
-
-    /**
-     * 菜单权限
-     */
-    private Set<String> menuPermission;
-
-    /**
-     * 角色权限
-     */
-    private Set<String> rolePermission;
-
-    /**
-     * 用户名
-     */
-    private String username;
-
-    /**
      * 角色对象
      */
     private List<RoleDTO> roles;
@@ -107,6 +43,7 @@ public class LoginUser implements Serializable {
      */
     private Long roleId;
 
+
     /**
      * 获取登录id
      */
@@ -114,10 +51,9 @@ public class LoginUser implements Serializable {
         if (userType == null) {
             throw new IllegalArgumentException("用户类型不能为空");
         }
-        if (userId == null) {
+        if (getUserId() == null) {
             throw new IllegalArgumentException("用户ID不能为空");
         }
-        return userType + ":" + userId;
+        return userType + ":" + getUserId();
     }
-
 }

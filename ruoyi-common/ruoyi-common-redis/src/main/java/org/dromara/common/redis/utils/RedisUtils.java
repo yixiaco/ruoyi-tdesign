@@ -224,15 +224,47 @@ public class RedisUtils {
     }
 
     /**
-     * 缓存List数据
+     * 添加缓存List数据到末尾
      *
      * @param key      缓存的键值
      * @param dataList 待缓存的List数据
      * @return 缓存的对象
      */
-    public static <T> boolean setCacheList(final String key, final List<T> dataList) {
+    public static <T> boolean addCacheList(final String key, final List<T> dataList) {
         RList<T> rList = CLIENT.getList(key);
         return rList.addAll(dataList);
+    }
+
+    /**
+     * 设置缓存List数据
+     *
+     * @param key      缓存的键值
+     * @param dataList 待缓存的List数据
+     * @return 缓存的对象
+     */
+    public static <T> void setCacheList(final String key, final List<T> dataList) {
+        RBatch batch = CLIENT.createBatch();
+        RListAsync<Object> batchList = batch.getList(key);
+        batchList.deleteAsync();
+        batchList.addAllAsync(dataList);
+        batch.execute();
+    }
+
+    /**
+     * 缓存List数据
+     *
+     * @param key      缓存的键值
+     * @param dataList 待缓存的List数据
+     * @param expire   过期时间
+     * @return 缓存的对象
+     */
+    public static <T> void setCacheList(final String key, final List<T> dataList, final Duration expire) {
+        RBatch batch = CLIENT.createBatch();
+        RListAsync<Object> batchList = batch.getList(key);
+        batchList.deleteAsync();
+        batchList.addAllAsync(dataList);
+        batchList.expireAsync(expire);
+        batch.execute();
     }
 
     /**
@@ -266,9 +298,41 @@ public class RedisUtils {
      * @param dataSet 缓存的数据
      * @return 缓存数据的对象
      */
-    public static <T> boolean setCacheSet(final String key, final Set<T> dataSet) {
+    public static <T> boolean addCacheSet(final String key, final Set<T> dataSet) {
         RSet<T> rSet = CLIENT.getSet(key);
         return rSet.addAll(dataSet);
+    }
+
+    /**
+     * 缓存Set
+     *
+     * @param key     缓存键值
+     * @param dataSet 缓存的数据
+     * @return 缓存数据的对象
+     */
+    public static <T> void setCacheSet(final String key, final Set<T> dataSet) {
+        RBatch batch = CLIENT.createBatch();
+        RSetAsync<Object> batchList = batch.getSet(key);
+        batchList.deleteAsync();
+        batchList.addAllAsync(dataSet);
+        batch.execute();
+    }
+
+    /**
+     * 缓存Set
+     *
+     * @param key     缓存键值
+     * @param dataSet 缓存的数据
+     * @param expire  过期时间
+     * @return 缓存数据的对象
+     */
+    public static <T> void setCacheSet(final String key, final Set<T> dataSet, final Duration expire) {
+        RBatch batch = CLIENT.createBatch();
+        RSetAsync<Object> batchList = batch.getSet(key);
+        batchList.deleteAsync();
+        batchList.expireAsync(expire);
+        batchList.addAllAsync(dataSet);
+        batch.execute();
     }
 
     /**

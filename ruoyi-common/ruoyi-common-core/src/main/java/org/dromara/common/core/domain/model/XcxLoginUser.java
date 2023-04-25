@@ -22,6 +22,11 @@ public class XcxLoginUser extends LoginUser {
     /**
      * openid
      */
-    private String openid;
+    private String openId;
+
+    /**
+     * unionId
+     */
+    private String unionId;
 
 }

@@ -4,7 +4,11 @@ import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.secure.BCrypt;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.http.Header;
+import cn.hutool.http.useragent.UserAgent;
+import cn.hutool.http.useragent.UserAgentUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.config.UserLoginConfig;
 import org.dromara.common.core.constant.Constants;
@@ -168,7 +172,7 @@ public class SysLoginService {
         loginUser.setUserId(user.getUserId());
         loginUser.setUsername(user.getUserName());
         loginUser.setUserType(user.getUserType());
-        loginUser.setOpenid(openid);
+        loginUser.setOpenId(openid);
         // 生成token
         LoginHelper.loginByDevice(loginUser, DeviceType.XCX);
 
@@ -204,12 +208,22 @@ public class SysLoginService {
      * @param message  消息内容
      */
     private void recordLogininfor(String tenantId, String username, String status, String message) {
+        HttpServletRequest request = ServletUtils.getRequest();
+        final UserAgent userAgent = UserAgentUtil.parse(request.getHeader(Header.USER_AGENT.getValue()));
+        final String ip = ServletUtils.getClientIP(request);
+        // 获取客户端操作系统
+        String os = userAgent.getOs().getName();
+        // 获取客户端浏览器
+        String browser = userAgent.getBrowser().getName();
+
         LogininforEvent logininforEvent = new LogininforEvent();
         logininforEvent.setTenantId(tenantId);
         logininforEvent.setUsername(username);
         logininforEvent.setStatus(status);
         logininforEvent.setMessage(message);
-        logininforEvent.setRequest(ServletUtils.getRequest());
+        logininforEvent.setIp(ip);
+        logininforEvent.setOs(os);
+        logininforEvent.setBrowser(browser);
         SpringUtils.context().publishEvent(logininforEvent);
     }
 

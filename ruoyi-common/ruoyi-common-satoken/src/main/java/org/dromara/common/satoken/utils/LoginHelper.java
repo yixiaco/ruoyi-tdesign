@@ -31,9 +31,9 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginHelper {
 
-    public static final String LOGIN_USER_KEY = "loginUser";
-    public static final String TENANT_KEY = "tenantId";
-    public static final String USER_KEY = "userId";
+    public static final String LOGIN_USER_KEY = "system:loginUser";
+    public static final String TENANT_KEY = "system:tenantId";
+    public static final String USER_KEY = "system:userId";
 
     /**
      * 登录系统
@@ -68,14 +68,15 @@ public class LoginHelper {
     /**
      * 获取用户(多级缓存)
      */
-    public static LoginUser getLoginUser() {
-        LoginUser loginUser = (LoginUser) SaHolder.getStorage().get(LOGIN_USER_KEY);
+    @SuppressWarnings("unchecked")
+    public static <T extends LoginUser> T getLoginUser() {
+        T loginUser = (T) SaHolder.getStorage().get(LOGIN_USER_KEY);
         if (loginUser != null) {
             return loginUser;
         }
         SaSession session = MultipleStpUtil.SYSTEM.getTokenSession();
         if (session != null) {
-            loginUser = (LoginUser) session.get(LOGIN_USER_KEY);
+            loginUser = (T) session.get(LOGIN_USER_KEY);
             SaHolder.getStorage().set(LOGIN_USER_KEY, loginUser);
         }
         return loginUser;
@@ -84,8 +85,9 @@ public class LoginHelper {
     /**
      * 获取用户基于token
      */
-    public static LoginUser getLoginUser(String token) {
-        return (LoginUser) MultipleStpUtil.SYSTEM.getTokenSessionByToken(token).get(LOGIN_USER_KEY);
+    @SuppressWarnings("unchecked")
+    public static <T extends LoginUser> T getLoginUser(String token) {
+        return (T) MultipleStpUtil.SYSTEM.getTokenSessionByToken(token).get(LOGIN_USER_KEY);
     }
 
     /**

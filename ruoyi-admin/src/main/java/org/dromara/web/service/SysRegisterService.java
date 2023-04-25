@@ -1,6 +1,10 @@
 package org.dromara.web.service;
 
 import cn.dev33.satoken.secure.BCrypt;
+import cn.hutool.http.Header;
+import cn.hutool.http.useragent.UserAgent;
+import cn.hutool.http.useragent.UserAgentUtil;
+import jakarta.servlet.http.HttpServletRequest;
 import org.dromara.common.core.constant.Constants;
 import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.domain.model.RegisterBody;
@@ -95,12 +99,22 @@ public class SysRegisterService {
      * @return
      */
     private void recordLogininfor(String tenantId, String username, String status, String message) {
+        HttpServletRequest request = ServletUtils.getRequest();
+        final UserAgent userAgent = UserAgentUtil.parse(request.getHeader(Header.USER_AGENT.getValue()));
+        final String ip = ServletUtils.getClientIP(request);
+        // 获取客户端操作系统
+        String os = userAgent.getOs().getName();
+        // 获取客户端浏览器
+        String browser = userAgent.getBrowser().getName();
+
         LogininforEvent logininforEvent = new LogininforEvent();
         logininforEvent.setTenantId(tenantId);
         logininforEvent.setUsername(username);
         logininforEvent.setStatus(status);
         logininforEvent.setMessage(message);
-        logininforEvent.setRequest(ServletUtils.getRequest());
+        logininforEvent.setIp(ip);
+        logininforEvent.setOs(os);
+        logininforEvent.setBrowser(browser);
         SpringUtils.context().publishEvent(logininforEvent);
     }
 }

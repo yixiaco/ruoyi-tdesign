@@ -45,9 +45,7 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
     @Async
     @EventListener
     public void recordLogininfor(LogininforEvent logininforEvent) {
-        HttpServletRequest request = logininforEvent.getRequest();
-        final UserAgent userAgent = UserAgentUtil.parse(request.getHeader("User-Agent"));
-        final String ip = ServletUtils.getClientIP(request);
+        String ip = logininforEvent.getIp();
 
         String address = AddressUtils.getRealAddressByIP(ip);
         StringBuilder s = new StringBuilder();
@@ -58,18 +56,14 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
         s.append(getBlock(logininforEvent.getMessage()));
         // 打印信息到日志
         log.info(s.toString(), logininforEvent.getArgs());
-        // 获取客户端操作系统
-        String os = userAgent.getOs().getName();
-        // 获取客户端浏览器
-        String browser = userAgent.getBrowser().getName();
         // 封装对象
         SysLogininforBo logininfor = new SysLogininforBo();
         logininfor.setTenantId(logininforEvent.getTenantId());
         logininfor.setUserName(logininforEvent.getUsername());
         logininfor.setIpaddr(ip);
         logininfor.setLoginLocation(address);
-        logininfor.setBrowser(browser);
-        logininfor.setOs(os);
+        logininfor.setBrowser(logininforEvent.getBrowser());
+        logininfor.setOs(logininforEvent.getOs());
         logininfor.setMsg(logininforEvent.getMessage());
         // 日志状态
         if (StringUtils.equalsAny(logininforEvent.getStatus(), Constants.LOGIN_SUCCESS, Constants.LOGOUT, Constants.REGISTER)) {
