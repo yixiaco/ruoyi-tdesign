@@ -11,7 +11,7 @@ import org.dromara.common.satoken.utils.LoginUserHelper;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.common.tenant.properties.TenantProperties;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * 自定义租户处理器
@@ -44,12 +44,15 @@ public class PlusTenantLineHandler implements TenantLineHandler {
     @Override
     public boolean ignoreTable(String tableName) {
         String tenantId = LoginHelper.getTenantId();
+        if (StringUtils.isBlank(tenantId)) {
+            tenantId = LoginUserHelper.getTenantId();
+        }
         // 判断是否有租户
         if (StringUtils.isNotBlank(tenantId)) {
             // 不需要过滤租户的表
-            List<String> excludes = tenantProperties.getExcludes();
+            Set<String> excludes = tenantProperties.getExcludes();
             // 非业务表
-            excludes.addAll(List.of(
+            excludes.addAll(Set.of(
                     "gen_table",
                     "gen_table_column"
             ));

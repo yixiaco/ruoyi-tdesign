@@ -3,7 +3,7 @@ package org.dromara.common.tenant.properties;
 import lombok.Data;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
-import java.util.List;
+import java.util.Set;
 
 /**
  * 租户 配置属性
@@ -22,6 +22,6 @@ public class TenantProperties {
     /**
      * 排除表
      */
-    private List<String> excludes;
+    private Set<String> excludes;
 
 }
