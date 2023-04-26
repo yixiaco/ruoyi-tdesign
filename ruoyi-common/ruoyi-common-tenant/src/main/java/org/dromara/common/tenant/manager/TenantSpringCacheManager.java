@@ -3,6 +3,7 @@ package org.dromara.common.tenant.manager;
 import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.redis.manager.PlusSpringCacheManager;
+import org.dromara.common.satoken.utils.LoginUserHelper;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.springframework.cache.Cache;
 
@@ -22,6 +23,9 @@ public class TenantSpringCacheManager extends PlusSpringCacheManager {
             return super.getCache(name);
         }
         String tenantId = TenantHelper.getTenantId();
+        if (StringUtils.isBlank(tenantId)) {
+            tenantId = LoginUserHelper.getTenantId();
+        }
         if (StringUtils.startsWith(name, tenantId)) {
             // 如果存在则直接返回
             return super.getCache(name);

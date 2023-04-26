@@ -3,6 +3,7 @@ package org.dromara.common.tenant.handle;
 import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.redis.handler.KeyPrefixHandler;
+import org.dromara.common.satoken.utils.LoginUserHelper;
 import org.dromara.common.tenant.helper.TenantHelper;
 
 /**
@@ -28,6 +29,9 @@ public class TenantKeyPrefixHandler extends KeyPrefixHandler {
             return super.map(name);
         }
         String tenantId = TenantHelper.getTenantId();
+        if (StringUtils.isBlank(tenantId)) {
+            tenantId = LoginUserHelper.getTenantId();
+        }
         if (StringUtils.startsWith(name, tenantId)) {
             // 如果存在则直接返回
             return super.map(name);
@@ -48,6 +52,9 @@ public class TenantKeyPrefixHandler extends KeyPrefixHandler {
             return super.unmap(name);
         }
         String tenantId = TenantHelper.getTenantId();
+        if (StringUtils.isBlank(tenantId)) {
+            tenantId = LoginUserHelper.getTenantId();
+        }
         if (StringUtils.startsWith(unmap, tenantId)) {
             // 如果存在则删除
             return unmap.substring((tenantId + ":").length());

@@ -253,6 +253,7 @@ swagger:
         in: HEADER
         name: ${sa-token.token-name}
 
+# api地址(数据源URL)：http://localhost:8080/v3/api-docs/1.演示模块
 springdoc:
   api-docs:
     # 是否开启接口文档
