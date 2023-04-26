@@ -12,7 +12,7 @@ export default {
 import CKEditor from '@ckeditor/ckeditor5-vue';
 import Editor from 'ckeditor5-overall-build/dist/ckeditor.js';
 
-const uploadUrl = `${import.meta.env.VITE_APP_BASE_API}/system/oss/upload`;
+const uploadUrl = `${import.meta.env.VITE_APP_BASE_API}/resource/oss/upload`;
 const Ckeditor = CKEditor.component;
 import { getCurrentInstance, ref } from 'vue';
 

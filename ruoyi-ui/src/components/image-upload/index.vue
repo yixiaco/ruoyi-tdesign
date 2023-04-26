@@ -94,7 +94,7 @@ const props = defineProps({
 const { proxy } = getCurrentInstance();
 const emit = defineEmits(['update:modelValue', 'change']);
 const baseUrl = import.meta.env.VITE_APP_BASE_API;
-const uploadImgUrl = ref(`${baseUrl}/system/oss/upload`); // 上传的图片服务器地址
+const uploadImgUrl = ref(`${baseUrl}/resource/oss/upload`); // 上传的图片服务器地址
 const headers = ref({ Authorization: `Bearer ${getToken()}` });
 const fileList = ref([]);
 const rawAccept = computed(() => {

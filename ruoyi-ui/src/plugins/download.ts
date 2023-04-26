@@ -11,7 +11,7 @@ let downloadLoadingInstance;
 
 export default {
   oss(ossId) {
-    const url = `${baseURL}/system/oss/download/${ossId}`;
+    const url = `${baseURL}/resource/oss/download/${ossId}`;
     downloadLoadingInstance = LoadingPlugin({
       text: '正在下载数据，请稍候',
     });
