@@ -40,6 +40,16 @@ export default ({ mode }: ConfigEnv): UserConfig => {
     },
 
     plugins: [
+      {
+        name: 'singleHMR',
+        handleHotUpdate({ modules }) {
+          modules.forEach((m) => {
+            m.importedModules = new Set();
+            m.importers = new Set();
+          });
+          return modules;
+        },
+      },
       vue(),
       vueJsx(),
       viteMockServe({
