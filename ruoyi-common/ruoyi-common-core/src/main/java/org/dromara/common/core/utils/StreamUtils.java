@@ -92,7 +92,7 @@ public class StreamUtils {
         if (CollUtil.isEmpty(collection)) {
             return MapUtil.newHashMap();
         }
-        return collection.stream().collect(Collectors.toMap(key, Function.identity(), BiOperator::first));
+        return collection.stream().collect(Collectors.toMap(key, Function.identity(), BiOperator::first, LinkedHashMap::new));
     }
 
     /**
@@ -111,7 +111,7 @@ public class StreamUtils {
         if (CollUtil.isEmpty(collection)) {
             return MapUtil.newHashMap();
         }
-        return collection.stream().collect(Collectors.toMap(key, value, BiOperator::first));
+        return collection.stream().collect(Collectors.toMap(key, value, BiOperator::first, LinkedHashMap::new));
     }
 
     /**
@@ -172,7 +172,11 @@ public class StreamUtils {
         }
         return collection
             .stream()
-            .collect(Collectors.groupingBy(key1, LinkedHashMap::new, Collectors.toMap(key2, Function.identity(), BiOperator::first)));
+            .collect(Collectors.groupingBy(
+                key1,
+                LinkedHashMap::new,
+                Collectors.toMap(key2, Function.identity(), BiOperator::first, LinkedHashMap::new))
+            );
     }
 
     /**
