@@ -5,7 +5,7 @@ import { request } from '@/utils/request';
 // 查询对象存储配置列表
 export function listOssConfig(query: SysOssConfigQuery) {
   return request.get<TableDataInfo<SysOssConfigVo>>({
-    url: '/system/oss/config/list',
+    url: '/resource/oss/config/list',
     params: query,
   });
 }
@@ -13,14 +13,14 @@ export function listOssConfig(query: SysOssConfigQuery) {
 // 查询对象存储配置详细
 export function getOssConfig(ossConfigId: number) {
   return request.get<R<SysOssConfigVo>>({
-    url: `/system/oss/config/${ossConfigId}`,
+    url: `/resource/oss/config/${ossConfigId}`,
   });
 }
 
 // 新增对象存储配置
 export function addOssConfig(data: SysOssConfigForm) {
   return request.post<R<void>>({
-    url: '/system/oss/config',
+    url: '/resource/oss/config',
     data,
   });
 }
@@ -28,7 +28,7 @@ export function addOssConfig(data: SysOssConfigForm) {
 // 修改对象存储配置
 export function updateOssConfig(data: SysOssConfigForm) {
   return request.put<R<void>>({
-    url: '/system/oss/config',
+    url: '/resource/oss/config',
     data,
   });
 }
@@ -36,7 +36,7 @@ export function updateOssConfig(data: SysOssConfigForm) {
 // 删除对象存储配置
 export function delOssConfig(ossConfigId: number) {
   return request.delete<R<void>>({
-    url: `/system/oss/config/${ossConfigId}`,
+    url: `/resource/oss/config/${ossConfigId}`,
   });
 }
 
@@ -48,7 +48,7 @@ export function changeOssConfigStatus(ossConfigId: number, status: string, confi
     configKey,
   };
   return request.put<R<void>>({
-    url: '/system/oss/config/changeStatus',
+    url: '/resource/oss/config/changeStatus',
     data,
   });
 }

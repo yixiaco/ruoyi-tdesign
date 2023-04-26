@@ -117,6 +117,7 @@ sa-token:
       match:
         - /system/**
         - /monitor/**
+        - /resource/**
     user:
       # token名称 (同时也是cookie名称)
       token-name: UserAuthorization

@@ -75,7 +75,7 @@ export function getCodeImg() {
 export function getCodeSms() {
   return request.get<R<void>>(
     {
-      url: '/sms/code',
+      url: '/resource/sms/code',
       timeout: 20000,
     },
     {

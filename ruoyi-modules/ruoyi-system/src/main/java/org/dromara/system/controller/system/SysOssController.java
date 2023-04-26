@@ -38,7 +38,7 @@ import java.util.List;
  */
 @Validated
 @RestController
-@RequestMapping("/system/oss")
+@RequestMapping("/resource/oss")
 public class SysOssController extends BaseController {
 
     @Autowired

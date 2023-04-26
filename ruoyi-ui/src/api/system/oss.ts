@@ -5,7 +5,7 @@ import { request } from '@/utils/request';
 // 查询OSS对象存储列表
 export function listOss(query: SysOssQuery) {
   return request.get<TableDataInfo<SysOssVo>>({
-    url: '/system/oss/list',
+    url: '/resource/oss/list',
     params: query,
   });
 }
@@ -13,14 +13,14 @@ export function listOss(query: SysOssQuery) {
 // 查询OSS对象基于id串
 export function listByIds(ossId: string) {
   return request.get<R<Array<SysOssVo>>>({
-    url: `/system/oss/listByIds/${ossId}`,
+    url: `/resource/oss/listByIds/${ossId}`,
   });
 }
 
 // 查询OSS对象基于url串
 export function listByUrls(urls: string) {
   return request.get<R<Array<SysOssVo>>>({
-    url: `/system/oss/listByUrls`,
+    url: `/resource/oss/listByUrls`,
     params: { urls: encodeURIComponent(urls) },
   });
 }
@@ -28,6 +28,6 @@ export function listByUrls(urls: string) {
 // 删除OSS对象存储
 export function delOss(ossId: number) {
   return request.delete<R<void>>({
-    url: `/system/oss/${ossId}`,
+    url: `/resource/oss/${ossId}`,
   });
 }

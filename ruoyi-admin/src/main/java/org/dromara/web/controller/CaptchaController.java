@@ -58,7 +58,7 @@ public class CaptchaController {
      * @param phonenumber 用户手机号
      */
     @SmsContextCache
-    @GetMapping("/sms/code")
+    @GetMapping("/resource/sms/code")
     public R<Void> smsCode(@NotBlank(message = "{user.phonenumber.not.blank}") String phonenumber) {
         String key = GlobalConstants.CAPTCHA_CODE_KEY + phonenumber;
         String code = RandomUtil.randomNumbers(4);
@@ -80,7 +80,7 @@ public class CaptchaController {
      *
      * @param email 邮箱
      */
-    @GetMapping("/email/code")
+    @GetMapping("/resource/email/code")
     public R<Void> emailCode(@NotBlank(message = "{user.email.not.blank}") String email) {
         String key = GlobalConstants.CAPTCHA_CODE_KEY + email;
         String code = RandomUtil.randomNumbers(4);
