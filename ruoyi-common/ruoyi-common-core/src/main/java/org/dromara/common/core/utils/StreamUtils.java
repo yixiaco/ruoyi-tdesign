@@ -401,7 +401,19 @@ public class StreamUtils {
      */
     @SafeVarargs
     public static <T> List<T> merge(Collection<T>... collections) {
-        return Arrays.stream(collections).flatMap(Collection::stream).collect(Collectors.toList());
+        return Arrays.stream(collections).filter(Objects::nonNull).flatMap(Collection::stream).collect(Collectors.toList());
+    }
+
+    /**
+     * 合并多个集合
+     *
+     * @param collections 集合
+     * @param <T>
+     * @return
+     */
+    @SafeVarargs
+    public static <T> Set<T> mergeToSet(Collection<T>... collections) {
+        return Arrays.stream(collections).filter(Objects::nonNull).flatMap(Collection::stream).collect(Collectors.toSet());
     }
 
     /**

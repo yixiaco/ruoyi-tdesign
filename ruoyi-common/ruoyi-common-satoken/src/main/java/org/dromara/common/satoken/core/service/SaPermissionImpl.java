@@ -6,6 +6,7 @@ import org.dromara.common.core.domain.model.TokenUser;
 import org.dromara.common.core.enums.UserType;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.LoginUserHelper;
+import org.dromara.common.satoken.utils.MultipleStpUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,18 +23,19 @@ public class SaPermissionImpl implements StpInterface {
      */
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
-        LoginUser loginUser = LoginHelper.getLoginUser();
-        if (loginUser != null) {
+        if (MultipleStpUtil.SYSTEM.isLogin()) {
+            LoginUser loginUser = LoginHelper.getLoginUser();
             UserType userType = UserType.getUserType(loginUser.getUserType());
             if (userType == UserType.SYS_USER) {
                 return new ArrayList<>(loginUser.getMenuPermission());
             } else if (userType == UserType.APP_USER) {
                 // 其他端 自行根据业务编写
             }
-        }
-        TokenUser tokenUser = LoginUserHelper.getLoginUser();
-        if (tokenUser != null) {
-            return new ArrayList<>(tokenUser.getMenuPermission());
+        } else if (MultipleStpUtil.USER.isLogin()) {
+            TokenUser tokenUser = LoginUserHelper.getLoginUser();
+            if (tokenUser != null) {
+                return new ArrayList<>(tokenUser.getMenuPermission());
+            }
         }
         return new ArrayList<>();
     }
@@ -43,18 +45,19 @@ public class SaPermissionImpl implements StpInterface {
      */
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
-        LoginUser loginUser = LoginHelper.getLoginUser();
-        if (loginUser != null) {
+        if (MultipleStpUtil.SYSTEM.isLogin()) {
+            LoginUser loginUser = LoginHelper.getLoginUser();
             UserType userType = UserType.getUserType(loginUser.getUserType());
             if (userType == UserType.SYS_USER) {
                 return new ArrayList<>(loginUser.getRolePermission());
             } else if (userType == UserType.APP_USER) {
                 // 其他端 自行根据业务编写
             }
-        }
-        TokenUser tokenUser = LoginUserHelper.getLoginUser();
-        if (tokenUser != null) {
-            return new ArrayList<>(tokenUser.getRolePermission());
+        } else if (MultipleStpUtil.USER.isLogin()) {
+            TokenUser tokenUser = LoginUserHelper.getLoginUser();
+            if (tokenUser != null) {
+                return new ArrayList<>(tokenUser.getRolePermission());
+            }
         }
         return new ArrayList<>();
     }

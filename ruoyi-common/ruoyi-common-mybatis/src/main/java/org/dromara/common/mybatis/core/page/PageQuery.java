@@ -9,11 +9,14 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.ServletUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.sql.SqlUtil;
 
+import java.io.Closeable;
+import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -28,6 +31,7 @@ import java.util.stream.Collectors;
  */
 
 @Data
+@Accessors(chain = true)
 public class PageQuery implements Serializable {
 
     @Serial
@@ -74,6 +78,11 @@ public class PageQuery implements Serializable {
     private String isAsc;
 
     /**
+     * 查询时是否统计总数
+     */
+    private boolean isSearchCount;
+
+    /**
      * 当前记录起始索引 默认值
      */
     public static final int DEFAULT_PAGE_NUM = 1;
@@ -83,18 +92,174 @@ public class PageQuery implements Serializable {
      */
     public static final int DEFAULT_PAGE_SIZE = Integer.MAX_VALUE;
 
+    /**
+     * 使用请求参数设置分页页码
+     *
+     * @return
+     */
+    public PageQuery defaultPageNum() {
+        pageNum = getRequestPageNum();
+        return this;
+    }
+
+    /**
+     * 使用请求参数设置分页数
+     *
+     * @return
+     */
+    public PageQuery defaultPageSize() {
+        pageSize = getRequestPageSize();
+        return this;
+    }
+
+    /**
+     * 使用请求参数设置排序字段名称
+     *
+     * @return
+     */
+    public PageQuery defaultOrderByColumn() {
+        orderByColumn = getRequestOrderByColumn();
+        return this;
+    }
+
+    /**
+     * 使用请求参数设置排序顺序
+     *
+     * @return
+     */
+    public PageQuery defaultIsAsc() {
+        isAsc = getIsAsc();
+        return this;
+    }
+
+    /**
+     * 查询时默认统计
+     *
+     * @return
+     */
+    public PageQuery defaultSearchCount() {
+        isSearchCount = true;
+        return this;
+    }
+
+    /**
+     * 使用分页创建对象
+     *
+     * @param pageNum  页码
+     * @param pageSize 每页数量
+     * @return
+     */
+    public static PageQuery of(Integer pageNum, Integer pageSize) {
+        return of(pageNum, pageSize, true);
+    }
+
+    /**
+     * 使用分页创建对象
+     *
+     * @param pageNum  页码
+     * @param pageSize 每页数量
+     * @return
+     */
+    public static PageQuery of(Integer pageNum, Integer pageSize, boolean isSearchCount) {
+        PageQuery pageQuery = new PageQuery();
+        pageQuery.setPageNum(pageNum);
+        pageQuery.setPageSize(pageSize);
+        pageQuery.setSearchCount(isSearchCount);
+        return pageQuery;
+    }
+
     public <T> Page<T> build() {
         Integer pageNum = ObjectUtil.defaultIfNull(getPageNum(), DEFAULT_PAGE_NUM);
         Integer pageSize = ObjectUtil.defaultIfNull(getPageSize(), DEFAULT_PAGE_SIZE);
         if (pageNum <= 0) {
             pageNum = DEFAULT_PAGE_NUM;
         }
-        Page<T> page = new Page<>(pageNum, pageSize);
+        Page<T> page = new Page<>(pageNum, pageSize, isSearchCount);
         List<OrderItem> orderItems = buildOrderItem(orderByColumn, isAsc);
         if (CollUtil.isNotEmpty(orderItems)) {
             page.addOrder(orderItems);
         }
         return page;
+    }
+
+    /**
+     * 执行方法分页查询
+     *
+     * @param supplier 查询方法
+     * @param <T>
+     * @return TableDataInfo
+     */
+    public <T> TableDataInfo<T> execute(Supplier<List<T>> supplier) {
+        Page<T> page = build();
+        if (CollUtil.isNotEmpty(page.orders())) {
+            List<OrderItem> orderItems = page.orders();
+            String orderBy = "";
+            if (orderItems != null) {
+                orderBy = orderItems
+                    .stream()
+                    .map(orderItem -> orderItem.getColumn() + (orderItem.isAsc() ? " asc" : " desc"))
+                    .collect(Collectors.joining(","));
+            }
+            try (Closeable close = PageHelper.startPage(pageNum, pageSize, page.searchCount()).setOrderBy(orderBy)) {
+                return wrap(supplier);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        } else {
+            try (Closeable close = PageHelper.startPage(pageNum, pageSize, page.searchCount())) {
+                return wrap(supplier);
+            } catch (IOException e) {
+                throw new RuntimeException(e);
+            }
+        }
+    }
+
+    private <T> TableDataInfo<T> wrap(Supplier<List<T>> supplier) {
+        PageInfo<T> pageInfo = new PageInfo<>(supplier.get());
+        TableDataInfo<T> rspData = new TableDataInfo<>();
+        rspData.setCode(HttpStatus.HTTP_OK);
+        rspData.setMsg("查询成功");
+        rspData.setRows(pageInfo.getList());
+        rspData.setTotal(pageInfo.getTotal());
+        rspData.setPageNum(pageInfo.getPageNum());
+        rspData.setPageSize((long) pageInfo.getPageSize());
+        return rspData;
+    }
+
+    /**
+     * 获取请求中的分页页码
+     *
+     * @return
+     */
+    public static Integer getRequestPageNum() {
+        return ServletUtils.getParameterToInt(PAGE_NUM, DEFAULT_PAGE_NUM);
+    }
+
+    /**
+     * 获取请求中的分页数
+     *
+     * @return
+     */
+    public static Integer getRequestPageSize() {
+        return ServletUtils.getParameterToInt(PAGE_SIZE, DEFAULT_PAGE_SIZE);
+    }
+
+    /**
+     * 获取请求中的排序字段
+     *
+     * @return
+     */
+    public static String getRequestOrderByColumn() {
+        return ServletUtils.getParameter(ORDER_BY_COLUMN);
+    }
+
+    /**
+     * 获取请求中的排序顺序
+     *
+     * @return
+     */
+    public static String getRequestIsAsc() {
+        return ServletUtils.getParameter(IS_ASC);
     }
 
     /**
@@ -141,42 +306,18 @@ public class PageQuery implements Serializable {
     /**
      * mybatis分页插件的使用
      *
-     * @param supplier
+     * @param supplier 查询方法
      * @param <T>
-     * @return
+     * @return TableDataInfo
      */
     public static <T> TableDataInfo<T> of(Supplier<List<T>> supplier) {
-        Integer pageNum = ServletUtils.getParameterToInt(PAGE_NUM, DEFAULT_PAGE_NUM);
-        Integer pageSize = ServletUtils.getParameterToInt(PAGE_SIZE, DEFAULT_PAGE_SIZE);
-        String orderByColumn = ServletUtils.getParameter(ORDER_BY_COLUMN);
-        String isAsc = ServletUtils.getParameter(IS_ASC);
-        if (pageNum <= 0) {
-            pageNum = DEFAULT_PAGE_NUM;
-        }
-        try {
-            if (StrUtil.isNotBlank(orderByColumn) || StrUtil.isNotBlank(isAsc)) {
-                List<OrderItem> orderItems = buildOrderItem(orderByColumn, isAsc);
-                String orderBy = "";
-                if (orderItems != null) {
-                    orderBy = orderItems
-                        .stream()
-                        .map(orderItem -> orderItem.getColumn() + (orderItem.isAsc() ? " asc" : " desc"))
-                        .collect(Collectors.joining(","));
-                }
-                PageHelper.startPage(pageNum, pageSize, orderBy);
-            } else {
-                PageHelper.startPage(pageNum, pageSize);
-            }
-            PageInfo<T> pageInfo = new PageInfo<>(supplier.get());
-            TableDataInfo<T> rspData = new TableDataInfo<>();
-            rspData.setCode(HttpStatus.HTTP_OK);
-            rspData.setMsg("查询成功");
-            rspData.setRows(pageInfo.getList());
-            rspData.setTotal(pageInfo.getTotal());
-            return rspData;
-        } finally {
-            PageHelper.clearPage();
-        }
+        PageQuery pageQuery = new PageQuery();
+        return pageQuery.defaultPageNum()
+            .defaultPageSize()
+            .defaultOrderByColumn()
+            .defaultIsAsc()
+            .defaultSearchCount()
+            .execute(supplier);
     }
 
 }

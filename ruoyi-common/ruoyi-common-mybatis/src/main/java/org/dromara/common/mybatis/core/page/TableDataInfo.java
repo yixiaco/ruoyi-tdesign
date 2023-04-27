@@ -43,6 +43,16 @@ public class TableDataInfo<T> implements Serializable {
     private String msg;
 
     /**
+     * 分页页码
+     */
+    private Integer pageNum;
+
+    /**
+     * 分页数
+     */
+    private Long pageSize;
+
+    /**
      * 分页
      *
      * @param list  列表数据
@@ -59,6 +69,8 @@ public class TableDataInfo<T> implements Serializable {
         rspData.setMsg("查询成功");
         rspData.setRows(page.getRecords());
         rspData.setTotal(page.getTotal());
+        rspData.setPageNum(Long.valueOf(page.getCurrent()).intValue());
+        rspData.setPageSize(page.getSize());
         return rspData;
     }
 
@@ -68,6 +80,8 @@ public class TableDataInfo<T> implements Serializable {
         rspData.setMsg("查询成功");
         rspData.setRows(list);
         rspData.setTotal(list.size());
+        rspData.setPageNum(1);
+        rspData.setPageSize((long) list.size());
         return rspData;
     }
 
@@ -75,6 +89,8 @@ public class TableDataInfo<T> implements Serializable {
         TableDataInfo<T> rspData = new TableDataInfo<>();
         rspData.setCode(HttpStatus.HTTP_OK);
         rspData.setMsg("查询成功");
+        rspData.setPageNum(1);
+        rspData.setPageSize(0L);
         return rspData;
     }
 
