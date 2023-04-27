@@ -80,7 +80,7 @@ public class PageQuery implements Serializable {
     /**
      * 查询时是否统计总数
      */
-    private boolean isSearchCount;
+    private boolean isSearchCount = true;
 
     /**
      * 当前记录起始索引 默认值
