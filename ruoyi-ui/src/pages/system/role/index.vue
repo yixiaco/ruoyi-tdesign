@@ -459,7 +459,7 @@ function getMenuTreeselect() {
 /** 所有部门节点数据 */
 function getDeptAllCheckedKeys() {
   const items = deptRef.value.getItems();
-  return items.filter((item) => item.indeterminate || item.checked).map((item) => Number(item.value));
+  return items.filter((item) => item.indeterminate || item.checked).map((item) => item.value as number);
 }
 /** 重置新增的表单以及其他数据  */
 function reset() {
@@ -498,7 +498,7 @@ function handleUpdate(row) {
   const roleMenu = getRoleMenuTreeselect(roleId);
   getRole(roleId).then((response) => {
     form.value = response.data;
-    form.value.roleSort = Number(form.value.roleSort);
+    form.value.roleSort = form.value.roleSort as number;
     open.value = true;
     roleMenu.then((res) => {
       const { checkedKeys } = res.data;
@@ -541,14 +541,14 @@ function handleCheckedTreeExpand(value, type) {
 function handleCheckedTreeNodeAll(value, type) {
   if (type === 'menu') {
     if (value) {
-      menuIds.value = menuRef.value.getItems().map((item) => Number(item.value));
+      menuIds.value = menuRef.value.getItems().map((item) => item.value as number);
     } else {
       menuIds.value = [];
     }
     // menuRef.value.setCheckedNodes(value ? menuOptions.value : []);
   } else if (type === 'dept') {
     if (value) {
-      deptIds.value = deptRef.value.getItems().map((item) => Number(item.value));
+      deptIds.value = deptRef.value.getItems().map((item) => item.value as number);
     } else {
       deptIds.value = [];
     }
@@ -564,7 +564,7 @@ function onExpand(type, value) {
 /** 所有菜单节点数据 */
 function getMenuAllCheckedKeys() {
   const items = menuRef.value.getItems();
-  return items.filter((item) => item.checked || item.indeterminate).map((item) => Number(item.value));
+  return items.filter((item) => item.checked || item.indeterminate).map((item) => item.value as number);
 }
 function confirm(type) {
   if (type === 'menu') {

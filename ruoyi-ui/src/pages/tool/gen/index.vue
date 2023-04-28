@@ -263,7 +263,7 @@ onActivated(() => {
   const time = route.query.t;
   if (time != null && time !== uniqueId.value) {
     uniqueId.value = time.toString();
-    queryParams.value.pageNum = Number(route.query.pageNum);
+    queryParams.value.pageNum = route.query.pageNum as any;
     dateRange.value = [];
     proxy.resetForm('queryForm');
     getList();
