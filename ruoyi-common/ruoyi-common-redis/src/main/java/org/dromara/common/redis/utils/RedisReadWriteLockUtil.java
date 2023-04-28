@@ -3,6 +3,7 @@ package org.dromara.common.redis.utils;
 import org.redisson.api.RLock;
 import org.redisson.api.RReadWriteLock;
 
+import java.time.Duration;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +29,7 @@ public class RedisReadWriteLockUtil {
      * @param key             key
      * @param defaultSupplier 默认值回调
      * @param <T>             数据类型
-     * @return 返回数据
+     * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> T readWrite(String key, Supplier<T> defaultSupplier) {
         return readWrite(key, defaultSupplier, RedisUtils::setCacheObject);
@@ -38,9 +39,22 @@ public class RedisReadWriteLockUtil {
      * 同时执行读与写操作，当读取值不存在时，执行默认回调获取值
      *
      * @param key             key
+     * @param expire          过期时间
      * @param defaultSupplier 默认值回调
      * @param <T>             数据类型
-     * @return 返回数据
+     * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
+     */
+    public static <T> T readWrite(String key, Duration expire, Supplier<T> defaultSupplier) {
+        return readWrite(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheObject(keyS, data, expire));
+    }
+
+    /**
+     * 同时执行读与写操作，当读取值不存在时，执行默认回调获取值
+     *
+     * @param key             key
+     * @param defaultSupplier 默认值回调
+     * @param <T>             数据类型
+     * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> List<T> readWriteList(String key, Supplier<List<T>> defaultSupplier) {
         return readWrite(key, defaultSupplier, RedisUtils::setCacheList);
@@ -50,9 +64,22 @@ public class RedisReadWriteLockUtil {
      * 同时执行读与写操作，当读取值不存在时，执行默认回调获取值
      *
      * @param key             key
+     * @param expire          过期时间
      * @param defaultSupplier 默认值回调
      * @param <T>             数据类型
-     * @return 返回数据
+     * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
+     */
+    public static <T> List<T> readWriteList(String key, Duration expire, Supplier<List<T>> defaultSupplier) {
+        return readWrite(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheList(keyS, data, expire));
+    }
+
+    /**
+     * 同时执行读与写操作，当读取值不存在时，执行默认回调获取值
+     *
+     * @param key             key
+     * @param defaultSupplier 默认值回调
+     * @param <T>             数据类型
+     * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> Set<T> readWriteSet(String key, Supplier<Set<T>> defaultSupplier) {
         return readWrite(key, defaultSupplier, RedisUtils::setCacheSet);
@@ -62,9 +89,22 @@ public class RedisReadWriteLockUtil {
      * 同时执行读与写操作，当读取值不存在时，执行默认回调获取值
      *
      * @param key             key
+     * @param expire          过期时间
      * @param defaultSupplier 默认值回调
      * @param <T>             数据类型
-     * @return 返回数据
+     * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
+     */
+    public static <T> Set<T> readWriteSet(String key, Duration expire, Supplier<Set<T>> defaultSupplier) {
+        return readWrite(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheSet(keyS, data, expire));
+    }
+
+    /**
+     * 同时执行读与写操作，当读取值不存在时，执行默认回调获取值
+     *
+     * @param key             key
+     * @param defaultSupplier 默认值回调
+     * @param <T>             数据类型
+     * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> Map<String, T> readWriteMap(String key, Supplier<Map<String, T>> defaultSupplier) {
         return readWrite(key, defaultSupplier, RedisUtils::setCacheMap);
@@ -74,10 +114,23 @@ public class RedisReadWriteLockUtil {
      * 同时执行读与写操作，当读取值不存在时，执行默认回调获取值
      *
      * @param key             key
+     * @param expire          过期时间
+     * @param defaultSupplier 默认值回调
+     * @param <T>             数据类型
+     * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
+     */
+    public static <T> Map<String, T> readWriteMap(String key, Duration expire, Supplier<Map<String, T>> defaultSupplier) {
+        return readWrite(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheMap(keyS, data, expire));
+    }
+
+    /**
+     * 同时执行读与写操作，当读取值不存在时，执行默认回调获取值
+     *
+     * @param key             key
      * @param defaultSupplier 默认值回调
      * @param <T>             数据类型
      * @param after           执行默认回调获取值后的操作，例如存入缓存中
-     * @return 返回数据
+     * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> T readWrite(String key, Supplier<T> defaultSupplier, BiConsumer<String, T> after) {
         RReadWriteLock readWriteLock = RedisUtils.getClient().getReadWriteLock("readWriteLock:" + key);
@@ -171,7 +224,7 @@ public class RedisReadWriteLockUtil {
      *
      * @param key             缓存key
      * @param defaultSupplier 获取值回调
-     * @return 当前值
+     * @return 回调值
      */
     public static <T> T write(String key, Supplier<T> defaultSupplier) {
         return write(key, defaultSupplier, RedisUtils::setCacheObject);
@@ -182,7 +235,18 @@ public class RedisReadWriteLockUtil {
      *
      * @param key             缓存key
      * @param defaultSupplier 获取值回调
-     * @return 当前值
+     * @return 回调值
+     */
+    public static <T> T write(String key, Duration expire, Supplier<T> defaultSupplier) {
+        return write(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheObject(keyS, data, expire));
+    }
+
+    /**
+     * 执行写操作
+     *
+     * @param key             缓存key
+     * @param defaultSupplier 获取值回调
+     * @return 回调值
      */
     public static <T> List<T> writeList(String key, Supplier<List<T>> defaultSupplier) {
         return write(key, defaultSupplier, RedisUtils::setCacheList);
@@ -193,7 +257,18 @@ public class RedisReadWriteLockUtil {
      *
      * @param key             缓存key
      * @param defaultSupplier 获取值回调
-     * @return 当前值
+     * @return 回调值
+     */
+    public static <T> List<T> writeList(String key, Duration expire, Supplier<List<T>> defaultSupplier) {
+        return write(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheList(keyS, data, expire));
+    }
+
+    /**
+     * 执行写操作
+     *
+     * @param key             缓存key
+     * @param defaultSupplier 获取值回调
+     * @return 回调值
      */
     public static <T> Set<T> writeSet(String key, Supplier<Set<T>> defaultSupplier) {
         return write(key, defaultSupplier, RedisUtils::setCacheSet);
@@ -204,10 +279,32 @@ public class RedisReadWriteLockUtil {
      *
      * @param key             缓存key
      * @param defaultSupplier 获取值回调
-     * @return 当前值
+     * @return 回调值
+     */
+    public static <T> Set<T> writeSet(String key, Duration expire, Supplier<Set<T>> defaultSupplier) {
+        return write(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheSet(keyS, data, expire));
+    }
+
+    /**
+     * 执行写操作
+     *
+     * @param key             缓存key
+     * @param defaultSupplier 获取值回调
+     * @return 回调值
      */
     public static <T> Map<String, T> writeMap(String key, Supplier<Map<String, T>> defaultSupplier) {
         return write(key, defaultSupplier, RedisUtils::setCacheMap);
+    }
+
+    /**
+     * 执行写操作
+     *
+     * @param key             缓存key
+     * @param defaultSupplier 获取值回调
+     * @return 回调值
+     */
+    public static <T> Map<String, T> writeMap(String key, Duration expire, Supplier<Map<String, T>> defaultSupplier) {
+        return write(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheMap(keyS, data, expire));
     }
 
     /**

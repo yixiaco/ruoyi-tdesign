@@ -360,16 +360,49 @@ public class RedisUtils {
     }
 
     /**
-     * 缓存Map
+     * put缓存Map
+     *
+     * @param key     缓存的键值
+     * @param dataMap 缓存的数据
+     */
+    public static <T> void putAllCacheMap(final String key, final Map<String, T> dataMap) {
+        if (dataMap != null) {
+            RMap<String, T> rMap = CLIENT.getMap(key);
+            rMap.putAll(dataMap);
+        }
+    }
+
+    /**
+     * 清空后，缓存Map
      *
      * @param key     缓存的键值
      * @param dataMap 缓存的数据
      */
     public static <T> void setCacheMap(final String key, final Map<String, T> dataMap) {
+        RBatch batch = CLIENT.createBatch();
+        batch.getBucket(key).deleteAsync();
         if (dataMap != null) {
-            RMap<String, T> rMap = CLIENT.getMap(key);
-            rMap.putAll(dataMap);
+            RMapAsync<String, T> map = batch.getMap(key);
+            map.putAllAsync(dataMap);
         }
+        batch.execute();
+    }
+
+    /**
+     * 清空后，缓存Map
+     *
+     * @param key     缓存的键值
+     * @param dataMap 缓存的数据
+     */
+    public static <T> void setCacheMap(final String key, final Map<String, T> dataMap, final Duration expire) {
+        RBatch batch = CLIENT.createBatch();
+        batch.getBucket(key).deleteAsync();
+        if (dataMap != null) {
+            RMapAsync<String, T> map = batch.getMap(key);
+            map.putAllAsync(dataMap);
+            map.expireAsync(expire);
+        }
+        batch.execute();
     }
 
     /**
