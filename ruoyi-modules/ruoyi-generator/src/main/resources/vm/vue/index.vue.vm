@@ -210,7 +210,7 @@
         </t-form-item>
 #elseif($column.htmlType == "editor")
         <t-form-item label="${comment}" name="${field}">
-          <editor v-model="form.${field}" :min-height="192" />
+          <editor v-model="form.${field}" />
         </t-form-item>
 #elseif($column.htmlType == "select" && "" != $dictType)
         <t-form-item label="${comment}" name="${field}">
@@ -327,6 +327,10 @@
             <t-col :span="12">
               <t-form-item label="${comment}">{{ form.${javaField} }}</t-form-item>
             </t-col>
+#elseif($column.detail && $column.htmlType == "editor")
+            <t-col :span="12">
+              <t-form-item label="${comment}"><div v-html="form.${javaField}"></div></t-form-item>
+            </t-col>
 #elseif($column.detail)
             <t-col :span="6">
               <t-form-item label="${comment}">{{ form.${javaField} }}</t-form-item>
@@ -345,7 +349,6 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { computed, getCurrentInstance, ref } from 'vue';
 import {
   AddIcon,
   BrowseIcon,
@@ -357,8 +360,16 @@ import {
   SettingIcon,
 } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { computed, getCurrentInstance, ref } from 'vue';
+
 import { list${BusinessName}, get${BusinessName}, del${BusinessName}, add${BusinessName}, update${BusinessName} } from '@/api/${moduleName}/${businessName}';
 import { #if(!$useBO || !$useQuery || !$useVO)${ClassName}#if($useBO || $useQuery || $useVO), #end#end#if($useBO)${ClassName}Form#if($useQuery || $useVO), #end#end#if($useQuery)${ClassName}Query#if($useVO), #end#end#if($useVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
+#foreach($column in $columns)
+#if($column.htmlType == "editor")
+import Editor from '@/components/editor/index.vue';
+#end
+#end
+
 #if($useVO)
 #set($vo="${ClassName}Vo")
 #else
