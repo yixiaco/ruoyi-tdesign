@@ -1,5 +1,6 @@
 package org.dromara;
 
+import cn.hutool.crypto.SecureUtil;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup;
@@ -14,6 +15,7 @@ import org.springframework.boot.context.metrics.buffering.BufferingApplicationSt
 public class DromaraApplication {
 
     public static void main(String[] args) {
+        SecureUtil.disableBouncyCastle();
         SpringApplication application = new SpringApplication(DromaraApplication.class);
         application.setApplicationStartup(new BufferingApplicationStartup(2048));
         application.run(args);
