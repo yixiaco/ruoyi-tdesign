@@ -1,14 +1,24 @@
 <template>
-  <t-image-viewer :key="props.src" :images="realSrcList">
+  <t-image-viewer :key="props.src" :default-index="0" :images="realSrcList">
     <template #trigger="{ open }">
       <t-image
         :key="realSrc"
         :src="realSrc"
-        :style="{ display: 'inline-block', width: realWidth, height: realHeight }"
+        :style="{
+          display: 'inline-block',
+          width: realWidth,
+          height: realHeight,
+          'border-radius': 'var(--td-radius-default)',
+        }"
+        :lazy="true"
+        :gallery="realSrcList.length > 1"
         overlay-trigger="hover"
+        @mouseenter="hover = true"
+        @mouseleave="hover = false"
       >
         <template #overlayContent>
           <div
+            class="overlay"
             style="
               background: rgba(0, 0, 0, 0.4);
               color: #fff;
@@ -16,6 +26,7 @@
               display: flex;
               align-items: center;
               justify-content: center;
+              border-radius: var(--td-radius-default);
             "
             @click.stop="open"
           >
@@ -54,6 +65,8 @@ const props = defineProps({
 });
 
 const realSrcList = ref([]);
+const hover = ref(false);
+const scale = computed(() => (hover.value ? 1.1 : 1));
 
 watch(
   () => props.src,
@@ -86,3 +99,12 @@ const realWidth = computed(() => (typeof props.width === 'string' ? props.width 
 
 const realHeight = computed(() => (typeof props.height === 'string' ? props.height : `${props.height}px`));
 </script>
+<!-- eslint-disable-next-line vue-scoped-css/enforce-style-type -->
+<style lang="less">
+.t-image__wrapper img,
+.overlay {
+  transition: all 0.3s;
+  cursor: pointer;
+  transform: scale(v-bind(scale));
+}
+</style>

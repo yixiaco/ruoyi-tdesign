@@ -387,7 +387,9 @@
               </t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="头像地址">{{ formView.avatar }}</t-form-item>
+              <t-form-item label="头像地址">
+                <image-preview :src="formView.avatar" :width="60" :height="60" />
+              </t-form-item>
             </t-col>
             <t-col :span="6">
               <t-form-item label="帐号状态">
@@ -727,6 +729,7 @@ function handleAdd() {
   open.value = true;
   dLoading.value = true;
   reset();
+  getDeptTree();
   getUser()
     .then((response) => {
       postOptions.value = response.data.posts;
@@ -744,6 +747,7 @@ function handleUpdate(row) {
   const userId = row.userId || ids.value;
   open.value = true;
   dLoading.value = true;
+  getDeptTree();
   getUser(userId)
     .then((response) => {
       Object.assign(form.value, response.data.user);

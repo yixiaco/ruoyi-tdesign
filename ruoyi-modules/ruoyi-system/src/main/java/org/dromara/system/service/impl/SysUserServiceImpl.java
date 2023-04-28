@@ -72,7 +72,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
                 .select(SysDept::getDeptId)
                 .apply(DataBaseHelper.findInSet(user.getDeptId(), "ancestors"))
                 .list();
-            user.setDeptIds(deptList.stream().map(SysDept::getDeptId).toArray(Long[]::new));
+            List<Long> ids = StreamUtils.toList(deptList, SysDept::getDeptId);
+            ids.add(user.getDeptId());
+            user.setDeptIds(ids.toArray(Long[]::new));
         }
         return PageQuery.of(() -> baseMapper.queryList(user));
     }
