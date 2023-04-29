@@ -36,6 +36,15 @@ public class LoginUserHelper {
     public static final String USER_KEY = "user:userId";
 
     /**
+     * 当前是否登录
+     *
+     * @return
+     */
+    public static boolean isLogin() {
+        return MultipleStpUtil.USER.isLogin();
+    }
+
+    /**
      * 登录系统
      *
      * @param tokenUser 登录用户信息
