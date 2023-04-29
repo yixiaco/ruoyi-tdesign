@@ -93,6 +93,18 @@ public class LoginUserHelper {
     /**
      * 更新用户
      *
+     * @param updateBy 更新回调
+     */
+    public static <T extends TokenUser> void updateUser(Consumer<T> updateBy) {
+        Long userId = getUserId();
+        if (userId != null) {
+            updateUser(userId, updateBy);
+        }
+    }
+
+    /**
+     * 更新用户
+     *
      * @param userId   用户id
      * @param updateBy 更新回调
      */
@@ -107,9 +119,11 @@ public class LoginUserHelper {
                     T tokenUser = (T) session.get(LOGIN_USER_KEY);
                     updateBy.accept(tokenUser);
                     session.set(LOGIN_USER_KEY, tokenUser);
-                    SaStorage storage = SaHolder.getStorage();
-                    if (storage != null) {
-                        storage.set(LOGIN_USER_KEY, tokenUser);
+                    if (Objects.equals(tokenValue, token)) {
+                        SaStorage storage = SaHolder.getStorage();
+                        if (storage != null) {
+                            storage.set(LOGIN_USER_KEY, tokenUser);
+                        }
                     }
                 }
             }
