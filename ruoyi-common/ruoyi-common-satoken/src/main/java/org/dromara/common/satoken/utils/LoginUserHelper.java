@@ -4,13 +4,17 @@ import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.context.model.SaStorage;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.SaLoginModel;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.domain.model.TokenUser;
 import org.dromara.common.core.enums.DeviceType;
+
+import java.util.List;
+import java.util.Objects;
+import java.util.function.Consumer;
 
 /**
  * 登录鉴权助手
@@ -84,6 +88,31 @@ public class LoginUserHelper {
     @SuppressWarnings("unchecked")
     public static <T extends TokenUser> T getLoginUser(String token) {
         return (T) MultipleStpUtil.USER.getTokenSessionByToken(token).get(LOGIN_USER_KEY);
+    }
+
+    /**
+     * 更新用户
+     *
+     * @param userId   用户id
+     * @param updateBy 更新回调
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends TokenUser> void updateUser(Long userId, Consumer<T> updateBy) {
+        List<String> tokens = MultipleStpUtil.USER.getTokenValueListByLoginId(userId);
+        String tokenValue = MultipleStpUtil.USER.getTokenValue();
+        if (CollUtil.isNotEmpty(tokens)) {
+            for (String token : tokens) {
+                SaSession session = MultipleStpUtil.USER.getTokenSessionByToken(token);
+                if (session != null) {
+                    T tokenUser = (T) session.get(LOGIN_USER_KEY);
+                    updateBy.accept(tokenUser);
+                    session.set(LOGIN_USER_KEY, tokenUser);
+                    if (Objects.equals(tokenValue, token)) {
+                        SaHolder.getStorage().set(LOGIN_USER_KEY, tokenUser);
+                    }
+                }
+            }
+        }
     }
 
     /**
