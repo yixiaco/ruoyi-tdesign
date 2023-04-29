@@ -78,7 +78,7 @@ public class PlusDataPermissionHandler {
         }
         LoginUser currentUser = DataPermissionHelper.getVariable("user");
         if (ObjectUtil.isNull(currentUser)) {
-            currentUser = LoginHelper.getLoginUser();
+            currentUser = LoginHelper.getUser();
             DataPermissionHelper.setVariable("user", currentUser);
         }
         // 如果是超级管理员或租户管理员，则不过滤数据

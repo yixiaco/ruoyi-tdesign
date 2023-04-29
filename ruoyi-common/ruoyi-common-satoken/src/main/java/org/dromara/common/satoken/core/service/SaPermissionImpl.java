@@ -2,7 +2,7 @@ package org.dromara.common.satoken.core.service;
 
 import cn.dev33.satoken.stp.StpInterface;
 import org.dromara.common.core.domain.model.LoginUser;
-import org.dromara.common.core.domain.model.TokenUser;
+import org.dromara.common.core.domain.model.BaseUser;
 import org.dromara.common.core.enums.UserType;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.LoginUserHelper;
@@ -24,7 +24,7 @@ public class SaPermissionImpl implements StpInterface {
     @Override
     public List<String> getPermissionList(Object loginId, String loginType) {
         if (MultipleStpUtil.SYSTEM.isLogin()) {
-            LoginUser loginUser = LoginHelper.getLoginUser();
+            LoginUser loginUser = LoginHelper.getUser();
             UserType userType = UserType.getUserType(loginUser.getUserType());
             if (userType == UserType.SYS_USER) {
                 return new ArrayList<>(loginUser.getMenuPermission());
@@ -32,7 +32,7 @@ public class SaPermissionImpl implements StpInterface {
                 // 其他端 自行根据业务编写
             }
         } else if (MultipleStpUtil.USER.isLogin()) {
-            TokenUser tokenUser = LoginUserHelper.getLoginUser();
+            BaseUser tokenUser = LoginUserHelper.getUser();
             if (tokenUser != null) {
                 return new ArrayList<>(tokenUser.getMenuPermission());
             }
@@ -46,7 +46,7 @@ public class SaPermissionImpl implements StpInterface {
     @Override
     public List<String> getRoleList(Object loginId, String loginType) {
         if (MultipleStpUtil.SYSTEM.isLogin()) {
-            LoginUser loginUser = LoginHelper.getLoginUser();
+            LoginUser loginUser = LoginHelper.getUser();
             UserType userType = UserType.getUserType(loginUser.getUserType());
             if (userType == UserType.SYS_USER) {
                 return new ArrayList<>(loginUser.getRolePermission());
@@ -54,7 +54,7 @@ public class SaPermissionImpl implements StpInterface {
                 // 其他端 自行根据业务编写
             }
         } else if (MultipleStpUtil.USER.isLogin()) {
-            TokenUser tokenUser = LoginUserHelper.getLoginUser();
+            BaseUser tokenUser = LoginUserHelper.getUser();
             if (tokenUser != null) {
                 return new ArrayList<>(tokenUser.getRolePermission());
             }

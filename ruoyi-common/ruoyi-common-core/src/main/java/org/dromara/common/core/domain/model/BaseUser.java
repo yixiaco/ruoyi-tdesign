@@ -15,7 +15,7 @@ import java.util.Set;
 
 @Data
 @NoArgsConstructor
-public class TokenUser implements Serializable {
+public class BaseUser implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

@@ -16,7 +16,7 @@ import java.util.List;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
-public class LoginUser extends TokenUser {
+public class LoginUser extends BaseUser {
 
     /**
      * 用户类型

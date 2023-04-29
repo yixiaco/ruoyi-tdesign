@@ -9,7 +9,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import org.dromara.common.core.domain.model.TokenUser;
+import org.dromara.common.core.domain.model.BaseUser;
 import org.dromara.common.core.enums.DeviceType;
 
 import java.util.List;
@@ -49,7 +49,7 @@ public class LoginUserHelper {
      *
      * @param tokenUser 登录用户信息
      */
-    public static void login(TokenUser tokenUser) {
+    public static void login(BaseUser tokenUser) {
         loginByDevice(tokenUser, null);
     }
 
@@ -59,7 +59,7 @@ public class LoginUserHelper {
      *
      * @param tokenUser 登录用户信息
      */
-    public static void loginByDevice(TokenUser tokenUser, DeviceType deviceType) {
+    public static void loginByDevice(BaseUser tokenUser, DeviceType deviceType) {
         SaStorage storage = SaHolder.getStorage();
         storage.set(LOGIN_USER_KEY, tokenUser);
         storage.set(TENANT_KEY, tokenUser.getTenantId());
@@ -78,24 +78,24 @@ public class LoginUserHelper {
      * 获取用户(多级缓存)
      */
     @SuppressWarnings("unchecked")
-    public static <T extends TokenUser> T getLoginUser() {
-        T tokenUser = (T) SaHolder.getStorage().get(LOGIN_USER_KEY);
-        if (tokenUser != null) {
-            return tokenUser;
+    public static <T extends BaseUser> T getUser() {
+        T user = (T) SaHolder.getStorage().get(LOGIN_USER_KEY);
+        if (user != null) {
+            return user;
         }
         SaSession session = MultipleStpUtil.USER.getTokenSession();
         if (session != null) {
-            tokenUser = (T) session.get(LOGIN_USER_KEY);
-            SaHolder.getStorage().set(LOGIN_USER_KEY, tokenUser);
+            user = (T) session.get(LOGIN_USER_KEY);
+            SaHolder.getStorage().set(LOGIN_USER_KEY, user);
         }
-        return tokenUser;
+        return user;
     }
 
     /**
      * 获取用户基于token
      */
     @SuppressWarnings("unchecked")
-    public static <T extends TokenUser> T getLoginUser(String token) {
+    public static <T extends BaseUser> T getUser(String token) {
         return (T) MultipleStpUtil.USER.getTokenSessionByToken(token).get(LOGIN_USER_KEY);
     }
 
@@ -104,7 +104,7 @@ public class LoginUserHelper {
      *
      * @param updateBy 更新回调
      */
-    public static <T extends TokenUser> void updateUser(Consumer<T> updateBy) {
+    public static <T extends BaseUser> void updateUser(Consumer<T> updateBy) {
         Long userId = getUserId();
         if (userId != null) {
             updateUser(userId, updateBy);
@@ -118,7 +118,7 @@ public class LoginUserHelper {
      * @param updateBy 更新回调
      */
     @SuppressWarnings("unchecked")
-    public static <T extends TokenUser> void updateUser(Long userId, Consumer<T> updateBy) {
+    public static <T extends BaseUser> void updateUser(Long userId, Consumer<T> updateBy) {
         List<String> tokens = MultipleStpUtil.USER.getTokenValueListByLoginId(userId);
         String tokenValue = MultipleStpUtil.USER.getTokenValue();
         if (CollUtil.isNotEmpty(tokens)) {
@@ -177,7 +177,7 @@ public class LoginUserHelper {
      * 获取用户账户
      */
     public static String getUsername() {
-        return getLoginUser().getUsername();
+        return getUser().getUsername();
     }
 
 }

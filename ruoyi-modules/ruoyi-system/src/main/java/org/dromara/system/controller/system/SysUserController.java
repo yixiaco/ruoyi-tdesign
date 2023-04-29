@@ -123,7 +123,7 @@ public class SysUserController extends BaseController {
     @GetMapping("/getInfo")
     public R<UserInfoVo> getInfo() {
         UserInfoVo userInfoVo = new UserInfoVo();
-        LoginUser loginUser = LoginHelper.getLoginUser();
+        LoginUser loginUser = LoginHelper.getUser();
         if (TenantHelper.isEnable() && LoginHelper.isSuperAdmin()) {
             // 超级管理员 如果重新加载用户信息需清除动态租户
             TenantHelper.clearDynamic();

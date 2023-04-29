@@ -82,7 +82,7 @@ public class LoginHelper {
      * 获取用户(多级缓存)
      */
     @SuppressWarnings("unchecked")
-    public static <T extends LoginUser> T getLoginUser() {
+    public static <T extends LoginUser> T getUser() {
         T loginUser = (T) SaHolder.getStorage().get(LOGIN_USER_KEY);
         if (loginUser != null) {
             return loginUser;
@@ -99,7 +99,7 @@ public class LoginHelper {
      * 获取用户基于token
      */
     @SuppressWarnings("unchecked")
-    public static <T extends LoginUser> T getLoginUser(String token) {
+    public static <T extends LoginUser> T getUser(String token) {
         return (T) MultipleStpUtil.SYSTEM.getTokenSessionByToken(token).get(LOGIN_USER_KEY);
     }
 
@@ -181,14 +181,14 @@ public class LoginHelper {
      * 获取部门ID
      */
     public static Long getDeptId() {
-        return getLoginUser().getDeptId();
+        return getUser().getDeptId();
     }
 
     /**
      * 获取用户账户
      */
     public static String getUsername() {
-        return getLoginUser().getUsername();
+        return getUser().getUsername();
     }
 
     /**
@@ -224,7 +224,7 @@ public class LoginHelper {
     }
 
     public static boolean isTenantAdmin() {
-        return isTenantAdmin(getLoginUser().getRolePermission());
+        return isTenantAdmin(getUser().getRolePermission());
     }
 
 }

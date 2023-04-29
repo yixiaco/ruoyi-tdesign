@@ -31,7 +31,7 @@ public class PlusWebSocketInterceptor implements HandshakeInterceptor {
      */
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) {
-        LoginUser loginUser = LoginHelper.getLoginUser();
+        LoginUser loginUser = LoginHelper.getUser();
         attributes.put(LOGIN_USER_KEY, loginUser);
         return true;
     }

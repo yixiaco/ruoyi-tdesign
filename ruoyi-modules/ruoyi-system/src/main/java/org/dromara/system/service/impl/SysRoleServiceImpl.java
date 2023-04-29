@@ -438,7 +438,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             if (MultipleStpUtil.SYSTEM.getTokenActivityTimeoutByToken(token) < -1) {
                 return;
             }
-            LoginUser loginUser = LoginHelper.getLoginUser(token);
+            LoginUser loginUser = LoginHelper.getUser(token);
             if (loginUser.getRoles().stream().anyMatch(r -> r.getRoleId().equals(roleId))) {
                 try {
                     MultipleStpUtil.SYSTEM.logoutByTokenValue(token);

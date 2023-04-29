@@ -186,7 +186,7 @@ public class SysLoginService {
      */
     public void logout() {
         try {
-            LoginUser loginUser = LoginHelper.getLoginUser();
+            LoginUser loginUser = LoginHelper.getUser();
             if (loginUser != null) {
                 if (TenantHelper.isEnable() && LoginHelper.isSuperAdmin()) {
                     // 超级管理员 登出清除动态租户
