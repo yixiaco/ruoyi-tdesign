@@ -147,7 +147,7 @@ public class TenantHelper {
             TEMP_DYNAMIC_TENANT.set(tenantId);
             return;
         }
-        String cacheKey = DYNAMIC_TENANT_KEY + ":" + LoginHelper.getTenantId();
+        String cacheKey = DYNAMIC_TENANT_KEY + ":" + LoginHelper.getUserId();
         RedisUtils.setCacheObject(cacheKey, tenantId);
         SaHolder.getStorage().set(cacheKey, tenantId);
     }
@@ -179,7 +179,7 @@ public class TenantHelper {
             TEMP_DYNAMIC_TENANT.remove();
             return;
         }
-        String cacheKey = DYNAMIC_TENANT_KEY + ":" + LoginHelper.getTenantId();
+        String cacheKey = DYNAMIC_TENANT_KEY + ":" + LoginHelper.getUserId();
         RedisUtils.deleteObject(cacheKey);
         SaHolder.getStorage().delete(cacheKey);
     }
