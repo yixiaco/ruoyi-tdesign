@@ -107,8 +107,9 @@ public class LoginUserHelper {
                     T tokenUser = (T) session.get(LOGIN_USER_KEY);
                     updateBy.accept(tokenUser);
                     session.set(LOGIN_USER_KEY, tokenUser);
-                    if (Objects.equals(tokenValue, token)) {
-                        SaHolder.getStorage().set(LOGIN_USER_KEY, tokenUser);
+                    SaStorage storage = SaHolder.getStorage();
+                    if (storage != null) {
+                        storage.set(LOGIN_USER_KEY, tokenUser);
                     }
                 }
             }
