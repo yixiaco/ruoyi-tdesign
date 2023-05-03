@@ -321,10 +321,11 @@ public class GenTableServiceImpl implements IGenTableService {
                 prevColumn.setIsIncrement(column.getIsIncrement());
                 prevColumn.setSort(column.getSort());
                 prevColumn.setUpdateTime(DateUtils.getNowDate());
+                saveColumns.add(prevColumn);
             } else {
                 GenUtils.initColumnField(column, table);
+                saveColumns.add(column);
             }
-            saveColumns.add(column);
         });
         if (CollUtil.isNotEmpty(saveColumns)) {
             genTableColumnMapper.insertOrUpdateBatch(saveColumns);
