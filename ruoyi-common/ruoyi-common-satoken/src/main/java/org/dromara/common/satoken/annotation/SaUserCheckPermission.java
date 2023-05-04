@@ -3,6 +3,7 @@ package org.dromara.common.satoken.annotation;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
+import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -14,7 +15,7 @@ import java.lang.annotation.Target;
  * 可标注在函数、类上（效果等同于标注在此类的所有方法上）
  *
  * @author hexm
- * @see cn.dev33.satoken.annotation.SaCheckPermission
+ * @see SaCheckPermission
  */
 @SaCheckPermission(type = MultipleStpUtil.USER_TYPE)
 @Retention(RetentionPolicy.RUNTIME)
@@ -33,6 +34,7 @@ public @interface SaUserCheckPermission {
      *
      * @return 验证模式
      */
+    @AliasFor(annotation = SaCheckPermission.class, attribute = "mode")
     SaMode mode() default SaMode.AND;
 
     /**
@@ -50,5 +52,6 @@ public @interface SaUserCheckPermission {
      *
      * @return /
      */
+    @AliasFor(annotation = SaCheckPermission.class, attribute = "orRole")
     String[] orRole() default {};
 }

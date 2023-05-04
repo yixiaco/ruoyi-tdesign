@@ -3,6 +3,7 @@ package org.dromara.common.satoken.annotation;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
+import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -33,6 +34,7 @@ public @interface SaUserCheckRole {
      *
      * @return 验证模式
      */
+    @AliasFor(annotation = SaCheckRole.class, attribute = "mode")
     SaMode mode() default SaMode.AND;
 
 }

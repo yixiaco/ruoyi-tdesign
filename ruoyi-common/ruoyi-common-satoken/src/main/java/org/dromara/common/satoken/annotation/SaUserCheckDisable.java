@@ -3,6 +3,7 @@ package org.dromara.common.satoken.annotation;
 import cn.dev33.satoken.annotation.SaCheckDisable;
 import cn.dev33.satoken.util.SaTokenConsts;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
+import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -34,6 +35,7 @@ public @interface SaUserCheckDisable {
      *
      * @return /
      */
+    @AliasFor(annotation = SaCheckDisable.class, attribute = "level")
     int level() default SaTokenConsts.DEFAULT_DISABLE_LEVEL;
 
 }
