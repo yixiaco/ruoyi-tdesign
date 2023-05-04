@@ -64,6 +64,7 @@ export const useUserStore = defineStore('user', {
             } else {
               this.roles = ['ROLE_DEFAULT'];
             }
+            this.tenantId = user.tenantId;
             this.userId = user.userId;
             this.name = user.userName;
             this.avatar = avatar;

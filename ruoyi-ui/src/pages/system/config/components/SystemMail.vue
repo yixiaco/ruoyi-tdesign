@@ -163,7 +163,7 @@ const configs = ref<Record<string, SysConfigForm & SysConfigVo>>({
     configName: '邮箱配置',
     configType: 'Y',
     configValue: JSON.stringify(form.value),
-    isGlobal: 1,
+    isGlobal: 0,
   },
 });
 

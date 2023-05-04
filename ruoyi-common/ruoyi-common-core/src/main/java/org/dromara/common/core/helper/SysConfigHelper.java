@@ -75,7 +75,7 @@ public class SysConfigHelper {
      * @return
      */
     public static String getSysMail() {
-        return configService.getGlobalConfigValue("sys.mail");
+        return configService.getConfigValue("sys.mail");
     }
 
     /**
@@ -84,7 +84,7 @@ public class SysConfigHelper {
      * @return
      */
     public static String getSysSms() {
-        return configService.getGlobalConfigValue("sys.sms");
+        return configService.getConfigValue("sys.sms");
     }
 
     /**
@@ -93,6 +93,6 @@ public class SysConfigHelper {
      * @return
      */
     public static String getSysSmsCaptchaTemplateId() {
-        return configService.getGlobalConfigValue("sys.sms.captchaTemplateId");
+        return configService.getConfigValue("sys.sms.captchaTemplateId");
     }
 }

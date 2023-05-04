@@ -126,7 +126,7 @@ const configs = ref<Record<string, SysConfigForm & SysConfigVo>>({
     configName: '短信配置',
     configType: 'Y',
     configValue: JSON.stringify(form.value),
-    isGlobal: 1,
+    isGlobal: 0,
   },
 });
 
