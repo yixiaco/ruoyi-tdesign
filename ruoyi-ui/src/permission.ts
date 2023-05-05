@@ -4,6 +4,7 @@ import NProgress from 'nprogress'; // progress bar
 
 import router from '@/router';
 import { getUserStore, usePermissionStoreHook } from '@/store';
+import { useTitle } from '@/utils/doc';
 import { isRelogin } from '@/utils/request';
 import { isHttp } from '@/utils/validate';
 
@@ -18,6 +19,10 @@ router.beforeEach(async (to, from, next) => {
   const userStore = getUserStore();
   const { token } = userStore;
   if (token) {
+    if (to.meta.title) {
+      useTitle(to.meta.title as string);
+    }
+
     if (to.path === '/login') {
       next();
       return;
