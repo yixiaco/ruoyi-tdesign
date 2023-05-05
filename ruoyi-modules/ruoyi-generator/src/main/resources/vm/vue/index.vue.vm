@@ -489,11 +489,13 @@ function getList() {
   proxy.addDateRange(queryParams.value, dateRange${AttrName}.value, '${AttrName}');
 #end
 #end
-  list${BusinessName}(queryParams.value).then((response) => {
-    ${businessName}List.value = response.rows;
-    total.value = response.total;
-    loading.value = false;
-  });
+  list${BusinessName}(queryParams.value)
+    .then((response) => {
+      ${businessName}List.value = response.rows;
+      total.value = response.total;
+      loading.value = false;
+    })
+    .finally(() => (loading.value = false));
 }
 
 // 表单重置
