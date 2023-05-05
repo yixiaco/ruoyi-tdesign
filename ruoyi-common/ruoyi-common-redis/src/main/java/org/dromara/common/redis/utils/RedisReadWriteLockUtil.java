@@ -57,7 +57,7 @@ public class RedisReadWriteLockUtil {
      * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> List<T> readWriteList(String key, Supplier<List<T>> defaultSupplier) {
-        return readWrite(key, defaultSupplier, RedisUtils::setCacheList);
+        return readWriteList(key, defaultSupplier, RedisUtils::setCacheList);
     }
 
     /**
@@ -70,7 +70,7 @@ public class RedisReadWriteLockUtil {
      * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> List<T> readWriteList(String key, Duration expire, Supplier<List<T>> defaultSupplier) {
-        return readWrite(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheList(keyS, data, expire));
+        return readWriteList(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheList(keyS, data, expire));
     }
 
     /**
@@ -82,7 +82,7 @@ public class RedisReadWriteLockUtil {
      * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> Set<T> readWriteSet(String key, Supplier<Set<T>> defaultSupplier) {
-        return readWrite(key, defaultSupplier, RedisUtils::setCacheSet);
+        return readWriteSet(key, defaultSupplier, RedisUtils::setCacheSet);
     }
 
     /**
@@ -95,7 +95,7 @@ public class RedisReadWriteLockUtil {
      * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> Set<T> readWriteSet(String key, Duration expire, Supplier<Set<T>> defaultSupplier) {
-        return readWrite(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheSet(keyS, data, expire));
+        return readWriteSet(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheSet(keyS, data, expire));
     }
 
     /**
@@ -107,7 +107,7 @@ public class RedisReadWriteLockUtil {
      * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> Map<String, T> readWriteMap(String key, Supplier<Map<String, T>> defaultSupplier) {
-        return readWrite(key, defaultSupplier, RedisUtils::setCacheMap);
+        return readWriteMap(key, defaultSupplier, RedisUtils::setCacheMap);
     }
 
     /**
@@ -120,7 +120,7 @@ public class RedisReadWriteLockUtil {
      * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> Map<String, T> readWriteMap(String key, Duration expire, Supplier<Map<String, T>> defaultSupplier) {
-        return readWrite(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheMap(keyS, data, expire));
+        return readWriteMap(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheMap(keyS, data, expire));
     }
 
     /**
@@ -133,7 +133,7 @@ public class RedisReadWriteLockUtil {
      * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> T readWrite(String key, Supplier<T> defaultSupplier, BiConsumer<String, T> after) {
-        RReadWriteLock readWriteLock = RedisUtils.getClient().getReadWriteLock("readWriteLock:" + key);
+        RReadWriteLock readWriteLock = RedisUtils.getClient().getReadWriteLock(getKey(key));
         RLock lock = readWriteLock.readLock();
         lock.lock();
         try {
@@ -148,6 +148,126 @@ public class RedisReadWriteLockUtil {
                         data = defaultSupplier.get();
                         after.accept(key, data);
                     }
+                } finally {
+                    writeLock.unlock();
+                }
+            }
+            return data;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * 同时执行读与写操作，当读取值不存在时，执行默认回调获取值
+     *
+     * @param key             key
+     * @param defaultSupplier 默认值回调
+     * @param <T>             数据类型
+     * @param after           执行默认回调获取值后的操作，例如存入缓存中
+     * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
+     */
+    public static <T> List<T> readWriteList(String key, Supplier<List<T>> defaultSupplier, BiConsumer<String, List<T>> after) {
+        RReadWriteLock readWriteLock = RedisUtils.getClient().getReadWriteLock(getKey(key));
+        RLock lock = readWriteLock.readLock();
+        lock.lock();
+        try {
+            Boolean hasKey = RedisUtils.hasKey(key);
+            if (hasKey) {
+                return RedisUtils.getCacheList(key);
+            }
+            List<T> data = null;
+            if (defaultSupplier != null) {
+                RLock writeLock = readWriteLock.writeLock();
+                writeLock.lock();
+                try {
+                    // 双重检查
+                    hasKey = RedisUtils.hasKey(key);
+                    if (hasKey) {
+                        return RedisUtils.getCacheList(key);
+                    }
+                    data = defaultSupplier.get();
+                    after.accept(key, data);
+                } finally {
+                    writeLock.unlock();
+                }
+            }
+            return data;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * 同时执行读与写操作，当读取值不存在时，执行默认回调获取值
+     *
+     * @param key             key
+     * @param defaultSupplier 默认值回调
+     * @param <T>             数据类型
+     * @param after           执行默认回调获取值后的操作，例如存入缓存中
+     * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
+     */
+    public static <T> Set<T> readWriteSet(String key, Supplier<Set<T>> defaultSupplier, BiConsumer<String, Set<T>> after) {
+        RReadWriteLock readWriteLock = RedisUtils.getClient().getReadWriteLock(getKey(key));
+        RLock lock = readWriteLock.readLock();
+        lock.lock();
+        try {
+            Boolean hasKey = RedisUtils.hasKey(key);
+            if (hasKey) {
+                return RedisUtils.getCacheSet(key);
+            }
+            Set<T> data = null;
+            if (defaultSupplier != null) {
+                RLock writeLock = readWriteLock.writeLock();
+                writeLock.lock();
+                try {
+                    // 双重检查
+                    hasKey = RedisUtils.hasKey(key);
+                    if (hasKey) {
+                        return RedisUtils.getCacheSet(key);
+                    }
+                    data = defaultSupplier.get();
+                    after.accept(key, data);
+                } finally {
+                    writeLock.unlock();
+                }
+            }
+            return data;
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * 同时执行读与写操作，当读取值不存在时，执行默认回调获取值
+     *
+     * @param key             key
+     * @param defaultSupplier 默认值回调
+     * @param <T>             数据类型
+     * @param after           执行默认回调获取值后的操作，例如存入缓存中
+     * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
+     */
+    public static <T> Map<String, T> readWriteMap(String key, Supplier<Map<String, T>> defaultSupplier, BiConsumer<String, Map<String, T>> after) {
+        RReadWriteLock readWriteLock = RedisUtils.getClient().getReadWriteLock(getKey(key));
+        RLock lock = readWriteLock.readLock();
+        lock.lock();
+        try {
+            Boolean hasKey = RedisUtils.hasKey(key);
+            if (hasKey) {
+                return RedisUtils.getCacheMap(key);
+            }
+            Map<String, T> data = null;
+            if (defaultSupplier != null) {
+                RLock writeLock = readWriteLock.writeLock();
+                writeLock.lock();
+                try {
+                    // 双重检查
+                    hasKey = RedisUtils.hasKey(key);
+                    if (hasKey) {
+                        return RedisUtils.getCacheMap(key);
+                    }
+                    data = defaultSupplier.get();
+                    after.accept(key, data);
                 } finally {
                     writeLock.unlock();
                 }
@@ -209,7 +329,7 @@ public class RedisReadWriteLockUtil {
      * @return
      */
     public static <T> T read(String key, Function<String, T> after) {
-        RReadWriteLock readWriteLock = RedisUtils.getClient().getReadWriteLock("readWriteLock:" + key);
+        RReadWriteLock readWriteLock = RedisUtils.getClient().getReadWriteLock(getKey(key));
         RLock lock = readWriteLock.readLock();
         lock.lock();
         try {
@@ -217,6 +337,10 @@ public class RedisReadWriteLockUtil {
         } finally {
             lock.unlock();
         }
+    }
+
+    private static String getKey(String key) {
+        return "readWriteLock:" + key;
     }
 
     /**
@@ -316,7 +440,7 @@ public class RedisReadWriteLockUtil {
      * @return
      */
     public static <T> T write(String key, Supplier<T> defaultSupplier, BiConsumer<String, T> after) {
-        RReadWriteLock readWriteLock = RedisUtils.getClient().getReadWriteLock("readWriteLock:" + key);
+        RReadWriteLock readWriteLock = RedisUtils.getClient().getReadWriteLock(getKey(key));
         RLock writeLock = readWriteLock.writeLock();
         writeLock.lock();
         try {

@@ -58,7 +58,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> List<T> getOrSaveList(String key, Supplier<List<T>> defaultSupplier) {
-        return getOrAfter(key, null, defaultSupplier, RedisUtils::setCacheList);
+        return getListOrAfter(key, null, defaultSupplier, RedisUtils::setCacheList);
     }
 
     /**
@@ -69,7 +69,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> List<T> getOrSaveList(String key, Duration lease, Supplier<List<T>> defaultSupplier) {
-        return getOrAfter(key, lease, defaultSupplier, RedisUtils::setCacheList);
+        return getListOrAfter(key, lease, defaultSupplier, RedisUtils::setCacheList);
     }
 
     /**
@@ -81,7 +81,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> List<T> getOrSaveList(String key, Duration lease, Duration expire, Supplier<List<T>> defaultSupplier) {
-        return getOrAfter(key, lease, defaultSupplier, (keyS, data) -> RedisUtils.setCacheList(keyS, data, expire));
+        return getListOrAfter(key, lease, defaultSupplier, (keyS, data) -> RedisUtils.setCacheList(keyS, data, expire));
     }
 
     /**
@@ -91,7 +91,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> Set<T> getOrSaveSet(String key, Supplier<Set<T>> defaultSupplier) {
-        return getOrAfter(key, null, defaultSupplier, RedisUtils::setCacheSet);
+        return getSetOrAfter(key, null, defaultSupplier, RedisUtils::setCacheSet);
     }
 
     /**
@@ -102,7 +102,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> Set<T> getOrSaveSet(String key, Duration lease, Supplier<Set<T>> defaultSupplier) {
-        return getOrAfter(key, lease, defaultSupplier, RedisUtils::setCacheSet);
+        return getSetOrAfter(key, lease, defaultSupplier, RedisUtils::setCacheSet);
     }
 
     /**
@@ -114,7 +114,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> Set<T> getOrSaveSet(String key, Duration lease, Duration expire, Supplier<Set<T>> defaultSupplier) {
-        return getOrAfter(key, lease, defaultSupplier, (keyS, data) -> RedisUtils.setCacheSet(keyS, data, expire));
+        return getSetOrAfter(key, lease, defaultSupplier, (keyS, data) -> RedisUtils.setCacheSet(keyS, data, expire));
     }
 
     /**
@@ -124,7 +124,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> Map<String, T> getOrSaveMap(String key, Supplier<Map<String, T>> defaultSupplier) {
-        return getOrAfter(key, null, defaultSupplier, RedisUtils::setCacheMap);
+        return getMapOrAfter(key, null, defaultSupplier, RedisUtils::setCacheMap);
     }
 
     /**
@@ -135,7 +135,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> Map<String, T> getOrSaveMap(String key, Duration lease, Supplier<Map<String, T>> defaultSupplier) {
-        return getOrAfter(key, lease, defaultSupplier, RedisUtils::setCacheMap);
+        return getMapOrAfter(key, lease, defaultSupplier, RedisUtils::setCacheMap);
     }
 
     /**
@@ -147,7 +147,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> Map<String, T> getOrSaveMap(String key, Duration lease, Duration expire, Supplier<Map<String, T>> defaultSupplier) {
-        return getOrAfter(key, lease, defaultSupplier, (keyS, map) -> RedisUtils.setCacheMap(keyS, map, expire));
+        return getMapOrAfter(key, lease, defaultSupplier, (keyS, map) -> RedisUtils.setCacheMap(keyS, map, expire));
     }
 
     /**
@@ -161,7 +161,7 @@ public class RedisLockUtil {
     public static <T> T getOrAfter(String key, Duration lease, Supplier<T> defaultSupplier, BiConsumer<String, T> after) {
         T data = RedisUtils.getCacheObject(key);
         if (data == null) {
-            RLock lock = RedisUtils.getClient().getLock("lock:" + key);
+            RLock lock = RedisUtils.getClient().getLock(getKey(key));
             if (lease == null || lease.getSeconds() < 0) {
                 lock.lock();
             } else {
@@ -178,5 +178,114 @@ public class RedisLockUtil {
             }
         }
         return data;
+    }
+
+    /**
+     * 获取缓存时，如果没有缓存时执行回调，并执行一个随后的操作
+     *
+     * @param key             缓存key
+     * @param lease           如果尚未通过调用unlock释放锁，则在获取锁后保留锁的最长时间。如果lease为-1，则保持锁定直到显式解锁
+     * @param defaultSupplier 不存在值时回调
+     * @param after           没有缓存时执行的回调
+     */
+    public static <T> List<T> getListOrAfter(String key, Duration lease, Supplier<List<T>> defaultSupplier, BiConsumer<String, List<T>> after) {
+        Boolean hasKey = RedisUtils.hasKey(key);
+        if (hasKey) {
+            return RedisUtils.getCacheList(key);
+        } else {
+            List<T> data;
+            RLock lock = RedisUtils.getClient().getLock(getKey(key));
+            if (lease == null || lease.getSeconds() < 0) {
+                lock.lock();
+            } else {
+                lock.lock(lease.getSeconds(), TimeUnit.SECONDS);
+            }
+            try {
+                hasKey = RedisUtils.hasKey(key);
+                if (hasKey) {
+                    return RedisUtils.getCacheList(key);
+                } else {
+                    data = defaultSupplier.get();
+                    after.accept(key, data);
+                }
+            } finally {
+                lock.unlock();
+            }
+            return data;
+        }
+    }
+
+    /**
+     * 获取缓存时，如果没有缓存时执行回调，并执行一个随后的操作
+     *
+     * @param key             缓存key
+     * @param lease           如果尚未通过调用unlock释放锁，则在获取锁后保留锁的最长时间。如果lease为-1，则保持锁定直到显式解锁
+     * @param defaultSupplier 不存在值时回调
+     * @param after           没有缓存时执行的回调
+     */
+    public static <T> Set<T> getSetOrAfter(String key, Duration lease, Supplier<Set<T>> defaultSupplier, BiConsumer<String, Set<T>> after) {
+        Boolean hasKey = RedisUtils.hasKey(key);
+        if (hasKey) {
+            return RedisUtils.getCacheSet(key);
+        } else {
+            Set<T> data;
+            RLock lock = RedisUtils.getClient().getLock(getKey(key));
+            if (lease == null || lease.getSeconds() < 0) {
+                lock.lock();
+            } else {
+                lock.lock(lease.getSeconds(), TimeUnit.SECONDS);
+            }
+            try {
+                hasKey = RedisUtils.hasKey(key);
+                if (hasKey) {
+                    return RedisUtils.getCacheSet(key);
+                } else {
+                    data = defaultSupplier.get();
+                    after.accept(key, data);
+                }
+            } finally {
+                lock.unlock();
+            }
+            return data;
+        }
+    }
+
+    /**
+     * 获取缓存时，如果没有缓存时执行回调，并执行一个随后的操作
+     *
+     * @param key             缓存key
+     * @param lease           如果尚未通过调用unlock释放锁，则在获取锁后保留锁的最长时间。如果lease为-1，则保持锁定直到显式解锁
+     * @param defaultSupplier 不存在值时回调
+     * @param after           没有缓存时执行的回调
+     */
+    public static <T> Map<String, T> getMapOrAfter(String key, Duration lease, Supplier<Map<String, T>> defaultSupplier, BiConsumer<String, Map<String, T>> after) {
+        Boolean hasKey = RedisUtils.hasKey(key);
+        if (hasKey) {
+            return RedisUtils.getCacheMap(key);
+        } else {
+            Map<String, T> data;
+            RLock lock = RedisUtils.getClient().getLock(getKey(key));
+            if (lease == null || lease.getSeconds() < 0) {
+                lock.lock();
+            } else {
+                lock.lock(lease.getSeconds(), TimeUnit.SECONDS);
+            }
+            try {
+                hasKey = RedisUtils.hasKey(key);
+                if (hasKey) {
+                    return RedisUtils.getCacheMap(key);
+                } else {
+                    data = defaultSupplier.get();
+                    after.accept(key, data);
+                }
+            } finally {
+                lock.unlock();
+            }
+            return data;
+        }
+    }
+
+    private static String getKey(String key) {
+        return "lock:" + key;
     }
 }
