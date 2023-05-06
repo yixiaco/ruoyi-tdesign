@@ -1155,8 +1155,8 @@ comment on column sys_oss_rule.update_by      is  '更新者';
 comment on column sys_oss_rule.update_time    is  '更新时间';
 comment on column sys_oss_rule.remark         is  '备注';
 
-insert into sys_oss_rule values (1, '000000', '180x180', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_180/quality,q_90', 'n', '0', 103, 1, sysdate, 1, sysdate, null);
-insert into sys_oss_rule values (2, '000000', '800x800', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_800/quality,q_90', 'y', '0', 103, 1, sysdate, 1, sysdate, null);
+insert into sys_oss_rule values (1, '000000', '180x180', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_180/quality,q_90', 'N', '0', 103, 1, sysdate, 1, sysdate, null);
+insert into sys_oss_rule values (2, '000000', '800x800', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_800/quality,q_90', 'Y', '0', 103, 1, sysdate, 1, sysdate, null);
 
 
 -- ----------------------------
