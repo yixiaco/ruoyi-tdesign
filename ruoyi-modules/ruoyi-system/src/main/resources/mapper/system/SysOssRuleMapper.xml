@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dromara.system.mapper.SysOssRuleMapper">
+
+    <resultMap id="SysOssRuleResult" autoMapping="true" type="org.dromara.system.domain.SysOssRule">
+    </resultMap>
+    <resultMap id="SysOssRuleResultVo" autoMapping="true" type="org.dromara.system.domain.vo.SysOssRuleVo">
+    </resultMap>
+
+    <sql id="selectSysOssRuleVo">
+        select sor.oss_rule_id, sor.tenant_id, sor.rule_name, sor.domain, sor.mime_type, sor.rule, sor.is_default, sor.`status`, sor.create_dept, sor.create_by, sor.create_time, sor.update_by, sor.update_time, sor.remark from sys_oss_rule sor
+    </sql>
+    <select id="queryList" parameterType="org.dromara.system.domain.query.SysOssRuleQuery" resultMap="SysOssRuleResultVo">
+        <include refid="selectSysOssRuleVo"/>
+        <where>
+            <if test="ruleName != null and ruleName != ''"> and sor.rule_name like concat('%', #{ruleName}, '%')</if>
+            <if test="domain != null and domain != ''"> and sor.domain like concat('%', #{domain}, '%')</if>
+            <if test="isDefault != null and isDefault != ''"> and sor.is_default = #{isDefault}</if>
+            <if test="status != null and status != ''"> and sor.`status` = #{status}</if>
+        </where>
+        order by sor.create_time desc
+    </select>
+
+</mapper>

@@ -22,4 +22,9 @@ public interface CacheConstants {
      */
     String SYS_DICT_KEY = "sys_dict:";
 
+    /**
+     * oss规则
+     */
+    String SYS_OSS_RULE = "sys_oss_rule";
+
 }

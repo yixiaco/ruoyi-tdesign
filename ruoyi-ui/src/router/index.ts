@@ -130,22 +130,6 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
     ],
   },
   {
-    path: '/system/oss-config',
-    component: Layout,
-    meta: {
-      hidden: true,
-      permissions: ['system:ossConfig:list'],
-    },
-    children: [
-      {
-        path: 'index',
-        component: () => import('@/pages/system/oss/config.vue'),
-        name: 'OssConfig',
-        meta: { title: '配置管理', activeMenu: '/system/oss' },
-      },
-    ],
-  },
-  {
     path: '/tool/gen-edit',
     component: Layout,
     meta: {

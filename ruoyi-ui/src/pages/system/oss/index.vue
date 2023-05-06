@@ -115,15 +115,6 @@
               >
                 预览开关 : {{ previewListResource ? '禁用' : '启用' }}
               </t-button>
-              <t-button
-                v-hasPermi="['system:ossConfig:list']"
-                theme="default"
-                variant="outline"
-                @click="handleOssConfig"
-              >
-                <template #icon> <setting-icon /> </template>
-                配置管理
-              </t-button>
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -141,8 +132,8 @@
           <image-preview
             v-if="previewListResource && checkFileSuffix(row.fileSuffix)"
             :src="row.url"
-            width="80px"
-            height="80px"
+            width="60px"
+            height="60px"
           ></image-preview>
           <span v-if="!checkFileSuffix(row.fileSuffix) || !previewListResource" v-text="row.url" />
         </template>
@@ -211,7 +202,6 @@ import {
 } from 'tdesign-icons-vue-next';
 import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref, toRefs } from 'vue';
-import { useRouter } from 'vue-router';
 
 import { getPreviewListResourceConfig } from '@/api/system/config';
 import { SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
@@ -221,7 +211,6 @@ import ImagePreview from '@/components/image-preview/index.vue';
 import ImageUpload from '@/components/image-upload/index.vue';
 import { useUserStore } from '@/store';
 
-const router = useRouter();
 const { proxy } = getCurrentInstance();
 const { tenantId } = toRefs(useUserStore());
 const isSystem = computed(() => tenantId.value === '000000');
@@ -249,7 +238,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `文件名`, colKey: 'fileName', align: 'center', ellipsis: true },
   { title: `原名`, colKey: 'originalName', align: 'center', ellipsis: true },
   { title: `文件后缀`, colKey: 'fileSuffix', align: 'center' },
-  { title: `文件展示`, colKey: 'url', align: 'center', ellipsis: true },
+  { title: `文件展示`, colKey: 'url', align: 'center' },
   { title: `大小`, colKey: 'size', align: 'center' },
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180, sorter: true },
   { title: `上传人`, colKey: 'createBy', align: 'center' },
@@ -297,11 +286,13 @@ function getList() {
   getPreviewListResourceConfig().then((response) => {
     previewListResource.value = response.data === undefined ? true : response.data;
   });
-  listOss(proxy.addDateRange(queryParams.value, daterangeCreateTime.value, 'CreateTime')).then((response) => {
-    ossList.value = response.rows;
-    total.value = response.total;
-    loading.value = false;
-  });
+  listOss(proxy.addDateRange(queryParams.value, daterangeCreateTime.value, 'CreateTime'))
+    .then((response) => {
+      ossList.value = response.rows;
+      total.value = response.total;
+      loading.value = false;
+    })
+    .finally(() => (loading.value = false));
 }
 function checkFileSuffix(fileSuffix) {
   const arr = ['png', 'jpg', 'jpeg', 'ico', 'bmp', 'webp', 'gif', 'svg'];
@@ -339,10 +330,6 @@ function handleSortChange(value) {
   queryParams.value.orderByColumn = value.sortBy;
   queryParams.value.isAsc = value.descending ? 'descending' : 'ascending';
   getList();
-}
-/** oss配置列表查询 */
-function handleOssConfig() {
-  router.push('/system/oss-config/index');
 }
 /** 文件按钮操作 */
 function handleFile() {

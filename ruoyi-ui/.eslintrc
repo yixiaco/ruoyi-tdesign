@@ -30,6 +30,7 @@
     "import/extensions": [".js", ".jsx", ".ts", ".tsx"]
   },
   "rules": {
+    "no-return-assign": "off",
     "prefer-destructuring": "off",
     "camelcase": "off",
     "no-console": "off",

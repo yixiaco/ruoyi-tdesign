@@ -29,13 +29,13 @@ public class TranslationHandler extends JsonSerializer<Object> implements Contex
     /**
      * 全局翻译实现类映射器
      */
-    public static final Map<String, TranslationInterface<?>> TRANSLATION_MAPPER = new ConcurrentHashMap<>();
+    public static final Map<String, TranslationInterface> TRANSLATION_MAPPER = new ConcurrentHashMap<>();
 
     private Translation translation;
 
     @Override
     public void serialize(Object value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
-        TranslationInterface<?> trans = TRANSLATION_MAPPER.get(translation.type());
+        TranslationInterface trans = TRANSLATION_MAPPER.get(translation.type());
         if (ObjectUtil.isNotNull(trans)) {
             // 如果映射字段不为空 则取映射字段的值
             if (StringUtils.isNotBlank(translation.mapper())) {
@@ -46,15 +46,12 @@ public class TranslationHandler extends JsonSerializer<Object> implements Contex
                 gen.writeNull();
                 return;
             }
-            Object result;
             try {
-                result = trans.translation(value, translation.other());
+                trans.translation(value, translation, gen);
             } catch (Exception e) {
                 gen.writeNull();
                 log.error("翻译发生异常", e);
-                return;
             }
-            gen.writeObject(result);
         } else {
             gen.writeObject(value);
         }

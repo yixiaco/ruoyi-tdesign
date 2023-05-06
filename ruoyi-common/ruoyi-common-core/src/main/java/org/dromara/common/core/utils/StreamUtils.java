@@ -457,4 +457,15 @@ public class StreamUtils {
         // 按照顺序，重新获取一遍
         return keys.stream().map(temp::get).filter(Objects::nonNull).collect(Collectors.toList());
     }
+
+    /**
+     * 获取第一个符合条件的数据
+     *
+     * @param collection 集合
+     * @param filter     过滤条件
+     * @return
+     */
+    public static <T> Optional<T> findFirst(Collection<T> collection, Function<T, Boolean> filter) {
+        return collection.stream().filter(filter::apply).findFirst();
+    }
 }

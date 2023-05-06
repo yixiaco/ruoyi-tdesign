@@ -27,4 +27,9 @@ public interface TransConstant {
      */
     String OSS_ID_TO_URL = "oss_id_to_url";
 
+    /**
+     * oss_rule
+     */
+    String OSS_RULE = "oss_rule";
+
 }

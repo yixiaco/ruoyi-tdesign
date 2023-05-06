@@ -373,13 +373,16 @@ insert into sys_menu values('122',  '租户套餐管理',  '6',   '2', 'tenantPa
 -- springboot-admin监控
 insert into sys_menu values('117',  'Admin监控',   '2',    '5', 'Admin',            'monitor/admin/index',         '', 1, 0, 'C', '0', '0', 'monitor:admin:list',          'dashboard',     103, 1, sysdate, null, null, 'Admin监控菜单');
 -- oss菜单
-insert into sys_menu values('118',  '文件管理',     '1',    '10', 'oss',             'system/oss/index',            '', 1, 0, 'C', '0', '0', 'system:oss:list',             'upload',        103, 1, sysdate, null, null, '文件管理菜单');
+insert into sys_menu values('1510', '对象存储', '1', '10', 'store', NULL, NULL, 1, 0, 'M', '0', '0', NULL, 'cloud', 103, 1, sysdate, 1, null, '');
 -- xxl-job-admin控制台
 insert into sys_menu values('120',  '任务调度中心',  '2',    '5', 'XxlJob',           'monitor/xxljob/index',        '', 1, 0, 'C', '0', '0', 'monitor:xxljob:list',         'video',           103, 1, sysdate, null, null, 'Xxl-Job控制台菜单');
 
 -- 三级菜单
 insert into sys_menu values('500',  '操作日志', '108', '1', 'operlog',    'monitor/operlog/index',    '', 1, 0, 'C', '0', '0', 'monitor:operlog:list',    'edit-1',          103, 1, sysdate, null, null, '操作日志菜单');
 insert into sys_menu values('501',  '登录日志', '108', '2', 'logininfor', 'monitor/logininfor/index', '', 1, 0, 'C', '0', '0', 'monitor:logininfor:list', 'swap',    103, 1, sysdate, null, null, '登录日志菜单');
+insert into sys_menu values('1500', 'OSS配置管理', '1510', '1', 'ossConfig', 'system/ossConfig/index', '', 1, 0, 'C', '0', '0', 'system:ossConfig:list', 'server', 103, 1, sysdate, 1, null, '');
+insert into sys_menu values('118',  '文件管理','1510','2', 'oss','system/oss/index','', 1, 0, 'C', '0', '0', 'system:oss:list', 'cloud-upload',103, 1, sysdate, null, null, '文件管理菜单');
+insert into sys_menu values('1521', 'OSS处理规则', '1510', '3', 'ossRule', 'system/ossRule/index', NULL, 1, 0, 'C', '0', '0', 'system:ossRule:list', 'chevron-right-double', 103, 1, sysdate, 1, null, 'OSS处理规则菜单');
 -- 用户管理按钮
 insert into sys_menu values('1001', '用户查询', '100', '1',  '', '', '', 1, 0, 'F', '0', '0', 'system:user:query',          '#', 103, 1, sysdate, null, null, '');
 insert into sys_menu values('1002', '用户新增', '100', '2',  '', '', '', 1, 0, 'F', '0', '0', 'system:user:add',            '#', 103, 1, sysdate, null, null, '');
@@ -452,10 +455,14 @@ insert into sys_menu values('1600', '文件查询', '118', '1', '#', '', '', 1, 
 insert into sys_menu values('1601', '文件上传', '118', '2', '#', '', '', 1, 0, 'F', '0', '0', 'system:oss:upload',       '#', 103, 1, sysdate, null, null, '');
 insert into sys_menu values('1602', '文件下载', '118', '3', '#', '', '', 1, 0, 'F', '0', '0', 'system:oss:download',     '#', 103, 1, sysdate, null, null, '');
 insert into sys_menu values('1603', '文件删除', '118', '4', '#', '', '', 1, 0, 'F', '0', '0', 'system:oss:remove',       '#', 103, 1, sysdate, null, null, '');
-insert into sys_menu values('1500', 'OSS配置管理', '118', '5', '#', '', '', 1, 0, 'F', '0', '0', 'system:ossConfig:list','#', 103, 1, sysdate, null, null, '');
 insert into sys_menu values('1501', '配置添加', '1500', '1', '#', '', '', 1, 0, 'F', '0', '0', 'system:ossConfig:add',  '#', 103, 1, sysdate, null, null, '');
 insert into sys_menu values('1502', '配置编辑', '1500', '2', '#', '', '', 1, 0, 'F', '0', '0', 'system:ossConfig:edit', '#', 103, 1, sysdate, null, null, '');
 insert into sys_menu values('1503', '配置删除', '1500', '3', '#', '', '', 1, 0, 'F', '0', '0', 'system:ossConfig:remove','#', 103, 1, sysdate, null, null, '');
+insert into sys_menu values('1522', 'OSS处理规则查询', '1521', '1', '#', '', null, 1, 0, 'F', '0', '0', 'system:ossRule:query', '#', 103, 1, sysdate, null, null, '');
+insert into sys_menu values('1523', 'OSS处理规则新增', '1521', '2', '#', '', null, 1, 0, 'F', '0', '0', 'system:ossRule:add', '#', 103, 1, sysdate, null, null, '');
+insert into sys_menu values('1524', 'OSS处理规则修改', '1521', '3', '#', '', null, 1, 0, 'F', '0', '0', 'system:ossRule:edit', '#', 103, 1, sysdate, null, null, '');
+insert into sys_menu values('1525', 'OSS处理规则删除', '1521', '4', '#', '', null, 1, 0, 'F', '0', '0', 'system:ossRule:remove', '#', 103, 1, sysdate, null, null, '');
+insert into sys_menu values('1526', 'OSS处理规则导出', '1521', '5', '#', '', null, 1, 0, 'F', '0', '0', 'system:ossRule:export', '#', 103, 1, sysdate, null, null, '');
 -- 租户管理相关按钮
 insert into sys_menu values('1606', '租户查询', '121', '1', '#', '', '', 1, 0, 'F', '0', '0', 'system:tenant:query',   '#', 103, 1, sysdate, null, null, '');
 insert into sys_menu values('1607', '租户新增', '121', '2', '#', '', '', 1, 0, 'F', '0', '0', 'system:tenant:add',     '#', 103, 1, sysdate, null, null, '');
@@ -1109,6 +1116,47 @@ insert into sys_oss_config values (2, '000000', 'qiniu',  'XXXXXXXXXXXXXXX',  'X
 insert into sys_oss_config values (3, '000000', 'aliyun', 'XXXXXXXXXXXXXXX',  'XXXXXXXXXXXXXXX', 'ruoyi',             '', 'oss-cn-beijing.aliyuncs.com',   '','N', '',            '1', '1', '', NULL, 103, 1, sysdate, 1, sysdate);
 insert into sys_oss_config values (4, '000000', 'qcloud', 'XXXXXXXXXXXXXXX',  'XXXXXXXXXXXXXXX', 'ruoyi-1250000000',  '', 'cos.ap-beijing.myqcloud.com',   '','N', 'ap-beijing',  '1', '1', '', NULL, 103, 1, sysdate, 1, sysdate);
 insert into sys_oss_config values (5, '000000', 'image',  'ruoyi',            'ruoyi123',        'ruoyi',             'image', '127.0.0.1:9000',           '','N', '',            '1', '1', '', NULL, 103, 1, sysdate, 1, sysdate);
+
+-- ----------------------------
+-- OSS处理规则表
+-- ----------------------------
+CREATE TABLE sys_oss_rule  (
+  oss_rule_id   number(20)    not null,
+  tenant_id     varchar2(20)  default '000000',
+  rule_name     varchar(255)  not null,
+  domain        varchar(255)  not null,
+  mime_type     varchar(255)  not null,
+  rule          varchar(255)  not null,
+  is_default    char(1)       not null,
+  status        char(1)       not null,
+  create_dept   number(20)    default null,
+  create_by     number(20)    default null,
+  create_time   date          default null,
+  update_by     number(20)    default null,
+  update_time   date          default null,
+  remark        varchar(500)  default null
+);
+
+alter table sys_oss_rule add constraint pk_sys_oss_rule primary key (oss_rule_id);
+
+comment on table sys_oss_rule                 is  'OSS处理规则表';
+comment on column sys_oss_rule.oss_rule_id    is  'oss规则id';
+comment on column sys_oss_rule.tenant_id      is  '租户编号';
+comment on column sys_oss_rule.rule_name      is  '规则名称（例如：80x80，则字段名称将输出字段名_80x80）';
+comment on column sys_oss_rule.domain         is  '匹配域名';
+comment on column sys_oss_rule.mime_type      is  '媒体类型（规则对匹配的媒体类型生效）';
+comment on column sys_oss_rule.rule           is  '规则';
+comment on column sys_oss_rule.is_default     is  '是否默认（不使用规则名，直接替换字段内容）';
+comment on column sys_oss_rule.status         is  '启用状态';
+comment on column sys_oss_rule.create_dept    is  '创建部门';
+comment on column sys_oss_rule.create_by      is  '创建者';
+comment on column sys_oss_rule.create_time    is  '创建时间';
+comment on column sys_oss_rule.update_by      is  '更新者';
+comment on column sys_oss_rule.update_time    is  '更新时间';
+comment on column sys_oss_rule.remark         is  '备注';
+
+insert into sys_oss_rule values (1, '000000', '180x180', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_180/quality,q_90', 'n', '0', 103, 1, sysdate, 1, sysdate, null);
+insert into sys_oss_rule values (2, '000000', '800x800', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_800/quality,q_90', 'y', '0', 103, 1, sysdate, 1, sysdate, null);
 
 
 -- ----------------------------

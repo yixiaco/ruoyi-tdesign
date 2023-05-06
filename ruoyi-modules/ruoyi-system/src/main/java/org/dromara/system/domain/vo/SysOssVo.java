@@ -45,6 +45,7 @@ public class SysOssVo implements Serializable {
     /**
      * URL地址
      */
+    @Translation(type = TransConstant.OSS_RULE)
     private String url;
 
     /**

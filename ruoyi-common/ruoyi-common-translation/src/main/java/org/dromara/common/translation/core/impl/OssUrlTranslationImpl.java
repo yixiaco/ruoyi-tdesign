@@ -1,7 +1,9 @@
 package org.dromara.common.translation.core.impl;
 
+import com.fasterxml.jackson.core.JsonGenerator;
 import lombok.AllArgsConstructor;
 import org.dromara.common.core.service.OssService;
+import org.dromara.common.translation.annotation.Translation;
 import org.dromara.common.translation.annotation.TranslationType;
 import org.dromara.common.translation.constant.TransConstant;
 import org.dromara.common.translation.core.TranslationInterface;
@@ -13,12 +15,12 @@ import org.dromara.common.translation.core.TranslationInterface;
  */
 @AllArgsConstructor
 @TranslationType(type = TransConstant.OSS_ID_TO_URL)
-public class OssUrlTranslationImpl implements TranslationInterface<String> {
+public class OssUrlTranslationImpl extends SimpleTranslationImpl {
 
     private final OssService ossService;
 
     @Override
-    public String translation(Object key, String other) {
+    public Object translation(Object key, Translation translation) {
         if (key instanceof String ids) {
             return ossService.selectUrlByIds(ids);
         } else if (key instanceof Long id) {

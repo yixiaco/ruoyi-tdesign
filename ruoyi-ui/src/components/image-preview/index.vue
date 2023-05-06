@@ -1,5 +1,5 @@
 <template>
-  <t-image-viewer :key="props.src" :default-index="0" :images="realSrcList">
+  <t-image-viewer :key="props.src" :default-index="0" :images="realPreviewSrcList">
     <template #trigger="{ open }">
       <t-image
         :key="realSrc"
@@ -11,7 +11,7 @@
           'border-radius': 'var(--td-radius-default)',
         }"
         :lazy="true"
-        :gallery="realSrcList.length > 1"
+        :gallery="realPreviewSrcList.length > 1"
         overlay-trigger="hover"
         @mouseenter="hover = true"
         @mouseleave="hover = false"
@@ -50,9 +50,14 @@ import { computed, ref, watch } from 'vue';
 import { listByIds } from '@/api/system/oss';
 
 const props = defineProps({
+  // 显示地址
   src: {
     type: String,
     required: true,
+  },
+  // 预览地址，为空则使用src显示地址
+  previewSrc: {
+    type: String,
   },
   width: {
     type: [Number, String],
@@ -64,7 +69,8 @@ const props = defineProps({
   },
 });
 
-const realSrcList = ref([]);
+const realSrc = ref('');
+const realPreviewSrcList = ref([]);
 const hover = ref(false);
 const scale = computed(() => (hover.value ? 1.1 : 1));
 
@@ -73,27 +79,44 @@ watch(
   (value) => {
     if (value) {
       if (/^([0-9],?)+$/.test(value)) {
+        const id = value.split(',')[0];
         // 使用id
-        listByIds(value).then((res) => {
-          realSrcList.value = res.data.map((item) => item.url);
+        listByIds(id).then((res) => {
+          realSrc.value = res.data?.length > 0 ? res.data[0].url : '';
         });
       } else {
         // http
-        realSrcList.value = value.split(',');
+        realSrc.value = value
+          .split(',http')
+          .map((value1) => (!value1.startsWith('http') ? `http${value1}` : value1))[0];
       }
     } else {
-      realSrcList.value = [];
+      realPreviewSrcList.value = [];
     }
   },
   { immediate: true },
 );
-
-const realSrc = computed(() => {
-  if (realSrcList.value.length === 0) {
-    return '';
-  }
-  return realSrcList.value[0];
-});
+watch(
+  () => props.previewSrc || props.src,
+  (value) => {
+    if (value) {
+      if (/^([0-9],?)+$/.test(value)) {
+        // 使用id
+        listByIds(value).then((res) => {
+          realPreviewSrcList.value = res.data.map((item) => item.url);
+        });
+      } else {
+        // http
+        realPreviewSrcList.value = value
+          .split(',http')
+          .map((value1) => (!value1.startsWith('http') ? `http${value1}` : value1));
+      }
+    } else {
+      realPreviewSrcList.value = [];
+    }
+  },
+  { immediate: true },
+);
 
 const realWidth = computed(() => (typeof props.width === 'string' ? props.width : `${props.width}px`));
 
