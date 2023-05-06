@@ -67,7 +67,7 @@ import { useSettingStore } from '@/store';
 import { changeChartsTheme } from '@/utils/color';
 
 import { PANE_LIST } from '../constants';
-import { constructInitDashboardDataset } from '../index';
+import { constructInitDashboardDataset } from '../data';
 
 echarts.use([LineChart, BarChart, CanvasRenderer]);
 

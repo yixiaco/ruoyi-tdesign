@@ -78,7 +78,7 @@ import { changeChartsTheme } from '@/utils/color';
 import { LAST_7_DAYS } from '@/utils/date';
 
 import { PANE_LIST_DATA, PRODUCT_LIST } from './constants';
-import { getFolderLineDataSet, getScatterDataSet } from './index';
+import { getFolderLineDataSet, getScatterDataSet } from './data';
 
 echarts.use([GridComponent, LegendComponent, TooltipComponent, LineChart, ScatterChart, CanvasRenderer]);
 

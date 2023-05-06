@@ -79,7 +79,7 @@ import { useSettingStore } from '@/store';
 import { changeChartsTheme } from '@/utils/color';
 import { LAST_7_DAYS } from '@/utils/date';
 
-import { constructInitDataset } from '../index';
+import { constructInitDataset } from '../data';
 
 echarts.use([TooltipComponent, LegendComponent, GridComponent, LineChart, CanvasRenderer]);
 

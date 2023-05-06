@@ -45,7 +45,7 @@ import { useSettingStore } from '@/store';
 import { changeChartsTheme } from '@/utils/color';
 import { LAST_7_DAYS } from '@/utils/date';
 
-import { getLineChartDataSet, getPieChartDataSet } from '../index';
+import { getLineChartDataSet, getPieChartDataSet } from '../data';
 
 echarts.use([TooltipComponent, LegendComponent, PieChart, GridComponent, LineChart, CanvasRenderer]);
 
