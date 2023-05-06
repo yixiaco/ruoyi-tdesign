@@ -1,12 +1,22 @@
 <template>
   <t-card>
     <t-space direction="vertical">
-      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
+      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="calc(5em + 24px)">
         <t-form-item label="规则名称" name="ruleName">
           <t-input v-model="queryParams.ruleName" placeholder="请输入规则名称" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="匹配域名" name="domain">
           <t-input v-model="queryParams.domain" placeholder="请输入匹配域名" clearable @enter="handleQuery" />
+        </t-form-item>
+        <t-form-item label="覆盖字段值" name="isOverwrite">
+          <t-select v-model="queryParams.isOverwrite" placeholder="请选择覆盖字段值" clearable>
+            <t-option
+              v-for="dict in sys_yes_no"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </t-select>
         </t-form-item>
         <t-form-item label="是否默认" name="isDefault">
           <t-select v-model="queryParams.isDefault" placeholder="请选择是否默认" clearable>
@@ -96,13 +106,16 @@
             </t-col>
           </t-row>
         </template>
-        <template #isDefault="{ row }">
+        <template #isOverwrite="{ row }">
           <t-switch
-            v-model="row.isDefault"
+            v-model="row.isOverwrite"
             :custom-value="['Y', 'N']"
             @click.stop
-            @change="handleDefaultChange(row)"
+            @change="handleOverwriteChange(row)"
           ></t-switch>
+        </template>
+        <template #isDefault="{ row }">
+          <dict-tag :options="sys_yes_no" :value="row.isDefault" />
         </template>
         <template #status="{ row }">
           <dict-tag :options="sys_normal_disable" :value="row.status" />
@@ -128,7 +141,7 @@
       v-model:visible="open"
       :close-on-overlay-click="false"
       :header="title"
-      width="500px"
+      width="650px"
       attach="body"
       :confirm-btn="{
         content: '确 定',
@@ -158,6 +171,14 @@
         <t-form-item label="规则" name="rule" help="内置domain、path、filename、url变量，使用#{#url}的方式使用">
           <t-textarea v-model.trim="form.rule" placeholder="请输入规则" clearable />
         </t-form-item>
+        <t-form-item label="是否默认" name="isDefault">
+          <template #help>
+            使用@Translation(type = TransConstant.OSS_RULE, other = "800x800")的方式指定使用规则
+            <br />
+            不指定规则时，使用默认规则。
+          </template>
+          <t-switch v-model="form.isDefault" :custom-value="['Y', 'N']" />
+        </t-form-item>
         <t-form-item label="启用状态" name="status">
           <t-switch v-model="form.status" :custom-value="['0', '1']" />
         </t-form-item>
@@ -186,6 +207,11 @@
             </t-col>
             <t-col :span="12">
               <t-form-item label="规则">{{ form.rule }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="是否覆盖默认字段值">
+                <dict-tag :options="sys_yes_no" :value="form.isOverwrite" />
+              </t-form-item>
             </t-col>
             <t-col :span="6">
               <t-form-item label="是否默认">
@@ -234,7 +260,7 @@ import { computed, getCurrentInstance, ref } from 'vue';
 import { SysOssRuleForm, SysOssRuleQuery, SysOssRuleVo } from '@/api/system/model/ossRuleModel';
 import {
   addOssRule,
-  changeOssRuleDefault,
+  changeOssRuleOverwrite,
   delOssRule,
   getOssRule,
   listOssRule,
@@ -266,6 +292,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
   domain: [{ required: true, message: '匹配域名不能为空', trigger: 'blur' }],
   mimeType: [{ required: true, message: '媒体类型不能为空', trigger: 'blur' }],
   rule: [{ required: true, message: '规则不能为空', trigger: 'blur' }],
+  isOverwrite: [{ required: true, message: '是否覆盖默认字段值不能为空', trigger: 'blur' }],
   isDefault: [{ required: true, message: '是否默认不能为空', trigger: 'blur' }],
   status: [{ required: true, message: '启用状态不能为空', trigger: 'blur' }],
 });
@@ -276,6 +303,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `匹配域名`, colKey: 'domain', align: 'center', ellipsis: true },
   { title: `媒体类型`, colKey: 'mimeType', align: 'center' },
   { title: `规则`, colKey: 'rule', align: 'center', ellipsis: true },
+  { title: `是否覆盖默认字段值`, colKey: 'isOverwrite', align: 'center' },
   { title: `是否默认`, colKey: 'isDefault', align: 'center' },
   { title: `启用状态`, colKey: 'status', align: 'center' },
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
@@ -285,6 +313,7 @@ const columns = ref<Array<PrimaryTableCol>>([
 ]);
 // 提交表单对象
 const form = ref<SysOssRuleVo & SysOssRuleForm>({
+  isOverwrite: 'N',
   isDefault: 'N',
   status: '0',
 });
@@ -294,6 +323,7 @@ const queryParams = ref<SysOssRuleQuery>({
   pageSize: 10,
   ruleName: undefined,
   domain: undefined,
+  isOverwrite: undefined,
   isDefault: undefined,
   status: undefined,
 });
@@ -320,7 +350,6 @@ function getList() {
     .then((response) => {
       ossRuleList.value = response.rows;
       total.value = response.total;
-      loading.value = false;
     })
     .finally(() => (loading.value = false));
 }
@@ -328,6 +357,7 @@ function getList() {
 // 表单重置
 function reset() {
   form.value = {
+    isOverwrite: 'N',
     isDefault: 'N',
     status: '0',
   };
@@ -448,25 +478,25 @@ function handleRefreshCache() {
   });
 }
 
-/** 规则默认修改  */
-function handleDefaultChange(row) {
-  const text = row.isDefault === 'N' ? '默认' : '非默认';
+/** 规则覆盖默认字段值修改  */
+function handleOverwriteChange(row) {
+  const text = row.isOverwrite === 'Y' ? '覆盖默认字段值' : '不覆盖默认字段值';
   proxy.$modal.confirm(
     `确认要设置该规则为"${text}"吗?`,
     () => {
       const msgLoading = proxy.$modal.msgLoading('提交中...');
-      return changeOssRuleDefault(row.ossRuleId, row.isDefault)
+      return changeOssRuleOverwrite(row.ossRuleId, row.isOverwrite)
         .then(() => {
           getList();
-          proxy.$modal.msgSuccess(`已设置规则为${text}`);
+          proxy.$modal.msgSuccess(`已设置规则为"${text}"`);
         })
         .catch(() => {
-          row.isDefault = row.isDefault === 'N' ? 'Y' : 'N';
+          row.isOverwrite = row.isOverwrite === 'N' ? 'Y' : 'N';
         })
         .finally(() => proxy.$modal.msgClose(msgLoading));
     },
     () => {
-      row.isDefault = row.isDefault === 'N' ? 'Y' : 'N';
+      row.isOverwrite = row.isOverwrite === 'N' ? 'Y' : 'N';
     },
   );
 }

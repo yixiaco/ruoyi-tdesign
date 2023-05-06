@@ -1151,6 +1151,7 @@ CREATE TABLE sys_oss_rule  (
   domain        varchar(255)  default ''::varchar not null,
   mime_type     varchar(255)  default ''::varchar not null,
   rule          varchar(255)  default ''::varchar not null,
+  is_overwrite  char(1)       default 'N'::bpchar not null,
   is_default    char(1)       default 'N'::bpchar not null,
   status        char(1)       default '0'::bpchar not null,
   create_dept   int8,
@@ -1169,7 +1170,8 @@ comment on column sys_oss_rule.rule_name      is  '规则名称（例如：80x80
 comment on column sys_oss_rule.domain         is  '匹配域名';
 comment on column sys_oss_rule.mime_type      is  '媒体类型（规则对匹配的媒体类型生效）';
 comment on column sys_oss_rule.rule           is  '规则';
-comment on column sys_oss_rule.is_default     is  '是否默认（不使用规则名，直接替换字段内容）';
+comment on column sys_oss_rule.is_overwrite   is  '是否覆盖默认字段值';
+comment on column sys_oss_rule.is_default     is  '是否默认（不指定规则时，默认输出的规则）';
 comment on column sys_oss_rule.status         is  '启用状态';
 comment on column sys_oss_rule.create_dept    is  '创建部门';
 comment on column sys_oss_rule.create_by      is  '创建者';
@@ -1178,8 +1180,8 @@ comment on column sys_oss_rule.update_by      is  '更新者';
 comment on column sys_oss_rule.update_time    is  '更新时间';
 comment on column sys_oss_rule.remark         is  '备注';
 
-insert into sys_oss_rule values (1, '000000', '180x180', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_180/quality,q_90', 'N', '0', 103, 1, now(), 1, now(), null);
-insert into sys_oss_rule values (2, '000000', '800x800', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_800/quality,q_90', 'Y', '0', 103, 1, now(), 1, now(), null);
+insert into sys_oss_rule values (1, '000000', '180x180', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_180/quality,q_90', 'N', 'N', '0', 103, 1, now(), 1, now(), null);
+insert into sys_oss_rule values (2, '000000', '800x800', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_800/quality,q_90', 'N', 'N', '0', 103, 1, now(), 1, now(), null);
 
 -- 字符串自动转时间 避免框架时间查询报错问题
 create or replace function cast_varchar_to_timestamp(varchar) returns timestamptz as $$

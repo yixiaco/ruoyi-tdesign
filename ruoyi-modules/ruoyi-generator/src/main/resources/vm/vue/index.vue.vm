@@ -493,7 +493,6 @@ function getList() {
     .then((response) => {
       ${businessName}List.value = response.rows;
       total.value = response.total;
-      loading.value = false;
     })
     .finally(() => (loading.value = false));
 }

@@ -811,22 +811,23 @@ insert into sys_oss_config values (5, '000000', 'image',  'ruoyi',            'r
 -- ----------------------------
 drop table if exists sys_oss_rule;
 create table sys_oss_rule  (
-  oss_rule_id bigint       not null                  comment 'oss规则id',
-  tenant_id   varchar(20)  null     default '000000' comment '租户编号',
-  rule_name   varchar(255) not null                  comment '规则名称（例如：80x80，则字段名称将输出字段名_80x80）',
-  domain      varchar(255) not null                  comment '匹配域名',
-  mime_type   varchar(255) not null                  comment '媒体类型（规则对匹配的媒体类型生效）',
-  rule        varchar(255) not null                  comment '规则',
-  is_default  char(1)      not null                  comment '是否默认（不使用规则名，直接替换字段内容）',
-  status      char(1)      not null                  comment '启用状态',
-  create_dept bigint       null     default null     comment '创建部门',
-  create_by   bigint       null     default null     comment '创建者',
-  create_time datetime     null     default null     comment '创建时间',
-  update_by   bigint       null     default null     comment '更新者',
-  update_time datetime     null     default null     comment '更新时间',
-  remark      varchar(500) null     default null     comment '备注',
+  oss_rule_id   bigint       not null                  comment 'oss规则id',
+  tenant_id     varchar(20)  null     default '000000' comment '租户编号',
+  rule_name     varchar(255) not null                  comment '规则名称（例如：80x80，则字段名称将输出字段名_80x80）',
+  domain        varchar(255) not null                  comment '匹配域名',
+  mime_type     varchar(255) not null                  comment '媒体类型（规则对匹配的媒体类型生效）',
+  rule          varchar(255) not null                  comment '规则',
+  is_overwrite  char(1)      not null                  comment '是否覆盖默认字段值',
+  is_default    char(1)      not null                  comment '是否默认（不指定规则时，默认输出的规则）',
+  status        char(1)      not null                  comment '启用状态',
+  create_dept   bigint       null     default null     comment '创建部门',
+  create_by     bigint       null     default null     comment '创建者',
+  create_time   datetime     null     default null     comment '创建时间',
+  update_by     bigint       null     default null     comment '更新者',
+  update_time   datetime     null     default null     comment '更新时间',
+  remark        varchar(500) null     default null     comment '备注',
   primary key (oss_rule_id) using btree
-) engine = innodb comment = 'oss处理规则表';
+) engine = innodb comment = 'OSS处理规则表';
 
-insert into sys_oss_rule values (1, '000000', '180x180', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_180/quality,q_90', 'N', '0', 103, 1, sysdate(), 1, sysdate(), null);
-insert into sys_oss_rule values (2, '000000', '800x800', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_800/quality,q_90', 'Y', '0', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_oss_rule values (1, '000000', '180x180', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_180/quality,q_90', 'N', 'N', '0', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_oss_rule values (2, '000000', '800x800', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_800/quality,q_90', 'N', 'N', '0', 103, 1, sysdate(), 1, sysdate(), null);

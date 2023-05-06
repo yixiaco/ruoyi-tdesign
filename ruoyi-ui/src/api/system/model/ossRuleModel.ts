@@ -8,7 +8,9 @@ export interface SysOssRuleQuery extends BaseEntity {
   ruleName?: string;
   /** 匹配域名 */
   domain?: string;
-  /** 是否默认（不使用变量名，直接替换字段内容） */
+  /** 是否覆盖默认字段值 */
+  isOverwrite?: string;
+  /** 是否默认（不指定规则时，默认输出的规则） */
   isDefault?: string;
   /** 启用状态 */
   status?: string;
@@ -27,7 +29,9 @@ export interface SysOssRuleForm extends BaseEntity {
   mimeType?: string;
   /** 规则 */
   rule?: string;
-  /** 是否默认（不使用变量名，直接替换字段内容） */
+  /** 是否覆盖默认字段值 */
+  isOverwrite?: string;
+  /** 是否默认（不指定规则时，默认输出的规则） */
   isDefault?: string;
   /** 启用状态 */
   status?: string;
@@ -48,7 +52,9 @@ export interface SysOssRuleVo {
   mimeType?: string;
   /** 规则 */
   rule?: string;
-  /** 是否默认（不使用变量名，直接替换字段内容） */
+  /** 是否覆盖默认字段值 */
+  isOverwrite?: string;
+  /** 是否默认（不指定规则时，默认输出的规则） */
   isDefault?: string;
   /** 启用状态 */
   status?: string;

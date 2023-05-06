@@ -52,15 +52,21 @@ public class SysOssRuleBo extends BaseEntity {
     private String rule;
 
     /**
-     * 是否默认（不使用变量名，直接替换字段内容）
+     * 是否覆盖默认字段值
      */
-    @NotNull(message = "是否默认不能为空", groups = {AddGroup.class, EditGroup.class})
+    @NotBlank(message = "是否覆盖默认字段值不能为空", groups = {AddGroup.class, EditGroup.class})
+    private String isOverwrite;
+
+    /**
+     * 是否默认（不指定规则时，默认输出的规则）
+     */
+    @NotBlank(message = "是否默认不能为空", groups = {AddGroup.class, EditGroup.class})
     private String isDefault;
 
     /**
      * 启用状态
      */
-    @NotNull(message = "启用状态不能为空", groups = {AddGroup.class, EditGroup.class})
+    @NotBlank(message = "启用状态不能为空", groups = {AddGroup.class, EditGroup.class})
     private String status;
 
     /**

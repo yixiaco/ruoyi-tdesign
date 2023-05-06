@@ -134,22 +134,22 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
     /**
      * 规则默认值修改
      *
-     * @param ossRuleId 规则id
-     * @param isDefault 默认值
+     * @param ossRuleId   规则id
+     * @param isOverwrite 是否覆盖字段值
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void updateDefault(Long ossRuleId, String isDefault) {
+    public void updateOverwrite(Long ossRuleId, String isOverwrite) {
         SysOssRule rule = getById(ossRuleId);
-        if (YesNoEnum.YES.getCode().equals(isDefault)) {
+        if (YesNoEnum.YES.getCode().equals(isOverwrite)) {
             // 设置其他相同域名的规则为非默认
             lambdaUpdate().eq(SysOssRule::getDomain, rule.getDomain())
-                .set(SysOssRule::getIsDefault, YesNoEnum.NO.getCode())
+                .set(SysOssRule::getIsOverwrite, YesNoEnum.NO.getCode())
                 .update();
         }
         // 设置当前规则
         lambdaUpdate().eq(SysOssRule::getOssRuleId, ossRuleId)
-            .set(SysOssRule::getIsDefault, isDefault)
+            .set(SysOssRule::getIsOverwrite, isOverwrite)
             .update();
         removeCache();
     }
@@ -184,7 +184,9 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
         // 二级缓存
         List<SysOssRule> rules = (List<SysOssRule>) SaHolder.getStorage().get(CacheConstants.SYS_OSS_RULE);
         if (rules == null) {
+            // 如果二级缓存为空，则从redis缓存中读取
             rules = RedisLockUtil.getOrSaveList(CacheConstants.SYS_OSS_RULE, () ->
+                // 如果redis中为空，则从database中读取
                 lambdaQuery().eq(SysOssRule::getStatus, "0").list()
             );
             SaHolder.getStorage().set(CacheConstants.SYS_OSS_RULE, rules);
@@ -194,27 +196,31 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
         String[] urls = splitUrl(originalUrl);
         for (String url : urls) {
             String mimeType = HttpUtil.getMimeType(originalUrl);
-            List<SysOssRule> list = rules.stream().filter(sysOssRule ->
-                mimeType.contains(sysOssRule.getMimeType())
-                    && originalUrl.contains(sysOssRule.getDomain())
-                    && (useRules == null || ArrayUtil.contains(useRules, sysOssRule.getRuleName()))
-            ).toList();
+            // 过滤命中的规则
+            List<SysOssRule> list = rules.stream()
+                .filter(sysOssRule ->
+                    mimeType.contains(sysOssRule.getMimeType())
+                        && originalUrl.contains(sysOssRule.getDomain())
+                        && (useRules == null ?
+                        YesNoEnum.YES.getCode().equals(sysOssRule.getIsDefault()) :
+                        ArrayUtil.contains(useRules, sysOssRule.getRuleName()))
+                ).toList();
 
-            // 设置默认字段值
-            Optional<SysOssRule> defaultRuleOpt = StreamUtils.findFirst(list, o -> YesNoEnum.YES.getCode().equals(o.getIsDefault()));
+            // 设置覆盖默认字段值
+            Optional<SysOssRule> overwriteRuleOpt = StreamUtils.findFirst(list, o -> YesNoEnum.YES.getCode().equals(o.getIsOverwrite()));
             String realUrl = url;
-            // 如果存在默认规则，则覆盖默认值
-            if (defaultRuleOpt.isPresent()) {
-                realUrl = getRealUrl(defaultRuleOpt.get().getRule(), url);
+            // 如果存在覆盖默认字段值规则，则覆盖默认值
+            if (overwriteRuleOpt.isPresent()) {
+                realUrl = getRealUrl(overwriteRuleOpt.get().getRule(), url);
             }
             result.merge(fieldName, realUrl, (s, s2) -> String.join(",", s, s2));
 
             // 设置规则值
-            List<SysOssRule> noDefaultRule = list
+            List<SysOssRule> noOverwriteRule = list
                 .stream()
-                .filter(ossRule -> YesNoEnum.NO.getCode().equals(ossRule.getIsDefault()))
+                .filter(ossRule -> YesNoEnum.NO.getCode().equals(ossRule.getIsOverwrite()))
                 .toList();
-            for (SysOssRule rule : noDefaultRule) {
+            for (SysOssRule rule : noOverwriteRule) {
                 String key = fieldName + "_" + rule.getRuleName();
                 realUrl = getRealUrl(rule.getRule(), url);
                 result.merge(key, realUrl, (s, s2) -> String.join(",", s, s2));

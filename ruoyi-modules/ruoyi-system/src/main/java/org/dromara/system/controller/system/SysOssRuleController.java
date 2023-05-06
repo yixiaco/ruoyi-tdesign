@@ -123,14 +123,14 @@ public class SysOssRuleController extends BaseController {
     }
 
     /**
-     * 规则默认值修改
+     * 规则覆盖字段值修改
      */
     @SaCheckPermission("system:ossRule:edit")
     @Log(title = "OSS规则", businessType = BusinessType.UPDATE)
-    @PutMapping("/changeDefault")
+    @PutMapping("/changeOverwrite")
     public R<Void> changeStatus(@NotNull(message = "规则id不能为空") Long ossRuleId,
-                                @NotBlank(message = "默认值不能为空") String isDefault) {
-        sysOssRuleService.updateDefault(ossRuleId, isDefault);
+                                @NotBlank(message = "是否覆盖字段值不能为空") String isOverwrite) {
+        sysOssRuleService.updateOverwrite(ossRuleId, isOverwrite);
         return R.ok();
     }
 }

@@ -74,8 +74,8 @@ public interface ISysOssRuleService extends IService<SysOssRule> {
     /**
      * 规则默认值修改
      *
-     * @param ossRuleId 规则id
-     * @param isDefault 默认值
+     * @param ossRuleId   规则id
+     * @param isOverwrite 是否覆盖字段值
      */
-    void updateDefault(Long ossRuleId, String isDefault);
+    void updateOverwrite(Long ossRuleId, String isOverwrite);
 }

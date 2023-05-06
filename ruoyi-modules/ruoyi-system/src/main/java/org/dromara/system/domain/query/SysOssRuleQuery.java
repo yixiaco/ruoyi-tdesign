@@ -25,7 +25,12 @@ public class SysOssRuleQuery extends BaseEntity {
     private String domain;
 
     /**
-     * 是否默认（不使用变量名，直接替换字段内容）
+     * 是否覆盖默认字段值
+     */
+    private String isOverwrite;
+
+    /**
+     * 是否默认（不指定规则时，默认输出的规则）
      */
     private String isDefault;
 

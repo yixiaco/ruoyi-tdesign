@@ -47,13 +47,13 @@ export function refreshOssRuleCache() {
   });
 }
 
-// OSS处理规则默认值修改
-export function changeOssRuleDefault(ossRuleId: number, isDefault: string) {
+// OSS处理规则覆盖字段值修改
+export function changeOssRuleOverwrite(ossRuleId: number, isOverwrite: string) {
   return request.put<R<void>>({
-    url: 'system/ossRule/changeDefault',
+    url: 'system/ossRule/changeOverwrite',
     params: {
       ossRuleId,
-      isDefault,
+      isOverwrite,
     },
   });
 }
