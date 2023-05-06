@@ -233,7 +233,8 @@ import { computed, getCurrentInstance, ref } from 'vue';
 
 import { SysOssRuleForm, SysOssRuleQuery, SysOssRuleVo } from '@/api/system/model/ossRuleModel';
 import {
-  addOssRule, changeOssRuleDefault,
+  addOssRule,
+  changeOssRuleDefault,
   delOssRule,
   getOssRule,
   listOssRule,
