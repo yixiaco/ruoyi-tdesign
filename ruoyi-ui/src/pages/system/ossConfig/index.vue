@@ -401,23 +401,24 @@ function submitForm({ validateResult, firstError }) {
 }
 /** 用户状态修改  */
 function handleStatusChange(row) {
-  const text = row.status === '0' ? '启用' : '停用';
+  const ossConfig = ossConfigList.value.find((value) => value.ossConfigId === row.ossConfigId);
+  const text = ossConfig.status === '0' ? '启用' : '停用';
   proxy.$modal.confirm(
-    `确认要"${text}""${row.configKey}"配置吗?`,
+    `确认要"${text}""${ossConfig.configKey}"配置吗?`,
     () => {
       const msgLoading = proxy.$modal.msgLoading('提交中...');
-      return changeOssConfigStatus(row.ossConfigId, row.status, row.configKey)
+      return changeOssConfigStatus(ossConfig.ossConfigId, ossConfig.status, ossConfig.configKey)
         .then(() => {
           getList();
           proxy.$modal.msgSuccess(`${text}成功`);
         })
         .catch(() => {
-          row.status = row.status === '0' ? '1' : '0';
+          ossConfig.status = ossConfig.status === '0' ? '1' : '0';
         })
         .finally(() => proxy.$modal.msgClose(msgLoading));
     },
     () => {
-      row.status = row.status === '0' ? '1' : '0';
+      ossConfig.status = ossConfig.status === '0' ? '1' : '0';
     },
   );
 }

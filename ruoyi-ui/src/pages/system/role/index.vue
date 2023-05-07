@@ -429,20 +429,21 @@ function handleSelectionChange(selection) {
 }
 /** 角色状态修改 */
 function handleStatusChange(row) {
-  const text = row.status === '0' ? '启用' : '停用';
+  const role = roleList.value.find((value) => value.roleId === row.roleId);
+  const text = role.status === '0' ? '启用' : '停用';
   proxy.$modal.confirm(
-    `确认要"${text}""${row.roleName}"角色吗?`,
+    `确认要"${text}""${role.roleName}"角色吗?`,
     () => {
-      return changeRoleStatus(row.roleId, row.status)
+      return changeRoleStatus(role.roleId, role.status)
         .then(() => {
           proxy.$modal.msgSuccess(`${text}成功`);
         })
         .catch(() => {
-          row.status = row.status === '0' ? '1' : '0';
+          role.status = role.status === '0' ? '1' : '0';
         });
     },
     () => {
-      row.status = row.status === '0' ? '1' : '0';
+      role.status = role.status === '0' ? '1' : '0';
     },
   );
 }

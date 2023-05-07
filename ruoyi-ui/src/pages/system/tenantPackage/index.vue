@@ -359,23 +359,24 @@ function handleSelectionChange(selection) {
 
 // 租户套餐状态修改
 function handleStatusChange(row) {
-  const text = row.status === '0' ? '启用' : '停用';
+  const data = tenantPackageList.value.find((value) => value.packageId === row.packageId);
+  const text = data.status === '0' ? '启用' : '停用';
   proxy.$modal.confirm(
-    `确认要"${text}""${row.packageName}"套餐吗？`,
+    `确认要"${text}""${data.packageName}"套餐吗？`,
     () => {
       const msgLoading = proxy.$modal.msgLoading('提交中...');
-      return changePackageStatus(row.packageId, row.status)
+      return changePackageStatus(data.packageId, data.status)
         .then(() => {
           getList();
           proxy.$modal.msgSuccess(`${text}成功`);
         })
         .catch(() => {
-          row.status = row.status === '0' ? '1' : '0';
+          data.status = data.status === '0' ? '1' : '0';
         })
         .finally(() => proxy.$modal.msgClose(msgLoading));
     },
     () => {
-      row.status = row.status === '0' ? '1' : '0';
+      data.status = data.status === '0' ? '1' : '0';
     },
   );
 }

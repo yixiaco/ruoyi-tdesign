@@ -72,7 +72,7 @@ public interface ISysOssRuleService extends IService<SysOssRule> {
     void removeCache();
 
     /**
-     * 规则默认值修改
+     * 规则覆盖字段值修改
      *
      * @param ossRuleId   规则id
      * @param isOverwrite 是否覆盖字段值

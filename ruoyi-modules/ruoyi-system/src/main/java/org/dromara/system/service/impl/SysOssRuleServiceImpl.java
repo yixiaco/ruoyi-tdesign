@@ -88,6 +88,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
     public Boolean insertByBo(SysOssRuleBo bo) {
         checkRepeat(bo);
         SysOssRule add = MapstructUtils.convert(bo, SysOssRule.class);
+        add.setIsOverwrite(YesNoEnum.NO.getCode());
         boolean save = save(add);
         removeCache();
         return save;
@@ -103,7 +104,13 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateByBo(SysOssRuleBo bo) {
         checkRepeat(bo);
+        SysOssRule rule = getById(bo.getOssRuleId());
         SysOssRule update = MapstructUtils.convert(bo, SysOssRule.class);
+        // 从非默认改为默认的过程，需要将覆盖字段值关闭
+        if (YesNoEnum.NO.getCode().equals(rule.getIsDefault())
+            && YesNoEnum.YES.getCode().equals(update.getIsDefault())) {
+            update.setIsOverwrite(YesNoEnum.NO.getCode());
+        }
         boolean b = updateById(update);
         removeCache();
         return b;
@@ -132,7 +139,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
     }
 
     /**
-     * 规则默认值修改
+     * 规则覆盖字段值修改
      *
      * @param ossRuleId   规则id
      * @param isOverwrite 是否覆盖字段值
@@ -141,9 +148,13 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
     @Transactional(rollbackFor = Exception.class)
     public void updateOverwrite(Long ossRuleId, String isOverwrite) {
         SysOssRule rule = getById(ossRuleId);
-        if (YesNoEnum.YES.getCode().equals(isOverwrite)) {
-            // 设置其他相同域名的规则为非默认
-            lambdaUpdate().eq(SysOssRule::getDomain, rule.getDomain())
+        // 当前覆盖字段值，并且是默认规则
+        if (YesNoEnum.YES.getCode().equals(isOverwrite)
+        && YesNoEnum.YES.getCode().equals(rule.getIsDefault())) {
+            // 设置其他相同域名并且为默认的规则为关闭覆盖字段值
+            lambdaUpdate()
+                .eq(SysOssRule::getDomain, rule.getDomain())
+                .eq(SysOssRule::getIsDefault, YesNoEnum.YES.getCode())
                 .set(SysOssRule::getIsOverwrite, YesNoEnum.NO.getCode())
                 .update();
         }

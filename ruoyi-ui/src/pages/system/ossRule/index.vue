@@ -10,12 +10,7 @@
         </t-form-item>
         <t-form-item label="覆盖字段值" name="isOverwrite">
           <t-select v-model="queryParams.isOverwrite" placeholder="请选择覆盖字段值" clearable>
-            <t-option
-              v-for="dict in sys_yes_no"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
+            <t-option v-for="dict in sys_yes_no" :key="dict.value" :label="dict.label" :value="dict.value" />
           </t-select>
         </t-form-item>
         <t-form-item label="是否默认" name="isDefault">
@@ -302,12 +297,12 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `规则名称`, colKey: 'ruleName', align: 'center' },
   { title: `匹配域名`, colKey: 'domain', align: 'center', ellipsis: true },
   { title: `媒体类型`, colKey: 'mimeType', align: 'center' },
-  { title: `规则`, colKey: 'rule', align: 'center', ellipsis: true },
-  { title: `是否覆盖默认字段值`, colKey: 'isOverwrite', align: 'center' },
+  // { title: `规则`, colKey: 'rule', align: 'center', ellipsis: true },
+  { title: `覆盖字段值`, colKey: 'isOverwrite', align: 'center' },
   { title: `是否默认`, colKey: 'isDefault', align: 'center' },
   { title: `启用状态`, colKey: 'status', align: 'center' },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
-  { title: `更新时间`, colKey: 'updateTime', align: 'center', width: 180 },
+  { title: `创建时间`, colKey: 'createTime', align: 'center' },
+  { title: `更新时间`, colKey: 'updateTime', align: 'center' },
   { title: `备注`, colKey: 'remark', align: 'center', ellipsis: true },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
@@ -480,23 +475,24 @@ function handleRefreshCache() {
 
 /** 规则覆盖默认字段值修改  */
 function handleOverwriteChange(row) {
-  const text = row.isOverwrite === 'Y' ? '覆盖默认字段值' : '不覆盖默认字段值';
+  const rule = ossRuleList.value.find((value) => value.ossRuleId === row.ossRuleId);
+  const text = rule.isOverwrite === 'Y' ? '覆盖默认字段值' : '不覆盖默认字段值';
   proxy.$modal.confirm(
     `确认要设置该规则为"${text}"吗?`,
     () => {
       const msgLoading = proxy.$modal.msgLoading('提交中...');
-      return changeOssRuleOverwrite(row.ossRuleId, row.isOverwrite)
+      return changeOssRuleOverwrite(rule.ossRuleId, rule.isOverwrite)
         .then(() => {
           getList();
           proxy.$modal.msgSuccess(`已设置规则为"${text}"`);
         })
         .catch(() => {
-          row.isOverwrite = row.isOverwrite === 'N' ? 'Y' : 'N';
+          rule.isOverwrite = rule.isOverwrite === 'N' ? 'Y' : 'N';
         })
         .finally(() => proxy.$modal.msgClose(msgLoading));
     },
     () => {
-      row.isOverwrite = row.isOverwrite === 'N' ? 'Y' : 'N';
+      rule.isOverwrite = rule.isOverwrite === 'N' ? 'Y' : 'N';
     },
   );
 }

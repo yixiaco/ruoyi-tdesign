@@ -87,24 +87,38 @@
           <t-switch v-model="row.status" :custom-value="['0', '1']" @click.stop @change="handleStatusChange(row)" />
         </template>
         <template #operation="{ row }">
-          <t-space :size="8">
-            <t-link v-hasPermi="['system:tenant:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
-              <browse-icon />详情
-            </t-link>
-            <t-link v-hasPermi="['system:tenant:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
-              <edit-icon />修改
-            </t-link>
-            <t-link
-              v-hasPermi="['system:tenant:edit']"
-              theme="primary"
-              hover="color"
-              @click.stop="handleSyncTenantPackage(row)"
-            >
-              <edit-icon />同步套餐
-            </t-link>
-            <t-link v-hasPermi="['system:tenant:remove']" theme="danger" hover="color" @click.stop="handleDelete(row)">
-              <delete-icon />删除
-            </t-link>
+          <t-space direction="vertical">
+            <t-space :size="8">
+              <t-link
+                v-hasPermi="['system:tenant:query']"
+                theme="primary"
+                hover="color"
+                @click.stop="handleDetail(row)"
+              >
+                <browse-icon />详情
+              </t-link>
+              <t-link v-hasPermi="['system:tenant:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
+                <edit-icon />修改
+              </t-link>
+            </t-space>
+            <t-space :size="8">
+              <t-link
+                v-hasPermi="['system:tenant:edit']"
+                theme="primary"
+                hover="color"
+                @click.stop="handleSyncTenantPackage(row)"
+              >
+                <edit-icon />同步套餐
+              </t-link>
+              <t-link
+                v-hasPermi="['system:tenant:remove']"
+                theme="danger"
+                hover="color"
+                @click.stop="handleDelete(row)"
+              >
+                <delete-icon />删除
+              </t-link>
+            </t-space>
           </t-space>
         </template>
       </t-table>
@@ -349,11 +363,11 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `联系电话`, colKey: 'contactPhone', align: 'center' },
   { title: `企业名称`, colKey: 'companyName', align: 'center' },
   { title: `社会信用代码`, colKey: 'licenseNumber', align: 'center' },
-  { title: `过期时间`, colKey: 'expireTime', align: 'center', width: 180 },
+  { title: `过期时间`, colKey: 'expireTime', align: 'center' },
   { title: `租户状态`, colKey: 'status', align: 'center' },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
-  { title: `更新时间`, colKey: 'updateTime', align: 'center', width: 180 },
-  { title: `操作`, colKey: 'operation', align: 'center', width: 260 },
+  { title: `创建时间`, colKey: 'createTime', align: 'center' },
+  { title: `更新时间`, colKey: 'updateTime', align: 'center' },
+  { title: `操作`, colKey: 'operation', align: 'center', width: 160 },
 ]);
 // 提交表单对象
 const form = ref<SysTenantVo & SysTenantForm>({});
@@ -410,23 +424,24 @@ function getTenantPackage() {
 
 // 租户套餐状态修改
 function handleStatusChange(row: SysTenantVo) {
-  const text = row.status === '0' ? '启用' : '停用';
+  const data = tenantList.value.find((value) => value.tenantId === row.tenantId);
+  const text = data.status === '0' ? '启用' : '停用';
   proxy.$modal.confirm(
-    `确认要"${text}""${row.companyName}"租户吗？`,
+    `确认要"${text}""${data.companyName}"租户吗？`,
     () => {
       const msgLoading = proxy.$modal.msgLoading('提交中...');
-      return changeTenantStatus(row.id, row.tenantId, row.status)
+      return changeTenantStatus(data.id, data.tenantId, data.status)
         .then(() => {
           getList();
           proxy.$modal.msgSuccess(`${text}成功`);
         })
         .catch(() => {
-          row.status = row.status === '0' ? '1' : '0';
+          data.status = data.status === '0' ? '1' : '0';
         })
         .finally(() => proxy.$modal.msgClose(msgLoading));
     },
     () => {
-      row.status = row.status === '0' ? '1' : '0';
+      data.status = data.status === '0' ? '1' : '0';
     },
   );
 }
