@@ -83,7 +83,8 @@ function filterAsyncRouter(asyncRouterMap: RouteRecordRaw[], lastRouter?: RouteR
       if (route.component?.toString() === 'Layout') {
         route.component = Layout;
       } else if (route.component?.toString() === 'ParentView') {
-        route.component = ParentView;
+        // route.component = ParentView;
+        route.component = null;
       } else if (route.component?.toString() === 'InnerLink') {
         route.component = InnerLink;
       } else {
