@@ -149,9 +149,12 @@ public class TenantHelper {
             TEMP_DYNAMIC_TENANT.set(tenantId);
             return;
         }
-        String cacheKey = DYNAMIC_TENANT_KEY + ":" + ((BaseUser) SaSecurityContext.getContext()).getUserId();
-        RedisUtils.setCacheObject(cacheKey, tenantId);
-        SaHolder.getStorage().set(cacheKey, tenantId);
+        BaseUser user = SaSecurityContext.getContext();
+        if (user != null) {
+            String cacheKey = DYNAMIC_TENANT_KEY + ":" + user.getUserId();
+            RedisUtils.setCacheObject(cacheKey, tenantId);
+            SaHolder.getStorage().set(cacheKey, tenantId);
+        }
     }
 
     /**

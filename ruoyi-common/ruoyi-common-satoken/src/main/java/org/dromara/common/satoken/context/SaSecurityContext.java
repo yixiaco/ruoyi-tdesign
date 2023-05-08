@@ -29,6 +29,10 @@ public class SaSecurityContext {
      */
     @SuppressWarnings("unchecked cast")
     public static <T extends BaseUser> T getContext() {
-        return (T) SaHolder.getStorage().get(KEY);
+        try {
+            return (T) SaHolder.getStorage().get(KEY);
+        } catch (Exception e) {
+            return null;
+        }
     }
 }
