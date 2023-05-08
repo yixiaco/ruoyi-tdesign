@@ -21,6 +21,11 @@ public class BaseUser implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 登录类型
+     */
+    private String loginType;
+
+    /**
      * 租户ID
      */
     private String tenantId;

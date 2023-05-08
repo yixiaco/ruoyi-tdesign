@@ -20,6 +20,8 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import static org.dromara.common.satoken.utils.MultipleStpUtil.*;
+
 /**
  * 登录鉴权助手
  * <p>
@@ -35,9 +37,14 @@ import java.util.function.Consumer;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginHelper {
 
-    public static final String LOGIN_USER_KEY = "system:loginUser";
-    public static final String TENANT_KEY = "system:tenantId";
-    public static final String USER_KEY = "system:userId";
+    /**
+     * 获取登录类型
+     *
+     * @return
+     */
+    public static String getLoginType() {
+        return MultipleStpUtil.SYSTEM.getLoginType();
+    }
 
     /**
      * 当前是否登录
@@ -64,10 +71,11 @@ public class LoginHelper {
      * @param loginUser 登录用户信息
      */
     public static void loginByDevice(LoginUser loginUser, DeviceType deviceType) {
+        loginUser.setLoginType(getLoginType());
         SaStorage storage = SaHolder.getStorage();
-        storage.set(LOGIN_USER_KEY, loginUser);
-        storage.set(TENANT_KEY, loginUser.getTenantId());
-        storage.set(USER_KEY, loginUser.getUserId());
+        storage.set(getLoginType() + LOGIN_USER_KEY, loginUser);
+        storage.set(getLoginType() + TENANT_KEY, loginUser.getTenantId());
+        storage.set(getLoginType() + USER_KEY, loginUser.getUserId());
         SaLoginModel model = new SaLoginModel();
         if (ObjectUtil.isNotNull(deviceType)) {
             model.setDevice(deviceType.getDevice());
@@ -83,14 +91,14 @@ public class LoginHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T extends LoginUser> T getUser() {
-        T loginUser = (T) SaHolder.getStorage().get(LOGIN_USER_KEY);
+        T loginUser = (T) SaHolder.getStorage().get(getLoginType() + LOGIN_USER_KEY);
         if (loginUser != null) {
             return loginUser;
         }
         SaSession session = MultipleStpUtil.SYSTEM.getTokenSession();
         if (session != null) {
             loginUser = (T) session.get(LOGIN_USER_KEY);
-            SaHolder.getStorage().set(LOGIN_USER_KEY, loginUser);
+            SaHolder.getStorage().set(getLoginType() + LOGIN_USER_KEY, loginUser);
         }
         return loginUser;
     }
@@ -135,7 +143,7 @@ public class LoginHelper {
                     if (Objects.equals(tokenValue, token)) {
                         SaStorage storage = SaHolder.getStorage();
                         if (storage != null) {
-                            storage.set(LOGIN_USER_KEY, tokenUser);
+                            storage.set(getLoginType() + LOGIN_USER_KEY, tokenUser);
                         }
                     }
                 }
@@ -149,10 +157,10 @@ public class LoginHelper {
     public static Long getUserId() {
         Long userId;
         try {
-            userId = Convert.toLong(SaHolder.getStorage().get(USER_KEY));
+            userId = Convert.toLong(SaHolder.getStorage().get(getLoginType() + USER_KEY));
             if (ObjectUtil.isNull(userId)) {
                 userId = Convert.toLong(MultipleStpUtil.SYSTEM.getExtra(USER_KEY));
-                SaHolder.getStorage().set(USER_KEY, userId);
+                SaHolder.getStorage().set(getLoginType() + USER_KEY, userId);
             }
         } catch (Exception e) {
             return null;
@@ -166,10 +174,10 @@ public class LoginHelper {
     public static String getTenantId() {
         String tenantId;
         try {
-            tenantId = (String) SaHolder.getStorage().get(TENANT_KEY);
+            tenantId = (String) SaHolder.getStorage().get(getLoginType() + TENANT_KEY);
             if (ObjectUtil.isNull(tenantId)) {
                 tenantId = (String) MultipleStpUtil.SYSTEM.getExtra(TENANT_KEY);
-                SaHolder.getStorage().set(TENANT_KEY, tenantId);
+                SaHolder.getStorage().set(getLoginType() + TENANT_KEY, tenantId);
             }
         } catch (Exception e) {
             return null;

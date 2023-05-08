@@ -6,8 +6,6 @@ import net.sf.jsqlparser.expression.Expression;
 import net.sf.jsqlparser.expression.NullValue;
 import net.sf.jsqlparser.expression.StringValue;
 import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.satoken.utils.LoginHelper;
-import org.dromara.common.satoken.utils.LoginUserHelper;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.common.tenant.properties.TenantProperties;
 
@@ -25,36 +23,30 @@ public class PlusTenantLineHandler implements TenantLineHandler {
 
     @Override
     public Expression getTenantId() {
-        String tenantId = LoginHelper.getTenantId();
-        if (StringUtils.isBlank(tenantId)) {
-            tenantId = LoginUserHelper.getTenantId();
-        }
+        String tenantId = TenantHelper.getTenantId();
         if (StringUtils.isBlank(tenantId)) {
             return new NullValue();
         }
-        String dynamicTenantId = TenantHelper.getDynamic();
-        if (StringUtils.isNotBlank(dynamicTenantId)) {
-            // 返回动态租户
-            return new StringValue(dynamicTenantId);
-        }
+//        String dynamicTenantId = TenantHelper.getDynamic();
+//        if (StringUtils.isNotBlank(dynamicTenantId)) {
+//            // 返回动态租户
+//            return new StringValue(dynamicTenantId);
+//        }
         // 返回固定租户
         return new StringValue(tenantId);
     }
 
     @Override
     public boolean ignoreTable(String tableName) {
-        String tenantId = LoginHelper.getTenantId();
-        if (StringUtils.isBlank(tenantId)) {
-            tenantId = LoginUserHelper.getTenantId();
-        }
+        String tenantId = TenantHelper.getTenantId();
         // 判断是否有租户
         if (StringUtils.isNotBlank(tenantId)) {
             // 不需要过滤租户的表
             Set<String> excludes = tenantProperties.getExcludes();
             // 非业务表
             excludes.addAll(Set.of(
-                    "gen_table",
-                    "gen_table_column"
+                "gen_table",
+                "gen_table_column"
             ));
             return excludes.contains(tableName);
         }

@@ -6,9 +6,12 @@ import cn.dev33.satoken.stp.StpLogic;
 import cn.hutool.core.collection.CollUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.dromara.common.core.domain.model.BaseUser;
 import org.dromara.common.satoken.config.MultipleSaTokenConfig;
 import org.dromara.common.satoken.config.MultipleSaTokenProperties;
+import org.dromara.common.satoken.context.SaSecurityContext;
 import org.dromara.common.satoken.stp.DynamicStpLogic;
+import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.dromara.common.security.config.properties.SecurityProperties;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -44,7 +47,13 @@ public class SecurityConfig implements WebMvcConfigurer {
                     MultipleSaTokenConfig config = entry.getValue();
                     if (CollUtil.isNotEmpty(config.getMatch())) {
                         StpLogic logic = DynamicStpLogic.getDynamicStpLogic(type);
-                        SaRouter.match(config.getMatch()).check(logic::checkLogin);
+                        SaRouter
+                            .match(config.getMatch())
+                            .check(logic::checkLogin)
+                            .check(() -> {
+                                BaseUser user = (BaseUser) logic.getTokenSession().get(MultipleStpUtil.LOGIN_USER_KEY);
+                                SaSecurityContext.setContext(user);
+                            });
                     }
                 }
             /*AllUrlHandler allUrlHandler = SpringUtils.getBean(AllUrlHandler.class);

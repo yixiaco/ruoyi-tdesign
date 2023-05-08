@@ -1,6 +1,5 @@
 package org.dromara.common.idempotent.aspectj;
 
-import cn.dev33.satoken.SaManager;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.crypto.SecureUtil;
 import jakarta.servlet.http.HttpServletRequest;
@@ -12,6 +11,7 @@ import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.domain.model.BaseUser;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MessageUtils;
 import org.dromara.common.core.utils.ServletUtils;
@@ -19,6 +19,7 @@ import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.idempotent.annotation.RepeatSubmit;
 import org.dromara.common.json.utils.JsonUtils;
 import org.dromara.common.redis.utils.RedisUtils;
+import org.dromara.common.satoken.context.SaSecurityContext;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -53,7 +54,7 @@ public class RepeatSubmitAspect {
         String url = request.getRequestURI();
 
         // 唯一值（没有消息头则使用请求地址）
-        String submitKey = StringUtils.trimToEmpty(request.getHeader(SaManager.getConfig().getTokenName()));
+        String submitKey = StringUtils.trimToEmpty(SaSecurityContext.getContext().getUserId().toString());
 
         submitKey = SecureUtil.md5(submitKey + ":" + nowParams);
         // 唯一标识（指定key + url + 消息头）

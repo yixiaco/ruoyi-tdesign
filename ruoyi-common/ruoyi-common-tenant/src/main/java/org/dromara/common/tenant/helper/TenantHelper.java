@@ -10,10 +10,12 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.GlobalConstants;
+import org.dromara.common.core.domain.model.BaseUser;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.funtion.Apply;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.redis.utils.RedisUtils;
+import org.dromara.common.satoken.context.SaSecurityContext;
 import org.dromara.common.satoken.utils.LoginHelper;
 
 import java.util.Objects;
@@ -147,7 +149,7 @@ public class TenantHelper {
             TEMP_DYNAMIC_TENANT.set(tenantId);
             return;
         }
-        String cacheKey = DYNAMIC_TENANT_KEY + ":" + LoginHelper.getUserId();
+        String cacheKey = DYNAMIC_TENANT_KEY + ":" + ((BaseUser) SaSecurityContext.getContext()).getUserId();
         RedisUtils.setCacheObject(cacheKey, tenantId);
         SaHolder.getStorage().set(cacheKey, tenantId);
     }
@@ -161,14 +163,18 @@ public class TenantHelper {
         if (!SpringMVCUtil.isWeb()) {
             return TEMP_DYNAMIC_TENANT.get();
         }
-        String cacheKey = DYNAMIC_TENANT_KEY + ":" + LoginHelper.getUserId();
-        String tenantId = (String) SaHolder.getStorage().get(cacheKey);
-        if (StringUtils.isNotBlank(tenantId)) {
+        BaseUser user = SaSecurityContext.getContext();
+        if (user != null) {
+            String cacheKey = DYNAMIC_TENANT_KEY + ":" + user.getUserId();
+            String tenantId = (String) SaHolder.getStorage().get(cacheKey);
+            if (StringUtils.isNotBlank(tenantId)) {
+                return tenantId;
+            }
+            tenantId = RedisUtils.getCacheObject(cacheKey);
+            SaHolder.getStorage().set(cacheKey, tenantId);
             return tenantId;
         }
-        tenantId = RedisUtils.getCacheObject(cacheKey);
-        SaHolder.getStorage().set(cacheKey, tenantId);
-        return tenantId;
+        return null;
     }
 
     /**
@@ -179,9 +185,12 @@ public class TenantHelper {
             TEMP_DYNAMIC_TENANT.remove();
             return;
         }
-        String cacheKey = DYNAMIC_TENANT_KEY + ":" + LoginHelper.getUserId();
-        RedisUtils.deleteObject(cacheKey);
-        SaHolder.getStorage().delete(cacheKey);
+        BaseUser user = SaSecurityContext.getContext();
+        if (user != null) {
+            String cacheKey = DYNAMIC_TENANT_KEY + ":" + user.getUserId();
+            RedisUtils.deleteObject(cacheKey);
+            SaHolder.getStorage().delete(cacheKey);
+        }
     }
 
     /**
@@ -190,7 +199,10 @@ public class TenantHelper {
     public static String getTenantId() {
         String tenantId = TenantHelper.getDynamic();
         if (StringUtils.isBlank(tenantId)) {
-            tenantId = LoginHelper.getTenantId();
+            BaseUser user = SaSecurityContext.getContext();
+            if (user != null) {
+                tenantId = user.getTenantId();
+            }
         }
         return tenantId;
     }
