@@ -7,7 +7,7 @@
     "dev:mock": "vite --open --mode mock",
     "dev": "vite --open --mode development",
     "dev:linux": "vite --mode development",
-    "build:test": "vite build --mode test",
+    "build:test": "vite build --mode test --minify false",
     "build": "vite build --mode release",
     "build:lint": "vue-tsc --noEmit && vite build --mode release",
     "preview": "vite preview",

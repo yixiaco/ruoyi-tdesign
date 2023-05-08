@@ -56,6 +56,7 @@ export default {
 
 <script setup lang="ts">
 import { BarChart, LineChart } from 'echarts/charts';
+import { GridComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
 import { FileIcon, UsergroupIcon } from 'tdesign-icons-vue-next';
@@ -69,7 +70,7 @@ import { changeChartsTheme } from '@/utils/color';
 import { PANE_LIST } from '../constants';
 import { constructInitDashboardDataset } from '../data';
 
-echarts.use([LineChart, BarChart, CanvasRenderer]);
+echarts.use([LineChart, BarChart, CanvasRenderer, GridComponent]);
 
 const store = useSettingStore();
 const resizeTime = ref(1);
