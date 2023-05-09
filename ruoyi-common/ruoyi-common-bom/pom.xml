@@ -164,6 +164,13 @@
                 <artifactId>ruoyi-common-websocket</artifactId>
                 <version>${revision}</version>
             </dependency>
+
+            <!-- 消息队列模块 -->
+            <dependency>
+                <groupId>org.dromara</groupId>
+                <artifactId>ruoyi-common-amqp</artifactId>
+                <version>${revision}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 </project>
