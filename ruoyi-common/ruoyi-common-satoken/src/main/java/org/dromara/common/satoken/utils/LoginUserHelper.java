@@ -128,7 +128,12 @@ public class LoginUserHelper {
     @SuppressWarnings("unchecked")
     public static <T extends BaseUser> void updateUser(Long userId, Consumer<T> updateBy) {
         List<String> tokens = MultipleStpUtil.USER.getTokenValueListByLoginId(userId);
-        String tokenValue = MultipleStpUtil.USER.getTokenValue();
+        String tokenValue = null;
+        try {
+            tokenValue = MultipleStpUtil.USER.getTokenValue();
+        } catch (Exception ignore) {
+            // 不做处理
+        }
         if (CollUtil.isNotEmpty(tokens)) {
             for (String token : tokens) {
                 SaSession session = MultipleStpUtil.USER.getTokenSessionByToken(token);

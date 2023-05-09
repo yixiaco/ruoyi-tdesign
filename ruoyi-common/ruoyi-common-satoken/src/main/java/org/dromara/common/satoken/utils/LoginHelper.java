@@ -132,7 +132,12 @@ public class LoginHelper {
     @SuppressWarnings("unchecked")
     public static <T extends LoginUser> void updateUser(Long userId, Consumer<T> updateBy) {
         List<String> tokens = MultipleStpUtil.SYSTEM.getTokenValueListByLoginId(userId);
-        String tokenValue = MultipleStpUtil.SYSTEM.getTokenValue();
+        String tokenValue = null;
+        try {
+            tokenValue = MultipleStpUtil.SYSTEM.getTokenValue();
+        } catch (Exception ignore) {
+            // 不做处理
+        }
         if (CollUtil.isNotEmpty(tokens)) {
             for (String token : tokens) {
                 SaSession session = MultipleStpUtil.SYSTEM.getTokenSessionByToken(token);

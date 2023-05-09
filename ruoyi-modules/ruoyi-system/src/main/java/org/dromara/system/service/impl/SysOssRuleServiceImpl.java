@@ -150,7 +150,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
         SysOssRule rule = getById(ossRuleId);
         // 当前覆盖字段值，并且是默认规则
         if (YesNoEnum.YES.getCode().equals(isOverwrite)
-        && YesNoEnum.YES.getCode().equals(rule.getIsDefault())) {
+            && YesNoEnum.YES.getCode().equals(rule.getIsDefault())) {
             // 设置其他相同域名并且为默认的规则为关闭覆盖字段值
             lambdaUpdate()
                 .eq(SysOssRule::getDomain, rule.getDomain())
@@ -206,11 +206,11 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
         // 多个url拆分
         String[] urls = splitUrl(originalUrl);
         for (String url : urls) {
-            String mimeType = HttpUtil.getMimeType(originalUrl);
+            String mimeType = HttpUtil.getMimeType(getFileName(originalUrl));
             // 过滤命中的规则
             List<SysOssRule> list = rules.stream()
                 .filter(sysOssRule ->
-                    mimeType.contains(sysOssRule.getMimeType())
+                    StrUtil.contains(mimeType, sysOssRule.getMimeType())
                         && originalUrl.contains(sysOssRule.getDomain())
                         && (useRules == null ?
                         YesNoEnum.YES.getCode().equals(sysOssRule.getIsDefault()) :
@@ -250,7 +250,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
     private String getRealUrl(String rule, String url) {
         // 解析url
         UrlBuilder builder = UrlBuilder.ofHttp(url, CharsetUtil.CHARSET_UTF_8);
-        HashMap<String, Object> variable = new HashMap<>();
+        HashMap<String, Object> variable = new HashMap<>(4);
         String domain = builder.getScheme() + "://" + builder.getHost();
         if (builder.getPort() > 0) {
             domain += ":" + builder.getPort();
@@ -261,6 +261,19 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
         variable.put("filename", segments.get(segments.size() - 1));
         variable.put("url", url);
         return SpringExpressionUtil.parseExpression(rule, variable);
+    }
+
+    /**
+     * 获取文件名称
+     *
+     * @param url
+     * @return
+     */
+    private String getFileName(String url) {
+        // 解析url
+        UrlBuilder builder = UrlBuilder.ofHttp(url, CharsetUtil.CHARSET_UTF_8);
+        List<String> segments = builder.getPath().getSegments();
+        return segments.isEmpty() ? null : segments.get(segments.size() - 1);
     }
 
     /**
