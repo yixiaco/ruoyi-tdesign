@@ -47,6 +47,6 @@ const editorConfig = ref({
 <!-- eslint-disable-next-line vue-scoped-css/enforce-style-type -->
 <style lang="less">
 :root {
-  --ck-z-default: 10000;
+  --ck-z-default: 10000 !important;
 }
 </style>
