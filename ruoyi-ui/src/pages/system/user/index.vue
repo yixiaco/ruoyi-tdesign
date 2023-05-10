@@ -152,8 +152,11 @@
                 @change="handleStatusChange(row)"
               ></t-switch>
             </template>
+            <template #avatar="{ row }">
+              <image-preview :src="row.avatar" width="60px" height="60px"></image-preview>
+            </template>
             <template #operation="{ row }">
-              <t-space :size="8">
+              <t-space :size="8" break-line>
                 <t-tooltip content="详情" placement="top">
                   <t-link
                     v-hasPermi="['system:user:query']"
@@ -494,12 +497,13 @@ const upload = reactive({
 });
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
-  { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
-  { title: `用户编号`, colKey: 'userId', align: 'center' },
+  { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 30, align: 'center' },
+  // { title: `用户编号`, colKey: 'userId', align: 'center' },
   { title: `用户名称`, colKey: 'userName', ellipsis: true, align: 'center' },
   { title: `用户昵称`, colKey: 'nickName', ellipsis: true, align: 'center' },
+  { title: `头像`, colKey: 'avatar', align: 'center' },
   { title: `部门`, colKey: 'dept.deptName', align: 'center' },
-  { title: `手机号码`, colKey: 'phonenumber', width: 130, align: 'center' },
+  { title: `手机号码`, colKey: 'phonenumber', align: 'center' },
   { title: `状态`, colKey: 'status', align: 'center' },
   { title: `创建时间`, colKey: 'createTime', align: 'center' },
   { title: `操作`, colKey: 'operation', align: 'center' },

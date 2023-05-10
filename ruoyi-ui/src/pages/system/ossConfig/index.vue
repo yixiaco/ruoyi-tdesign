@@ -105,7 +105,7 @@
           ></t-switch>
         </template>
         <template #operation="{ row }">
-          <t-space :size="8">
+          <t-space :size="8" break-line>
             <t-link
               v-hasPermi="['system:ossConfig:edit']"
               theme="primary"
@@ -224,16 +224,16 @@ const ossConfigRef = ref<FormInstanceFunctions>(null);
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
-  { title: `主建`, colKey: 'ossConfigId', align: 'center' },
+  // { title: `主建`, colKey: 'ossConfigId', align: 'center' },
   { title: `配置key`, colKey: 'configKey', align: 'center' },
-  { title: `访问站点`, colKey: 'endpoint', align: 'center', width: 200 },
-  { title: `自定义域名`, colKey: 'domain', align: 'center', width: 200 },
+  { title: `访问站点`, colKey: 'endpoint', align: 'center', ellipsis: true },
+  { title: `自定义域名`, colKey: 'domain', align: 'center', ellipsis: true },
   { title: `桶名称`, colKey: 'bucketName', align: 'center' },
   { title: `前缀`, colKey: 'prefix', align: 'center' },
   { title: `域`, colKey: 'region', align: 'center' },
   { title: `桶权限类型`, colKey: 'accessPolicy', align: 'center' },
   { title: `是否默认`, colKey: 'status', align: 'center' },
-  { title: `操作`, colKey: 'operation', align: 'center' },
+  { title: `操作`, colKey: 'operation', align: 'center', width: 140 },
 ]);
 
 const rules = ref<Record<string, Array<FormRule>>>({

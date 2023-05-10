@@ -141,7 +141,7 @@
           <span>{{ bytesToSize(row.size) }}</span>
         </template>
         <template #operation="{ row }">
-          <t-space :size="8">
+          <t-space :size="8" break-line>
             <t-link
               v-hasPermi="['system:oss:download']"
               v-copyText="row.url"

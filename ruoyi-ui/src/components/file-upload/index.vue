@@ -94,7 +94,7 @@ watch(
       if (Array.isArray(val)) {
         list = val;
       } else if (props.mode === 'url') {
-        await listByUrls(val).then((res) => {
+        await listByUrls(val as string).then((res) => {
           list = res.data.map((oss) => {
             return {
               name: oss.originalName,
@@ -107,7 +107,7 @@ watch(
           });
         });
       } else if (props.mode === 'id') {
-        await listByIds(val).then((res) => {
+        await listByIds(val as string).then((res) => {
           list = res.data.map((oss) => {
             return {
               name: oss.originalName,
@@ -135,7 +135,6 @@ watch(
       });
     } else {
       fileList.value = [];
-      return [];
     }
   },
   { deep: true, immediate: true },

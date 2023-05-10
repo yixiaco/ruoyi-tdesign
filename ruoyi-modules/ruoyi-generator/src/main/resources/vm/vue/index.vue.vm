@@ -148,7 +148,7 @@
 #end
 #end
         <template #operation="{ row }">
-          <t-space :size="8">
+          <t-space :size="8" break-line>
             <t-link v-hasPermi="['${moduleName}:${businessName}:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
               <browse-icon />详情
             </t-link>

@@ -87,38 +87,24 @@
           <t-switch v-model="row.status" :custom-value="['0', '1']" @click.stop @change="handleStatusChange(row)" />
         </template>
         <template #operation="{ row }">
-          <t-space direction="vertical">
-            <t-space :size="8">
-              <t-link
-                v-hasPermi="['system:tenant:query']"
-                theme="primary"
-                hover="color"
-                @click.stop="handleDetail(row)"
-              >
-                <browse-icon />详情
-              </t-link>
-              <t-link v-hasPermi="['system:tenant:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
-                <edit-icon />修改
-              </t-link>
-            </t-space>
-            <t-space :size="8">
-              <t-link
-                v-hasPermi="['system:tenant:edit']"
-                theme="primary"
-                hover="color"
-                @click.stop="handleSyncTenantPackage(row)"
-              >
-                <edit-icon />同步套餐
-              </t-link>
-              <t-link
-                v-hasPermi="['system:tenant:remove']"
-                theme="danger"
-                hover="color"
-                @click.stop="handleDelete(row)"
-              >
-                <delete-icon />删除
-              </t-link>
-            </t-space>
+          <t-space :size="8" break-line>
+            <t-link v-hasPermi="['system:tenant:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
+              <browse-icon />详情
+            </t-link>
+            <t-link v-hasPermi="['system:tenant:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
+              <edit-icon />修改
+            </t-link>
+            <t-link
+              v-hasPermi="['system:tenant:edit']"
+              theme="primary"
+              hover="color"
+              @click.stop="handleSyncTenantPackage(row)"
+            >
+              <edit-icon />同步套餐
+            </t-link>
+            <t-link v-hasPermi="['system:tenant:remove']" theme="danger" hover="color" @click.stop="handleDelete(row)">
+              <delete-icon />删除
+            </t-link>
           </t-space>
         </template>
       </t-table>

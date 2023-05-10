@@ -11,6 +11,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.dromara.common.core.domain.model.BaseUser;
 import org.dromara.common.core.enums.DeviceType;
+import org.dromara.common.satoken.context.SaSecurityContext;
 
 import java.util.List;
 import java.util.Objects;
@@ -76,6 +77,7 @@ public class LoginUserHelper {
         if (ObjectUtil.isNotNull(deviceType)) {
             model.setDevice(deviceType.getDevice());
         }
+        SaSecurityContext.setContext(baseUser);
         MultipleStpUtil.USER.login(baseUser.getUserId(),
             model.setExtra(TENANT_KEY, baseUser.getTenantId())
                 .setExtra(USER_KEY, baseUser.getUserId()));

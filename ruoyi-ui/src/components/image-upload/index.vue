@@ -41,7 +41,7 @@ const props = defineProps({
   },
   draggable: {
     type: Boolean,
-    default: false,
+    default: undefined,
   },
   // 大小限制(MB)
   fileSize: {
@@ -110,11 +110,11 @@ watch(
       if (Array.isArray(val)) {
         list = val;
       } else if (props.mode === 'url') {
-        await listByUrls(val).then((res) => {
+        await listByUrls(val as string).then((res) => {
           list = res.data;
         });
       } else if (props.mode === 'id') {
-        await listByIds(val).then((res) => {
+        await listByIds(val as string).then((res) => {
           list = res.data;
         });
       }
@@ -138,7 +138,6 @@ watch(
       });
     } else {
       fileList.value = [];
-      return [];
     }
   },
   { deep: true, immediate: true },
