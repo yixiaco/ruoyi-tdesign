@@ -206,16 +206,23 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
         // 多个url拆分
         String[] urls = splitUrl(originalUrl);
         for (String url : urls) {
-            String mimeType = HttpUtil.getMimeType(getFileName(originalUrl));
+            String fileName = getFileName(originalUrl);
+            String mimeType = HttpUtil.getMimeType(fileName);
             // 过滤命中的规则
             List<SysOssRule> list = rules.stream()
-                .filter(sysOssRule ->
-                    StrUtil.contains(mimeType, sysOssRule.getMimeType())
-                        && originalUrl.contains(sysOssRule.getDomain())
-                        && (useRules == null ?
-                        YesNoEnum.YES.getCode().equals(sysOssRule.getIsDefault()) :
-                        ArrayUtil.contains(useRules, sysOssRule.getRuleName()))
-                ).toList();
+                .filter(sysOssRule -> {
+                    if (!originalUrl.contains(sysOssRule.getDomain())) {
+                        return false;
+                    }
+                    String[] mimeTypes = sysOssRule.getMimeType().split(",");
+                    if (!StrUtil.containsAny(mimeType, mimeTypes) && !StrUtil.endWithAny(fileName, mimeTypes)) {
+                        return false;
+                    }
+                    if (useRules == null) {
+                        return YesNoEnum.YES.getCode().equals(sysOssRule.getIsDefault());
+                    }
+                    return ArrayUtil.contains(useRules, sysOssRule.getRuleName());
+                }).toList();
 
             // 设置覆盖默认字段值
             Optional<SysOssRule> overwriteRuleOpt = StreamUtils.findFirst(list, o -> YesNoEnum.YES.getCode().equals(o.getIsOverwrite()));
