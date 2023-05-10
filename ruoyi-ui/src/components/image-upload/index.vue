@@ -69,7 +69,7 @@ const props = defineProps({
   // 文件类型, 例如['png', 'jpg', 'jpeg']
   fileType: {
     type: Array as PropType<Array<string>>,
-    default: () => ['png', 'jpg', 'jpeg'],
+    default: () => ['png', 'jpg', 'jpeg', 'gif', 'webp', 'bmp'],
   },
   // 是否显示提示
   isShowTip: {
