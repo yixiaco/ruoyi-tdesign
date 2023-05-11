@@ -42,6 +42,7 @@
       </t-form>
       <t-table
         ref="refTable"
+        hover
         :loading="loading"
         row-key="userId"
         :data="userList"

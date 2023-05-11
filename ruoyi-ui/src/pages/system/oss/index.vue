@@ -70,6 +70,7 @@
 
       <t-table
         v-model:column-controller-visible="columnControllerVisible"
+        hover
         :loading="loading"
         row-key="ossId"
         :data="ossList"

@@ -32,6 +32,7 @@
         </t-form-item>
       </t-form>
       <t-table
+        hover
         :loading="loading"
         row-key="tokenId"
         :data="onlineList"

@@ -49,6 +49,7 @@
       <!-- 表格数据 -->
       <t-table
         v-model:column-controller-visible="columnControllerVisible"
+        hover
         :loading="loading"
         row-key="roleId"
         :data="roleList"

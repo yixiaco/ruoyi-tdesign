@@ -19,6 +19,7 @@
 
       <t-table
         v-model:column-controller-visible="columnControllerVisible"
+        hover
         :loading="loading"
         row-key="packageId"
         :data="tenantPackageList"

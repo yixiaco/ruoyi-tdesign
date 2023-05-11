@@ -71,6 +71,7 @@
       <t-table
         v-model:column-controller-visible="columnControllerVisible"
         :loading="loading"
+        hover
         row-key="${pkColumn.javaField}"
         :data="${businessName}List"
         :columns="columns"

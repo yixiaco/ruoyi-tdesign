@@ -38,6 +38,7 @@
       <t-table
         v-model:column-controller-visible="columnControllerVisible"
         :loading="loading"
+        hover
         row-key="ossRuleId"
         :data="ossRuleList"
         :columns="columns"
@@ -160,7 +161,11 @@
         <t-form-item label="匹配域名" name="domain">
           <t-input v-model.trim="form.domain" placeholder="请输入匹配域名" clearable />
         </t-form-item>
-        <t-form-item label="媒体类型" name="mimeType" help="规则对匹配的媒体类型或者匹配的文件后缀生效，多个使用逗号分割">
+        <t-form-item
+          label="媒体类型"
+          name="mimeType"
+          help="规则对匹配的媒体类型或者匹配的文件后缀生效，多个使用逗号分割"
+        >
           <t-input v-model.trim="form.mimeType" placeholder="请输入媒体类型" clearable />
         </t-form-item>
         <t-form-item label="规则" name="rule" help="内置domain、path、filename、url变量，使用#{#url}的方式使用">

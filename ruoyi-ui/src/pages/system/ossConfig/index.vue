@@ -41,6 +41,7 @@
       <t-table
         v-model:column-controller-visible="columnControllerVisible"
         :loading="loading"
+        hover
         row-key="ossConfigId"
         :data="ossConfigList"
         :columns="columns"

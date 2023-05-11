@@ -20,7 +20,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { manifest } from 'tdesign-icons-vue-next/lib/manifest';
+import { manifest } from 'tdesign-icons-vue-next';
 import { ref } from 'vue';
 
 defineProps({

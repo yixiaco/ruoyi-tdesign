@@ -31,6 +31,7 @@
       <t-enhanced-table
         ref="tableRef"
         v-model:column-controller-visible="columnControllerVisible"
+        hover
         :loading="loading"
         :data="deptList"
         row-key="deptId"

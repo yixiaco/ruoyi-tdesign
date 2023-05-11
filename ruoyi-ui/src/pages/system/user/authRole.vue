@@ -19,6 +19,7 @@
     <h4 class="form-header h4">角色信息</h4>
     <t-table
       ref="roleRef"
+      hover
       :loading="loading"
       row-key="roleId"
       :columns="columns"

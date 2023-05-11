@@ -43,6 +43,7 @@
       </t-form>
       <t-table
         ref="table"
+        hover
         height="260px"
         :loading="loading"
         row-key="tableName"
