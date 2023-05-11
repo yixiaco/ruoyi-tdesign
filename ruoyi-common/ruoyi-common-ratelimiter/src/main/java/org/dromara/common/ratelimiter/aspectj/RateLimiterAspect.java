@@ -101,13 +101,7 @@ public class RateLimiterAspect {
             }
             // 解析返回给key
             try {
-                Expression expression;
-                if (StringUtils.startsWith(key, parserContext.getExpressionPrefix())
-                    && StringUtils.endsWith(key, parserContext.getExpressionSuffix())) {
-                    expression = parser.parseExpression(key, parserContext);
-                } else {
-                    expression = parser.parseExpression(key);
-                }
+                Expression expression = parser.parseExpression(key, parserContext);
                 key = expression.getValue(context, String.class) + ":";
             } catch (Exception e) {
                 throw new ServiceException("限流key解析异常!请联系管理员!");
