@@ -7,6 +7,7 @@ import Components from 'unplugin-vue-components/vite';
 import { ConfigEnv, loadEnv, UserConfig } from 'vite';
 import viteCompression from 'vite-plugin-compression';
 import { viteMockServe } from 'vite-plugin-mock';
+import VueDevTools from 'vite-plugin-vue-devtools';
 import svgLoader from 'vite-svg-loader';
 
 const CWD = process.cwd();
@@ -52,6 +53,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       },
       vue(),
       vueJsx(),
+      VueDevTools(),
       viteMockServe({
         mockPath: 'mock',
         localEnabled: true,
