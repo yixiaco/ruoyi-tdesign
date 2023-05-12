@@ -14,6 +14,7 @@ export interface MenuRoute {
   redirect?: string;
   children: MenuRoute[];
   meta: any;
+  query: any;
 }
 
 export type ModeType = 'dark' | 'light';

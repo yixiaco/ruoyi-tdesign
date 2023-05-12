@@ -8,7 +8,7 @@
           </template>
           {{ item.title }}
         </t-menu-item>
-        <t-menu-item v-else :name="item.path" :value="item.meta.value ?? item.path" :to="item.path">
+        <t-menu-item v-else :name="item.path" :value="item.meta.value ?? item.path" :to="item">
           <template #icon>
             <component :is="menuIcon(item)" class="t-icon"></component>
           </template>
@@ -70,6 +70,7 @@ const getMenuList = (list: MenuRoute[], basePath?: string): ListItemType[] => {
         children: getMenuList(item.children, path),
         meta: item.meta,
         redirect: item.redirect,
+        query: item.query,
       };
     })
     .filter((item) => item.meta && item.meta.hidden !== true);

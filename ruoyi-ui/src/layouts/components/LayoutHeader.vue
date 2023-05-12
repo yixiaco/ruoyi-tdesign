@@ -26,6 +26,7 @@ const headerMenu = computed(() => {
     if (settingStore.splitMenu) {
       return menuRouters.value.map((menu) => {
         const newMenu = {
+          query: undefined,
           ...menu,
           children: [],
         };
@@ -33,6 +34,7 @@ const headerMenu = computed(() => {
         if (menu.children && menu.children.length > 0 && menu.redirect?.toString().includes('noRedirect')) {
           newMenu.path = `${menu.path}/${menu.children[0].path}`;
           newMenu.meta.value = menu.path;
+          newMenu.query = (menu.children[0] as any).query;
         }
         return newMenu;
       });

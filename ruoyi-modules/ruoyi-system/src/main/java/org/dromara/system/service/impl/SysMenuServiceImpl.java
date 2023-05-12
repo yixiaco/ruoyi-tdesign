@@ -4,6 +4,8 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
+import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
@@ -35,6 +37,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 
@@ -194,7 +197,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             router.setName(menu.getRouteName());
             router.setPath(menu.getRouterPath());
             router.setComponent(menu.getComponentInfo());
-            router.setQuery(menu.getQueryParam());
+            router.setQuery(getQueryParam(menu.getQueryParam()));
             router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), Objects.equals(1, menu.getIsCache()), menu.getPath()));
             List<SysMenu> cMenus = menu.getChildren();
             if (CollUtil.isNotEmpty(cMenus) && UserConstants.TYPE_DIR.equals(menu.getMenuType())) {
@@ -209,7 +212,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 children.setComponent(menu.getComponentInfo());
                 children.setName(StringUtils.capitalize(menu.getPath()));
                 children.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), Objects.equals(1, menu.getIsCache()), menu.getPath()));
-                children.setQuery(menu.getQueryParam());
+                children.setQuery(getQueryParam(menu.getQueryParam()));
                 childrenList.add(children);
                 router.setChildren(childrenList);
             } else if (menu.getParentId().intValue() == 0 && menu.isInnerLink()) {
@@ -228,6 +231,16 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             routers.add(router);
         }
         return routers;
+    }
+
+    private Map<String, Object> getQueryParam(String queryParam) {
+        if (StrUtil.isBlank(queryParam)) {
+            return null;
+        }
+        if (JSONUtil.isTypeJSONObject(queryParam)) {
+            return JSONUtil.parseObj(queryParam);
+        }
+        return null;
     }
 
     /**

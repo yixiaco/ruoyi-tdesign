@@ -3,7 +3,6 @@ import { ref } from 'vue';
 import { RouteRecordRaw } from 'vue-router';
 
 import { getRouters } from '@/api/menu';
-import ParentView from '@/components/ParentView/index.vue';
 import InnerLink from '@/layouts/components/InnerLink.vue';
 import Layout from '@/layouts/index.vue';
 import auth from '@/plugins/auth';

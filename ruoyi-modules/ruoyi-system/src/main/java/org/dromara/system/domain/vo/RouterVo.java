@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 路由配置信息
@@ -42,7 +43,7 @@ public class RouterVo {
     /**
      * 路由参数：如 {"id": 1, "name": "ry"}
      */
-    private String query;
+    private Map<String, Object> query;
 
     /**
      * 当你一个路由下面的 children 声明的路由大于1个时，自动会变成嵌套的模式--如组件页面
