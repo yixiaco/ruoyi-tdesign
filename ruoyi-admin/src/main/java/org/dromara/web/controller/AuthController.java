@@ -76,7 +76,6 @@ public class AuthController {
         LoginVo loginVo = new LoginVo();
         // 生成令牌
         String token = loginService.login(
-            body.getTenantId(),
             body.getUsername(), body.getPassword(),
             body.getCode(), body.getUuid());
         loginVo.setToken(token);
@@ -93,7 +92,7 @@ public class AuthController {
     public R<LoginVo> smsLogin(@Validated @RequestBody SmsLoginBody body) {
         LoginVo loginVo = new LoginVo();
         // 生成令牌
-        String token = loginService.smsLogin(body.getTenantId(), body.getPhonenumber(), body.getSmsCode());
+        String token = loginService.smsLogin(body.getPhonenumber(), body.getSmsCode());
         loginVo.setToken(token);
         return R.ok(loginVo);
     }
@@ -108,7 +107,7 @@ public class AuthController {
     public R<LoginVo> emailLogin(@Validated @RequestBody EmailLoginBody body) {
         LoginVo loginVo = new LoginVo();
         // 生成令牌
-        String token = loginService.emailLogin(body.getTenantId(), body.getEmail(), body.getEmailCode());
+        String token = loginService.emailLogin(body.getEmail(), body.getEmailCode());
         loginVo.setToken(token);
         return R.ok(loginVo);
     }

@@ -1,5 +1,6 @@
 package org.dromara.common.core.domain.model;
 
+import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
@@ -11,6 +12,13 @@ import lombok.EqualsAndHashCode;
 @Data
 @EqualsAndHashCode(callSuper = true)
 public class RegisterBody extends LoginBody {
+
+    /**
+     * 租户ID
+     */
+    @NotBlank(message = "{tenant.number.not.blank}")
+    private String tenantId;
+
 
     private String userType;
 

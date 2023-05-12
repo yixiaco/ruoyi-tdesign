@@ -12,9 +12,8 @@ export function isLogin() {
 }
 
 // 登录方法
-export function login(tenantId: string, username: string, password: string, code: string, uuid: string) {
+export function login(username: string, password: string, code: string, uuid: string) {
   const data = {
-    tenantId,
     username,
     password,
     code,

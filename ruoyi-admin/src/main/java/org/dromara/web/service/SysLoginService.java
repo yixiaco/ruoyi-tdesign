@@ -79,16 +79,20 @@ public class SysLoginService {
      * @param uuid     唯一标识
      * @return 结果
      */
-    public String login(String tenantId, String username, String password, String code, String uuid) {
+    public String login(String username, String password, String code, String uuid) {
         boolean captchaEnabled = captchaProperties.getEnable();
         // 验证码开关
         if (captchaEnabled) {
-            validateCaptcha(tenantId, username, code, uuid);
+            validateCaptcha(username, code, uuid);
         }
+
+        SysUserVo user = loadUserByUsername(username);
+
+        String tenantId = user.getTenantId();
+
         // 校验租户
         checkTenant(tenantId);
 
-        SysUserVo user = loadUserByUsername(tenantId, username);
         checkLogin(LoginType.PASSWORD, tenantId, username, () -> !BCrypt.checkpw(password, user.getPassword()));
         // 此处可根据登录用户的数据不同 自行创建 loginUser
         LoginUser loginUser = buildLoginUser(user);
@@ -103,16 +107,18 @@ public class SysLoginService {
     /**
      * 短信登录
      *
-     * @param tenantId
      * @param phonenumber
      * @param smsCode
      * @return
      */
-    public String smsLogin(String tenantId, String phonenumber, String smsCode) {
+    public String smsLogin(String phonenumber, String smsCode) {
+        // 通过手机号查找用户
+        SysUserVo user = loadUserByPhonenumber(phonenumber);
+
+        String tenantId = user.getTenantId();
+
         // 校验租户
         checkTenant(tenantId);
-        // 通过手机号查找用户
-        SysUserVo user = loadUserByPhonenumber(tenantId, phonenumber);
 
         checkLogin(LoginType.SMS, tenantId, user.getUserName(), () -> !validateSmsCode(tenantId, phonenumber, smsCode));
         // 此处可根据登录用户的数据不同 自行创建 loginUser
@@ -128,16 +134,17 @@ public class SysLoginService {
     /**
      * 邮箱登录
      *
-     * @param tenantId
      * @param email
      * @param emailCode
      * @return
      */
-    public String emailLogin(String tenantId, String email, String emailCode) {
+    public String emailLogin(String email, String emailCode) {
+        // 通过邮箱查找用户
+        SysUserVo user = loadUserByEmail(email);
+        String tenantId = user.getTenantId();
+
         // 校验租户
         checkTenant(tenantId);
-        // 通过邮箱查找用户
-        SysUserVo user = loadUserByEmail(tenantId, email);
 
         checkLogin(LoginType.EMAIL, tenantId, user.getUserName(), () -> !validateEmailCode(tenantId, email, emailCode));
         // 此处可根据登录用户的数据不同 自行创建 loginUser
@@ -258,24 +265,23 @@ public class SysLoginService {
      * @param code     验证码
      * @param uuid     唯一标识
      */
-    public void validateCaptcha(String tenantId, String username, String code, String uuid) {
+    public void validateCaptcha(String username, String code, String uuid) {
         String verifyKey = GlobalConstants.CAPTCHA_CODE_KEY + StringUtils.defaultString(uuid, "");
         String captcha = RedisUtils.getCacheObject(verifyKey);
         RedisUtils.deleteObject(verifyKey);
         if (captcha == null) {
-            recordLogininfor(tenantId, username, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.expire"));
+            recordLogininfor(TenantConstants.DEFAULT_TENANT_ID, username, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.expire"));
             throw new CaptchaExpireException();
         }
         if (!code.equalsIgnoreCase(captcha)) {
-            recordLogininfor(tenantId, username, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.error"));
+            recordLogininfor(TenantConstants.DEFAULT_TENANT_ID, username, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.error"));
             throw new CaptchaException();
         }
     }
 
-    private SysUserVo loadUserByUsername(String tenantId, String username) {
+    private SysUserVo loadUserByUsername(String username) {
         SysUser user = userMapper.selectOne(new LambdaQueryWrapper<SysUser>()
             .select(SysUser::getUserName, SysUser::getStatus)
-            .eq(TenantHelper.isEnable(), SysUser::getTenantId, tenantId)
             .eq(SysUser::getUserName, username));
         if (ObjectUtil.isNull(user)) {
             log.info("登录用户：{} 不存在.", username);
@@ -284,16 +290,12 @@ public class SysLoginService {
             log.info("登录用户：{} 已被停用.", username);
             throw new UserException("user.blocked", username);
         }
-        if (TenantHelper.isEnable()) {
-            return userMapper.selectTenantUserByUserName(username, tenantId);
-        }
         return userMapper.selectUserByUserName(username);
     }
 
-    private SysUserVo loadUserByPhonenumber(String tenantId, String phonenumber) {
+    private SysUserVo loadUserByPhonenumber(String phonenumber) {
         SysUser user = userMapper.selectOne(new LambdaQueryWrapper<SysUser>()
             .select(SysUser::getPhonenumber, SysUser::getStatus)
-            .eq(TenantHelper.isEnable(), SysUser::getTenantId, tenantId)
             .eq(SysUser::getPhonenumber, phonenumber));
         if (ObjectUtil.isNull(user)) {
             log.info("登录用户：{} 不存在.", phonenumber);
@@ -302,16 +304,12 @@ public class SysLoginService {
             log.info("登录用户：{} 已被停用.", phonenumber);
             throw new UserException("user.blocked", phonenumber);
         }
-        if (TenantHelper.isEnable()) {
-            return userMapper.selectTenantUserByPhonenumber(phonenumber, tenantId);
-        }
         return userMapper.selectUserByPhonenumber(phonenumber);
     }
 
-    private SysUserVo loadUserByEmail(String tenantId, String email) {
+    private SysUserVo loadUserByEmail(String email) {
         SysUser user = userMapper.selectOne(new LambdaQueryWrapper<SysUser>()
             .select(SysUser::getPhonenumber, SysUser::getStatus)
-            .eq(TenantHelper.isEnable(), SysUser::getTenantId, tenantId)
             .eq(SysUser::getEmail, email));
         if (ObjectUtil.isNull(user)) {
             log.info("登录用户：{} 不存在.", email);
@@ -319,9 +317,6 @@ public class SysLoginService {
         } else if (UserStatus.DISABLE.getCode().equals(user.getStatus())) {
             log.info("登录用户：{} 已被停用.", email);
             throw new UserException("user.blocked", email);
-        }
-        if (TenantHelper.isEnable()) {
-            return userMapper.selectTenantUserByEmail(email, tenantId);
         }
         return userMapper.selectUserByEmail(email);
     }

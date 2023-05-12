@@ -4,11 +4,13 @@ import cn.dev33.satoken.secure.BCrypt;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.file.MimeTypeUtils;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.satoken.utils.LoginHelper;
+import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.bo.SysUserBo;
 import org.dromara.system.domain.bo.SysUserProfileBo;
@@ -67,12 +69,16 @@ public class SysProfileController extends BaseController {
     @PutMapping
     public R<Void> updateProfile(@RequestBody SysUserProfileBo profile) {
         SysUserBo user = BeanUtil.toBean(profile, SysUserBo.class);
-        if (StringUtils.isNotEmpty(user.getPhonenumber()) && !userService.checkPhoneUnique(user)) {
-            return R.fail("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
-        }
-        if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user)) {
-            return R.fail("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
-        }
+        String username = LoginHelper.getUsername();
+        // 检查全局
+        TenantHelper.ignore(() -> {
+            if (StringUtils.isNotEmpty(user.getPhonenumber()) && !userService.checkPhoneUnique(user)) {
+                throw new ServiceException("修改用户'" + username + "'失败，手机号码已存在");
+            }
+            if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user)) {
+                throw new ServiceException("修改用户'" + username + "'失败，邮箱账号已存在");
+            }
+        });
         user.setUserId(LoginHelper.getUserId());
         if (userService.updateUserProfile(user) > 0) {
             return R.ok();

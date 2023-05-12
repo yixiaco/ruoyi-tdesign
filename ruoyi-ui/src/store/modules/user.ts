@@ -32,17 +32,15 @@ export const useUserStore = defineStore('user', {
       });
     },
     login(userInfo: LoginParam) {
-      const tenantId = userInfo.tenantId.trim();
       const username = userInfo.username.trim();
       const { password } = userInfo;
       const { code } = userInfo;
       const { uuid } = userInfo;
       return new Promise<void>((resolve, reject) => {
-        login(tenantId, username, password, code, uuid)
+        login(username, password, code, uuid)
           .then((res) => {
             setToken(res.data.token);
             this.token = res.data.token;
-            this.tenantId = tenantId;
             resolve();
           })
           .catch((error) => {

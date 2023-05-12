@@ -8,6 +8,7 @@ import cn.hutool.core.util.ObjectUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.domain.model.LoginUser;
+import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
@@ -164,13 +165,15 @@ public class SysUserController extends BaseController {
     @Log(title = "用户管理", businessType = BusinessType.INSERT)
     @PostMapping
     public R<Void> add(@Validated @RequestBody SysUserBo user) {
-        if (!userService.checkUserNameUnique(user)) {
-            return R.fail("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
-        } else if (StringUtils.isNotEmpty(user.getPhonenumber()) && !userService.checkPhoneUnique(user)) {
-            return R.fail("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
-        } else if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user)) {
-            return R.fail("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
-        }
+        TenantHelper.ignore(() -> {
+            if (!userService.checkUserNameUnique(user)) {
+                throw new ServiceException("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
+            } else if (StringUtils.isNotEmpty(user.getPhonenumber()) && !userService.checkPhoneUnique(user)) {
+                throw new ServiceException("新增用户'" + user.getUserName() + "'失败，手机号码已存在");
+            } else if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user)) {
+                throw new ServiceException("新增用户'" + user.getUserName() + "'失败，邮箱账号已存在");
+            }
+        });
         if (TenantHelper.isEnable()) {
             if (!tenantService.checkAccountBalance(TenantHelper.getTenantId())) {
                 return R.fail("当前租户下用户名额不足，请联系管理员");
@@ -189,13 +192,15 @@ public class SysUserController extends BaseController {
     public R<Void> edit(@Validated @RequestBody SysUserBo user) {
         userService.checkUserAllowed(user.getUserId());
         userService.checkUserDataScope(user.getUserId());
-        if (!userService.checkUserNameUnique(user)) {
-            return R.fail("修改用户'" + user.getUserName() + "'失败，登录账号已存在");
-        } else if (StringUtils.isNotEmpty(user.getPhonenumber()) && !userService.checkPhoneUnique(user)) {
-            return R.fail("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
-        } else if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user)) {
-            return R.fail("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
-        }
+        TenantHelper.ignore(() -> {
+            if (!userService.checkUserNameUnique(user)) {
+                throw new ServiceException("修改用户'" + user.getUserName() + "'失败，登录账号已存在");
+            } else if (StringUtils.isNotEmpty(user.getPhonenumber()) && !userService.checkPhoneUnique(user)) {
+                throw new ServiceException("修改用户'" + user.getUserName() + "'失败，手机号码已存在");
+            } else if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user)) {
+                throw new ServiceException("修改用户'" + user.getUserName() + "'失败，邮箱账号已存在");
+            }
+        });
         return toAjax(userService.updateUser(user));
     }
 

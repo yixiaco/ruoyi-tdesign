@@ -21,7 +21,6 @@ export interface CaptchaImage {
 
 // 登录参数
 export interface LoginParam {
-  tenantId: string;
   username: string;
   password: string;
   code: string;

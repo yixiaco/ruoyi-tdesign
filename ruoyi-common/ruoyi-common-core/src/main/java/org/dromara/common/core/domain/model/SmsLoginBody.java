@@ -13,12 +13,6 @@ import lombok.Data;
 public class SmsLoginBody {
 
     /**
-     * 租户ID
-     */
-    @NotBlank(message = "{tenant.number.not.blank}")
-    private String tenantId;
-
-    /**
      * 手机号
      */
     @NotBlank(message = "{user.phonenumber.not.blank}")

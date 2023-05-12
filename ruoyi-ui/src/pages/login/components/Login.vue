@@ -7,14 +7,6 @@
     label-width="0"
     @submit="onSubmit"
   >
-    <t-form-item v-if="tenantEnabled" name="tenantId">
-      <t-select v-model="formData.tenantId" size="large" filterable placeholder="请选择/输入公司名称">
-        <template #prefixIcon>
-          <company class="t-icon" />
-        </template>
-        <t-option v-for="item in tenantList" :key="item.tenantId" :label="item.companyName" :value="item.tenantId" />
-      </t-select>
-    </t-form-item>
     <template v-if="type === 'password'">
       <t-form-item name="account">
         <t-input v-model="formData.account" size="large" placeholder="请输入账号">
@@ -111,7 +103,6 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { getCodeImg, getTenantList } from '@/api/login';
 import { LoginParam, TenantListVo } from '@/api/model/loginModel';
-import Company from '@/assets/icons/svg/company.svg?component';
 import { useCounter } from '@/hooks';
 import { useTabsRouterStore, useUserStore } from '@/store';
 import { decrypt, encrypt } from '@/utils/jsencrypt';
@@ -119,7 +110,6 @@ import { decrypt, encrypt } from '@/utils/jsencrypt';
 const userStore = useUserStore();
 
 const FORM_RULES: Record<string, FormRule[]> = {
-  tenantId: [{ required: true, message: '请输入您的租户编号', type: 'error' }],
   phone: [{ required: true, message: '手机号必填', type: 'error' }],
   account: [{ required: true, message: '账号必填', type: 'error' }],
   password: [{ required: true, message: '密码必填', type: 'error' }],
@@ -133,7 +123,6 @@ const tenantList = ref<TenantListVo[]>([]);
 const tenantEnabled = ref(true);
 const form = ref<FormInstanceFunctions>();
 const formData = ref({
-  tenantId: '000000',
   phone: '',
   account: 'admin',
   password: 'admin123',
@@ -169,12 +158,10 @@ function getCode() {
 }
 
 function getCookie() {
-  const tenantId = Cookies.get('tenantId');
   const account = Cookies.get('account');
   const password = Cookies.get('password');
   const rememberMe = Cookies.get('rememberMe');
   formData.value = {
-    tenantId: tenantId === undefined ? formData.value.tenantId : tenantId,
     account: account === undefined ? formData.value.account : account,
     phone: '',
     password: password === undefined ? formData.value.password : decrypt(password),
@@ -195,22 +182,6 @@ const sendCode = () => {
   });
 };
 
-/**
- * 获取租户列表
- */
-function initTenantList() {
-  getTenantList().then((res) => {
-    const vo = res.data;
-    tenantEnabled.value = !!vo.tenantEnabled;
-    if (tenantEnabled.value) {
-      tenantList.value = vo.voList;
-      if (tenantList.value != null && tenantList.value.length !== 0) {
-        formData.value.tenantId = tenantList.value[0].tenantId;
-      }
-    }
-  });
-}
-
 const onSubmit = async ({ validateResult }) => {
   if (validateResult === true) {
     try {
@@ -226,7 +197,6 @@ const onSubmit = async ({ validateResult }) => {
         default:
       }
       const loginParam: LoginParam = {
-        tenantId: formData.value.tenantId,
         username,
         password: formData.value.password,
         code: formData.value.code,
@@ -240,13 +210,11 @@ const onSubmit = async ({ validateResult }) => {
       }
       // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
       if (formData.value.rememberMe && type.value === 'password') {
-        Cookies.set('tenantId', formData.value.tenantId, { expires: 30 });
         Cookies.set('account', formData.value.account, { expires: 30 });
         Cookies.set('password', encrypt(formData.value.password), { expires: 30 });
         Cookies.set('rememberMe', formData.value.rememberMe.toString(), { expires: 30 });
       } else {
         // 否则移除
-        Cookies.remove('tenantId');
         Cookies.remove('account');
         Cookies.remove('password');
         Cookies.remove('rememberMe');
@@ -271,7 +239,6 @@ const onSubmit = async ({ validateResult }) => {
 };
 
 getCode();
-initTenantList();
 getCookie();
 </script>
 
