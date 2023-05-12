@@ -3,8 +3,10 @@ package org.dromara.common.satoken.stp;
 import cn.dev33.satoken.config.SaTokenConfig;
 import cn.dev33.satoken.exception.SaTokenException;
 import cn.dev33.satoken.stp.StpLogic;
+import org.dromara.common.satoken.config.MultipleSaTokenConfig;
 import org.dromara.common.satoken.config.MultipleSaTokenProperties;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -42,8 +44,15 @@ public class DynamicStpLogic {
                 synchronized (DYNAMIC) {
                     stpLogic = DYNAMIC.get(type);
                     if (stpLogic == null) {
-                        SaTokenConfig tokenConfig = config.getMultiple().get(type);
-                        stpLogic = new MultipleStpLogicJwtForSimple(type, tokenConfig);
+                        MultipleSaTokenConfig tokenConfig = config.getMultiple().get(type);
+                        try {
+                            stpLogic = (StpLogic) tokenConfig.getLogicClass()
+                                .getDeclaredConstructor(String.class, SaTokenConfig.class)
+                                .newInstance(type, tokenConfig);
+                        } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                                 NoSuchMethodException e) {
+                            throw new SaTokenException("Initialize MultipleStpLogic【" + type + "】 implementation class exceptions：" + e.getMessage());
+                        }
                         DYNAMIC.put(type, stpLogic);
                     }
                 }

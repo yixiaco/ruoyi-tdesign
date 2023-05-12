@@ -78,9 +78,7 @@ public class LoginUserHelper {
             model.setDevice(deviceType.getDevice());
         }
         SaSecurityContext.setContext(baseUser);
-        MultipleStpUtil.USER.login(baseUser.getUserId(),
-            model.setExtra(TENANT_KEY, baseUser.getTenantId())
-                .setExtra(USER_KEY, baseUser.getUserId()));
+        MultipleStpUtil.USER.login(baseUser.getUserId());
         MultipleStpUtil.USER.getTokenSession().set(LOGIN_USER_KEY, baseUser);
     }
 
@@ -162,7 +160,7 @@ public class LoginUserHelper {
         try {
             userId = Convert.toLong(SaHolder.getStorage().get(getLoginType() + USER_KEY));
             if (ObjectUtil.isNull(userId)) {
-                userId = Convert.toLong(MultipleStpUtil.USER.getExtra(USER_KEY));
+                userId = getUser().getUserId();
                 SaHolder.getStorage().set(getLoginType() + USER_KEY, userId);
             }
         } catch (Exception e) {
@@ -179,7 +177,7 @@ public class LoginUserHelper {
         try {
             tenantId = (String) SaHolder.getStorage().get(getLoginType() + TENANT_KEY);
             if (ObjectUtil.isNull(tenantId)) {
-                tenantId = (String) MultipleStpUtil.USER.getExtra(TENANT_KEY);
+                tenantId = getUser().getTenantId();
                 SaHolder.getStorage().set(getLoginType() + TENANT_KEY, tenantId);
             }
         } catch (Exception e) {

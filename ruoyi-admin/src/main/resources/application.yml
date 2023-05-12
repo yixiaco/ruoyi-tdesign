@@ -96,6 +96,7 @@ spring:
 sa-token:
   multiple:
     login:
+      token-style: simple-uuid
       # token名称 (同时也是cookie名称)
       token-name: Authorization
       # token有效期 设为一天 (必定过期) 单位: 秒
@@ -112,13 +113,12 @@ sa-token:
       is-read-cookie: false
       # token前缀
       token-prefix: "Bearer"
-      # jwt秘钥
-      jwt-secret-key: OXCOQF3Fj1zRpmR65QAojaiK41bdFf48
       match:
         - /system/**
         - /monitor/**
         - /resource/**
     user:
+      token-style: simple-uuid
       # token名称 (同时也是cookie名称)
       token-name: UserAuthorization
       # token有效期 设为一天 (必定过期) 单位: 秒
@@ -135,8 +135,6 @@ sa-token:
       is-read-cookie: false
       # token前缀
       token-prefix: "Bearer"
-      # jwt秘钥
-      jwt-secret-key: 1RvT3qRWj67kOdQ3swtyIGldAIg5BeTN
       match:
         - /user/**
 
