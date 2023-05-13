@@ -3,6 +3,7 @@ import '@/style/index.less';
 import './permission';
 
 import HljsVuePlugin from '@highlightjs/vue-plugin';
+import TDesign from 'tdesign-vue-next';
 import { createApp } from 'vue';
 
 import { getConfigKey, updateConfigByKey } from '@/api/system/config';
@@ -58,6 +59,7 @@ app.use(store);
 app.use(router);
 app.use(plugins);
 app.use(HljsVuePlugin);
+app.use(TDesign);
 
 directive(app);
 
