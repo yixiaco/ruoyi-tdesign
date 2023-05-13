@@ -119,7 +119,7 @@ spring:
 
 redisson:
   # redis key前缀
-  keyPrefix:
+  keyPrefix: ruoyi-tdesign
   # 线程池数量
   threads: 4
   # Netty线程池数量
