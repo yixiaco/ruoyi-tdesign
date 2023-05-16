@@ -78,7 +78,7 @@ public class LoginUserHelper {
             model.setDevice(deviceType.getDevice());
         }
         SaSecurityContext.setContext(baseUser);
-        MultipleStpUtil.USER.login(baseUser.getUserId());
+        MultipleStpUtil.USER.login(baseUser.getUserId(), model);
         MultipleStpUtil.USER.getTokenSession().set(LOGIN_USER_KEY, baseUser);
     }
 
