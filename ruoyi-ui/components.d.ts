@@ -81,5 +81,6 @@ declare module '@vue/runtime-core' {
     TTree: typeof import('tdesign-vue-next')['Tree']
     TTreeSelect: typeof import('tdesign-vue-next')['TreeSelect']
     TUpload: typeof import('tdesign-vue-next')['Upload']
+    TWatermark: typeof import('tdesign-vue-next')['Watermark']
   }
 }

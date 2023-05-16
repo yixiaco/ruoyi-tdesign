@@ -1,26 +1,28 @@
 <template>
-  <div>
-    <template v-if="setting.layout.value === 'side'">
-      <t-layout key="side" :class="mainLayoutCls">
-        <t-aside><layout-side-nav /></t-aside>
-        <t-layout>
-          <t-header><layout-header /></t-header>
-          <t-content><layout-content /></t-content>
+  <t-watermark :watermark-content="{ text: name }" :y="100" :x="80" :width="120" :height="60" :z-index="90000">
+    <div>
+      <template v-if="setting.layout.value === 'side'">
+        <t-layout key="side" :class="mainLayoutCls">
+          <t-aside><layout-side-nav /></t-aside>
+          <t-layout>
+            <t-header><layout-header /></t-header>
+            <t-content><layout-content /></t-content>
+          </t-layout>
         </t-layout>
-      </t-layout>
-    </template>
+      </template>
 
-    <template v-else>
-      <t-layout key="no-side">
-        <t-header><layout-header /> </t-header>
-        <t-layout :class="mainLayoutCls">
-          <layout-side-nav />
-          <layout-content />
+      <template v-else>
+        <t-layout key="no-side">
+          <t-header><layout-header /> </t-header>
+          <t-layout :class="mainLayoutCls">
+            <layout-side-nav />
+            <layout-content />
+          </t-layout>
         </t-layout>
-      </t-layout>
-    </template>
-    <setting-com />
-  </div>
+      </template>
+      <setting-com />
+    </div>
+  </t-watermark>
 </template>
 
 <script setup lang="ts">
@@ -31,7 +33,7 @@ import { computed, onMounted, watch } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { prefix } from '@/config/global';
-import { useSettingStore, useTabsRouterStore } from '@/store';
+import { useSettingStore, useTabsRouterStore, useUserStore } from '@/store';
 
 import LayoutContent from './components/LayoutContent.vue';
 import LayoutHeader from './components/LayoutHeader.vue';
@@ -42,6 +44,7 @@ const route = useRoute();
 const settingStore = useSettingStore();
 const tabsRouterStore = useTabsRouterStore();
 const setting = storeToRefs(settingStore);
+const { name } = storeToRefs(useUserStore());
 
 const mainLayoutCls = computed(() => [
   {
