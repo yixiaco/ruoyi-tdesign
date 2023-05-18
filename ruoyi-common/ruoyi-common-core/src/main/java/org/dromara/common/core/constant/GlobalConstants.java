@@ -31,4 +31,9 @@ public interface GlobalConstants {
      * 登录账户密码错误次数 redis key
      */
     String PWD_ERR_CNT_KEY = GLOBAL_REDIS_KEY + "pwd_err_cnt:";
+
+    /**
+     * 应用key redis key
+     */
+    String APP_KEY = GLOBAL_REDIS_KEY + "app_key";
 }

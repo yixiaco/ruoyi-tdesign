@@ -65,9 +65,9 @@ public class RepeatSubmitAspect {
         submitKey = SecureUtil.md5(submitKey + ":" + nowParams);
         // 唯一标识（指定key + url + 消息头）
         String cacheRepeatKey = GlobalConstants.REPEAT_SUBMIT_KEY + url + submitKey;
-        String key = RedisUtils.getCacheObject(cacheRepeatKey);
+        String key = RedisUtils.getObject(cacheRepeatKey);
         if (key == null) {
-            RedisUtils.setCacheObject(cacheRepeatKey, "", Duration.ofMillis(interval));
+            RedisUtils.setObject(cacheRepeatKey, "", Duration.ofMillis(interval));
             KEY_CACHE.set(cacheRepeatKey);
         } else {
             String message = repeatSubmit.message();

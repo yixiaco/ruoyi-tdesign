@@ -52,7 +52,7 @@ public class SysUserOnlineController extends BaseController {
             if (MultipleStpUtil.SYSTEM.getTokenActivityTimeoutByToken(token) < -1) {
                 continue;
             }
-            userOnlineDTOList.add(RedisUtils.getCacheObject(CacheConstants.ONLINE_TOKEN_KEY + token));
+            userOnlineDTOList.add(RedisUtils.getObject(CacheConstants.ONLINE_TOKEN_KEY + token));
         }
         if (StringUtils.isNotEmpty(ipaddr) && StringUtils.isNotEmpty(userName)) {
             userOnlineDTOList = StreamUtils.filter(userOnlineDTOList, userOnline ->

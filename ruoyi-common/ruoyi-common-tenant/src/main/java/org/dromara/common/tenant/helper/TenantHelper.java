@@ -11,12 +11,13 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.domain.model.BaseUser;
+import org.dromara.common.core.service.AppService;
+import org.dromara.common.core.utils.ServletUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.funtion.Apply;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.satoken.context.SaSecurityContext;
-import org.dromara.common.satoken.utils.LoginHelper;
 
 import java.util.Objects;
 import java.util.function.Consumer;
@@ -152,7 +153,7 @@ public class TenantHelper {
         BaseUser user = SaSecurityContext.getContext();
         if (user != null) {
             String cacheKey = DYNAMIC_TENANT_KEY + ":" + user.getUserId();
-            RedisUtils.setCacheObject(cacheKey, tenantId);
+            RedisUtils.setObject(cacheKey, tenantId);
             SaHolder.getStorage().set(cacheKey, tenantId);
         }
     }
@@ -173,7 +174,7 @@ public class TenantHelper {
             if (StringUtils.isNotBlank(tenantId)) {
                 return tenantId;
             }
-            tenantId = RedisUtils.getCacheObject(cacheKey);
+            tenantId = RedisUtils.getObject(cacheKey);
             SaHolder.getStorage().set(cacheKey, tenantId);
             return tenantId;
         }
@@ -205,6 +206,13 @@ public class TenantHelper {
             BaseUser user = SaSecurityContext.getContext();
             if (user != null) {
                 tenantId = user.getTenantId();
+            }
+        }
+        if (StringUtils.isBlank(tenantId)) {
+            String appKey = ServletUtils.getAppKey();
+            if (StringUtils.isNotBlank(appKey)) {
+                AppService service = SpringUtils.getBean(AppService.class);
+                tenantId = service.getTenantIdByAppKey(appKey);
             }
         }
         return tenantId;

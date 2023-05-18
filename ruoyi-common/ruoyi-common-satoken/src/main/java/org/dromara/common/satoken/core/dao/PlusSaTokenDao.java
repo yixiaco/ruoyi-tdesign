@@ -21,7 +21,7 @@ public class PlusSaTokenDao implements SaTokenDao {
      */
     @Override
     public String get(String key) {
-        return RedisUtils.getCacheObject(key);
+        return RedisUtils.getObject(key);
     }
 
     /**
@@ -34,9 +34,9 @@ public class PlusSaTokenDao implements SaTokenDao {
         }
         // 判断是否为永不过期
         if (timeout == NEVER_EXPIRE) {
-            RedisUtils.setCacheObject(key, value);
+            RedisUtils.setObject(key, value);
         } else {
-            RedisUtils.setCacheObject(key, value, Duration.ofSeconds(timeout));
+            RedisUtils.setObject(key, value, Duration.ofSeconds(timeout));
         }
     }
 
@@ -50,7 +50,7 @@ public class PlusSaTokenDao implements SaTokenDao {
         if (expire == NOT_VALUE_EXPIRE) {
             return;
         }
-        RedisUtils.setCacheObject(key, value, true);
+        RedisUtils.setObject(key, value, true);
     }
 
     /**
@@ -95,7 +95,7 @@ public class PlusSaTokenDao implements SaTokenDao {
      */
     @Override
     public Object getObject(String key) {
-        return RedisUtils.getCacheObject(key);
+        return RedisUtils.getObject(key);
     }
 
     /**
@@ -108,9 +108,9 @@ public class PlusSaTokenDao implements SaTokenDao {
         }
         // 判断是否为永不过期
         if (timeout == NEVER_EXPIRE) {
-            RedisUtils.setCacheObject(key, object);
+            RedisUtils.setObject(key, object);
         } else {
-            RedisUtils.setCacheObject(key, object, Duration.ofSeconds(timeout));
+            RedisUtils.setObject(key, object, Duration.ofSeconds(timeout));
         }
     }
 

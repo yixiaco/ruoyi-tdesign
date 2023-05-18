@@ -78,7 +78,7 @@ public class RedisCacheController {
      */
     @GetMapping("/test6")
     public R<Boolean> test6(String key, String value) {
-        RedisUtils.setCacheObject(key, value);
+        RedisUtils.setObject(key, value);
         boolean flag = RedisUtils.expire(key, Duration.ofSeconds(10));
         System.out.println("***********" + flag);
         try {
@@ -86,7 +86,7 @@ public class RedisCacheController {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-        Object obj = RedisUtils.getCacheObject(key);
+        Object obj = RedisUtils.getObject(key);
         return R.ok(value.equals(obj));
     }
 

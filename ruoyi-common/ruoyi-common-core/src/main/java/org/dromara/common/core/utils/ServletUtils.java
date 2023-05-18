@@ -190,4 +190,13 @@ public class ServletUtils extends JakartaServletUtil {
         return URLDecoder.decode(str, StandardCharsets.UTF_8);
     }
 
+    /**
+     * 获取appKey
+     *
+     * @return
+     */
+    public static String getAppKey() {
+        return getHeaderIgnoreCase(getRequest(), "X-APP-KEY");
+    }
+
 }

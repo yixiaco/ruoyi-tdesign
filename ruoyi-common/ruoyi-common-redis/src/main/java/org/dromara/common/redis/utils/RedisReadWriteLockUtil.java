@@ -32,7 +32,7 @@ public class RedisReadWriteLockUtil {
      * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> T readWrite(String key, Supplier<T> defaultSupplier) {
-        return readWrite(key, defaultSupplier, RedisUtils::setCacheObject);
+        return readWrite(key, defaultSupplier, RedisUtils::setObject);
     }
 
     /**
@@ -45,7 +45,7 @@ public class RedisReadWriteLockUtil {
      * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> T readWrite(String key, Duration expire, Supplier<T> defaultSupplier) {
-        return readWrite(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheObject(keyS, data, expire));
+        return readWrite(key, defaultSupplier, (keyS, data) -> RedisUtils.setObject(keyS, data, expire));
     }
 
     /**
@@ -57,7 +57,7 @@ public class RedisReadWriteLockUtil {
      * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> List<T> readWriteList(String key, Supplier<List<T>> defaultSupplier) {
-        return readWriteList(key, defaultSupplier, RedisUtils::setCacheList);
+        return readWriteList(key, defaultSupplier, RedisUtils::setList);
     }
 
     /**
@@ -70,7 +70,7 @@ public class RedisReadWriteLockUtil {
      * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> List<T> readWriteList(String key, Duration expire, Supplier<List<T>> defaultSupplier) {
-        return readWriteList(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheList(keyS, data, expire));
+        return readWriteList(key, defaultSupplier, (keyS, data) -> RedisUtils.setList(keyS, data, expire));
     }
 
     /**
@@ -82,7 +82,7 @@ public class RedisReadWriteLockUtil {
      * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> Set<T> readWriteSet(String key, Supplier<Set<T>> defaultSupplier) {
-        return readWriteSet(key, defaultSupplier, RedisUtils::setCacheSet);
+        return readWriteSet(key, defaultSupplier, RedisUtils::setSet);
     }
 
     /**
@@ -95,7 +95,7 @@ public class RedisReadWriteLockUtil {
      * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> Set<T> readWriteSet(String key, Duration expire, Supplier<Set<T>> defaultSupplier) {
-        return readWriteSet(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheSet(keyS, data, expire));
+        return readWriteSet(key, defaultSupplier, (keyS, data) -> RedisUtils.setSet(keyS, data, expire));
     }
 
     /**
@@ -107,7 +107,7 @@ public class RedisReadWriteLockUtil {
      * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> Map<String, T> readWriteMap(String key, Supplier<Map<String, T>> defaultSupplier) {
-        return readWriteMap(key, defaultSupplier, RedisUtils::setCacheMap);
+        return readWriteMap(key, defaultSupplier, RedisUtils::setMap);
     }
 
     /**
@@ -120,7 +120,7 @@ public class RedisReadWriteLockUtil {
      * @return 返回缓存的数据，如果不存在则在执行回调后返回回调值
      */
     public static <T> Map<String, T> readWriteMap(String key, Duration expire, Supplier<Map<String, T>> defaultSupplier) {
-        return readWriteMap(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheMap(keyS, data, expire));
+        return readWriteMap(key, defaultSupplier, (keyS, data) -> RedisUtils.setMap(keyS, data, expire));
     }
 
     /**
@@ -137,12 +137,12 @@ public class RedisReadWriteLockUtil {
         RLock lock = readWriteLock.readLock();
         lock.lock();
         try {
-            T data = RedisUtils.getCacheObject(key);
+            T data = RedisUtils.getObject(key);
             if (data == null && defaultSupplier != null) {
                 RLock writeLock = readWriteLock.writeLock();
                 writeLock.lock();
                 try {
-                    data = RedisUtils.getCacheObject(key);
+                    data = RedisUtils.getObject(key);
                     // 双重检查
                     if (data == null) {
                         data = defaultSupplier.get();
@@ -174,7 +174,7 @@ public class RedisReadWriteLockUtil {
         try {
             Boolean hasKey = RedisUtils.hasKey(key);
             if (hasKey) {
-                return RedisUtils.getCacheList(key);
+                return RedisUtils.getList(key);
             }
             List<T> data = null;
             if (defaultSupplier != null) {
@@ -184,7 +184,7 @@ public class RedisReadWriteLockUtil {
                     // 双重检查
                     hasKey = RedisUtils.hasKey(key);
                     if (hasKey) {
-                        return RedisUtils.getCacheList(key);
+                        return RedisUtils.getList(key);
                     }
                     data = defaultSupplier.get();
                     after.accept(key, data);
@@ -214,7 +214,7 @@ public class RedisReadWriteLockUtil {
         try {
             Boolean hasKey = RedisUtils.hasKey(key);
             if (hasKey) {
-                return RedisUtils.getCacheSet(key);
+                return RedisUtils.getSet(key);
             }
             Set<T> data = null;
             if (defaultSupplier != null) {
@@ -224,7 +224,7 @@ public class RedisReadWriteLockUtil {
                     // 双重检查
                     hasKey = RedisUtils.hasKey(key);
                     if (hasKey) {
-                        return RedisUtils.getCacheSet(key);
+                        return RedisUtils.getSet(key);
                     }
                     data = defaultSupplier.get();
                     after.accept(key, data);
@@ -254,7 +254,7 @@ public class RedisReadWriteLockUtil {
         try {
             Boolean hasKey = RedisUtils.hasKey(key);
             if (hasKey) {
-                return RedisUtils.getCacheMap(key);
+                return RedisUtils.getMap(key);
             }
             Map<String, T> data = null;
             if (defaultSupplier != null) {
@@ -264,7 +264,7 @@ public class RedisReadWriteLockUtil {
                     // 双重检查
                     hasKey = RedisUtils.hasKey(key);
                     if (hasKey) {
-                        return RedisUtils.getCacheMap(key);
+                        return RedisUtils.getMap(key);
                     }
                     data = defaultSupplier.get();
                     after.accept(key, data);
@@ -286,7 +286,7 @@ public class RedisReadWriteLockUtil {
      * @return
      */
     public static <T> T read(String key) {
-        return read(key, RedisUtils::getCacheObject);
+        return read(key, RedisUtils::getObject);
     }
 
     /**
@@ -297,7 +297,7 @@ public class RedisReadWriteLockUtil {
      * @return
      */
     public static <T> List<T> readList(String key) {
-        return read(key, RedisUtils::getCacheList);
+        return read(key, RedisUtils::getList);
     }
 
     /**
@@ -308,7 +308,7 @@ public class RedisReadWriteLockUtil {
      * @return
      */
     public static <T> Set<T> readSet(String key) {
-        return read(key, RedisUtils::getCacheSet);
+        return read(key, RedisUtils::getSet);
     }
 
     /**
@@ -319,7 +319,7 @@ public class RedisReadWriteLockUtil {
      * @return
      */
     public static <T> Map<String, T> readMap(String key) {
-        return read(key, RedisUtils::getCacheMap);
+        return read(key, RedisUtils::getMap);
     }
 
     /**
@@ -351,7 +351,7 @@ public class RedisReadWriteLockUtil {
      * @return 回调值
      */
     public static <T> T write(String key, Supplier<T> defaultSupplier) {
-        return write(key, defaultSupplier, RedisUtils::setCacheObject);
+        return write(key, defaultSupplier, RedisUtils::setObject);
     }
 
     /**
@@ -362,7 +362,7 @@ public class RedisReadWriteLockUtil {
      * @return 回调值
      */
     public static <T> T write(String key, Duration expire, Supplier<T> defaultSupplier) {
-        return write(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheObject(keyS, data, expire));
+        return write(key, defaultSupplier, (keyS, data) -> RedisUtils.setObject(keyS, data, expire));
     }
 
     /**
@@ -373,7 +373,7 @@ public class RedisReadWriteLockUtil {
      * @return 回调值
      */
     public static <T> List<T> writeList(String key, Supplier<List<T>> defaultSupplier) {
-        return write(key, defaultSupplier, RedisUtils::setCacheList);
+        return write(key, defaultSupplier, RedisUtils::setList);
     }
 
     /**
@@ -384,7 +384,7 @@ public class RedisReadWriteLockUtil {
      * @return 回调值
      */
     public static <T> List<T> writeList(String key, Duration expire, Supplier<List<T>> defaultSupplier) {
-        return write(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheList(keyS, data, expire));
+        return write(key, defaultSupplier, (keyS, data) -> RedisUtils.setList(keyS, data, expire));
     }
 
     /**
@@ -395,7 +395,7 @@ public class RedisReadWriteLockUtil {
      * @return 回调值
      */
     public static <T> Set<T> writeSet(String key, Supplier<Set<T>> defaultSupplier) {
-        return write(key, defaultSupplier, RedisUtils::setCacheSet);
+        return write(key, defaultSupplier, RedisUtils::setSet);
     }
 
     /**
@@ -406,7 +406,7 @@ public class RedisReadWriteLockUtil {
      * @return 回调值
      */
     public static <T> Set<T> writeSet(String key, Duration expire, Supplier<Set<T>> defaultSupplier) {
-        return write(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheSet(keyS, data, expire));
+        return write(key, defaultSupplier, (keyS, data) -> RedisUtils.setSet(keyS, data, expire));
     }
 
     /**
@@ -417,7 +417,7 @@ public class RedisReadWriteLockUtil {
      * @return 回调值
      */
     public static <T> Map<String, T> writeMap(String key, Supplier<Map<String, T>> defaultSupplier) {
-        return write(key, defaultSupplier, RedisUtils::setCacheMap);
+        return write(key, defaultSupplier, RedisUtils::setMap);
     }
 
     /**
@@ -428,7 +428,7 @@ public class RedisReadWriteLockUtil {
      * @return 回调值
      */
     public static <T> Map<String, T> writeMap(String key, Duration expire, Supplier<Map<String, T>> defaultSupplier) {
-        return write(key, defaultSupplier, (keyS, data) -> RedisUtils.setCacheMap(keyS, data, expire));
+        return write(key, defaultSupplier, (keyS, data) -> RedisUtils.setMap(keyS, data, expire));
     }
 
     /**

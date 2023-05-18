@@ -25,7 +25,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> T getOrSave(String key, Supplier<T> defaultSupplier) {
-        return getOrAfter(key, null, defaultSupplier, RedisUtils::setCacheObject);
+        return getOrAfter(key, null, defaultSupplier, RedisUtils::setObject);
     }
 
     /**
@@ -36,7 +36,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> T getOrSave(String key, Duration lease, Supplier<T> defaultSupplier) {
-        return getOrAfter(key, lease, defaultSupplier, RedisUtils::setCacheObject);
+        return getOrAfter(key, lease, defaultSupplier, RedisUtils::setObject);
     }
 
     /**
@@ -48,7 +48,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> T getOrSave(String key, Duration lease, Duration expire, Supplier<T> defaultSupplier) {
-        return getOrAfter(key, lease, defaultSupplier, (keyS, data) -> RedisUtils.setCacheObject(keyS, data, expire));
+        return getOrAfter(key, lease, defaultSupplier, (keyS, data) -> RedisUtils.setObject(keyS, data, expire));
     }
 
     /**
@@ -58,7 +58,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> List<T> getOrSaveList(String key, Supplier<List<T>> defaultSupplier) {
-        return getListOrAfter(key, null, defaultSupplier, RedisUtils::setCacheList);
+        return getListOrAfter(key, null, defaultSupplier, RedisUtils::setList);
     }
 
     /**
@@ -69,7 +69,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> List<T> getOrSaveList(String key, Duration lease, Supplier<List<T>> defaultSupplier) {
-        return getListOrAfter(key, lease, defaultSupplier, RedisUtils::setCacheList);
+        return getListOrAfter(key, lease, defaultSupplier, RedisUtils::setList);
     }
 
     /**
@@ -81,7 +81,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> List<T> getOrSaveList(String key, Duration lease, Duration expire, Supplier<List<T>> defaultSupplier) {
-        return getListOrAfter(key, lease, defaultSupplier, (keyS, data) -> RedisUtils.setCacheList(keyS, data, expire));
+        return getListOrAfter(key, lease, defaultSupplier, (keyS, data) -> RedisUtils.setList(keyS, data, expire));
     }
 
     /**
@@ -91,7 +91,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> Set<T> getOrSaveSet(String key, Supplier<Set<T>> defaultSupplier) {
-        return getSetOrAfter(key, null, defaultSupplier, RedisUtils::setCacheSet);
+        return getSetOrAfter(key, null, defaultSupplier, RedisUtils::setSet);
     }
 
     /**
@@ -102,7 +102,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> Set<T> getOrSaveSet(String key, Duration lease, Supplier<Set<T>> defaultSupplier) {
-        return getSetOrAfter(key, lease, defaultSupplier, RedisUtils::setCacheSet);
+        return getSetOrAfter(key, lease, defaultSupplier, RedisUtils::setSet);
     }
 
     /**
@@ -114,7 +114,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> Set<T> getOrSaveSet(String key, Duration lease, Duration expire, Supplier<Set<T>> defaultSupplier) {
-        return getSetOrAfter(key, lease, defaultSupplier, (keyS, data) -> RedisUtils.setCacheSet(keyS, data, expire));
+        return getSetOrAfter(key, lease, defaultSupplier, (keyS, data) -> RedisUtils.setSet(keyS, data, expire));
     }
 
     /**
@@ -124,7 +124,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> Map<String, T> getOrSaveMap(String key, Supplier<Map<String, T>> defaultSupplier) {
-        return getMapOrAfter(key, null, defaultSupplier, RedisUtils::setCacheMap);
+        return getMapOrAfter(key, null, defaultSupplier, RedisUtils::setMap);
     }
 
     /**
@@ -135,7 +135,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> Map<String, T> getOrSaveMap(String key, Duration lease, Supplier<Map<String, T>> defaultSupplier) {
-        return getMapOrAfter(key, lease, defaultSupplier, RedisUtils::setCacheMap);
+        return getMapOrAfter(key, lease, defaultSupplier, RedisUtils::setMap);
     }
 
     /**
@@ -147,7 +147,7 @@ public class RedisLockUtil {
      * @param defaultSupplier 不存在值时回调
      */
     public static <T> Map<String, T> getOrSaveMap(String key, Duration lease, Duration expire, Supplier<Map<String, T>> defaultSupplier) {
-        return getMapOrAfter(key, lease, defaultSupplier, (keyS, map) -> RedisUtils.setCacheMap(keyS, map, expire));
+        return getMapOrAfter(key, lease, defaultSupplier, (keyS, map) -> RedisUtils.setMap(keyS, map, expire));
     }
 
     /**
@@ -159,7 +159,7 @@ public class RedisLockUtil {
      * @param after           没有缓存时执行的回调
      */
     public static <T> T getOrAfter(String key, Duration lease, Supplier<T> defaultSupplier, BiConsumer<String, T> after) {
-        T data = RedisUtils.getCacheObject(key);
+        T data = RedisUtils.getObject(key);
         if (data == null) {
             RLock lock = RedisUtils.getClient().getLock(getKey(key));
             if (lease == null || lease.getSeconds() < 0) {
@@ -168,7 +168,7 @@ public class RedisLockUtil {
                 lock.lock(lease.getSeconds(), TimeUnit.SECONDS);
             }
             try {
-                data = RedisUtils.getCacheObject(key);
+                data = RedisUtils.getObject(key);
                 if (data == null) {
                     data = defaultSupplier.get();
                     after.accept(key, data);
@@ -191,7 +191,7 @@ public class RedisLockUtil {
     public static <T> List<T> getListOrAfter(String key, Duration lease, Supplier<List<T>> defaultSupplier, BiConsumer<String, List<T>> after) {
         Boolean hasKey = RedisUtils.hasKey(key);
         if (hasKey) {
-            return RedisUtils.getCacheList(key);
+            return RedisUtils.getList(key);
         } else {
             List<T> data;
             RLock lock = RedisUtils.getClient().getLock(getKey(key));
@@ -203,7 +203,7 @@ public class RedisLockUtil {
             try {
                 hasKey = RedisUtils.hasKey(key);
                 if (hasKey) {
-                    return RedisUtils.getCacheList(key);
+                    return RedisUtils.getList(key);
                 } else {
                     data = defaultSupplier.get();
                     after.accept(key, data);
@@ -226,7 +226,7 @@ public class RedisLockUtil {
     public static <T> Set<T> getSetOrAfter(String key, Duration lease, Supplier<Set<T>> defaultSupplier, BiConsumer<String, Set<T>> after) {
         Boolean hasKey = RedisUtils.hasKey(key);
         if (hasKey) {
-            return RedisUtils.getCacheSet(key);
+            return RedisUtils.getSet(key);
         } else {
             Set<T> data;
             RLock lock = RedisUtils.getClient().getLock(getKey(key));
@@ -238,7 +238,7 @@ public class RedisLockUtil {
             try {
                 hasKey = RedisUtils.hasKey(key);
                 if (hasKey) {
-                    return RedisUtils.getCacheSet(key);
+                    return RedisUtils.getSet(key);
                 } else {
                     data = defaultSupplier.get();
                     after.accept(key, data);
@@ -261,7 +261,7 @@ public class RedisLockUtil {
     public static <T> Map<String, T> getMapOrAfter(String key, Duration lease, Supplier<Map<String, T>> defaultSupplier, BiConsumer<String, Map<String, T>> after) {
         Boolean hasKey = RedisUtils.hasKey(key);
         if (hasKey) {
-            return RedisUtils.getCacheMap(key);
+            return RedisUtils.getMap(key);
         } else {
             Map<String, T> data;
             RLock lock = RedisUtils.getClient().getLock(getKey(key));
@@ -273,7 +273,7 @@ public class RedisLockUtil {
             try {
                 hasKey = RedisUtils.hasKey(key);
                 if (hasKey) {
-                    return RedisUtils.getCacheMap(key);
+                    return RedisUtils.getMap(key);
                 } else {
                     data = defaultSupplier.get();
                     after.accept(key, data);

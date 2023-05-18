@@ -58,7 +58,7 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
             for (SysOssConfig config : map.get(tenantId)) {
                 String configKey = config.getConfigKey();
                 if ("0".equals(config.getStatus())) {
-                    RedisUtils.setCacheObject(OssConstant.DEFAULT_CONFIG_KEY, configKey);
+                    RedisUtils.setObject(OssConstant.DEFAULT_CONFIG_KEY, configKey);
                 }
                 CacheUtils.put(CacheNames.SYS_OSS_CONFIG, config.getConfigKey(), JsonUtils.toJsonString(config));
             }
@@ -160,7 +160,7 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
             .set(SysOssConfig::getStatus, "1"));
         row += baseMapper.updateById(sysOssConfig);
         if (row > 0) {
-            RedisUtils.setCacheObject(OssConstant.DEFAULT_CONFIG_KEY, sysOssConfig.getConfigKey());
+            RedisUtils.setObject(OssConstant.DEFAULT_CONFIG_KEY, sysOssConfig.getConfigKey());
         }
         return row;
     }

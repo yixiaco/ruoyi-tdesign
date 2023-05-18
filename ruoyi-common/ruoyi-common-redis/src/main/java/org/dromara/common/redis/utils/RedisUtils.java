@@ -93,8 +93,8 @@ public class RedisUtils {
      * @param key   缓存的键值
      * @param value 缓存的值
      */
-    public static <T> void setCacheObject(final String key, final T value) {
-        setCacheObject(key, value, false);
+    public static <T> void setObject(final String key, final T value) {
+        setObject(key, value, false);
     }
 
     /**
@@ -105,14 +105,14 @@ public class RedisUtils {
      * @param isSaveTtl 是否保留TTL有效期(例如: set之前ttl剩余90 set之后还是为90)
      * @since Redis 6.X 以上使用 setAndKeepTTL 兼容 5.X 方案
      */
-    public static <T> void setCacheObject(final String key, final T value, final boolean isSaveTtl) {
+    public static <T> void setObject(final String key, final T value, final boolean isSaveTtl) {
         RBucket<T> bucket = CLIENT.getBucket(key);
         if (isSaveTtl) {
             try {
                 bucket.setAndKeepTTL(value);
             } catch (Exception e) {
                 long timeToLive = bucket.remainTimeToLive();
-                setCacheObject(key, value, Duration.ofMillis(timeToLive));
+                setObject(key, value, Duration.ofMillis(timeToLive));
             }
         } else {
             bucket.set(value);
@@ -126,7 +126,7 @@ public class RedisUtils {
      * @param value    缓存的值
      * @param duration 时间
      */
-    public static <T> void setCacheObject(final String key, final T value, final Duration duration) {
+    public static <T> void setObject(final String key, final T value, final Duration duration) {
         RBatch batch = CLIENT.createBatch();
         RBucketAsync<T> bucket = batch.getBucket(key);
         bucket.setAsync(value);
@@ -176,7 +176,7 @@ public class RedisUtils {
      * @param key 缓存键值
      * @return 缓存键值对应的数据
      */
-    public static <T> T getCacheObject(final String key) {
+    public static <T> T getObject(final String key) {
         RBucket<T> rBucket = CLIENT.getBucket(key);
         return rBucket.get();
     }
@@ -230,7 +230,7 @@ public class RedisUtils {
      * @param dataList 待缓存的List数据
      * @return 缓存的对象
      */
-    public static <T> boolean addCacheList(final String key, final List<T> dataList) {
+    public static <T> boolean addList(final String key, final List<T> dataList) {
         RList<T> rList = CLIENT.getList(key);
         return rList.addAll(dataList);
     }
@@ -242,7 +242,7 @@ public class RedisUtils {
      * @param dataList 待缓存的List数据
      * @return 缓存的对象
      */
-    public static <T> void setCacheList(final String key, final List<T> dataList) {
+    public static <T> void setList(final String key, final List<T> dataList) {
         RBatch batch = CLIENT.createBatch();
         RListAsync<Object> batchList = batch.getList(key);
         batchList.deleteAsync();
@@ -258,7 +258,7 @@ public class RedisUtils {
      * @param expire   过期时间
      * @return 缓存的对象
      */
-    public static <T> void setCacheList(final String key, final List<T> dataList, final Duration expire) {
+    public static <T> void setList(final String key, final List<T> dataList, final Duration expire) {
         RBatch batch = CLIENT.createBatch();
         RListAsync<Object> batchList = batch.getList(key);
         batchList.deleteAsync();
@@ -286,7 +286,7 @@ public class RedisUtils {
      * @param key 缓存的键值
      * @return 缓存键值对应的数据
      */
-    public static <T> List<T> getCacheList(final String key) {
+    public static <T> List<T> getList(final String key) {
         RList<T> rList = CLIENT.getList(key);
         return rList.readAll();
     }
@@ -298,7 +298,7 @@ public class RedisUtils {
      * @param dataSet 缓存的数据
      * @return 缓存数据的对象
      */
-    public static <T> boolean addCacheSet(final String key, final Set<T> dataSet) {
+    public static <T> boolean addSet(final String key, final Set<T> dataSet) {
         RSet<T> rSet = CLIENT.getSet(key);
         return rSet.addAll(dataSet);
     }
@@ -310,7 +310,7 @@ public class RedisUtils {
      * @param dataSet 缓存的数据
      * @return 缓存数据的对象
      */
-    public static <T> void setCacheSet(final String key, final Set<T> dataSet) {
+    public static <T> void setSet(final String key, final Set<T> dataSet) {
         RBatch batch = CLIENT.createBatch();
         RSetAsync<Object> batchList = batch.getSet(key);
         batchList.deleteAsync();
@@ -326,7 +326,7 @@ public class RedisUtils {
      * @param expire  过期时间
      * @return 缓存数据的对象
      */
-    public static <T> void setCacheSet(final String key, final Set<T> dataSet, final Duration expire) {
+    public static <T> void setSet(final String key, final Set<T> dataSet, final Duration expire) {
         RBatch batch = CLIENT.createBatch();
         RSetAsync<Object> batchList = batch.getSet(key);
         batchList.deleteAsync();
@@ -354,7 +354,7 @@ public class RedisUtils {
      * @param key 缓存的key
      * @return set对象
      */
-    public static <T> Set<T> getCacheSet(final String key) {
+    public static <T> Set<T> getSet(final String key) {
         RSet<T> rSet = CLIENT.getSet(key);
         return rSet.readAll();
     }
@@ -365,7 +365,7 @@ public class RedisUtils {
      * @param key     缓存的键值
      * @param dataMap 缓存的数据
      */
-    public static <T> void putAllCacheMap(final String key, final Map<String, T> dataMap) {
+    public static <T> void putAllMap(final String key, final Map<String, T> dataMap) {
         if (dataMap != null) {
             RMap<String, T> rMap = CLIENT.getMap(key);
             rMap.putAll(dataMap);
@@ -378,7 +378,7 @@ public class RedisUtils {
      * @param key     缓存的键值
      * @param dataMap 缓存的数据
      */
-    public static <T> void setCacheMap(final String key, final Map<String, T> dataMap) {
+    public static <T> void setMap(final String key, final Map<String, T> dataMap) {
         RBatch batch = CLIENT.createBatch();
         batch.getBucket(key).deleteAsync();
         if (dataMap != null) {
@@ -394,7 +394,7 @@ public class RedisUtils {
      * @param key     缓存的键值
      * @param dataMap 缓存的数据
      */
-    public static <T> void setCacheMap(final String key, final Map<String, T> dataMap, final Duration expire) {
+    public static <T> void setMap(final String key, final Map<String, T> dataMap, final Duration expire) {
         RBatch batch = CLIENT.createBatch();
         batch.getBucket(key).deleteAsync();
         if (dataMap != null) {
@@ -424,7 +424,7 @@ public class RedisUtils {
      * @param key 缓存的键值
      * @return map对象
      */
-    public static <T> Map<String, T> getCacheMap(final String key) {
+    public static <T> Map<String, T> getMap(final String key) {
         RMap<String, T> rMap = CLIENT.getMap(key);
         return rMap.getAll(rMap.keySet());
     }
@@ -435,7 +435,7 @@ public class RedisUtils {
      * @param key 缓存的键值
      * @return key列表
      */
-    public static <T> Set<String> getCacheMapKeySet(final String key) {
+    public static <T> Set<String> getMapKeySet(final String key) {
         RMap<String, T> rMap = CLIENT.getMap(key);
         return rMap.keySet();
     }
@@ -447,7 +447,7 @@ public class RedisUtils {
      * @param hKey  Hash键
      * @param value 值
      */
-    public static <T> void setCacheMapValue(final String key, final String hKey, final T value) {
+    public static <T> void putMapValue(final String key, final String hKey, final T value) {
         RMap<String, T> rMap = CLIENT.getMap(key);
         rMap.put(hKey, value);
     }
@@ -459,7 +459,7 @@ public class RedisUtils {
      * @param hKey Hash键
      * @return Hash中的对象
      */
-    public static <T> T getCacheMapValue(final String key, final String hKey) {
+    public static <T> T getMap(final String key, final String hKey) {
         RMap<String, T> rMap = CLIENT.getMap(key);
         return rMap.get(hKey);
     }
@@ -471,9 +471,20 @@ public class RedisUtils {
      * @param hKey Hash键
      * @return Hash中的对象
      */
-    public static <T> T delCacheMapValue(final String key, final String hKey) {
+    public static <T> T removeMapKey(final String key, final String hKey) {
         RMap<String, T> rMap = CLIENT.getMap(key);
         return rMap.remove(hKey);
+    }
+
+    /**
+     * 删除Hash中的数据
+     *
+     * @param key  Redis键
+     * @param hKey Hash键
+     * @return Hash中的对象
+     */
+    public static long removeMapKeys(final String key, final String... hKey) {
+        return CLIENT.getMap(key).fastRemove(hKey);
     }
 
     /**
@@ -483,7 +494,7 @@ public class RedisUtils {
      * @param hKeys Hash键集合
      * @return Hash对象集合
      */
-    public static <K, V> Map<K, V> getMultiCacheMapValue(final String key, final Set<K> hKeys) {
+    public static <K, V> Map<K, V> getMultiMap(final String key, final Set<K> hKeys) {
         RMap<K, V> rMap = CLIENT.getMap(key);
         return rMap.getAll(hKeys);
     }

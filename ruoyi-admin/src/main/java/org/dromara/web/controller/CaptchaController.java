@@ -62,7 +62,7 @@ public class CaptchaController {
     public R<Void> smsCode(@NotBlank(message = "{user.phonenumber.not.blank}") String phonenumber) {
         String key = GlobalConstants.CAPTCHA_CODE_KEY + phonenumber;
         String code = RandomUtil.randomNumbers(4);
-        RedisUtils.setCacheObject(key, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
+        RedisUtils.setObject(key, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
         // 验证码模板id
         String loginTemplateId = SysConfigHelper.getSysSmsCaptchaTemplateId();
         Map<String, String> map = new HashMap<>(1);
@@ -86,7 +86,7 @@ public class CaptchaController {
         String code = RandomUtil.randomNumbers(4);
         try {
             mailService.sendText(email, "登录验证码", "您本次验证码为：" + code + "，有效性为" + Constants.CAPTCHA_EXPIRATION + "分钟，请尽快填写。");
-            RedisUtils.setCacheObject(key, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
+            RedisUtils.setObject(key, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
         } catch (Exception e) {
             log.error("验证码邮箱发送异常 => {}", e.getMessage());
             return R.fail(e.getMessage());
@@ -122,7 +122,7 @@ public class CaptchaController {
             Expression exp = parser.parseExpression(StringUtils.remove(code, "="));
             code = exp.getValue(String.class);
         }
-        RedisUtils.setCacheObject(verifyKey, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
+        RedisUtils.setObject(verifyKey, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
         captchaVo.setUuid(uuid);
         captchaVo.setImg(captcha.getImageBase64());
         return R.ok(captchaVo);
