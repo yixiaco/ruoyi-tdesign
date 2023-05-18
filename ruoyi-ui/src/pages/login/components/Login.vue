@@ -101,8 +101,8 @@ import { MessagePlugin } from 'tdesign-vue-next';
 import { getCurrentInstance, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { getCodeImg, getTenantList } from '@/api/login';
-import { LoginParam, TenantListVo } from '@/api/model/loginModel';
+import { getCodeImg } from '@/api/login';
+import { LoginParam } from '@/api/model/loginModel';
 import { useCounter } from '@/hooks';
 import { useTabsRouterStore, useUserStore } from '@/store';
 import { decrypt, encrypt } from '@/utils/jsencrypt';
@@ -117,10 +117,6 @@ const FORM_RULES: Record<string, FormRule[]> = {
 };
 
 const type = ref('password');
-// 租户列表
-const tenantList = ref<TenantListVo[]>([]);
-// 租户开关
-const tenantEnabled = ref(true);
 const form = ref<FormInstanceFunctions>();
 const formData = ref({
   phone: '',

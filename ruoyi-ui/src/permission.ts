@@ -3,7 +3,7 @@ import 'nprogress/nprogress.css'; // progress bar style
 import NProgress from 'nprogress'; // progress bar
 
 import router from '@/router';
-import { getUserStore, usePermissionStoreHook } from '@/store';
+import { usePermissionStoreHook, useUserStore } from '@/store';
 import { useTitle } from '@/utils/doc';
 import { isRelogin } from '@/utils/request';
 import { isHttp } from '@/utils/validate';
@@ -16,7 +16,7 @@ router.beforeEach(async (to, from, next) => {
   const permissionStore = usePermissionStoreHook();
   const { whiteListRouters } = permissionStore;
 
-  const userStore = getUserStore();
+  const userStore = useUserStore();
   const { token } = userStore;
   if (token) {
     if (to.meta.title) {
@@ -72,7 +72,7 @@ router.beforeEach(async (to, from, next) => {
 
 router.afterEach(async (to) => {
   if (to.path === '/login') {
-    const userStore = getUserStore();
+    const userStore = useUserStore();
     const { token } = userStore;
     const isLogin = await userStore.isLogin();
     if (isLogin) {

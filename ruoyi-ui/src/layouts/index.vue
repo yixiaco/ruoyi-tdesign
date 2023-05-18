@@ -1,5 +1,12 @@
 <template>
-  <t-watermark :watermark-content="{ text: name }" :y="100" :x="80" :width="120" :height="60" :z-index="90000">
+  <t-watermark
+    :watermark-content="{ text: name }"
+    :y="100"
+    :x="80"
+    :width="name.length * 20"
+    :height="40"
+    :z-index="1000"
+  >
     <div>
       <template v-if="setting.layout.value === 'side'">
         <t-layout key="side" :class="mainLayoutCls">

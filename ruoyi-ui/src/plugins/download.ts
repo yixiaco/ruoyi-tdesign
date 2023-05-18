@@ -2,7 +2,7 @@ import axios from 'axios';
 import { saveAs } from 'file-saver';
 import { LoadingPlugin, MessagePlugin } from 'tdesign-vue-next';
 
-import { getToken } from '@/utils/auth';
+import { useUserStore } from '@/store';
 import errorCode from '@/utils/errorCode';
 import { blobValidate } from '@/utils/ruoyi';
 
@@ -11,6 +11,7 @@ let downloadLoadingInstance;
 
 export default {
   oss(ossId) {
+    const { token } = useUserStore();
     const url = `${baseURL}/resource/oss/download/${ossId}`;
     downloadLoadingInstance = LoadingPlugin({
       text: '正在下载数据，请稍候',
@@ -19,7 +20,7 @@ export default {
       method: 'get',
       url,
       responseType: 'blob',
-      headers: { Authorization: `Bearer ${getToken()}` },
+      headers: { Authorization: `Bearer ${token}` },
     })
       .then((res) => {
         const isBlob = blobValidate(res.data);
@@ -38,13 +39,14 @@ export default {
       });
   },
   zip(url, name) {
+    const { token } = useUserStore();
     url = baseURL + url;
     axios({
       method: 'get',
       url,
       responseType: 'blob',
       headers: {
-        Authorization: `Bearer ${getToken()}`,
+        Authorization: `Bearer ${token}`,
         datasource: localStorage.getItem('dataName'),
       },
     }).then((res) => {

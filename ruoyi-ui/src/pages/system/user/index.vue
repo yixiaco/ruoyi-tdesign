@@ -427,6 +427,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia';
 import {
   AddIcon,
   BrowseIcon,
@@ -454,7 +455,7 @@ import {
   resetUserPwd,
   updateUser,
 } from '@/api/system/user';
-import { getToken } from '@/utils/auth';
+import { useUserStore } from '@/store';
 
 const router = useRouter();
 const { proxy } = getCurrentInstance();
@@ -481,6 +482,7 @@ const deptOptions = ref(undefined);
 const initPassword = ref(undefined);
 const postOptions = ref([]);
 const roleOptions = ref([]);
+const { token } = storeToRefs(useUserStore());
 /** * 用户导入参数 */
 const upload = reactive({
   // 是否显示弹出层（用户导入）
@@ -492,7 +494,7 @@ const upload = reactive({
   // 是否更新已经存在的用户数据
   updateSupport: false,
   // 设置上传的请求头部
-  headers: { Authorization: `Bearer ${getToken()}` },
+  headers: { Authorization: `Bearer ${token.value}` },
   // 上传的地址
   url: `${import.meta.env.VITE_APP_BASE_API}/system/user/importData`,
 });

@@ -87,7 +87,7 @@ import { useRoute, useRouter } from 'vue-router';
 import LogoFull from '@/assets/icons/assets-logo-full.svg?component';
 import { prefix } from '@/config/global';
 import { getActive } from '@/router';
-import { getUserStore, useSettingStore, useUserStore } from '@/store';
+import { useSettingStore, useUserStore } from '@/store';
 import type { MenuRoute } from '@/types/interface';
 
 import DynamicTenant from './DynamicTenant.vue';
@@ -179,7 +179,7 @@ const handleNav = (url) => {
 };
 
 const handleLogout = async () => {
-  const userStore = getUserStore();
+  const userStore = useUserStore();
   await userStore.logout();
   await router.push({
     path: '/login',

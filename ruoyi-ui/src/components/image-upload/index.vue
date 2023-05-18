@@ -26,11 +26,12 @@
 </template>
 
 <script lang="ts" setup>
+import { storeToRefs } from 'pinia';
 import { SuccessContext, UploadFile, UploadRemoveContext, UploadValidateType } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, PropType, ref, watch } from 'vue';
 
 import { delOss, listByIds, listByUrls } from '@/api/system/oss';
-import { getToken } from '@/utils/auth';
+import { useUserStore } from '@/store';
 
 const props = defineProps({
   modelValue: [String, Object, Array],
@@ -91,11 +92,12 @@ const props = defineProps({
   },
 });
 
+const { token } = storeToRefs(useUserStore());
 const { proxy } = getCurrentInstance();
 const emit = defineEmits(['update:modelValue', 'change']);
 const baseUrl = import.meta.env.VITE_APP_BASE_API;
 const uploadImgUrl = ref(`${baseUrl}/resource/oss/upload`); // 上传的图片服务器地址
-const headers = ref({ Authorization: `Bearer ${getToken()}` });
+const headers = ref({ Authorization: `Bearer ${token.value}` });
 const fileList = ref([]);
 const rawAccept = computed(() => {
   return props.accept || props.fileType.map((value) => `.${value}`).join(',');

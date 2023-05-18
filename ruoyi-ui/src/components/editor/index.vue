@@ -14,11 +14,13 @@ import Editor from 'ckeditor5-overall-build/dist/ckeditor.js';
 
 const uploadUrl = `${import.meta.env.VITE_APP_BASE_API}/resource/oss/upload`;
 const Ckeditor = CKEditor.component;
+import { storeToRefs } from 'pinia';
 import { getCurrentInstance, ref } from 'vue';
 
-import { getToken } from '@/utils/auth';
+import { useUserStore } from '@/store';
 
 const { proxy } = getCurrentInstance();
+const { token } = storeToRefs(useUserStore());
 
 const editorConfig = ref({
   mediaEmbed: { previewsInData: true },
@@ -26,7 +28,7 @@ const editorConfig = ref({
     uploadUrl,
     withCredentials: true,
     headers: {
-      Authorization: `Bearer ${getToken()}`,
+      Authorization: `Bearer ${token.value}`,
     },
     beforeUpload(data, file) {
       const formData = new FormData();
