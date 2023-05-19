@@ -475,7 +475,13 @@ insert into sys_menu values('1612', '租户套餐新增', '122', '2', '#', '', '
 insert into sys_menu values('1613', '租户套餐修改', '122', '3', '#', '', '', 1, 0, 'F', '0', '0', 'system:tenantPackage:edit',    '#', 103, 1, sysdate, null, null, '');
 insert into sys_menu values('1614', '租户套餐删除', '122', '4', '#', '', '', 1, 0, 'F', '0', '0', 'system:tenantPackage:remove',  '#', 103, 1, sysdate, null, null, '');
 insert into sys_menu values('1615', '租户套餐导出', '122', '5', '#', '', '', 1, 0, 'F', '0', '0', 'system:tenantPackage:export',  '#', 103, 1, sysdate, null, null, '');
-
+-- 应用管理
+INSERT INTO sys_menu VALUES ('1701', '应用管理', 6, 3, 'app', 'system/app/index', NULL, 1, 0, 'C', '0', '0', 'system:app:list', 'app', 103, 1, sysdate, 1, sysdate, '应用管理菜单');
+INSERT INTO sys_menu VALUES ('1702', '应用管理查询', '1701', 1, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:app:query', '#', 103, 1, sysdate, NULL, NULL, '');
+INSERT INTO sys_menu VALUES ('1702', '应用管理新增', '1701', 2, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:app:add', '#', 103, 1, sysdate, NULL, NULL, '');
+INSERT INTO sys_menu VALUES ('1703', '应用管理修改', '1701', 3, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:app:edit', '#', 103, 1, sysdate, NULL, NULL, '');
+INSERT INTO sys_menu VALUES ('1704', '应用管理删除', '1701', 4, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:app:remove', '#', 103, 1, sysdate, NULL, NULL, '');
+INSERT INTO sys_menu VALUES ('1705', '应用管理导出', '1701', 5, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:app:export', '#', 103, 1, sysdate, NULL, NULL, '');
 
 -- ----------------------------
 -- 6、用户和角色关联表  用户N-1角色
@@ -729,6 +735,7 @@ insert into sys_dict_type values(7, '000000', '通知类型', 'sys_notice_type',
 insert into sys_dict_type values(8, '000000', '通知状态', 'sys_notice_status',   '0', 103, 1, sysdate, null, null, '通知状态列表');
 insert into sys_dict_type values(9, '000000', '操作类型', 'sys_oper_type',       '0', 103, 1, sysdate, null, null, '操作类型列表');
 insert into sys_dict_type values(10, '000000', '系统状态', 'sys_common_status',   '0', 103, 1, sysdate, null, null, '登录状态列表');
+insert into sys_dict_type values(11, '000000', '应用类型', 'sys_app_type', '0', 103, 1, sysdate, 1, sysdate, '应用管理列表');
 
 
 -- ----------------------------
@@ -798,6 +805,10 @@ insert into sys_dict_data values(25, '000000', 8,  '生成代码', '8',       's
 insert into sys_dict_data values(26, '000000', 9,  '清空数据', '9',       'sys_oper_type',       '',   'danger',  'N', '0', 103, 1, sysdate, null, null, '清空操作');
 insert into sys_dict_data values(27, '000000', 1,  '成功',     '0',       'sys_common_status',   '',   'primary', 'N', '0', 103, 1, sysdate, null, null, '正常状态');
 insert into sys_dict_data values(28, '000000', 2,  '失败',     '1',       'sys_common_status',   '',   'danger',  'N', '0', 103, 1, sysdate, null, null, '停用状态');
+insert into sys_dict_data values(30, '000000', 0, '域名', 'DOMAIN', 'sys_app_type', null, 'primary', 'N', '0', 103, 1, sysdate, 1, sysdate, null);
+insert into sys_dict_data values(31, '000000', 1, '微信小程序', 'WX_XCX', 'sys_app_type', null, 'primary', 'N', '0', 103, 1, sysdate, 1, sysdate, null);
+insert into sys_dict_data values(32, '000000', 2, '微信公众号', 'WX_GZH', 'sys_app_type', null, 'primary', 'N', '0', 103, 1, sysdate, 1, sysdate, null);
+insert into sys_dict_data values(33, '000000', 3, 'APP', 'APP', 'sys_app_type', null, 'primary', 'N', '0', 103, 1, sysdate, 1, sysdate, null);
 
 
 -- ----------------------------
