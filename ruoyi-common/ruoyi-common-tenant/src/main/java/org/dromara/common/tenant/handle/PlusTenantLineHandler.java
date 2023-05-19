@@ -3,8 +3,8 @@ package org.dromara.common.tenant.handle;
 import com.baomidou.mybatisplus.extension.plugins.handler.TenantLineHandler;
 import lombok.AllArgsConstructor;
 import net.sf.jsqlparser.expression.Expression;
-import net.sf.jsqlparser.expression.NullValue;
 import net.sf.jsqlparser.expression.StringValue;
+import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.common.tenant.properties.TenantProperties;
@@ -25,7 +25,7 @@ public class PlusTenantLineHandler implements TenantLineHandler {
     public Expression getTenantId() {
         String tenantId = TenantHelper.getTenantId();
         if (StringUtils.isBlank(tenantId)) {
-            return new NullValue();
+            throw new ServiceException("未能识别到有效tenantId");
         }
         // 返回固定租户
         return new StringValue(tenantId);
