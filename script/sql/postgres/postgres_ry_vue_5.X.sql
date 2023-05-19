@@ -1183,6 +1183,37 @@ comment on column sys_oss_rule.remark         is  '备注';
 insert into sys_oss_rule values (1, '000000', '180x180', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_180/quality,q_90', 'N', 'N', '0', 103, 1, now(), 1, now(), null);
 insert into sys_oss_rule values (2, '000000', '800x800', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_800/quality,q_90', 'N', 'N', '0', 103, 1, now(), 1, now(), null);
 
+-- ----------------------------
+-- 应用管理表
+-- ----------------------------
+create table sys_app  (
+  appid         int8,
+  tenant_id     varchar(20)     default '000000',
+  app_type      varchar(20)     default ''::varchar not null,
+  app_key       varchar(50)     default ''::varchar not null,
+  app_name      varchar(255)    default ''::varchar not null,
+  create_dept   int8,
+  create_by     int8,
+  create_time   timestamp,
+  update_by     int8,
+  update_time   timestamp,
+  remark        varchar(500)    default ''::varchar not null,
+  constraint sys_app_pk primary key (appid)
+);
+
+comment on table sys_app                is  '应用管理表';
+comment on column sys_app.appid         is  'oss规则id';
+comment on column sys_app.tenant_id     is  '租户编号';
+comment on column sys_app.app_type      is  '规则名称（例如：80x80，则字段名称将输出字段名_80x80）';
+comment on column sys_app.app_key       is  '匹配域名';
+comment on column sys_app.app_name      is  '媒体类型（规则对匹配的媒体类型生效）';
+comment on column sys_app.create_dept   is  '规则';
+comment on column sys_app.create_by     is  '是否覆盖默认字段值';
+comment on column sys_app.create_time   is  '是否默认（不指定规则时，默认输出的规则）';
+comment on column sys_app.update_by     is  '启用状态';
+comment on column sys_app.update_time   is  '创建部门';
+comment on column sys_app.remark        is  '创建者';
+
 -- 字符串自动转时间 避免框架时间查询报错问题
 create or replace function cast_varchar_to_timestamp(varchar) returns timestamptz as $$
 select to_timestamp($1, 'yyyy-mm-dd hh24:mi:ss');

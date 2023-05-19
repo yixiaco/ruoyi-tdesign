@@ -831,3 +831,22 @@ create table sys_oss_rule  (
 
 insert into sys_oss_rule values (1, '000000', '180x180', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_180/quality,q_90', 'N', 'N', '0', 103, 1, sysdate(), 1, sysdate(), null);
 insert into sys_oss_rule values (2, '000000', '800x800', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_800/quality,q_90', 'N', 'N', '0', 103, 1, sysdate(), 1, sysdate(), null);
+
+-- ----------------------------
+-- 应用管理表
+-- ----------------------------
+drop table if exists sys_app;
+create table sys_app  (
+  appid         bigint          not null                        comment '应用id',
+  tenant_id     varchar(20)     null        default '000000'    comment '租户编号',
+  app_type      varchar(20)     not null                        comment '应用类型',
+  app_key       varchar(50)     not null                        comment '应用key',
+  app_name      varchar(255)    not null                        comment '应用名称',
+  create_dept   bigint          null        default null        comment '创建部门',
+  create_by     bigint          null        default null        comment '创建者',
+  create_time   datetime        null        default null        comment '创建时间',
+  update_by     bigint          null        default null        comment '更新者',
+  update_time   datetime        null        default null        comment '更新时间',
+  remark        varchar(500)    null        default null        comment '备注',
+  primary key (appid) using btree
+) engine = innodb comment = '应用管理表';

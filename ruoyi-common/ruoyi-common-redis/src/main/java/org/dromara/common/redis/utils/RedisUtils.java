@@ -185,7 +185,7 @@ public class RedisUtils {
      * 获得key剩余存活时间
      *
      * @param key 缓存键值
-     * @return 剩余存活时间
+     * @return 剩余存活时间.以毫秒为单位的时间 -2 如果密钥不存在。 -1 如果密钥存在但没有关联的过期时间。
      */
     public static <T> long getTimeToLive(final String key) {
         RBucket<T> rBucket = CLIENT.getBucket(key);
