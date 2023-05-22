@@ -39,6 +39,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
+@SaIgnore
 @Validated
 @RestController
 @RequestMapping("/auth")
@@ -58,7 +59,6 @@ public class AuthController {
      *
      * @return
      */
-    @SaIgnore
     @GetMapping("/isLogin")
     public R<Boolean> isLogin() {
         return R.ok(MultipleStpUtil.SYSTEM.isLogin());
@@ -70,7 +70,6 @@ public class AuthController {
      * @param body 登录信息
      * @return 结果
      */
-    @SaIgnore
     @PostMapping("/login")
     public R<LoginVo> login(@Validated @RequestBody LoginBody body) {
         LoginVo loginVo = new LoginVo();
@@ -88,7 +87,6 @@ public class AuthController {
      * @param body 登录信息
      * @return 结果
      */
-    @SaIgnore
     @PostMapping("/smsLogin")
     public R<LoginVo> smsLogin(@Validated @RequestBody SmsLoginBody body) {
         LoginVo loginVo = new LoginVo();
@@ -104,7 +102,6 @@ public class AuthController {
      * @param body 登录信息
      * @return 结果
      */
-    @SaIgnore
     @PostMapping("/emailLogin")
     public R<LoginVo> emailLogin(@Validated @RequestBody EmailLoginBody body) {
         LoginVo loginVo = new LoginVo();
@@ -120,7 +117,6 @@ public class AuthController {
      * @param xcxCode 小程序code
      * @return 结果
      */
-    @SaIgnore
     @PostMapping("/xcxLogin")
     public R<LoginVo> xcxLogin(@NotBlank(message = "{xcx.code.not.blank}") String xcxCode) {
         LoginVo loginVo = new LoginVo();
@@ -142,7 +138,6 @@ public class AuthController {
     /**
      * 用户注册
      */
-    @SaIgnore
     @PostMapping("/register")
     public R<Void> register(@Validated @RequestBody RegisterBody user) {
         if (!configService.selectRegisterEnabled(user.getTenantId())) {
@@ -157,7 +152,6 @@ public class AuthController {
      *
      * @return 租户列表
      */
-    @SaIgnore
     @GetMapping("/tenant/list")
     public R<LoginTenantVo> tenantList(HttpServletRequest request) throws Exception {
         List<SysTenantVo> tenantList = tenantService.queryList(new SysTenantQuery());

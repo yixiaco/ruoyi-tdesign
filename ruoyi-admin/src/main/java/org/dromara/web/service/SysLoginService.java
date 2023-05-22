@@ -31,6 +31,7 @@ import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.log.event.LogininforEvent;
 import org.dromara.common.redis.utils.RedisUtils;
+import org.dromara.common.satoken.context.SaSecurityContext;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.dromara.common.tenant.exception.TenantException;
@@ -195,6 +196,8 @@ public class SysLoginService {
         try {
             LoginUser loginUser = LoginHelper.getUser();
             if (loginUser != null) {
+                // 将用户对象放到上下文缓存中
+                SaSecurityContext.setContext(loginUser);
                 if (TenantHelper.isEnable() && LoginHelper.isSuperAdmin()) {
                     // 超级管理员 登出清除动态租户
                     TenantHelper.clearDynamic();

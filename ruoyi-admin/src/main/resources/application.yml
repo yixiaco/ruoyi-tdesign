@@ -114,7 +114,6 @@ sa-token:
       # token前缀
       token-prefix: "Bearer"
       match:
-        - /auth/**
         - /system/**
         - /monitor/**
         - /resource/**
