@@ -101,7 +101,11 @@ public class ServletUtils extends JakartaServletUtil {
      * 获取request
      */
     public static HttpServletRequest getRequest() {
-        return getRequestAttributes().getRequest();
+        ServletRequestAttributes attributes = getRequestAttributes();
+        if (attributes == null) {
+            return null;
+        }
+        return attributes.getRequest();
     }
 
     /**
@@ -196,7 +200,11 @@ public class ServletUtils extends JakartaServletUtil {
      * @return
      */
     public static String getAppKey() {
-        return getHeaderIgnoreCase(getRequest(), "X-APP-KEY");
+        HttpServletRequest request = getRequest();
+        if (request == null) {
+            return null;
+        }
+        return getHeaderIgnoreCase(request, "X-APP-KEY");
     }
 
 }
