@@ -88,7 +88,17 @@
       z-index: 100;
     }
     &-tabs-nav + .@{starter-prefix}-content-layout {
-      padding-top: var(--td-comp-paddingTB-xxl);
+      padding-top: var(--td-comp-paddingTB-xl);
+    }
+
+    &-tabs-nav {
+      .t-tabs__nav-item.t-size-m {
+        margin: 3px 1.5px;
+        border-radius: var(--td-radius-default);
+        box-shadow: var(--td-shadow-3);
+        height: var(--td-comp-size-m);
+        line-height: var(--td-comp-size-m);
+      }
     }
 
     &::-webkit-scrollbar {
