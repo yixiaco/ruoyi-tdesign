@@ -33,19 +33,14 @@ public class PlusTenantLineHandler implements TenantLineHandler {
 
     @Override
     public boolean ignoreTable(String tableName) {
-        String tenantId = TenantHelper.getTenantId();
-        // 判断是否有租户
-        if (StringUtils.isNotBlank(tenantId)) {
-            // 不需要过滤租户的表
-            Set<String> excludes = tenantProperties.getExcludes();
-            // 非业务表
-            excludes.addAll(Set.of(
-                "gen_table",
-                "gen_table_column"
-            ));
-            return excludes.contains(tableName);
-        }
-        return true;
+        // 不需要过滤租户的表
+        Set<String> excludes = tenantProperties.getExcludes();
+        // 非业务表
+        excludes.addAll(Set.of(
+            "gen_table",
+            "gen_table_column"
+        ));
+        return excludes.contains(tableName);
     }
 
 }
