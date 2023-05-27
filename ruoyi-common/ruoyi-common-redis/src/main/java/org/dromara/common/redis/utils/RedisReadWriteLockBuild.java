@@ -71,6 +71,8 @@ public class RedisReadWriteLockBuild {
             T data = RedisUtils.getObject(key);
             if (data == null && defaultSupplier != null) {
                 RLock writeLock = readWriteLock.writeLock();
+                // 此处读锁需要先释放才能获取写锁
+                lock.unlock();
                 writeLock.lock();
                 try {
                     data = RedisUtils.getObject(key);
@@ -114,6 +116,8 @@ public class RedisReadWriteLockBuild {
             List<T> data = null;
             if (defaultSupplier != null) {
                 RLock writeLock = readWriteLock.writeLock();
+                // 此处读锁需要先释放才能获取写锁
+                lock.unlock();
                 writeLock.lock();
                 try {
                     // 双重检查
@@ -156,6 +160,8 @@ public class RedisReadWriteLockBuild {
             Set<T> data = null;
             if (defaultSupplier != null) {
                 RLock writeLock = readWriteLock.writeLock();
+                // 此处读锁需要先释放才能获取写锁
+                lock.unlock();
                 writeLock.lock();
                 try {
                     // 双重检查
@@ -198,6 +204,8 @@ public class RedisReadWriteLockBuild {
             Map<String, T> data = null;
             if (defaultSupplier != null) {
                 RLock writeLock = readWriteLock.writeLock();
+                // 此处读锁需要先释放才能获取写锁
+                lock.unlock();
                 writeLock.lock();
                 try {
                     // 双重检查
