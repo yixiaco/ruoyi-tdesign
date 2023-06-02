@@ -5,6 +5,8 @@ import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
 
+import java.time.Duration;
+
 /**
  * 处理发布消息
  *
@@ -67,6 +69,20 @@ public class PublisherHandler {
     }
 
     /**
+     * 提交后发送延迟消息
+     *
+     * @param exchange 交换机
+     * @param message  消息
+     * @param time     延迟时间
+     */
+    public void commitSendDelay(String exchange, Object message, Duration time) {
+        publisherEvent.commit(() -> send(exchange, message, message1 -> {
+            message1.getMessageProperties().setDelay((int) time.toMillis());
+            return message1;
+        }));
+    }
+
+    /**
      * 发送消息
      *
      * @param exchange   交换机
@@ -108,5 +124,19 @@ public class PublisherHandler {
      */
     public void send(String exchange, Object message, MessagePostProcessor messagePostProcessor) {
         amqpTemplate.convertAndSend(exchange, exchange + QUEUE, message, messagePostProcessor);
+    }
+
+    /**
+     * 发送延迟消息
+     *
+     * @param exchange 交换机
+     * @param message  消息
+     * @param time     延迟时间
+     */
+    public void sendDelay(String exchange, Object message, Duration time) {
+        amqpTemplate.convertAndSend(exchange, exchange + QUEUE, message, message1 -> {
+            message1.getMessageProperties().setDelay((int) time.toMillis());
+            return message1;
+        });
     }
 }
