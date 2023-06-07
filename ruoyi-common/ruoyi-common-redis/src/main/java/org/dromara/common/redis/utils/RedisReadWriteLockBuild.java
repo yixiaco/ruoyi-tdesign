@@ -2,6 +2,7 @@ package org.dromara.common.redis.utils;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.dromara.common.core.constant.GlobalConstants;
 import org.redisson.api.RLock;
 import org.redisson.api.RReadWriteLock;
 
@@ -296,7 +297,7 @@ public class RedisReadWriteLockBuild {
     }
 
     private static String getKey(String key) {
-        return "readWriteLock:" + key;
+        return GlobalConstants.GLOBAL_REDIS_KEY + "readWriteLock:" + key;
     }
 
     public Duration getMaxExpire() {

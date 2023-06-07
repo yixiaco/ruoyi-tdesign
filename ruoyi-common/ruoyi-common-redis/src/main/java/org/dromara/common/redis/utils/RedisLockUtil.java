@@ -1,5 +1,6 @@
 package org.dromara.common.redis.utils;
 
+import org.dromara.common.core.constant.GlobalConstants;
 import org.redisson.api.RLock;
 
 import java.time.Duration;
@@ -285,7 +286,13 @@ public class RedisLockUtil {
         }
     }
 
-    private static String getKey(String key) {
-        return "lock:" + key;
+    /**
+     * 获取key
+     *
+     * @param key
+     * @return
+     */
+    public static String getKey(String key) {
+        return GlobalConstants.GLOBAL_REDIS_KEY + "lock:" + key;
     }
 }
