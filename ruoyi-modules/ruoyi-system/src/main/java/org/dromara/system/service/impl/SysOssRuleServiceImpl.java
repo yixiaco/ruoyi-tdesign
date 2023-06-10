@@ -1,6 +1,7 @@
 package org.dromara.system.service.impl;
 
 import cn.dev33.satoken.context.SaHolder;
+import cn.dev33.satoken.spring.SpringMVCUtil;
 import cn.hutool.core.net.url.UrlBuilder;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.CharsetUtil;
@@ -193,7 +194,10 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
     @SuppressWarnings("unchecked cast")
     public Map<String, String> getUrls(String fieldName, String originalUrl, String[] useRules) {
         // 二级缓存
-        List<SysOssRule> rules = (List<SysOssRule>) SaHolder.getStorage().get(CacheConstants.SYS_OSS_RULE);
+        List<SysOssRule> rules = null;
+        if (SpringMVCUtil.isWeb()) {
+            rules = (List<SysOssRule>) SaHolder.getStorage().get(CacheConstants.SYS_OSS_RULE);
+        }
         if (rules == null) {
             // 如果二级缓存为空，则从redis缓存中读取
             rules = RedisLockUtil.getOrSaveList(CacheConstants.SYS_OSS_RULE, () ->
