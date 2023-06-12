@@ -20,13 +20,21 @@
       @remove="handleDelete"
       @validate="onValidate"
     >
-      <slot v-if="theme === 'custom'" />
+      <!-- 上传按钮 -->
+      <slot />
+      <t-button v-if="!$slots.default" variant="outline">
+        <template #icon>
+          <cloud-upload-icon />
+        </template>
+        选取文件
+      </t-button>
     </t-upload>
   </div>
 </template>
 
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia';
+import { CloudUploadIcon } from 'tdesign-icons-vue-next';
 import { SuccessContext, UploadFile, UploadRemoveContext, UploadValidateType } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, PropType, ref, watch } from 'vue';
 

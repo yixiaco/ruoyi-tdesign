@@ -1,5 +1,6 @@
 package org.dromara.system.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.dynamic.datasource.annotation.DS;
@@ -28,11 +29,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * 参数配置 服务层实现
@@ -212,27 +209,53 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateConfigs(List<SysConfigBo> configs) {
-        List<SysConfig> sysConfigs = MapstructUtils.convert(configs, SysConfig.class);
         // 全局配置
-        List<SysConfig> globalConfigs = StreamUtils.filter(sysConfigs, sysConfig -> Objects.equals(1, sysConfig.getIsGlobal()));
+        List<SysConfigBo> globalConfigBos = StreamUtils.filter(configs, sysConfig -> Objects.equals(1, sysConfig.getIsGlobal()));
         // 租户配置
-        List<SysConfig> tenantConfigs = StreamUtils.filter(sysConfigs, sysConfig -> Objects.equals(0, sysConfig.getIsGlobal()));
+        List<SysConfigBo> tenantConfigBos = StreamUtils.filter(configs, sysConfig -> Objects.equals(0, sysConfig.getIsGlobal()));
 
         // 更新租户配置
-        saveOrUpdateBatch(tenantConfigs);
-        // 更新缓存
-        for (SysConfig sysConfig : tenantConfigs) {
-            CacheUtils.put(CacheNames.SYS_CONFIG, sysConfig.getConfigKey(), sysConfig.getConfigValue());
-        }
-
+        updateConfigs(tenantConfigBos, false);
         // 更新全局配置
         TenantHelper.ignore(() -> {
-            saveOrUpdateBatch(globalConfigs);
-            // 更新缓存
-            for (SysConfig sysConfig : globalConfigs) {
-                CacheUtils.put(GlobalConstants.GLOBAL_REDIS_KEY + CacheNames.SYS_CONFIG, sysConfig.getConfigKey(), sysConfig.getConfigValue());
-            }
+            updateConfigs(globalConfigBos, true);
         });
+    }
+
+    /**
+     * 更新配置
+     *
+     * @param configs  配置
+     * @param isGlobal 是否是全局配置
+     */
+    private void updateConfigs(List<SysConfigBo> configs, boolean isGlobal) {
+        if (CollUtil.isEmpty(configs)) {
+            return;
+        }
+        List<SysConfig> list = lambdaQuery()
+            .in(SysConfig::getConfigKey, StreamUtils.toSet(configs, SysConfigBo::getConfigKey))
+            .eq(SysConfig::getIsGlobal, isGlobal ? 1 : 0)
+            .list();
+        Map<String, SysConfig> configMap = StreamUtils.toIdentityMap(list, SysConfig::getConfigKey);
+        List<SysConfig> configList = new ArrayList<>();
+        for (SysConfigBo configBo : configs) {
+            SysConfig config = configMap.get(configBo.getConfigKey());
+            if (config == null) {
+                config = MapstructUtils.convert(configBo, SysConfig.class);
+            } else {
+                Long configId = config.getConfigId();
+                MapstructUtils.convert(configBo, config);
+                config.setConfigId(configId);
+            }
+            configList.add(config);
+        }
+        // 更新租户配置
+        saveOrUpdateBatch(configList);
+        // 更新缓存
+        for (SysConfig sysConfig : configList) {
+            String cacheNames = GlobalConstants.getGlobalKey(isGlobal, CacheNames.SYS_CONFIG);
+            CacheUtils.put(cacheNames, sysConfig.getConfigKey(), sysConfig.getConfigValue());
+        }
     }
 
     /**

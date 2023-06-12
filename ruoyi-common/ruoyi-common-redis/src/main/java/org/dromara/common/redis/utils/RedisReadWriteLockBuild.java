@@ -2,6 +2,7 @@ package org.dromara.common.redis.utils;
 
 import lombok.Builder;
 import lombok.Getter;
+import org.dromara.common.core.constant.GlobalConstants;
 import org.redisson.api.RLock;
 import org.redisson.api.RReadWriteLock;
 
@@ -71,6 +72,8 @@ public class RedisReadWriteLockBuild {
             T data = RedisUtils.getObject(key);
             if (data == null && defaultSupplier != null) {
                 RLock writeLock = readWriteLock.writeLock();
+                // 此处读锁需要先释放才能获取写锁
+                lock.unlock();
                 writeLock.lock();
                 try {
                     data = RedisUtils.getObject(key);
@@ -114,6 +117,8 @@ public class RedisReadWriteLockBuild {
             List<T> data = null;
             if (defaultSupplier != null) {
                 RLock writeLock = readWriteLock.writeLock();
+                // 此处读锁需要先释放才能获取写锁
+                lock.unlock();
                 writeLock.lock();
                 try {
                     // 双重检查
@@ -156,6 +161,8 @@ public class RedisReadWriteLockBuild {
             Set<T> data = null;
             if (defaultSupplier != null) {
                 RLock writeLock = readWriteLock.writeLock();
+                // 此处读锁需要先释放才能获取写锁
+                lock.unlock();
                 writeLock.lock();
                 try {
                     // 双重检查
@@ -198,6 +205,8 @@ public class RedisReadWriteLockBuild {
             Map<String, T> data = null;
             if (defaultSupplier != null) {
                 RLock writeLock = readWriteLock.writeLock();
+                // 此处读锁需要先释放才能获取写锁
+                lock.unlock();
                 writeLock.lock();
                 try {
                     // 双重检查
@@ -288,7 +297,7 @@ public class RedisReadWriteLockBuild {
     }
 
     private static String getKey(String key) {
-        return "readWriteLock:" + key;
+        return GlobalConstants.GLOBAL_REDIS_KEY + "readWriteLock:" + key;
     }
 
     public Duration getMaxExpire() {
