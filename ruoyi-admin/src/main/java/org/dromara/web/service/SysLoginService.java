@@ -31,8 +31,10 @@ import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.log.event.LogininforEvent;
 import org.dromara.common.redis.utils.RedisUtils;
+import org.dromara.common.satoken.context.SaSecurityContext;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
+import org.dromara.common.tenant.annotation.IgnoreTenant;
 import org.dromara.common.tenant.exception.TenantException;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.common.web.config.properties.CaptchaProperties;
@@ -79,6 +81,7 @@ public class SysLoginService {
      * @param uuid     唯一标识
      * @return 结果
      */
+    @IgnoreTenant
     public String login(String username, String password, String code, String uuid) {
         boolean captchaEnabled = captchaProperties.getEnable();
         // 验证码开关
@@ -111,6 +114,7 @@ public class SysLoginService {
      * @param smsCode
      * @return
      */
+    @IgnoreTenant
     public String smsLogin(String phonenumber, String smsCode) {
         // 通过手机号查找用户
         SysUserVo user = loadUserByPhonenumber(phonenumber);
@@ -138,6 +142,7 @@ public class SysLoginService {
      * @param emailCode
      * @return
      */
+    @IgnoreTenant
     public String emailLogin(String email, String emailCode) {
         // 通过邮箱查找用户
         SysUserVo user = loadUserByEmail(email);
@@ -164,6 +169,7 @@ public class SysLoginService {
      * @param xcxCode
      * @return
      */
+    @IgnoreTenant
     public String xcxLogin(String xcxCode) {
         // xcxCode 为 小程序调用 wx.login 授权后获取
         // todo 以下自行实现
@@ -195,12 +201,14 @@ public class SysLoginService {
         try {
             LoginUser loginUser = LoginHelper.getUser();
             if (loginUser != null) {
+                // 将用户对象放到上下文缓存中
+                SaSecurityContext.setContext(loginUser);
                 if (TenantHelper.isEnable() && LoginHelper.isSuperAdmin()) {
                     // 超级管理员 登出清除动态租户
                     TenantHelper.clearDynamic();
                 }
-                MultipleStpUtil.SYSTEM.logout();
                 recordLogininfor(loginUser.getTenantId(), loginUser.getUsername(), Constants.LOGOUT, MessageUtils.message("user.logout.success"));
+                MultipleStpUtil.SYSTEM.logout();
             }
         } catch (NotLoginException ignored) {
         }

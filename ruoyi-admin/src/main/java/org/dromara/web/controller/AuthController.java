@@ -59,7 +59,6 @@ public class AuthController {
      *
      * @return
      */
-    @SaIgnore
     @GetMapping("/isLogin")
     public R<Boolean> isLogin() {
         return R.ok(MultipleStpUtil.SYSTEM.isLogin());
