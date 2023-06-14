@@ -20,6 +20,7 @@ import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.satoken.context.SaSecurityContext;
 
 import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import java.util.function.Supplier;
@@ -37,6 +38,10 @@ public class TenantHelper {
 
     private static final ThreadLocal<String> TEMP_DYNAMIC_TENANT = new TransmittableThreadLocal<>();
     private static final ThreadLocal<Boolean> IGNORE_CACHE_TENANT = new TransmittableThreadLocal<>();
+    // 忽略租户db重入计数,防止重入调用提前关闭租户
+    private static final ThreadLocal<AtomicInteger> HEAVY_ENTRY_IGNORE_DB_TENANT = TransmittableThreadLocal.withInitial(() -> new AtomicInteger(0));
+    // 忽略租户缓存重入计数,防止重入调用提前关闭租户
+    private static final ThreadLocal<AtomicInteger> HEAVY_ENTRY_IGNORE_CACHE_TENANT = TransmittableThreadLocal.withInitial(() -> new AtomicInteger(0));
 
     /**
      * 是否启用了缓存忽略租户
@@ -59,13 +64,17 @@ public class TenantHelper {
      */
     public static void enableIgnore() {
         InterceptorIgnoreHelper.handle(IgnoreStrategy.builder().tenantLine(true).build());
+        HEAVY_ENTRY_IGNORE_DB_TENANT.get().incrementAndGet();
     }
 
     /**
      * 关闭忽略租户
      */
     public static void disableIgnore() {
-        InterceptorIgnoreHelper.clearIgnoreStrategy();
+        if (HEAVY_ENTRY_IGNORE_DB_TENANT.get().decrementAndGet() <= 0) {
+            InterceptorIgnoreHelper.clearIgnoreStrategy();
+            HEAVY_ENTRY_IGNORE_DB_TENANT.remove();
+        }
     }
 
     /**
@@ -73,13 +82,17 @@ public class TenantHelper {
      */
     public static void enableIgnoreCache() {
         IGNORE_CACHE_TENANT.set(true);
+        HEAVY_ENTRY_IGNORE_CACHE_TENANT.get().incrementAndGet();
     }
 
     /**
      * 关闭缓存忽略租户
      */
     public static void disableIgnoreCache() {
-        IGNORE_CACHE_TENANT.remove();
+        if (HEAVY_ENTRY_IGNORE_CACHE_TENANT.get().decrementAndGet() <= 0) {
+            IGNORE_CACHE_TENANT.remove();
+            HEAVY_ENTRY_IGNORE_CACHE_TENANT.remove();
+        }
     }
 
     /**
