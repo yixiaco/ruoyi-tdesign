@@ -45,7 +45,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import {PageInfo, PrimaryTableCol} from 'tdesign-vue-next';
+import { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, nextTick, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
