@@ -31,7 +31,8 @@ const transform: AxiosTransform = {
     const { isTransformResponse, isReturnNativeResponse } = options;
 
     // 如果204无内容直接返回
-    if (res.status === 204) {
+    const method = res.config.method?.toLowerCase();
+    if (res.status === 204 && ['put', 'patch', 'delete'].includes(method)) {
       return res;
     }
 
