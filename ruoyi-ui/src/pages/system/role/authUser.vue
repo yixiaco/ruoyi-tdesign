@@ -101,6 +101,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import { AddIcon, CloseCircleIcon, CloseIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
+import { PageInfo } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -149,7 +150,7 @@ const pagination = computed(() => {
     pageSize: queryParams.pageSize,
     total: total.value,
     showJumper: true,
-    onChange: (pageInfo) => {
+    onChange: (pageInfo: PageInfo) => {
       queryParams.pageNum = pageInfo.current;
       queryParams.pageSize = pageInfo.pageSize;
       getList();
@@ -181,7 +182,7 @@ function resetQuery() {
   handleQuery();
 }
 // 多选框选中数据
-function handleSelectionChange(selection) {
+function handleSelectionChange(selection: Array<string | number>) {
   userIds.value = selection;
   multiple.value = !selection.length;
 }
@@ -190,7 +191,7 @@ function openSelectUser() {
   selectRef.value.show();
 }
 /** 取消授权按钮操作 */
-function cancelAuthUser(row) {
+function cancelAuthUser(row: SysUserVo) {
   proxy.$modal.confirm(`确认要取消该用户"${row.userName}"角色吗？`, () => {
     const msgLoading = proxy.$modal.msgLoading('提交中...');
     return authUserCancel({ userId: row.userId, roleId: queryParams.roleId })
@@ -202,7 +203,7 @@ function cancelAuthUser(row) {
   });
 }
 /** 批量取消授权按钮操作 */
-function cancelAuthUserAll(row) {
+function cancelAuthUserAll(row: SysUserVo) {
   const { roleId } = queryParams;
   const uIds = userIds.value.join(',');
   proxy.$modal.confirm('是否取消选中用户授权数据项?', () => {

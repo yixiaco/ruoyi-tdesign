@@ -6,7 +6,7 @@
 import { useUserStore } from '@/store/modules/user';
 
 export default {
-  mounted(el, binding, vnode) {
+  mounted(el: any, binding: any) {
     const { value } = binding;
     const superAdmin = 'admin';
     const { roles } = useUserStore();

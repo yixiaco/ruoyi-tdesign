@@ -291,7 +291,13 @@ import {
   SettingIcon,
   UnfoldMoreIcon,
 } from 'tdesign-icons-vue-next';
-import { EnhancedTableInstanceFunctions, FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import {
+  EnhancedTableInstanceFunctions,
+  FormInstanceFunctions,
+  FormRule,
+  PrimaryTableCol,
+  SubmitContext,
+} from 'tdesign-vue-next';
 import { getCurrentInstance, ref } from 'vue';
 
 import { addMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu';
@@ -362,6 +368,7 @@ function getList() {
 function getTreeselect() {
   menuOptions.value = [];
   return listMenu().then((response) => {
+    // @ts-ignore
     const menu = { menuId: 0, menuName: '主类目', children: [] };
     menu.children = proxy.handleTree(response.data, 'menuId');
     menuOptions.value = [menu];
@@ -393,7 +400,7 @@ function resetQuery() {
   handleQuery();
 }
 /** 新增按钮操作 */
-function handleAdd(row) {
+function handleAdd(row: SysMenuVo) {
   reset();
   open.value = true;
   title.value = '添加菜单';
@@ -424,7 +431,7 @@ function refreshExpandAll() {
   });
 }
 /** 修改按钮操作 */
-async function handleUpdate(row) {
+async function handleUpdate(row: SysMenuVo) {
   reset();
   await getTreeselect();
   title.value = '修改菜单';
@@ -439,7 +446,7 @@ const onConfirm = () => {
   menuRef.value.submit();
 };
 /** 提交按钮 */
-function submitForm({ validateResult, firstError }) {
+function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     const msgLoading = proxy.$modal.msgLoading('提交中...');
     if (form.value.menuId) {
@@ -464,7 +471,7 @@ function submitForm({ validateResult, firstError }) {
   }
 }
 /** 删除按钮操作 */
-function handleDelete(row) {
+function handleDelete(row: SysMenuVo) {
   proxy.$modal.confirm(`是否确认删除名称为"${row.menuName}"的数据项?`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delMenu(row.menuId)

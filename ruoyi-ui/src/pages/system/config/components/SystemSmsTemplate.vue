@@ -41,7 +41,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { FormRule } from 'tdesign-vue-next';
+import { FormRule, SubmitContext } from 'tdesign-vue-next';
 import { getCurrentInstance, ref, watch } from 'vue';
 
 import { getConfigByKeys, refreshCache, updateConfigs } from '@/api/system/config';
@@ -88,7 +88,7 @@ const { proxy } = getCurrentInstance();
  * @param validateResult
  * @param firstError
  */
-function submitForm({ validateResult, firstError }) {
+function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');

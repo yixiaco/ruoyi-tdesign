@@ -182,7 +182,7 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -259,7 +259,7 @@ const pagination = computed(() => {
     pageSize: queryParams.value.pageSize,
     total: total.value,
     showJumper: true,
-    onChange: (pageInfo) => {
+    onChange: (pageInfo: PageInfo) => {
       queryParams.value.pageNum = pageInfo.current;
       queryParams.value.pageSize = pageInfo.pageSize;
       getList();
@@ -268,8 +268,8 @@ const pagination = computed(() => {
 });
 
 /** 查询字典类型详细 */
-function getTypes(dictId) {
-  getType(dictId).then((response) => {
+function getTypes(dictId: string | number | string[]) {
+  getType(dictId as number).then((response) => {
     queryParams.value.dictType = response.data.dictType;
     defaultDictType.value = response.data.dictType;
     getList();
@@ -329,17 +329,17 @@ function handleAdd() {
   form.value.dictType = queryParams.value.dictType;
 }
 /** 多选框选中数据 */
-function handleSelectionChange(selection) {
+function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
 }
 /** 修改按钮操作 */
-function handleUpdate(row) {
+function handleUpdate(row: SysDictDataVo) {
   reset();
   open.value = true;
   title.value = '修改字典数据';
-  const dictCode = row.dictCode || ids.value;
+  const dictCode = row.dictCode || ids.value.at(0);
   eLoading.value = true;
   getData(dictCode).then((response) => {
     form.value = response.data;
@@ -350,7 +350,7 @@ function onConfirm() {
   dataRef.value.submit();
 }
 /** 提交按钮 */
-function submitForm({ validateResult, firstError }) {
+function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     const msgLoading = proxy.$modal.msgLoading('提交中...');
     if (form.value.dictCode) {
@@ -377,7 +377,7 @@ function submitForm({ validateResult, firstError }) {
   }
 }
 /** 删除按钮操作 */
-function handleDelete(row) {
+function handleDelete(row: SysDictDataVo) {
   const dictCodes = row.dictCode || ids.value;
   proxy.$modal.confirm(`是否确认删除字典编码为"${dictCodes}"的数据项？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');

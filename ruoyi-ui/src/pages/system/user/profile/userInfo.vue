@@ -23,7 +23,7 @@
 </template>
 
 <script lang="ts" setup>
-import { FormRule } from 'tdesign-vue-next';
+import { FormRule, SubmitContext } from 'tdesign-vue-next';
 import { getCurrentInstance, ref, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -55,7 +55,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
 });
 
 /** 提交按钮 */
-function submit({ validateResult }) {
+function submit({ validateResult }: SubmitContext) {
   if (validateResult === true) {
     const msgLoading = proxy.$modal.msgLoading('提交中...');
     updateUserProfile(user.value)

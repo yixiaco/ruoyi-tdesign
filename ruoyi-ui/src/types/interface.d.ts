@@ -1,4 +1,4 @@
-import { LocationQueryRaw, RouteRecordName } from 'vue-router';
+import { LocationQueryRaw, RouteRecordName, RouteRecordRaw } from 'vue-router';
 
 import STYLE_CONFIG from '@/config/style';
 
@@ -17,6 +17,8 @@ export interface MenuRoute {
   query: any;
 }
 
+export type ComplexRoute = Partial<MenuRoute | (RouteRecordRaw & { query: any })>;
+
 export type ModeType = 'dark' | 'light';
 
 export type SettingType = typeof STYLE_CONFIG;
@@ -26,6 +28,11 @@ export type ClassName = { [className: string]: any } | ClassName[] | string;
 export type CommonObjType = {
   [key: string]: string | number;
 };
+
+export interface UserInfo {
+  name: string;
+  roles: string[];
+}
 
 export interface NotificationItem {
   id: string;
@@ -51,4 +58,15 @@ export interface TRouterInfo {
 export interface TTabRouterType {
   isRefreshing: boolean;
   tabRouterList: Array<TRouterInfo>;
+}
+
+export interface TTabRemoveOptions {
+  value: TabValue;
+  index: number;
+  e: MouseEvent;
+}
+
+export interface TableSort {
+  sortBy: string;
+  descending: boolean;
 }

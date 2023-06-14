@@ -29,7 +29,7 @@ defineProps({
 const emit = defineEmits(['update:modelValue', 'change']);
 // 获取全部图标的列表
 const options = ref(manifest);
-const onChange = (value) => {
+const onChange = (value: string) => {
   emit('update:modelValue', value);
   emit('change', value);
 };

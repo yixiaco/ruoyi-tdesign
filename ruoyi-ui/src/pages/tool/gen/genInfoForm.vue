@@ -228,13 +228,13 @@ const props = defineProps({
 });
 const { info } = toRefs(props);
 
-function tplSelectChange(value) {
+function tplSelectChange(value: string) {
   if (value !== 'sub') {
     info.value.subTableName = '';
     info.value.subTableFkName = '';
   }
 }
-function setSubTableColumns(value) {
+function setSubTableColumns(value: string) {
   for (const item in props.tables) {
     const name = props.tables[item].tableName;
     if (value === name) {

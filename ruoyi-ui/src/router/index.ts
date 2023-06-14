@@ -150,7 +150,7 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 export const allRoutes = [...defaultRouterList, ...asyncRouterList];
 
 export const getRoutesExpanded = () => {
-  const expandedRoutes = [];
+  const expandedRoutes: Array<string> = [];
 
   allRoutes.forEach((item) => {
     if (item.meta && item.meta.expanded) {

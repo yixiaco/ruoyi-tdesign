@@ -11,7 +11,7 @@ export function list(query: SysOperLogBo) {
 }
 
 // 删除操作日志
-export function delOperlog(operId: number) {
+export function delOperlog(operId: number | number[]) {
   return request.delete<R<void>>({
     url: `/monitor/operlog/${operId}`,
   });

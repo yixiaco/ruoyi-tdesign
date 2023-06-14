@@ -34,7 +34,7 @@ export function updateNotice(data: SysNoticeForm) {
 }
 
 // 删除公告
-export function delNotice(noticeId: number) {
+export function delNotice(noticeId: number | number[]) {
   return request.delete<R<void>>({
     url: `/system/notice/${noticeId}`,
   });

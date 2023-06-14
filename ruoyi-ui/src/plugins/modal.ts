@@ -5,6 +5,7 @@ import {
   Form,
   FormItem,
   Input,
+  LoadingInstance,
   LoadingPlugin,
   MessagePlugin,
   NotifyPlugin,
@@ -13,7 +14,7 @@ import { TNode } from 'tdesign-vue-next/es/common';
 import { MessageInfoOptions, MessageInstance } from 'tdesign-vue-next/es/message/type';
 import { h, reactive, ref } from 'vue';
 
-let loadingInstance;
+let loadingInstance: LoadingInstance;
 
 export default {
   // 消息提示
@@ -67,7 +68,7 @@ export default {
   },
   // 错误提示
   alertError(content: DialogOptions | string) {
-    let instance;
+    let instance: DialogInstance;
     if (content instanceof Object) {
       instance = DialogPlugin.alert({
         theme: 'danger',
@@ -90,7 +91,7 @@ export default {
   },
   // 成功提示
   alertSuccess(content: DialogOptions | string) {
-    let instance;
+    let instance: DialogInstance;
     if (content instanceof Object) {
       instance = DialogPlugin.alert({
         theme: 'success',
@@ -113,7 +114,7 @@ export default {
   },
   // 警告提示
   alertWarning(content: DialogOptions | string) {
-    let instance;
+    let instance: DialogInstance;
     if (content instanceof Object) {
       instance = DialogPlugin.alert({
         theme: 'warning',
@@ -135,31 +136,31 @@ export default {
     return instance;
   },
   // 通知提示
-  notify(content) {
+  notify(content: any) {
     return NotifyPlugin.info({
       content,
     });
   },
   // 错误通知
-  notifyError(content) {
+  notifyError(content: any) {
     return NotifyPlugin.error({
       content,
     });
   },
   // 成功通知
-  notifySuccess(content) {
+  notifySuccess(content: any) {
     return NotifyPlugin.success({
       content,
     });
   },
   // 警告通知
-  notifyWarning(content) {
+  notifyWarning(content: any) {
     return NotifyPlugin.warning({
       content,
     });
   },
   // 确认窗体
-  confirm(content, onConfirm: Function, onClose?: Function) {
+  confirm(content: string, onConfirm: Function, onClose?: Function) {
     const btn = reactive({
       content: '确定',
       loading: false,
@@ -189,7 +190,19 @@ export default {
     return instance;
   },
   // 提交内容
-  prompt(tip, title, props) {
+  prompt(
+    tip: string,
+    title: string,
+    props: {
+      confirmButtonText?: string;
+      onConfirm?: (value: string) => {};
+      theme?: 'default' | 'info' | 'warning' | 'danger' | 'success' | 'primary';
+      cancelButtonText?: string | null;
+      closeOnClickModal?: boolean;
+      inputErrorMessage?: string;
+      inputPattern?: RegExp;
+    },
+  ) {
     const btn = reactive({
       content: props.confirmButtonText,
       loading: false,
@@ -197,7 +210,7 @@ export default {
         formRef.value.validate().then(async () => {
           btn.loading = true;
           try {
-            await props?.onConfirm({ value: form.input });
+            await props?.onConfirm(form.input);
             instance.destroy();
           } finally {
             btn.loading = false;
@@ -210,6 +223,7 @@ export default {
     });
     const formRef = ref(null);
     const instance = DialogPlugin.confirm({
+      // @ts-ignore
       theme: props.theme || 'warning',
       header: title || '系统提示',
       confirmBtn: btn,
@@ -217,6 +231,7 @@ export default {
       closeOnOverlayClick: props.closeOnClickModal,
       body: () =>
         h(
+          // @ts-ignore
           Form,
           {
             data: form,
@@ -237,7 +252,7 @@ export default {
             },
             h(Input, {
               value: form.input,
-              'onUpdate:value': (value) => {
+              'onUpdate:value': (value: any) => {
                 form.input = value;
               },
             }),

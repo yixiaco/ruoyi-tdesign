@@ -67,15 +67,15 @@ export default {
 </script>
 <script lang="ts" setup>
 import { DeleteIcon, RefreshIcon, SearchIcon } from 'tdesign-icons-vue-next';
-import { PrimaryTableCol } from 'tdesign-vue-next';
+import { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
-import { SysUserOnlineQuery } from '@/api/monitor/model/userOnlineModel';
+import { SysUserOnline, SysUserOnlineQuery } from '@/api/monitor/model/userOnlineModel';
 import { forceLogout, list as initData } from '@/api/monitor/online';
 
 const { proxy } = getCurrentInstance();
 
-const onlineList = ref([]);
+const onlineList = ref<SysUserOnline[]>([]);
 const loading = ref(false);
 const total = ref(0);
 const pageNum = ref(1);
@@ -107,7 +107,7 @@ const pagination = computed(() => {
     pageSize: pageSize.value,
     total: total.value,
     showJumper: true,
-    onChange: (pageInfo) => {
+    onChange: (pageInfo: PageInfo) => {
       pageNum.value = pageInfo.current;
       pageSize.value = pageInfo.pageSize;
     },
@@ -134,7 +134,7 @@ function resetQuery() {
   handleQuery();
 }
 /** 强退按钮操作 */
-function handleForceLogout(row) {
+function handleForceLogout(row: SysUserOnline) {
   proxy.$modal.confirm(`是否确认强退名称为"${row.userName}"的用户?`, () => {
     return forceLogout(row.tokenId).then(() => {
       getList();

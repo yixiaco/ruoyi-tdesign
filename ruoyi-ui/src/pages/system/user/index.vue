@@ -440,7 +440,16 @@ import {
   SettingIcon,
   UploadIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PrimaryTableCol, UploadInstanceFunctions } from 'tdesign-vue-next';
+import {
+  FormInstanceFunctions,
+  FormRule,
+  PageInfo,
+  PrimaryTableCol,
+  SubmitContext,
+  SuccessContext,
+  TreeNodeModel,
+  UploadInstanceFunctions,
+} from 'tdesign-vue-next';
 import { computed, createVNode, getCurrentInstance, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
@@ -548,7 +557,7 @@ const pagination = computed(() => {
     pageSize: queryParams.value.pageSize,
     total: total.value,
     showJumper: true,
-    onChange: (pageInfo) => {
+    onChange: (pageInfo: PageInfo) => {
       queryParams.value.pageNum = pageInfo.current;
       queryParams.value.pageSize = pageInfo.pageSize;
       getList();
@@ -557,7 +566,7 @@ const pagination = computed(() => {
 });
 
 /** 通过条件过滤节点  */
-const filterNode = (node) => {
+const filterNode = (node: TreeNodeModel) => {
   if (!node.value) return true;
   return node.label.indexOf(deptName.value) !== -1;
 };
@@ -578,9 +587,9 @@ function getList() {
   });
 }
 /** 节点单击事件 */
-function handleNodeClick({ node }) {
+function handleNodeClick({ node }: { node: TreeNodeModel }) {
   if (!node.actived) {
-    queryParams.value.deptId = node.value;
+    queryParams.value.deptId = node.value as number;
   } else {
     queryParams.value.deptId = undefined;
   }
@@ -600,7 +609,7 @@ function resetQuery() {
   handleQuery();
 }
 /** 删除按钮操作 */
-function handleDelete(row) {
+function handleDelete(row: SysUserVo) {
   const userIds = row.userId || ids.value;
   proxy.$modal.confirm(`是否确认删除用户编号为"${userIds}"的数据项？`, () => {
     return delUser(userIds).then(() => {
@@ -620,7 +629,7 @@ function handleExport() {
   );
 }
 /** 用户状态修改  */
-function handleStatusChange(row) {
+function handleStatusChange(row: SysUserVo) {
   const user = userList.value.find((value) => value.userId === row.userId);
   const text = user.status === '0' ? '启用' : '停用';
   proxy.$modal.confirm(
@@ -642,19 +651,19 @@ function handleStatusChange(row) {
   );
 }
 /** 跳转角色分配 */
-function handleAuthRole(row) {
+function handleAuthRole(row: SysUserVo) {
   const { userId } = row;
   router.push(`/system/user-auth/role/${userId}`);
 }
 /** 重置密码按钮操作 */
-function handleResetPwd(row) {
+function handleResetPwd(row: SysUserVo) {
   proxy.$modal.prompt(`请输入"${row.userName}"的新密码`, '提示', {
     confirmButtonText: '确定',
     cancelButtonText: '取消',
     closeOnClickModal: false,
     inputPattern: /^.{5,20}$/,
     inputErrorMessage: '用户密码长度必须介于 5 和 20 之间',
-    onConfirm: ({ value }) => {
+    onConfirm: (value) => {
       const msgLoading = proxy.$modal.msgLoading('提交中...');
       return resetUserPwd(row.userId, value)
         .then((response) => {
@@ -665,10 +674,10 @@ function handleResetPwd(row) {
   });
 }
 /** 选择条数  */
-function handleSelectionChange(value) {
-  ids.value = value;
-  single.value = value.length !== 1;
-  multiple.value = !value.length;
+function handleSelectionChange(selection: Array<string | number>) {
+  ids.value = selection;
+  single.value = selection.length !== 1;
+  multiple.value = !selection.length;
 }
 /** 导入按钮操作 */
 function handleImport() {
@@ -680,11 +689,11 @@ function importTemplate() {
   proxy.download('system/user/importTemplate', {}, `user_template_${new Date().getTime()}.xlsx`);
 }
 /** 文件上传中处理 */
-const handleFileUploadProgress = (event, file, fileList) => {
+const handleFileUploadProgress = () => {
   upload.isUploading = true;
 };
 /** 文件上传成功处理 */
-const handleFileSuccess = (context) => {
+const handleFileSuccess = (context: SuccessContext) => {
   upload.open = false;
   upload.isUploading = false;
   uploadRef.value.uploadFiles([]);
@@ -722,11 +731,11 @@ function cancel() {
   reset();
 }
 /** 详情按钮操作 */
-function handleDetail(row) {
+function handleDetail(row: SysUserVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const userId = row.userId || ids.value;
+  const userId = row.userId || ids.value.at(0);
   getUser(userId).then((response) => {
     formView.value = response.data?.user;
     openViewLoading.value = false;
@@ -750,9 +759,9 @@ function handleAdd() {
     });
 }
 /** 修改按钮操作 */
-function handleUpdate(row) {
+function handleUpdate(row: SysUserVo) {
   reset();
-  const userId = row.userId || ids.value;
+  const userId = row.userId || ids.value.at(0);
   open.value = true;
   dLoading.value = true;
   getDeptTree();
@@ -775,7 +784,7 @@ function submitForm() {
   userRef.value.submit();
 }
 
-const onSubmit = ({ validateResult, firstError }) => {
+const onSubmit = ({ validateResult, firstError }: SubmitContext) => {
   if (validateResult === true) {
     dLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');

@@ -55,7 +55,7 @@
         v-model:column-controller-visible="columnControllerVisible"
         hover
         :loading="loading"
-        row-key="configId"
+        row-key="operId"
         :data="operlogList"
         :columns="columns"
         :selected-row-keys="ids"
@@ -183,11 +183,12 @@ export default {
 </script>
 <script lang="ts" setup>
 import { BrowseIcon, DeleteIcon, DownloadIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { PrimaryTableCol } from 'tdesign-vue-next';
+import { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { SysOperLogBo, SysOperLogVo } from '@/api/monitor/model/operlogModel';
 import { cleanOperlog, delOperlog, list } from '@/api/monitor/operlog';
+import { TableSort } from '@/types/interface';
 
 const { proxy } = getCurrentInstance();
 const { sys_oper_type, sys_common_status } = proxy.useDict('sys_oper_type', 'sys_common_status');
@@ -238,7 +239,7 @@ const pagination = computed(() => {
     pageSize: queryParams.value.pageSize,
     total: total.value,
     showJumper: true,
-    onChange: (pageInfo) => {
+    onChange: (pageInfo: PageInfo) => {
       queryParams.value.pageNum = pageInfo.current;
       queryParams.value.pageSize = pageInfo.pageSize;
       getList();
@@ -257,7 +258,7 @@ function getList() {
   });
 }
 /** 操作日志类型字典翻译 */
-function typeFormat(row, column) {
+function typeFormat(row: SysOperLogVo) {
   return proxy.selectDictLabel(sys_oper_type.value, row.businessType);
 }
 /** 搜索按钮操作 */
@@ -273,24 +274,24 @@ function resetQuery() {
   handleSortChange({ ...defaultSort.value });
 }
 /** 多选框选中数据 */
-function handleSelectionChange(selection) {
-  ids.value = selection.map((item) => item.operId);
+function handleSelectionChange(selection: Array<string | number>) {
+  ids.value = selection;
   multiple.value = !selection.length;
 }
 /** 排序触发事件 */
-function handleSortChange(value) {
+function handleSortChange(value: TableSort) {
   sort.value = value;
   queryParams.value.orderByColumn = value.sortBy;
   queryParams.value.isAsc = value.descending ? 'descending' : 'ascending';
   getList();
 }
 /** 详细按钮操作 */
-function handleView(row) {
+function handleView(row: SysOperLogVo, index: number) {
   open.value = true;
   form.value = row;
 }
 /** 删除按钮操作 */
-function handleDelete(row) {
+function handleDelete(row: SysOperLogVo) {
   const operIds = row.operId || ids.value;
   proxy.$modal.confirm(`是否确认删除日志编号为"${operIds}"的数据项?`, () => {
     return delOperlog(operIds).then(() => {

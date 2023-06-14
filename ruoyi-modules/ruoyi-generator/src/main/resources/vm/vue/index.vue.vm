@@ -360,7 +360,7 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { list${BusinessName}, get${BusinessName}, del${BusinessName}, add${BusinessName}, update${BusinessName} } from '@/api/${moduleName}/${businessName}';
@@ -473,7 +473,7 @@ const pagination = computed(() => {
     pageSize: queryParams.value.pageSize,
     total: total.value,
     showJumper: true,
-    onChange: (pageInfo) => {
+    onChange: (pageInfo: PageInfo) => {
       queryParams.value.pageNum = pageInfo.current;
       queryParams.value.pageSize = pageInfo.pageSize;
       getList();
@@ -531,7 +531,7 @@ function resetQuery() {
 }
 
 // 多选框选中数据
-function handleSelectionChange(selection) {
+function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
@@ -545,11 +545,11 @@ function handleAdd() {
 }
 
 /** 详情按钮操作 */
-function handleDetail(row) {
+function handleDetail(row: ${vo}) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const ${pkColumn.javaField} = row.${pkColumn.javaField} || ids.value;
+  const ${pkColumn.javaField} = row.${pkColumn.javaField} || ids.value.at(0);
   get${BusinessName}(${pkColumn.javaField}).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
@@ -557,12 +557,12 @@ function handleDetail(row) {
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row) {
+function handleUpdate(row: ${vo}) {
   buttonLoading.value = true;
   reset();
   open.value = true;
   title.value = '修改${functionName}';
-  const ${pkColumn.javaField} = row.${pkColumn.javaField} || ids.value;
+  const ${pkColumn.javaField} = row.${pkColumn.javaField} || ids.value.at(0);
   get${BusinessName}(${pkColumn.javaField}).then((response) => {
     buttonLoading.value = false;
     form.value = response.data;
@@ -580,7 +580,7 @@ function onConfirm() {
 }
 
 /** 提交表单 */
-function submitForm({ validateResult, firstError }) {
+function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
 #foreach ($column in $columns)
@@ -618,7 +618,7 @@ function submitForm({ validateResult, firstError }) {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row) {
+function handleDelete(row: ${vo}) {
   const ${pkColumn.javaField}s = row.${pkColumn.javaField} || ids.value;
   proxy.#[[$modal]]#.confirm(`是否确认删除${functionName}编号为${${pkColumn.javaField}s}的数据项？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');

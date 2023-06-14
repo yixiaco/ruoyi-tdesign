@@ -96,7 +96,7 @@
 import Cookies from 'js-cookie';
 import QrcodeVue from 'qrcode.vue';
 import { SecuredIcon } from 'tdesign-icons-vue-next';
-import type { FormInstanceFunctions, FormRule } from 'tdesign-vue-next';
+import type { FormInstanceFunctions, FormRule, SubmitContext } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { getCurrentInstance, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -178,8 +178,8 @@ const sendCode = () => {
   });
 };
 
-const onSubmit = async ({ validateResult }) => {
-  if (validateResult === true) {
+const onSubmit = async (ctx: SubmitContext) => {
+  if (ctx.validateResult === true) {
     try {
       loading.value = true;
       let username;

@@ -55,7 +55,7 @@ export function changeRoleStatus(roleId: number, status: string) {
 }
 
 // 删除角色
-export function delRole(roleId: number) {
+export function delRole(roleId: number | number[]) {
   return request.delete<R<void>>({
     url: `/system/role/${roleId}`,
   });

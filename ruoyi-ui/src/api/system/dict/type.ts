@@ -34,7 +34,7 @@ export function updateType(data: SysDictTypeForm) {
 }
 
 // 删除字典类型
-export function delType(dictId: number) {
+export function delType(dictId: number | number[]) {
   return request.delete<R<void>>({
     url: `/system/dict/type/${dictId}`,
   });

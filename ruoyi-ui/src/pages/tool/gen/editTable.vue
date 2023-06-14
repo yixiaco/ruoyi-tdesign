@@ -118,11 +118,12 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { FormRule, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { getCurrentInstance, reactive, ref, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { optionselect as getDictOptionselect } from '@/api/system/dict/type';
+import { SysDictTypeVo } from '@/api/system/model/dictModel';
 import { getGenTable, updateGenTable } from '@/api/tool/gen';
 import { GenTable, GenTableColumn } from '@/api/tool/model/genModel';
 import { useTabsRouterStore } from '@/store';
@@ -138,7 +139,7 @@ const { proxy } = getCurrentInstance();
 
 const activeName = ref('columnInfo');
 const tableHeight = ref(`${document.documentElement.scrollHeight - 245}px`);
-const dictOptions = ref([]);
+const dictOptions = ref<SysDictTypeVo[]>([]);
 const columns = ref<Array<PrimaryTableCol<GenTableColumn>>>([
   { title: '序号', colKey: 'serial-number', width: '5%', align: 'center' },
   { title: `字段列名`, colKey: 'columnName', align: 'center', ellipsis: true, width: '10%' },
@@ -181,7 +182,7 @@ const form = reactive<{
 
 const { tables, columnsData, info } = toRefs(form);
 
-function onSubmit({ validateResult, firstError }) {
+function onSubmit({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     const genTable = { ...info.value };
     genTable.columns = columnsData.value;

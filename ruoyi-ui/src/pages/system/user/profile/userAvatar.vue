@@ -147,7 +147,7 @@ function cropScale() {
   cropperRef.value.scale = cropSize / size;
 }
 /** 图片缩放 */
-function changeScale(num) {
+function changeScale(num: number) {
   num = num || 1;
   cropperRef.value.changeScale(num);
 }
@@ -171,7 +171,7 @@ function beforeUpload(file: UploadFile) {
 }
 /** 上传图片 */
 function uploadImg() {
-  cropperRef.value.getCropBlob((data) => {
+  cropperRef.value.getCropBlob((data: any) => {
     const formData = new FormData();
     formData.append('avatarfile', data, options.filename);
     const msgLoading = proxy.$modal.msgLoading('上传中...');
@@ -187,7 +187,7 @@ function uploadImg() {
   });
 }
 /** 实时预览 */
-function realTime(data) {
+function realTime(data: any) {
   options.previews = data;
 }
 /** 关闭窗口 */

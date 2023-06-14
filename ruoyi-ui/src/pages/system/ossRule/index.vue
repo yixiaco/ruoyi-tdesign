@@ -254,7 +254,7 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { SysOssRuleForm, SysOssRuleQuery, SysOssRuleVo } from '@/api/system/model/ossRuleModel';
@@ -335,7 +335,7 @@ const pagination = computed(() => {
     pageSize: queryParams.value.pageSize,
     total: total.value,
     showJumper: true,
-    onChange: (pageInfo) => {
+    onChange: (pageInfo: PageInfo) => {
       queryParams.value.pageNum = pageInfo.current;
       queryParams.value.pageSize = pageInfo.pageSize;
       getList();
@@ -377,7 +377,7 @@ function resetQuery() {
 }
 
 // 多选框选中数据
-function handleSelectionChange(selection) {
+function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
@@ -391,11 +391,11 @@ function handleAdd() {
 }
 
 /** 详情按钮操作 */
-function handleDetail(row) {
+function handleDetail(row: SysOssRuleVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const ossRuleId = row.ossRuleId || ids.value;
+  const ossRuleId = row.ossRuleId || ids.value.at(0);
   getOssRule(ossRuleId).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
@@ -403,12 +403,12 @@ function handleDetail(row) {
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row) {
+function handleUpdate(row: SysOssRuleVo) {
   buttonLoading.value = true;
   reset();
   open.value = true;
   title.value = '修改OSS处理规则';
-  const ossRuleId = row.ossRuleId || ids.value;
+  const ossRuleId = row.ossRuleId || ids.value.at(0);
   getOssRule(ossRuleId).then((response) => {
     buttonLoading.value = false;
     form.value = response.data;
@@ -421,7 +421,7 @@ function onConfirm() {
 }
 
 /** 提交表单 */
-function submitForm({ validateResult, firstError }) {
+function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');
@@ -454,7 +454,7 @@ function submitForm({ validateResult, firstError }) {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row) {
+function handleDelete(row: SysOssRuleVo) {
   const ossRuleIds = row.ossRuleId || ids.value;
   proxy.$modal.confirm(`是否确认删除OSS处理规则编号为${ossRuleIds}的数据项？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
@@ -479,7 +479,7 @@ function handleRefreshCache() {
 }
 
 /** 规则覆盖默认字段值修改  */
-function handleOverwriteChange(row) {
+function handleOverwriteChange(row: SysOssRuleVo) {
   const rule = ossRuleList.value.find((value) => value.ossRuleId === row.ossRuleId);
   const text = rule.isOverwrite === 'Y' ? '覆盖默认字段值' : '不覆盖默认字段值';
   proxy.$modal.confirm(

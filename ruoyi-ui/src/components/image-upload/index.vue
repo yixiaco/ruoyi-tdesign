@@ -106,7 +106,7 @@ const emit = defineEmits(['update:modelValue', 'change']);
 const baseUrl = import.meta.env.VITE_APP_BASE_API;
 const uploadImgUrl = ref(`${baseUrl}/resource/oss/upload`); // 上传的图片服务器地址
 const headers = ref({ Authorization: `Bearer ${token.value}` });
-const fileList = ref([]);
+const fileList = ref<UploadFile[]>([]);
 const rawAccept = computed(() => {
   return props.accept || props.fileType.map((value) => `.${value}`).join(',');
 });
@@ -168,7 +168,7 @@ const onValidate = (params: { type: UploadValidateType; files: UploadFile[] }) =
 };
 
 // 上传前loading加载
-function handleBeforeUpload(file) {
+function handleBeforeUpload(file: UploadFile) {
   let isImg: boolean;
   if (props.fileType.length) {
     let fileExtension = '';
@@ -190,7 +190,7 @@ function handleBeforeUpload(file) {
 }
 
 // 单上传成功回调，多选回调多次
-function handleOneUploadSuccess(context) {
+function handleOneUploadSuccess(context: Pick<SuccessContext, 'e' | 'file' | 'response' | 'XMLHttpRequest'>) {
   if (context.response.code !== 200) {
     proxy.$modal.msgError(context.response.msg);
   } else {
@@ -220,7 +220,7 @@ function handleDelete({ file }: UploadRemoveContext) {
 }
 
 // 上传结束处理
-function uploadedSuccessfully(uploadList) {
+function uploadedSuccessfully(uploadList: UploadFile[]) {
   fileList.value = fileList.value.filter((f) => f.url !== undefined).concat(uploadList);
   const value = listToString(fileList.value);
   emit('update:modelValue', value);
@@ -233,7 +233,7 @@ function handleUploadError() {
 }
 
 // 对象转成指定字符串分隔
-function listToString(list, separator?) {
+function listToString(list: UploadFile[], separator?: string) {
   let strs = '';
   separator = separator || ',';
   for (const i in list) {

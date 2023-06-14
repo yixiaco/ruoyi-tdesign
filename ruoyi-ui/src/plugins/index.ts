@@ -1,9 +1,11 @@
+import { App } from 'vue';
+
 import auth from './auth';
 import cache from './cache';
 import download from './download';
 import modal from './modal';
 
-export default function installPlugins(app) {
+export default function installPlugins(app: App) {
   // 认证对象
   app.config.globalProperties.$auth = auth;
   // 缓存对象

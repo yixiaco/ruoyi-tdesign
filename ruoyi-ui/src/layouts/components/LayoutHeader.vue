@@ -15,17 +15,18 @@ import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 
 import { usePermissionStore, useSettingStore } from '@/store';
+import { ComplexRoute } from '@/types/interface';
 
 import LHeader from './Header.vue';
 
 const permissionStore = usePermissionStore();
 const settingStore = useSettingStore();
 const { topbarRouters: menuRouters } = storeToRefs(permissionStore);
-const headerMenu = computed(() => {
+const headerMenu = computed<ComplexRoute[]>(() => {
   if (settingStore.layout === 'mix') {
     if (settingStore.splitMenu) {
       return menuRouters.value.map((menu) => {
-        const newMenu = {
+        const newMenu: ComplexRoute = {
           query: undefined,
           ...menu,
           children: [],

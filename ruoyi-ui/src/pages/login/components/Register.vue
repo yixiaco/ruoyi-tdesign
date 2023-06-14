@@ -93,7 +93,8 @@
 
 <script setup lang="ts">
 import { SecuredIcon } from 'tdesign-icons-vue-next';
-import { FormRule, MessagePlugin } from 'tdesign-vue-next';
+import type { FormRule, SubmitContext } from 'tdesign-vue-next';
+import { MessagePlugin } from 'tdesign-vue-next';
 import { getCurrentInstance, ref } from 'vue';
 
 import { getCodeImg, getTenantList, register } from '@/api/login';
@@ -101,7 +102,7 @@ import { RegisterBody, TenantListVo } from '@/api/model/loginModel';
 import Company from '@/assets/icons/svg/company.svg?component';
 import { useCounter } from '@/hooks';
 
-const equalToPassword = (value) => {
+const equalToPassword = (value: string) => {
   return formData.value.password === value;
 };
 
@@ -150,8 +151,8 @@ const emit = defineEmits(['registerSuccess']);
 
 const { proxy } = getCurrentInstance();
 
-const onSubmit = ({ validateResult }) => {
-  if (validateResult === true) {
+const onSubmit = (ctx: SubmitContext) => {
+  if (ctx.validateResult === true) {
     if (type.value === 'phone' || type.value === 'email') {
       MessagePlugin.warning('暂不支持手机号与邮箱注册');
       return;
@@ -189,7 +190,7 @@ const onSubmit = ({ validateResult }) => {
   }
 };
 
-const switchType = (val) => {
+const switchType = (val: string) => {
   form.value.reset();
   type.value = val;
 };

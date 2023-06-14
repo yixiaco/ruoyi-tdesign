@@ -353,7 +353,13 @@ import {
   SettingIcon,
   UnfoldMoreIcon,
 } from 'tdesign-icons-vue-next';
-import { EnhancedTableInstanceFunctions, FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import {
+  EnhancedTableInstanceFunctions,
+  FormInstanceFunctions,
+  FormRule,
+  PrimaryTableCol,
+  SubmitContext,
+} from 'tdesign-vue-next';
 import { getCurrentInstance, ref } from 'vue';
 
 import { list${BusinessName}, get${BusinessName}, del${BusinessName}, add${BusinessName}, update${BusinessName} } from '@/api/${moduleName}/${businessName}';
@@ -481,6 +487,7 @@ function getList() {
 function getTreeselect() {
   list${BusinessName}().then((response) => {
     ${businessName}Options.value = [];
+    // @ts-ignore
     const data = { ${treeCode}: 0, ${treeName}: '顶级节点', children: [] };
     data.children = proxy.handleTree(response.data, '${treeCode}', '${treeParentCode}');
     ${businessName}Options.value = [data];
@@ -519,7 +526,7 @@ function resetQuery() {
 }
 
 /** 新增按钮操作 */
-function handleAdd(row) {
+function handleAdd(row: ${vo}) {
   reset();
   getTreeselect();
   if (row != null && row.${treeCode}) {
@@ -549,7 +556,7 @@ function refreshExpandAll() {
 }
 
 /** 详情按钮操作 */
-function handleDetail(row) {
+function handleDetail(row: ${vo}) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
@@ -561,7 +568,7 @@ function handleDetail(row) {
 }
 
 /** 修改按钮操作 */
-async function handleUpdate(row) {
+async function handleUpdate(row: ${vo}) {
   buttonLoading.value = true;
   reset();
   open.value = true;
@@ -587,7 +594,7 @@ function onConfirm() {
 }
 
 /** 提交表单 */
-function submitForm({ validateResult, firstError }) {
+function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
 #foreach ($column in $columns)
@@ -625,7 +632,7 @@ function submitForm({ validateResult, firstError }) {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row) {
+function handleDelete(row: ${vo}) {
   proxy.#[[$modal]]#.confirm(`是否确认删除${functionName}编号为#[[$]]#{row.${pkColumn.javaField}}的数据项？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return del${BusinessName}(row.${pkColumn.javaField})

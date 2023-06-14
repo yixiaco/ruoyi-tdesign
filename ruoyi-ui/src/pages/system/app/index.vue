@@ -192,7 +192,7 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { addApp, delApp, getApp, listApp, updateApp } from '@/api/system/app';
@@ -251,7 +251,7 @@ const pagination = computed(() => {
     pageSize: queryParams.value.pageSize,
     total: total.value,
     showJumper: true,
-    onChange: (pageInfo) => {
+    onChange: (pageInfo: PageInfo) => {
       queryParams.value.pageNum = pageInfo.current;
       queryParams.value.pageSize = pageInfo.pageSize;
       getList();
@@ -289,7 +289,7 @@ function resetQuery() {
 }
 
 // 多选框选中数据
-function handleSelectionChange(selection) {
+function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
@@ -303,11 +303,11 @@ function handleAdd() {
 }
 
 /** 详情按钮操作 */
-function handleDetail(row) {
+function handleDetail(row: SysAppVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const appid = row.appid || ids.value;
+  const appid = row.appid || ids.value.at(0);
   getApp(appid).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
@@ -315,12 +315,12 @@ function handleDetail(row) {
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row) {
+function handleUpdate(row: SysAppVo) {
   buttonLoading.value = true;
   reset();
   open.value = true;
   title.value = '修改应用管理';
-  const appid = row.appid || ids.value;
+  const appid = row.appid || ids.value.at(0);
   getApp(appid).then((response) => {
     buttonLoading.value = false;
     form.value = response.data;
@@ -333,7 +333,7 @@ function onConfirm() {
 }
 
 /** 提交表单 */
-function submitForm({ validateResult, firstError }) {
+function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');
@@ -366,7 +366,7 @@ function submitForm({ validateResult, firstError }) {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row) {
+function handleDelete(row: SysAppVo) {
   const appids = row.appid || ids.value;
   proxy.$modal.confirm(`是否确认删除应用管理编号为${appids}的数据项？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');

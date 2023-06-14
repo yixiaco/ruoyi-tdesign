@@ -177,7 +177,13 @@ import {
   SettingIcon,
   UnfoldMoreIcon,
 } from 'tdesign-icons-vue-next';
-import { EnhancedTableInstanceFunctions, FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import {
+  EnhancedTableInstanceFunctions,
+  FormInstanceFunctions,
+  FormRule,
+  PrimaryTableCol,
+  SubmitContext,
+} from 'tdesign-vue-next';
 import { getCurrentInstance, ref } from 'vue';
 
 import { addDept, delDept, getDept, listDept, listDeptExcludeChild, updateDept } from '@/api/system/dept';
@@ -251,7 +257,7 @@ function resetQuery() {
   handleQuery();
 }
 /** 新增按钮操作 */
-function handleAdd(row) {
+function handleAdd(row: SysDeptVo) {
   reset();
   open.value = true;
   title.value = '添加部门';
@@ -281,7 +287,7 @@ function refreshExpandAll() {
   });
 }
 /** 修改按钮操作 */
-function handleUpdate(row) {
+function handleUpdate(row: SysDeptVo) {
   reset();
   open.value = true;
   title.value = '修改部门';
@@ -292,6 +298,7 @@ function handleUpdate(row) {
     listDeptExcludeChild(row.deptId).then((response) => {
       deptOptions.value = proxy.handleTree(response.data, 'deptId');
       if (deptOptions.value.length === 0) {
+        // @ts-ignore
         const noResultsOptions = { deptId: 0, deptName: '根部门', children: [] };
         deptOptions.value = [noResultsOptions];
       }
@@ -302,7 +309,7 @@ function confirm() {
   deptRef.value.submit();
 }
 /** 提交按钮 */
-function submitForm({ validateResult, firstError }) {
+function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     const msgLoading = proxy.$modal.msgLoading('提交中...');
     if (form.value.deptId) {
@@ -327,7 +334,7 @@ function submitForm({ validateResult, firstError }) {
   }
 }
 /** 删除按钮操作 */
-function handleDelete(row) {
+function handleDelete(row: SysDeptVo) {
   proxy.$modal.confirm(`是否确认删除名称为"${row.deptName}"的数据项?`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delDept(row.deptId)

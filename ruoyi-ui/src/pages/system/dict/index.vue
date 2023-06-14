@@ -181,7 +181,7 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { addType, delType, getType, listType, refreshCache, updateType } from '@/api/system/dict/type';
@@ -239,7 +239,7 @@ const pagination = computed(() => {
     pageSize: queryParams.value.pageSize,
     total: total.value,
     showJumper: true,
-    onChange: (pageInfo) => {
+    onChange: (pageInfo: PageInfo) => {
       queryParams.value.pageNum = pageInfo.current;
       queryParams.value.pageSize = pageInfo.pageSize;
       getList();
@@ -285,18 +285,18 @@ function handleAdd() {
   title.value = '添加字典类型';
 }
 /** 多选框选中数据 */
-function handleSelectionChange(selection) {
+function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
 }
 /** 修改按钮操作 */
-function handleUpdate(row) {
+function handleUpdate(row: SysDictTypeVo) {
   reset();
   open.value = true;
   title.value = '修改字典类型';
   eLoading.value = true;
-  const dictId = row.dictId || ids.value;
+  const dictId = row.dictId || ids.value.at(0);
   getType(dictId).then((response) => {
     form.value = response.data;
     eLoading.value = false;
@@ -306,7 +306,7 @@ function onConfirm() {
   dictRef.value.submit();
 }
 /** 提交按钮 */
-function submitForm({ validateResult, firstError }) {
+function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     const msgLoading = proxy.$modal.msgLoading('提交中...');
     if (form.value.dictId) {
@@ -331,7 +331,7 @@ function submitForm({ validateResult, firstError }) {
   }
 }
 /** 删除按钮操作 */
-function handleDelete(row) {
+function handleDelete(row: SysDictTypeVo) {
   const dictIds = row.dictId || ids.value;
   proxy.$modal.confirm(`是否确认删除字典编号为"${dictIds}"的数据项？`, () => {
     return delType(dictIds).then(() => {

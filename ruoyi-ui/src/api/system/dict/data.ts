@@ -41,7 +41,7 @@ export function updateData(data: SysDictDataForm) {
 }
 
 // 删除字典数据
-export function delData(dictCode: string) {
+export function delData(dictCode: number | number[]) {
   return request.delete<R<void>>({
     url: `/system/dict/data/${dictCode}`,
   });

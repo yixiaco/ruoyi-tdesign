@@ -34,7 +34,7 @@ export function updateOssConfig(data: SysOssConfigForm) {
 }
 
 // 删除对象存储配置
-export function delOssConfig(ossConfigId: number) {
+export function delOssConfig(ossConfigId: number | number[]) {
   return request.delete<R<void>>({
     url: `/resource/oss/config/${ossConfigId}`,
   });

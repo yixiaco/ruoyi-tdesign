@@ -7,14 +7,14 @@ import useDictStore from '@/store/modules/dict';
 export interface DictModel {
   label: string;
   value: string;
-  elTagType?: 'primary' | 'warning' | 'danger' | 'default' | 'success' | '';
+  elTagType?: string;
   elTagClass?: string;
 }
 
 /**
  * 获取字典数据
  */
-export function useDict(...args) {
+export function useDict(...args: string[]) {
   const res = ref<Record<string, Array<DictModel>>>({});
   return (() => {
     args.forEach((dictType) => {

@@ -121,7 +121,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { FormRule } from 'tdesign-vue-next';
+import { FormRule, SubmitContext } from 'tdesign-vue-next';
 import { getCurrentInstance, ref, watch } from 'vue';
 
 import { getConfigByKeys, refreshCache, updateConfigs } from '@/api/system/config';
@@ -190,7 +190,7 @@ const { proxy } = getCurrentInstance();
  * @param validateResult
  * @param firstError
  */
-function submitForm({ validateResult, firstError }) {
+function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');
@@ -241,7 +241,7 @@ function openSendTestMail() {
     theme: 'primary',
     confirmButtonText: '发送',
     cancelButtonText: '取消',
-    onConfirm: ({ value }) => {
+    onConfirm: (value) => {
       return sendTestMail(value).then(() => {
         proxy.$modal.msgSuccess(`测试邮件已经发送至 '${value}'。`);
       });

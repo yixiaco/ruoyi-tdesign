@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { FormRule } from 'tdesign-vue-next';
+import { FormRule, SubmitContext } from 'tdesign-vue-next';
 import { getCurrentInstance, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -35,7 +35,7 @@ const user = reactive({
   confirmPassword: undefined,
 });
 
-const equalToPassword = (value) => {
+const equalToPassword = (value: string) => {
   return user.newPassword === value;
 };
 const rules = ref<Record<string, Array<FormRule>>>({
@@ -51,7 +51,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
 });
 
 /** 提交按钮 */
-function submit({ validateResult }) {
+function submit({ validateResult }: SubmitContext) {
   if (validateResult === true) {
     const msgLoading = proxy.$modal.msgLoading('提交中...');
     updateUserPwd(user.oldPassword, user.newPassword)

@@ -29,12 +29,13 @@ import { computed } from 'vue';
 import type { PropType } from 'vue';
 import type { MenuRoute } from '@/types/interface';
 import { getActive } from '@/router';
+import { ComplexRoute } from "@/types/interface";
 
 type ListItemType = MenuRoute & { icon?: string };
 
 const props = defineProps({
   navData: {
-    type: Array as PropType<MenuRoute[]>,
+    type: Array as PropType<ComplexRoute[]>,
     default: () => [],
   },
 });
@@ -51,7 +52,7 @@ const menuIcon = (item: ListItemType) => {
   return RenderIcon;
 };
 
-const getMenuList = (list: MenuRoute[], basePath?: string): ListItemType[] => {
+const getMenuList = (list: ComplexRoute[], basePath?: string): ListItemType[] => {
   if (!list || list.length === 0) {
     return [];
   }
@@ -60,7 +61,7 @@ const getMenuList = (list: MenuRoute[], basePath?: string): ListItemType[] => {
     return (a.meta?.orderNo || 0) - (b.meta?.orderNo || 0);
   });
   return list
-    .map((item) => {
+    .map<ListItemType>((item: MenuRoute) => {
       const path = basePath && !item.path.includes(basePath) ? `${basePath}/${item.path}` : item.path;
 
       return {

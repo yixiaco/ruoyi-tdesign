@@ -66,7 +66,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import { RefreshIcon, SearchIcon } from 'tdesign-icons-vue-next';
-import { PrimaryTableCol } from 'tdesign-vue-next';
+import { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, reactive, ref } from 'vue';
 
 import { SysUserVo } from '@/api/system/model/userModel';
@@ -110,7 +110,7 @@ const pagination = computed(() => {
     pageSize: queryParams.pageSize,
     total: total.value,
     showJumper: true,
-    onChange: (pageInfo) => {
+    onChange: (pageInfo: PageInfo) => {
       queryParams.pageNum = pageInfo.current;
       queryParams.pageSize = pageInfo.pageSize;
       getList();
@@ -124,7 +124,7 @@ function show() {
   visible.value = true;
 }
 // 多选框选中数据
-function handleSelectionChange(selection) {
+function handleSelectionChange(selection: Array<string | number>) {
   userIds.value = selection;
 }
 // 查询表数据

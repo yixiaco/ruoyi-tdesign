@@ -153,8 +153,8 @@
         <t-tab-panel
           v-for="(value, key) in preview.data"
           :key="value"
-          :value="key.substring(key.lastIndexOf('/') + 1, key.indexOf('.vm'))"
-          :label="key.substring(key.lastIndexOf('/') + 1, key.indexOf('.vm'))"
+          :value="(key as string).substring((key as string).lastIndexOf('/') + 1, (key as string).indexOf('.vm'))"
+          :label="(key as string).substring((key as string).lastIndexOf('/') + 1, (key as string).indexOf('.vm'))"
           class="content-scrollbar"
           style="height: 70vh"
         >
@@ -191,7 +191,7 @@ import {
   SettingIcon,
   UploadIcon,
 } from 'tdesign-icons-vue-next';
-import { PrimaryTableCol } from 'tdesign-vue-next';
+import { PageInfo, PrimaryTableCol, SelectOptions } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, onActivated, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -204,7 +204,7 @@ import ImportTable from './importTable.vue';
 const route = useRoute();
 const { proxy } = getCurrentInstance();
 
-const tableList = ref([]);
+const tableList = ref<GenTable[]>([]);
 const loading = ref(false);
 const columnControllerVisible = ref(false);
 const showSearch = ref(true);
@@ -250,7 +250,7 @@ const pagination = computed(() => {
     pageSize: queryParams.value.pageSize,
     total: total.value,
     showJumper: true,
-    onChange: (pageInfo) => {
+    onChange: (pageInfo: PageInfo) => {
       queryParams.value.pageNum = pageInfo.current;
       queryParams.value.pageSize = pageInfo.pageSize;
       getList();
@@ -287,7 +287,7 @@ function handleQuery() {
   getList();
 }
 /** 生成代码操作 */
-function handleGenTable(row) {
+function handleGenTable(row: GenTable) {
   const tbNames = row.tableName || tableNames.value;
   if (!row.tableName && tableNames.value.length === 0) {
     proxy.$modal.msgError('请选择要生成的数据');
@@ -302,7 +302,7 @@ function handleGenTable(row) {
   }
 }
 /** 同步数据库操作 */
-function handleSynchDb(row) {
+function handleSynchDb(row: GenTable) {
   const { tableName } = row;
   proxy.$modal.confirm(`确认要强制同步"${tableName}"表结构吗？`, () => {
     return synchDb(tableName).then(() => {
@@ -321,7 +321,7 @@ function resetQuery() {
   handleQuery();
 }
 /** 预览按钮 */
-function handlePreview(row) {
+function handlePreview(row: GenTable) {
   previewTable(row.tableId).then((response) => {
     preview.value.data = response.data;
     preview.value.open = true;
@@ -334,19 +334,19 @@ function copyTextSuccess() {
   proxy.$modal.msgSuccess('复制成功');
 }
 // 多选框选中数据
-function handleSelectionChange(selection, { selectedRowData }) {
+function handleSelectionChange(selection: Array<string | number>, { selectedRowData }: SelectOptions<GenTable>) {
   ids.value = selection;
   tableNames.value = selectedRowData.map((item) => item.tableName);
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
 }
 /** 修改按钮操作 */
-function handleEditTable(row) {
+function handleEditTable(row: GenTable) {
   const tableId = row.tableId || ids.value[0];
   router.push({ path: `/tool/gen-edit/index/${tableId}`, query: { pageNum: queryParams.value.pageNum } });
 }
 /** 删除按钮操作 */
-function handleDelete(row) {
+function handleDelete(row: GenTable) {
   const tableIds = row.tableId || ids.value;
   proxy.$modal.confirm(`是否确认删除表编号为"${tableIds}"的数据项？`, () => {
     return delTable(tableIds).then(() => {

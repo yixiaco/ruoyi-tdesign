@@ -11,7 +11,7 @@ export function list(query: SysUserOnlineQuery) {
 }
 
 // 强退用户
-export function forceLogout(tokenId) {
+export function forceLogout(tokenId: string) {
   return request.delete<R<void>>({
     url: `/monitor/online/${tokenId}`,
   });

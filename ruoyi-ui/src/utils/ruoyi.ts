@@ -2,6 +2,7 @@
  * 通用js方法封装处理
  * Copyright (c) 2019 ruoyi
  */
+import { DictModel } from '@/utils/dict';
 
 // 日期格式化
 export function parseTime(time: any, pattern?: string) {
@@ -26,7 +27,7 @@ export function parseTime(time: any, pattern?: string) {
     }
     date = new Date(time);
   }
-  const formatObj = {
+  const formatObj: Record<string, number> = {
     y: date.getFullYear(),
     m: date.getMonth() + 1,
     d: date.getDate(),
@@ -35,8 +36,8 @@ export function parseTime(time: any, pattern?: string) {
     s: date.getSeconds(),
     a: date.getDay(),
   };
-  return format.replace(/{([ymdhisa])+}/g, (result, key) => {
-    let value = formatObj[key];
+  return format.replace(/{([ymdhisa])+}/g, (result: string, key: string) => {
+    let value: string | number = formatObj[key];
     // Note: getDay() returns 0 on Sunday
     if (key === 'a') {
       return ['日', '一', '二', '三', '四', '五', '六'][value];
@@ -44,12 +45,12 @@ export function parseTime(time: any, pattern?: string) {
     if (result.length > 0 && value < 10) {
       value = `0${value}`;
     }
-    return value || 0;
+    return String(value || 0);
   });
 }
 
 // 表单重置
-export function resetForm(refName) {
+export function resetForm(refName: string | number) {
   if (this.$refs[refName]) {
     this.$refs[refName].reset();
   }
@@ -61,7 +62,7 @@ export function resetForm(refName) {
  * @param dateRange
  * @param propName
  */
-export function addDateRange(params, dateRange: Array<any>, propName?) {
+export function addDateRange(params: any, dateRange: Array<any>, propName?: any) {
   const search = params;
   search.params =
     typeof search.params === 'object' && search.params !== null && !Array.isArray(search.params) ? search.params : {};
@@ -84,7 +85,7 @@ export function addDateRange(params, dateRange: Array<any>, propName?) {
  * @param dateRange
  * @param propName
  */
-export function addDateRangeTime(params, dateRange: Array<any>, propName?) {
+export function addDateRangeTime(params: any, dateRange: Array<any>, propName?: any) {
   const search = params;
   search.params =
     typeof search.params === 'object' && search.params !== null && !Array.isArray(search.params) ? search.params : {};
@@ -98,16 +99,17 @@ export function addDateRangeTime(params, dateRange: Array<any>, propName?) {
 }
 
 // 回显数据字典
-export function selectDictLabel(datas, value) {
+export function selectDictLabel(datas: DictModel[], value: any) {
   if (value === undefined) {
     return '';
   }
   const actions = [];
-  Object.keys(datas).some((key) => {
-    if (datas[key].value == `${value}`) {
-      actions.push(datas[key].label);
+  datas.some((dict) => {
+    if (dict.value === `${value}`) {
+      actions.push(dict.label);
       return true;
     }
+    return false;
   });
   if (actions.length === 0) {
     actions.push(value);
@@ -116,38 +118,37 @@ export function selectDictLabel(datas, value) {
 }
 
 // 回显数据字典（字符串数组）
-export function selectDictLabels(datas, value, separator) {
+export function selectDictLabels(datas: DictModel[], value?: string | string[], separator = ',') {
   if (value === undefined || value.length === 0) {
     return '';
   }
   if (Array.isArray(value)) {
     value = value.join(',');
   }
-  const actions = [];
-  const currentSeparator = undefined === separator ? ',' : separator;
-  const temp = value.split(currentSeparator);
-  Object.keys(value.split(currentSeparator)).some((val) => {
+  const actions: string[] = [];
+  value.split(separator).forEach((val) => {
     let match = false;
-    Object.keys(datas).some((key) => {
-      if (datas[key].value == `${temp[val]}`) {
-        actions.push(datas[key].label + currentSeparator);
+    datas.some((dict) => {
+      if (dict.value === val) {
+        actions.push(dict.label + separator);
         match = true;
       }
+      return false;
     });
     if (!match) {
-      actions.push(temp[val] + currentSeparator);
+      actions.push(val + separator);
     }
   });
   return actions.join('').substring(0, actions.join('').length - 1);
 }
 
 // 字符串格式化(%s )
-export function sprintf(str) {
+export function sprintf(str: string) {
   // eslint-disable-next-line prefer-rest-params
   const args = arguments;
   let flag = true;
   let i = 1;
-  str = str.replace(/%s/g, function () {
+  str = str.replace(/%s/g, () => {
     const arg = args[i++];
     if (typeof arg === 'undefined') {
       flag = false;
@@ -159,7 +160,7 @@ export function sprintf(str) {
 }
 
 // 转换字符串，undefined,null等转化为""
-export function parseStrEmpty(str) {
+export function parseStrEmpty(str: string | number) {
   if (!str || str === 'undefined' || str === 'null') {
     return '';
   }
@@ -167,7 +168,7 @@ export function parseStrEmpty(str) {
 }
 
 // 数据合并
-export function mergeRecursive(source, target) {
+export function mergeRecursive(source: { [x: string]: any }, target: { [x: string]: any }) {
   for (const p in target) {
     try {
       if (target[p].constructor === Object) {
@@ -196,21 +197,25 @@ export function handleTree<T>(data: T[], id?: string, parentId?: string, childre
     childrenList: children || 'children',
   };
 
-  const childrenListMap = {};
+  const childrenListMap: Record<any, any> = {};
   const nodeIds = {};
   const tree = <T[]>[];
 
   for (const d of data) {
+    // @ts-ignore
     const parentId = d[config.parentId];
     if (childrenListMap[parentId] == null) {
       childrenListMap[parentId] = [];
     }
+    // @ts-ignore
     nodeIds[d[config.id]] = d;
     childrenListMap[parentId].push(d);
   }
 
   for (const d of data) {
+    // @ts-ignore
     const parentId = d[config.parentId];
+    // @ts-ignore
     if (nodeIds[parentId] == null) {
       tree.push(d);
     }
@@ -221,10 +226,14 @@ export function handleTree<T>(data: T[], id?: string, parentId?: string, childre
   }
 
   function adaptToChildrenList(o: T) {
+    // @ts-ignore
     if (childrenListMap[o[config.id]] !== null) {
+      // @ts-ignore
       o[config.childrenList] = childrenListMap[o[config.id]];
     }
+    // @ts-ignore
     if (o[config.childrenList]) {
+      // @ts-ignore
       for (const c of o[config.childrenList]) {
         adaptToChildrenList(c);
       }
@@ -237,7 +246,7 @@ export function handleTree<T>(data: T[], id?: string, parentId?: string, childre
  * 参数处理
  * @param {*} params  参数
  */
-export function tansParams(params) {
+export function tansParams(params: { [x: string]: any }) {
   let result = '';
   for (const propName of Object.keys(params)) {
     const value = params[propName];
@@ -260,7 +269,7 @@ export function tansParams(params) {
 }
 
 // 返回项目路径
-export function getNormalPath(p) {
+export function getNormalPath(p: string) {
   if (p.length === 0 || !p || p === 'undefined' || p === null) {
     return p;
   }
@@ -272,12 +281,12 @@ export function getNormalPath(p) {
 }
 
 // 验证是否为blob格式
-export function blobValidate(data) {
+export function blobValidate(data: { type: string }) {
   return data.type !== 'application/json';
 }
 
 // 过滤tree数据
-export function treeFilter(data, searchValue) {
+export function treeFilter(data: any[], searchValue: any) {
   if (data && data.length > 0) {
     data = Object.assign([], data);
     return data
@@ -293,7 +302,8 @@ export function treeFilter(data, searchValue) {
 }
 
 /** tree中的所有id */
-export function treeId(data) {
+// @ts-ignore
+export function treeId(data: any[]) {
   if (data && data.length > 0) {
     return data.flatMap((item) => {
       let ids = [];
@@ -307,7 +317,7 @@ export function treeId(data) {
 }
 
 /** byte格式化 */
-export function bytesToSize(bytes) {
+export function bytesToSize(bytes: number) {
   if (!bytes) return '';
   if (bytes === 0) return '0 B';
   const k = 1024;

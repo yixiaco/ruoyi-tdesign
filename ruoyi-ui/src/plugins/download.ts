@@ -1,16 +1,17 @@
 import axios from 'axios';
+// @ts-ignore
 import { saveAs } from 'file-saver';
-import { LoadingPlugin, MessagePlugin } from 'tdesign-vue-next';
+import { LoadingInstance, LoadingPlugin, MessagePlugin } from 'tdesign-vue-next';
 
 import { useUserStore } from '@/store';
 import errorCode from '@/utils/errorCode';
 import { blobValidate } from '@/utils/ruoyi';
 
 const baseURL = import.meta.env.VITE_APP_BASE_API;
-let downloadLoadingInstance;
+let downloadLoadingInstance: LoadingInstance;
 
 export default {
-  oss(ossId) {
+  oss(ossId: number) {
     const { token } = useUserStore();
     const url = `${baseURL}/resource/oss/download/${ossId}`;
     downloadLoadingInstance = LoadingPlugin({
@@ -38,7 +39,7 @@ export default {
         downloadLoadingInstance.hide();
       });
   },
-  zip(url, name) {
+  zip(url: string, name: string) {
     const { token } = useUserStore();
     url = baseURL + url;
     axios({
@@ -59,12 +60,13 @@ export default {
       }
     });
   },
-  saveAs(text, name, opts) {
+  saveAs(text: any, name: any, opts: any) {
     saveAs(text, name, opts);
   },
-  async printErrMsg(data) {
+  async printErrMsg(data: { text: () => any }) {
     const resText = await data.text();
     const rspObj = JSON.parse(resText);
+    // @ts-ignore
     const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode.default;
     MessagePlugin.error(errMsg);
   },

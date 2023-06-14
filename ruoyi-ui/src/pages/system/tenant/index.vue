@@ -291,7 +291,7 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { SysTenantForm, SysTenantQuery, SysTenantVo } from '@/api/system/model/tenantModel';
@@ -376,7 +376,7 @@ const pagination = computed(() => {
     pageSize: queryParams.value.pageSize,
     total: total.value,
     showJumper: true,
-    onChange: (pageInfo) => {
+    onChange: (pageInfo: PageInfo) => {
       queryParams.value.pageNum = pageInfo.current;
       queryParams.value.pageSize = pageInfo.pageSize;
       getList();
@@ -446,7 +446,7 @@ function resetQuery() {
 }
 
 // 多选框选中数据
-function handleSelectionChange(selection) {
+function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
@@ -461,26 +461,26 @@ function handleAdd() {
 }
 
 /** 详情按钮操作 */
-function handleDetail(row) {
+function handleDetail(row: SysTenantVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const $id = row.id || ids.value;
-  getTenant($id).then((response) => {
+  const id = row.id || ids.value.at(0);
+  getTenant(id).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
   });
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row) {
+function handleUpdate(row: SysTenantVo) {
   buttonLoading.value = true;
   reset();
   open.value = true;
   title.value = '修改租户';
-  const $id = row.id || ids.value;
+  const id = row.id || ids.value.at(0);
   getTenantPackage();
-  getTenant($id).then((response) => {
+  getTenant(id).then((response) => {
     buttonLoading.value = false;
     form.value = response.data;
   });
@@ -492,7 +492,7 @@ function onConfirm() {
 }
 
 /** 提交表单 */
-function submitForm({ validateResult, firstError }) {
+function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');
@@ -525,8 +525,8 @@ function submitForm({ validateResult, firstError }) {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row) {
-  const $ids = row.id || ids.value;
+function handleDelete(row: SysTenantVo) {
+  const $ids = row.id || ids.value.at(0);
   proxy.$modal.confirm(`是否确认删除租户编号为${row.tenantId}的数据项？`, () => {
     loading.value = true;
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
@@ -543,7 +543,7 @@ function handleDelete(row) {
 }
 
 /** 同步租户套餐按钮操作 */
-function handleSyncTenantPackage(row) {
+function handleSyncTenantPackage(row: SysTenantVo) {
   proxy.$modal.confirm(`是否确认同步租户套餐租户编号为"${row.tenantId}"的数据项？`, () => {
     loading.value = true;
     const msgLoading = proxy.$modal.msgLoading('正在同步中...');

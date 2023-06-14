@@ -1,12 +1,14 @@
 import { defineStore } from 'pinia';
 
+import { DictModel } from '@/utils/dict';
+
 const useDictStore = defineStore('dict', {
   state: () => ({
     dict: [],
   }),
   actions: {
     // 获取字典
-    getDict(_key) {
+    getDict(_key: string) {
       if (_key == null && _key === '') {
         return null;
       }
@@ -22,7 +24,7 @@ const useDictStore = defineStore('dict', {
       return null;
     },
     // 设置字典
-    setDict(_key, value) {
+    setDict(_key: string, value: DictModel[]) {
       if (_key !== null && _key !== '') {
         this.dict.push({
           key: _key,
@@ -31,7 +33,7 @@ const useDictStore = defineStore('dict', {
       }
     },
     // 删除字典
-    removeDict(_key) {
+    removeDict(_key: string) {
       let bln = false;
       try {
         for (let i = 0; i < this.dict.length; i++) {

@@ -45,7 +45,7 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import { PrimaryTableCol } from 'tdesign-vue-next';
+import {PageInfo, PrimaryTableCol} from 'tdesign-vue-next';
 import { computed, getCurrentInstance, nextTick, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -87,15 +87,15 @@ const pagination = computed(() => {
     pageSize: pageSize.value,
     total: total.value,
     showJumper: true,
-    onChange: (pageInfo) => {
+    onChange: (pageInfo: PageInfo) => {
       pageNum.value = pageInfo.current;
       pageSize.value = pageInfo.pageSize;
     },
   };
 });
 /** 多选框选中数据 */
-function handleSelectionChange(value) {
-  roleIds.value = value;
+function handleSelectionChange(selection: Array<number>) {
+  roleIds.value = selection;
 }
 /** 关闭按钮 */
 function close() {

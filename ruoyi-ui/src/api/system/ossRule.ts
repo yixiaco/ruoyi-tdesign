@@ -34,7 +34,7 @@ export function updateOssRule(data: SysOssRuleForm) {
 }
 
 // 删除OSS处理规则
-export function delOssRule(ossRuleIds: Array<number>) {
+export function delOssRule(ossRuleIds: number | Array<number>) {
   return request.delete<R<void>>({
     url: `/system/ossRule/${ossRuleIds}`,
   });

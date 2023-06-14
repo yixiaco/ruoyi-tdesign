@@ -43,7 +43,7 @@ export function updateUser(data: SysUserForm) {
 }
 
 // 删除用户
-export function delUser(userId: number) {
+export function delUser(userId: number | number[]) {
   return request.delete<R<void>>({
     url: `/system/user/${userId}`,
     method: 'delete',

@@ -55,7 +55,7 @@ export function previewTable(tableId: number) {
 }
 
 // 删除表数据
-export function delTable(tableId: number) {
+export function delTable(tableId: number | number[]) {
   return request.delete<R<void>>({
     headers: { datasource: localStorage.getItem('dataName') },
     url: `/tool/gen/${tableId}`,

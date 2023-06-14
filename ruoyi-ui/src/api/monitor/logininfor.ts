@@ -11,7 +11,7 @@ export function list(query: SysLogininforBo) {
 }
 
 // 删除登录日志
-export function delLogininfor(infoId: number) {
+export function delLogininfor(infoId: number | number[]) {
   return request.delete<R<void>>({
     url: `/monitor/logininfor/${infoId}`,
   });

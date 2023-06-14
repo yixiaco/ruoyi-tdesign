@@ -38,7 +38,7 @@ export function roleMenuTreeselect(roleId: number) {
 }
 
 // 根据角色ID查询菜单下拉树结构
-export function tenantPackageMenuTreeselect(packageId) {
+export function tenantPackageMenuTreeselect(packageId: number) {
   return request.get<R<MenuTreeSelectVo>>({
     url: `/system/menu/tenantPackageMenuTreeselect/${packageId}`,
   });

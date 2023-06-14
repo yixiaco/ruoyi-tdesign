@@ -26,7 +26,7 @@ export function listByUrls(urls: string) {
 }
 
 // 删除OSS对象存储
-export function delOss(ossId: number) {
+export function delOss(ossId: number | number[]) {
   return request.delete<R<void>>({
     url: `/resource/oss/${ossId}`,
   });

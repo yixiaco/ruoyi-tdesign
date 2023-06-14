@@ -129,11 +129,12 @@ export default {
 </script>
 <script lang="ts" setup>
 import { DeleteIcon, DownloadIcon, LockOffIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { PrimaryTableCol } from 'tdesign-vue-next';
+import { PageInfo, PrimaryTableCol, SelectOptions } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { cleanLogininfor, delLogininfor, list, unlockLogininfor } from '@/api/monitor/logininfor';
 import { SysLogininforBo, SysLogininforVo } from '@/api/monitor/model/logininforModel';
+import { TableSort } from '@/types/interface';
 
 const { proxy } = getCurrentInstance();
 const { sys_common_status } = proxy.useDict('sys_common_status');
@@ -148,7 +149,7 @@ const multiple = ref(true);
 const selectName = ref('');
 const total = ref(0);
 const dateRange = ref([]);
-const defaultSort = ref({ sortBy: 'loginTime', descending: true });
+const defaultSort = ref<TableSort>({ sortBy: 'loginTime', descending: true });
 const sort = ref({ ...defaultSort.value });
 
 // 查询参数
@@ -182,7 +183,7 @@ const pagination = computed(() => {
     pageSize: queryParams.value.pageSize,
     total: total.value,
     showJumper: true,
-    onChange: (pageInfo) => {
+    onChange: (pageInfo: PageInfo) => {
       queryParams.value.pageNum = pageInfo.current;
       queryParams.value.pageSize = pageInfo.pageSize;
       getList();
@@ -212,25 +213,26 @@ function resetQuery() {
   handleSortChange({ ...defaultSort.value });
 }
 /** 多选框选中数据 */
-function handleSelectionChange(selection, { selectedRowData }) {
+function handleSelectionChange(selection: Array<string | number>, { selectedRowData }: SelectOptions<SysLogininforVo>) {
   ids.value = selection;
   multiple.value = !selection.length;
   single.value = selection.length !== 1;
-  selectName.value = selectedRowData.map((item) => item.userName);
+  selectName.value = selectedRowData.map((item) => item.userName)[0];
 }
 /** 排序触发事件 */
-function handleSortChange(value) {
+function handleSortChange(value: TableSort) {
   sort.value = value;
   queryParams.value.orderByColumn = value.sortBy;
   queryParams.value.isAsc = value.descending ? 'descending' : 'ascending';
   getList();
 }
 /** 删除按钮操作 */
-function handleDelete(row) {
+function handleDelete(row: SysLogininforVo) {
   const infoIds = row.infoId || ids.value;
   proxy.$modal.confirm(`是否确认删除访问编号为"${infoIds}"的数据项?`, () => {
     return delLogininfor(infoIds).then(() => {
       getList();
+      ids.value = [];
       proxy.$modal.msgSuccess('删除成功');
     });
   });
@@ -240,6 +242,7 @@ function handleClean() {
   proxy.$modal.confirm('是否确认清空所有登录日志数据项?', () => {
     return cleanLogininfor().then(() => {
       getList();
+      ids.value = [];
       proxy.$modal.msgSuccess('清空成功');
     });
   });

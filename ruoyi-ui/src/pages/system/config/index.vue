@@ -43,7 +43,7 @@ const isSystem = computed(() => tenantId.value === '000000');
 // 表单禁用
 const disabled = !useHasPermission(['system:config:edit']);
 
-function handleChange(value) {
+function handleChange(value: number) {
   router.push({ path: route.path, query: { action: value } });
 }
 </script>

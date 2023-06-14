@@ -1,9 +1,10 @@
 // axios配置  可自行根据项目进行更改，只需更改该文件即可，其他文件可以不动
-import type { AxiosInstance, InternalAxiosRequestConfig } from 'axios';
+import type { AxiosInstance, AxiosRequestConfig, InternalAxiosRequestConfig } from 'axios';
+// @ts-ignore
 import { saveAs } from 'file-saver';
 import isString from 'lodash/isString';
 import merge from 'lodash/merge';
-import { DialogPlugin, LoadingPlugin, MessagePlugin, NotifyPlugin } from 'tdesign-vue-next';
+import { DialogPlugin, LoadingInstance, LoadingPlugin, MessagePlugin, NotifyPlugin } from 'tdesign-vue-next';
 
 import { ContentTypeEnum } from '@/constants';
 import cache from '@/plugins/cache';
@@ -57,6 +58,7 @@ const transform: AxiosTransform = {
     // 未设置状态码则默认成功状态
     const code = res.data.code || 200;
     // 获取错误信息
+    // @ts-ignore
     let msg = errorCode[code] || res.data.msg || errorCode.default;
 
     // 二进制数据则直接返回
@@ -306,11 +308,13 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
     ),
   );
 }
+
 export const request = createAxios();
 
-let downloadLoadingInstance;
+let downloadLoadingInstance: LoadingInstance;
+
 // 通用下载方法
-export function download(url, params, filename, config?) {
+export function download(url: string, params: any, filename: string, config?: AxiosRequestConfig<any>) {
   downloadLoadingInstance = LoadingPlugin({ text: '正在下载数据，请稍候' /* , background: 'rgba(0, 0, 0, 0.7)' */ });
   return request
     .post({
@@ -333,6 +337,7 @@ export function download(url, params, filename, config?) {
       } else {
         const resText = await data.text();
         const rspObj = JSON.parse(resText);
+        // @ts-ignore
         const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode.default;
         MessagePlugin.error(errMsg);
       }

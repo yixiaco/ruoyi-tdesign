@@ -216,7 +216,14 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PrimaryTableCol, TreeInstanceFunctions } from 'tdesign-vue-next';
+import {
+  FormInstanceFunctions,
+  FormRule,
+  PageInfo,
+  PrimaryTableCol,
+  SubmitContext,
+  TreeInstanceFunctions,
+} from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { TreeModel } from '@/api/model/resultModel';
@@ -288,7 +295,7 @@ const pagination = computed(() => {
     pageSize: queryParams.value.pageSize,
     total: total.value,
     showJumper: true,
-    onChange: (pageInfo) => {
+    onChange: (pageInfo: PageInfo) => {
       queryParams.value.pageNum = pageInfo.current;
       queryParams.value.pageSize = pageInfo.pageSize;
       getList();
@@ -304,7 +311,7 @@ function getMenuTreeselect() {
 }
 
 /** 根据租户套餐ID查询菜单树结构 */
-function getPackageMenuTreeselect(packageId) {
+function getPackageMenuTreeselect(packageId: number) {
   return tenantPackageMenuTreeselect(packageId).then((response) => {
     menuOptions.value = response.data.menus;
     return response;
@@ -321,7 +328,7 @@ function getList() {
   });
 }
 
-function onExpand(type, value) {
+function onExpand(type: string, value: number[]) {
   if (type === 'menu') {
     menuExpandNode.value = value;
   }
@@ -352,14 +359,14 @@ function resetQuery() {
 }
 
 // 多选框选中数据
-function handleSelectionChange(selection) {
+function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
 }
 
 // 租户套餐状态修改
-function handleStatusChange(row) {
+function handleStatusChange(row: SysTenantPackageVo) {
   const data = tenantPackageList.value.find((value) => value.packageId === row.packageId);
   const text = data.status === '0' ? '启用' : '停用';
   proxy.$modal.confirm(
@@ -391,35 +398,35 @@ function handleAdd() {
 }
 
 /** 详情按钮操作 */
-function handleDetail(row) {
+function handleDetail(row: SysTenantPackageVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const $packageId = row.packageId || ids.value;
-  getTenantPackage($packageId).then((response) => {
+  const packageId = row.packageId || ids.value.at(0);
+  getTenantPackage(packageId).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
   });
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row) {
+function handleUpdate(row: SysTenantPackageVo) {
   buttonLoading.value = true;
   reset();
   open.value = true;
   title.value = '修改租户套餐';
-  const $packageId = row.packageId || ids.value;
-  getPackageMenuTreeselect($packageId).then((res) => {
+  const packageId = row.packageId || ids.value.at(0);
+  getPackageMenuTreeselect(packageId).then((res) => {
     menuIds.value = res.data.checkedKeys;
   });
-  getTenantPackage($packageId).then((response) => {
+  getTenantPackage(packageId).then((response) => {
     buttonLoading.value = false;
     form.value = response.data;
   });
 }
 
 /** 树权限（展开/折叠） */
-function handleCheckedTreeExpand(value, type) {
+function handleCheckedTreeExpand(value: boolean, type: string) {
   if (type === 'menu') {
     if (value) {
       menuExpandNode.value = menuOptions.value.map((row) => row.id);
@@ -429,7 +436,7 @@ function handleCheckedTreeExpand(value, type) {
   }
 }
 /** 树权限（全选/全不选） */
-function handleCheckedTreeNodeAll(value, type) {
+function handleCheckedTreeNodeAll(value: boolean, type: string) {
   if (type === 'menu') {
     if (value) {
       menuIds.value = menuRef.value.getItems().map((item) => item.value as number);
@@ -450,7 +457,7 @@ function onConfirm() {
 }
 
 /** 提交表单 */
-function submitForm({ validateResult, firstError }) {
+function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');
@@ -485,12 +492,12 @@ function submitForm({ validateResult, firstError }) {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row) {
-  const $packageIds = row.packageId || ids.value;
-  proxy.$modal.confirm(`是否确认删除租户套餐编号为${$packageIds}的数据项？`, () => {
+function handleDelete(row: SysTenantPackageVo) {
+  const packageIds = row.packageId || ids.value;
+  proxy.$modal.confirm(`是否确认删除租户套餐编号为${packageIds}的数据项？`, () => {
     loading.value = true;
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
-    return delTenantPackage($packageIds)
+    return delTenantPackage(packageIds)
       .then(() => {
         getList();
         proxy.$modal.msgSuccess('删除成功');

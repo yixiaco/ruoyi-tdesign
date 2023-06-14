@@ -34,7 +34,7 @@ export function updatePost(data: SysPostForm) {
 }
 
 // 删除岗位
-export function delPost(postId: number) {
+export function delPost(postId: number | number[]) {
   return request.delete<R<void>>({
     url: `/system/post/${postId}`,
   });

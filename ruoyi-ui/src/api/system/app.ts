@@ -1,6 +1,6 @@
-import { request } from '@/utils/request';
 import { R, TableDataInfo } from '@/api/model/resultModel';
 import { SysAppForm, SysAppQuery, SysAppVo } from '@/api/system/model/appModel';
+import { request } from '@/utils/request';
 
 // 查询应用管理列表
 export function listApp(query?: SysAppQuery) {
@@ -34,7 +34,7 @@ export function updateApp(data: SysAppForm) {
 }
 
 // 删除应用管理
-export function delApp(appids: Array<number>) {
+export function delApp(appids: number | Array<number>) {
   return request.delete<R<void>>({
     url: `/system/app/${appids}`,
   });

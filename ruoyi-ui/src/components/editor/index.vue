@@ -30,15 +30,15 @@ const editorConfig = ref({
     headers: {
       Authorization: `Bearer ${token.value}`,
     },
-    beforeUpload(data, file) {
+    beforeUpload(data: FormData, file: File) {
       const formData = new FormData();
       formData.set('file', file);
       return formData;
     },
-    success(response) {
+    success(response: any) {
       return { default: response.data.url };
     },
-    error(response) {
+    error(response: any) {
       const message = response && response.error && response.error.message;
       proxy.$modal.msgError(message);
       return message;

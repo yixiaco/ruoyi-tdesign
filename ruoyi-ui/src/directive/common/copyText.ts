@@ -3,7 +3,7 @@
  * Copyright (c) 2022 ruoyi
  */
 export default {
-  beforeMount(el, { value, arg }) {
+  beforeMount(el: any, { value, arg }: any) {
     if (arg === 'callback') {
       el.$copyCallback = value;
     } else {
@@ -20,7 +20,7 @@ export default {
   },
 };
 
-function copyTextToClipboard(input, { target = document.body } = {}) {
+function copyTextToClipboard(input: string, { target = document.body } = {}) {
   const element = document.createElement('textarea');
   const previouslyFocusedElement = document.activeElement;
 

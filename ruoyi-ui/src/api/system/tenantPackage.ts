@@ -53,7 +53,7 @@ export function changePackageStatus(packageId: number, status: string) {
 }
 
 // 删除租户套餐
-export function delTenantPackage(packageId: string | number) {
+export function delTenantPackage(packageId: string | number | string[] | number[]) {
   return request.delete<R<void>>({
     url: `/system/tenant/package/${packageId}`,
   });

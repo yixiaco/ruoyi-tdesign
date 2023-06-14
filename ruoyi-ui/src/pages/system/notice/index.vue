@@ -177,7 +177,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import { AddIcon, DeleteIcon, EditIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { SysNoticeForm, SysNoticeQuery, SysNoticeVo } from '@/api/system/model/noticeModel';
@@ -234,7 +234,7 @@ const pagination = computed(() => {
     pageSize: queryParams.value.pageSize,
     total: total.value,
     showJumper: true,
-    onChange: (pageInfo) => {
+    onChange: (pageInfo: PageInfo) => {
       queryParams.value.pageNum = pageInfo.current;
       queryParams.value.pageSize = pageInfo.pageSize;
       getList();
@@ -269,7 +269,7 @@ function resetQuery() {
   handleQuery();
 }
 /** 多选框选中数据 */
-function handleSelectionChange(selection) {
+function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
@@ -281,12 +281,12 @@ function handleAdd() {
   title.value = '添加公告';
 }
 /** 修改按钮操作 */
-function handleUpdate(row) {
+function handleUpdate(row: SysNoticeVo) {
   reset();
   open.value = true;
   title.value = '修改公告';
   eLoading.value = true;
-  const noticeId = row.noticeId || ids.value;
+  const noticeId = row.noticeId || ids.value.at(0);
   getNotice(noticeId).then((response) => {
     form.value = response.data;
     eLoading.value = false;
@@ -296,7 +296,7 @@ function onConfirm() {
   noticeRef.value.submit();
 }
 /** 提交按钮 */
-function submitForm({ validateResult, firstError }) {
+function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     const msgLoading = proxy.$modal.msgLoading('提交中...');
     if (form.value.noticeId) {
@@ -321,7 +321,7 @@ function submitForm({ validateResult, firstError }) {
   }
 }
 /** 删除按钮操作 */
-function handleDelete(row) {
+function handleDelete(row: SysNoticeVo) {
   const noticeIds = row.noticeId || ids.value;
   proxy.$modal.confirm(`是否确认删除公告编号为"${noticeIds}"的数据项？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');

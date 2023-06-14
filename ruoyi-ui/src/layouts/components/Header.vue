@@ -88,7 +88,7 @@ import LogoFull from '@/assets/icons/assets-logo-full.svg?component';
 import { prefix } from '@/config/global';
 import { getActive } from '@/router';
 import { useSettingStore, useUserStore } from '@/store';
-import type { MenuRoute } from '@/types/interface';
+import { ComplexRoute } from '@/types/interface';
 
 import DynamicTenant from './DynamicTenant.vue';
 import MenuContent from './MenuContent.vue';
@@ -111,7 +111,7 @@ const props = defineProps({
     default: true,
   },
   menu: {
-    type: Array as PropType<MenuRoute[]>,
+    type: Array as PropType<ComplexRoute[]>,
     default: () => [],
   },
   isFixed: {
@@ -174,7 +174,7 @@ const changeCollapsed = () => {
   });
 };
 
-const handleNav = (url) => {
+const handleNav = (url: string) => {
   router.push(url);
 };
 

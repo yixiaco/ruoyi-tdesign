@@ -21,6 +21,7 @@ import { R, TableDataInfo } from '@/api/model/resultModel';
 #set($Result="R<Array<$vo>>")
 import { R } from '@/api/model/resultModel';
 #end
+#set($idType=${GenUtil.javaTypeToTypescript(${pkColumn.javaType})})
 import { #if(!$useBO || !$useQuery || !$useVO)${ClassName}#if($useBO || $useQuery || $useVO), #end#end#if($useBO)${ClassName}Form#if($useQuery || $useVO), #end#end#if($useQuery)${ClassName}Query#if($useVO), #end#end#if($useVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
 
 // 查询${functionName}列表
@@ -32,7 +33,7 @@ export function list${BusinessName}(query?: ${query}) {
 }
 
 // 查询${functionName}详细
-export function get${BusinessName}(${pkColumn.javaField}: ${GenUtil.javaTypeToTypescript(${pkColumn.javaType})}) {
+export function get${BusinessName}(${pkColumn.javaField}: $idType) {
   return request.get<R<${vo}>>({
     url: `/${moduleName}/${businessName}/${${pkColumn.javaField}}`,
   });
@@ -55,7 +56,7 @@ export function update${BusinessName}(data: ${bo}) {
 }
 
 // 删除${functionName}
-export function del${BusinessName}(${pkColumn.javaField}s: Array<${GenUtil.javaTypeToTypescript(${pkColumn.javaType})}>) {
+export function del${BusinessName}(${pkColumn.javaField}s: $idType | Array<$idType>) {
   return request.delete<R<void>>({
     url: `/${moduleName}/${businessName}/${${pkColumn.javaField}s}`,
   });

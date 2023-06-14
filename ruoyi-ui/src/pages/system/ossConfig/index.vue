@@ -193,7 +193,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import { AddIcon, DeleteIcon, EditIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { SysOssConfigForm, SysOssConfigQuery, SysOssConfigVo } from '@/api/system/model/ossConfigModel';
@@ -295,7 +295,7 @@ const pagination = computed(() => {
     pageSize: queryParams.value.pageSize,
     total: total.value,
     showJumper: true,
-    onChange: (pageInfo) => {
+    onChange: (pageInfo: PageInfo) => {
       queryParams.value.pageNum = pageInfo.current;
       queryParams.value.pageSize = pageInfo.pageSize;
       getList();
@@ -342,7 +342,7 @@ function resetQuery() {
   handleQuery();
 }
 /** 选择条数  */
-function handleSelectionChange(selection) {
+function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
@@ -354,10 +354,10 @@ function handleAdd() {
   title.value = '添加对象存储配置';
 }
 /** 修改按钮操作 */
-function handleUpdate(row) {
+function handleUpdate(row: SysOssConfigVo) {
   loading.value = true;
   reset();
-  const ossConfigId = row.ossConfigId || ids.value;
+  const ossConfigId = row.ossConfigId || ids.value.at(0);
   getOssConfig(ossConfigId).then((response) => {
     loading.value = false;
     form.value = response.data;
@@ -369,7 +369,7 @@ function onConfirm() {
   ossConfigRef.value.submit();
 }
 /** 提交按钮 */
-function submitForm({ validateResult, firstError }) {
+function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');
@@ -401,7 +401,7 @@ function submitForm({ validateResult, firstError }) {
   }
 }
 /** 用户状态修改  */
-function handleStatusChange(row) {
+function handleStatusChange(row: SysOssConfigVo) {
   const ossConfig = ossConfigList.value.find((value) => value.ossConfigId === row.ossConfigId);
   const text = ossConfig.status === '0' ? '启用' : '停用';
   proxy.$modal.confirm(
@@ -424,7 +424,7 @@ function handleStatusChange(row) {
   );
 }
 /** 删除按钮操作 */
-function handleDelete(row) {
+function handleDelete(row: SysOssConfigVo) {
   const ossConfigIds = row.ossConfigId || ids.value;
   proxy.$modal.confirm(`是否确认删除OSS配置编号为"${ossConfigIds}"的数据项?`, () => {
     loading.value = true;

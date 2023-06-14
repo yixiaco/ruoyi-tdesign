@@ -101,7 +101,7 @@ function filterAsyncRouter(asyncRouterMap: RouteRecordRaw[], lastRouter?: RouteR
 }
 
 function filterChildren(childrenMap: RouteRecordRaw[], lastRouter?: RouteRecordRaw) {
-  let children = [];
+  let children: RouteRecordRaw[] = [];
   childrenMap.forEach((el) => {
     if (el.children && el.children.length) {
       if (el.component?.toString() === 'ParentView' && !lastRouter) {
@@ -126,14 +126,14 @@ function filterChildren(childrenMap: RouteRecordRaw[], lastRouter?: RouteRecordR
 
 // 动态路由遍历，验证是否具备权限
 export function filterDynamicRoutes(routes: RouteRecordRaw[]) {
-  const res = [];
+  const res: RouteRecordRaw[] = [];
   routes.forEach((route) => {
     if (route.meta.permissions) {
-      if (auth.hasPermiOr(route.meta.permissions)) {
+      if (auth.hasPermiOr(route.meta.permissions as any)) {
         res.push(route);
       }
     } else if (route.meta.roles) {
-      if (auth.hasRoleOr(route.meta.roles)) {
+      if (auth.hasRoleOr(route.meta.roles as string[])) {
         res.push(route);
       }
     }

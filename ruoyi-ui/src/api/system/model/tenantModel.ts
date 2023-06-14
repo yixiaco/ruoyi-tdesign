@@ -94,4 +94,8 @@ export interface SysTenantVo {
   accountCount?: number;
   /** 租户状态（0正常 1停用） */
   status?: string;
+  /** 更新时间 */
+  updateTime?: string;
+  /** 创建时间 */
+  createTime?: string;
 }

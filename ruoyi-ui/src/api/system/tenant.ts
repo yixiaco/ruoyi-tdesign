@@ -11,7 +11,7 @@ export function listTenant(query: SysTenantQuery) {
 }
 
 // 查询租户详细
-export function getTenant(id) {
+export function getTenant(id: number) {
   return request.get<R<SysTenantVo>>({
     url: `/system/tenant/${id}`,
   });
@@ -68,7 +68,7 @@ export function dynamicClear() {
 }
 
 // 同步租户套餐
-export function syncTenantPackage(tenantId, packageId) {
+export function syncTenantPackage(tenantId: string, packageId: number) {
   const data = {
     tenantId,
     packageId,

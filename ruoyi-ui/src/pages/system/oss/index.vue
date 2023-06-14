@@ -201,7 +201,7 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormRule, PrimaryTableCol } from 'tdesign-vue-next';
+import { FormRule, PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref, toRefs } from 'vue';
 
 import { getPreviewListResourceConfig } from '@/api/system/config';
@@ -211,6 +211,7 @@ import FileUpload from '@/components/file-upload/index.vue';
 import ImagePreview from '@/components/image-preview/index.vue';
 import ImageUpload from '@/components/image-upload/index.vue';
 import { useUserStore } from '@/store';
+import { TableSort } from '@/types/interface';
 
 const { proxy } = getCurrentInstance();
 const { tenantId } = toRefs(useUserStore());
@@ -273,7 +274,7 @@ const pagination = computed(() => {
     pageSize: queryParams.value.pageSize,
     total: total.value,
     showJumper: true,
-    onChange: (pageInfo) => {
+    onChange: (pageInfo: PageInfo) => {
       queryParams.value.pageNum = pageInfo.current;
       queryParams.value.pageSize = pageInfo.pageSize;
       getList();
@@ -295,7 +296,7 @@ function getList() {
     })
     .finally(() => (loading.value = false));
 }
-function checkFileSuffix(fileSuffix) {
+function checkFileSuffix(fileSuffix: string | string[]) {
   const arr = ['png', 'jpg', 'jpeg', 'ico', 'bmp', 'webp', 'gif', 'svg'];
   return arr.some((type) => {
     return fileSuffix.indexOf(type) > -1;
@@ -320,13 +321,13 @@ function resetQuery() {
   handleSortChange({ ...defaultSort.value });
 }
 /** 选择条数  */
-function handleSelectionChange(selection) {
+function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
 }
 /** 排序触发事件 */
-function handleSortChange(value) {
+function handleSortChange(value: TableSort) {
   sort.value = value;
   queryParams.value.orderByColumn = value.sortBy;
   queryParams.value.isAsc = value.descending ? 'descending' : 'ascending';
@@ -357,16 +358,16 @@ function copyTextSuccess() {
   proxy.$modal.msgSuccess('复制成功');
 }
 /** 下载按钮操作 */
-function handleDownload(row) {
+function handleDownload(row: SysOssVo) {
   proxy.$download.oss(row.ossId);
 }
 /** 用户状态修改  */
-function handlePreviewListResource(previewListResource) {
-  const text = previewListResource ? '启用' : '停用';
+function handlePreviewListResource(preview: boolean) {
+  const text = preview ? '启用' : '停用';
   proxy.$modal.confirm(`确认要"${text}""预览列表图片"配置吗?`, () => {
     const msgLoading = proxy.$modal.msgLoading('提交中...');
     return proxy
-      .updateConfigByKey('sys.oss.previewListResource', previewListResource)
+      .updateConfigByKey('sys.oss.previewListResource', `${preview}`)
       .then(() => {
         getList();
         proxy.$modal.msgSuccess(`${text}成功`);
@@ -378,7 +379,7 @@ function handlePreviewListResource(previewListResource) {
   });
 }
 /** 删除按钮操作 */
-function handleDelete(row) {
+function handleDelete(row: SysOssVo) {
   const ossIds = row.ossId || ids.value;
   proxy.$modal.confirm(`是否确认删除OSS对象存储编号为"${ossIds}"的数据项?`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
