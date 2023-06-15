@@ -241,7 +241,7 @@ public class VelocityUtils {
      * @return 包前缀名称
      */
     public static String getPackagePrefix(String packageName) {
-        int lastIndex = packageName.lastIndexOf(".");
+        int lastIndex = packageName.lastIndexOf('.');
         return StringUtils.substring(packageName, 0, lastIndex);
     }
 

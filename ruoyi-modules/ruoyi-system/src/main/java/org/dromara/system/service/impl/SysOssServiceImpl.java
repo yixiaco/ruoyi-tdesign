@@ -113,7 +113,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
     @Override
     public SysOssVo upload(MultipartFile file) {
         String originalfileName = file.getOriginalFilename();
-        String suffix = StringUtils.substring(originalfileName, originalfileName.lastIndexOf("."), originalfileName.length());
+        String suffix = StringUtils.substring(originalfileName, originalfileName.lastIndexOf('.'), originalfileName.length());
         OssClient storage = OssFactory.instance();
         UploadResult uploadResult;
         try {

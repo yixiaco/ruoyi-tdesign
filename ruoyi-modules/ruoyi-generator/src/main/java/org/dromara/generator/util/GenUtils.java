@@ -168,7 +168,7 @@ public class GenUtils {
      * @return 模块名
      */
     public static String getModuleName(String packageName) {
-        int lastIndex = packageName.lastIndexOf(".");
+        int lastIndex = packageName.lastIndexOf('.');
         int nameLength = packageName.length();
         return StringUtils.substring(packageName, lastIndex + 1, nameLength);
     }
@@ -180,7 +180,7 @@ public class GenUtils {
      * @return 业务名
      */
     public static String getBusinessName(String tableName) {
-        int firstIndex = tableName.indexOf("_");
+        int firstIndex = tableName.indexOf('_');
         int nameLength = tableName.length();
         String businessName = StringUtils.substring(tableName, firstIndex + 1, nameLength);
         businessName = StringUtils.toCamelCase(businessName);
