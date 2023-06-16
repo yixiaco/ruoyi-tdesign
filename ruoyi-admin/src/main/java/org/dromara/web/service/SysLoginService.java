@@ -318,7 +318,7 @@ public class SysLoginService {
 
     private SysUserVo loadUserByEmail(String email) {
         SysUser user = userMapper.selectOne(new LambdaQueryWrapper<SysUser>()
-            .select(SysUser::getPhonenumber, SysUser::getStatus)
+            .select(SysUser::getEmail, SysUser::getStatus)
             .eq(SysUser::getEmail, email));
         if (ObjectUtil.isNull(user)) {
             log.info("登录用户：{} 不存在.", email);
