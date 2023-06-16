@@ -13,14 +13,16 @@
         <div class="head-container">
           <t-tree
             ref="deptTreeRef"
+            v-model:actived="deptActived"
             :data="deptOptions"
             :keys="{ value: 'id', label: 'label', children: 'children' }"
             :filter="filterNode"
             activable
             expand-all
             hover
+            line
             check-strictly
-            @click="handleNodeClick"
+            @active="handleQuery"
           />
         </div>
       </t-col>
@@ -491,6 +493,7 @@ const deptOptions = ref(undefined);
 const initPassword = ref(undefined);
 const postOptions = ref([]);
 const roleOptions = ref([]);
+const deptActived = ref([]);
 const { token } = storeToRefs(useUserStore());
 /** * 用户导入参数 */
 const upload = reactive({
@@ -566,10 +569,10 @@ const pagination = computed(() => {
 });
 
 /** 通过条件过滤节点  */
-const filterNode = (node: TreeNodeModel) => {
-  if (!node.value) return true;
-  return node.label.indexOf(deptName.value) !== -1;
-};
+function filterNode(node: TreeNodeModel) {
+  if (!node.value || !deptName.value) return true;
+  return node.label.indexOf(deptName.value) >= 0;
+}
 /** 查询部门下拉树结构 */
 function getDeptTree() {
   deptTreeSelect().then((response) => {
@@ -579,21 +582,13 @@ function getDeptTree() {
 /** 查询用户列表 */
 function getList() {
   loading.value = true;
+  queryParams.value.deptId = deptActived.value.at(0);
   listUser(proxy.addDateRange(queryParams.value, dateRange.value)).then((res) => {
     loading.value = false;
     userList.value = res.rows;
     total.value = res.total;
     handleSelectionChange([]);
   });
-}
-/** 节点单击事件 */
-function handleNodeClick({ node }: { node: TreeNodeModel }) {
-  if (!node.actived) {
-    queryParams.value.deptId = node.value as number;
-  } else {
-    queryParams.value.deptId = undefined;
-  }
-  handleQuery();
 }
 /** 搜索按钮操作 */
 function handleQuery() {
@@ -604,8 +599,8 @@ function handleQuery() {
 function resetQuery() {
   dateRange.value = [];
   proxy.resetForm('queryRef');
+  deptActived.value = [];
   queryParams.value.deptId = undefined;
-  // proxy.$refs.tree.setCurrentKey(null);
   handleQuery();
 }
 /** 删除按钮操作 */
