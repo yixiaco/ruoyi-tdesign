@@ -144,7 +144,7 @@ public class VelocityUtils {
      */
     public static List<String> getTemplateList(GenTable table) {
         String tplCategory = table.getTplCategory();
-        List<String> templates = new ArrayList<String>();
+        List<String> templates = new ArrayList<>();
         templates.add("vm/java/domain.java.vm");
         if (table.getIsUseQuery()) {
             templates.add("vm/java/query.java.vm");
@@ -253,7 +253,7 @@ public class VelocityUtils {
      */
     public static HashSet<String> getImportList(GenTable genTable) {
         List<GenTableColumn> columns = genTable.getColumns();
-        HashSet<String> importList = new HashSet<String>();
+        HashSet<String> importList = new HashSet<>();
         for (GenTableColumn column : columns) {
             if (!column.isSuperColumn() && GenConstants.TYPE_DATE.equals(column.getJavaType())) {
                 importList.add("java.util.Date");

@@ -6,7 +6,6 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.RegExUtils;
 import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.generator.config.GenConfig;
 import org.dromara.generator.constant.GenConstants;
 import org.dromara.generator.domain.GenTable;
@@ -45,14 +44,14 @@ public class GenUtils {
     /**
      * 初始化表信息
      */
-    public static void initTable(GenTable genTable, String operName) {
+    public static void initTable(GenTable genTable, Long operId) {
         genTable.setClassName(convertClassName(genTable.getTableName()));
         genTable.setPackageName(GenConfig.getPackageName());
         genTable.setModuleName(getModuleName(GenConfig.getPackageName()));
         genTable.setBusinessName(getBusinessName(genTable.getTableName()));
         genTable.setFunctionName(replaceText(genTable.getTableComment()));
         genTable.setFunctionAuthor(GenConfig.getAuthor());
-        genTable.setCreateBy(LoginHelper.getUserId());
+        genTable.setCreateBy(operId);
     }
 
     /**
@@ -208,7 +207,6 @@ public class GenUtils {
      *
      * @param replacementm 替换值
      * @param searchList   替换列表
-     * @return
      */
     public static String replaceFirst(String replacementm, String[] searchList) {
         String text = replacementm;

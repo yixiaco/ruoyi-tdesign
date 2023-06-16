@@ -190,7 +190,7 @@ public class GenTableServiceImpl implements IGenTableService {
         try {
             for (GenTable table : tableList) {
                 String tableName = table.getTableName();
-                GenUtils.initTable(table, operName);
+                GenUtils.initTable(table, LoginHelper.getUserId());
                 table.setDataName(dataName);
                 int row = baseMapper.insert(table);
                 if (row > 0) {
@@ -351,7 +351,7 @@ public class GenTableServiceImpl implements IGenTableService {
         List<GenTable> genTables = selectDbTableListByNames(new String[]{table.getTableName()}, table.getDataName());
         if (!genTables.isEmpty()) {
             GenTable genTable = genTables.get(0);
-            GenUtils.initTable(genTable, LoginHelper.getUsername());
+            GenUtils.initTable(genTable, LoginHelper.getUserId());
             table.setFunctionName(genTable.getFunctionName());
             table.setTableComment(genTable.getTableComment());
             baseMapper.updateById(table);
