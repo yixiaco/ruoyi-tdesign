@@ -357,10 +357,10 @@ insert into sys_menu values ('1615', '租户套餐导出', '122', '5', '#', '', 
 -- 应用管理
 INSERT INTO sys_menu VALUES ('1701', '应用管理', 6, 3, 'app', 'system/app/index', NULL, 1, 0, 'C', '0', '0', 'system:app:list', 'app', 103, 1, sysdate(), 1, sysdate(), '应用管理菜单');
 INSERT INTO sys_menu VALUES ('1702', '应用管理查询', '1701', 1, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:app:query', '#', 103, 1, sysdate(), NULL, NULL, '');
-INSERT INTO sys_menu VALUES ('1702', '应用管理新增', '1701', 2, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:app:add', '#', 103, 1, sysdate(), NULL, NULL, '');
-INSERT INTO sys_menu VALUES ('1703', '应用管理修改', '1701', 3, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:app:edit', '#', 103, 1, sysdate(), NULL, NULL, '');
-INSERT INTO sys_menu VALUES ('1704', '应用管理删除', '1701', 4, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:app:remove', '#', 103, 1, sysdate(), NULL, NULL, '');
-INSERT INTO sys_menu VALUES ('1705', '应用管理导出', '1701', 5, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:app:export', '#', 103, 1, sysdate(), NULL, NULL, '');
+INSERT INTO sys_menu VALUES ('1703', '应用管理新增', '1701', 2, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:app:add', '#', 103, 1, sysdate(), NULL, NULL, '');
+INSERT INTO sys_menu VALUES ('1704', '应用管理修改', '1701', 3, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:app:edit', '#', 103, 1, sysdate(), NULL, NULL, '');
+INSERT INTO sys_menu VALUES ('1705', '应用管理删除', '1701', 4, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:app:remove', '#', 103, 1, sysdate(), NULL, NULL, '');
+INSERT INTO sys_menu VALUES ('1706', '应用管理导出', '1701', 5, '#', '', NULL, 1, 0, 'F', '0', '0', 'system:app:export', '#', 103, 1, sysdate(), NULL, NULL, '');
 
 
 -- ----------------------------
