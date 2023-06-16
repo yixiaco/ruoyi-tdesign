@@ -7,7 +7,7 @@
         </span>
         <div v-else class="header-operate-left">
           <t-button theme="default" shape="square" variant="text" @click="changeCollapsed">
-            <t-icon class="collapsed-icon" name="view-list" />
+            <view-list-icon class="collapsed-icon" />
           </t-button>
           <search :layout="layout" />
         </div>
@@ -28,12 +28,12 @@
 
           <t-tooltip placement="bottom" content="代码仓库">
             <t-button theme="default" shape="square" variant="text" @click="navToGitHub">
-              <t-icon name="logo-github" />
+              <logo-github-icon />
             </t-button>
           </t-tooltip>
           <t-tooltip placement="bottom" content="帮助文档">
             <t-button theme="default" shape="square" variant="text" @click="navToHelper">
-              <t-icon name="help-circle" />
+              <help-circle-icon />
             </t-button>
           </t-tooltip>
           <t-dropdown :min-column-width="120" trigger="click">
@@ -44,10 +44,10 @@
                   class="operations-dropdown-container-item"
                   @click="handleNav('/user/profile')"
                 >
-                  <t-icon name="user-circle"></t-icon>个人中心
+                  <user-circle-icon />个人中心
                 </t-dropdown-item>
                 <t-dropdown-item class="operations-dropdown-container-item" @click="handleLogout">
-                  <t-icon name="poweroff"></t-icon>退出登录
+                  <poweroff-icon />退出登录
                 </t-dropdown-item>
               </t-dropdown-menu>
             </template>
@@ -61,7 +61,7 @@
                   hide-on-load-failed
                   :alt="userStore.name"
                 >
-                  <template #icon><t-icon class="header-user-avatar" name="user-circle" /></template>
+                  <template #icon><user-circle-icon class="header-user-avatar" /></template>
                 </t-avatar>
               </template>
               <div class="header-user-account">{{ userStore.name }}</div>
@@ -70,7 +70,7 @@
           </t-dropdown>
           <t-tooltip placement="bottom" content="系统设置">
             <t-button theme="default" shape="square" variant="text" @click="toggleSettingPanel">
-              <t-icon name="setting" />
+              <setting-icon />
             </t-button>
           </t-tooltip>
         </div>
@@ -80,6 +80,14 @@
 </template>
 
 <script setup lang="ts">
+import {
+  HelpCircleIcon,
+  LogoGithubIcon,
+  PoweroffIcon,
+  SettingIcon,
+  UserCircleIcon,
+  ViewListIcon,
+} from 'tdesign-icons-vue-next';
 import type { PropType } from 'vue';
 import { computed, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';

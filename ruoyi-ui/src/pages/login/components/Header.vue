@@ -3,19 +3,21 @@
     <logo-full-icon class="logo" />
     <div class="operations-container">
       <t-button v-show="false" theme="default" shape="square" variant="text" @click="navToGitHub">
-        <t-icon name="logo-github" class="icon" />
+        <logo-github-icon />
       </t-button>
       <t-button v-show="false" theme="default" shape="square" variant="text" @click="navToHelper">
-        <t-icon name="help-circle" class="icon" />
+        <help-circle-icon class="icon" />
       </t-button>
       <t-button theme="default" shape="square" variant="text" @click="toggleSettingPanel">
-        <t-icon name="setting" class="icon" />
+        <setting-icon class="icon" />
       </t-button>
     </div>
   </header>
 </template>
 
 <script setup lang="ts">
+import { HelpCircleIcon, LogoGithubIcon, SettingIcon } from 'tdesign-icons-vue-next';
+
 import LogoFullIcon from '@/assets/icons/assets-logo-full.svg?component';
 import { useSettingStore } from '@/store';
 

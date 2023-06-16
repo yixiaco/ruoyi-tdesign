@@ -12,7 +12,7 @@
       <t-card class="user-info-list" title="个人信息" :bordered="false">
         <template #actions>
           <t-button theme="default" shape="square" variant="text">
-            <t-icon name="ellipsis" />
+            <ellipsis-icon />
           </t-button>
         </template>
         <t-row class="content" justify="space-between">
@@ -63,7 +63,7 @@
       <t-card title="团队成员" class="user-team" :bordered="false">
         <template #actions>
           <t-button theme="default" shape="square" variant="text">
-            <t-icon name="ellipsis" />
+            <ellipsis-icon />
           </t-button>
         </template>
         <t-list :split="false">
@@ -76,7 +76,7 @@
       <t-card title="服务产品" class="product-container" :bordered="false">
         <template #actions>
           <t-button theme="default" shape="square" variant="text">
-            <t-icon name="ellipsis" />
+            <ellipsis-icon />
           </t-button>
         </template>
         <t-row class="content" :getters="16">
@@ -98,6 +98,7 @@ import { LineChart } from 'echarts/charts';
 import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
+import { EllipsisIcon } from 'tdesign-icons-vue-next';
 import type { DateRangeValue } from 'tdesign-vue-next';
 import { computed, nextTick, onMounted, onUnmounted, watch } from 'vue';
 

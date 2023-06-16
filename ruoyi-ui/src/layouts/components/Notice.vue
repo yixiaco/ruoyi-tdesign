@@ -40,7 +40,7 @@
     </template>
     <t-badge :count="unreadMsg.length" :offset="[4, 4]">
       <t-button theme="default" shape="square" variant="text">
-        <t-icon name="mail" />
+        <mail-icon />
       </t-button>
     </t-badge>
   </t-popup>
@@ -48,6 +48,7 @@
 
 <script setup lang="ts">
 import { storeToRefs } from 'pinia';
+import { MailIcon } from 'tdesign-icons-vue-next';
 import { useRouter } from 'vue-router';
 
 import Nothing from '@/assets/images/nothing.png';

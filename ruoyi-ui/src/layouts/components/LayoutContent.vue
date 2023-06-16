@@ -31,26 +31,26 @@
             <template v-if="!routeItem.isHome">
               {{ routeItem.title }}
             </template>
-            <t-icon v-else name="home" />
+            <home-icon v-else />
             <template #dropdown>
               <t-dropdown-menu>
                 <t-dropdown-item @click="() => handleRefresh(routeItem, index)">
-                  <t-icon name="refresh" />
+                  <refresh-icon />
                   刷新
                 </t-dropdown-item>
                 <t-dropdown-item v-if="index > 1" @click="() => handleCloseAhead(routeItem.path, index)">
-                  <t-icon name="arrow-left" />
+                  <arrow-left-icon />
                   关闭左侧
                 </t-dropdown-item>
                 <t-dropdown-item
                   v-if="index < tabRouters.length - 1"
                   @click="() => handleCloseBehind(routeItem.path, index)"
                 >
-                  <t-icon name="arrow-right" />
+                  <arrow-right-icon />
                   关闭右侧
                 </t-dropdown-item>
                 <t-dropdown-item v-if="tabRouters.length > 2" @click="() => handleCloseOther(routeItem.path, index)">
-                  <t-icon name="close-circle" />
+                  <close-circle-icon />
                   关闭其它
                 </t-dropdown-item>
               </t-dropdown-menu>
@@ -70,6 +70,7 @@
 </template>
 
 <script setup lang="ts">
+import { ArrowLeftIcon, ArrowRightIcon, CloseCircleIcon, HomeIcon, RefreshIcon } from 'tdesign-icons-vue-next';
 import type { PopupVisibleChangeContext } from 'tdesign-vue-next';
 import { computed, nextTick, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';

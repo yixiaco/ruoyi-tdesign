@@ -40,7 +40,7 @@
                 :describe="item.upTrend || item.downTrend"
               />
             </div>
-            <t-icon name="chevron-right" />
+            <chevron-right-icon />
           </div>
         </template>
       </t-card>
@@ -59,7 +59,7 @@ import { BarChart, LineChart } from 'echarts/charts';
 import { GridComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
-import { FileIcon, UsergroupIcon } from 'tdesign-icons-vue-next';
+import { ChevronRightIcon, FileIcon, UsergroupIcon } from 'tdesign-icons-vue-next';
 import { nextTick, onMounted, onUnmounted, ref, watch } from 'vue';
 
 // 导入样式

@@ -10,7 +10,7 @@
                 环比
                 <trend class="icon" :type="item.upTrend ? 'up' : 'down'" :describe="item.upTrend || item.downTrend" />
               </div>
-              <t-icon name="chevron-right" />
+              <chevron-right-icon />
             </div>
           </t-card>
         </t-col>
@@ -69,6 +69,7 @@ import { LineChart, ScatterChart } from 'echarts/charts';
 import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';
 import { CanvasRenderer } from 'echarts/renderers';
+import { ChevronRightIcon } from 'tdesign-icons-vue-next';
 import { computed, nextTick, onDeactivated, onMounted, onUnmounted, watch } from 'vue';
 
 import ProductCard from '@/components/product-card/index.vue';

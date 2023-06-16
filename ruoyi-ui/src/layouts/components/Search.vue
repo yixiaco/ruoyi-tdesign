@@ -7,7 +7,7 @@
       @focus="changeSearchFocus(true)"
     >
       <template #prefix-icon>
-        <t-icon class="icon" name="search" size="16" />
+        <search-icon class="icon" size="16" />
       </template>
     </t-input>
   </div>
@@ -20,7 +20,7 @@
       variant="text"
       @click="changeSearchFocus(true)"
     >
-      <t-icon name="search" />
+      <search-icon />
     </t-button>
     <t-input
       v-model="searchData"
@@ -30,13 +30,14 @@
       @blur="changeSearchFocus(false)"
     >
       <template #prefix-icon>
-        <t-icon name="search" size="16" />
+        <search-icon size="16" />
       </template>
     </t-input>
   </div>
 </template>
 
 <script setup lang="ts">
+import { SearchIcon } from 'tdesign-icons-vue-next';
 import { ref } from 'vue';
 
 defineProps({

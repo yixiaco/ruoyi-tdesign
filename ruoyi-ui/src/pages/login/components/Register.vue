@@ -19,7 +19,7 @@
       <t-form-item name="phone">
         <t-input v-model="formData.phone" :maxlength="11" size="large" placeholder="请输入您的手机号">
           <template #prefix-icon>
-            <t-icon name="user" />
+            <user-icon />
           </template>
         </t-input>
       </t-form-item>
@@ -29,7 +29,7 @@
       <t-form-item name="email">
         <t-input v-model="formData.email" type="text" size="large" placeholder="请输入您的邮箱">
           <template #prefix-icon>
-            <t-icon name="mail" />
+            <mail-icon />
           </template>
         </t-input>
       </t-form-item>
@@ -44,10 +44,11 @@
         placeholder="请输入登录密码"
       >
         <template #prefix-icon>
-          <t-icon name="lock-on" />
+          <lock-on-icon />
         </template>
         <template #suffix-icon>
-          <t-icon :name="showPsw ? 'browse' : 'browse-off'" @click="showPsw = !showPsw" />
+          <browse-icon v-if="showPsw" @click="showPsw = !showPsw" />
+          <browse-off-icon v-else @click="showPsw = !showPsw" />
         </template>
       </t-input>
     </t-form-item>
@@ -92,7 +93,7 @@
 </template>
 
 <script setup lang="ts">
-import { SecuredIcon } from 'tdesign-icons-vue-next';
+import { BrowseIcon, BrowseOffIcon, LockOnIcon, MailIcon, SecuredIcon, UserIcon } from 'tdesign-icons-vue-next';
 import type { FormRule, SubmitContext } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { getCurrentInstance, ref } from 'vue';

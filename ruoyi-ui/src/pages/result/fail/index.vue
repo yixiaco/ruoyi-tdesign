@@ -1,6 +1,6 @@
 <template>
   <div class="result-success">
-    <t-icon class="result-success-icon" name="error-circle" />
+    <error-circle-icon class="result-success-icon" />
     <div class="result-success-title">项目创建失败</div>
     <div class="result-success-describe">企业微信联系检查创建者权限，或返回修改</div>
     <div>
@@ -9,8 +9,11 @@
   </div>
 </template>
 <script lang="ts">
+import { ErrorCircleIcon } from 'tdesign-icons-vue-next';
+
 export default {
   name: 'ResultFail',
+  components: { ErrorCircleIcon },
 };
 </script>
 <style lang="less" scoped>
