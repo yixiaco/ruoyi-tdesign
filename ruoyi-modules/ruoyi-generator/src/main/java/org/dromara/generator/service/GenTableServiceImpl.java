@@ -53,7 +53,6 @@ import java.util.zip.ZipOutputStream;
  *
  * @author Lion Li
  */
-// @DS("#header.datasource")
 @Slf4j
 @Service
 public class GenTableServiceImpl implements IGenTableService {
@@ -128,7 +127,7 @@ public class GenTableServiceImpl implements IGenTableService {
      * 查询据库列表
      *
      * @param tableNames 表名称组
-     * @param dataName
+     * @param dataName   数据源名称
      * @return 数据库表集合
      */
     @DS("#dataName")
@@ -151,7 +150,6 @@ public class GenTableServiceImpl implements IGenTableService {
      * 修改业务
      *
      * @param genTable 业务信息
-     * @return 结果
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -170,7 +168,6 @@ public class GenTableServiceImpl implements IGenTableService {
      * 删除业务对象
      *
      * @param tableIds 需要删除的数据ID
-     * @return 结果
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
@@ -184,7 +181,7 @@ public class GenTableServiceImpl implements IGenTableService {
      * 导入表结构
      *
      * @param tableList 导入表列表
-     * @param dataName
+     * @param dataName  数据源名称
      */
     @DSTransactional
     @Override
