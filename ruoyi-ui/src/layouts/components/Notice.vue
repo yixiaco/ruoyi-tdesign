@@ -22,7 +22,7 @@
         </t-list>
 
         <div v-else class="empty-list">
-          <img src="https://tdesign.gtimg.com/pro-template/personal/nothing.png" alt="空" />
+          <img :src="Nothing" alt="空" />
           <p>暂无通知</p>
         </div>
         <div class="header-msg-bottom">
@@ -50,6 +50,7 @@
 import { storeToRefs } from 'pinia';
 import { useRouter } from 'vue-router';
 
+import Nothing from '@/assets/images/nothing.png';
 import { useNotificationStore } from '@/store';
 import type { NotificationItem } from '@/types/interface';
 

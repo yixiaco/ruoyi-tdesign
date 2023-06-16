@@ -14,9 +14,9 @@
         <t-radio-group v-model="formData.mode">
           <div v-for="(item, index) in MODE_OPTIONS" :key="index" class="setting-layout-drawer">
             <div>
-              <t-radio-button :key="index" :value="item.type"
-                ><component :is="getModeIcon(item.type)"
-              /></t-radio-button>
+              <t-radio-button :key="index" :value="item.type">
+                <component :is="getModeIcon(item.type)" />
+              </t-radio-button>
               <p :style="{ textAlign: 'center', marginTop: '8px' }">{{ item.text }}</p>
             </div>
           </div>
@@ -100,6 +100,9 @@ import useClipboard from 'vue-clipboard3';
 import SettingAutoIcon from '@/assets/icons/assets-setting-auto.svg';
 import SettingDarkIcon from '@/assets/icons/assets-setting-dark.svg';
 import SettingLightIcon from '@/assets/icons/assets-setting-light.svg';
+import Mix from '@/assets/images/mix.png';
+import Side from '@/assets/images/side.png';
+import Top from '@/assets/images/top.png';
 import ColorContainer from '@/components/color/index.vue';
 import Thumbnail from '@/components/thumbnail/index.vue';
 import { DEFAULT_COLOR_OPTIONS } from '@/config/color';
@@ -191,6 +194,15 @@ const handleCloseDrawer = () => {
 };
 
 const getThumbnailUrl = (name: string): string => {
+  if (name === 'side') {
+    return Side;
+  }
+  if (name === 'mix') {
+    return Mix;
+  }
+  if (name === 'top') {
+    return Top;
+  }
   return `https://tdesign.gtimg.com/tdesign-pro/setting/${name}.png`;
 };
 
