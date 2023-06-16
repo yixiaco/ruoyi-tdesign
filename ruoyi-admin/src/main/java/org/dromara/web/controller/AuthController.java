@@ -157,9 +157,17 @@ public class AuthController {
         List<SysTenantVo> tenantList = tenantService.queryList(new SysTenantQuery());
         List<TenantListVo> voList = MapstructUtils.convert(tenantList, TenantListVo.class);
         // 获取域名
-        String host = new URL(request.getRequestURL().toString()).getHost();
+        String host;
+        String referer = request.getHeader("referer");
+        if (StringUtils.isNotBlank(referer)) {
+            // 这里从referer中取值是为了本地使用hosts添加虚拟域名，方便本地环境调试
+            host = referer.split("//")[1].split("/")[0];
+        } else {
+            host = new URL(request.getRequestURL().toString()).getHost();
+        }
         // 根据域名进行筛选
-        List<TenantListVo> list = StreamUtils.filter(voList, vo -> StringUtils.equals(vo.getDomain(), host));
+        List<TenantListVo> list = StreamUtils.filter(voList, vo ->
+            StringUtils.equals(vo.getDomain(), host));
         // 返回对象
         LoginTenantVo vo = new LoginTenantVo();
         vo.setVoList(CollUtil.isNotEmpty(list) ? list : voList);
