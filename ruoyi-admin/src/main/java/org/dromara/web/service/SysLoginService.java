@@ -385,24 +385,25 @@ public class SysLoginService {
         Integer maxRetryCount = userLoginConfig.getMaxRetryCount();
         Duration lockTime = userLoginConfig.getLockTime();
 
-        // 获取用户登录错误次数(可自定义限制策略 例如: key + username + ip)
-        Integer errorNumber = RedisUtils.getObject(errorKey);
+        // 获取用户登录错误次数，默认为0 (可自定义限制策略 例如: key + username + ip)
+        int errorNumber = ObjectUtil.defaultIfNull(RedisUtils.getObject(errorKey), 0);
         // 锁定时间内登录 则踢出
-        if (ObjectUtil.isNotNull(errorNumber) && errorNumber.equals(maxRetryCount)) {
+        if (errorNumber >= maxRetryCount) {
             recordLogininfor(tenantId, username, loginFail, MessageUtils.message(loginType.getRetryLimitExceed(), maxRetryCount, lockTime));
             throw new UserException(loginType.getRetryLimitExceed(), maxRetryCount, lockTime.getSeconds());
         }
 
         if (supplier.get()) {
-            // 是否第一次
-            errorNumber = ObjectUtil.isNull(errorNumber) ? 1 : errorNumber + 1;
+            // 错误次数递增
+            errorNumber++;
+            RedisUtils.setObject(errorKey, errorNumber, lockTime);
             // 达到规定错误次数 则锁定登录
-            if (errorNumber.equals(maxRetryCount)) {
+            if (errorNumber >= maxRetryCount) {
                 RedisUtils.setObject(errorKey, errorNumber, lockTime);
                 recordLogininfor(tenantId, username, loginFail, MessageUtils.message(loginType.getRetryLimitExceed(), maxRetryCount, lockTime));
                 throw new UserException(loginType.getRetryLimitExceed(), maxRetryCount, lockTime.getSeconds());
             } else {
-                // 未达到规定错误次数 则递增
+                // 未达到规定错误次数
                 RedisUtils.setObject(errorKey, errorNumber);
                 recordLogininfor(tenantId, username, loginFail, MessageUtils.message(loginType.getRetryLimitCount(), errorNumber));
                 throw new UserException(loginType.getRetryLimitCount(), errorNumber);
