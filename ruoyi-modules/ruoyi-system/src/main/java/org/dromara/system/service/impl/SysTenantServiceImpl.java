@@ -328,7 +328,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Override
     @IgnoreTenant
     @Transactional(rollbackFor = Exception.class)
-    public Boolean syncTenantPackage(String tenantId, String packageId) {
+    public Boolean syncTenantPackage(String tenantId, Long packageId) {
         SysTenantPackage tenantPackage = tenantPackageMapper.selectById(packageId);
         List<SysRole> roles = roleMapper.selectList(
             new LambdaQueryWrapper<SysRole>().eq(SysRole::getTenantId, tenantId));
