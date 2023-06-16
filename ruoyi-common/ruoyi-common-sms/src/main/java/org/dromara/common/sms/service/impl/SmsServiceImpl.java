@@ -6,15 +6,17 @@ import org.dromara.common.core.helper.SysConfigHelper;
 import org.dromara.common.json.utils.JsonUtils;
 import org.dromara.common.sms.aspectj.SmsContextCache;
 import org.dromara.common.sms.config.properties.SmsProperties;
-import org.dromara.common.sms.core.AliyunSmsTemplate;
-import org.dromara.common.sms.core.SmsTemplate;
-import org.dromara.common.sms.core.TencentSmsTemplate;
-import org.dromara.common.sms.entity.SmsResult;
 import org.dromara.common.sms.handle.SmsContextHolder;
 import org.dromara.common.sms.service.SmsService;
+import org.dromara.sms4j.aliyun.config.AlibabaConfig;
+import org.dromara.sms4j.aliyun.config.AlibabaFactory;
+import org.dromara.sms4j.api.SmsBlend;
+import org.dromara.sms4j.api.entity.SmsResponse;
+import org.dromara.sms4j.tencent.config.TencentConfig;
+import org.dromara.sms4j.tencent.config.TencentFactory;
 import org.springframework.stereotype.Service;
 
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 /**
  * 短信服务
@@ -27,9 +29,9 @@ import java.util.Map;
 public class SmsServiceImpl implements SmsService {
 
     @Override
-    public SmsTemplate getSmsTemplate() {
+    public SmsBlend getSmsTemplate() {
         // 优先从上下文中获取
-        SmsTemplate template = SmsContextHolder.getSmsTemplate();
+        SmsBlend template = SmsContextHolder.getSmsTemplate();
         if (template != null) {
             return template;
         }
@@ -40,8 +42,25 @@ public class SmsServiceImpl implements SmsService {
         SmsProperties properties = JsonUtils.parseObject(smsJson, SmsProperties.class);
         if (properties != null && properties.getEnabled()) {
             template = switch (properties.getEndpoint()) {
-                case "dysmsapi.aliyuncs.com" -> new AliyunSmsTemplate(properties);
-                case "sms.tencentcloudapi.com" -> new TencentSmsTemplate(properties);
+                case "dysmsapi.aliyuncs.com" -> {
+                    AlibabaConfig config = AlibabaConfig.builder()
+                        .accessKeyId(properties.getAccessKeyId())
+                        .accessKeySecret(properties.getAccessKeySecret())
+                        .requestUrl(properties.getEndpoint())
+                        .signature(properties.getSignName())
+                        .build();
+                    yield AlibabaFactory.instance().createSms(config);
+                }
+                case "sms.tencentcloudapi.com" -> {
+                    TencentConfig config = TencentConfig.builder()
+                        .accessKeyId(properties.getAccessKeyId())
+                        .accessKeySecret(properties.getAccessKeySecret())
+                        .requestUrl(properties.getEndpoint())
+                        .signature(properties.getSignName())
+                        .sdkAppId(properties.getSdkAppId())
+                        .build();
+                    yield TencentFactory.instance().createSms(config);
+                }
                 default -> throw new ServiceException("未找到对应的短信平台！");
             };
             return template;
@@ -50,7 +69,7 @@ public class SmsServiceImpl implements SmsService {
     }
 
     @Override
-    public SmsResult send(String phones, String templateId, Map<String, String> param) {
-        return getSmsTemplate().send(phones, templateId, param);
+    public SmsResponse send(String phones, String templateId, LinkedHashMap<String, String> param) {
+        return getSmsTemplate().sendMessage(phones, templateId, param);
     }
 }

@@ -7,7 +7,6 @@
         <groupId>org.dromara</groupId>
         <artifactId>ruoyi-common</artifactId>
         <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>ruoyi-common-sms</artifactId>
@@ -23,15 +22,17 @@
         </dependency>
 
         <dependency>
-            <groupId>com.aliyun</groupId>
-            <artifactId>dysmsapi20170525</artifactId>
+            <groupId>org.dromara.sms4j</groupId>
+            <artifactId>sms4j-spring-boot-starter</artifactId>
+            <exclusions>
+                <!-- 排除京东短信内存在的fastjson等待作者后续修复 -->
+                <exclusion>
+                    <groupId>com.alibaba</groupId>
+                    <artifactId>fastjson</artifactId>
+                </exclusion>
+            </exclusions>
         </dependency>
 
-        <dependency>
-            <groupId>com.tencentcloudapi</groupId>
-            <artifactId>tencentcloud-sdk-java-sms</artifactId>
-            <optional>true</optional>
-        </dependency>
     </dependencies>
 
 </project>

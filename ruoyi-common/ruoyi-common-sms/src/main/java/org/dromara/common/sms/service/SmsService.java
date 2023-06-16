@@ -1,9 +1,9 @@
 package org.dromara.common.sms.service;
 
-import org.dromara.common.sms.core.SmsTemplate;
-import org.dromara.common.sms.entity.SmsResult;
+import org.dromara.sms4j.api.SmsBlend;
+import org.dromara.sms4j.api.entity.SmsResponse;
 
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 /**
  * @author hexm
@@ -16,7 +16,7 @@ public interface SmsService {
      *
      * @return
      */
-    SmsTemplate getSmsTemplate();
+    SmsBlend getSmsTemplate();
 
     /**
      * 发送短信
@@ -27,5 +27,5 @@ public interface SmsService {
      *                   阿里 需使用 模板变量名称对应内容 例如: code=1234
      *                   腾讯 需使用 模板变量顺序对应内容 例如: 1=1234, 1为模板内第一个参数
      */
-    SmsResult send(String phones, String templateId, Map<String, String> param);
+    SmsResponse send(String phones, String templateId, LinkedHashMap<String, String> param);
 }

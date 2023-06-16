@@ -61,7 +61,6 @@ public class SysUserBo extends BaseEntity {
     /**
      * 用户邮箱
      */
-    @Sensitive(strategy = SensitiveStrategy.EMAIL)
     @Email(message = "邮箱格式不正确")
     @Size(min = 0, max = 50, message = "邮箱长度不能超过{max}个字符")
     private String email;
@@ -69,18 +68,12 @@ public class SysUserBo extends BaseEntity {
     /**
      * 手机号码
      */
-    @Sensitive(strategy = SensitiveStrategy.PHONE)
     private String phonenumber;
 
     /**
      * 用户性别（0男 1女 2未知）
      */
     private String sex;
-
-    /**
-     * 头像地址
-     */
-    private Long avatar;
 
     /**
      * 密码
@@ -91,16 +84,6 @@ public class SysUserBo extends BaseEntity {
      * 帐号状态（0正常 1停用）
      */
     private String status;
-
-    /**
-     * 最后登录IP
-     */
-    private String loginIp;
-
-    /**
-     * 最后登录时间
-     */
-    private Date loginDate;
 
     /**
      * 备注

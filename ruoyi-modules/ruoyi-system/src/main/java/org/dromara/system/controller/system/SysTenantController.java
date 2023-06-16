@@ -173,7 +173,8 @@ public class SysTenantController extends BaseController {
     @SaCheckPermission("system:tenant:edit")
     @Log(title = "租户", businessType = BusinessType.UPDATE)
     @GetMapping("/syncTenantPackage")
-    public R<Void> syncTenantPackage(@NotBlank(message = "租户ID不能为空") String tenantId, @NotBlank(message = "套餐ID不能为空") String packageId) {
+    public R<Void> syncTenantPackage(@NotBlank(message = "租户ID不能为空") String tenantId,
+                                     @NotNull(message = "套餐ID不能为空") Long packageId) {
         return toAjax(tenantService.syncTenantPackage(tenantId, packageId));
     }
 

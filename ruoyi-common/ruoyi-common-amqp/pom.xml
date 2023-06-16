@@ -7,7 +7,6 @@
         <groupId>org.dromara</groupId>
         <artifactId>ruoyi-common</artifactId>
         <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
 
     <artifactId>ruoyi-common-amqp</artifactId>

@@ -17,10 +17,10 @@ import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.mail.service.MailService;
 import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.sms.aspectj.SmsContextCache;
-import org.dromara.common.sms.entity.SmsResult;
 import org.dromara.common.sms.service.SmsService;
 import org.dromara.common.web.config.properties.CaptchaProperties;
 import org.dromara.common.web.enums.CaptchaType;
+import org.dromara.sms4j.api.entity.SmsResponse;
 import org.dromara.web.domain.vo.CaptchaVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.Expression;
@@ -31,8 +31,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.LinkedHashMap;
 
 /**
  * 验证码操作处理
@@ -65,12 +64,12 @@ public class CaptchaController {
         RedisUtils.setObject(key, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
         // 验证码模板id
         String loginTemplateId = SysConfigHelper.getSysSmsCaptchaTemplateId();
-        Map<String, String> map = new HashMap<>(1);
+        LinkedHashMap<String, String> map = new LinkedHashMap<>(1);
         map.put("code", code);
-        SmsResult result = smsService.send(phonenumber, loginTemplateId, map);
-        if (!result.isSuccess()) {
-            log.error("验证码短信发送异常 => {}", result);
-            return R.fail(result.getMessage());
+        SmsResponse smsResponse = smsService.send(phonenumber, loginTemplateId, map);
+        if (!"OK".equals(smsResponse.getCode())) {
+            log.error("验证码短信发送异常 => {}", smsResponse);
+            return R.fail(smsResponse.getMessage());
         }
         return R.ok();
     }

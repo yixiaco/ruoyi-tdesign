@@ -88,7 +88,7 @@ public class SysLoginService {
         if (captchaEnabled) {
             validateCaptcha(username, code, uuid);
         }
-
+        // 框架登录不限制从什么表查询 只要最终构建出 LoginUser 即可
         SysUserVo user = loadUserByUsername(username);
 
         String tenantId = user.getTenantId();
@@ -97,7 +97,7 @@ public class SysLoginService {
         checkTenant(tenantId);
 
         checkLogin(LoginType.PASSWORD, tenantId, username, () -> !BCrypt.checkpw(password, user.getPassword()));
-        // 此处可根据登录用户的数据不同 自行创建 loginUser
+        // 此处可根据登录用户的数据不同 自行创建 loginUser 属性不够用继承扩展就行了
         LoginUser loginUser = buildLoginUser(user);
         // 生成token
         LoginHelper.loginByDevice(loginUser, DeviceType.PC);
@@ -125,7 +125,7 @@ public class SysLoginService {
         checkTenant(tenantId);
 
         checkLogin(LoginType.SMS, tenantId, user.getUserName(), () -> !validateSmsCode(tenantId, phonenumber, smsCode));
-        // 此处可根据登录用户的数据不同 自行创建 loginUser
+        // 此处可根据登录用户的数据不同 自行创建 loginUser 属性不够用继承扩展就行了
         LoginUser loginUser = buildLoginUser(user);
         // 生成token
         LoginHelper.loginByDevice(loginUser, DeviceType.APP);
@@ -152,7 +152,7 @@ public class SysLoginService {
         checkTenant(tenantId);
 
         checkLogin(LoginType.EMAIL, tenantId, user.getUserName(), () -> !validateEmailCode(tenantId, email, emailCode));
-        // 此处可根据登录用户的数据不同 自行创建 loginUser
+        // 此处可根据登录用户的数据不同 自行创建 loginUser 属性不够用继承扩展就行了
         LoginUser loginUser = buildLoginUser(user);
         // 生成token
         LoginHelper.loginByDevice(loginUser, DeviceType.APP);
@@ -175,11 +175,12 @@ public class SysLoginService {
         // todo 以下自行实现
         // 校验 appid + appsrcret + xcxCode 调用登录凭证校验接口 获取 session_key 与 openid
         String openid = "";
+        // 框架登录不限制从什么表查询 只要最终构建出 LoginUser 即可
         SysUserVo user = loadUserByOpenid(openid);
         // 校验租户
         checkTenant(user.getTenantId());
 
-        // 此处可根据登录用户的数据不同 自行创建 loginUser
+        // 此处可根据登录用户的数据不同 自行创建 loginUser 属性不够用继承扩展就行了
         XcxLoginUser loginUser = new XcxLoginUser();
         loginUser.setTenantId(user.getTenantId());
         loginUser.setUserId(user.getUserId());
@@ -317,7 +318,7 @@ public class SysLoginService {
 
     private SysUserVo loadUserByEmail(String email) {
         SysUser user = userMapper.selectOne(new LambdaQueryWrapper<SysUser>()
-            .select(SysUser::getPhonenumber, SysUser::getStatus)
+            .select(SysUser::getEmail, SysUser::getStatus)
             .eq(SysUser::getEmail, email));
         if (ObjectUtil.isNull(user)) {
             log.info("登录用户：{} 不存在.", email);
@@ -384,24 +385,25 @@ public class SysLoginService {
         Integer maxRetryCount = userLoginConfig.getMaxRetryCount();
         Duration lockTime = userLoginConfig.getLockTime();
 
-        // 获取用户登录错误次数(可自定义限制策略 例如: key + username + ip)
-        Integer errorNumber = RedisUtils.getObject(errorKey);
+        // 获取用户登录错误次数，默认为0 (可自定义限制策略 例如: key + username + ip)
+        int errorNumber = ObjectUtil.defaultIfNull(RedisUtils.getObject(errorKey), 0);
         // 锁定时间内登录 则踢出
-        if (ObjectUtil.isNotNull(errorNumber) && errorNumber.equals(maxRetryCount)) {
+        if (errorNumber >= maxRetryCount) {
             recordLogininfor(tenantId, username, loginFail, MessageUtils.message(loginType.getRetryLimitExceed(), maxRetryCount, lockTime));
             throw new UserException(loginType.getRetryLimitExceed(), maxRetryCount, lockTime.getSeconds());
         }
 
         if (supplier.get()) {
-            // 是否第一次
-            errorNumber = ObjectUtil.isNull(errorNumber) ? 1 : errorNumber + 1;
+            // 错误次数递增
+            errorNumber++;
+            RedisUtils.setObject(errorKey, errorNumber, lockTime);
             // 达到规定错误次数 则锁定登录
-            if (errorNumber.equals(maxRetryCount)) {
+            if (errorNumber >= maxRetryCount) {
                 RedisUtils.setObject(errorKey, errorNumber, lockTime);
                 recordLogininfor(tenantId, username, loginFail, MessageUtils.message(loginType.getRetryLimitExceed(), maxRetryCount, lockTime));
                 throw new UserException(loginType.getRetryLimitExceed(), maxRetryCount, lockTime.getSeconds());
             } else {
-                // 未达到规定错误次数 则递增
+                // 未达到规定错误次数
                 RedisUtils.setObject(errorKey, errorNumber);
                 recordLogininfor(tenantId, username, loginFail, MessageUtils.message(loginType.getRetryLimitCount(), errorNumber));
                 throw new UserException(loginType.getRetryLimitCount(), errorNumber);

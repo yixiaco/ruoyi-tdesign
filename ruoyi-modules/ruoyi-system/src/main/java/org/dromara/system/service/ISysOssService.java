@@ -8,6 +8,7 @@ import org.dromara.system.domain.query.SysOssQuery;
 import org.dromara.system.domain.vo.SysOssVo;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.File;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.List;
@@ -45,6 +46,13 @@ public interface ISysOssService extends IService<SysOss> {
      * @param file 文件
      */
     SysOssVo upload(MultipartFile file);
+
+    /**
+     * 上传OSS对象存储
+     *
+     * @param file 文件
+     */
+    SysOssVo upload(File file);
 
     /**
      * 下载OSS对象

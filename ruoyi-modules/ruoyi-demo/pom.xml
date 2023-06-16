@@ -6,7 +6,6 @@
         <artifactId>ruoyi-modules</artifactId>
         <groupId>org.dromara</groupId>
         <version>${revision}</version>
-        <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -98,16 +97,6 @@
             <groupId>org.dromara</groupId>
             <artifactId>ruoyi-common-websocket</artifactId>
         </dependency>
-        <!-- 短信 用哪个导入哪个依赖 -->
-<!--        <dependency>-->
-<!--            <groupId>com.aliyun</groupId>-->
-<!--            <artifactId>dysmsapi20170525</artifactId>-->
-<!--        </dependency>-->
-
-<!--        <dependency>-->
-<!--            <groupId>com.tencentcloudapi</groupId>-->
-<!--            <artifactId>tencentcloud-sdk-java-sms</artifactId>-->
-<!--        </dependency>-->
 
     </dependencies>
 

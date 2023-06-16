@@ -1,8 +1,11 @@
 ## 平台简介
+
+[![码云Gitee](https://gitee.com/yixiacoco/ruoyi-tdesign/badge/star.svg?theme=blue)](https://gitee.com/yixiacoco/ruoyi-tdesign)
+[![GitHub](https://img.shields.io/github/stars/yixiaco/ruoyi-tdesign.svg?style=social&label=Stars)](https://github.com/yixiaco/ruoyi-tdesign)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://gitee.com/yixiacoco/ruoyi-tdesign/blob/master/LICENSE)
 [![使用IntelliJ IDEA开发维护](https://img.shields.io/badge/IntelliJ%20IDEA-提供支持-blue.svg)](https://www.jetbrains.com/?from=ruoyi-tdesign)
 <br>
-[![ruoyi-tdesign](https://img.shields.io/badge/ruoyi%20tdesign-1.0.0_5.0.0-success.svg)](https://gitee.com/yixiacoco/ruoyi-tdesign)
+[![ruoyi-tdesign](https://img.shields.io/badge/ruoyi%20tdesign-1.0.1-success.svg)](https://gitee.com/yixiacoco/ruoyi-tdesign)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.0-blue.svg)]()
 [![JDK-17](https://img.shields.io/badge/JDK-17-green.svg)]()
 [![JDK-19](https://img.shields.io/badge/JDK-19-green.svg)]()
@@ -40,7 +43,7 @@
 | 分布式任务调度 | Xxl-Job                     | [Xxl-Job官网](https://www.xuxueli.com/xxl-job/)              | 高性能 高可靠 易扩展                                         |
 | 文件存储       | Minio                       | [Minio文档](https://docs.min.io/)                            | 采用 Minio 分布式文件存储 天生支持多机、多硬盘、多分片、多副本存储<br/>支持权限管理 安全可靠 文件可加密存储 |
 | 云存储         | 七牛、阿里、腾讯            | [OSS使用文档](https://gitee.com/yixiacoco/ruoyi-tdesign/wikis/pages?sort_id=4359146&doc_id=1469725) | 采用 AWS S3 协议客户端 支持 七牛、阿里、腾讯 等一切支持S3协议的厂家 |
-| 短信           | 阿里、腾讯                  | [短信使用文档](https://gitee.com/yixiacoco/ruoyi-tdesign/wikis/pages?sort_id=5578491&doc_id=1469725) | 支持 阿里、腾讯 只需在yml配置好厂家密钥即可使用 接口化支持扩展其他厂家 |
+| 短信           | 支持数十种短信厂家                  | [短信使用文档](https://wind.kim/) | 采用 sms4j 短信融合包 支持数十种短信厂家 只需在yml配置好厂家密钥即可使用 可多厂家共用 |
 | 邮件           | mail-api                    |                                                              | 采用 mail-api 通用协议支持大部分邮件厂商                     |
 | 监控框架       | SpringBoot-Admin            | [SpringBoot-Admin文档](https://codecentric.github.io/spring-boot-admin/current/) | 全方位服务监控                                               |
 | 校验框架       | Validation                  | [Validation文档](https://docs.jboss.org/hibernate/stable/validator/reference/en-US/html_single/) | 增强接口安全性、严谨性 支持国际化                            |
