@@ -3,13 +3,9 @@
     <t-space direction="vertical">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline">
         <t-form-item label="数据源" name="dataName">
-          <t-input
-            v-model="queryParams.dataName"
-            placeholder="请输入数据源名称"
-            clearable
-            style="width: 200px"
-            @enter="handleQuery"
-          />
+          <t-select v-model="queryParams.dataName" filterable clearable placeholder="请选择/输入数据源名称">
+            <t-option v-for="item in dataNameList" :key="item" :value="item" :label="item"></t-option>
+          </t-select>
         </t-form-item>
         <t-form-item label="表名称" name="tableName">
           <t-input
@@ -192,11 +188,11 @@ import {
   UploadIcon,
 } from 'tdesign-icons-vue-next';
 import { PageInfo, PrimaryTableCol, SelectOptions } from 'tdesign-vue-next';
-import { computed, getCurrentInstance, onActivated, ref } from 'vue';
+import { computed, getCurrentInstance, onActivated, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
-import { delTable, genCode, listTable, previewTable, synchDb } from '@/api/tool/gen';
-import { GenTable } from '@/api/tool/model/genModel';
+import { delTable, genCode, getDataNames, listTable, previewTable, synchDb } from '@/api/tool/gen';
+import { DbTableQuery, GenTable } from '@/api/tool/model/genModel';
 import router from '@/router';
 
 import ImportTable from './importTable.vue';
@@ -212,7 +208,7 @@ const ids = ref([]);
 const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
-const tableNames = ref([]);
+const dataNameList = ref<Array<string>>([]);
 const dateRange = ref([]);
 const uniqueId = ref('');
 const importRef = ref(null);
@@ -221,6 +217,7 @@ const importRef = ref(null);
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 55, align: 'center' },
   { title: '序号', colKey: 'serial-number', width: 80, align: 'center' },
+  { title: `数据源`, colKey: 'dataName', align: 'center', ellipsis: true },
   { title: `表名称`, colKey: 'tableName', align: 'center', ellipsis: true },
   { title: `表描述`, colKey: 'tableComment', align: 'center', ellipsis: true },
   { title: `实体`, colKey: 'className', align: 'center', ellipsis: true },
@@ -229,12 +226,12 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 330 },
 ]);
 
-const queryParams = ref<GenTable>({
+const queryParams = ref<DbTableQuery>({
   pageNum: 1,
   pageSize: 10,
   tableName: undefined,
   tableComment: undefined,
-  dataName: 'master',
+  dataName: '',
 });
 const preview = ref({
   open: false,
@@ -258,8 +255,6 @@ const pagination = computed(() => {
   };
 });
 
-localStorage.setItem('dataName', queryParams.value.dataName);
-
 onActivated(() => {
   const time = route.query.t;
   if (time != null && time !== uniqueId.value) {
@@ -270,6 +265,12 @@ onActivated(() => {
     getList();
   }
 });
+
+/** 查询多数据源名称 */
+async function getDataNameList() {
+  const res = await getDataNames();
+  dataNameList.value = res.data;
+}
 
 /** 查询表集合 */
 function getList() {
@@ -282,37 +283,36 @@ function getList() {
 }
 /** 搜索按钮操作 */
 function handleQuery() {
-  localStorage.setItem('dataName', queryParams.value.dataName);
   queryParams.value.pageNum = 1;
   getList();
 }
 /** 生成代码操作 */
 function handleGenTable(row: GenTable) {
-  const tbNames = row.tableName || tableNames.value;
-  if (!row.tableName && tableNames.value.length === 0) {
+  const tbIds = row?.tableId || ids.value;
+  if (!row?.tableId && ids.value.length === 0) {
     proxy.$modal.msgError('请选择要生成的数据');
     return;
   }
   if (row?.genType === '1') {
-    genCode(row.tableName).then((response) => {
+    genCode(row.tableId).then((response) => {
       proxy.$modal.msgSuccess(`成功生成到自定义路径：${row.genPath}`);
     });
   } else {
-    proxy.$download.zip(`/tool/gen/batchGenCode?tables=${tbNames}`, 'ruoyi.zip');
+    proxy.$download.zip(`/tool/gen/batchGenCode?tableIdStr=${tbIds}`, 'ruoyi.zip');
   }
 }
 /** 同步数据库操作 */
 function handleSynchDb(row: GenTable) {
-  const { tableName } = row;
-  proxy.$modal.confirm(`确认要强制同步"${tableName}"表结构吗？`, () => {
-    return synchDb(tableName).then(() => {
+  const { tableName, tableId, dataName } = row;
+  proxy.$modal.confirm(`确认要强制同步"${dataName}.${tableName}"表结构吗？`, () => {
+    return synchDb(tableId).then(() => {
       proxy.$modal.msgSuccess('同步成功');
     });
   });
 }
 /** 打开导入表弹窗 */
 function openImportTable() {
-  importRef.value.show();
+  importRef.value.show(queryParams.value.dataName);
 }
 /** 重置按钮操作 */
 function resetQuery() {
@@ -336,7 +336,6 @@ function copyTextSuccess() {
 // 多选框选中数据
 function handleSelectionChange(selection: Array<string | number>, { selectedRowData }: SelectOptions<GenTable>) {
   ids.value = selection;
-  tableNames.value = selectedRowData.map((item) => item.tableName);
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
 }
@@ -356,5 +355,8 @@ function handleDelete(row: GenTable) {
   });
 }
 
-getList();
+onMounted(() => {
+  getList();
+  getDataNameList();
+});
 </script>

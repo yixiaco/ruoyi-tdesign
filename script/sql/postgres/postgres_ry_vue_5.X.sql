@@ -957,6 +957,7 @@ drop table if exists gen_table;
 create table if not exists gen_table
 (
     table_id          int8,
+    data_name         varchar(200)  default ''::varchar,
     table_name        varchar(200)  default ''::varchar,
     table_comment     varchar(500)  default ''::varchar,
     class_name        varchar(100)  default ''::varchar,
@@ -980,6 +981,7 @@ create table if not exists gen_table
 
 comment on table gen_table is '代码生成业务表';
 comment on column gen_table.table_id is '编号';
+comment on column gen_table.data_name is '数据源名称';
 comment on column gen_table.table_name is '表名称';
 comment on column gen_table.table_comment is '表描述';
 comment on column gen_table.class_name is '实体类名称';

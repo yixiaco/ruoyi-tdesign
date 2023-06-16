@@ -4,7 +4,7 @@
     v-model:visible="visible"
     :close-on-overlay-click="false"
     header="导入表"
-    width="800px"
+    width="1100px"
     top="5vh"
     attach="body"
     @opened="handleOpen"
@@ -12,6 +12,17 @@
   >
     <t-space direction="vertical">
       <t-form ref="queryRef" :data="queryParams" layout="inline" label-width="70px">
+        <t-form-item label="数据源" name="dataName">
+          <t-select
+            v-model="queryParams.dataName"
+            style="width: 200px"
+            placeholder="请选择/输入数据源名称"
+            filterable
+            clearable
+          >
+            <t-option v-for="item in dataNameList" :key="item" :label="item" :value="item"> </t-option>
+          </t-select>
+        </t-form-item>
         <t-form-item label="表名称" name="tableName">
           <t-input
             v-model="queryParams.tableName"
@@ -64,21 +75,23 @@ import { RefreshIcon, SearchIcon } from 'tdesign-icons-vue-next';
 import { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, reactive, ref } from 'vue';
 
-import { importTable, listDbTable } from '@/api/tool/gen';
-import { GenTable } from '@/api/tool/model/genModel';
+import { getDataNames, importTable, listDbTable } from '@/api/tool/gen';
+import { DbTableQuery, GenTable } from '@/api/tool/model/genModel';
 
 const total = ref(0);
 const loading = ref(false);
 const visible = ref(false);
 const tables = ref([]);
 const dbTableList = ref<GenTable[]>([]);
+const dataNameList = ref<Array<string>>([]);
 const { proxy } = getCurrentInstance();
 
-const queryParams = reactive({
+const queryParams = reactive<DbTableQuery>({
   pageNum: 1,
   pageSize: 10,
-  tableName: undefined,
-  tableComment: undefined,
+  dataName: '',
+  tableName: '',
+  tableComment: '',
 });
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
@@ -106,7 +119,13 @@ const pagination = computed(() => {
 const emit = defineEmits(['ok']);
 
 /** 查询参数列表 */
-function show() {
+function show(dataName: string) {
+  getDataNameList();
+  if (dataName) {
+    queryParams.dataName = dataName;
+  } else {
+    queryParams.dataName = 'master';
+  }
   getList();
   visible.value = true;
 }
@@ -144,13 +163,18 @@ function handleImportTable() {
     proxy.$modal.msgError('请选择要导入的表');
     return;
   }
-  importTable(tableNames).then((res) => {
+  importTable(tableNames, queryParams.dataName).then((res) => {
     proxy.$modal.msgSuccess(res.msg);
     if (res.code === 200) {
       visible.value = false;
       emit('ok');
     }
   });
+}
+/** 查询多数据源名称 */
+async function getDataNameList() {
+  const res = await getDataNames();
+  dataNameList.value = res.data;
 }
 
 defineExpose({

@@ -1,5 +1,6 @@
 package org.dromara.generator.mapper;
 
+import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
@@ -17,7 +18,7 @@ import java.util.List;
 public interface GenTableMapper extends BaseMapperPlus<GenTable, GenTable> {
 
     /**
-     * 查询据库列表
+     * 查询数据库列表
      *
      * @param genTable 查询条件
      * @return 数据库表集合
@@ -25,7 +26,7 @@ public interface GenTableMapper extends BaseMapperPlus<GenTable, GenTable> {
     Page<GenTable> selectPageDbTableList(@Param("page") Page<GenTable> page, @Param("genTable") GenTable genTable);
 
     /**
-     * 查询据库列表
+     * 查询数据库列表
      *
      * @param tableNames 表名称组
      * @return 数据库表集合
@@ -55,4 +56,12 @@ public interface GenTableMapper extends BaseMapperPlus<GenTable, GenTable> {
      */
     GenTable selectGenTableByName(String tableName);
 
+    /**
+     * 查询表名列表
+     *
+     * @param dataName 数据源
+     * @return
+     */
+    @DS("")
+    List<String> selectTableNameList(String dataName);
 }
