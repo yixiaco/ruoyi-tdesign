@@ -1,8 +1,11 @@
 ## 平台简介
+
+[![码云Gitee](https://gitee.com/yixiacoco/ruoyi-tdesign/badge/star.svg?theme=blue)](https://gitee.com/yixiacoco/ruoyi-tdesign)
+[![GitHub](https://img.shields.io/github/stars/yixiaco/ruoyi-tdesign.svg?style=social&label=Stars)](https://github.com/yixiaco/ruoyi-tdesign)
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://gitee.com/yixiacoco/ruoyi-tdesign/blob/master/LICENSE)
 [![使用IntelliJ IDEA开发维护](https://img.shields.io/badge/IntelliJ%20IDEA-提供支持-blue.svg)](https://www.jetbrains.com/?from=ruoyi-tdesign)
 <br>
-[![ruoyi-tdesign](https://img.shields.io/badge/ruoyi%20tdesign-1.0.0_5.0.0-success.svg)](https://gitee.com/yixiacoco/ruoyi-tdesign)
+[![ruoyi-tdesign](https://img.shields.io/badge/ruoyi%20tdesign-1.0.1-success.svg)](https://gitee.com/yixiacoco/ruoyi-tdesign)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.0-blue.svg)]()
 [![JDK-17](https://img.shields.io/badge/JDK-17-green.svg)]()
 [![JDK-19](https://img.shields.io/badge/JDK-19-green.svg)]()
