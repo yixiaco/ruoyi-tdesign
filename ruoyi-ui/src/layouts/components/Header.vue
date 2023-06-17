@@ -65,7 +65,7 @@
                 </t-avatar>
               </template>
               <div class="header-user-account">{{ userStore.name }}</div>
-              <template #suffix><t-icon name="chevron-down" /></template>
+              <template #suffix><chevron-down-icon /></template>
             </t-button>
           </t-dropdown>
           <t-tooltip placement="bottom" content="系统设置">
@@ -81,6 +81,7 @@
 
 <script setup lang="ts">
 import {
+  ChevronDownIcon,
   HelpCircleIcon,
   LogoGithubIcon,
   PoweroffIcon,
