@@ -8,10 +8,10 @@
   >
     <t-option v-for="item in options" :key="item.stem" :value="item.stem" class="overlay-options">
       <div>
-        <t-icon :name="item.stem" />
+        <r-icon :name="item.stem" />
       </div>
     </t-option>
-    <template #valueDisplay><t-icon :name="modelValue" :style="{ marginRight: '8px' }" />{{ modelValue }}</template>
+    <template #valueDisplay><r-icon :name="modelValue" :style="{ marginRight: '8px' }" />{{ modelValue }}</template>
   </t-select>
 </template>
 <script lang="ts">

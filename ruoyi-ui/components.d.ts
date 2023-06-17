@@ -18,6 +18,7 @@ declare module 'vue' {
     ParentView: typeof import('./src/components/ParentView/index.vue')['default']
     ProductCard: typeof import('./src/components/product-card/index.vue')['default']
     Result: typeof import('./src/components/result/index.vue')['default']
+    RIcon: typeof import('./src/components/r-icon/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TAside: typeof import('tdesign-vue-next')['Aside']

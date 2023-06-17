@@ -65,7 +65,7 @@
           </t-row>
         </template>
         <template #icon="{ row }">
-          <t-icon :name="row.icon" />
+          <r-icon :name="row.icon" />
         </template>
         <template #status="{ row }">
           <dict-tag :options="sys_normal_disable" :value="row.status" />
