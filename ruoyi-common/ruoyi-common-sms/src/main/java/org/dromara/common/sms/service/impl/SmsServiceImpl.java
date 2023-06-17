@@ -9,11 +9,12 @@ import org.dromara.common.sms.config.properties.SmsProperties;
 import org.dromara.common.sms.handle.SmsContextHolder;
 import org.dromara.common.sms.service.SmsService;
 import org.dromara.sms4j.aliyun.config.AlibabaConfig;
-import org.dromara.sms4j.aliyun.config.AlibabaFactory;
 import org.dromara.sms4j.api.SmsBlend;
 import org.dromara.sms4j.api.entity.SmsResponse;
+import org.dromara.sms4j.api.universal.SupplierConfig;
+import org.dromara.sms4j.core.factory.SmsFactory;
+import org.dromara.sms4j.provider.enumerate.SupplierType;
 import org.dromara.sms4j.tencent.config.TencentConfig;
-import org.dromara.sms4j.tencent.config.TencentFactory;
 import org.springframework.stereotype.Service;
 
 import java.util.LinkedHashMap;
@@ -22,6 +23,7 @@ import java.util.LinkedHashMap;
  * 短信服务
  * 当执行多次的接口调用时，可以手动缓存对象到{@linkplain  SmsContextHolder}中，并在执行结束后移除缓存，避免修改配置后读取不到；
  * 或者可以使用{@linkplain SmsContextCache}注解在使用的SpringBean中使用，可以在整个方法中缓存发送对象
+ *
  * @author hexm
  * @date 2023/2/4
  */
@@ -43,23 +45,23 @@ public class SmsServiceImpl implements SmsService {
         if (properties != null && properties.getEnabled()) {
             template = switch (properties.getEndpoint()) {
                 case "dysmsapi.aliyuncs.com" -> {
-                    AlibabaConfig config = AlibabaConfig.builder()
+                    SupplierConfig config = AlibabaConfig.builder()
                         .accessKeyId(properties.getAccessKeyId())
                         .accessKeySecret(properties.getAccessKeySecret())
                         .requestUrl(properties.getEndpoint())
                         .signature(properties.getSignName())
                         .build();
-                    yield AlibabaFactory.instance().createSms(config);
+                    yield SmsFactory.createSmsBlend(SupplierType.ALIBABA, config);
                 }
                 case "sms.tencentcloudapi.com" -> {
-                    TencentConfig config = TencentConfig.builder()
+                    SupplierConfig config = TencentConfig.builder()
                         .accessKeyId(properties.getAccessKeyId())
                         .accessKeySecret(properties.getAccessKeySecret())
                         .requestUrl(properties.getEndpoint())
                         .signature(properties.getSignName())
                         .sdkAppId(properties.getSdkAppId())
                         .build();
-                    yield TencentFactory.instance().createSms(config);
+                    yield SmsFactory.createSmsBlend(SupplierType.TENCENT, config);
                 }
                 default -> throw new ServiceException("未找到对应的短信平台！");
             };
