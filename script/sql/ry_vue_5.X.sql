@@ -863,3 +863,86 @@ create table sys_app  (
   remark        varchar(500)    null        default null        comment '备注',
   primary key (appid) using btree
 ) engine = innodb comment = '应用管理表';
+
+-- ----------------------------
+-- 消息配置表
+-- ----------------------------
+drop table if exists sys_message_config;
+create table sys_message_config  (
+  message_config_id bigint(20)      not null                    comment '消息设置id',
+  title             varchar(255)    not null                    comment '标题',
+  supplier_type     varchar(20)     not null                    comment '支持平台标识',
+  config_json       text            null                        comment '配置json',
+  is_open           tinyint(1)      not null                    comment '启用标识 1开启 0关闭',
+  remark            varchar(500)    null        default null    comment '备注',
+  create_dept       bigint(20)      null        default null    comment '创建部门',
+  update_by         bigint(20)      null        default null    comment '更新者',
+  create_by         bigint(20)      null        default null    comment '创建者',
+  update_time       datetime        null        default null    comment '更新时间',
+  create_time       datetime        null        default null    comment '创建时间',
+  primary key (message_config_id) using btree
+) engine = innodb comment = '消息配置表';
+
+-- ----------------------------
+-- 消息常量表
+-- ----------------------------
+drop table if exists sys_message_key;
+create table sys_message_key  (
+  message_key_id    bigint(20)      not null                    comment '消息key主键',
+  name              varchar(255)    not null                    comment '消息名称',
+  message_key       varchar(50)     not null                    comment '消息key',
+  vars_json         text            null                        comment '输出变量',
+  remark            varchar(500)    null        default null    comment '备注',
+  create_dept       bigint(20)      null        default null    comment '创建部门',
+  update_by         bigint(20)      null        default null    comment '更新者',
+  create_by         bigint(20)      null        default null    comment '创建者',
+  update_time       datetime        null        default null    comment '更新时间',
+  create_time       datetime        null        default null    comment '创建时间',
+  primary key (message_key_id) using btree
+) engine = innodb comment = '消息常量表';
+
+-- ----------------------------
+-- 消息发送记录表
+-- ----------------------------
+drop table if exists sys_message_log;
+create table sys_message_log  (
+  message_log_id        bigint(20)      not null                    comment '消息发送记录id',
+  message_key           varchar(50)     not null                    comment '消息key',
+  message_template_name varchar(255)    null        default null    comment '模板名称',
+  message_type          varchar(20)     not null                    comment '消息类型 SMS、EMAIL',
+  account               varchar(255)    not null                    comment '发送账号',
+  content               text            null                        comment '发送内容或模板id',
+  message_config_title  varchar(255)    null        default null    comment '消息配置标题',
+  supplier_type         varchar(20)     null        default null    comment '平台标识',
+  is_success            tinyint(1)      null        default null    comment '是否成功',
+  error_code            varchar(255)    null        default null    comment '错误码',
+  error_message         varchar(500)    null        default null    comment '错误消息',
+  biz_id                varchar(36)     null        default null    comment '回执消息id',
+  message               varchar(255)    null        default null    comment '返回消息',
+  log_time              datetime NOT    null                        comment '记录时间',
+  PRIMARY KEY (message_log_id) USING BTREE
+) ENGINE = InnoDB COMMENT = '消息发送记录表';
+
+-- ----------------------------
+-- 消息模板表
+-- ----------------------------
+drop table if exists sys_message_template;
+create table sys_message_template  (
+  message_template_id   bigint(20)      not null                    comment '消息模板id',
+  template_name         varchar(255)    not null                    comment '模板名称',
+  message_config_id     bigint(20)      not null                    comment '消息配置id',
+  message_key           varchar(50)     not null                    comment '消息key',
+  message_type          varchar(20)     not null                    comment '消息类型 SMS、EMAIL',
+  template_type         varchar(20)     not null                    comment '模板类型 模板id模式、内容模式',
+  template_id           varchar(100)    null        default null    comment '模板id',
+  content               varchar(500)    null        default null    comment '内容',
+  vars_json             text            null                        comment '输入变量',
+  is_open               tinyint(1)      not null                    comment '是否启用',
+  remark                varchar(500)    null        default null    comment '备注',
+  create_dept           bigint(20)      null        default null    comment '创建部门',
+  update_by             bigint(20)      null        default null    comment '更新者',
+  create_by             bigint(20)      null        default null    comment '创建者',
+  update_time           datetime        null        default null    comment '更新时间',
+  create_time           datetime        null        default null    comment '创建时间',
+  primary key (message_template_id) using btree
+) engine = innodb comment = '消息模板表';
