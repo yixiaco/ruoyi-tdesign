@@ -18,6 +18,7 @@ import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.redis.utils.RedisLockUtil;
 import org.dromara.common.redis.utils.RedisUtils;
+import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.system.domain.SysOssRule;
 import org.dromara.system.domain.bo.SysOssRuleBo;
 import org.dromara.system.domain.query.SysOssRuleQuery;
@@ -193,6 +194,10 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
     @Override
     @SuppressWarnings("unchecked cast")
     public Map<String, String> getUrls(String fieldName, String originalUrl, String[] useRules) {
+        // 如果启用了租户，但获取不到租户，则直接返回null
+        if (TenantHelper.isEnable() && StrUtil.isBlank(TenantHelper.getTenantId())) {
+            return null;
+        }
         // 二级缓存
         List<SysOssRule> rules = null;
         if (SpringMVCUtil.isWeb()) {
