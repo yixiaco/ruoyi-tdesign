@@ -28,6 +28,7 @@ public @interface SaUserCheckDisable {
      *
      * @return see note
      */
+    @AliasFor(annotation = SaCheckDisable.class, attribute = "value")
     String[] value() default {SaTokenConsts.DEFAULT_DISABLE_SERVICE};
 
     /**
