@@ -121,25 +121,54 @@ watch(
         list = val;
       } else if (props.mode === 'url') {
         await listByUrls(val as string).then((res) => {
-          list = res.data;
+          const tempMap = new Map<string, object>();
+          res.data.forEach((oss) => {
+            tempMap.set(oss.url, {
+              name: oss.originalName,
+              status: 'success',
+              size: oss.size,
+              uploadTime: oss.createTime,
+              url: oss.url,
+              ossId: oss.ossId,
+            });
+          });
+          list = val.split(',').map((url: string) => {
+            return (
+              tempMap.get(url) || {
+                name: url.slice(url.lastIndexOf('/') + 1),
+                status: 'success',
+                size: 0,
+                url,
+              }
+            );
+          });
         });
       } else if (props.mode === 'id') {
         await listByIds(val as string).then((res) => {
-          list = res.data;
+          list = res.data.map((oss) => {
+            return {
+              name: oss.originalName,
+              status: 'success',
+              size: oss.size,
+              uploadTime: oss.createTime,
+              url: oss.url,
+              ossId: oss.ossId,
+            };
+          });
         });
       }
       // 然后将数组转为对象数组
       fileList.value = list.map((item) => {
         // 字符串回显处理 如果此处存的是url可直接回显 如果存的是id需要调用接口查出来
         if (typeof item === 'string') {
-          item = { name: item, status: 'success', url: item };
+          item = { name: item.slice(item.lastIndexOf('/') + 1), status: 'success', url: item };
         } else {
           // 此处name使用ossId 防止删除出现重名
           item = {
-            name: item.ossId,
-            status: 'success',
+            name: item.name,
+            status: item.status,
             size: item.size,
-            uploadTime: item.createTime,
+            uploadTime: item.uploadTime,
             url: item.url,
             ossId: item.ossId,
           };

@@ -243,7 +243,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `文件展示`, colKey: 'url', align: 'center' },
   { title: `大小`, colKey: 'size', align: 'center' },
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180, sorter: true },
-  { title: `上传人`, colKey: 'createBy', align: 'center' },
+  { title: `上传人`, colKey: 'createByName', align: 'center' },
   { title: `服务商`, colKey: 'service', align: 'center' },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
