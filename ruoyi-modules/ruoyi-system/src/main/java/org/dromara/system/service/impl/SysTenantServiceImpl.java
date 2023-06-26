@@ -10,6 +10,8 @@ import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.constant.Constants;
 import org.dromara.common.core.constant.TenantConstants;
+import org.dromara.common.core.enums.NormalDisableEnum;
+import org.dromara.common.core.enums.YesNoEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
@@ -165,7 +167,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         List<SysConfig> sysConfigList = configMapper.selectList(
             new LambdaQueryWrapper<SysConfig>()
                 .eq(SysConfig::getTenantId, defaultTenantId)
-                .eq(SysConfig::getIsGlobal, 0)
+                .eq(SysConfig::getIsGlobal, YesNoEnum.NO.getCodeNum())
         );
         for (SysConfig config : sysConfigList) {
             config.setConfigId(null);
@@ -216,7 +218,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         role.setRoleName(TenantConstants.TENANT_ADMIN_ROLE_NAME);
         role.setRoleKey(TenantConstants.TENANT_ADMIN_ROLE_KEY);
         role.setRoleSort(1);
-        role.setStatus(TenantConstants.NORMAL);
+        role.setStatus(NormalDisableEnum.NORMAL.getCode());
         roleMapper.insert(role);
         Long roleId = role.getRoleId();
 

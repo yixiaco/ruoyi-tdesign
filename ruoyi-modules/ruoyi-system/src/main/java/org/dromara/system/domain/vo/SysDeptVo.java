@@ -76,7 +76,7 @@ public class SysDeptVo implements Serializable {
     private String email;
 
     /**
-     * 部门状态（0正常 1停用）
+     * 部门状态（1正常 0停用）
      */
     @ExcelProperty(value = "部门状态", converter = ExcelDictConvert.class)
     @ExcelDictFormat(dictType = "sys_normal_disable")

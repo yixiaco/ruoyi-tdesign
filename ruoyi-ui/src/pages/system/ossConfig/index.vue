@@ -22,8 +22,8 @@
         </t-form-item>
         <t-form-item label="是否默认" name="status">
           <t-select v-model="queryParams.status" placeholder="请选择状态" clearable style="width: 200px">
-            <t-option key="0" label="是" value="0" />
-            <t-option key="1" label="否" value="1" />
+            <t-option key="1" label="是" value="1" />
+            <t-option key="0" label="否" value="0" />
           </t-select>
         </t-form-item>
         <t-form-item label-width="0px">

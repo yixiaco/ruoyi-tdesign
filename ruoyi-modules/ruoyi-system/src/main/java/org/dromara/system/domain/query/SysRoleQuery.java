@@ -32,7 +32,7 @@ public class SysRoleQuery extends BaseEntity {
     private String roleKey;
 
     /**
-     * 角色状态（0正常 1停用）
+     * 角色状态（1正常 0停用）
      */
     private String status;
 

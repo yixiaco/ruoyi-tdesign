@@ -11,6 +11,8 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.UserConstants;
+import org.dromara.common.core.enums.ShowHiddenEnum;
+import org.dromara.common.core.enums.YesNoEnum;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
@@ -33,13 +35,7 @@ import org.dromara.system.service.ISysMenuService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 菜单 业务层处理
@@ -193,12 +189,12 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         List<RouterVo> routers = new LinkedList<>();
         for (SysMenu menu : menus) {
             RouterVo router = new RouterVo();
-            router.setHidden("1".equals(menu.getVisible()));
+            router.setHidden(ShowHiddenEnum.HIDDEN.getCode().equals(menu.getVisible()));
             router.setName(menu.getRouteName());
             router.setPath(menu.getRouterPath());
             router.setComponent(menu.getComponentInfo());
             router.setQuery(getQueryParam(menu.getQueryParam()));
-            router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), Objects.equals(1, menu.getIsCache()), menu.getPath()));
+            router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), Objects.equals(YesNoEnum.NO.getCodeNum(), menu.getIsCache()), menu.getPath()));
             List<SysMenu> cMenus = menu.getChildren();
             if (CollUtil.isNotEmpty(cMenus) && UserConstants.TYPE_DIR.equals(menu.getMenuType())) {
                 router.setAlwaysShow(true);
@@ -211,11 +207,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 children.setPath(menu.getPath());
                 children.setComponent(menu.getComponentInfo());
                 children.setName(StringUtils.capitalize(menu.getPath()));
-                children.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), Objects.equals(1, menu.getIsCache()), menu.getPath()));
+                children.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), Objects.equals(YesNoEnum.NO.getCodeNum(), menu.getIsCache()), menu.getPath()));
                 children.setQuery(getQueryParam(menu.getQueryParam()));
                 childrenList.add(children);
                 router.setChildren(childrenList);
-            } else if (menu.getParentId().intValue() == 0 && menu.isInnerLink()) {
+            } else if (Objects.equals(menu.getParentId(), 0L) && menu.isInnerLink()) {
                 router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon()));
                 router.setPath("/");
                 List<RouterVo> childrenList = new ArrayList<>();

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.Constants;
+import org.dromara.common.core.enums.CommonStatusEnum;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.ip.AddressUtils;
@@ -64,9 +65,9 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
         logininfor.setMsg(logininforEvent.getMessage());
         // 日志状态
         if (StringUtils.equalsAny(logininforEvent.getStatus(), Constants.LOGIN_SUCCESS, Constants.LOGOUT, Constants.REGISTER)) {
-            logininfor.setStatus(Constants.SUCCESS);
+            logininfor.setStatus(CommonStatusEnum.SUCCESS.getCode());
         } else if (Constants.LOGIN_FAIL.equals(logininforEvent.getStatus())) {
-            logininfor.setStatus(Constants.FAIL);
+            logininfor.setStatus(CommonStatusEnum.FAIL.getCode());
         }
         // 插入数据
         insertLogininfor(logininfor);

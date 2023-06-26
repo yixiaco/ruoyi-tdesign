@@ -1,10 +1,6 @@
 package org.dromara.system.domain;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
@@ -92,12 +88,12 @@ public class SysTenant extends BaseEntity {
     private Long accountCount;
 
     /**
-     * 租户状态（0正常 1停用）
+     * 租户状态（1正常 0停用）
      */
     private String status;
 
     /**
-     * 删除标志（0代表存在 2代表删除）
+     * 删除标志（0代表存在 1代表删除）
      */
     @TableLogic
     private String delFlag;

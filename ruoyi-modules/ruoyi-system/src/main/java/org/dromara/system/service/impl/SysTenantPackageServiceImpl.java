@@ -3,7 +3,7 @@ package org.dromara.system.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.dromara.common.core.constant.TenantConstants;
+import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
@@ -55,7 +55,7 @@ public class SysTenantPackageServiceImpl extends ServiceImpl<SysTenantPackageMap
     @Override
     public List<SysTenantPackageVo> selectList() {
         return baseMapper.selectVoList(new LambdaQueryWrapper<SysTenantPackage>()
-                .eq(SysTenantPackage::getStatus, TenantConstants.NORMAL));
+                .eq(SysTenantPackage::getStatus, NormalDisableEnum.NORMAL.getCode()));
     }
 
     /**

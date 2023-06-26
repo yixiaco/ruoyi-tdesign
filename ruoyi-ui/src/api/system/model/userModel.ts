@@ -19,7 +19,7 @@ export interface SysUserQuery extends BaseEntity {
   email?: string;
   /** 手机号码 */
   phonenumber?: string;
-  /** 帐号状态（0正常 1停用） */
+  /** 帐号状态（1正常 0停用） */
   status?: string;
 }
 /**
@@ -46,7 +46,7 @@ export interface SysUserForm extends BaseEntity {
   avatar?: string;
   /** 密码 */
   password?: string;
-  /** 帐号状态（0正常 1停用） */
+  /** 帐号状态（1正常 0停用） */
   status?: string;
   /** 最后登录IP */
   loginIp?: string;
@@ -93,7 +93,7 @@ export interface SysUserVo {
   avatar?: string;
   /** 密码 */
   password?: string;
-  /** 帐号状态（0正常 1停用） */
+  /** 帐号状态（1正常 0停用） */
   status?: string;
   /** 最后登录IP */
   loginIp?: string;

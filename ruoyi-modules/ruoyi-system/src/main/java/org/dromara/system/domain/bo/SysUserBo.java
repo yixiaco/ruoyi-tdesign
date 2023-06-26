@@ -10,11 +10,7 @@ import lombok.NoArgsConstructor;
 import org.dromara.common.core.constant.UserConstants;
 import org.dromara.common.core.xss.Xss;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
-import org.dromara.common.sensitive.annotation.Sensitive;
-import org.dromara.common.sensitive.core.SensitiveStrategy;
 import org.dromara.system.domain.SysUser;
-
-import java.util.Date;
 
 /**
  * 用户信息业务对象 sys_user
@@ -81,7 +77,7 @@ public class SysUserBo extends BaseEntity {
     private String password;
 
     /**
-     * 帐号状态（0正常 1停用）
+     * 帐号状态（1正常 0停用）
      */
     private String status;
 

@@ -1,27 +1,27 @@
 package org.dromara.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.service.AppService;
 import org.dromara.common.core.utils.MapstructUtils;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.utils.StreamUtils;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.tenant.helper.TenantHelper;
-import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import org.dromara.system.domain.SysApp;
 import org.dromara.system.domain.bo.SysAppBo;
 import org.dromara.system.domain.query.SysAppQuery;
 import org.dromara.system.domain.vo.SysAppVo;
 import org.dromara.system.mapper.SysAppMapper;
 import org.dromara.system.service.ISysAppService;
+import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 
 /**

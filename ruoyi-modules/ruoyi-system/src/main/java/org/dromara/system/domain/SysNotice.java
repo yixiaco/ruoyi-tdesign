@@ -43,7 +43,7 @@ public class SysNotice extends TenantEntity {
     private String noticeContent;
 
     /**
-     * 公告状态（0正常 1关闭）
+     * 公告状态（1正常 0关闭）
      */
     private String status;
 

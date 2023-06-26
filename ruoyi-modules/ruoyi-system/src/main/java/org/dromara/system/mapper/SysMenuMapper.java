@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
 import org.dromara.common.core.constant.UserConstants;
+import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysMenu;
 import org.dromara.system.domain.query.SysMenuQuery;
@@ -66,7 +67,7 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenu, SysMenuVo> {
     default List<SysMenu> selectMenuTreeAll() {
         LambdaQueryWrapper<SysMenu> lqw = new LambdaQueryWrapper<SysMenu>()
             .in(SysMenu::getMenuType, UserConstants.TYPE_DIR, UserConstants.TYPE_MENU)
-            .eq(SysMenu::getStatus, UserConstants.MENU_NORMAL)
+            .eq(SysMenu::getStatus, NormalDisableEnum.NORMAL.getCode())
             .orderByAsc(SysMenu::getParentId)
             .orderByAsc(SysMenu::getOrderNum);
         return this.selectList(lqw);

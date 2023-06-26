@@ -10,7 +10,7 @@ export interface SysRoleQuery extends BaseEntity {
   roleName?: string;
   /** 角色权限字符串 */
   roleKey?: string;
-  /** 角色状态（0正常 1停用） */
+  /** 角色状态（1正常 0停用） */
   status?: string;
 }
 /**
@@ -31,7 +31,7 @@ export interface SysRoleForm extends BaseEntity {
   menuCheckStrictly?: boolean;
   /** 部门树选择项是否关联显示 */
   deptCheckStrictly?: boolean;
-  /** 角色状态（0正常 1停用） */
+  /** 角色状态（1正常 0停用） */
   status?: string;
   /** 备注 */
   remark?: string;
@@ -60,7 +60,7 @@ export interface SysRoleVo {
   menuCheckStrictly?: boolean;
   /** 部门树选择项是否关联显示 */
   deptCheckStrictly?: boolean;
-  /** 角色状态（0正常 1停用） */
+  /** 角色状态（1正常 0停用） */
   status?: string;
   /** 创建时间 */
   createTime?: any;

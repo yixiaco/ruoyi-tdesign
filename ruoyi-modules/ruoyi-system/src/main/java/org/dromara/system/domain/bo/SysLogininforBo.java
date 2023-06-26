@@ -54,7 +54,7 @@ public class SysLogininforBo {
     private String os;
 
     /**
-     * 登录状态（0成功 1失败）
+     * 登录状态（1成功 0失败）
      */
     private String status;
 

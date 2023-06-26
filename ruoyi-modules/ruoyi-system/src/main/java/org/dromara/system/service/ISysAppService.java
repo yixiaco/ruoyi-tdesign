@@ -1,11 +1,11 @@
 package org.dromara.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysApp;
 import org.dromara.system.domain.bo.SysAppBo;
 import org.dromara.system.domain.query.SysAppQuery;
 import org.dromara.system.domain.vo.SysAppVo;
-import com.baomidou.mybatisplus.extension.service.IService;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
 
 import java.util.Collection;
 import java.util.List;
