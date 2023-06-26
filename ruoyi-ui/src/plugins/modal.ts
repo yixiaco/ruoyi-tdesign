@@ -9,6 +9,7 @@ import {
   LoadingPlugin,
   MessagePlugin,
   NotifyPlugin,
+  ValidateResultContext,
 } from 'tdesign-vue-next';
 import { TNode } from 'tdesign-vue-next/es/common';
 import { MessageInfoOptions, MessageInstance } from 'tdesign-vue-next/es/message/type';
@@ -207,13 +208,17 @@ export default {
       content: props.confirmButtonText,
       loading: false,
       onClick: async () => {
-        formRef.value.validate().then(async () => {
-          btn.loading = true;
-          try {
-            await props?.onConfirm(form.input);
-            instance.destroy();
-          } finally {
-            btn.loading = false;
+        formRef.value.validate().then(async (result: ValidateResultContext<FormData> | boolean) => {
+          if (result === true) {
+            btn.loading = true;
+            try {
+              await props?.onConfirm(form.input);
+              instance.destroy();
+            } finally {
+              btn.loading = false;
+            }
+          } else if (props.inputErrorMessage) {
+            await this.msgError(props.inputErrorMessage);
           }
         });
       },
