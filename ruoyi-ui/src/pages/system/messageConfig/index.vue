@@ -480,8 +480,9 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');
+    const data = { ...form.value, configJson: JSON.stringify(form.value.configJson) };
     if (form.value.messageConfigId) {
-      updateMessageConfig(form.value)
+      updateMessageConfig(data)
         .then(() => {
           proxy.$modal.msgSuccess('修改成功');
           open.value = false;
@@ -492,7 +493,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
           proxy.$modal.msgClose(msgLoading);
         });
     } else {
-      addMessageConfig(form.value)
+      addMessageConfig(data)
         .then(() => {
           proxy.$modal.msgSuccess('新增成功');
           open.value = false;
