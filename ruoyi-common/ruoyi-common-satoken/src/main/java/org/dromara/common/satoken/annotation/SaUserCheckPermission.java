@@ -27,6 +27,7 @@ public @interface SaUserCheckPermission {
      *
      * @return 需要校验的权限码
      */
+    @AliasFor(annotation = SaCheckPermission.class, attribute = "value")
     String[] value() default {};
 
     /**

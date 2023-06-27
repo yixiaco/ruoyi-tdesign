@@ -206,7 +206,7 @@ const columnControllerVisible = ref(false);
 
 const formInitValue = {
   orderNum: 0,
-  status: '0',
+  status: '1',
 };
 
 // 列显隐信息

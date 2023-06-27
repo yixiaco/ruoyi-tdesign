@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.CacheNames;
+import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
@@ -47,17 +48,16 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
      */
     @Override
     public void init() {
-        List<SysOssConfig> list = TenantHelper.ignore(() -> {
-            return baseMapper.selectList(
-                new LambdaQueryWrapper<SysOssConfig>().orderByAsc(SysOssConfig::getTenantId));
-        });
+        List<SysOssConfig> list = TenantHelper.ignore(() ->
+            baseMapper.selectList(lambdaQuery().orderByAsc(SysOssConfig::getTenantId).getWrapper())
+        );
         Map<String, List<SysOssConfig>> map = StreamUtils.groupByKey(list, SysOssConfig::getTenantId);
         for (String tenantId : map.keySet()) {
             TenantHelper.setDynamic(tenantId);
             // 加载OSS初始化配置
             for (SysOssConfig config : map.get(tenantId)) {
                 String configKey = config.getConfigKey();
-                if ("0".equals(config.getStatus())) {
+                if (NormalDisableEnum.NORMAL.getCode().equals(config.getStatus())) {
                     RedisUtils.setObject(OssConstant.DEFAULT_CONFIG_KEY, configKey);
                 }
                 CacheUtils.put(CacheNames.SYS_OSS_CONFIG, config.getConfigKey(), JsonUtils.toJsonString(config));
@@ -157,7 +157,7 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
     public int updateOssConfigStatus(SysOssConfigBo bo) {
         SysOssConfig sysOssConfig = MapstructUtils.convert(bo, SysOssConfig.class);
         int row = baseMapper.update(null, new LambdaUpdateWrapper<SysOssConfig>()
-            .set(SysOssConfig::getStatus, "1"));
+            .set(SysOssConfig::getStatus, NormalDisableEnum.DISABLE.getCode()));
         row += baseMapper.updateById(sysOssConfig);
         if (row > 0) {
             RedisUtils.setObject(OssConstant.DEFAULT_CONFIG_KEY, sysOssConfig.getConfigKey());

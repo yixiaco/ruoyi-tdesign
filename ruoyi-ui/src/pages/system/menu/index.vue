@@ -148,13 +148,14 @@
                 <template #label>
                   <span>
                     <t-tooltip content="选择是外链则路由地址需要以`http(s)://`开头" placement="top">
-                      <help-circle-filled-icon /></t-tooltip
-                    >是否外链
+                      <help-circle-filled-icon />
+                    </t-tooltip>
+                    是否外链
                   </span>
                 </template>
                 <t-radio-group v-model="form.isFrame">
-                  <t-radio :value="0">是</t-radio>
-                  <t-radio :value="1">否</t-radio>
+                  <t-radio :value="1">是</t-radio>
+                  <t-radio :value="0">否</t-radio>
                 </t-radio-group>
               </t-form-item>
             </t-col>
@@ -230,8 +231,8 @@
                   </span>
                 </template>
                 <t-radio-group v-model="form.isCache">
-                  <t-radio :value="0">缓存</t-radio>
-                  <t-radio :value="1">不缓存</t-radio>
+                  <t-radio :value="1">缓存</t-radio>
+                  <t-radio :value="0">不缓存</t-radio>
                 </t-radio-group>
               </t-form-item>
             </t-col>
@@ -343,10 +344,10 @@ const form = ref<SysMenuForm & SysMenuVo>({
   icon: undefined,
   menuType: 'M',
   orderNum: 0,
-  isFrame: 1,
-  isCache: 0,
-  visible: '0',
-  status: '0',
+  isFrame: 0,
+  isCache: 1,
+  visible: '1',
+  status: '1',
 });
 
 const queryParams = ref<SysMenuQuery>({
@@ -383,10 +384,10 @@ function reset() {
     icon: undefined,
     menuType: 'M',
     orderNum: 0,
-    isFrame: 1,
-    isCache: 0,
-    visible: '0',
-    status: '0',
+    isFrame: 0,
+    isCache: 1,
+    visible: '1',
+    status: '1',
   };
   proxy.resetForm('menuRef');
 }

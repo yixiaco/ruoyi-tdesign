@@ -4,27 +4,23 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 用户状态
+ * 系统开关（正常停用）
  *
- * @author ruoyi
+ * @author hexm
+ * @date 2023/06/26 16:32
  */
 @Getter
 @AllArgsConstructor
-public enum UserStatus {
+public enum NormalDisableEnum {
+
     /**
      * 正常
      */
-    OK("1", "正常"),
+    NORMAL("1"),
     /**
      * 停用
      */
-    DISABLE("0", "停用"),
-    /**
-     * 删除
-     */
-    DELETED("2", "删除");
+    DISABLE("0");
 
     private final String code;
-    private final String info;
-
 }

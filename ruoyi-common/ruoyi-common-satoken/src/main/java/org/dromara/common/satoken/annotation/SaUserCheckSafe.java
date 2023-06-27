@@ -3,6 +3,7 @@ package org.dromara.common.satoken.annotation;
 import cn.dev33.satoken.annotation.SaCheckSafe;
 import cn.dev33.satoken.util.SaTokenConsts;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
+import org.springframework.core.annotation.AliasFor;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -27,6 +28,7 @@ public @interface SaUserCheckSafe {
      *
      * @return /
      */
+    @AliasFor(annotation = SaCheckSafe.class, attribute = "value")
     String value() default SaTokenConsts.DEFAULT_SAFE_AUTH_SERVICE;
 
 }

@@ -8,7 +8,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.constant.GlobalConstants;
-import org.dromara.common.core.constant.UserConstants;
+import org.dromara.common.core.enums.YesNoEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.service.ConfigService;
 import org.dromara.common.core.utils.MapstructUtils;
@@ -157,7 +157,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     public void deleteConfigByIds(Long[] configIds) {
         for (Long configId : configIds) {
             SysConfig config = baseMapper.selectById(configId);
-            if (StringUtils.equals(UserConstants.YES, config.getConfigType())) {
+            if (StringUtils.equals(YesNoEnum.YES.getCodeStr(), config.getConfigType())) {
                 throw new ServiceException(String.format("内置参数【%1$s】不能删除 ", config.getConfigKey()));
             }
             CacheUtils.evict(CacheNames.SYS_CONFIG, config.getConfigKey());
@@ -234,7 +234,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
         }
         List<SysConfig> list = lambdaQuery()
             .in(SysConfig::getConfigKey, StreamUtils.toSet(configs, SysConfigBo::getConfigKey))
-            .eq(SysConfig::getIsGlobal, isGlobal ? 1 : 0)
+            .eq(SysConfig::getIsGlobal, isGlobal ? YesNoEnum.YES.getCodeNum() : YesNoEnum.NO.getCodeNum())
             .list();
         Map<String, SysConfig> configMap = StreamUtils.toIdentityMap(list, SysConfig::getConfigKey);
         List<SysConfig> configList = new ArrayList<>();
@@ -283,7 +283,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
         Optional<SysConfig> oneOpt = lambdaQuery()
             .eq(SysConfig::getConfigKey, configKey)
             .select(SysConfig::getConfigId, SysConfig::getConfigValue)
-            .eq(SysConfig::getIsGlobal, 1)
+            .eq(SysConfig::getIsGlobal, YesNoEnum.YES.getCodeNum())
             .oneOpt();
         if (oneOpt.isPresent()) {
             return oneOpt.get().getConfigValue();

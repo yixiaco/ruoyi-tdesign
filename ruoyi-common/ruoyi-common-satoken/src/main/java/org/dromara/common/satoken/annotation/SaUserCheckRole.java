@@ -27,6 +27,7 @@ public @interface SaUserCheckRole {
      *
      * @return 需要校验的角色标识
      */
+    @AliasFor(annotation = SaCheckRole.class, attribute = "value")
     String[] value() default {};
 
     /**

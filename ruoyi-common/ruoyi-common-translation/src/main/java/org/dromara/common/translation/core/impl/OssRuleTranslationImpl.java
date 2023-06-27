@@ -8,6 +8,7 @@ import org.dromara.common.translation.annotation.Translation;
 import org.dromara.common.translation.annotation.TranslationType;
 import org.dromara.common.translation.constant.TransConstant;
 import org.dromara.common.translation.core.TranslationInterface;
+import org.springframework.web.context.request.RequestContextHolder;
 
 import java.io.IOException;
 import java.util.Map;
@@ -33,12 +34,16 @@ public class OssRuleTranslationImpl implements TranslationInterface {
      */
     @Override
     public void translation(Object key, Translation translation, JsonGenerator gen) throws IOException {
-        if (key instanceof String) {
+        // 只在web环境下使用
+        if (key instanceof String && isWeb()) {
             String fieldName = gen.getOutputContext().getCurrentName();
             String[] useRules = StrUtil.isNotBlank(translation.other()) ? translation.other().split(",") : null;
 
             Map<String, String> urls = ossRuleService.getUrls(fieldName, (String) key, useRules);
-
+            if (urls == null) {
+                gen.writeObject(key);
+                return;
+            }
             // 默认字段值
             gen.writeObject(urls.remove(fieldName));
             // 写出非默认规则
@@ -51,5 +56,14 @@ public class OssRuleTranslationImpl implements TranslationInterface {
         } else {
             gen.writeObject(key);
         }
+    }
+
+    /**
+     * 是否是web环境
+     *
+     * @return
+     */
+    private static boolean isWeb() {
+        return RequestContextHolder.getRequestAttributes() != null;
     }
 }

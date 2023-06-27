@@ -31,7 +31,7 @@ export interface SysDictDataForm extends BaseEntity {
   listClass?: string;
   /** 是否默认（Y是 N否） */
   isDefault?: string;
-  /** 状态（0正常 1停用） */
+  /** 状态（1正常 0停用） */
   status?: string;
   /** 创建部门 */
   createDept?: number;
@@ -58,7 +58,7 @@ export interface SysDictDataVo {
   listClass?: string;
   /** 是否默认（Y是 N否） */
   isDefault?: string;
-  /** 状态（0正常 1停用） */
+  /** 状态（1正常 0停用） */
   status?: string;
   /** 创建时间 */
   createTime?: any;
@@ -87,7 +87,7 @@ export interface SysDictTypeForm extends BaseEntity {
   dictName?: string;
   /** 字典类型 */
   dictType?: string;
-  /** 状态（0正常 1停用） */
+  /** 状态（1正常 0停用） */
   status?: string;
   /** 创建部门 */
   createDept?: number;
@@ -104,7 +104,7 @@ export interface SysDictTypeVo {
   dictName?: string;
   /** 字典类型 */
   dictType?: string;
-  /** 状态（0正常 1停用） */
+  /** 状态（1正常 0停用） */
   status?: string;
   /** 创建时间 */
   createTime?: any;

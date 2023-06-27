@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.dromara.common.core.constant.UserConstants;
+import org.dromara.common.core.enums.YesNoEnum;
 import org.dromara.common.tenant.core.TenantEntity;
 
 import java.util.Date;
@@ -64,7 +64,7 @@ public class SysDictData extends TenantEntity {
     private String isDefault;
 
     /**
-     * 状态（0正常 1停用）
+     * 状态（1正常 0停用）
      */
     private String status;
 
@@ -104,7 +104,7 @@ public class SysDictData extends TenantEntity {
     private Date updateTime;
 
     public boolean getDefault() {
-        return UserConstants.YES.equals(this.isDefault);
+        return YesNoEnum.YES.getCodeStr().equals(this.isDefault);
     }
 
 }

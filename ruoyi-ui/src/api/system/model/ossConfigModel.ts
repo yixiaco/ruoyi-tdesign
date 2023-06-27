@@ -75,7 +75,7 @@ export interface SysOssConfigVo {
   isHttps?: string;
   /** 域 */
   region?: string;
-  /** 是否默认（0=是,1=否） */
+  /** 是否默认（1=是,0=否） */
   status?: string;
   /** 扩展字段 */
   ext1?: string;

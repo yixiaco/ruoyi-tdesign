@@ -16,7 +16,7 @@ public interface OssRuleService {
      * @param fieldName 字段名称
      * @param url       url
      * @param useRules  限定使用规则，为空则不限制
-     * @return
+     * @return key：字段名称 value：url
      */
     Map<String, String> getUrls(String fieldName, String url, String[] useRules);
 }

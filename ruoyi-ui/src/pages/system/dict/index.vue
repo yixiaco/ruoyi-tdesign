@@ -222,7 +222,7 @@ const columns = ref<Array<PrimaryTableCol>>([
 ]);
 
 const form = ref<SysDictTypeForm & SysDictTypeVo>({
-  status: '0',
+  status: '1',
 });
 const queryParams = ref<SysDictTypeQuery>({
   pageNum: 1,
@@ -262,7 +262,7 @@ function reset() {
     dictId: undefined,
     dictName: undefined,
     dictType: undefined,
-    status: '0',
+    status: '1',
     remark: undefined,
   };
   proxy.resetForm('dictRef');

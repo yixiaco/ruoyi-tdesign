@@ -14,11 +14,11 @@ public enum TenantStatus {
     /**
      * 正常
      */
-    OK("0", "正常"),
+    OK("1", "正常"),
     /**
      * 停用
      */
-    DISABLE("1", "停用"),
+    DISABLE("0", "停用"),
     /**
      * 删除
      */

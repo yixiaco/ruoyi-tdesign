@@ -46,7 +46,7 @@ public class SysLogininforVo implements Serializable {
     private String userName;
 
     /**
-     * 登录状态（0成功 1失败）
+     * 登录状态（1成功 0失败）
      */
     @ExcelProperty(value = "登录状态", converter = ExcelDictConvert.class)
     @ExcelDictFormat(dictType = "sys_common_status")

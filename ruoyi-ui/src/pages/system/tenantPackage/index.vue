@@ -81,7 +81,7 @@
           </t-row>
         </template>
         <template #status="{ row }">
-          <t-switch v-model="row.status" :custom-value="['0', '1']" @click.stop @change="handleStatusChange(row)" />
+          <t-switch v-model="row.status" :custom-value="['1', '0']" @click.stop @change="handleStatusChange(row)" />
         </template>
         <template #operation="{ row }">
           <t-space :size="8">
@@ -340,7 +340,7 @@ function reset() {
   menuExpand.value = false;
   menuNodeAll.value = false;
   form.value = {
-    status: '0',
+    status: '1',
     menuIds: [],
   };
   proxy.resetForm('tenantPackageRef');
@@ -368,7 +368,7 @@ function handleSelectionChange(selection: Array<string | number>) {
 // 租户套餐状态修改
 function handleStatusChange(row: SysTenantPackageVo) {
   const data = tenantPackageList.value.find((value) => value.packageId === row.packageId);
-  const text = data.status === '0' ? '启用' : '停用';
+  const text = data.status === '1' ? '启用' : '停用';
   proxy.$modal.confirm(
     `确认要"${text}""${data.packageName}"套餐吗？`,
     () => {

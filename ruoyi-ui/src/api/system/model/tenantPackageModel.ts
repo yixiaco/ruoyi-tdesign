@@ -10,7 +10,7 @@ import { BaseEntity } from '@/api/model/resultModel';
 export interface SysTenantPackageQuery extends BaseEntity {
   /** 套餐名称 */
   packageName?: string;
-  /** 状态（0正常 1停用） */
+  /** 状态（1正常 0停用） */
   status?: string;
 }
 export interface SysTenantPackageForm extends BaseEntity {
@@ -24,7 +24,7 @@ export interface SysTenantPackageForm extends BaseEntity {
   remark?: string;
   /** 菜单树选择项是否关联显示 */
   menuCheckStrictly?: boolean;
-  /** 状态（0正常 1停用） */
+  /** 状态（1正常 0停用） */
   status?: string;
 }
 /**
@@ -40,7 +40,7 @@ export interface SysTenantPackageVo {
   remark?: string;
   /** 菜单树选择项是否关联显示 */
   menuCheckStrictly?: boolean;
-  /** 状态（0正常 1停用） */
+  /** 状态（1正常 0停用） */
   status?: string;
   /** 创建时间 */
   createTime?: any;

@@ -108,7 +108,7 @@
         <template #status="{ row }">
           <t-switch
             v-model="row.status"
-            :custom-value="['0', '1']"
+            :custom-value="['1', '0']"
             @click.stop
             @change="handleStatusChange(row)"
           ></t-switch>
@@ -363,7 +363,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
 });
 const form = ref<SysRoleForm & SysRoleVo>({
   roleSort: 0,
-  status: '0',
+  status: '1',
   menuIds: [],
   deptIds: [],
 });
@@ -438,7 +438,7 @@ function handleSelectionChange(selection: Array<string | number>) {
 /** 角色状态修改 */
 function handleStatusChange(row: SysRoleVo) {
   const role = roleList.value.find((value) => value.roleId === row.roleId);
-  const text = role.status === '0' ? '启用' : '停用';
+  const text = role.status === '1' ? '启用' : '停用';
   proxy.$modal.confirm(
     `确认要"${text}""${role.roleName}"角色吗?`,
     () => {
@@ -483,7 +483,7 @@ function reset() {
     roleName: undefined,
     roleKey: undefined,
     roleSort: 0,
-    status: '0',
+    status: '1',
     menuIds: [],
     deptIds: [],
     remark: undefined,

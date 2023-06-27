@@ -93,7 +93,7 @@ public class SysOperLog implements Serializable {
     private String jsonResult;
 
     /**
-     * 操作状态（0正常 1异常）
+     * 操作状态（1正常 0异常）
      */
     private Integer status;
 

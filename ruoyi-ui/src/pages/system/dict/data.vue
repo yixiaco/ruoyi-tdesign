@@ -242,7 +242,7 @@ const columns = ref<Array<PrimaryTableCol>>([
 const form = ref<SysDictDataForm & SysDictDataVo>({
   listClass: 'default',
   dictSort: 0,
-  status: '0',
+  status: '1',
 });
 const queryParams = ref<SysDictDataQuery>({
   pageNum: 1,
@@ -301,7 +301,7 @@ function reset() {
     cssClass: undefined,
     listClass: 'default',
     dictSort: 0,
-    status: '0',
+    status: '1',
     remark: undefined,
   };
   proxy.resetForm('dataRef');

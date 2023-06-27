@@ -58,7 +58,7 @@ export interface SysTenantForm extends BaseEntity {
   expireTime?: any;
   /** 用户数量（-1不限制） */
   accountCount?: number;
-  /** 租户状态（0正常 1停用） */
+  /** 租户状态（1正常 0停用） */
   status?: string;
 }
 
@@ -92,7 +92,7 @@ export interface SysTenantVo {
   expireTime?: any;
   /** 用户数量（-1不限制） */
   accountCount?: number;
-  /** 租户状态（0正常 1停用） */
+  /** 租户状态（1正常 0停用） */
   status?: string;
   /** 更新时间 */
   updateTime?: string;

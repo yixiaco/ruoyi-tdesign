@@ -217,7 +217,7 @@ const columns = ref<Array<PrimaryTableCol>>([
 ]);
 
 const form = ref<SysNoticeVo & SysNoticeForm>({
-  status: '0',
+  status: '1',
 });
 const queryParams = ref<SysNoticeQuery>({
   pageNum: 1,
@@ -254,7 +254,7 @@ function getList() {
 /** 表单重置 */
 function reset() {
   form.value = {
-    status: '0',
+    status: '1',
   };
   proxy.resetForm('noticeRef');
 }

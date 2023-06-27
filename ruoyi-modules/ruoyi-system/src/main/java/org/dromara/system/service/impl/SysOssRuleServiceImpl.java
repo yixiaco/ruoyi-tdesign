@@ -9,6 +9,8 @@ import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.CacheConstants;
+import org.dromara.common.core.enums.NormalDisableEnum;
+import org.dromara.common.core.enums.YesNoEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.service.OssRuleService;
 import org.dromara.common.core.utils.MapstructUtils;
@@ -18,23 +20,17 @@ import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.redis.utils.RedisLockUtil;
 import org.dromara.common.redis.utils.RedisUtils;
+import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.system.domain.SysOssRule;
 import org.dromara.system.domain.bo.SysOssRuleBo;
 import org.dromara.system.domain.query.SysOssRuleQuery;
 import org.dromara.system.domain.vo.SysOssRuleVo;
-import org.dromara.system.enums.YesNoEnum;
 import org.dromara.system.mapper.SysOssRuleMapper;
 import org.dromara.system.service.ISysOssRuleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
 
 /**
  * OSS处理规则Service业务层处理
@@ -89,7 +85,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
     public Boolean insertByBo(SysOssRuleBo bo) {
         checkRepeat(bo);
         SysOssRule add = MapstructUtils.convert(bo, SysOssRule.class);
-        add.setIsOverwrite(YesNoEnum.NO.getCode());
+        add.setIsOverwrite(YesNoEnum.NO.getCodeStr());
         boolean save = save(add);
         removeCache();
         return save;
@@ -108,9 +104,9 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
         SysOssRule rule = getById(bo.getOssRuleId());
         SysOssRule update = MapstructUtils.convert(bo, SysOssRule.class);
         // 从非默认改为默认的过程，需要将覆盖字段值关闭
-        if (YesNoEnum.NO.getCode().equals(rule.getIsDefault())
-            && YesNoEnum.YES.getCode().equals(update.getIsDefault())) {
-            update.setIsOverwrite(YesNoEnum.NO.getCode());
+        if (YesNoEnum.NO.getCodeStr().equals(rule.getIsDefault())
+            && YesNoEnum.YES.getCodeStr().equals(update.getIsDefault())) {
+            update.setIsOverwrite(YesNoEnum.NO.getCodeStr());
         }
         boolean b = updateById(update);
         removeCache();
@@ -150,13 +146,13 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
     public void updateOverwrite(Long ossRuleId, String isOverwrite) {
         SysOssRule rule = getById(ossRuleId);
         // 当前覆盖字段值，并且是默认规则
-        if (YesNoEnum.YES.getCode().equals(isOverwrite)
-            && YesNoEnum.YES.getCode().equals(rule.getIsDefault())) {
+        if (YesNoEnum.YES.getCodeStr().equals(isOverwrite)
+            && YesNoEnum.YES.getCodeStr().equals(rule.getIsDefault())) {
             // 设置其他相同域名并且为默认的规则为关闭覆盖字段值
             lambdaUpdate()
                 .eq(SysOssRule::getDomain, rule.getDomain())
-                .eq(SysOssRule::getIsDefault, YesNoEnum.YES.getCode())
-                .set(SysOssRule::getIsOverwrite, YesNoEnum.NO.getCode())
+                .eq(SysOssRule::getIsDefault, YesNoEnum.YES.getCodeStr())
+                .set(SysOssRule::getIsOverwrite, YesNoEnum.NO.getCodeStr())
                 .update();
         }
         // 设置当前规则
@@ -193,6 +189,10 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
     @Override
     @SuppressWarnings("unchecked cast")
     public Map<String, String> getUrls(String fieldName, String originalUrl, String[] useRules) {
+        // 如果启用了租户，但获取不到租户，则直接返回null
+        if (TenantHelper.isEnable() && StrUtil.isBlank(TenantHelper.getTenantId())) {
+            return null;
+        }
         // 二级缓存
         List<SysOssRule> rules = null;
         if (SpringMVCUtil.isWeb()) {
@@ -202,7 +202,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
             // 如果二级缓存为空，则从redis缓存中读取
             rules = RedisLockUtil.getOrSaveList(CacheConstants.SYS_OSS_RULE, () ->
                 // 如果redis中为空，则从database中读取
-                lambdaQuery().eq(SysOssRule::getStatus, "0").list()
+                lambdaQuery().eq(SysOssRule::getStatus, NormalDisableEnum.NORMAL.getCode()).list()
             );
             SaHolder.getStorage().set(CacheConstants.SYS_OSS_RULE, rules);
         }
@@ -223,13 +223,13 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
                         return false;
                     }
                     if (useRules == null) {
-                        return YesNoEnum.YES.getCode().equals(sysOssRule.getIsDefault());
+                        return YesNoEnum.YES.getCodeStr().equals(sysOssRule.getIsDefault());
                     }
                     return ArrayUtil.contains(useRules, sysOssRule.getRuleName());
                 }).toList();
 
             // 设置覆盖默认字段值
-            Optional<SysOssRule> overwriteRuleOpt = StreamUtils.findFirst(list, o -> YesNoEnum.YES.getCode().equals(o.getIsOverwrite()));
+            Optional<SysOssRule> overwriteRuleOpt = StreamUtils.findFirst(list, o -> YesNoEnum.YES.getCodeStr().equals(o.getIsOverwrite()));
             String realUrl = url;
             // 如果存在覆盖默认字段值规则，则覆盖默认值
             if (overwriteRuleOpt.isPresent()) {
@@ -240,7 +240,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
             // 设置规则值
             List<SysOssRule> noOverwriteRule = list
                 .stream()
-                .filter(ossRule -> YesNoEnum.NO.getCode().equals(ossRule.getIsOverwrite()))
+                .filter(ossRule -> YesNoEnum.NO.getCodeStr().equals(ossRule.getIsOverwrite()))
                 .toList();
             for (SysOssRule rule : noOverwriteRule) {
                 String key = fieldName + "_" + rule.getRuleName();

@@ -106,7 +106,7 @@ public class SysTenantBo extends BaseEntity {
     private Long accountCount;
 
     /**
-     * 租户状态（0正常 1停用）
+     * 租户状态（1正常 0停用）
      */
     private String status;
 
