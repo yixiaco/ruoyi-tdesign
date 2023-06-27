@@ -85,7 +85,7 @@
           </t-row>
         </template>
         <template #status="{ row }">
-          <t-switch v-model="row.status" :custom-value="['0', '1']" @click.stop @change="handleStatusChange(row)" />
+          <t-switch v-model="row.status" :custom-value="['1', '0']" @click.stop @change="handleStatusChange(row)" />
         </template>
         <template #operation="{ row }">
           <t-space :size="8" break-line>
@@ -412,7 +412,7 @@ function getTenantPackage() {
 // 租户套餐状态修改
 function handleStatusChange(row: SysTenantVo) {
   const data = tenantList.value.find((value) => value.tenantId === row.tenantId);
-  const text = data.status === '0' ? '启用' : '停用';
+  const text = data.status === '1' ? '启用' : '停用';
   proxy.$modal.confirm(
     `确认要"${text}""${data.companyName}"租户吗？`,
     () => {

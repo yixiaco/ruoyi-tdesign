@@ -598,16 +598,16 @@ create table sys_dict_data
 insert into sys_dict_data values(1, '000000', 1,  '男',       '0',       'sys_user_sex',        '',   '',        'Y', '1', 103, 1, sysdate(), null, null, '性别男');
 insert into sys_dict_data values(2, '000000', 2,  '女',       '1',       'sys_user_sex',        '',   '',        'N', '1', 103, 1, sysdate(), null, null, '性别女');
 insert into sys_dict_data values(3, '000000', 3,  '未知',     '2',       'sys_user_sex',        '',   '',        'N', '1', 103, 1, sysdate(), null, null, '性别未知');
-insert into sys_dict_data values(4, '000000', 1,  '显示',     '0',       'sys_show_hide',       '',   'primary', 'Y', '1', 103, 1, sysdate(), null, null, '显示菜单');
-insert into sys_dict_data values(5, '000000', 2,  '隐藏',     '1',       'sys_show_hide',       '',   'danger',  'N', '1', 103, 1, sysdate(), null, null, '隐藏菜单');
-insert into sys_dict_data values(6, '000000', 1,  '正常',     '0',       'sys_normal_disable',  '',   'primary', 'Y', '1', 103, 1, sysdate(), null, null, '正常状态');
-insert into sys_dict_data values(7, '000000', 2,  '停用',     '1',       'sys_normal_disable',  '',   'danger',  'N', '1', 103, 1, sysdate(), null, null, '停用状态');
+insert into sys_dict_data values(4, '000000', 1,  '显示',     '1',       'sys_show_hide',       '',   'primary', 'Y', '1', 103, 1, sysdate(), null, null, '显示菜单');
+insert into sys_dict_data values(5, '000000', 2,  '隐藏',     '0',       'sys_show_hide',       '',   'danger',  'N', '1', 103, 1, sysdate(), null, null, '隐藏菜单');
+insert into sys_dict_data values(6, '000000', 1,  '正常',     '1',       'sys_normal_disable',  '',   'primary', 'Y', '1', 103, 1, sysdate(), null, null, '正常状态');
+insert into sys_dict_data values(7, '000000', 2,  '停用',     '0',       'sys_normal_disable',  '',   'danger',  'N', '1', 103, 1, sysdate(), null, null, '停用状态');
 insert into sys_dict_data values(12, '000000', 1,  '是',       'Y',       'sys_yes_no',          '',   'primary', 'Y', '1', 103, 1, sysdate(), null, null, '系统默认是');
 insert into sys_dict_data values(13, '000000', 2,  '否',       'N',       'sys_yes_no',          '',   'danger',  'N', '1', 103, 1, sysdate(), null, null, '系统默认否');
 insert into sys_dict_data values(14, '000000', 1,  '通知',     '1',       'sys_notice_type',     '',   'warning', 'Y', '1', 103, 1, sysdate(), null, null, '通知');
 insert into sys_dict_data values(15, '000000', 2,  '公告',     '2',       'sys_notice_type',     '',   'success', 'N', '1', 103, 1, sysdate(), null, null, '公告');
-insert into sys_dict_data values(16, '000000', 1,  '正常',     '0',       'sys_notice_status',   '',   'primary', 'Y', '1', 103, 1, sysdate(), null, null, '正常状态');
-insert into sys_dict_data values(17, '000000', 2,  '关闭',     '1',       'sys_notice_status',   '',   'danger',  'N', '1', 103, 1, sysdate(), null, null, '关闭状态');
+insert into sys_dict_data values(16, '000000', 1,  '正常',     '1',       'sys_notice_status',   '',   'primary', 'Y', '1', 103, 1, sysdate(), null, null, '正常状态');
+insert into sys_dict_data values(17, '000000', 2,  '关闭',     '0',       'sys_notice_status',   '',   'danger',  'N', '1', 103, 1, sysdate(), null, null, '关闭状态');
 insert into sys_dict_data values(29, '000000', 99, '其他',     '0',       'sys_oper_type',       '',   'primary', 'N', '1', 103, 1, sysdate(), null, null, '其他操作');
 insert into sys_dict_data values(18, '000000', 1,  '新增',     '1',       'sys_oper_type',       '',   'primary', 'N', '1', 103, 1, sysdate(), null, null, '新增操作');
 insert into sys_dict_data values(19, '000000', 2,  '修改',     '2',       'sys_oper_type',       '',   'primary', 'N', '1', 103, 1, sysdate(), null, null, '修改操作');
@@ -618,8 +618,8 @@ insert into sys_dict_data values(23, '000000', 6,  '导入',     '6',       'sys
 insert into sys_dict_data values(24, '000000', 7,  '强退',     '7',       'sys_oper_type',       '',   'danger',  'N', '1', 103, 1, sysdate(), null, null, '强退操作');
 insert into sys_dict_data values(25, '000000', 8,  '生成代码', '8',       'sys_oper_type',       '',   'warning', 'N', '1', 103, 1, sysdate(), null, null, '生成操作');
 insert into sys_dict_data values(26, '000000', 9,  '清空数据', '9',       'sys_oper_type',       '',   'danger',  'N', '1', 103, 1, sysdate(), null, null, '清空操作');
-insert into sys_dict_data values(27, '000000', 1,  '成功',     '0',       'sys_common_status',   '',   'primary', 'N', '1', 103, 1, sysdate(), null, null, '正常状态');
-insert into sys_dict_data values(28, '000000', 2,  '失败',     '1',       'sys_common_status',   '',   'danger',  'N', '1', 103, 1, sysdate(), null, null, '停用状态');
+insert into sys_dict_data values(27, '000000', 1,  '成功',     '1',       'sys_common_status',   '',   'primary', 'N', '1', 103, 1, sysdate(), null, null, '正常状态');
+insert into sys_dict_data values(28, '000000', 2,  '失败',     '0',       'sys_common_status',   '',   'danger',  'N', '1', 103, 1, sysdate(), null, null, '停用状态');
 insert into sys_dict_data values(30, '000000', 0, '域名', 'DOMAIN', 'sys_app_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
 insert into sys_dict_data values(31, '000000', 1, '微信小程序', 'WX_XCX', 'sys_app_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
 insert into sys_dict_data values(32, '000000', 2, '微信公众号', 'WX_GZH', 'sys_app_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
@@ -650,8 +650,8 @@ create table sys_config (
 insert into sys_config values(1, '000000', '主框架页-默认皮肤样式名称',     'sys.index.skinName',            'skin-blue',     'Y', 0, 103, 1, sysdate(), null, null, '蓝色 skin-blue、绿色 skin-green、紫色 skin-purple、红色 skin-red、黄色 skin-yellow' );
 insert into sys_config values(2, '000000', '用户管理-账号初始密码',        'sys.user.initPassword',         '123456',        'Y', 0, 103, 1, sysdate(), null, null, '初始化密码 123456' );
 insert into sys_config values(3, '000000', '主框架页-侧边栏主题',          'sys.index.sideTheme',           'theme-dark',    'Y', 0, 103, 1, sysdate(), null, null, '深色主题theme-dark，浅色主题theme-light' );
-insert into sys_config values(5, '000000', '账号自助-是否开启用户注册功能',  'sys.account.registerUser',      'false',         'Y', 0, 103, 1, sysdate(), null, null, '是否开启注册用户功能（true开启，false关闭）');
-insert into sys_config values(11, '000000', 'OSS预览列表资源开关',         'sys.oss.previewListResource',   'true',          'Y', 0, 103, 1, sysdate(), null, null, 'true:开启, false:关闭');
+insert into sys_config values(5, '000000', '账号自助-是否开启用户注册功能',  'sys.account.registerUser',      'false',         'Y', 1, 103, 1, sysdate(), null, null, '是否开启注册用户功能（true开启，false关闭）');
+insert into sys_config values(11, '000000', 'OSS预览列表资源开关',         'sys.oss.previewListResource',   'true',          'Y', 1, 103, 1, sysdate(), null, null, 'true:开启, false:关闭');
 
 
 -- ----------------------------

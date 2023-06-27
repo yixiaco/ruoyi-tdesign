@@ -344,10 +344,10 @@ const form = ref<SysMenuForm & SysMenuVo>({
   icon: undefined,
   menuType: 'M',
   orderNum: 0,
-  isFrame: 1,
-  isCache: 0,
-  visible: '0',
-  status: '0',
+  isFrame: 0,
+  isCache: 1,
+  visible: '1',
+  status: '1',
 });
 
 const queryParams = ref<SysMenuQuery>({
@@ -384,10 +384,10 @@ function reset() {
     icon: undefined,
     menuType: 'M',
     orderNum: 0,
-    isFrame: 1,
-    isCache: 0,
-    visible: '0',
-    status: '0',
+    isFrame: 0,
+    isCache: 1,
+    visible: '1',
+    status: '1',
   };
   proxy.resetForm('menuRef');
 }
