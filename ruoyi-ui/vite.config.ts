@@ -56,7 +56,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       VueDevTools(),
       viteMockServe({
         mockPath: 'mock',
-        localEnabled: true,
+        enable: false,
       }),
       AutoImport({
         resolvers: [

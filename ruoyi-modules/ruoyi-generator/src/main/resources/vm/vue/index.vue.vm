@@ -424,7 +424,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
 #else
 #set($comment=$column.columnComment)
 #end
-  $column.javaField: [{ required: true, message: '$comment不能为空', trigger: #if($column.htmlType == "select")'change'#else'blur'#end }],
+  $column.javaField: [{ required: true, message: '$comment不能为空', trigger: #if($column.htmlType == "select")'blur'#else'blur'#end }],
 #end
 #end
 #end

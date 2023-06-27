@@ -201,7 +201,7 @@ const noticeRef = ref<FormInstanceFunctions>(null);
 
 const rules = ref<Record<string, Array<FormRule>>>({
   noticeTitle: [{ required: true, message: '公告标题不能为空', trigger: 'blur' }],
-  noticeType: [{ required: true, message: '公告类型不能为空', trigger: 'change' }],
+  noticeType: [{ required: true, message: '公告类型不能为空', trigger: 'blur' }],
 });
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
