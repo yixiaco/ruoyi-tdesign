@@ -218,12 +218,13 @@
                 :placeholder="`请输入${value.name}`"
               />
               <t-input-number
-                v-if="value.component === 'input-number'"
+                v-else-if="value.component === 'input-number'"
                 v-model="form.configJson[key]"
                 :placeholder="`请输入${value.name}`"
                 :min="value.min"
                 :max="value.max"
               />
+              <t-switch v-else-if="value.component === 'switch'" v-model="form.configJson[key]" />
             </t-form-item>
           </t-col>
           <t-col :span="12">
@@ -307,7 +308,8 @@ import {
 } from '@/api/system/messageConfig';
 import { SysMessageConfigForm, SysMessageConfigQuery, SysMessageConfigVo } from '@/api/system/model/messageConfigModel';
 
-import { SmsConfig, SUPPLIER_TYPE_MAP } from './data';
+import { SUPPLIER_TYPE_MAP } from './data';
+import { SupplierConfig } from './model';
 
 const { proxy } = getCurrentInstance();
 const { sys_message_type, sys_normal_disable, sys_message_supplier_type } = proxy.useDict(
@@ -331,9 +333,9 @@ const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
 
-const supplierTypeConfig = computed<SmsConfig>(() => {
+const supplierTypeConfig = computed<SupplierConfig>(() => {
   if (!form.value.supplierType) {
-    return {} as SmsConfig;
+    return {} as SupplierConfig;
   }
   return SUPPLIER_TYPE_MAP.get(form.value.supplierType);
 });
