@@ -1,26 +1,26 @@
-package org.dromara.system.enums;
+package org.dromara.common.core.enums;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 /**
- * 是否枚举
+ * 显隐状态
  *
  * @author hexm
- * @date 2023/05/06 11:29
+ * @date 2023/06/26 17:16
  */
 @Getter
 @AllArgsConstructor
-public enum YesNoEnum {
+public enum ShowHiddenEnum {
 
     /**
-     * 是
+     * 显示
      */
-    YES("Y"),
+    SHOW("1"),
     /**
-     * 否
+     * 隐藏
      */
-    NO("N");
+    HIDDEN("0");
 
     private final String code;
 }

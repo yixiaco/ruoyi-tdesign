@@ -150,7 +150,7 @@
             <template #status="{ row }">
               <t-switch
                 v-model="row.status"
-                :custom-value="['0', '1']"
+                :custom-value="['1', '0']"
                 @click.stop
                 @change="handleStatusChange(row)"
               ></t-switch>
@@ -305,7 +305,7 @@
                     :key="item.postId"
                     :label="item.postName"
                     :value="item.postId"
-                    :disabled="item.status === 1"
+                    :disabled="item.status === 0"
                   ></t-option>
                 </t-select>
               </t-form-item>
@@ -318,7 +318,7 @@
                     :key="item.roleId"
                     :label="item.roleName"
                     :value="item.roleId"
-                    :disabled="item.status === 1"
+                    :disabled="item.status === 0"
                   ></t-option>
                 </t-select>
               </t-form-item>
@@ -455,6 +455,8 @@ import {
 import { computed, createVNode, getCurrentInstance, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import { SysPostVo } from '@/api/system/model/postModel';
+import { SysRoleVo } from '@/api/system/model/roleModel';
 import { SysUserForm, SysUserQuery, SysUserVo } from '@/api/system/model/userModel';
 import {
   addUser,
@@ -491,9 +493,9 @@ const dateRange = ref([]);
 const deptName = ref('');
 const deptOptions = ref(undefined);
 const initPassword = ref(undefined);
-const postOptions = ref([]);
-const roleOptions = ref([]);
-const deptActived = ref([]);
+const postOptions = ref<SysPostVo[]>([]);
+const roleOptions = ref<SysRoleVo[]>([]);
+const deptActived = ref<number[]>([]);
 const { token } = storeToRefs(useUserStore());
 /** * 用户导入参数 */
 const upload = reactive({
@@ -538,7 +540,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
   phonenumber: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
 });
 const form = ref<SysUserForm & SysUserVo>({
-  status: '0',
+  status: '1',
   postIds: [],
   roleIds: [],
 });
@@ -626,7 +628,7 @@ function handleExport() {
 /** 用户状态修改  */
 function handleStatusChange(row: SysUserVo) {
   const user = userList.value.find((value) => value.userId === row.userId);
-  const text = user.status === '0' ? '启用' : '停用';
+  const text = user.status === '1' ? '启用' : '停用';
   proxy.$modal.confirm(
     `确认要"${text}""${user.userName}"用户吗?`,
     () => {
@@ -713,7 +715,7 @@ function reset() {
     phonenumber: undefined,
     email: undefined,
     sex: undefined,
-    status: '0',
+    status: '1',
     remark: undefined,
     postIds: [],
     roleIds: [],

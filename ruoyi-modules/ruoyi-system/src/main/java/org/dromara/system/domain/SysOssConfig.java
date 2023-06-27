@@ -72,7 +72,7 @@ public class SysOssConfig extends TenantEntity {
     private String region;
 
     /**
-     * 是否默认（0=是,1=否）
+     * 是否默认（1=是,0=否）
      */
     private String status;
 

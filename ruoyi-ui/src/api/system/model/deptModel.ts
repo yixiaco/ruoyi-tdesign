@@ -32,7 +32,7 @@ export interface SysDeptForm extends BaseEntity {
   phone?: string;
   /** 邮箱 */
   email?: string;
-  /** 部门状态（0正常 1停用） */
+  /** 部门状态（1正常 0停用） */
   status?: string;
 }
 /**
@@ -55,7 +55,7 @@ export interface SysDeptVo {
   phone?: string;
   /** 邮箱 */
   email?: string;
-  /** 部门状态（0正常 1停用） */
+  /** 部门状态（1正常 0停用） */
   status?: string;
   /** 创建时间 */
   createTime?: any;

@@ -22,8 +22,8 @@
         </t-form-item>
         <t-form-item label="是否默认" name="status">
           <t-select v-model="queryParams.status" placeholder="请选择状态" clearable style="width: 200px">
-            <t-option key="0" label="是" value="0" />
-            <t-option key="1" label="否" value="1" />
+            <t-option key="1" label="是" value="1" />
+            <t-option key="0" label="否" value="0" />
           </t-select>
         </t-form-item>
         <t-form-item label-width="0px">
@@ -100,7 +100,7 @@
         <template #status="{ row }">
           <t-switch
             v-model="row.status"
-            :custom-value="['0', '1']"
+            :custom-value="['1', '0']"
             @change="handleStatusChange(row)"
             @click.stop
           ></t-switch>
@@ -403,7 +403,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
 /** 用户状态修改  */
 function handleStatusChange(row: SysOssConfigVo) {
   const ossConfig = ossConfigList.value.find((value) => value.ossConfigId === row.ossConfigId);
-  const text = ossConfig.status === '0' ? '启用' : '停用';
+  const text = ossConfig.status === '1' ? '启用' : '停用';
   proxy.$modal.confirm(
     `确认要"${text}""${ossConfig.configKey}"配置吗?`,
     () => {

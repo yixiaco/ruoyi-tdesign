@@ -8,7 +8,7 @@ export interface SysPostQuery extends BaseEntity {
   postCode?: string;
   /** 岗位名称 */
   postName?: string;
-  /** 状态（0正常 1停用） */
+  /** 状态（1正常 0停用） */
   status?: string;
 }
 /**
@@ -23,7 +23,7 @@ export interface SysPostForm extends BaseEntity {
   postName?: string;
   /** 显示顺序 */
   postSort?: number;
-  /** 状态（0正常 1停用） */
+  /** 状态（1正常 0停用） */
   status?: string;
   /** 备注 */
   remark?: string;
@@ -40,7 +40,7 @@ export interface SysPostVo {
   postName?: string;
   /** 显示顺序 */
   postSort?: number;
-  /** 状态（0正常 1停用） */
+  /** 状态（1正常 0停用） */
   status?: string;
   /** 创建时间 */
   createTime?: any;

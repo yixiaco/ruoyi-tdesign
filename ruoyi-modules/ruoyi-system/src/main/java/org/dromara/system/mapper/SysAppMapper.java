@@ -1,9 +1,9 @@
 package org.dromara.system.mapper;
 
+import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysApp;
 import org.dromara.system.domain.query.SysAppQuery;
 import org.dromara.system.domain.vo.SysAppVo;
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 
 import java.util.List;
 

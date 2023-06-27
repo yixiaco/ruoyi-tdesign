@@ -22,7 +22,7 @@ export interface SysLogininforBo extends BaseEntity {
   browser?: string;
   /**  操作系统 */
   os?: string;
-  /**  登录状态（0成功 1失败） */
+  /**  登录状态（1成功 0失败） */
   status?: string;
   /**  提示消息 */
   msg?: string;
@@ -37,7 +37,7 @@ export interface SysLogininforVo {
   tenantId?: string;
   /**  用户账号 */
   userName?: string;
-  /**  登录状态（0成功 1失败） */
+  /**  登录状态（1成功 0失败） */
   status?: string;
   /**  登录IP地址 */
   ipaddr?: string;

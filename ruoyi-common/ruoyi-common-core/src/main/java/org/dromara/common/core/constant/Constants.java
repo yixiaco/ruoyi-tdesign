@@ -8,6 +8,11 @@ package org.dromara.common.core.constant;
 public interface Constants {
 
     /**
+     * 未删除标识
+     */
+    String DEL_FLAG = "0";
+
+    /**
      * UTF-8 字符集
      */
     String UTF8 = "UTF-8";
@@ -31,16 +36,6 @@ public interface Constants {
      * https请求
      */
     String HTTPS = "https://";
-
-    /**
-     * 通用成功标识
-     */
-    String SUCCESS = "0";
-
-    /**
-     * 通用失败标识
-     */
-    String FAIL = "1";
 
     /**
      * 登录成功

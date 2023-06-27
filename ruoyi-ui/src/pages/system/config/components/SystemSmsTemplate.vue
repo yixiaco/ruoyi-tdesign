@@ -71,7 +71,7 @@ const form = ref<Record<string, SysConfigForm & SysConfigVo>>({
     configName: '登录模板ID',
     configType: 'Y',
     configValue: '',
-    isGlobal: 0,
+    isGlobal: 1,
     // eslint-disable-next-line no-template-curly-in-string
     remark: '需要验证码场景，例如：注册、登录、修改密码、修改绑定手机号（阿里云模板固定参数${code}）',
   },

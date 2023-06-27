@@ -180,7 +180,7 @@
           <t-switch v-model="form.isDefault" :custom-value="['Y', 'N']" />
         </t-form-item>
         <t-form-item label="启用状态" name="status">
-          <t-switch v-model="form.status" :custom-value="['0', '1']" />
+          <t-switch v-model="form.status" :custom-value="['1', '0']" />
         </t-form-item>
         <t-form-item label="备注" name="remark">
           <t-textarea v-model="form.remark" placeholder="请输入内容" />
@@ -315,7 +315,7 @@ const columns = ref<Array<PrimaryTableCol>>([
 const form = ref<SysOssRuleVo & SysOssRuleForm>({
   isOverwrite: 'N',
   isDefault: 'N',
-  status: '0',
+  status: '1',
 });
 // 查询对象
 const queryParams = ref<SysOssRuleQuery>({
@@ -359,7 +359,7 @@ function reset() {
   form.value = {
     isOverwrite: 'N',
     isDefault: 'N',
-    status: '0',
+    status: '1',
   };
   proxy.resetForm('ossRuleRef');
 }

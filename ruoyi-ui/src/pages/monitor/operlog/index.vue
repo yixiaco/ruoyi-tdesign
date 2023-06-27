@@ -155,21 +155,17 @@
           </t-col>
           <t-col :span="6">
             <t-form-item label="操作状态">
-              <div v-if="form.status === 0">正常</div>
-              <div v-else-if="form.status === 1">失败</div>
+              <dict-tag :options="sys_common_status" :value="form.status" />
             </t-form-item>
           </t-col>
           <t-col :span="6">
             <t-form-item label="操作时间">{{ parseTime(form.operTime) }}</t-form-item>
           </t-col>
-          <t-col :span="12">
-            <t-col :span="6">
-              <t-form-item label="消耗时间">{{ form.costTime }}毫秒</t-form-item>
-            </t-col>
-            <t-form-item label="错误消息">{{ form.errorMsg }}</t-form-item>
+          <t-col :span="6">
+            <t-form-item label="消耗时间">{{ form.costTime }}毫秒</t-form-item>
           </t-col>
           <t-col :span="12">
-            <t-form-item v-if="form.status === 1" label="异常信息">{{ form.errorMsg }}</t-form-item>
+            <t-form-item v-if="form.status === 0" label="异常信息">{{ form.errorMsg }}</t-form-item>
           </t-col>
         </t-row>
       </t-form>
