@@ -147,6 +147,7 @@
       :header="title"
       width="800px"
       attach="body"
+      top="3%"
       :confirm-btn="{
         content: '确 定',
         theme: 'primary',
@@ -205,28 +206,31 @@
               </t-select>
             </t-form-item>
           </t-col>
-          <t-col v-for="(value, key) in supplierTypeConfig" :key="key" :span="value.span ?? 12">
-            <t-form-item
-              :label="value.name"
-              :name="`configJson[${key}]`"
-              :help="value.help"
-              :rules="[{ required: value.required, message: `${value.name}不能为空` }]"
-            >
-              <t-input
-                v-if="value.component === 'input'"
-                v-model="form.configJson[key]"
-                :placeholder="`请输入${value.name}`"
-              />
-              <t-input-number
-                v-else-if="value.component === 'input-number'"
-                v-model="form.configJson[key]"
-                :placeholder="`请输入${value.name}`"
-                :min="value.min"
-                :max="value.max"
-              />
-              <t-switch v-else-if="value.component === 'switch'" v-model="form.configJson[key]" />
-            </t-form-item>
-          </t-col>
+          <template v-for="(value, key) in messageConfig.supplierConfig" :key="key">
+            <t-col v-if="!value.visible || form.configJson[value.visible]" :span="value.span ?? 12">
+              <t-form-item
+                :label="value.name"
+                :name="`configJson[${key}]`"
+                :help="value.help"
+                :rules="[{ required: value.required, message: `${value.name}不能为空` }, ...(value.rules ?? [])]"
+              >
+                <t-input
+                  v-if="value.component === 'input'"
+                  v-model="form.configJson[key]"
+                  :placeholder="`请输入${value.name}`"
+                />
+                <t-input-number
+                  v-else-if="value.component === 'input-number'"
+                  v-model="form.configJson[key]"
+                  :allow-input-over-limit="false"
+                  :min="value.min"
+                  :max="value.max"
+                  :decimal-places="0"
+                />
+                <t-switch v-else-if="value.component === 'switch'" v-model="form.configJson[key]" />
+              </t-form-item>
+            </t-col>
+          </template>
           <t-col :span="12">
             <t-form-item label="备注" name="remark">
               <t-textarea v-model="form.remark" placeholder="请输入内容" />
@@ -309,7 +313,7 @@ import {
 import { SysMessageConfigForm, SysMessageConfigQuery, SysMessageConfigVo } from '@/api/system/model/messageConfigModel';
 
 import { SUPPLIER_TYPE_MAP } from './data';
-import { SupplierConfig } from './model';
+import { MessageConfig } from './model';
 
 const { proxy } = getCurrentInstance();
 const { sys_message_type, sys_normal_disable, sys_message_supplier_type } = proxy.useDict(
@@ -333,9 +337,9 @@ const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
 
-const supplierTypeConfig = computed<SupplierConfig>(() => {
+const messageConfig = computed<MessageConfig>(() => {
   if (!form.value.supplierType) {
-    return {} as SupplierConfig;
+    return {} as MessageConfig;
   }
   return SUPPLIER_TYPE_MAP.get(form.value.supplierType);
 });
@@ -391,13 +395,14 @@ const pagination = computed(() => {
 /** 处理支持平台变更事件 */
 function handleSupplierTypeChange() {
   // 默认值赋值
-  if (supplierTypeConfig.value) {
+  if (messageConfig.value) {
     const configValue = {};
-    Object.entries(supplierTypeConfig.value).forEach((value) => {
+    Object.entries(messageConfig.value.supplierConfig).forEach((value) => {
       // @ts-ignore
       configValue[value[0]] = value[1].value;
     });
     form.value.configJson = configValue;
+    form.value.messageType = messageConfig.value.messageType;
   }
 }
 
