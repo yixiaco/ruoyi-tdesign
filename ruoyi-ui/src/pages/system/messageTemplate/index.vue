@@ -1,19 +1,22 @@
 <template>
   <t-card>
     <t-space direction="vertical">
-      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="75px">
-        <t-form-item label="标题" name="title">
-          <t-input v-model="queryParams.title" placeholder="请输入标题" clearable @enter="handleQuery" />
+      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
+        <t-form-item label="模板名称" name="templateName">
+          <t-input v-model="queryParams.templateName" placeholder="请输入模板名称" clearable @enter="handleQuery" />
+        </t-form-item>
+        <t-form-item label="消息key" name="messageKey">
+          <t-input v-model="queryParams.messageKey" placeholder="请输入消息key" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="消息类型" name="messageType">
           <t-select v-model="queryParams.messageType" placeholder="请选择消息类型" clearable>
             <t-option v-for="dict in sys_message_type" :key="dict.value" :label="dict.label" :value="dict.value" />
           </t-select>
         </t-form-item>
-        <t-form-item label="支持平台" name="supplierType">
-          <t-select v-model="queryParams.supplierType" placeholder="请选择支持平台" clearable>
+        <t-form-item label="模板类型" name="templateMode">
+          <t-select v-model="queryParams.templateMode" placeholder="请选择模板类型" clearable>
             <t-option
-              v-for="dict in sys_message_supplier_type"
+              v-for="dict in sys_message_template_mode"
               :key="dict.value"
               :label="dict.label"
               :value="dict.value"
@@ -41,8 +44,8 @@
         v-model:column-controller-visible="columnControllerVisible"
         :loading="loading"
         hover
-        row-key="messageConfigId"
-        :data="messageConfigList"
+        row-key="messageTemplateId"
+        :data="messageTemplateList"
         :columns="columns"
         :selected-row-keys="ids"
         select-on-row-click
@@ -55,12 +58,12 @@
         <template #topContent>
           <t-row>
             <t-col flex="auto">
-              <t-button v-hasPermi="['system:messageConfig:add']" theme="primary" @click="handleAdd">
+              <t-button v-hasPermi="['system:messageTemplate:add']" theme="primary" @click="handleAdd">
                 <template #icon> <add-icon /></template>
                 新增
               </t-button>
               <t-button
-                v-hasPermi="['system:messageConfig:edit']"
+                v-hasPermi="['system:messageTemplate:edit']"
                 theme="default"
                 variant="outline"
                 :disabled="single"
@@ -70,7 +73,7 @@
                 修改
               </t-button>
               <t-button
-                v-hasPermi="['system:messageConfig:remove']"
+                v-hasPermi="['system:messageTemplate:remove']"
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
@@ -80,7 +83,7 @@
                 删除
               </t-button>
               <t-button
-                v-hasPermi="['system:messageConfig:export']"
+                v-hasPermi="['system:messageTemplate:export']"
                 theme="default"
                 variant="outline"
                 @click="handleExport"
@@ -103,8 +106,8 @@
         <template #messageType="{ row }">
           <dict-tag :options="sys_message_type" :value="row.messageType" />
         </template>
-        <template #supplierType="{ row }">
-          <dict-tag :options="sys_message_supplier_type" :value="row.supplierType" />
+        <template #templateMode="{ row }">
+          <dict-tag :options="sys_message_template_mode" :value="row.templateMode" />
         </template>
         <template #status="{ row }">
           <dict-tag :options="sys_normal_disable" :value="row.status" />
@@ -112,7 +115,7 @@
         <template #operation="{ row }">
           <t-space :size="8" break-line>
             <t-link
-              v-hasPermi="['system:messageConfig:query']"
+              v-hasPermi="['system:messageTemplate:query']"
               theme="primary"
               hover="color"
               @click.stop="handleDetail(row)"
@@ -120,7 +123,7 @@
               <browse-icon />详情
             </t-link>
             <t-link
-              v-hasPermi="['system:messageConfig:edit']"
+              v-hasPermi="['system:messageTemplate:edit']"
               theme="primary"
               hover="color"
               @click.stop="handleUpdate(row)"
@@ -128,7 +131,7 @@
               <edit-icon />修改
             </t-link>
             <t-link
-              v-hasPermi="['system:messageConfig:remove']"
+              v-hasPermi="['system:messageTemplate:remove']"
               theme="danger"
               hover="color"
               @click.stop="handleDelete(row)"
@@ -140,14 +143,13 @@
       </t-table>
     </t-space>
 
-    <!-- 添加或修改消息配置对话框 -->
+    <!-- 添加或修改消息模板对话框 -->
     <t-dialog
       v-model:visible="open"
       :close-on-overlay-click="false"
       :header="title"
-      width="800px"
+      width="700px"
       attach="body"
-      top="3%"
       :confirm-btn="{
         content: '确 定',
         theme: 'primary',
@@ -156,42 +158,59 @@
       @confirm="onConfirm"
     >
       <t-form
-        ref="messageConfigRef"
+        ref="messageTemplateRef"
         label-align="right"
         :data="form"
         :rules="rules"
-        label-width="calc(10em + 24px)"
+        label-width="calc(5em + 24px)"
         scroll-to-first-error="smooth"
         @submit="submitForm"
       >
         <t-row :gutter="[0, 20]">
           <t-col :span="6">
-            <t-form-item label="标题" name="title">
-              <t-input v-model="form.title" placeholder="请输入标题" clearable />
+            <t-form-item label="模板名称" name="templateName">
+              <t-input v-model="form.templateName" placeholder="请输入模板名称" clearable />
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="消息key" name="messageKey">
+              <t-select v-model="form.messageKey" placeholder="请选择消息key" clearable>
+                <t-option
+                  v-for="item in messageKeys"
+                  :key="item.messageKey"
+                  :label="item.name"
+                  :value="item.messageKey"
+                />
+              </t-select>
             </t-form-item>
           </t-col>
           <t-col :span="6">
             <t-form-item label="消息类型" name="messageType">
-              <t-select v-model="form.messageType" placeholder="请选择消息类型" clearable>
+              <t-select
+                v-model="form.messageType"
+                placeholder="请选择消息类型"
+                clearable
+                @change="handleMessageTypeChange"
+              >
                 <t-option v-for="dict in sys_message_type" :key="dict.value" :label="dict.label" :value="dict.value" />
               </t-select>
             </t-form-item>
           </t-col>
           <t-col :span="6">
-            <t-form-item label="支持平台" name="supplierType">
-              <t-select
-                v-model="form.supplierType"
-                placeholder="请选择支持平台"
-                clearable
-                @change="handleSupplierTypeChange"
-              >
+            <t-form-item v-show="form.messageType" label="消息配置" name="messageConfigId">
+              <t-select v-model="form.messageConfigId" placeholder="请选择消息配置" filterable clearable>
                 <t-option
-                  v-for="dict in sys_message_supplier_type"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
+                  v-for="item in messageConfigs"
+                  :key="item.messageConfigId"
+                  :label="item.title"
+                  :value="item.messageConfigId"
                 />
               </t-select>
+            </t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="签名" name="signature">
+              <t-input v-model="form.signature" placeholder="请输入签名" clearable />
             </t-form-item>
           </t-col>
           <t-col :span="6">
@@ -206,31 +225,44 @@
               </t-select>
             </t-form-item>
           </t-col>
-          <template v-for="(value, key) in messageConfig.supplierConfig" :key="key">
-            <t-col v-if="!value.visible || form.configJson[value.visible]" :span="value.span ?? 12">
-              <t-form-item
-                :label="value.name"
-                :name="`configJson[${key}]`"
-                :help="value.help"
-                :rules="[{ required: value.required, message: `${value.name}不能为空` }, ...(value.rules ?? [])]"
-              >
-                <t-input
-                  v-if="value.component === 'input'"
-                  v-model="form.configJson[key]"
-                  :placeholder="`请输入${value.name}`"
+          <t-col :span="6">
+            <t-form-item label="模板类型" name="templateMode">
+              <t-select v-model="form.templateMode" placeholder="请选择模板类型" clearable>
+                <t-option
+                  v-for="dict in sys_message_template_mode"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
                 />
-                <t-input-number
-                  v-else-if="value.component === 'input-number'"
-                  v-model="form.configJson[key]"
-                  :allow-input-over-limit="false"
-                  :min="value.min"
-                  :max="value.max"
-                  :decimal-places="0"
-                />
-                <t-switch v-else-if="value.component === 'switch'" v-model="form.configJson[key]" />
-              </t-form-item>
-            </t-col>
-          </template>
+              </t-select>
+            </t-form-item>
+          </t-col>
+          <t-col v-if="form.templateMode === 'TEMPLATE_ID'" :span="6">
+            <t-form-item label="模板ID" name="templateId">
+              <t-input v-model="form.templateId" placeholder="请输入模板ID" clearable />
+            </t-form-item>
+          </t-col>
+          <t-col :span="12">
+            <t-form-item label="内容" name="content">
+              <t-textarea v-model="form.content" placeholder="请输入内容" />
+            </t-form-item>
+            <t-form-item>
+              <t-alert>
+                <b>变量格式</b>：${name}；例如，尊敬的 ${name}，您的快递已飞奔在路上，将今天 ${time}
+                送达您的手里，请留意查收。
+              </t-alert>
+            </t-form-item>
+          </t-col>
+          <t-col :span="12">
+            <t-form-item label="变量属性" name="varsJson">
+              <t-input-group separate>
+                <span :style="{ lineHeight: '32px' }">变量：</span>
+                <t-input :style="{ width: '100px' }" default-value="0731" />
+                <span :style="{ lineHeight: '32px' }">&nbsp;入参：</span>
+                <t-input :style="{ width: '100px' }" default-value="12345" />
+              </t-input-group>
+            </t-form-item>
+          </t-col>
           <t-col :span="12">
             <t-form-item label="备注" name="remark">
               <t-textarea v-model="form.remark" placeholder="请输入备注" />
@@ -240,16 +272,22 @@
       </t-form>
     </t-dialog>
 
-    <!-- 消息配置详情 -->
-    <t-dialog v-model:visible="openView" header="消息配置详情" width="700px" attach="body" :footer="false">
+    <!-- 消息模板详情 -->
+    <t-dialog v-model:visible="openView" header="消息模板详情" width="700px" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
         <t-form label-align="right" colon label-width="calc(5em + 24px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
-              <t-form-item label="消息设置id">{{ form.messageConfigId }}</t-form-item>
+              <t-form-item label="消息模板id">{{ form.messageTemplateId }}</t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="标题">{{ form.title }}</t-form-item>
+              <t-form-item label="模板名称">{{ form.templateName }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="消息配置id">{{ form.messageConfigId }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="消息key">{{ form.messageKey }}</t-form-item>
             </t-col>
             <t-col :span="6">
               <t-form-item label="消息类型">
@@ -257,12 +295,21 @@
               </t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="支持平台标识">
-                <dict-tag :options="sys_message_supplier_type" :value="form.supplierType" />
+              <t-form-item label="模板类型">
+                <dict-tag :options="sys_message_template_mode" :value="form.templateMode" />
               </t-form-item>
             </t-col>
+            <t-col :span="6">
+              <t-form-item label="签名">{{ form.signature }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="模板id">{{ form.templateId }}</t-form-item>
+            </t-col>
             <t-col :span="12">
-              <t-form-item label="配置json">{{ form.configJson }}</t-form-item>
+              <t-form-item label="内容"><div v-html="form.content"></div></t-form-item>
+            </t-col>
+            <t-col :span="12">
+              <t-form-item label="输入变量">{{ form.varsJson }}</t-form-item>
             </t-col>
             <t-col :span="6">
               <t-form-item label="状态">
@@ -286,7 +333,7 @@
 </template>
 <script lang="ts">
 export default {
-  name: 'MessageConfig',
+  name: 'MessageTemplate',
 };
 </script>
 <script lang="ts" setup>
@@ -304,26 +351,31 @@ import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitConte
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import {
-  addMessageConfig,
-  delMessageConfig,
-  getMessageConfig,
-  listMessageConfig,
-  updateMessageConfig,
-} from '@/api/system/messageConfig';
-import { SysMessageConfigForm, SysMessageConfigQuery, SysMessageConfigVo } from '@/api/system/model/messageConfigModel';
-
-import { SUPPLIER_TYPE_MAP } from './data';
-import { MessageConfig } from './model';
+  addMessageTemplate,
+  delMessageTemplate,
+  getMessageConfigs,
+  getMessageKeys,
+  getMessageTemplate,
+  listMessageTemplate,
+  updateMessageTemplate,
+} from '@/api/system/messageTemplate';
+import { SysMessageConfigVo } from '@/api/system/model/messageConfigModel';
+import { SysMessageKeyVo } from '@/api/system/model/messageKeyModel';
+import {
+  SysMessageTemplateForm,
+  SysMessageTemplateQuery,
+  SysMessageTemplateVo,
+} from '@/api/system/model/messageTemplateModel';
 
 const { proxy } = getCurrentInstance();
-const { sys_message_type, sys_normal_disable, sys_message_supplier_type } = proxy.useDict(
+const { sys_message_template_mode, sys_message_type, sys_normal_disable } = proxy.useDict(
+  'sys_message_template_mode',
   'sys_message_type',
   'sys_normal_disable',
-  'sys_message_supplier_type',
 );
 
-const messageConfigList = ref<SysMessageConfigVo[]>([]);
-const messageConfigRef = ref<FormInstanceFunctions>(null);
+const messageTemplateList = ref<SysMessageTemplateVo[]>([]);
+const messageTemplateRef = ref<FormInstanceFunctions>(null);
 const open = ref(false);
 const openView = ref(false);
 const openViewLoading = ref(false);
@@ -336,44 +388,44 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
-
-const messageConfig = computed<MessageConfig>(() => {
-  if (!form.value.supplierType) {
-    return {} as MessageConfig;
-  }
-  return SUPPLIER_TYPE_MAP.get(form.value.supplierType);
-});
+const messageKeys = ref<SysMessageKeyVo[]>([]);
+const messageConfigs = ref<SysMessageConfigVo[]>([]);
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
-  title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
+  templateName: [{ required: true, message: '模板名称不能为空', trigger: 'blur' }],
+  messageConfigId: [{ required: true, message: '消息配置不能为空', trigger: 'blur' }],
+  messageKey: [{ required: true, message: '消息key不能为空', trigger: 'blur' }],
   messageType: [{ required: true, message: '消息类型不能为空', trigger: 'blur' }],
-  supplierType: [{ required: true, message: '支持平台标识不能为空', trigger: 'blur' }],
+  templateMode: [{ required: true, message: '模板类型不能为空', trigger: 'blur' }],
   status: [{ required: true, message: '状态不能为空', trigger: 'blur' }],
+  templateId: [{ required: true, message: '模板ID不能为空', trigger: 'blur' }],
+  content: [{ required: true, message: '内容不能为空', trigger: 'blur' }],
 });
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
-  { title: `标题`, colKey: 'title', align: 'center' },
+  { title: `模板名称`, colKey: 'templateName', align: 'center' },
+  { title: `消息配置id`, colKey: 'messageConfigId', align: 'center' },
+  { title: `消息key`, colKey: 'messageKey', align: 'center' },
   { title: `消息类型`, colKey: 'messageType', align: 'center' },
-  { title: `支持平台标识`, colKey: 'supplierType', align: 'center' },
+  { title: `模板类型`, colKey: 'templateMode', align: 'center' },
+  { title: `签名`, colKey: 'signature', align: 'center' },
   { title: `状态`, colKey: 'status', align: 'center' },
-  { title: `备注`, colKey: 'remark', align: 'center', ellipsis: true },
   { title: `更新时间`, colKey: 'updateTime', align: 'center', width: 180 },
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 // 提交表单对象
-const form = ref<SysMessageConfigVo & SysMessageConfigForm>({
-  configJson: {},
-});
+const form = ref<SysMessageTemplateVo & SysMessageTemplateForm>({});
 // 查询对象
-const queryParams = ref<SysMessageConfigQuery>({
+const queryParams = ref<SysMessageTemplateQuery>({
   pageNum: 1,
   pageSize: 10,
-  title: undefined,
+  templateName: undefined,
+  messageKey: undefined,
   messageType: undefined,
-  supplierType: undefined,
+  templateMode: undefined,
   status: undefined,
 });
 
@@ -392,26 +444,32 @@ const pagination = computed(() => {
   };
 });
 
-/** 处理支持平台变更事件 */
-function handleSupplierTypeChange() {
-  // 默认值赋值
-  if (messageConfig.value) {
-    const configValue = {};
-    Object.entries(messageConfig.value.supplierConfig).forEach((value) => {
-      // @ts-ignore
-      configValue[value[0]] = value[1].value;
-    });
-    form.value.configJson = configValue;
-    form.value.messageType = messageConfig.value.messageType;
+const vars = computed(() => {
+  if (!form.value.content) {
+    return [];
   }
+  const rex = /\$\{([^$]+)}/g;
+  return form.value.content.match(rex);
+});
+
+/** 处理消息类型变更 */
+function handleMessageTypeChange(value: string) {
+  messageTemplateRef.value.clearValidate(['messageConfigId']);
+  if (!value) {
+    messageConfigs.value = [];
+    return;
+  }
+  getMessageConfigs(value).then((res) => {
+    messageConfigs.value = res.data;
+  });
 }
 
-/** 查询消息配置列表 */
+/** 查询消息模板列表 */
 function getList() {
   loading.value = true;
-  listMessageConfig(queryParams.value)
+  listMessageTemplate(queryParams.value)
     .then((response) => {
-      messageConfigList.value = response.rows;
+      messageTemplateList.value = response.rows;
       total.value = response.total;
     })
     .finally(() => (loading.value = false));
@@ -421,9 +479,8 @@ function getList() {
 function reset() {
   form.value = {
     status: 1,
-    configJson: {},
   };
-  proxy.resetForm('messageConfigRef');
+  proxy.resetForm('messageTemplateRef');
 }
 
 /** 搜索按钮操作 */
@@ -449,37 +506,43 @@ function handleSelectionChange(selection: Array<string | number>) {
 function handleAdd() {
   reset();
   open.value = true;
-  title.value = '添加消息配置';
+  title.value = '添加消息模板';
+  getMessageKeys().then((res) => {
+    messageKeys.value = res.data;
+  });
 }
 
 /** 详情按钮操作 */
-function handleDetail(row: SysMessageConfigVo) {
+function handleDetail(row: SysMessageTemplateVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const messageConfigId = row.messageConfigId || ids.value.at(0);
-  getMessageConfig(messageConfigId).then((response) => {
+  const messageTemplateId = row.messageTemplateId || ids.value.at(0);
+  getMessageTemplate(messageTemplateId).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
+  });
+  getMessageKeys().then((res) => {
+    messageKeys.value = res.data;
   });
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row: SysMessageConfigVo) {
+function handleUpdate(row: SysMessageTemplateVo) {
   buttonLoading.value = true;
   reset();
   open.value = true;
-  title.value = '修改消息配置';
-  const messageConfigId = row.messageConfigId || ids.value.at(0);
-  getMessageConfig(messageConfigId).then((response) => {
+  title.value = '修改消息模板';
+  const messageTemplateId = row.messageTemplateId || ids.value.at(0);
+  getMessageTemplate(messageTemplateId).then((response) => {
     buttonLoading.value = false;
-    form.value = { ...response.data, configJson: JSON.parse(response.data.configJson as string) };
+    form.value = response.data;
   });
 }
 
 /** 提交按钮 */
 function onConfirm() {
-  messageConfigRef.value.submit();
+  messageTemplateRef.value.submit();
 }
 
 /** 提交表单 */
@@ -487,9 +550,8 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');
-    const data = { ...form.value, configJson: JSON.stringify(form.value.configJson) };
-    if (form.value.messageConfigId) {
-      updateMessageConfig(data)
+    if (form.value.messageTemplateId) {
+      updateMessageTemplate(form.value)
         .then(() => {
           proxy.$modal.msgSuccess('修改成功');
           open.value = false;
@@ -500,7 +562,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
           proxy.$modal.msgClose(msgLoading);
         });
     } else {
-      addMessageConfig(data)
+      addMessageTemplate(form.value)
         .then(() => {
           proxy.$modal.msgSuccess('新增成功');
           open.value = false;
@@ -517,11 +579,11 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row: SysMessageConfigVo) {
-  const messageConfigIds = row.messageConfigId || ids.value;
-  proxy.$modal.confirm(`是否确认删除消息配置编号为${messageConfigIds}的数据项？`, () => {
+function handleDelete(row: SysMessageTemplateVo) {
+  const messageTemplateIds = row.messageTemplateId || ids.value;
+  proxy.$modal.confirm(`是否确认删除消息模板编号为${messageTemplateIds}的数据项？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
-    return delMessageConfig(messageConfigIds)
+    return delMessageTemplate(messageTemplateIds)
       .then(() => {
         getList();
         proxy.$modal.msgSuccess('删除成功');
@@ -535,11 +597,11 @@ function handleDelete(row: SysMessageConfigVo) {
 /** 导出按钮操作 */
 function handleExport() {
   proxy.download(
-    'system/messageConfig/export',
+    'system/messageTemplate/export',
     {
       ...queryParams.value,
     },
-    `messageConfig_${new Date().getTime()}.xlsx`,
+    `messageTemplate_${new Date().getTime()}.xlsx`,
   );
 }
 

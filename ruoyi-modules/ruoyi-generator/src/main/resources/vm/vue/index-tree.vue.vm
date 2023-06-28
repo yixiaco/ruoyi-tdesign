@@ -276,7 +276,7 @@
         </t-form-item>
 #elseif($column.htmlType == "textarea")
         <t-form-item label="${comment}" name="${field}">
-          <t-textarea v-model="form.${field}" placeholder="请输入内容" />
+          <t-textarea v-model="form.${field}" placeholder="请输入${comment}" />
         </t-form-item>
 #end
 #end

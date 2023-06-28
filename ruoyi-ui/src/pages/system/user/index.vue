@@ -325,7 +325,7 @@
             </t-col>
             <t-col :span="12">
               <t-form-item label="备注">
-                <t-textarea v-model="form.remark" placeholder="请输入内容"></t-textarea>
+                <t-textarea v-model="form.remark" placeholder="请输入备注"></t-textarea>
               </t-form-item>
             </t-col>
           </t-row>

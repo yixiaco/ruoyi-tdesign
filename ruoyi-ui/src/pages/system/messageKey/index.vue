@@ -2,16 +2,11 @@
   <t-card>
     <t-space direction="vertical">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
-        <t-form-item label="应用类型" name="appType">
-          <t-select v-model="queryParams.appType" placeholder="请选择应用类型" clearable>
-            <t-option v-for="dict in sys_app_type" :key="dict.value" :label="dict.label" :value="dict.value" />
-          </t-select>
+        <t-form-item label="消息名称" name="name">
+          <t-input v-model="queryParams.name" placeholder="请输入消息名称" clearable @enter="handleQuery" />
         </t-form-item>
-        <t-form-item label="应用key" name="appKey">
-          <t-input v-model="queryParams.appKey" placeholder="请输入应用key" clearable @enter="handleQuery" />
-        </t-form-item>
-        <t-form-item label="应用名称" name="appName">
-          <t-input v-model="queryParams.appName" placeholder="请输入应用名称" clearable @enter="handleQuery" />
+        <t-form-item label="消息key" name="messageKey">
+          <t-input v-model="queryParams.messageKey" placeholder="请输入消息key" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label-width="0px">
           <t-button theme="primary" @click="handleQuery">
@@ -29,8 +24,8 @@
         v-model:column-controller-visible="columnControllerVisible"
         :loading="loading"
         hover
-        row-key="appid"
-        :data="appList"
+        row-key="messageKeyId"
+        :data="messageKeyList"
         :columns="columns"
         :selected-row-keys="ids"
         select-on-row-click
@@ -43,12 +38,12 @@
         <template #topContent>
           <t-row>
             <t-col flex="auto">
-              <t-button v-hasPermi="['system:app:add']" theme="primary" @click="handleAdd">
+              <t-button v-hasPermi="['system:messageKey:add']" theme="primary" @click="handleAdd">
                 <template #icon> <add-icon /></template>
                 新增
               </t-button>
               <t-button
-                v-hasPermi="['system:app:edit']"
+                v-hasPermi="['system:messageKey:edit']"
                 theme="default"
                 variant="outline"
                 :disabled="single"
@@ -58,7 +53,7 @@
                 修改
               </t-button>
               <t-button
-                v-hasPermi="['system:app:remove']"
+                v-hasPermi="['system:messageKey:remove']"
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
@@ -67,7 +62,12 @@
                 <template #icon> <delete-icon /> </template>
                 删除
               </t-button>
-              <t-button v-hasPermi="['system:app:export']" theme="default" variant="outline" @click="handleExport">
+              <t-button
+                v-hasPermi="['system:messageKey:export']"
+                theme="default"
+                variant="outline"
+                @click="handleExport"
+              >
                 <template #icon> <download-icon /> </template>
                 导出
               </t-button>
@@ -83,18 +83,30 @@
             </t-col>
           </t-row>
         </template>
-        <template #appType="{ row }">
-          <dict-tag :options="sys_app_type" :value="row.appType" />
-        </template>
         <template #operation="{ row }">
           <t-space :size="8" break-line>
-            <t-link v-hasPermi="['system:app:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
+            <t-link
+              v-hasPermi="['system:messageKey:query']"
+              theme="primary"
+              hover="color"
+              @click.stop="handleDetail(row)"
+            >
               <browse-icon />详情
             </t-link>
-            <t-link v-hasPermi="['system:app:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
+            <t-link
+              v-hasPermi="['system:messageKey:edit']"
+              theme="primary"
+              hover="color"
+              @click.stop="handleUpdate(row)"
+            >
               <edit-icon />修改
             </t-link>
-            <t-link v-hasPermi="['system:app:remove']" theme="danger" hover="color" @click.stop="handleDelete(row)">
+            <t-link
+              v-hasPermi="['system:messageKey:remove']"
+              theme="danger"
+              hover="color"
+              @click.stop="handleDelete(row)"
+            >
               <delete-icon />删除
             </t-link>
           </t-space>
@@ -102,7 +114,7 @@
       </t-table>
     </t-space>
 
-    <!-- 添加或修改应用管理对话框 -->
+    <!-- 添加或修改消息常量对话框 -->
     <t-dialog
       v-model:visible="open"
       :close-on-overlay-click="false"
@@ -117,7 +129,7 @@
       @confirm="onConfirm"
     >
       <t-form
-        ref="appRef"
+        ref="messageKeyRef"
         label-align="right"
         :data="form"
         :rules="rules"
@@ -125,16 +137,11 @@
         scroll-to-first-error="smooth"
         @submit="submitForm"
       >
-        <t-form-item label="应用名称" name="appName">
-          <t-input v-model="form.appName" placeholder="请输入应用名称" clearable />
+        <t-form-item label="消息名称" name="name">
+          <t-input v-model="form.name" placeholder="请输入消息名称" clearable />
         </t-form-item>
-        <t-form-item label="应用类型" name="appType">
-          <t-select v-model="form.appType" placeholder="请选择应用类型" clearable>
-            <t-option v-for="dict in sys_app_type" :key="dict.value" :label="dict.label" :value="dict.value" />
-          </t-select>
-        </t-form-item>
-        <t-form-item label="应用key" name="appKey" help="请求头X-APP-KEY">
-          <t-input v-model="form.appKey" placeholder="请输入应用key" clearable />
+        <t-form-item label="消息key" name="messageKey">
+          <t-input v-model="form.messageKey" placeholder="请输入消息key" clearable />
         </t-form-item>
         <t-form-item label="备注" name="remark">
           <t-textarea v-model="form.remark" placeholder="请输入备注" />
@@ -142,33 +149,28 @@
       </t-form>
     </t-dialog>
 
-    <!-- 应用管理详情 -->
-    <t-dialog v-model:visible="openView" header="应用管理详情" width="700px" attach="body" :footer="false">
+    <!-- 消息常量详情 -->
+    <t-dialog v-model:visible="openView" header="消息常量详情" width="700px" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
         <t-form label-align="right" colon label-width="calc(5em + 24px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
-              <t-form-item label="应用id">{{ form.appid }}</t-form-item>
+              <t-form-item label="消息key主键">{{ form.messageKeyId }}</t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="应用类型">
-                <dict-tag :options="sys_app_type" :value="form.appType" />
-              </t-form-item>
+              <t-form-item label="消息名称">{{ form.name }}</t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="应用key">{{ form.appKey }}</t-form-item>
+              <t-form-item label="消息key">{{ form.messageKey }}</t-form-item>
             </t-col>
-            <t-col :span="6">
-              <t-form-item label="应用名称">{{ form.appName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
+            <t-col :span="12">
+              <t-form-item label="备注">{{ form.remark }}</t-form-item>
             </t-col>
             <t-col :span="6">
               <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
             </t-col>
-            <t-col :span="12">
-              <t-form-item label="备注">{{ form.remark }}</t-form-item>
+            <t-col :span="6">
+              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
             </t-col>
           </t-row>
         </t-form>
@@ -178,7 +180,7 @@
 </template>
 <script lang="ts">
 export default {
-  name: 'App',
+  name: 'MessageKey',
 };
 </script>
 <script lang="ts" setup>
@@ -195,14 +197,13 @@ import {
 import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
-import { addApp, delApp, getApp, listApp, updateApp } from '@/api/system/app';
-import { SysAppForm, SysAppQuery, SysAppVo } from '@/api/system/model/appModel';
+import { addMessageKey, delMessageKey, getMessageKey, listMessageKey, updateMessageKey } from '@/api/system/messageKey';
+import { SysMessageKeyForm, SysMessageKeyQuery, SysMessageKeyVo } from '@/api/system/model/messageKeyModel';
 
 const { proxy } = getCurrentInstance();
-const { sys_app_type } = proxy.useDict('sys_app_type');
 
-const appList = ref<SysAppVo[]>([]);
-const appRef = ref<FormInstanceFunctions>(null);
+const messageKeyList = ref<SysMessageKeyVo[]>([]);
+const messageKeyRef = ref<FormInstanceFunctions>(null);
 const open = ref(false);
 const openView = ref(false);
 const openViewLoading = ref(false);
@@ -218,30 +219,27 @@ const title = ref('');
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
-  appType: [{ required: true, message: '应用类型不能为空', trigger: 'blur' }],
-  appKey: [{ required: true, message: '应用key不能为空', trigger: 'blur' }],
-  appName: [{ required: true, message: '应用名称不能为空', trigger: 'blur' }],
+  name: [{ required: true, message: '消息名称不能为空', trigger: 'blur' }],
+  messageKey: [{ required: true, message: '消息key不能为空', trigger: 'blur' }],
 });
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
-  { title: `应用类型`, colKey: 'appType', align: 'center' },
-  { title: `应用key`, colKey: 'appKey', align: 'center' },
-  { title: `应用名称`, colKey: 'appName', align: 'center' },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
-  { title: `更新时间`, colKey: 'updateTime', align: 'center', width: 180 },
+  { title: `消息名称`, colKey: 'name', align: 'center' },
+  { title: `消息key`, colKey: 'messageKey', align: 'center' },
   { title: `备注`, colKey: 'remark', align: 'center', ellipsis: true },
+  { title: `更新时间`, colKey: 'updateTime', align: 'center', width: 180 },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 // 提交表单对象
-const form = ref<SysAppVo & SysAppForm>({});
+const form = ref<SysMessageKeyVo & SysMessageKeyForm>({});
 // 查询对象
-const queryParams = ref<SysAppQuery>({
+const queryParams = ref<SysMessageKeyQuery>({
   pageNum: 1,
   pageSize: 10,
-  appType: undefined,
-  appKey: undefined,
-  appName: undefined,
+  name: undefined,
+  messageKey: undefined,
 });
 
 // 分页
@@ -259,12 +257,12 @@ const pagination = computed(() => {
   };
 });
 
-/** 查询应用管理列表 */
+/** 查询消息常量列表 */
 function getList() {
   loading.value = true;
-  listApp(queryParams.value)
+  listMessageKey(queryParams.value)
     .then((response) => {
-      appList.value = response.rows;
+      messageKeyList.value = response.rows;
       total.value = response.total;
     })
     .finally(() => (loading.value = false));
@@ -273,7 +271,7 @@ function getList() {
 // 表单重置
 function reset() {
   form.value = {};
-  proxy.resetForm('appRef');
+  proxy.resetForm('messageKeyRef');
 }
 
 /** 搜索按钮操作 */
@@ -299,29 +297,29 @@ function handleSelectionChange(selection: Array<string | number>) {
 function handleAdd() {
   reset();
   open.value = true;
-  title.value = '添加应用管理';
+  title.value = '添加消息常量';
 }
 
 /** 详情按钮操作 */
-function handleDetail(row: SysAppVo) {
+function handleDetail(row: SysMessageKeyVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const appid = row.appid || ids.value.at(0);
-  getApp(appid).then((response) => {
+  const messageKeyId = row.messageKeyId || ids.value.at(0);
+  getMessageKey(messageKeyId).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
   });
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row: SysAppVo) {
+function handleUpdate(row: SysMessageKeyVo) {
   buttonLoading.value = true;
   reset();
   open.value = true;
-  title.value = '修改应用管理';
-  const appid = row.appid || ids.value.at(0);
-  getApp(appid).then((response) => {
+  title.value = '修改消息常量';
+  const messageKeyId = row.messageKeyId || ids.value.at(0);
+  getMessageKey(messageKeyId).then((response) => {
     buttonLoading.value = false;
     form.value = response.data;
   });
@@ -329,7 +327,7 @@ function handleUpdate(row: SysAppVo) {
 
 /** 提交按钮 */
 function onConfirm() {
-  appRef.value.submit();
+  messageKeyRef.value.submit();
 }
 
 /** 提交表单 */
@@ -337,8 +335,8 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');
-    if (form.value.appid) {
-      updateApp(form.value)
+    if (form.value.messageKeyId) {
+      updateMessageKey(form.value)
         .then(() => {
           proxy.$modal.msgSuccess('修改成功');
           open.value = false;
@@ -349,7 +347,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
           proxy.$modal.msgClose(msgLoading);
         });
     } else {
-      addApp(form.value)
+      addMessageKey(form.value)
         .then(() => {
           proxy.$modal.msgSuccess('新增成功');
           open.value = false;
@@ -366,11 +364,11 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row: SysAppVo) {
-  const appids = row.appid || ids.value;
-  proxy.$modal.confirm(`是否确认删除应用管理编号为${appids}的数据项？`, () => {
+function handleDelete(row: SysMessageKeyVo) {
+  const messageKeyIds = row.messageKeyId || ids.value;
+  proxy.$modal.confirm(`是否确认删除消息常量编号为${messageKeyIds}的数据项？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
-    return delApp(appids)
+    return delMessageKey(messageKeyIds)
       .then(() => {
         getList();
         proxy.$modal.msgSuccess('删除成功');
@@ -384,11 +382,11 @@ function handleDelete(row: SysAppVo) {
 /** 导出按钮操作 */
 function handleExport() {
   proxy.download(
-    'system/app/export',
+    'system/messageKey/export',
     {
       ...queryParams.value,
     },
-    `app_${new Date().getTime()}.xlsx`,
+    `messageKey_${new Date().getTime()}.xlsx`,
   );
 }
 

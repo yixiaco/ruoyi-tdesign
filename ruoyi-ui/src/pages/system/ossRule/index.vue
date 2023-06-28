@@ -183,7 +183,7 @@
           <t-switch v-model="form.status" :custom-value="['1', '0']" />
         </t-form-item>
         <t-form-item label="备注" name="remark">
-          <t-textarea v-model="form.remark" placeholder="请输入内容" />
+          <t-textarea v-model="form.remark" placeholder="请输入备注" />
         </t-form-item>
       </t-form>
     </t-dialog>
