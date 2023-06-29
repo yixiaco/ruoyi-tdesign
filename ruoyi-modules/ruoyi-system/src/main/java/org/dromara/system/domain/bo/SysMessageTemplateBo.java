@@ -37,7 +37,7 @@ public class SysMessageTemplateBo extends BaseEntity {
     /**
      * 消息配置id
      */
-    @NotNull(message = "消息配置id不能为空", groups = {AddGroup.class, EditGroup.class})
+    @NotNull(message = "消息配置不能为空", groups = {AddGroup.class, EditGroup.class})
     private Long messageConfigId;
 
     /**
@@ -64,6 +64,11 @@ public class SysMessageTemplateBo extends BaseEntity {
     private String signature;
 
     /**
+     * 标题
+     */
+    private String title;
+
+    /**
      * 模板id
      */
     private String templateId;
@@ -81,7 +86,7 @@ public class SysMessageTemplateBo extends BaseEntity {
     /**
      * 状态（1正常 0停用）
      */
-    @NotNull(message = "状态（1正常 0停用）不能为空", groups = {AddGroup.class, EditGroup.class})
+    @NotNull(message = "状态不能为空", groups = {AddGroup.class, EditGroup.class})
     private Integer status;
 
     /**

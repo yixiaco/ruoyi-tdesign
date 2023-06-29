@@ -60,6 +60,11 @@ public class SysMessageTemplate extends BaseEntity {
     private String signature;
 
     /**
+     * 标题
+     */
+    private String title;
+
+    /**
      * 模板id
      */
     private String templateId;

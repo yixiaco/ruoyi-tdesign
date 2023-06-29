@@ -33,6 +33,8 @@ export interface SysMessageTemplateForm extends BaseEntity {
   templateMode?: string;
   /** 签名 */
   signature?: string;
+  /** 标题 */
+  title?: string;
   /** 模板id */
   templateId?: string;
   /** 内容 */
@@ -62,6 +64,8 @@ export interface SysMessageTemplateVo {
   templateMode?: string;
   /** 签名 */
   signature?: string;
+  /** 标题 */
+  title?: string;
   /** 模板id */
   templateId?: string;
   /** 内容 */

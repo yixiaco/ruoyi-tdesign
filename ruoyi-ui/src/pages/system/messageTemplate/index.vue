@@ -216,9 +216,14 @@
               </t-select>
             </t-form-item>
           </t-col>
-          <t-col :span="6">
+          <t-col v-if="form.messageType === 'SMS'" :span="6">
             <t-form-item label="签名" name="signature">
               <t-input v-model="form.signature" placeholder="请输入签名" clearable />
+            </t-form-item>
+          </t-col>
+          <t-col v-if="form.messageType === 'MAIL'" :span="6">
+            <t-form-item label="标题" name="title">
+              <t-input v-model="form.title" placeholder="请输入标题" clearable />
             </t-form-item>
           </t-col>
           <t-col :span="6">
@@ -460,6 +465,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
   messageConfigId: [{ required: true, message: '消息配置不能为空', trigger: 'blur' }],
   messageKey: [{ required: true, message: '消息key不能为空', trigger: 'blur' }],
   messageType: [{ required: true, message: '消息类型不能为空', trigger: 'blur' }],
+  title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
   templateMode: [{ required: true, message: '模板类型不能为空', trigger: 'blur' }],
   status: [{ required: true, message: '状态不能为空', trigger: 'blur' }],
   templateId: [{ required: true, message: '模板ID不能为空', trigger: 'blur' }],
@@ -469,14 +475,13 @@ const rules = ref<Record<string, Array<FormRule>>>({
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
   { title: `模板名称`, colKey: 'templateName', align: 'center' },
-  { title: `消息配置id`, colKey: 'messageConfigId', align: 'center' },
   { title: `消息key`, colKey: 'messageKey', align: 'center' },
   { title: `消息类型`, colKey: 'messageType', align: 'center' },
   { title: `模板类型`, colKey: 'templateMode', align: 'center' },
-  { title: `签名`, colKey: 'signature', align: 'center' },
   { title: `状态`, colKey: 'status', align: 'center' },
-  { title: `更新时间`, colKey: 'updateTime', align: 'center', width: 180 },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
+  { title: `备注`, colKey: 'remark', align: 'center', ellipsis: true },
+  { title: `更新时间`, colKey: 'updateTime', align: 'center' },
+  { title: `创建时间`, colKey: 'createTime', align: 'center' },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 // 校验测试规则

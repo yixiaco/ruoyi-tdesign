@@ -911,7 +911,8 @@ create table sys_message_log  (
   message_type          varchar(20)     not null                    comment '消息类型 SMS、MAIL',
   template_mode         varchar(20)     null                        comment '模板类型 模板id模式、内容模式',
   account               varchar(255)    not null                    comment '发送账号',
-  template_id           varchar(100)    not null                    comment '模板id',
+  title                 varchar(255)    null        default null    comment '标题',
+  template_id           varchar(100)    null        default null    comment '模板id',
   content               text            null                        comment '发送内容',
   message_config_title  varchar(255)    null        default null    comment '消息配置标题',
   supplier_type         varchar(20)     null        default null    comment '平台标识',
@@ -920,9 +921,9 @@ create table sys_message_log  (
   error_message         varchar(500)    null        default null    comment '错误消息',
   biz_id                varchar(36)     null        default null    comment '回执消息id',
   message               varchar(255)    null        default null    comment '返回消息',
-  log_time              datetime NOT    null                        comment '记录时间',
-  PRIMARY KEY (message_log_id) USING BTREE
-) ENGINE = InnoDB COMMENT = '消息发送记录表';
+  log_time              datetime        not null                    comment '记录时间',
+  primary key (message_log_id) using btree
+) engine = innodb comment = '消息发送记录表';
 
 -- ----------------------------
 -- 消息模板表
@@ -935,7 +936,8 @@ create table sys_message_template  (
   message_key           varchar(50)     not null                    comment '消息key',
   message_type          varchar(20)     not null                    comment '消息类型 SMS、MAIL',
   template_mode         varchar(20)     not null                    comment '模板类型 模板id模式、内容模式',
-  signature             varchar(100)    not null                    comment '签名',
+  signature             varchar(100)    null        default null    comment '签名',
+  title                 varchar(255)    null        default null    comment '标题',
   template_id           varchar(100)    null        default null    comment '模板id',
   content               varchar(500)    null        default null    comment '内容',
   vars_json             text            null                        comment '输入变量',

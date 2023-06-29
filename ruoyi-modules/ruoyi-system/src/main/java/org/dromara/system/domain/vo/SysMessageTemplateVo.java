@@ -70,6 +70,12 @@ public class SysMessageTemplateVo implements Serializable {
     private String signature;
 
     /**
+     * 标题
+     */
+    @ExcelProperty(value = "标题")
+    private String title;
+
+    /**
      * 模板id
      */
     @ExcelProperty(value = "模板id")

@@ -1,5 +1,6 @@
 package org.dromara.system.service.impl;
 
+import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.fasterxml.jackson.core.type.TypeReference;
 import org.dromara.common.core.enums.MessageSupplierTypeEnum;
@@ -151,30 +152,51 @@ public class SysMessageSendServiceImpl implements ISysMessageSendService {
                 SmsBlend smsBlend = switch (supplierType) {
                     case ALIBABA -> {
                         AlibabaConfig alibabaConfig = JSONUtil.toBean(config.getConfigJson(), AlibabaConfig.class, true);
+                        if (StrUtil.isNotBlank(template.getSignature())) {
+                            alibabaConfig.setSignature(template.getSignature());
+                        }
                         yield SmsFactory.createSmsBlend(SupplierType.ALIBABA, alibabaConfig);
                     }
                     case HUAWEI -> {
                         HuaweiConfig huaweiConfig = JSONUtil.toBean(config.getConfigJson(), HuaweiConfig.class, true);
+                        if (StrUtil.isNotBlank(template.getSignature())) {
+                            huaweiConfig.setSignature(template.getSignature());
+                        }
                         yield SmsFactory.createSmsBlend(SupplierType.HUAWEI, huaweiConfig);
                     }
                     case TENCENT -> {
                         TencentConfig tencentConfig = JSONUtil.toBean(config.getConfigJson(), TencentConfig.class, true);
+                        if (StrUtil.isNotBlank(template.getSignature())) {
+                            tencentConfig.setSignature(template.getSignature());
+                        }
                         yield SmsFactory.createSmsBlend(SupplierType.TENCENT, tencentConfig);
                     }
                     case YUNPIAN -> {
                         YunpianConfig yunpianConfig = JSONUtil.toBean(config.getConfigJson(), YunpianConfig.class, true);
+                        if (StrUtil.isNotBlank(template.getSignature())) {
+                            yunpianConfig.setSignature(template.getSignature());
+                        }
                         yield SmsFactory.createSmsBlend(SupplierType.YUNPIAN, yunpianConfig);
                     }
                     case UNI_SMS -> {
                         UniConfig uniConfig = JSONUtil.toBean(config.getConfigJson(), UniConfig.class, true);
+                        if (StrUtil.isNotBlank(template.getSignature())) {
+                            uniConfig.setSignature(template.getSignature());
+                        }
                         yield SmsFactory.createSmsBlend(SupplierType.UNI_SMS, uniConfig);
                     }
                     case JD_CLOUD -> {
                         JdCloudConfig jdCloudConfig = JSONUtil.toBean(config.getConfigJson(), JdCloudConfig.class, true);
+                        if (StrUtil.isNotBlank(template.getSignature())) {
+                            jdCloudConfig.setSignature(template.getSignature());
+                        }
                         yield SmsFactory.createSmsBlend(SupplierType.JD_CLOUD, jdCloudConfig);
                     }
                     case CLOOPEN -> {
                         CloopenConfig cloopenConfig = JSONUtil.toBean(config.getConfigJson(), CloopenConfig.class, true);
+                        if (StrUtil.isNotBlank(template.getSignature())) {
+                            cloopenConfig.setSignature(template.getSignature());
+                        }
                         yield SmsFactory.createSmsBlend(SupplierType.CLOOPEN, cloopenConfig);
                     }
                     case EMAY -> {
@@ -183,10 +205,16 @@ public class SysMessageSendServiceImpl implements ISysMessageSendService {
                     }
                     case CTYUN -> {
                         CtyunConfig ctyunConfig = JSONUtil.toBean(config.getConfigJson(), CtyunConfig.class, true);
+                        if (StrUtil.isNotBlank(template.getSignature())) {
+                            ctyunConfig.setSignature(template.getSignature());
+                        }
                         yield SmsFactory.createSmsBlend(SupplierType.CTYUN, ctyunConfig);
                     }
                     case NETEASE -> {
                         NeteaseConfig neteaseConfig = JSONUtil.toBean(config.getConfigJson(), NeteaseConfig.class, true);
+                        if (StrUtil.isNotBlank(template.getSignature())) {
+                            neteaseConfig.setSignature(template.getSignature());
+                        }
                         yield SmsFactory.createSmsBlend(SupplierType.NETEASE, neteaseConfig);
                     }
                     default -> throw new ServiceException("不支持的消息类型");
@@ -217,11 +245,10 @@ public class SysMessageSendServiceImpl implements ISysMessageSendService {
                     default -> throw new ServiceException("不支持的消息类型");
                 };
                 String content = helper.replacePlaceholders(template.getContent(), outputProperties);
-                // TODO： 邮箱标题添加到模板中
-                if (content.contains("<")) {
-                    MailUtils.sendHtml(mailAccount, account, "", content);
+                if (content.contains("<") && content.contains(">")) {
+                    MailUtils.sendHtml(mailAccount, account, template.getTitle(), content);
                 } else {
-                    MailUtils.sendText(mailAccount, account, "", content);
+                    MailUtils.sendText(mailAccount, account, template.getTitle(), content);
                 }
             }
         }

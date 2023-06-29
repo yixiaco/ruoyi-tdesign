@@ -53,7 +53,7 @@ public class SysMessageConfigBo extends BaseEntity {
     /**
      * 状态（1正常 0停用）
      */
-    @NotNull(message = "状态（1正常 0停用）不能为空", groups = {AddGroup.class, EditGroup.class})
+    @NotNull(message = "状态不能为空", groups = {AddGroup.class, EditGroup.class})
     private Integer status;
 
     /**

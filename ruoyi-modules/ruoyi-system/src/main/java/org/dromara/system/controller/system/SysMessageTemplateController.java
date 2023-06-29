@@ -1,4 +1,4 @@
-package org.dromara.system.controller;
+package org.dromara.system.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
