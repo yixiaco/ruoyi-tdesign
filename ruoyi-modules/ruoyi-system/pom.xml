@@ -59,6 +59,12 @@
             <groupId>org.dromara</groupId>
             <artifactId>ruoyi-common-sms</artifactId>
         </dependency>
+        <!-- 邮箱功能模块 -->
+        <dependency>
+            <groupId>org.dromara</groupId>
+            <artifactId>ruoyi-common-mail</artifactId>
+            <optional>true</optional>
+        </dependency>
 
         <dependency>
             <groupId>org.dromara</groupId>

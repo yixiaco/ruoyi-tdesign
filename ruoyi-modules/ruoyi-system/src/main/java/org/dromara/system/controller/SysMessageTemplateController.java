@@ -24,6 +24,7 @@ import org.dromara.system.domain.query.SysMessageTemplateQuery;
 import org.dromara.system.domain.vo.SysMessageTemplateVo;
 import org.dromara.system.service.ISysMessageConfigService;
 import org.dromara.system.service.ISysMessageKeyService;
+import org.dromara.system.service.ISysMessageSendService;
 import org.dromara.system.service.ISysMessageTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -48,6 +49,8 @@ public class SysMessageTemplateController extends BaseController {
     private ISysMessageConfigService messageConfigService;
     @Autowired
     private ISysMessageKeyService messageKeyService;
+    @Autowired
+    private ISysMessageSendService messageSendService;
 
     /**
      * 查询消息模板列表
@@ -155,7 +158,7 @@ public class SysMessageTemplateController extends BaseController {
     @PostMapping("/sendTest")
     @SaCheckPermission(value = "system:messageTemplate:test")
     public R<Void> sendTest(@Validated @RequestBody SysMessageTemplateTestBo templateTestBo) {
-        sysMessageTemplateService.sendTest(templateTestBo);
+        messageSendService.send(templateTestBo.getMessageTemplateId(), templateTestBo.getAccount(), templateTestBo.getVars());
         return R.ok();
     }
 

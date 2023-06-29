@@ -1,29 +1,22 @@
 package org.dromara.system.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
-import org.dromara.common.json.utils.JsonUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysMessageTemplate;
 import org.dromara.system.domain.bo.SysMessageTemplateBo;
-import org.dromara.system.domain.bo.SysMessageTemplateTestBo;
 import org.dromara.system.domain.query.SysMessageTemplateQuery;
 import org.dromara.system.domain.vo.SysMessageTemplateVo;
 import org.dromara.system.mapper.SysMessageTemplateMapper;
 import org.dromara.system.service.ISysMessageTemplateService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.util.PropertyPlaceholderHelper;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Properties;
 
 /**
  * 消息模板Service业务层处理
@@ -122,28 +115,5 @@ public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplat
         if (exists) {
             throw new ServiceException("该消息类型下存在相同的消息Key");
         }
-    }
-
-    /**
-     * 发送测试消息
-     *
-     * @param templateTestBo 测试对象
-     */
-    @Override
-    public void sendTest(SysMessageTemplateTestBo templateTestBo) {
-        SysMessageTemplate template = getById(templateTestBo.getMessageTemplateId());
-        if (template == null) {
-            throw new ServiceException("模板不存在");
-        }
-        // 检查变量输入是否完整
-        Map<String, String> outputVars = JsonUtils.parseObject(template.getVarsJson(), new TypeReference<>() {
-        });
-        PropertyPlaceholderHelper helper = new PropertyPlaceholderHelper("${", "}", ":", true);
-        Properties properties = new Properties();
-        properties.putAll(templateTestBo.getVars());
-        if (outputVars != null) {
-            outputVars.forEach((key, value) -> outputVars.put(key, helper.replacePlaceholders(value, properties)));
-        }
-        System.out.println(outputVars);
     }
 }

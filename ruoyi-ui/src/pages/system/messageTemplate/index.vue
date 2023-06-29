@@ -654,9 +654,6 @@ function handleDetail(row: SysMessageTemplateVo) {
     form.value = response.data;
     openViewLoading.value = false;
   });
-  getMessageKeys().then((res) => {
-    messageKeys.value = res.data;
-  });
 }
 
 /** 修改按钮操作 */
@@ -672,6 +669,9 @@ function handleUpdate(row: SysMessageTemplateVo) {
     getMessageConfigs(form.value.messageType).then((res) => {
       messageConfigs.value = res.data;
     });
+  });
+  getMessageKeys().then((res) => {
+    messageKeys.value = res.data;
   });
 }
 
