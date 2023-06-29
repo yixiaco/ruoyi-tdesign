@@ -38,7 +38,7 @@ export interface SysMessageTemplateForm extends BaseEntity {
   /** 内容 */
   content?: string;
   /** 输入变量 */
-  varsJson?: string;
+  varsJson?: string | object;
   /** 状态（1正常 0停用） */
   status?: number;
   /** 备注 */
@@ -67,7 +67,7 @@ export interface SysMessageTemplateVo {
   /** 内容 */
   content?: string;
   /** 输入变量 */
-  varsJson?: string;
+  varsJson?: string | object;
   /** 状态（1正常 0停用） */
   status?: number;
   /** 备注 */
@@ -76,4 +76,14 @@ export interface SysMessageTemplateVo {
   updateTime?: any;
   /** 创建时间 */
   createTime?: any;
+}
+
+/** 模板测试 */
+export interface SysMessageTemplateTest {
+  /** 消息模板id */
+  messageTemplateId?: number;
+  /** 账号 */
+  account?: string;
+  /** 变量 */
+  vars?: object;
 }

@@ -115,6 +115,14 @@
         <template #operation="{ row }">
           <t-space :size="8" break-line>
             <t-link
+              v-hasPermi="['system:messageTemplate:test']"
+              theme="primary"
+              hover="color"
+              @click.stop="handleTest(row)"
+            >
+              <swap-icon />测试
+            </t-link>
+            <t-link
               v-hasPermi="['system:messageTemplate:query']"
               theme="primary"
               hover="color"
@@ -244,23 +252,29 @@
           </t-col>
           <t-col :span="12">
             <t-form-item label="内容" name="content">
-              <t-textarea v-model="form.content" placeholder="请输入内容" />
-            </t-form-item>
-            <t-form-item>
-              <t-alert>
+              <template #help>
                 <b>变量格式</b>：${name}；例如，尊敬的 ${name}，您的快递已飞奔在路上，将今天 ${time}
                 送达您的手里，请留意查收。
-              </t-alert>
+              </template>
+              <t-textarea v-model="form.content" placeholder="请输入内容" @change="handleContentChange" />
             </t-form-item>
           </t-col>
-          <t-col :span="12">
-            <t-form-item label="变量属性" name="varsJson">
-              <t-input-group separate>
-                <span :style="{ lineHeight: '32px' }">变量：</span>
-                <t-input :style="{ width: '100px' }" default-value="0731" />
-                <span :style="{ lineHeight: '32px' }">&nbsp;入参：</span>
-                <t-input :style="{ width: '100px' }" default-value="12345" />
-              </t-input-group>
+          <t-col v-if="form.varsJson && Object.keys(form.varsJson).length > 0" :span="12">
+            <t-form-item label="变量属性">
+              <template #help> <b>变量格式</b>：${name}、${name:名称} </template>
+              <t-space direction="vertical">
+                <t-form-item
+                  v-for="(value, key) in form.varsJson"
+                  :key="key"
+                  :label="key"
+                  :name="`varsJson[${key}]`"
+                  label-align="left"
+                  :label-width="`${maxVarsLabelWidth * 12}px`"
+                  :rules="[{ required: true, message: '输入变量不能为空' }]"
+                >
+                  <t-input v-model="form.varsJson[key]" />
+                </t-form-item>
+              </t-space>
             </t-form-item>
           </t-col>
           <t-col :span="12">
@@ -329,6 +343,48 @@
         </t-form>
       </t-loading>
     </t-dialog>
+
+    <t-dialog
+      v-model:visible="openTest"
+      header="消息模板测试"
+      width="500px"
+      attach="body"
+      :confirm-btn="{
+        content: '发送测试',
+        theme: 'primary',
+        loading: buttonTestLoading,
+      }"
+      @confirm="onConfirmTest"
+    >
+      <t-form
+        ref="messageTemplateTestRef"
+        label-align="right"
+        :data="formTest"
+        :rules="testRules"
+        label-width="calc(5em + 24px)"
+        scroll-to-first-error="smooth"
+        @submit="submitFormTest"
+      >
+        <t-form-item label="账号" name="account">
+          <t-input v-model="formTest.account" placeholder="请输入账号" clearable />
+        </t-form-item>
+        <t-form-item label="变量属性">
+          <t-space direction="vertical">
+            <t-form-item
+              v-for="(value, key) in formTest.vars"
+              :key="key"
+              :label="key"
+              :name="`vars[${key}]`"
+              label-align="left"
+              :label-width="`${maxVarsTestLabelWidth * 12}px`"
+              :rules="[{ required: true, message: '输入变量不能为空' }]"
+            >
+              <t-input v-model="formTest.vars[key]" />
+            </t-form-item>
+          </t-space>
+        </t-form-item>
+      </t-form>
+    </t-dialog>
   </t-card>
 </template>
 <script lang="ts">
@@ -346,6 +402,7 @@ import {
   RefreshIcon,
   SearchIcon,
   SettingIcon,
+  SwapIcon,
 } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
@@ -357,6 +414,7 @@ import {
   getMessageKeys,
   getMessageTemplate,
   listMessageTemplate,
+  sendMessageTest,
   updateMessageTemplate,
 } from '@/api/system/messageTemplate';
 import { SysMessageConfigVo } from '@/api/system/model/messageConfigModel';
@@ -364,6 +422,7 @@ import { SysMessageKeyVo } from '@/api/system/model/messageKeyModel';
 import {
   SysMessageTemplateForm,
   SysMessageTemplateQuery,
+  SysMessageTemplateTest,
   SysMessageTemplateVo,
 } from '@/api/system/model/messageTemplateModel';
 
@@ -376,10 +435,12 @@ const { sys_message_template_mode, sys_message_type, sys_normal_disable } = prox
 
 const messageTemplateList = ref<SysMessageTemplateVo[]>([]);
 const messageTemplateRef = ref<FormInstanceFunctions>(null);
+const messageTemplateTestRef = ref<FormInstanceFunctions>(null);
 const open = ref(false);
 const openView = ref(false);
 const openViewLoading = ref(false);
 const buttonLoading = ref(false);
+const buttonTestLoading = ref(false);
 const loading = ref(false);
 const columnControllerVisible = ref(false);
 const showSearch = ref(true);
@@ -390,6 +451,8 @@ const total = ref(0);
 const title = ref('');
 const messageKeys = ref<SysMessageKeyVo[]>([]);
 const messageConfigs = ref<SysMessageConfigVo[]>([]);
+const openTest = ref(false);
+const formTest = ref<SysMessageTemplateTest>({});
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
@@ -416,8 +479,14 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
+// 校验测试规则
+const testRules = ref<Record<string, Array<FormRule>>>({
+  account: [{ required: true, message: '账号不能为空', trigger: 'blur' }],
+});
 // 提交表单对象
-const form = ref<SysMessageTemplateVo & SysMessageTemplateForm>({});
+const form = ref<SysMessageTemplateVo & SysMessageTemplateForm>({
+  varsJson: {},
+});
 // 查询对象
 const queryParams = ref<SysMessageTemplateQuery>({
   pageNum: 1,
@@ -444,16 +513,50 @@ const pagination = computed(() => {
   };
 });
 
-const vars = computed(() => {
-  if (!form.value.content) {
-    return [];
+const maxVarsLabelWidth = computed(() => {
+  if (form.value.varsJson instanceof Object) {
+    return Math.max(...Object.keys(form.value.varsJson).map((value) => value.length));
   }
-  const rex = /\$\{([^$]+)}/g;
-  return form.value.content.match(rex);
+  return 0;
 });
+const maxVarsTestLabelWidth = computed(() => {
+  if (formTest.value.vars instanceof Object) {
+    return Math.max(...Object.keys(formTest.value.vars).map((value) => value.length));
+  }
+  return 0;
+});
+
+/**
+ * 提取变量
+ * @param content
+ */
+function getVars(content: string) {
+  const vars: string[] = [];
+  if (content) {
+    const rex = /\$\{([^$]+)}/g;
+    let temp;
+    do {
+      temp = rex.exec(content);
+      if (temp) {
+        vars.push(temp[1]);
+      }
+    } while (temp);
+  }
+  return vars;
+}
+
+/** 处理消息内容变更 */
+function handleContentChange(content: string) {
+  const vars = getVars(content);
+  const map = vars.map((value) => {
+    return [value, (form.value.varsJson as object)[value as keyof typeof form.value.varsJson] ?? `$\{${value}}`];
+  });
+  form.value.varsJson = Object.fromEntries(map);
+}
 
 /** 处理消息类型变更 */
 function handleMessageTypeChange(value: string) {
+  form.value.messageConfigId = undefined;
   messageTemplateRef.value.clearValidate(['messageConfigId']);
   if (!value) {
     messageConfigs.value = [];
@@ -479,6 +582,10 @@ function getList() {
 function reset() {
   form.value = {
     status: 1,
+    varsJson: {},
+  };
+  formTest.value = {
+    vars: {},
   };
   proxy.resetForm('messageTemplateRef');
 }
@@ -512,6 +619,31 @@ function handleAdd() {
   });
 }
 
+/** 测试按钮操作 */
+function handleTest(row: SysMessageTemplateVo) {
+  reset();
+  openTest.value = true;
+  getMessageTemplate(row.messageTemplateId).then((response) => {
+    const data = response.data;
+    const values = Object.values(JSON.parse(data.varsJson as string));
+    let vars = {};
+    values.forEach((value: string) => {
+      vars = {
+        ...Object.fromEntries(
+          getVars(value).map((value1) => {
+            if (value1.includes(':')) {
+              const v = value1.split(':');
+              return [v[0], v[1]];
+            }
+            return [value1, ''];
+          }),
+        ),
+      };
+    });
+    formTest.value = { messageTemplateId: data.messageTemplateId, vars };
+  });
+}
+
 /** 详情按钮操作 */
 function handleDetail(row: SysMessageTemplateVo) {
   reset();
@@ -536,7 +668,10 @@ function handleUpdate(row: SysMessageTemplateVo) {
   const messageTemplateId = row.messageTemplateId || ids.value.at(0);
   getMessageTemplate(messageTemplateId).then((response) => {
     buttonLoading.value = false;
-    form.value = response.data;
+    form.value = { ...response.data, varsJson: JSON.parse(response.data.varsJson as string) };
+    getMessageConfigs(form.value.messageType).then((res) => {
+      messageConfigs.value = res.data;
+    });
   });
 }
 
@@ -550,8 +685,9 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');
+    const data = { ...form.value, varsJson: JSON.stringify(form.value.varsJson) };
     if (form.value.messageTemplateId) {
-      updateMessageTemplate(form.value)
+      updateMessageTemplate(data)
         .then(() => {
           proxy.$modal.msgSuccess('修改成功');
           open.value = false;
@@ -562,7 +698,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
           proxy.$modal.msgClose(msgLoading);
         });
     } else {
-      addMessageTemplate(form.value)
+      addMessageTemplate(data)
         .then(() => {
           proxy.$modal.msgSuccess('新增成功');
           open.value = false;
@@ -573,6 +709,29 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
           proxy.$modal.msgClose(msgLoading);
         });
     }
+  } else {
+    proxy.$modal.msgError(firstError);
+  }
+}
+
+/** 提交测试按钮 */
+function onConfirmTest() {
+  messageTemplateTestRef.value.submit();
+}
+
+/** 提交测试表单 */
+function submitFormTest({ validateResult, firstError }: SubmitContext) {
+  if (validateResult === true) {
+    buttonTestLoading.value = true;
+    const msgLoading = proxy.$modal.msgLoading('发送测试消息中...');
+    sendMessageTest(formTest.value)
+      .then(() => {
+        proxy.$modal.msgSuccess('发送成功');
+      })
+      .finally(() => {
+        buttonTestLoading.value = false;
+        proxy.$modal.msgClose(msgLoading);
+      });
   } else {
     proxy.$modal.msgError(firstError);
   }

@@ -1,11 +1,12 @@
 package org.dromara.system.service;
 
-import org.dromara.system.domain.SysMessageTemplate;
-import org.dromara.system.domain.bo.SysMessageTemplateBo;
-import org.dromara.system.domain.query.SysMessageTemplateQuery;
-import org.dromara.system.domain.vo.SysMessageTemplateVo;
 import com.baomidou.mybatisplus.extension.service.IService;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.system.domain.SysMessageTemplate;
+import org.dromara.system.domain.bo.SysMessageTemplateBo;
+import org.dromara.system.domain.bo.SysMessageTemplateTestBo;
+import org.dromara.system.domain.query.SysMessageTemplateQuery;
+import org.dromara.system.domain.vo.SysMessageTemplateVo;
 
 import java.util.Collection;
 import java.util.List;
@@ -65,4 +66,11 @@ public interface ISysMessageTemplateService extends IService<SysMessageTemplate>
      * @return Boolean
      */
     Boolean deleteWithValidByIds(Collection<Long> ids);
+
+    /**
+     * 发送测试消息
+     *
+     * @param templateTestBo 测试对象
+     */
+    void sendTest(SysMessageTemplateTestBo templateTestBo);
 }

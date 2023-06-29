@@ -1,12 +1,13 @@
 import { R, TableDataInfo } from '@/api/model/resultModel';
+import { SysMessageConfigVo } from '@/api/system/model/messageConfigModel';
+import { SysMessageKeyVo } from '@/api/system/model/messageKeyModel';
 import {
   SysMessageTemplateForm,
   SysMessageTemplateQuery,
+  SysMessageTemplateTest,
   SysMessageTemplateVo,
 } from '@/api/system/model/messageTemplateModel';
 import { request } from '@/utils/request';
-import {SysMessageKeyVo} from "@/api/system/model/messageKeyModel";
-import {SysMessageConfigVo} from "@/api/system/model/messageConfigModel";
 
 // 查询消息模板列表
 export function listMessageTemplate(query?: SysMessageTemplateQuery) {
@@ -58,5 +59,13 @@ export function getMessageConfigs(messageType: string) {
 export function getMessageKeys() {
   return request.get<R<SysMessageKeyVo[]>>({
     url: `/system/messageTemplate/messageKeys`,
+  });
+}
+
+// 发送测试消息
+export function sendMessageTest(data: SysMessageTemplateTest) {
+  return request.post<R<void>>({
+    url: `/system/messageTemplate/sendTest`,
+    data,
   });
 }

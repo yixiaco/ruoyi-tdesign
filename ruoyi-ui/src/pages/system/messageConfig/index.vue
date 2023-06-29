@@ -395,7 +395,7 @@ const pagination = computed(() => {
 /** 处理支持平台变更事件 */
 function handleSupplierTypeChange() {
   // 默认值赋值
-  if (messageConfig.value) {
+  if (messageConfig.value?.supplierConfig) {
     const configValue = {};
     Object.entries(messageConfig.value.supplierConfig).forEach((value) => {
       // @ts-ignore
@@ -403,6 +403,8 @@ function handleSupplierTypeChange() {
     });
     form.value.configJson = configValue;
     form.value.messageType = messageConfig.value.messageType;
+  } else {
+    form.value.configJson = {};
   }
 }
 

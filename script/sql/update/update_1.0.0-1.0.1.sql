@@ -19,6 +19,11 @@ INSERT INTO `sys_menu` VALUES (1673958410416009220, '消息模板新增', 167395
 INSERT INTO `sys_menu` VALUES (1673958410416009221, '消息模板修改', 1673958410416009218, 3, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageTemplate:edit', '#', 103, 1, now(), NULL, NULL, '');
 INSERT INTO `sys_menu` VALUES (1673958410416009222, '消息模板删除', 1673958410416009218, 4, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageTemplate:remove', '#', 103, 1, now(), NULL, NULL, '');
 INSERT INTO `sys_menu` VALUES (1673958410416009223, '消息模板导出', 1673958410416009218, 5, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageTemplate:export', '#', 103, 1, now(), NULL, NULL, '');
+INSERT INTO `sys_menu` VALUES (1674264710421118977, '消息发送记录', 1673538385829883905, 4, 'messageLog', 'system/messageLog/index', NULL, 0, 1, 'C', '1', '1', 'system:messageLog:list', 'history', 103, 1, now(), 1, now(), '消息发送记录菜单');
+INSERT INTO `sys_menu` VALUES (1674264710421118978, '消息发送记录查询', 1674264710421118977, 1, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageLog:query', '#', 103, 1, now(), NULL, NULL, '');
+INSERT INTO `sys_menu` VALUES (1674264710421118981, '消息发送记录删除', 1674264710421118977, 4, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageLog:remove', '#', 103, 1, now(), NULL, NULL, '');
+INSERT INTO `sys_menu` VALUES (1674264710421118982, '消息发送记录导出', 1674264710421118977, 5, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageLog:export', '#', 103, 1, now(), NULL, NULL, '');
+
 
 INSERT INTO `sys_dict_type` VALUES (1673530912729395201, '000000', '消息类型', 'sys_message_type', '1', 103, 1, now(), 1, now(), NULL);
 INSERT INTO `sys_dict_type` VALUES (1673531836864589825, '000000', '消息支持平台', 'sys_message_supplier_type', '1', 103, 1, now(), 1, now(), NULL);

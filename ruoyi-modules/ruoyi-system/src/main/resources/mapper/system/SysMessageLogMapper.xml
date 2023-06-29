@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dromara.system.mapper.SysMessageLogMapper">
+
+    <resultMap id="SysMessageLogResult" autoMapping="true" type="org.dromara.system.domain.SysMessageLog">
+    </resultMap>
+    <resultMap id="SysMessageLogResultVo" autoMapping="true" type="org.dromara.system.domain.vo.SysMessageLogVo">
+    </resultMap>
+
+    <sql id="selectSysMessageLogVo">
+        select sml.message_log_id, sml.message_key, sml.message_template_name, sml.message_type, sml.template_mode, sml.account, sml.template_id, sml.content, sml.message_config_title, sml.supplier_type, sml.is_success, sml.error_code, sml.error_message, sml.biz_id, sml.message, sml.log_time from sys_message_log sml
+    </sql>
+    <select id="queryList" parameterType="org.dromara.system.domain.query.SysMessageLogQuery" resultMap="SysMessageLogResultVo">
+        <include refid="selectSysMessageLogVo"/>
+        <where>
+            <if test="messageKey != null and messageKey != ''"> and sml.message_key like concat('%', #{messageKey}, '%')</if>
+            <if test="messageTemplateName != null and messageTemplateName != ''"> and sml.message_template_name like concat('%', #{messageTemplateName}, '%')</if>
+            <if test="messageType != null and messageType != ''"> and sml.message_type = #{messageType}</if>
+            <if test="templateMode != null and templateMode != ''"> and sml.template_mode = #{templateMode}</if>
+            <if test="account != null and account != ''"> and sml.account like concat('%', #{account}, '%')</if>
+            <if test="templateId != null and templateId != ''"> and sml.template_id like concat('%', #{templateId}, '%')</if>
+            <if test="supplierType != null and supplierType != ''"> and sml.supplier_type = #{supplierType}</if>
+            <if test="isSuccess != null "> and sml.is_success = #{isSuccess}</if>
+        </where>
+        order by sml.log_time desc
+    </select>
+
+</mapper>

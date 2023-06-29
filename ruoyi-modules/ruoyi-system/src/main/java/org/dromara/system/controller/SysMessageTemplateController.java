@@ -19,6 +19,7 @@ import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.SysMessageConfig;
 import org.dromara.system.domain.SysMessageKey;
 import org.dromara.system.domain.bo.SysMessageTemplateBo;
+import org.dromara.system.domain.bo.SysMessageTemplateTestBo;
 import org.dromara.system.domain.query.SysMessageTemplateQuery;
 import org.dromara.system.domain.vo.SysMessageTemplateVo;
 import org.dromara.system.service.ISysMessageConfigService;
@@ -73,7 +74,7 @@ public class SysMessageTemplateController extends BaseController {
      *
      * @param messageTemplateId 主键
      */
-    @SaCheckPermission(value = {"system:messageTemplate:query", "system:messageTemplate:edit"}, mode = SaMode.OR)
+    @SaCheckPermission(value = {"system:messageTemplate:query", "system:messageTemplate:edit", "system:messageTemplate:test"}, mode = SaMode.OR)
     @GetMapping("/{messageTemplateId}")
     public R<SysMessageTemplateVo> getInfo(@NotNull(message = "主键不能为空") @PathVariable Long messageTemplateId) {
         return R.ok(sysMessageTemplateService.queryById(messageTemplateId));
@@ -143,6 +144,19 @@ public class SysMessageTemplateController extends BaseController {
             .orderByDesc(SysMessageKey::getCreateTime)
             .list();
         return R.ok(list);
+    }
+
+    /**
+     * 发送测试消息
+     *
+     * @param templateTestBo 测试对象
+     * @return
+     */
+    @PostMapping("/sendTest")
+    @SaCheckPermission(value = "system:messageTemplate:test")
+    public R<Void> sendTest(@Validated @RequestBody SysMessageTemplateTestBo templateTestBo) {
+        sysMessageTemplateService.sendTest(templateTestBo);
+        return R.ok();
     }
 
 }
