@@ -10,7 +10,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import * as Icons from 'tdesign-icons-vue-next/lib/icons';
-import { computed, defineProps } from 'vue';
+import { computed } from 'vue';
 
 const components = new Map();
 Object.entries(Icons).forEach((value) => {

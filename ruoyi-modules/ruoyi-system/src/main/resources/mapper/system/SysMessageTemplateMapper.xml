@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dromara.system.mapper.SysMessageTemplateMapper">
+
+    <resultMap id="SysMessageTemplateResult" autoMapping="true" type="org.dromara.system.domain.SysMessageTemplate">
+    </resultMap>
+    <resultMap id="SysMessageTemplateResultVo" autoMapping="true" type="org.dromara.system.domain.vo.SysMessageTemplateVo">
+    </resultMap>
+
+    <sql id="selectSysMessageTemplateVo">
+        select smt.message_template_id, smt.template_name, smt.message_config_id, smt.message_key_id, smt.message_key, smt.message_type, smt.template_mode, smt.title, smt.signature, smt.template_id, smt.content, smt.vars_json, smt.`status`, smt.remark, smt.create_dept, smt.update_by, smt.create_by, smt.update_time, smt.create_time from sys_message_template smt
+    </sql>
+    <select id="queryList" parameterType="org.dromara.system.domain.query.SysMessageTemplateQuery" resultMap="SysMessageTemplateResultVo">
+        <include refid="selectSysMessageTemplateVo"/>
+        <where>
+            <if test="templateName != null and templateName != ''"> and smt.template_name like concat('%', #{templateName}, '%')</if>
+            <if test="messageKey != null and messageKey != ''"> and smt.message_key like concat('%', #{messageKey}, '%')</if>
+            <if test="messageType != null and messageType != ''"> and smt.message_type = #{messageType}</if>
+            <if test="templateMode != null and templateMode != ''"> and smt.template_mode = #{templateMode}</if>
+            <if test="status != null "> and smt.`status` = #{status}</if>
+        </where>
+        order by smt.create_time desc
+    </select>
+
+</mapper>

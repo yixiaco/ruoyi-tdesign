@@ -137,7 +137,7 @@
           <t-input v-model="form.appKey" placeholder="请输入应用key" clearable />
         </t-form-item>
         <t-form-item label="备注" name="remark">
-          <t-textarea v-model="form.remark" placeholder="请输入内容" />
+          <t-textarea v-model="form.remark" placeholder="请输入备注" />
         </t-form-item>
       </t-form>
     </t-dialog>
@@ -218,7 +218,7 @@ const title = ref('');
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
-  appType: [{ required: true, message: '应用类型不能为空', trigger: 'change' }],
+  appType: [{ required: true, message: '应用类型不能为空', trigger: 'blur' }],
   appKey: [{ required: true, message: '应用key不能为空', trigger: 'blur' }],
   appName: [{ required: true, message: '应用名称不能为空', trigger: 'blur' }],
 });

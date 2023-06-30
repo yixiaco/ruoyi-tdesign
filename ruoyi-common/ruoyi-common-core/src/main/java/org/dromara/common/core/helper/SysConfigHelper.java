@@ -68,31 +68,4 @@ public class SysConfigHelper {
     public static Boolean getSysOssPreviewListResource() {
         return Boolean.TRUE.toString().equals(configService.getGlobalConfigValue("sys.oss.previewListResource"));
     }
-
-    /**
-     * 邮箱配置
-     *
-     * @return
-     */
-    public static String getSysMail() {
-        return configService.getGlobalConfigValue("sys.mail");
-    }
-
-    /**
-     * 短信配置
-     *
-     * @return
-     */
-    public static String getSysSms() {
-        return configService.getGlobalConfigValue("sys.sms");
-    }
-
-    /**
-     * 短信验证码模板id
-     *
-     * @return
-     */
-    public static String getSysSmsCaptchaTemplateId() {
-        return configService.getGlobalConfigValue("sys.sms.captchaTemplateId");
-    }
 }

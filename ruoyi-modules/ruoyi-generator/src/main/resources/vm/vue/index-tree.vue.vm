@@ -276,7 +276,7 @@
         </t-form-item>
 #elseif($column.htmlType == "textarea")
         <t-form-item label="${comment}" name="${field}">
-          <t-textarea v-model="form.${field}" placeholder="请输入内容" />
+          <t-textarea v-model="form.${field}" placeholder="请输入${comment}" />
         </t-form-item>
 #end
 #end
@@ -421,7 +421,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
 #else
 #set($comment=$column.columnComment)
 #end
-  $column.javaField: [{ required: true, message: '$comment不能为空', trigger: #if($column.htmlType == "select")'change'#else'blur'#end }],
+  $column.javaField: [{ required: true, message: '$comment不能为空', trigger: #if($column.htmlType == "select")'blur'#else'blur'#end }],
 #end
 #end
 #end

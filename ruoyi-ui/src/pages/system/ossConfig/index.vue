@@ -180,7 +180,7 @@
           <t-input v-model="form.region" placeholder="请输入域" />
         </t-form-item>
         <t-form-item label="备注" name="remark">
-          <t-textarea v-model="form.remark" placeholder="请输入内容" />
+          <t-textarea v-model="form.remark" placeholder="请输入备注" />
         </t-form-item>
       </t-form>
     </t-dialog>

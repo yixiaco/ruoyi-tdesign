@@ -32,7 +32,7 @@ create table sys_tenant
 -- 初始化-租户表数据
 -- ----------------------------
 
-insert into sys_tenant values(1, '000000', '管理组', '15888888888', 'XXX有限公司', NULL, NULL, '多租户通用后台管理管理系统', NULL, NULL, NULL, NULL, -1, '1', '0', 103, 1, sysdate(), NULL, NULL);
+insert into sys_tenant values(1, '000000', '管理组', '15888888888', 'XXX有限公司', null, null, '多租户通用后台管理管理系统', null, null, null, null, -1, '1', '0', 103, 1, sysdate(), null, null);
 
 
 -- ----------------------------
@@ -205,7 +205,7 @@ create table sys_menu (
   path              varchar(200)    default ''                 comment '路由地址',
   component         varchar(255)    default null               comment '组件路径',
   query_param       varchar(255)    default null               comment '路由参数',
-  is_frame          int(1)          default 1                  comment '是否为外链（1是 0否）',
+  is_frame          int(1)          default 0                  comment '是否为外链（1是 0否）',
   is_cache          int(1)          default 1                  comment '是否缓存（1缓存 0不缓存）',
   menu_type         char(1)         default ''                 comment '菜单类型（M目录 C菜单 F按钮）',
   visible           char(1)         default 1                  comment '显示状态（1显示 0隐藏）',
@@ -260,7 +260,7 @@ insert into sys_menu values('500',  '操作日志', '108', '1', 'operlog',    'm
 insert into sys_menu values('501',  '登录日志', '108', '2', 'logininfor', 'monitor/logininfor/index', '', 0, 1, 'C', '1', '1', 'monitor:logininfor:list', 'swap',    103, 1, sysdate(), null, null, '登录日志菜单');
 insert into sys_menu values('1500', 'OSS配置管理', '1510', '1', 'ossConfig', 'system/ossConfig/index', '', 0, 1, 'C', '1', '1', 'system:ossConfig:list', 'server', 103, 1, sysdate(), 1, null, '');
 insert into sys_menu values('118',  '文件管理','1510','2', 'oss','system/oss/index','', 0, 1, 'C', '1', '1', 'system:oss:list', 'cloud-upload',103, 1, sysdate(), null, null, '文件管理菜单');
-insert into sys_menu values('1521', 'OSS处理规则', '1510', '3', 'ossRule', 'system/ossRule/index', NULL, 0, 1, 'C', '1', '1', 'system:ossRule:list', 'chevron-right-double', 103, 1, sysdate(), 1, null, 'OSS处理规则菜单');
+insert into sys_menu values('1521', 'OSS处理规则', '1510', '3', 'ossRule', 'system/ossRule/index', null, 0, 1, 'C', '1', '1', 'system:ossRule:list', 'chevron-right-double', 103, 1, sysdate(), 1, null, 'OSS处理规则菜单');
 -- 用户管理按钮
 insert into sys_menu values('1001', '用户查询', '100', '1',  '', '', '', 0, 1, 'F', '1', '1', 'system:user:query',          '#', 103, 1, sysdate(), null, null, '');
 insert into sys_menu values('1002', '用户新增', '100', '2',  '', '', '', 0, 1, 'F', '1', '1', 'system:user:add',            '#', 103, 1, sysdate(), null, null, '');
@@ -342,24 +342,54 @@ insert into sys_menu values('1524', 'OSS处理规则修改', '1521', '3', '#', '
 insert into sys_menu values('1525', 'OSS处理规则删除', '1521', '4', '#', '', null, 0, 1, 'F', '1', '1', 'system:ossRule:remove', '#', 103, 1, sysdate(), null, null, '');
 insert into sys_menu values('1526', 'OSS处理规则导出', '1521', '5', '#', '', null, 0, 1, 'F', '1', '1', 'system:ossRule:export', '#', 103, 1, sysdate(), null, null, '');
 -- 租户管理相关按钮
-insert into sys_menu values ('1606', '租户查询', '121', '1', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenant:query',   '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values ('1607', '租户新增', '121', '2', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenant:add',     '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values ('1608', '租户修改', '121', '3', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenant:edit',    '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values ('1609', '租户删除', '121', '4', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenant:remove',  '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values ('1610', '租户导出', '121', '5', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenant:export',  '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1606', '租户查询', '121', '1', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenant:query',   '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1607', '租户新增', '121', '2', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenant:add',     '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1608', '租户修改', '121', '3', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenant:edit',    '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1609', '租户删除', '121', '4', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenant:remove',  '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1610', '租户导出', '121', '5', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenant:export',  '#', 103, 1, sysdate(), null, null, '');
 -- 租户套餐管理相关按钮
-insert into sys_menu values ('1611', '租户套餐查询', '122', '1', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenantPackage:query',   '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values ('1612', '租户套餐新增', '122', '2', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenantPackage:add',     '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values ('1613', '租户套餐修改', '122', '3', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenantPackage:edit',    '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values ('1614', '租户套餐删除', '122', '4', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenantPackage:remove',  '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values ('1615', '租户套餐导出', '122', '5', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenantPackage:export',  '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1611', '租户套餐查询', '122', '1', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenantPackage:query',   '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1612', '租户套餐新增', '122', '2', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenantPackage:add',     '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1613', '租户套餐修改', '122', '3', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenantPackage:edit',    '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1614', '租户套餐删除', '122', '4', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenantPackage:remove',  '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1615', '租户套餐导出', '122', '5', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenantPackage:export',  '#', 103, 1, sysdate(), null, null, '');
 -- 应用管理
-INSERT INTO sys_menu VALUES ('1701', '应用管理', 6, 3, 'app', 'system/app/index', NULL, 0, 1, 'C', '1', '1', 'system:app:list', 'app', 103, 1, sysdate(), 1, sysdate(), '应用管理菜单');
-INSERT INTO sys_menu VALUES ('1702', '应用管理查询', '1701', 1, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:app:query', '#', 103, 1, sysdate(), NULL, NULL, '');
-INSERT INTO sys_menu VALUES ('1703', '应用管理新增', '1701', 2, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:app:add', '#', 103, 1, sysdate(), NULL, NULL, '');
-INSERT INTO sys_menu VALUES ('1704', '应用管理修改', '1701', 3, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:app:edit', '#', 103, 1, sysdate(), NULL, NULL, '');
-INSERT INTO sys_menu VALUES ('1705', '应用管理删除', '1701', 4, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:app:remove', '#', 103, 1, sysdate(), NULL, NULL, '');
-INSERT INTO sys_menu VALUES ('1706', '应用管理导出', '1701', 5, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:app:export', '#', 103, 1, sysdate(), NULL, NULL, '');
+insert into sys_menu values('1701', '应用管理',    '6',    3, 'app','system/app/index', null, 0, 1, 'C', '1', '1', 'system:app:list', 'app', 103, 1, sysdate(), 1, sysdate(), '应用管理菜单');
+insert into sys_menu values('1702', '应用管理查询', '1701', 1, '#', '', null, 0, 1, 'F', '1', '1', 'system:app:query', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1703', '应用管理新增', '1701', 2, '#', '', null, 0, 1, 'F', '1', '1', 'system:app:add', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1704', '应用管理修改', '1701', 3, '#', '', null, 0, 1, 'F', '1', '1', 'system:app:edit', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1705', '应用管理删除', '1701', 4, '#', '', null, 0, 1, 'F', '1', '1', 'system:app:remove', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1706', '应用管理导出', '1701', 5, '#', '', null, 0, 1, 'F', '1', '1', 'system:app:export', '#', 103, 1, sysdate(), null, null, '');
+
+-- 消息管理
+insert into sys_menu values('1801', '消息管理', '1', 11, 'messageManage', null, null, 0, 1, 'M', '1', '1', null, 'chat', 103, 1, sysdate(), 1, sysdate(), '');
+-- 消息配置
+insert into sys_menu values('1802', '消息配置',    '1801', 1, 'messageConfig', 'system/messageConfig/index', null, 0, 1, 'C', '1', '1', 'system:messageConfig:list', 'tools', 103, 1, sysdate(), 1, sysdate(), '消息配置菜单');
+insert into sys_menu values('1803', '消息配置查询', '1802', 1, '#', '', null, 0, 1, 'F', '1', '1', 'system:messageConfig:query', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1804', '消息配置新增', '1802', 2, '#', '', null, 0, 1, 'F', '1', '1', 'system:messageConfig:add', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1805', '消息配置修改', '1802', 3, '#', '', null, 0, 1, 'F', '1', '1', 'system:messageConfig:edit', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1806', '消息配置删除', '1802', 4, '#', '', null, 0, 1, 'F', '1', '1', 'system:messageConfig:remove', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1807', '消息配置导出', '1802', 5, '#', '', null, 0, 1, 'F', '1', '1', 'system:messageConfig:export', '#', 103, 1, sysdate(), null, null, '');
+-- 消息常量
+insert into sys_menu values('1810', '消息常量',     '1801', 2, 'messageKey', 'system/messageKey/index', null, 0, 1, 'C', '1', '1', 'system:messageKey:list', 'root-list', 103, 1, sysdate(), 1, sysdate(), '消息常量菜单');
+insert into sys_menu values('1811', '消息常量查询', '1810', 1, '#', '', null, 0, 1, 'F', '1', '1', 'system:messageKey:query', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1812', '消息常量新增', '1810', 2, '#', '', null, 0, 1, 'F', '1', '1', 'system:messageKey:add', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1813', '消息常量修改', '1810', 3, '#', '', null, 0, 1, 'F', '1', '1', 'system:messageKey:edit', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1814', '消息常量删除', '1810', 4, '#', '', null, 0, 1, 'F', '1', '1', 'system:messageKey:remove', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1815', '消息常量导出', '1810', 5, '#', '', null, 0, 1, 'F', '1', '1', 'system:messageKey:export', '#', 103, 1, sysdate(), null, null, '');
+-- 消息模板
+insert into sys_menu values('1820', '消息模板',    '1801', 3, 'messageTemplate', 'system/messageTemplate/index', null, 0, 1, 'C', '1', '1', 'system:messageTemplate:list', 'relativity', 103, 1, sysdate(), 1, sysdate(), '消息模板菜单');
+insert into sys_menu values('1821', '消息模板查询', '1820', 1, '#', '', null, 0, 1, 'F', '1', '1', 'system:messageTemplate:query', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1822', '消息模板新增', '1820', 2, '#', '', null, 0, 1, 'F', '1', '1', 'system:messageTemplate:add', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1823', '消息模板修改', '1820', 3, '#', '', null, 0, 1, 'F', '1', '1', 'system:messageTemplate:edit', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1824', '消息模板删除', '1820', 4, '#', '', null, 0, 1, 'F', '1', '1', 'system:messageTemplate:remove', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1825', '消息模板导出', '1820', 5, '#', '', null, 0, 1, 'F', '1', '1', 'system:messageTemplate:export', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1826', '发送测试消息', '1820', 6, '', null, null, 0, 1, 'F', '1', '1', 'system:messageTemplate:test', '#', 103, 1, sysdate(), 1, sysdate(), '');
+-- 消息发送记录
+insert into sys_menu values('1830', '消息发送记录',    '1801', 4, 'messageLog', 'system/messageLog/index', null, 0, 1, 'C', '1', '1', 'system:messageLog:list', 'history', 103, 1, sysdate(), 1, sysdate(), '消息发送记录菜单');
+insert into sys_menu values('1831', '消息发送记录查询', '1830', 1, '#', '', null, 0, 1, 'F', '1', '1', 'system:messageLog:query', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1832', '消息发送记录删除', '1830', 4, '#', '', null, 0, 1, 'F', '1', '1', 'system:messageLog:remove', '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1833', '消息发送记录导出', '1830', 5, '#', '', null, 0, 1, 'F', '1', '1', 'system:messageLog:export', '#', 103, 1, sysdate(), null, null, '');
 
 
 -- ----------------------------
@@ -559,16 +589,18 @@ create table sys_dict_type
   unique (tenant_id, dict_type)
 ) engine=innodb comment = '字典类型表';
 
-insert into sys_dict_type values(1, '000000', '用户性别', 'sys_user_sex',        '1', 103, 1, sysdate(), null, null, '用户性别列表');
-insert into sys_dict_type values(2, '000000', '菜单状态', 'sys_show_hide',       '1', 103, 1, sysdate(), null, null, '菜单状态列表');
-insert into sys_dict_type values(3, '000000', '系统开关', 'sys_normal_disable',  '1', 103, 1, sysdate(), null, null, '系统开关列表');
-insert into sys_dict_type values(6, '000000', '系统是否', 'sys_yes_no',          '1', 103, 1, sysdate(), null, null, '系统是否列表');
-insert into sys_dict_type values(7, '000000', '通知类型', 'sys_notice_type',     '1', 103, 1, sysdate(), null, null, '通知类型列表');
-insert into sys_dict_type values(8, '000000', '通知状态', 'sys_notice_status',   '1', 103, 1, sysdate(), null, null, '通知状态列表');
-insert into sys_dict_type values(9, '000000', '操作类型', 'sys_oper_type',       '1', 103, 1, sysdate(), null, null, '操作类型列表');
+insert into sys_dict_type values(1,  '000000', '用户性别', 'sys_user_sex',        '1', 103, 1, sysdate(), null, null, '用户性别列表');
+insert into sys_dict_type values(2,  '000000', '菜单状态', 'sys_show_hide',       '1', 103, 1, sysdate(), null, null, '菜单状态列表');
+insert into sys_dict_type values(3,  '000000', '系统开关', 'sys_normal_disable',  '1', 103, 1, sysdate(), null, null, '系统开关列表');
+insert into sys_dict_type values(6,  '000000', '系统是否', 'sys_yes_no',          '1', 103, 1, sysdate(), null, null, '系统是否列表');
+insert into sys_dict_type values(7,  '000000', '通知类型', 'sys_notice_type',     '1', 103, 1, sysdate(), null, null, '通知类型列表');
+insert into sys_dict_type values(8,  '000000', '通知状态', 'sys_notice_status',   '1', 103, 1, sysdate(), null, null, '通知状态列表');
+insert into sys_dict_type values(9,  '000000', '操作类型', 'sys_oper_type',       '1', 103, 1, sysdate(), null, null, '操作类型列表');
 insert into sys_dict_type values(10, '000000', '系统状态', 'sys_common_status',   '1', 103, 1, sysdate(), null, null, '登录状态列表');
 insert into sys_dict_type values(11, '000000', '应用类型', 'sys_app_type', '1', 103, 1, sysdate(), 1, sysdate(), '应用管理列表');
-
+insert into sys_dict_type values(12, '000000', '消息类型', 'sys_message_type', '1', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_type values(13, '000000', '消息支持平台', 'sys_message_supplier_type', '1', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_type values(14, '000000', '消息模板类型', 'sys_message_template_mode', '1', 103, 1, sysdate(), 1, sysdate(), null);
 
 -- ----------------------------
 -- 12、字典数据表
@@ -624,6 +656,21 @@ insert into sys_dict_data values(30, '000000', 0, '域名', 'DOMAIN', 'sys_app_t
 insert into sys_dict_data values(31, '000000', 1, '微信小程序', 'WX_XCX', 'sys_app_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
 insert into sys_dict_data values(32, '000000', 2, '微信公众号', 'WX_GZH', 'sys_app_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
 insert into sys_dict_data values(33, '000000', 3, 'APP', 'APP', 'sys_app_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_data values(34, '000000', 0, '短信', 'SMS', 'sys_message_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_data values(35, '000000', 1, '邮箱', 'MAIL', 'sys_message_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_data values(36, '000000', 1, '阿里云短信', 'ALIBABA', 'sys_message_supplier_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_data values(37, '000000', 2, '华为云短信', 'HUAWEI', 'sys_message_supplier_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_data values(38, '000000', 3, '腾讯云短信', 'TENCENT', 'sys_message_supplier_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_data values(39, '000000', 4, '云片短信', 'YUNPIAN', 'sys_message_supplier_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_data values(40, '000000', 5, '合一短信', 'UNI_SMS', 'sys_message_supplier_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_data values(41, '000000', 6, '京东云短信', 'JD_CLOUD', 'sys_message_supplier_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_data values(42, '000000', 7, '容联云短信', 'CLOOPEN', 'sys_message_supplier_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_data values(43, '000000', 8, '亿美软通短信', 'EMAY', 'sys_message_supplier_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_data values(44, '000000', 9, '天翼云短信', 'CTYUN', 'sys_message_supplier_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_data values(45, '000000', 0, '邮箱', 'MAIL', 'sys_message_supplier_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_data values(46, '000000', 10, '网易云短信', 'NETEASE', 'sys_message_supplier_type', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_data values(47, '000000', 0, '模板ID', 'TEMPLATE_ID', 'sys_message_template_mode', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_data values(48, '000000', 1, '模板内容', 'TEMPLATE_CONTENT', 'sys_message_template_mode', null, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
 
 
 -- ----------------------------
@@ -812,11 +859,11 @@ create table sys_oss_config (
   primary key (oss_config_id)
 ) engine=innodb comment='对象存储配置表';
 
-insert into sys_oss_config values (1, '000000', 'minio',  'ruoyi',            'ruoyi123',        'ruoyi',             '', '127.0.0.1:9000',                '','N', '',             '1' ,'1', '', 103, 1, sysdate(), 1, sysdate(), NULL);
-insert into sys_oss_config values (2, '000000', 'qiniu',  'XXXXXXXXXXXXXXX',  'XXXXXXXXXXXXXXX', 'ruoyi',             '', 's3-cn-north-1.qiniucs.com',     '','N', '',             '1' ,'0', '', 103, 1, sysdate(), 1, sysdate(), NULL);
-insert into sys_oss_config values (3, '000000', 'aliyun', 'XXXXXXXXXXXXXXX',  'XXXXXXXXXXXXXXX', 'ruoyi',             '', 'oss-cn-beijing.aliyuncs.com',   '','N', '',             '1' ,'0', '', 103, 1, sysdate(), 1, sysdate(), NULL);
-insert into sys_oss_config values (4, '000000', 'qcloud', 'XXXXXXXXXXXXXXX',  'XXXXXXXXXXXXXXX', 'ruoyi-1250000000',  '', 'cos.ap-beijing.myqcloud.com',   '','N', 'ap-beijing',   '1' ,'0', '', 103, 1, sysdate(), 1, sysdate(), NULL);
-insert into sys_oss_config values (5, '000000', 'image',  'ruoyi',            'ruoyi123',        'ruoyi',             'image', '127.0.0.1:9000',           '','N', '',             '1' ,'0', '', 103, 1, sysdate(), 1, sysdate(), NULL);
+insert into sys_oss_config values (1, '000000', 'minio',  'ruoyi',            'ruoyi123',        'ruoyi',             '', '127.0.0.1:9000',                '','N', '',             '1' ,'1', '', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_oss_config values (2, '000000', 'qiniu',  'XXXXXXXXXXXXXXX',  'XXXXXXXXXXXXXXX', 'ruoyi',             '', 's3-cn-north-1.qiniucs.com',     '','N', '',             '1' ,'0', '', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_oss_config values (3, '000000', 'aliyun', 'XXXXXXXXXXXXXXX',  'XXXXXXXXXXXXXXX', 'ruoyi',             '', 'oss-cn-beijing.aliyuncs.com',   '','N', '',             '1' ,'0', '', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_oss_config values (4, '000000', 'qcloud', 'XXXXXXXXXXXXXXX',  'XXXXXXXXXXXXXXX', 'ruoyi-1250000000',  '', 'cos.ap-beijing.myqcloud.com',   '','N', 'ap-beijing',   '1' ,'0', '', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_oss_config values (5, '000000', 'image',  'ruoyi',            'ruoyi123',        'ruoyi',             'image', '127.0.0.1:9000',           '','N', '',             '1' ,'0', '', 103, 1, sysdate(), 1, sysdate(), null);
 
 -- ----------------------------
 -- OSS处理规则表
@@ -862,3 +909,97 @@ create table sys_app  (
   remark        varchar(500)    null        default null        comment '备注',
   primary key (appid) using btree
 ) engine = innodb comment = '应用管理表';
+
+-- ----------------------------
+-- 消息配置表
+-- ----------------------------
+drop table if exists sys_message_config;
+create table sys_message_config  (
+  message_config_id bigint(20)      not null                    comment '消息设置id',
+  title             varchar(255)    not null                    comment '标题',
+  message_type      varchar(20)     not null                    comment '消息类型 SMS、MAIL',
+  supplier_type     varchar(20)     not null                    comment '支持平台标识',
+  config_json       text            null                        comment '配置json',
+  status            tinyint(1)      not null                    comment '状态（1正常 0停用）',
+  remark            varchar(500)    null        default null    comment '备注',
+  create_dept       bigint(20)      null        default null    comment '创建部门',
+  update_by         bigint(20)      null        default null    comment '更新者',
+  create_by         bigint(20)      null        default null    comment '创建者',
+  update_time       datetime        null        default null    comment '更新时间',
+  create_time       datetime        null        default null    comment '创建时间',
+  primary key (message_config_id) using btree,
+  index idx_message_type(message_type, status) using btree
+) engine = innodb comment = '消息配置表';
+
+-- ----------------------------
+-- 消息常量表
+-- ----------------------------
+drop table if exists sys_message_key;
+create table sys_message_key  (
+  message_key_id    bigint(20)      not null                    comment '消息key主键',
+  name              varchar(255)    not null                    comment '消息名称',
+  message_key       varchar(50)     not null                    comment '消息key',
+  remark            varchar(500)    null        default null    comment '备注',
+  create_dept       bigint(20)      null        default null    comment '创建部门',
+  update_by         bigint(20)      null        default null    comment '更新者',
+  create_by         bigint(20)      null        default null    comment '创建者',
+  update_time       datetime        null        default null    comment '更新时间',
+  create_time       datetime        null        default null    comment '创建时间',
+  primary key (message_key_id) using btree
+) engine = innodb comment = '消息常量表';
+
+-- ----------------------------
+-- 消息发送记录表
+-- ----------------------------
+drop table if exists sys_message_log;
+create table sys_message_log  (
+  message_log_id        bigint(20)      not null                    comment '消息发送记录id',
+  message_template_id   bigint(20)      null        default null    comment '消息模板id',
+  message_key           varchar(50)     not null                    comment '消息key',
+  message_template_name varchar(255)    null        default null    comment '模板名称',
+  message_type          varchar(20)     not null                    comment '消息类型 SMS、MAIL',
+  template_mode         varchar(20)     null                        comment '模板类型 模板id模式、内容模式',
+  account               varchar(255)    not null                    comment '发送账号',
+  title                 varchar(255)    null        default null    comment '标题',
+  template_id           varchar(100)    null        default null    comment '模板ID',
+  content               text            null                        comment '发送内容',
+  message_config_title  varchar(255)    null        default null    comment '消息配置标题',
+  supplier_type         varchar(20)     null        default null    comment '平台标识',
+  is_success            tinyint(1)      null        default null    comment '是否成功',
+  error_code            varchar(255)    null        default null    comment '错误码',
+  error_message         varchar(500)    null        default null    comment '错误消息',
+  biz_id                varchar(255)    null        default null    comment '回执消息id',
+  message               varchar(255)    null        default null    comment '返回消息',
+  log_time              datetime        not null                    comment '记录时间',
+  primary key (message_log_id) using btree,
+  index idx_message_template_id(message_template_id) using btree
+) engine = innodb comment = '消息发送记录表';
+
+-- ----------------------------
+-- 消息模板表
+-- ----------------------------
+drop table if exists sys_message_template;
+create table sys_message_template  (
+  message_template_id   bigint(20)      not null                    comment '消息模板id',
+  template_name         varchar(255)    not null                    comment '模板名称',
+  message_config_id     bigint(20)      not null                    comment '消息配置id',
+  message_key_id        bigint          not null                    COMMENT '消息key主键',
+  message_key           varchar(50)     not null                    comment '消息key',
+  message_type          varchar(20)     not null                    comment '消息类型 SMS、MAIL',
+  template_mode         varchar(20)     not null                    comment '模板类型 模板id模式、内容模式',
+  title                 varchar(255)    null        default null    comment '标题',
+  signature             varchar(100)    null        default null    comment '签名',
+  template_id           varchar(100)    null        default null    comment '模板id',
+  content               varchar(500)    null        default null    comment '内容',
+  vars_json             text            null                        comment '输入变量',
+  status                tinyint(1)      not null                    comment '状态（1正常 0停用）',
+  remark                varchar(500)    null        default null    comment '备注',
+  create_dept           bigint(20)      null        default null    comment '创建部门',
+  update_by             bigint(20)      null        default null    comment '更新者',
+  create_by             bigint(20)      null        default null    comment '创建者',
+  update_time           datetime        null        default null    comment '更新时间',
+  create_time           datetime        null        default null    comment '创建时间',
+  primary key (message_template_id) using btree,
+  index idx_message_key_id(message_key_id) using btree,
+  index idx_message_key(message_key, message_type, status) using btree
+) engine = innodb comment = '消息模板表';

@@ -159,7 +159,7 @@
             </t-radio-group>
           </t-form-item>
           <t-form-item label="备注" name="remark">
-            <t-textarea v-model="form.remark" placeholder="请输入内容"></t-textarea>
+            <t-textarea v-model="form.remark" placeholder="请输入备注"></t-textarea>
           </t-form-item>
         </t-form>
       </t-loading>
