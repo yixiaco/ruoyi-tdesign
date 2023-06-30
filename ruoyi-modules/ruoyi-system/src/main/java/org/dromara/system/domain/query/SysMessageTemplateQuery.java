@@ -2,9 +2,6 @@ package org.dromara.system.domain.query;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.Date;
-
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 /**

@@ -16,11 +16,13 @@ public enum CommonStatusEnum {
     /**
      * 成功
      */
-    SUCCESS("1"),
+    SUCCESS("1", 1),
     /**
      * 失败
      */
-    FAIL("0");
+    FAIL("0", 0);
 
     private final String code;
+
+    private final Integer codeNum;
 }

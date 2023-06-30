@@ -218,6 +218,7 @@
                   v-if="value.component === 'input'"
                   v-model="form.configJson[key]"
                   :placeholder="`请输入${value.name}`"
+                  :type="value.type"
                 />
                 <t-input-number
                   v-else-if="value.component === 'input-number'"

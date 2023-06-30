@@ -56,4 +56,9 @@ public interface ISysMessageLogService extends IService<SysMessageLog> {
      * @return Boolean
      */
     Boolean deleteWithValidByIds(Collection<Long> ids);
+
+    /**
+     * 清空消息记录
+     */
+    Boolean clear();
 }

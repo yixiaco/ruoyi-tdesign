@@ -39,3 +39,10 @@ export function delMessageLog(messageLogIds: number | Array<number>) {
     url: `/system/messageLog/${messageLogIds}`,
   });
 }
+
+// 清空消息发送记录
+export function clearMessageLog() {
+  return request.delete<R<void>>({
+    url: `/system/messageLog/clear`,
+  });
+}

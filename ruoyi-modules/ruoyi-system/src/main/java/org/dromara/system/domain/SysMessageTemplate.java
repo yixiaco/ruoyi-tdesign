@@ -1,13 +1,15 @@
 package org.dromara.system.domain;
 
-import org.dromara.common.mybatis.core.domain.BaseEntity;
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 import java.io.Serial;
 import java.util.Date;
-import java.math.BigDecimal;
 
 /**
  * 消息模板对象 sys_message_template
@@ -40,6 +42,11 @@ public class SysMessageTemplate extends BaseEntity {
     private Long messageConfigId;
 
     /**
+     * 消息key主键
+     */
+    private Long messageKeyId;
+
+    /**
      * 消息key
      */
     private String messageKey;
@@ -55,14 +62,14 @@ public class SysMessageTemplate extends BaseEntity {
     private String templateMode;
 
     /**
-     * 签名
-     */
-    private String signature;
-
-    /**
      * 标题
      */
     private String title;
+
+    /**
+     * 签名
+     */
+    private String signature;
 
     /**
      * 模板id

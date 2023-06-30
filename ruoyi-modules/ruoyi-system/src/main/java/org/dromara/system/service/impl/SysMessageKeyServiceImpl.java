@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 消息常量Service业务层处理
@@ -90,6 +91,10 @@ public class SysMessageKeyServiceImpl extends ServiceImpl<SysMessageKeyMapper, S
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateByBo(SysMessageKeyBo bo) {
         checkRepeat(bo);
+        String messageKey = getKeyById(bo.getMessageKeyId());
+        if (!Objects.equals(messageKey, bo.getMessageKey())) {
+            messageTemplateService.updateMessageKey(bo.getMessageKeyId(), bo.getMessageKey());
+        }
         SysMessageKey update = MapstructUtils.convert(bo, SysMessageKey.class);
         return updateById(update);
     }
@@ -125,5 +130,19 @@ public class SysMessageKeyServiceImpl extends ServiceImpl<SysMessageKeyMapper, S
         if (exists) {
             throw new ServiceException("已存在相同的KEY");
         }
+    }
+
+    /**
+     * 查询消息key
+     *
+     * @param messageKeyId 消息常量id
+     * @return 消息key
+     */
+    @Override
+    public String getKeyById(Long messageKeyId) {
+        return lambdaQuery()
+            .eq(SysMessageKey::getMessageKeyId, messageKeyId)
+            .select(SysMessageKey::getMessageKey)
+            .oneOpt().map(SysMessageKey::getMessageKey).orElse(null);
     }
 }

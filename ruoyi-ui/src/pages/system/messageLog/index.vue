@@ -31,8 +31,8 @@
         <t-form-item label="发送账号" name="account">
           <t-input v-model="queryParams.account" placeholder="请输入发送账号" clearable @enter="handleQuery" />
         </t-form-item>
-        <t-form-item label="模板id" name="templateId">
-          <t-input v-model="queryParams.templateId" placeholder="请输入模板id" clearable @enter="handleQuery" />
+        <t-form-item label="模板ID" name="templateId">
+          <t-input v-model="queryParams.templateId" placeholder="请输入模板ID" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="平台标识" name="supplierType">
           <t-select v-model="queryParams.supplierType" placeholder="请选择平台标识" clearable>
@@ -88,6 +88,10 @@
               >
                 <template #icon> <delete-icon /> </template>
                 删除
+              </t-button>
+              <t-button v-hasPermi="['system:messageLog:remove']" theme="danger" variant="outline" @click="handleClear">
+                <template #icon> <delete-icon /> </template>
+                清空记录
               </t-button>
               <t-button
                 v-hasPermi="['system:messageLog:export']"
@@ -146,12 +150,15 @@
     </t-space>
 
     <!-- 消息发送记录详情 -->
-    <t-dialog v-model:visible="openView" header="消息发送记录详情" width="700px" attach="body" :footer="false">
+    <t-dialog v-model:visible="openView" header="消息发送记录详情" top="3%" width="700px" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(5em + 24px)">
+        <t-form label-align="right" colon label-width="calc(7em + 24px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="消息发送记录id">{{ form.messageLogId }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="消息模板id">{{ form.messageTemplateId }}</t-form-item>
             </t-col>
             <t-col :span="6">
               <t-form-item label="消息key">{{ form.messageKey }}</t-form-item>
@@ -171,6 +178,9 @@
             </t-col>
             <t-col :span="6">
               <t-form-item label="发送账号">{{ form.account }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="标题">{{ form.title }}</t-form-item>
             </t-col>
             <t-col :span="6">
               <t-form-item label="模板id">{{ form.templateId }}</t-form-item>
@@ -197,10 +207,10 @@
             <t-col :span="12">
               <t-form-item label="错误消息">{{ form.errorMessage }}</t-form-item>
             </t-col>
-            <t-col :span="6">
+            <t-col :span="12">
               <t-form-item label="回执消息id">{{ form.bizId }}</t-form-item>
             </t-col>
-            <t-col :span="6">
+            <t-col :span="12">
               <t-form-item label="返回消息">{{ form.message }}</t-form-item>
             </t-col>
             <t-col :span="6">
@@ -222,7 +232,7 @@ import { BrowseIcon, DeleteIcon, DownloadIcon, RefreshIcon, SearchIcon, SettingI
 import { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
-import { delMessageLog, getMessageLog, listMessageLog } from '@/api/system/messageLog';
+import { clearMessageLog, delMessageLog, getMessageLog, listMessageLog } from '@/api/system/messageLog';
 import { SysMessageLogQuery, SysMessageLogVo } from '@/api/system/model/messageLogModel';
 
 const { proxy } = getCurrentInstance();
@@ -252,7 +262,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `消息类型`, colKey: 'messageType', align: 'center' },
   { title: `模板类型`, colKey: 'templateMode', align: 'center' },
   { title: `发送账号`, colKey: 'account', align: 'center' },
-  { title: `发送内容`, colKey: 'content', align: 'center' },
+  { title: `发送内容`, colKey: 'content', align: 'center', ellipsis: true },
   { title: `平台标识`, colKey: 'supplierType', align: 'center' },
   { title: `是否成功`, colKey: 'isSuccess', align: 'center' },
   { title: `返回消息`, colKey: 'message', align: 'center' },
@@ -344,6 +354,21 @@ function handleDelete(row: SysMessageLogVo) {
   proxy.$modal.confirm(`是否确认删除消息发送记录编号为${messageLogIds}的数据项？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delMessageLog(messageLogIds)
+      .then(() => {
+        getList();
+        proxy.$modal.msgSuccess('删除成功');
+      })
+      .finally(() => {
+        proxy.$modal.msgClose(msgLoading);
+      });
+  });
+}
+
+/** 清空记录按钮操作 */
+function handleClear(row: SysMessageLogVo) {
+  proxy.$modal.confirm(`是否确认删除所有消息发送记录？`, () => {
+    const msgLoading = proxy.$modal.msgLoading('正在删除中...');
+    return clearMessageLog()
       .then(() => {
         getList();
         proxy.$modal.msgSuccess('删除成功');

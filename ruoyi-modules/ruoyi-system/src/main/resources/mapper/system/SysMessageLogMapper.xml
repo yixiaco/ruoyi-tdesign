@@ -10,7 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysMessageLogVo">
-        select sml.message_log_id, sml.message_key, sml.message_template_name, sml.message_type, sml.template_mode, sml.account, sml.template_id, sml.content, sml.message_config_title, sml.supplier_type, sml.is_success, sml.error_code, sml.error_message, sml.biz_id, sml.message, sml.log_time from sys_message_log sml
+        select sml.message_log_id, sml.message_template_id, sml.message_key, sml.message_template_name, sml.message_type, sml.template_mode, sml.account, sml.title, sml.template_id, sml.content, sml.message_config_title, sml.supplier_type, sml.is_success, sml.error_code, sml.error_message, sml.biz_id, sml.message, sml.log_time from sys_message_log sml
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysMessageLogQuery" resultMap="SysMessageLogResultVo">
         <include refid="selectSysMessageLogVo"/>

@@ -1,15 +1,13 @@
 package org.dromara.system.domain;
 
-import org.dromara.common.mybatis.core.domain.BaseEntity;
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
 
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
 import java.io.Serial;
 import java.util.Date;
-import java.math.BigDecimal;
 
 /**
  * 消息发送记录对象 sys_message_log
@@ -30,6 +28,11 @@ public class SysMessageLog extends BaseEntity {
      */
     @TableId(value = "message_log_id")
     private Long messageLogId;
+
+    /**
+     * 消息模板id
+     */
+    private Long messageTemplateId;
 
     /**
      * 消息key
@@ -55,6 +58,11 @@ public class SysMessageLog extends BaseEntity {
      * 发送账号
      */
     private String account;
+
+    /**
+     * 标题
+     */
+    private String title;
 
     /**
      * 模板id

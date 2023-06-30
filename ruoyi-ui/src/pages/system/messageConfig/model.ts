@@ -24,6 +24,8 @@ export interface FieldConfig<T extends string | number | boolean | Array<string 
   visible?: string;
   /** 其他校验规则 */
   rules?: FormRule[];
+  /** 组件类型 */
+  type?: string;
 }
 export type SupplierConfig = Record<string, FieldConfig<any>>;
 export class MessageConfig {

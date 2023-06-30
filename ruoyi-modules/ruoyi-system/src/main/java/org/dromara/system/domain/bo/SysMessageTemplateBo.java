@@ -1,15 +1,14 @@
 package org.dromara.system.domain.bo;
 
-import org.dromara.system.domain.SysMessageTemplate;
-import org.dromara.common.mybatis.core.domain.BaseEntity;
-import org.dromara.common.core.validate.AddGroup;
-import org.dromara.common.core.validate.EditGroup;
 import io.github.linpeilie.annotations.AutoMapper;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import jakarta.validation.constraints.*;
-
-import java.util.Date;
+import org.dromara.common.core.validate.AddGroup;
+import org.dromara.common.core.validate.EditGroup;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
+import org.dromara.system.domain.SysMessageTemplate;
 
 /**
  * 消息模板业务对象 sys_message_template
@@ -41,10 +40,10 @@ public class SysMessageTemplateBo extends BaseEntity {
     private Long messageConfigId;
 
     /**
-     * 消息key
+     * 消息key主键
      */
-    @NotBlank(message = "消息key不能为空", groups = {AddGroup.class, EditGroup.class})
-    private String messageKey;
+    @NotNull(message = "消息key不能为空", groups = {AddGroup.class, EditGroup.class})
+    private Long messageKeyId;
 
     /**
      * 消息类型
@@ -59,14 +58,14 @@ public class SysMessageTemplateBo extends BaseEntity {
     private String templateMode;
 
     /**
-     * 签名
-     */
-    private String signature;
-
-    /**
      * 标题
      */
     private String title;
+
+    /**
+     * 签名
+     */
+    private String signature;
 
     /**
      * 模板id

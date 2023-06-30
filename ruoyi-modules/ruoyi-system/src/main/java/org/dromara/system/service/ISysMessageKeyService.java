@@ -1,11 +1,11 @@
 package org.dromara.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysMessageKey;
 import org.dromara.system.domain.bo.SysMessageKeyBo;
 import org.dromara.system.domain.query.SysMessageKeyQuery;
 import org.dromara.system.domain.vo.SysMessageKeyVo;
-import com.baomidou.mybatisplus.extension.service.IService;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
 
 import java.util.Collection;
 import java.util.List;
@@ -65,4 +65,12 @@ public interface ISysMessageKeyService extends IService<SysMessageKey> {
      * @return Boolean
      */
     Boolean deleteWithValidByIds(Collection<Long> ids);
+
+    /**
+     * 查询消息key
+     *
+     * @param messageKeyId 消息常量id
+     * @return 消息key
+     */
+    String getKeyById(Long messageKeyId);
 }

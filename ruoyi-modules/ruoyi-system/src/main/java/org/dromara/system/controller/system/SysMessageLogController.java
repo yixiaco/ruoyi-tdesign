@@ -76,4 +76,14 @@ public class SysMessageLogController extends BaseController {
     public R<Void> remove(@NotEmpty(message = "主键不能为空") @PathVariable Long[] messageLogIds) {
         return toAjax(sysMessageLogService.deleteWithValidByIds(List.of(messageLogIds)));
     }
+
+    /**
+     * 清空消息发送记录
+     */
+    @SaCheckPermission("system:messageLog:remove")
+    @Log(title = "消息发送记录", businessType = BusinessType.DELETE)
+    @DeleteMapping("/clear")
+    public R<Void> clear() {
+        return toAjax(sysMessageLogService.clear());
+    }
 }

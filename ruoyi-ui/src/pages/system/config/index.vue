@@ -6,16 +6,6 @@
           <system-config :action="action === 1" :disabled="disabled" :is-system="isSystem" />
         </div>
       </t-tab-panel>
-      <t-tab-panel :value="2" label="邮箱配置" :destroy-on-hide="false">
-        <div class="panel-content">
-          <system-mail :action="action === 2" :disabled="disabled" />
-        </div>
-      </t-tab-panel>
-      <t-tab-panel :value="3" label="短信配置" :destroy-on-hide="false">
-        <div class="panel-content">
-          <system-sms :action="action === 3" :disabled="disabled" />
-        </div>
-      </t-tab-panel>
     </t-tabs>
   </t-card>
 </template>
@@ -28,8 +18,6 @@ export default {
 import { computed, ref, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import SystemMail from '@/pages/system/config/components/SystemMail.vue';
-import SystemSms from '@/pages/system/config/components/SystemSms.vue';
 import { useUserStore } from '@/store';
 import { useHasPermission } from '@/utils/auth';
 

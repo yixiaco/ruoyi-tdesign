@@ -81,4 +81,12 @@ public class SysMessageLogServiceImpl extends ServiceImpl<SysMessageLogMapper, S
     public Boolean deleteWithValidByIds(Collection<Long> ids) {
         return removeByIds(ids);
     }
+
+    /**
+     * 清空消息记录
+     */
+    @Override
+    public Boolean clear() {
+        return remove(lambdaQuery().getWrapper());
+    }
 }

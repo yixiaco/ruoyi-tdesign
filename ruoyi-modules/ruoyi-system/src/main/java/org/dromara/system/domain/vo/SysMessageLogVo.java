@@ -1,17 +1,16 @@
 package org.dromara.system.domain.vo;
 
-import java.util.Date;
-import com.fasterxml.jackson.annotation.JsonFormat;
-import org.dromara.system.domain.SysMessageLog;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
-import org.dromara.common.excel.annotation.ExcelDictFormat;
-import org.dromara.common.excel.convert.ExcelDictConvert;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
-import java.util.Date;
+import org.dromara.common.excel.annotation.ExcelDictFormat;
+import org.dromara.common.excel.convert.ExcelDictConvert;
+import org.dromara.system.domain.SysMessageLog;
+
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 消息发送记录视图对象 sys_message_log
@@ -32,6 +31,12 @@ public class SysMessageLogVo implements Serializable {
      */
     @ExcelProperty(value = "消息发送记录id")
     private Long messageLogId;
+
+    /**
+     * 消息模板id
+     */
+    @ExcelProperty(value = "消息模板id")
+    private Long messageTemplateId;
 
     /**
      * 消息key
@@ -64,6 +69,12 @@ public class SysMessageLogVo implements Serializable {
      */
     @ExcelProperty(value = "发送账号")
     private String account;
+
+    /**
+     * 标题
+     */
+    @ExcelProperty(value = "标题")
+    private String title;
 
     /**
      * 模板id

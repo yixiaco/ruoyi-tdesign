@@ -9,18 +9,16 @@ import jakarta.validation.constraints.NotBlank;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.Constants;
 import org.dromara.common.core.constant.GlobalConstants;
+import org.dromara.common.core.constant.MessageConstants;
 import org.dromara.common.core.domain.R;
-import org.dromara.common.core.helper.SysConfigHelper;
+import org.dromara.common.core.enums.MessageTypeEnum;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.reflect.ReflectUtils;
 import org.dromara.common.core.utils.spring.SpringUtils;
-import org.dromara.common.mail.service.MailService;
 import org.dromara.common.redis.utils.RedisUtils;
-import org.dromara.common.sms.aspectj.SmsContextCache;
-import org.dromara.common.sms.service.SmsService;
 import org.dromara.common.web.config.properties.CaptchaProperties;
 import org.dromara.common.web.enums.CaptchaType;
-import org.dromara.sms4j.api.entity.SmsResponse;
+import org.dromara.system.service.ISysMessageSendService;
 import org.dromara.web.domain.vo.CaptchaVo;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.expression.Expression;
@@ -31,7 +29,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.Duration;
-import java.util.LinkedHashMap;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 验证码操作处理
@@ -47,30 +46,22 @@ public class CaptchaController {
     @Autowired
     private CaptchaProperties captchaProperties;
     @Autowired
-    private SmsService smsService;
-    @Autowired
-    private MailService mailService;
+    private ISysMessageSendService messageSendService;
 
     /**
      * 短信验证码
      *
      * @param phonenumber 用户手机号
      */
-    @SmsContextCache
     @GetMapping("/resource/sms/code")
     public R<Void> smsCode(@NotBlank(message = "{user.phonenumber.not.blank}") String phonenumber) {
         String key = GlobalConstants.CAPTCHA_CODE_KEY + phonenumber;
         String code = RandomUtil.randomNumbers(4);
-        RedisUtils.setObject(key, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
-        // 验证码模板id
-        String loginTemplateId = SysConfigHelper.getSysSmsCaptchaTemplateId();
-        LinkedHashMap<String, String> map = new LinkedHashMap<>(1);
+        Map<String, Object> map = new HashMap<>(1);
         map.put("code", code);
-        SmsResponse smsResponse = smsService.send(phonenumber, loginTemplateId, map);
-        if (!"OK".equals(smsResponse.getCode())) {
-            log.error("验证码短信发送异常 => {}", smsResponse);
-            return R.fail(smsResponse.getMessage());
-        }
+        // 发送验证码
+        messageSendService.send(MessageConstants.LOGIN_CAPTCHA, MessageTypeEnum.SMS, phonenumber, map);
+        RedisUtils.setObject(key, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
         return R.ok();
     }
 
@@ -83,13 +74,12 @@ public class CaptchaController {
     public R<Void> emailCode(@NotBlank(message = "{user.email.not.blank}") String email) {
         String key = GlobalConstants.CAPTCHA_CODE_KEY + email;
         String code = RandomUtil.randomNumbers(4);
-        try {
-            mailService.sendText(email, "登录验证码", "您本次验证码为：" + code + "，有效性为" + Constants.CAPTCHA_EXPIRATION + "分钟，请尽快填写。");
-            RedisUtils.setObject(key, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
-        } catch (Exception e) {
-            log.error("验证码邮箱发送异常 => {}", e.getMessage());
-            return R.fail(e.getMessage());
-        }
+        Map<String, Object> map = new HashMap<>(1);
+        map.put("code", code);
+        map.put("time", Constants.CAPTCHA_EXPIRATION);
+        // 发送验证码
+        messageSendService.send(MessageConstants.LOGIN_CAPTCHA, MessageTypeEnum.MAIL, email, map);
+        RedisUtils.setObject(key, code, Duration.ofMinutes(Constants.CAPTCHA_EXPIRATION));
         return R.ok();
     }
 

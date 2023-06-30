@@ -1,13 +1,15 @@
 package org.dromara.system.domain;
 
-import org.dromara.common.mybatis.core.domain.BaseEntity;
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 import java.io.Serial;
 import java.util.Date;
-import java.math.BigDecimal;
 
 /**
  * 消息常量对象 sys_message_key

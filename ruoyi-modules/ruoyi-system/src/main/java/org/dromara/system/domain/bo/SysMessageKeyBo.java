@@ -1,15 +1,14 @@
 package org.dromara.system.domain.bo;
 
-import org.dromara.system.domain.SysMessageKey;
-import org.dromara.common.mybatis.core.domain.BaseEntity;
-import org.dromara.common.core.validate.AddGroup;
-import org.dromara.common.core.validate.EditGroup;
 import io.github.linpeilie.annotations.AutoMapper;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import jakarta.validation.constraints.*;
-
-import java.util.Date;
+import org.dromara.common.core.validate.AddGroup;
+import org.dromara.common.core.validate.EditGroup;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
+import org.dromara.system.domain.SysMessageKey;
 
 /**
  * 消息常量业务对象 sys_message_key

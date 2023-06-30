@@ -25,16 +25,16 @@ export interface SysMessageTemplateForm extends BaseEntity {
   templateName?: string;
   /** 消息配置id */
   messageConfigId?: number;
-  /** 消息key */
-  messageKey?: string;
+  /** 消息key主键 */
+  messageKeyId?: number;
   /** 消息类型 */
   messageType?: string;
   /** 模板类型 */
   templateMode?: string;
-  /** 签名 */
-  signature?: string;
   /** 标题 */
   title?: string;
+  /** 签名 */
+  signature?: string;
   /** 模板id */
   templateId?: string;
   /** 内容 */
@@ -56,16 +56,18 @@ export interface SysMessageTemplateVo {
   templateName?: string;
   /** 消息配置id */
   messageConfigId?: number;
+  /** 消息key主键 */
+  messageKeyId?: number;
   /** 消息key */
   messageKey?: string;
   /** 消息类型 */
   messageType?: string;
   /** 模板类型 */
   templateMode?: string;
-  /** 签名 */
-  signature?: string;
   /** 标题 */
   title?: string;
+  /** 签名 */
+  signature?: string;
   /** 模板id */
   templateId?: string;
   /** 内容 */

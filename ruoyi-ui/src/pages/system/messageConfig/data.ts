@@ -46,6 +46,7 @@ const mail: MailConfig = {
     required: true,
     help: '注意，某些邮箱需要为SMTP服务单独设置密码，详情查看相关帮助',
     visible: 'auth',
+    type: 'password',
   },
   from: {
     component: 'input',
@@ -83,14 +84,14 @@ const mail: MailConfig = {
     help: '对于文件名是否使用charset编码，默认为 true',
   },
   starttlsEnable: {
-    value: false,
+    value: true,
     component: 'switch',
     name: 'STARTTLS安全连接',
     required: true,
     help: '使用 STARTTLS安全连接，STARTTLS是对纯文本通信协议的扩展。它将纯文本连接升级为加密连接（TLS或SSL）， 而不是使用一个单独的加密通信端口。',
   },
   sslEnable: {
-    value: false,
+    value: true,
     component: 'switch',
     name: 'SSL安全连接',
     required: true,
@@ -159,6 +160,7 @@ const alibaba: AlibabaSmsConfig = {
     name: 'accessKeySecret',
     help: '阿里云的accessKeySecret',
     required: true,
+    type: 'password',
   },
   signature: {
     component: 'input',
@@ -209,6 +211,7 @@ const tencent: TencentConfig = {
     name: 'accessKeySecret',
     help: '腾讯云的accessKeySecret',
     required: true,
+    type: 'password',
   },
   signature: {
     component: 'input',
@@ -274,6 +277,7 @@ const huawei: HuaweiSmsConfig = {
     component: 'input',
     name: 'appSecret',
     required: true,
+    type: 'password',
   },
   signature: {
     component: 'input',
@@ -312,6 +316,7 @@ const uniSms: UniSmsConfig = {
     name: 'accessKeySecret',
     required: false,
     help: '访问键秘钥 简易模式不需要配置',
+    type: 'password',
   },
   signature: {
     component: 'input',
@@ -333,6 +338,7 @@ const yunpianSms: YunpianSmsConfig = {
     name: 'apikey',
     help: '账号唯一标识',
     required: true,
+    type: 'password',
   },
   signature: {
     component: 'input',
@@ -359,6 +365,7 @@ const jdCloudSms: JdCloudSmsConfig = {
     name: 'accessKeySecret',
     required: false,
     help: '访问键秘钥',
+    type: 'password',
   },
   signature: {
     component: 'input',
@@ -385,6 +392,7 @@ const cloopenSms: CloopenSmsConfig = {
     name: 'accessKeySecret',
     required: true,
     help: '访问键秘钥',
+    type: 'password',
   },
   appId: {
     component: 'input',
@@ -411,6 +419,7 @@ const emaySmsConfig: EmaySmsConfig = {
     name: 'secretKey',
     required: true,
     help: '访问键秘钥',
+    type: 'password',
   },
   requestUrl: {
     component: 'input',
@@ -432,6 +441,7 @@ const ctyunSmsConfig: CtyunSmsConfig = {
     name: 'accessKeySecret',
     help: '天翼云的accessKeySecret',
     required: true,
+    type: 'password',
   },
   signature: {
     component: 'input',
@@ -466,6 +476,7 @@ const neteaseSmsConfig: NeteaseSmsConfig = {
     name: 'accessKeySecret',
     help: '访问键秘钥 ',
     required: true,
+    type: 'password',
   },
   signature: {
     component: 'input',

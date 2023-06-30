@@ -6,12 +6,15 @@ import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.system.domain.SysMessageKey;
 import org.dromara.system.domain.SysMessageTemplate;
 import org.dromara.system.domain.bo.SysMessageTemplateBo;
 import org.dromara.system.domain.query.SysMessageTemplateQuery;
 import org.dromara.system.domain.vo.SysMessageTemplateVo;
 import org.dromara.system.mapper.SysMessageTemplateMapper;
+import org.dromara.system.service.ISysMessageKeyService;
 import org.dromara.system.service.ISysMessageTemplateService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,6 +29,9 @@ import java.util.List;
  */
 @Service
 public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplateMapper, SysMessageTemplate> implements ISysMessageTemplateService {
+
+    @Autowired
+    private ISysMessageKeyService messageKeyService;
 
     /**
      * 查询消息模板
@@ -70,7 +76,12 @@ public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplat
     @Transactional(rollbackFor = Exception.class)
     public Boolean insertByBo(SysMessageTemplateBo bo) {
         checkRepeat(bo);
+        String messageKey = messageKeyService.getKeyById(bo.getMessageKeyId());
+        if (messageKey == null) {
+            throw new ServiceException("消息常量不存在");
+        }
         SysMessageTemplate add = MapstructUtils.convert(bo, SysMessageTemplate.class);
+        add.setMessageKey(messageKey);
         return save(add);
     }
 
@@ -84,7 +95,12 @@ public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplat
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateByBo(SysMessageTemplateBo bo) {
         checkRepeat(bo);
+        String messageKey = messageKeyService.getKeyById(bo.getMessageKeyId());
+        if (messageKey == null) {
+            throw new ServiceException("消息常量不存在");
+        }
         SysMessageTemplate update = MapstructUtils.convert(bo, SysMessageTemplate.class);
+        update.setMessageKey(messageKey);
         return updateById(update);
     }
 
@@ -108,12 +124,27 @@ public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplat
     private void checkRepeat(SysMessageTemplateBo bo) {
         boolean exists = lambdaQuery()
             .ne(bo.getMessageTemplateId() != null, SysMessageTemplate::getMessageTemplateId, bo.getMessageTemplateId())
-            .eq(SysMessageTemplate::getMessageKey, bo.getMessageKey())
+            .eq(SysMessageTemplate::getMessageKeyId, bo.getMessageKeyId())
             .eq(SysMessageTemplate::getMessageType, bo.getMessageType())
             .eq(SysMessageTemplate::getStatus, NormalDisableEnum.NORMAL.getCode())
             .exists();
         if (exists) {
             throw new ServiceException("该消息类型下存在相同的消息Key");
         }
+    }
+
+    /**
+     * 更新消息key
+     *
+     * @param messageKeyId 消息key主键
+     * @param messageKey   消息key
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateMessageKey(Long messageKeyId, String messageKey) {
+        lambdaUpdate()
+            .eq(SysMessageTemplate::getMessageKeyId, messageKeyId)
+            .set(SysMessageTemplate::getMessageKey, messageKey)
+            .update();
     }
 }

@@ -181,13 +181,13 @@
             </t-form-item>
           </t-col>
           <t-col :span="6">
-            <t-form-item label="消息key" name="messageKey">
-              <t-select v-model="form.messageKey" placeholder="请选择消息key" clearable>
+            <t-form-item label="消息key" name="messageKeyId">
+              <t-select v-model="form.messageKeyId" placeholder="请选择消息key" clearable>
                 <t-option
                   v-for="item in messageKeys"
-                  :key="item.messageKey"
+                  :key="item.messageKeyId"
                   :label="item.name"
-                  :value="item.messageKey"
+                  :value="item.messageKeyId"
                 />
               </t-select>
             </t-form-item>
@@ -463,7 +463,7 @@ const formTest = ref<SysMessageTemplateTest>({});
 const rules = ref<Record<string, Array<FormRule>>>({
   templateName: [{ required: true, message: '模板名称不能为空', trigger: 'blur' }],
   messageConfigId: [{ required: true, message: '消息配置不能为空', trigger: 'blur' }],
-  messageKey: [{ required: true, message: '消息key不能为空', trigger: 'blur' }],
+  messageKeyId: [{ required: true, message: '消息key不能为空', trigger: 'blur' }],
   messageType: [{ required: true, message: '消息类型不能为空', trigger: 'blur' }],
   title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
   templateMode: [{ required: true, message: '模板类型不能为空', trigger: 'blur' }],
@@ -479,6 +479,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `消息类型`, colKey: 'messageType', align: 'center' },
   { title: `模板类型`, colKey: 'templateMode', align: 'center' },
   { title: `状态`, colKey: 'status', align: 'center' },
+  { title: `内容`, colKey: 'content', align: 'center', ellipsis: true },
   { title: `备注`, colKey: 'remark', align: 'center', ellipsis: true },
   { title: `更新时间`, colKey: 'updateTime', align: 'center' },
   { title: `创建时间`, colKey: 'createTime', align: 'center' },
@@ -634,6 +635,7 @@ function handleTest(row: SysMessageTemplateVo) {
     let vars = {};
     values.forEach((value: string) => {
       vars = {
+        ...vars,
         ...Object.fromEntries(
           getVars(value).map((value1) => {
             if (value1.includes(':')) {

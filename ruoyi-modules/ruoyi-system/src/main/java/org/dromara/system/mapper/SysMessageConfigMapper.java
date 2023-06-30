@@ -1,9 +1,9 @@
 package org.dromara.system.mapper;
 
+import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysMessageConfig;
 import org.dromara.system.domain.query.SysMessageConfigQuery;
 import org.dromara.system.domain.vo.SysMessageConfigVo;
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 
 import java.util.List;
 

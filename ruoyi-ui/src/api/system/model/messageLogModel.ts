@@ -4,6 +4,8 @@ import { BaseEntity } from '@/api/model/resultModel';
  * 消息发送记录查询对象
  */
 export interface SysMessageLogQuery extends BaseEntity {
+  /** 消息模板id */
+  messageTemplateId?: number;
   /** 消息key */
   messageKey?: string;
   /** 模板名称 */
@@ -27,6 +29,8 @@ export interface SysMessageLogQuery extends BaseEntity {
 export interface SysMessageLog extends BaseEntity {
   /** 消息发送记录id */
   messageLogId?: number;
+  /** 消息模板id */
+  messageTemplateId?: number;
   /** 消息key */
   messageKey?: string;
   /** 模板名称 */
@@ -37,6 +41,8 @@ export interface SysMessageLog extends BaseEntity {
   templateMode?: string;
   /** 发送账号 */
   account?: string;
+  /** 标题 */
+  title?: string;
   /** 模板id */
   templateId?: string;
   /** 发送内容 */
@@ -64,6 +70,8 @@ export interface SysMessageLog extends BaseEntity {
 export interface SysMessageLogVo {
   /** 消息发送记录id */
   messageLogId?: number;
+  /** 消息模板id */
+  messageTemplateId?: number;
   /** 消息key */
   messageKey?: string;
   /** 模板名称 */
@@ -74,6 +82,8 @@ export interface SysMessageLogVo {
   templateMode?: string;
   /** 发送账号 */
   account?: string;
+  /** 标题 */
+  title?: string;
   /** 模板id */
   templateId?: string;
   /** 发送内容 */

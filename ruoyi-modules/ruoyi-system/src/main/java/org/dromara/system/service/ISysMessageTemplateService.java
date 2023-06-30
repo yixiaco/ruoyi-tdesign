@@ -65,4 +65,12 @@ public interface ISysMessageTemplateService extends IService<SysMessageTemplate>
      * @return Boolean
      */
     Boolean deleteWithValidByIds(Collection<Long> ids);
+
+    /**
+     * 更新消息key
+     *
+     * @param messageKeyId 消息key主键
+     * @param messageKey   消息key
+     */
+    void updateMessageKey(Long messageKeyId, String messageKey);
 }

@@ -64,6 +64,8 @@ user:
 spring:
   application:
     name: ${ruoyi.name}
+  main:
+    allow-circular-references: true
   # 资源信息
   messages:
     # 国际化资源文件路径

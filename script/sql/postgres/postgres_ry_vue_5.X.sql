@@ -24,7 +24,7 @@ create table if not exists sys_tenant
     create_time       timestamp,
     update_by         int8,
     update_time       timestamp,
-    constraint "pk_sys_tenant" primary key (id)
+    constraint pk_sys_tenant primary key (id)
 );
 
 
@@ -75,7 +75,7 @@ create table if not exists sys_tenant_package
     create_time         timestamp,
     update_by           int8,
     update_time         timestamp,
-    constraint "pk_sys_tenant_package" primary key (package_id)
+    constraint pk_sys_tenant_package primary key (package_id)
 );
 
 
@@ -115,7 +115,7 @@ create table if not exists sys_dept
     create_time timestamp,
     update_by   int8,
     update_time timestamp,
-    constraint "sys_dept_pk" primary key (dept_id)
+    constraint sys_dept_pk primary key (dept_id)
 );
 
 comment on table sys_dept               is '部门表';
@@ -177,7 +177,7 @@ create table if not exists sys_user
     update_by   int8,
     update_time timestamp,
     remark      varchar(500) default null::varchar,
-    constraint "sys_user_pk" primary key (user_id)
+    constraint sys_user_pk primary key (user_id)
 );
 
 comment on table sys_user               is '用户信息表';
@@ -229,7 +229,7 @@ create table if not exists sys_post
     update_by   int8,
     update_time timestamp,
     remark      varchar(500) default null::varchar,
-    constraint "sys_post_pk" primary key (post_id)
+    constraint sys_post_pk primary key (post_id)
 );
 
 comment on table sys_post               is '岗位信息表';
@@ -276,7 +276,7 @@ create table if not exists sys_role
     update_by           int8,
     update_time         timestamp,
     remark              varchar(500) default null::varchar,
-    constraint "sys_role_pk" primary key (role_id)
+    constraint sys_role_pk primary key (role_id)
 );
 
 comment on table sys_role                       is '角色信息表';
@@ -317,8 +317,8 @@ create table if not exists sys_menu
     path        varchar(200) default ''::varchar,
     component   varchar(255) default null::varchar,
     query_param varchar(255) default null::varchar,
-    is_frame    char         default '0'::bpchar,
-    is_cache    char         default '1'::bpchar,
+    is_frame    int2         default 0,
+    is_cache    int2         default 1,
     menu_type   char         default ''::bpchar,
     visible     char         default '1'::bpchar,
     status      char         default '1'::bpchar,
@@ -330,7 +330,7 @@ create table if not exists sys_menu
     update_by   int8,
     update_time timestamp,
     remark      varchar(500) default ''::varchar,
-    constraint "sys_menu_pk" primary key (menu_id)
+    constraint sys_menu_pk primary key (menu_id)
 );
 
 comment on table sys_menu               is '菜单权限表';
@@ -487,12 +487,43 @@ insert into sys_menu values('1613', '租户套餐修改', '122', '3', '#', '', '
 insert into sys_menu values('1614', '租户套餐删除', '122', '4', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenantPackage:remove',  '#', 103, 1, now(), null, null, '');
 insert into sys_menu values('1615', '租户套餐导出', '122', '5', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenantPackage:export',  '#', 103, 1, now(), null, null, '');
 -- 应用管理
-INSERT INTO sys_menu VALUES ('1701', '应用管理', 6, 3, 'app', 'system/app/index', NULL, 0, 1, 'C', '1', '1', 'system:app:list', 'app', 103, 1, now(), 1, now(), '应用管理菜单');
-INSERT INTO sys_menu VALUES ('1702', '应用管理查询', '1701', 1, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:app:query', '#', 103, 1, now(), NULL, NULL, '');
-INSERT INTO sys_menu VALUES ('1703', '应用管理新增', '1701', 2, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:app:add', '#', 103, 1, now(), NULL, NULL, '');
-INSERT INTO sys_menu VALUES ('1704', '应用管理修改', '1701', 3, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:app:edit', '#', 103, 1, now(), NULL, NULL, '');
-INSERT INTO sys_menu VALUES ('1705', '应用管理删除', '1701', 4, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:app:remove', '#', 103, 1, now(), NULL, NULL, '');
-INSERT INTO sys_menu VALUES ('1706', '应用管理导出', '1701', 5, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:app:export', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1701', '应用管理', 6, 3, 'app', 'system/app/index', NULL, 0, 1, 'C', '1', '1', 'system:app:list', 'app', 103, 1, now(), 1, now(), '应用管理菜单');
+insert into sys_menu values('1702', '应用管理查询', '1701', 1, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:app:query', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1703', '应用管理新增', '1701', 2, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:app:add', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1704', '应用管理修改', '1701', 3, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:app:edit', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1705', '应用管理删除', '1701', 4, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:app:remove', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1706', '应用管理导出', '1701', 5, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:app:export', '#', 103, 1, now(), NULL, NULL, '');
+
+-- 消息管理
+insert into sys_menu values('1801', '消息管理', '1', 11, 'messageManage', NULL, NULL, 0, 1, 'M', '1', '1', NULL, 'chat', 103, 1, now(), 1, now(), '');
+-- 消息配置
+insert into sys_menu values('1802', '消息配置',    '1801', 1, 'messageConfig', 'system/messageConfig/index', NULL, 0, 1, 'C', '1', '1', 'system:messageConfig:list', 'tools', 103, 1, now(), 1, now(), '消息配置菜单');
+insert into sys_menu values('1803', '消息配置查询', '1802', 1, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageConfig:query', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1804', '消息配置新增', '1802', 2, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageConfig:add', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1805', '消息配置修改', '1802', 3, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageConfig:edit', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1806', '消息配置删除', '1802', 4, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageConfig:remove', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1807', '消息配置导出', '1802', 5, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageConfig:export', '#', 103, 1, now(), NULL, NULL, '');
+-- 消息常量
+insert into sys_menu values('1810', '消息常量',     '1801', 2, 'messageKey', 'system/messageKey/index', NULL, 0, 1, 'C', '1', '1', 'system:messageKey:list', 'root-list', 103, 1, now(), 1, now(), '消息常量菜单');
+insert into sys_menu values('1811', '消息常量查询', '1810', 1, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageKey:query', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1812', '消息常量新增', '1810', 2, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageKey:add', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1813', '消息常量修改', '1810', 3, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageKey:edit', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1814', '消息常量删除', '1810', 4, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageKey:remove', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1815', '消息常量导出', '1810', 5, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageKey:export', '#', 103, 1, now(), NULL, NULL, '');
+-- 消息模板
+insert into sys_menu values('1820', '消息模板',    '1801', 3, 'messageTemplate', 'system/messageTemplate/index', NULL, 0, 1, 'C', '1', '1', 'system:messageTemplate:list', 'relativity', 103, 1, now(), 1, now(), '消息模板菜单');
+insert into sys_menu values('1821', '消息模板查询', '1820', 1, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageTemplate:query', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1822', '消息模板新增', '1820', 2, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageTemplate:add', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1823', '消息模板修改', '1820', 3, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageTemplate:edit', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1824', '消息模板删除', '1820', 4, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageTemplate:remove', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1825', '消息模板导出', '1820', 5, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageTemplate:export', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1826', '发送测试消息', '1820', 6, '', NULL, NULL, 0, 1, 'F', '1', '1', 'system:messageTemplate:test', '#', 103, 1, now(), 1, now(), '');
+-- 消息发送记录
+insert into sys_menu values('1830', '消息发送记录',    '1801', 4, 'messageLog', 'system/messageLog/index', NULL, 0, 1, 'C', '1', '1', 'system:messageLog:list', 'history', 103, 1, now(), 1, now(), '消息发送记录菜单');
+insert into sys_menu values('1831', '消息发送记录查询', '1830', 1, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageLog:query', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1832', '消息发送记录删除', '1830', 4, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageLog:remove', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1833', '消息发送记录导出', '1830', 5, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:messageLog:export', '#', 103, 1, now(), NULL, NULL, '');
+
 
 -- ----------------------------
 -- 6、用户和角色关联表  用户N-1角色
@@ -754,6 +785,9 @@ insert into sys_dict_type values(8, '000000', '通知状态', 'sys_notice_status
 insert into sys_dict_type values(9, '000000', '操作类型', 'sys_oper_type',       '1', 103, 1, now(), null, null, '操作类型列表');
 insert into sys_dict_type values(10, '000000', '系统状态', 'sys_common_status',   '1', 103, 1, now(), null, null, '登录状态列表');
 insert into sys_dict_type values(11, '000000', '应用类型', 'sys_app_type', '1', 103, 1, now(), 1, now(), '应用管理列表');
+insert into sys_dict_type values(12, '000000', '消息类型', 'sys_message_type', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_type values(13, '000000', '消息支持平台', 'sys_message_supplier_type', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_type values(14, '000000', '消息模板类型', 'sys_message_template_mode', '1', 103, 1, now(), 1, now(), NULL);
 
 
 -- ----------------------------
@@ -828,6 +862,21 @@ insert into sys_dict_data values(30, '000000', 0, '域名', 'DOMAIN', 'sys_app_t
 insert into sys_dict_data values(31, '000000', 1, '微信小程序', 'WX_XCX', 'sys_app_type', null, 'primary', 'N', '1', 103, 1, now(), 1, now(), null);
 insert into sys_dict_data values(32, '000000', 2, '微信公众号', 'WX_GZH', 'sys_app_type', null, 'primary', 'N', '1', 103, 1, now(), 1, now(), null);
 insert into sys_dict_data values(33, '000000', 3, 'APP', 'APP', 'sys_app_type', null, 'primary', 'N', '1', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(34, '000000', 0, '短信', 'SMS', 'sys_message_type', NULL, 'primary', 'N', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_data values(35, '000000', 1, '邮箱', 'MAIL', 'sys_message_type', NULL, 'primary', 'N', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_data values(36, '000000', 1, '阿里云短信', 'ALIBABA', 'sys_message_supplier_type', NULL, 'primary', 'N', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_data values(37, '000000', 2, '华为云短信', 'HUAWEI', 'sys_message_supplier_type', NULL, 'primary', 'N', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_data values(38, '000000', 3, '腾讯云短信', 'TENCENT', 'sys_message_supplier_type', NULL, 'primary', 'N', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_data values(39, '000000', 4, '云片短信', 'YUNPIAN', 'sys_message_supplier_type', NULL, 'primary', 'N', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_data values(40, '000000', 5, '合一短信', 'UNI_SMS', 'sys_message_supplier_type', NULL, 'primary', 'N', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_data values(41, '000000', 6, '京东云短信', 'JD_CLOUD', 'sys_message_supplier_type', NULL, 'primary', 'N', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_data values(42, '000000', 7, '容联云短信', 'CLOOPEN', 'sys_message_supplier_type', NULL, 'primary', 'N', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_data values(43, '000000', 8, '亿美软通短信', 'EMAY', 'sys_message_supplier_type', NULL, 'primary', 'N', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_data values(44, '000000', 9, '天翼云短信', 'CTYUN', 'sys_message_supplier_type', NULL, 'primary', 'N', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_data values(45, '000000', 0, '邮箱', 'MAIL', 'sys_message_supplier_type', NULL, 'primary', 'N', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_data values(46, '000000', 10, '网易云短信', 'NETEASE', 'sys_message_supplier_type', NULL, 'primary', 'N', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_data values(47, '000000', 0, '模板ID', 'TEMPLATE_ID', 'sys_message_template_mode', NULL, 'primary', 'N', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_data values(48, '000000', 1, '模板内容', 'TEMPLATE_CONTENT', 'sys_message_template_mode', NULL, 'primary', 'N', '1', 103, 1, now(), 1, now(), NULL);
 
 
 -- ----------------------------
@@ -1157,7 +1206,8 @@ insert into sys_oss_config values (5, '000000', 'image',  'ruoyi',            'r
 -- ----------------------------
 -- OSS处理规则表
 -- ----------------------------
-CREATE TABLE sys_oss_rule  (
+drop table if exists sys_oss_rule;
+create table sys_oss_rule  (
   oss_rule_id   int8,
   tenant_id     varchar(20)   default '000000',
   rule_name     varchar(255)  default ''::varchar not null,
@@ -1199,6 +1249,7 @@ insert into sys_oss_rule values (2, '000000', '800x800', 'oss-cn-beijing.aliyunc
 -- ----------------------------
 -- 应用管理表
 -- ----------------------------
+drop table if exists sys_app;
 create table sys_app  (
   appid         int8,
   tenant_id     varchar(20)     default '000000',
@@ -1226,6 +1277,162 @@ comment on column sys_app.create_time   is  '是否默认（不指定规则时�
 comment on column sys_app.update_by     is  '启用状态';
 comment on column sys_app.update_time   is  '创建部门';
 comment on column sys_app.remark        is  '创建者';
+
+-- ----------------------------
+-- 消息配置表
+-- ----------------------------
+drop table if exists sys_message_config;
+create table sys_message_config (
+  message_config_id     int8            not null,
+  title                 varchar(255)    not null,
+  message_type          varchar(20)     not null,
+  supplier_type         varchar(20)     not null,
+  config_json           text,
+  status                int2            not null,
+  remark                varchar(500),
+  create_dept           int8,
+  update_by             int8,
+  create_by             int8,
+  update_time           timestamp,
+  create_time           timestamp,
+  constraint sys_message_config_pk primary key (message_config_id)
+);
+create index idx_sys_message_type on sys_message_config using btree (message_type,status);
+comment on table sys_message_config                     is '消息配置表';
+comment on column sys_message_config.message_config_id  is '消息设置id';
+comment on column sys_message_config.title              is '标题';
+comment on column sys_message_config.message_type       is '消息类型 SMS、MAIL';
+comment on column sys_message_config.supplier_type      is '支持平台标识';
+comment on column sys_message_config.config_json        is '配置json';
+comment on column sys_message_config.status             is '状态（1正常 0停用）';
+comment on column sys_message_config.remark             is '备注';
+comment on column sys_message_config.create_dept        is '创建部门';
+comment on column sys_message_config.update_by          is '更新者';
+comment on column sys_message_config.create_by          is '创建者';
+comment on column sys_message_config.update_time        is '更新时间';
+comment on column sys_message_config.create_time        is '创建时间';
+
+-- ----------------------------
+-- 消息常量表
+-- ----------------------------
+drop table if exists sys_message_key;
+create table sys_message_key (
+  message_key_id    int8            not null,
+  name              varchar(255)    not null,
+  message_key       varchar(50)     not null,
+  remark            varchar(500),
+  create_dept       int8,
+  update_by         int8,
+  create_by         int8,
+  update_time       timestamp,
+  create_time       timestamp,
+  constraint sys_message_key_pk primary key (message_key_id)
+);
+comment on table  sys_message_key                   is '消息常量表';
+comment on column sys_message_key.message_key_id    is '消息key主键';
+comment on column sys_message_key.name              is '消息名称';
+comment on column sys_message_key.message_key       is '消息key';
+comment on column sys_message_key.remark            is '备注';
+comment on column sys_message_key.create_dept       is '创建部门';
+comment on column sys_message_key.update_by         is '更新者';
+comment on column sys_message_key.create_by         is '创建者';
+comment on column sys_message_key.update_time       is '更新时间';
+comment on column sys_message_key.create_time       is '创建时间';
+
+-- ----------------------------
+-- 消息发送记录表
+-- ----------------------------
+drop table if exists sys_message_log;
+create table sys_message_log (
+  message_log_id        int8            not null,
+  message_template_id   int8,
+  message_key           varchar(50)     not null,
+  message_template_name varchar(255),
+  message_type          varchar(20)     not null,
+  template_mode         varchar(20),
+  account               varchar(255)    not null,
+  title                 varchar(255),
+  template_id           varchar(100),
+  content               text,
+  message_config_title  varchar(255),
+  supplier_type         varchar(20),
+  is_success            int2,
+  error_code            varchar(255),
+  error_message         varchar(500),
+  biz_id                varchar(255),
+  message               varchar(255),
+  log_time              timestamp       not null,
+  constraint sys_message_log_pk primary key (message_log_id)
+);
+create index idx_sys_message_template_id on sys_message_log using btree (message_template_id);
+comment on table  sys_message_log                           IS '消息发送记录表';
+comment on column sys_message_log.message_log_id            IS '消息发送记录id';
+comment on column sys_message_log.message_template_id       IS '消息模板id';
+comment on column sys_message_log.message_key               IS '消息key';
+comment on column sys_message_log.message_template_name     IS '模板名称';
+comment on column sys_message_log.message_type              IS '消息类型 SMS、MAIL';
+comment on column sys_message_log.template_mode             IS '模板类型 模板id模式、内容模式';
+comment on column sys_message_log.account                   IS '发送账号';
+comment on column sys_message_log.title                     IS '标题';
+comment on column sys_message_log.template_id               IS '模板ID';
+comment on column sys_message_log.content                   IS '发送内容';
+comment on column sys_message_log.message_config_title      IS '消息配置标题';
+comment on column sys_message_log.supplier_type             IS '平台标识';
+comment on column sys_message_log.is_success                IS '是否成功';
+comment on column sys_message_log.error_code                IS '错误码';
+comment on column sys_message_log.error_message             IS '错误消息';
+comment on column sys_message_log.biz_id                    IS '回执消息id';
+comment on column sys_message_log.message                   IS '返回消息';
+comment on column sys_message_log.log_time                  IS '记录时间';
+
+-- ----------------------------
+-- 消息模板表
+-- ----------------------------
+drop table if exists sys_message_template;
+create table sys_message_template (
+  message_template_id   int8            not null,
+  template_name         varchar(255)    not null,
+  message_config_id     int8            not null,
+  message_key_id        int8            not null,
+  message_key           varchar(50)     not null,
+  message_type          varchar(20)     not null,
+  template_mode         varchar(20)     not null,
+  title                 varchar(255),
+  signature             varchar(100),
+  template_id           varchar(100),
+  content               varchar(500),
+  vars_json             text,
+  status                int2            not null,
+  remark                varchar(500),
+  create_dept           int8,
+  update_by             int8,
+  create_by             int8,
+  update_time           timestamp,
+  create_time           timestamp,
+  constraint sys_message_template_pk primary key (message_template_id)
+);
+create index idx_message_key_id on sys_message_template using btree (message_key_id);
+create index idx_message_key on sys_message_template using btree (message_key,message_type,status);
+comment on table  sys_message_template                      is '消息模板表';
+comment on column sys_message_template.message_template_id  is '消息模板id';
+comment on column sys_message_template.template_name        is '模板名称';
+comment on column sys_message_template.message_config_id    is '消息配置id';
+comment on column sys_message_template.message_key_id       is '消息key主键';
+comment on column sys_message_template.message_key          is '消息key';
+comment on column sys_message_template.message_type         is '消息类型 SMS、MAIL';
+comment on column sys_message_template.template_mode        is '模板类型 模板id模式、内容模式';
+comment on column sys_message_template.title                is '标题';
+comment on column sys_message_template.signature            is '签名';
+comment on column sys_message_template.template_id          is '模板id';
+comment on column sys_message_template.content              is '内容';
+comment on column sys_message_template.vars_json            is '输入变量';
+comment on column sys_message_template.status               is '状态（1正常 0停用）';
+comment on column sys_message_template.remark               is '备注';
+comment on column sys_message_template.create_dept          is '创建部门';
+comment on column sys_message_template.update_by            is '更新者';
+comment on column sys_message_template.create_by            is '创建者';
+comment on column sys_message_template.update_time          is '更新时间';
+comment on column sys_message_template.create_time          is '创建时间';
 
 -- 字符串自动转时间 避免框架时间查询报错问题
 create or replace function cast_varchar_to_timestamp(varchar) returns timestamptz as $$

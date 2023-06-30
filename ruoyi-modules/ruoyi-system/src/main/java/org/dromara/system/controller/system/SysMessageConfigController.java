@@ -1,27 +1,28 @@
 package org.dromara.system.controller.system;
 
-import java.util.List;
-
-import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.*;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.validation.annotation.Validated;
-import org.dromara.common.idempotent.annotation.RepeatSubmit;
-import org.dromara.common.log.annotation.Log;
-import org.dromara.common.web.core.BaseController;
+import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
-import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.excel.utils.ExcelUtil;
+import org.dromara.common.idempotent.annotation.RepeatSubmit;
+import org.dromara.common.log.annotation.Log;
+import org.dromara.common.log.enums.BusinessType;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.bo.SysMessageConfigBo;
 import org.dromara.system.domain.query.SysMessageConfigQuery;
 import org.dromara.system.domain.vo.SysMessageConfigVo;
 import org.dromara.system.service.ISysMessageConfigService;
-import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 消息配置

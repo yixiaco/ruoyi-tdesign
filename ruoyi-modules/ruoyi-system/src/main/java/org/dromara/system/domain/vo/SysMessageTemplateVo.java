@@ -1,15 +1,16 @@
 package org.dromara.system.domain.vo;
 
-import org.dromara.system.domain.SysMessageTemplate;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
-import org.dromara.common.excel.annotation.ExcelDictFormat;
-import org.dromara.common.excel.convert.ExcelDictConvert;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
-import java.util.Date;
+import org.dromara.common.excel.annotation.ExcelDictFormat;
+import org.dromara.common.excel.convert.ExcelDictConvert;
+import org.dromara.system.domain.SysMessageTemplate;
+
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 
 /**
  * 消息模板视图对象 sys_message_template
@@ -42,6 +43,12 @@ public class SysMessageTemplateVo implements Serializable {
      */
     @ExcelProperty(value = "消息配置id")
     private Long messageConfigId;
+
+    /**
+     * 消息key主键
+     */
+    @ExcelProperty(value = "消息key主键")
+    private Long messageKeyId;
 
     /**
      * 消息key
