@@ -37,6 +37,32 @@ comment on column sys_tenant_package.del_flag is '删除标志（0代表存在 1
 comment on column sys_user.status is '帐号状态（1正常 0停用）';
 comment on column sys_user.del_flag is '删除标志（0代表存在 1代表删除）';
 
+-- 存在数据时使用该脚本，对状态值取反
+-- UPDATE sys_config SET is_global = 1 WHERE config_id = 5;
+-- UPDATE sys_config SET is_global = 1 WHERE config_id = 11;
+-- UPDATE sys_dept SET status = DECODE(status, '1', '0', '1');
+-- UPDATE sys_dict_data SET status = DECODE(status, '1', '0', '1');
+-- UPDATE sys_dict_type SET status = DECODE(status, '1', '0', '1');
+-- UPDATE sys_dict_data SET dict_value = '1' WHERE dict_code = 4;
+-- UPDATE sys_dict_data SET dict_value = '0' WHERE dict_code = 5;
+-- UPDATE sys_dict_data SET dict_value = '1' WHERE dict_code = 6;
+-- UPDATE sys_dict_data SET dict_value = '0' WHERE dict_code = 7;
+-- UPDATE sys_dict_data SET dict_value = '1' WHERE dict_code = 16;
+-- UPDATE sys_dict_data SET dict_value = '0' WHERE dict_code = 17;
+-- UPDATE sys_dict_data SET dict_value = '1' WHERE dict_code = 27;
+-- UPDATE sys_dict_data SET dict_value = '0' WHERE dict_code = 28;
+-- UPDATE sys_menu SET status = DECODE(status, '1', '0', '1'),visible = DECODE(status, '1', '0', '1'),is_frame = DECODE(status, 1, 0, 1),is_cache = DECODE(status, 1, 0, 1);
+-- UPDATE sys_notice SET status = DECODE(status, '1', '0', '1');
+-- UPDATE sys_oss_config SET status = DECODE(status, '1', '0', '1');
+-- UPDATE sys_oss_rule SET status = DECODE(status, '1', '0', '1');
+-- UPDATE sys_post SET status = DECODE(status, '1', '0', '1');
+-- UPDATE sys_role SET status = DECODE(status, '1', '0', '1');
+-- UPDATE sys_tenant SET status = DECODE(status, '1', '0', '1');
+-- UPDATE sys_tenant_package SET status = DECODE(status, '1', '0', '1');
+-- UPDATE sys_user SET status = DECODE(status, '1', '0', '1');
+-- UPDATE sys_logininfor SET status = DECODE(status, '1', '0', '1');
+-- UPDATE sys_oper_log SET status = DECODE(status, '1', '0', '1');
+-- 存在数据的情况，可以使用以上脚本替代
 -- 修改表数据
 UPDATE sys_config SET is_global = 1 WHERE config_id = 5;
 UPDATE sys_config SET is_global = 1 WHERE config_id = 11;

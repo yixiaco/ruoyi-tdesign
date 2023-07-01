@@ -35,6 +35,32 @@ COMMENT ON COLUMN sys_tenant_package.del_flag IS '删除标志（0代表存在 1
 COMMENT ON COLUMN sys_user.status IS '帐号状态（1正常 0停用）';
 COMMENT ON COLUMN sys_user.del_flag IS '删除标志（0代表存在 1代表删除）';
 
+-- 存在数据时使用该脚本，对状态值取反
+-- UPDATE sys_config SET is_global = 1 WHERE config_id = 5;
+-- UPDATE sys_config SET is_global = 1 WHERE config_id = 11;
+-- UPDATE sys_dept SET status = case status when '1' then '0' else '1' end;
+-- UPDATE sys_dict_data SET status = case status when '1' then '0' else '1' end;
+-- UPDATE sys_dict_type SET status = case status when '1' then '0' else '1' end;
+-- UPDATE sys_dict_data SET dict_value = '1' WHERE dict_code = 4;
+-- UPDATE sys_dict_data SET dict_value = '0' WHERE dict_code = 5;
+-- UPDATE sys_dict_data SET dict_value = '1' WHERE dict_code = 6;
+-- UPDATE sys_dict_data SET dict_value = '0' WHERE dict_code = 7;
+-- UPDATE sys_dict_data SET dict_value = '1' WHERE dict_code = 16;
+-- UPDATE sys_dict_data SET dict_value = '0' WHERE dict_code = 17;
+-- UPDATE sys_dict_data SET dict_value = '1' WHERE dict_code = 27;
+-- UPDATE sys_dict_data SET dict_value = '0' WHERE dict_code = 28;
+-- UPDATE sys_menu SET status = case status when '1' then '0' else '1' end, visible = case status when '1' then '0' else '1' end, is_frame = case status when 1 then 0 else 1 end, is_cache = case status when 1 then 0 else 1 end;
+-- UPDATE sys_notice SET status = case status when '1' then '0' else '1' end;
+-- UPDATE sys_oss_config SET status = case status when '1' then '0' else '1' end;
+-- UPDATE sys_oss_rule SET status = case status when '1' then '0' else '1' end;
+-- UPDATE sys_post SET status = case status when '1' then '0' else '1' end;
+-- UPDATE sys_role SET status = case status when '1' then '0' else '1' end;
+-- UPDATE sys_tenant SET status = case status when '1' then '0' else '1' end;
+-- UPDATE sys_tenant_package SET status = case status when '1' then '0' else '1' end;
+-- UPDATE sys_user SET status = case status when '1' then '0' else '1' end;
+-- UPDATE sys_logininfor SET status = case status when '1' then '0' else '1' end;
+-- UPDATE sys_oper_log SET status = case status when '1' then '0' else '1' end;
+-- 存在数据的情况，可以使用以上脚本替代
 -- 修改表数据
 UPDATE sys_config SET is_global = 1 WHERE config_id = 5;
 UPDATE sys_config SET is_global = 1 WHERE config_id = 11;
