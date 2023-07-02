@@ -78,7 +78,7 @@ create table sys_message_template  (
   title                 varchar(255)    null        default null    comment '标题',
   signature             varchar(100)    null        default null    comment '签名',
   template_id           varchar(100)    null        default null    comment '模板id',
-  content               varchar(500)    null        default null    comment '内容',
+  content               text            null                        comment '内容',
   vars_json             text            null                        comment '输入变量',
   status                tinyint(1)      not null                    comment '状态（1正常 0停用）',
   remark                varchar(500)    null        default null    comment '备注',

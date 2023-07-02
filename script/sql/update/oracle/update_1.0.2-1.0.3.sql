@@ -120,7 +120,7 @@ create table sys_message_template (
   title                 varchar2(255),
   signature             varchar2(100),
   template_id           varchar2(100),
-  content               varchar2(500),
+  content               nclob,
   vars_json             nclob,
   status                number(4)       not null,
   remark                varchar2(500),

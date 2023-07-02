@@ -1400,7 +1400,7 @@ create table sys_message_template (
   title                 varchar(255),
   signature             varchar(100),
   template_id           varchar(100),
-  content               varchar(500),
+  content               text,
   vars_json             text,
   status                int2            not null,
   remark                varchar(500),

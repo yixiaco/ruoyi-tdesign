@@ -1,6 +1,7 @@
 package org.dromara.system.domain.bo;
 
 import io.github.linpeilie.annotations.AutoMapper;
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -9,6 +10,9 @@ import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.system.domain.SysMessageTemplate;
+import org.dromara.system.domain.vo.SysMessageTemplateVar;
+
+import java.util.List;
 
 /**
  * 消息模板业务对象 sys_message_template
@@ -80,7 +84,8 @@ public class SysMessageTemplateBo extends BaseEntity {
     /**
      * 输入变量
      */
-    private String varsJson;
+    @Valid
+    private List<SysMessageTemplateVar> varsList;
 
     /**
      * 状态（1正常 0停用）

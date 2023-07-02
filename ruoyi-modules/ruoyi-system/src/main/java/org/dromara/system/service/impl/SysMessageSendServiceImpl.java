@@ -3,10 +3,9 @@ package org.dromara.system.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import com.fasterxml.jackson.core.type.TypeReference;
 import org.dromara.common.core.enums.*;
 import org.dromara.common.core.exception.ServiceException;
-import org.dromara.common.json.utils.JsonUtils;
+import org.dromara.common.core.utils.funtion.BiOperator;
 import org.dromara.common.mail.utils.MailAccount;
 import org.dromara.common.mail.utils.MailUtils;
 import org.dromara.sms4j.aliyun.config.AlibabaConfig;
@@ -26,6 +25,7 @@ import org.dromara.sms4j.yunpian.config.YunpianConfig;
 import org.dromara.system.domain.SysMessageConfig;
 import org.dromara.system.domain.SysMessageLog;
 import org.dromara.system.domain.SysMessageTemplate;
+import org.dromara.system.domain.vo.SysMessageTemplateVar;
 import org.dromara.system.service.ISysMessageConfigService;
 import org.dromara.system.service.ISysMessageLogService;
 import org.dromara.system.service.ISysMessageSendService;
@@ -37,6 +37,7 @@ import org.springframework.util.PropertyPlaceholderHelper;
 import java.util.*;
 import java.util.function.Consumer;
 import java.util.regex.Pattern;
+import java.util.stream.Collectors;
 
 /**
  * 消息发送 服务实现
@@ -54,7 +55,9 @@ public class SysMessageSendServiceImpl implements ISysMessageSendService {
     @Autowired
     private ISysMessageLogService messageLogService;
 
-    /** 判断是否是html内容的正则 */
+    /**
+     * 判断是否是html内容的正则
+     */
     private static final Pattern HTML = Pattern.compile(".*((<[a-zA-Z]+>[^>]*</[a-zA-Z]+>)+|(<[a-zA-Z]+ />)+).*");
 
     /**
@@ -144,13 +147,18 @@ public class SysMessageSendServiceImpl implements ISysMessageSendService {
         }
         SysMessageConfig config = messageConfigService.getById(template.getMessageConfigId());
         // 将模板变量转为Map
-        LinkedHashMap<String, String> outputVars = JsonUtils.parseObject(template.getVarsJson(), new TypeReference<>() {
-        });
+        List<SysMessageTemplateVar> vars = JSONUtil.toList(template.getVarsJson(), SysMessageTemplateVar.class);
+        LinkedHashMap<String, String> outputVars = vars
+            .stream()
+            .collect(Collectors.toMap(SysMessageTemplateVar::getKey,
+                SysMessageTemplateVar::getValue,
+                BiOperator::first,
+                LinkedHashMap::new));
         // 将模板变量的值的占位符替换为输入变量
         PropertyPlaceholderHelper helper = new PropertyPlaceholderHelper("${", "}", ":", true);
         Properties properties = new Properties();
         properties.putAll(message);
-        if (outputVars != null) {
+        if (!outputVars.isEmpty()) {
             outputVars.forEach((key, value) -> outputVars.put(key, helper.replacePlaceholders(value, properties)));
         }
         // 将模板内容中的占位符替换为模板变量中的值
@@ -162,7 +170,10 @@ public class SysMessageSendServiceImpl implements ISysMessageSendService {
         // 根据消息类型分别处理
         switch (messageType) {
             case SMS -> sendSms(account, template, config, outputVars, content, supplierType);
-            case MAIL -> sendMail(account, template, config, content, supplierType);
+            case MAIL -> {
+                String title = helper.replacePlaceholders(template.getTitle(), properties);
+                sendMail(account, template, config, title, content, supplierType);
+            }
         }
     }
 
@@ -273,26 +284,28 @@ public class SysMessageSendServiceImpl implements ISysMessageSendService {
     /**
      * 发送邮件
      */
-    private void sendMail(List<String> account, SysMessageTemplate template, SysMessageConfig config, String content, MessageSupplierTypeEnum supplierType) {
+    private void sendMail(List<String> account, SysMessageTemplate template, SysMessageConfig config, String title, String content, MessageSupplierTypeEnum supplierType) {
         MailAccount mailAccount = switch (supplierType) {
             case MAIL -> JSONUtil.toBean(config.getConfigJson(), MailAccount.class);
             default -> throw new ServiceException("不支持的消息类型");
         };
         String messageId;
         if (isHtml(content)) {
-            messageId = MailUtils.sendHtml(mailAccount, account, template.getTitle(), content);
+            messageId = MailUtils.sendHtml(mailAccount, account, title, content);
         } else {
-            messageId = MailUtils.sendText(mailAccount, account, template.getTitle(), content);
+            messageId = MailUtils.sendText(mailAccount, account, title, content);
         }
         // 记录发送记录
         saveLog(account, template, config, content, log -> {
             log.setIsSuccess(CommonStatusEnum.SUCCESS.getCodeNum());
             log.setBizId(messageId);
+            log.setTitle(title);
         });
     }
 
     /**
      * 是否是html
+     *
      * @param content 内容
      */
     private static boolean isHtml(String content) {

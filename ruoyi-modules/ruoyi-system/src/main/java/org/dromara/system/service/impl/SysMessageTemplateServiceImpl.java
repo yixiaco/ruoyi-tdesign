@@ -4,9 +4,9 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
+import org.dromara.common.json.utils.JsonUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
-import org.dromara.system.domain.SysMessageKey;
 import org.dromara.system.domain.SysMessageTemplate;
 import org.dromara.system.domain.bo.SysMessageTemplateBo;
 import org.dromara.system.domain.query.SysMessageTemplateQuery;
@@ -81,6 +81,7 @@ public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplat
             throw new ServiceException("消息常量不存在");
         }
         SysMessageTemplate add = MapstructUtils.convert(bo, SysMessageTemplate.class);
+        add.setVarsJson(JsonUtils.toJsonString(bo.getVarsList()));
         add.setMessageKey(messageKey);
         return save(add);
     }
@@ -100,6 +101,7 @@ public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplat
             throw new ServiceException("消息常量不存在");
         }
         SysMessageTemplate update = MapstructUtils.convert(bo, SysMessageTemplate.class);
+        update.setVarsJson(JsonUtils.toJsonString(bo.getVarsList()));
         update.setMessageKey(messageKey);
         return updateById(update);
     }

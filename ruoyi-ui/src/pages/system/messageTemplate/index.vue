@@ -264,20 +264,22 @@
               <t-textarea v-model="form.content" placeholder="请输入内容" @change="handleContentChange" />
             </t-form-item>
           </t-col>
-          <t-col v-if="form.varsJson && Object.keys(form.varsJson).length > 0" :span="12">
+          <t-col v-if="form.varsList && form.varsList.length > 0" :span="12">
             <t-form-item label="变量属性">
-              <template #help> <b>变量格式</b>：${name}、${name:名称} </template>
               <t-space direction="vertical">
                 <t-form-item
-                  v-for="(value, key) in form.varsJson"
-                  :key="key"
-                  :label="key"
-                  :name="`varsJson[${key}]`"
+                  v-for="(value, index) in form.varsList"
+                  :key="value.key"
+                  :label="value.key"
+                  :name="`varsList[${index}].value`"
                   label-align="left"
                   :label-width="`${maxVarsLabelWidth * 12}px`"
                   :rules="[{ required: true, message: '输入变量不能为空' }]"
                 >
-                  <t-input v-model="form.varsJson[key]" />
+                  <template v-if="form.varsList.length - 1 === index" #help>
+                    <b>变量格式</b>：${name}、${name:名称}
+                  </template>
+                  <t-input v-model="form.varsList[index].value" />
                 </t-form-item>
               </t-space>
             </t-form-item>
@@ -428,6 +430,7 @@ import {
   SysMessageTemplateForm,
   SysMessageTemplateQuery,
   SysMessageTemplateTest,
+  SysMessageTemplateVar,
   SysMessageTemplateVo,
 } from '@/api/system/model/messageTemplateModel';
 
@@ -491,7 +494,7 @@ const testRules = ref<Record<string, Array<FormRule>>>({
 });
 // 提交表单对象
 const form = ref<SysMessageTemplateVo & SysMessageTemplateForm>({
-  varsJson: {},
+  varsList: [],
 });
 // 查询对象
 const queryParams = ref<SysMessageTemplateQuery>({
@@ -520,10 +523,7 @@ const pagination = computed(() => {
 });
 
 const maxVarsLabelWidth = computed(() => {
-  if (form.value.varsJson instanceof Object) {
-    return Math.max(...Object.keys(form.value.varsJson).map((value) => value.length));
-  }
-  return 0;
+  return Math.max(...form.value.varsList.map((value) => value.key.length));
 });
 const maxVarsTestLabelWidth = computed(() => {
   if (formTest.value.vars instanceof Object) {
@@ -537,9 +537,9 @@ const maxVarsTestLabelWidth = computed(() => {
  * @param content
  */
 function getVars(content: string) {
-  const vars: string[] = [];
+  let vars: string[] = [];
   if (content) {
-    const rex = /\$\{([^$]+)}/g;
+    const rex = /\$\{([^}]+)}/g;
     let temp;
     do {
       temp = rex.exec(content);
@@ -548,16 +548,20 @@ function getVars(content: string) {
       }
     } while (temp);
   }
+  // 去重
+  vars = vars.filter((value, index) => {
+    return vars.indexOf(value) === index;
+  });
   return vars;
 }
 
 /** 处理消息内容变更 */
 function handleContentChange(content: string) {
   const vars = getVars(content);
-  const map = vars.map((value) => {
-    return [value, (form.value.varsJson as object)[value as keyof typeof form.value.varsJson] ?? `$\{${value}}`];
+  form.value.varsList = vars.map<SysMessageTemplateVar>((key) => {
+    const value = form.value.varsList.find((item) => item.key === key);
+    return { key, value: value?.value ?? `$\{${key}}` };
   });
-  form.value.varsJson = Object.fromEntries(map);
 }
 
 /** 处理消息类型变更 */
@@ -588,7 +592,7 @@ function getList() {
 function reset() {
   form.value = {
     status: 1,
-    varsJson: {},
+    varsList: [],
   };
   formTest.value = {
     vars: {},
@@ -631,22 +635,26 @@ function handleTest(row: SysMessageTemplateVo) {
   openTest.value = true;
   getMessageTemplate(row.messageTemplateId).then((response) => {
     const data = response.data;
-    const values = Object.values(JSON.parse(data.varsJson as string));
+    const values: SysMessageTemplateVar[] = JSON.parse(data.varsJson as string);
     let vars = {};
-    values.forEach((value: string) => {
+    // 将变量合并到vars属性中
+    function merge(value?: string) {
+      if (!value) return;
       vars = {
         ...vars,
         ...Object.fromEntries(
-          getVars(value).map((value1) => {
-            if (value1.includes(':')) {
-              const v = value1.split(':');
+          getVars(value).map((value) => {
+            if (value.includes(':')) {
+              const v = value.split(':');
               return [v[0], v[1]];
             }
-            return [value1, ''];
+            return [value, ''];
           }),
         ),
       };
-    });
+    }
+    values.forEach((item) => merge(item.value));
+    merge(data.title);
     formTest.value = { messageTemplateId: data.messageTemplateId, vars };
   });
 }
@@ -672,7 +680,8 @@ function handleUpdate(row: SysMessageTemplateVo) {
   const messageTemplateId = row.messageTemplateId || ids.value.at(0);
   getMessageTemplate(messageTemplateId).then((response) => {
     buttonLoading.value = false;
-    form.value = { ...response.data, varsJson: JSON.parse(response.data.varsJson as string) };
+    const varsList = JSON.parse(response.data.varsJson);
+    form.value = { ...response.data, varsList: Array.isArray(varsList) ? varsList : [] };
     getMessageConfigs(form.value.messageType).then((res) => {
       messageConfigs.value = res.data;
     });
@@ -692,9 +701,8 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');
-    const data = { ...form.value, varsJson: JSON.stringify(form.value.varsJson) };
     if (form.value.messageTemplateId) {
-      updateMessageTemplate(data)
+      updateMessageTemplate(form.value)
         .then(() => {
           proxy.$modal.msgSuccess('修改成功');
           open.value = false;
@@ -705,7 +713,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
           proxy.$modal.msgClose(msgLoading);
         });
     } else {
-      addMessageTemplate(data)
+      addMessageTemplate(form.value)
         .then(() => {
           proxy.$modal.msgSuccess('新增成功');
           open.value = false;
