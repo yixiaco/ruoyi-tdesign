@@ -62,7 +62,7 @@ public class SysOssConfig extends TenantEntity {
     private String domain;
 
     /**
-     * 是否https（0否 1是）
+     * 是否https（Y=是,N=否）
      */
     private String isHttps;
 
@@ -72,24 +72,24 @@ public class SysOssConfig extends TenantEntity {
     private String region;
 
     /**
+     * 桶权限类型(0=private 1=public 2=custom)
+     */
+    private String accessPolicy;
+
+    /**
      * 是否默认（1=是,0=否）
      */
     private String status;
 
     /**
+     * 创建桶（1=是,0=否）
+     */
+    private Integer createBucket;
+
+    /**
      * 扩展字段
      */
     private String ext1;
-
-    /**
-     * 备注
-     */
-    private String remark;
-
-    /**
-     * 桶权限类型(0private 1public 2custom)
-     */
-    private String accessPolicy;
 
     /**
      * 创建部门
@@ -121,5 +121,9 @@ public class SysOssConfig extends TenantEntity {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
+    /**
+     * 备注
+     */
+    private String remark;
 
 }

@@ -36,28 +36,28 @@ public class SysOssConfigBo extends BaseEntity {
      * 配置key
      */
     @NotBlank(message = "配置key不能为空", groups = {AddGroup.class, EditGroup.class})
-    @Size(min = 2, max = 100, message = "configKey长度必须介于{min}和{max} 之间")
+    @Size(min = 2, max = 100, message = "configKey长度必须介于{min}和{max} 之间", groups = {AddGroup.class, EditGroup.class})
     private String configKey;
 
     /**
      * accessKey
      */
     @NotBlank(message = "accessKey不能为空", groups = {AddGroup.class, EditGroup.class})
-    @Size(min = 2, max = 100, message = "accessKey长度必须介于{min}和{max} 之间")
+    @Size(min = 2, max = 100, message = "accessKey长度必须介于{min}和{max} 之间", groups = {AddGroup.class, EditGroup.class})
     private String accessKey;
 
     /**
      * 秘钥
      */
     @NotBlank(message = "secretKey不能为空", groups = {AddGroup.class, EditGroup.class})
-    @Size(min = 2, max = 100, message = "secretKey长度必须介于{min}和{max} 之间")
+    @Size(min = 2, max = 100, message = "secretKey长度必须介于{min}和{max} 之间", groups = {AddGroup.class, EditGroup.class})
     private String secretKey;
 
     /**
      * 桶名称
      */
     @NotBlank(message = "桶名称不能为空", groups = {AddGroup.class, EditGroup.class})
-    @Size(min = 2, max = 100, message = "bucketName长度必须介于{min}和{max}之间")
+    @Size(min = 2, max = 100, message = "bucketName长度必须介于{min}和{max}之间", groups = {AddGroup.class, EditGroup.class})
     private String bucketName;
 
     /**
@@ -80,17 +80,30 @@ public class SysOssConfigBo extends BaseEntity {
     /**
      * 是否https（Y=是,N=否）
      */
+    @NotBlank(message = "是否https", groups = {AddGroup.class, EditGroup.class})
     private String isHttps;
-
-    /**
-     * 是否默认（1=是,0=否）
-     */
-    private String status;
 
     /**
      * 域
      */
     private String region;
+
+    /**
+     * 桶权限类型(0=private 1=public 2=custom)
+     */
+    @NotBlank(message = "桶权限类型不能为空", groups = {AddGroup.class, EditGroup.class})
+    private String accessPolicy;
+
+    /**
+     * 是否默认（1=是,0=否）
+     */
+    @NotBlank(message = "是否默认不能为空", groups = {AddGroup.class, EditGroup.class})
+    private String status;
+
+    /**
+     * 创建桶（1=是,0=否）
+     */
+    private Integer createBucket;
 
     /**
      * 扩展字段
@@ -101,31 +114,5 @@ public class SysOssConfigBo extends BaseEntity {
      * 备注
      */
     private String remark;
-
-    /**
-     * 桶权限类型(0private 1public 2custom)
-     */
-    @NotBlank(message = "桶权限类型不能为空", groups = {AddGroup.class, EditGroup.class})
-    private String accessPolicy;
-
-    /**
-     * 创建者
-     */
-    private Long createBy;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新者
-     */
-    private Long updateBy;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
 
 }

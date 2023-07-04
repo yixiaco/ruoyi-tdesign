@@ -206,3 +206,7 @@ insert into sys_dict_data values(45, '000000', 0, '邮箱', 'MAIL', 'sys_message
 insert into sys_dict_data values(46, '000000', 10, '网易云短信', 'NETEASE', 'sys_message_supplier_type', null, 'primary', 'N', '1', 103, 1, now(), 1, now(), null);
 insert into sys_dict_data values(47, '000000', 0, '模板ID', 'TEMPLATE_ID', 'sys_message_template_mode', null, 'primary', 'N', '1', 103, 1, now(), 1, now(), null);
 insert into sys_dict_data values(48, '000000', 1, '模板内容', 'TEMPLATE_CONTENT', 'sys_message_template_mode', null, 'primary', 'N', '1', 103, 1, now(), 1, now(), null);
+
+-- OSS配置新增自动创建桶字段 update by 2023-07-05
+ALTER TABLE sys_oss_config ADD create_bucket int2 default 0 not null;
+COMMENT ON COLUMN sys_oss_config.create_bucket IS '创建桶（1=是,0=否）';

@@ -8,10 +8,12 @@ export interface SysOssConfigQuery extends BaseEntity {
   configKey?: string;
   /** 桶名称 */
   bucketName?: string;
-  /** 是否默认 */
+  /** 是否默认（1=是,0=否） */
   status?: string;
 }
-
+/**
+ * 对象存储配置业务对象
+ */
 export interface SysOssConfigForm extends BaseEntity {
   /** 主建 */
   ossConfigId?: number;
@@ -31,28 +33,21 @@ export interface SysOssConfigForm extends BaseEntity {
   domain?: string;
   /** 是否https（Y=是,N=否） */
   isHttps?: string;
-  /** 是否默认 */
-  status?: string;
   /** 域 */
   region?: string;
+  /** 桶权限类型(0=private 1=public 2=custom) */
+  accessPolicy?: string;
+  /** 是否默认（1=是,0=否） */
+  status?: string;
+  /** 创建桶（1=是,0=否） */
+  createBucket?: number;
   /** 扩展字段 */
   ext1?: string;
   /** 备注 */
   remark?: string;
-  /** 桶权限类型(0private 1public 2custom) */
-  accessPolicy?: string;
-  /** 创建者 */
-  createBy?: string;
-  /** 创建时间 */
-  createTime?: string;
-  /** 更新者 */
-  updateBy?: string;
-  /** 更新时间 */
-  updateTime?: string;
 }
-
 /**
- * oss配置
+ * 对象存储配置视图对象
  */
 export interface SysOssConfigVo {
   /** 主建 */
@@ -75,12 +70,18 @@ export interface SysOssConfigVo {
   isHttps?: string;
   /** 域 */
   region?: string;
+  /** 桶权限类型(0=private 1=public 2=custom) */
+  accessPolicy?: string;
   /** 是否默认（1=是,0=否） */
   status?: string;
+  /** 创建桶（1=是,0=否） */
+  createBucket?: number;
   /** 扩展字段 */
   ext1?: string;
+  /** 创建时间 */
+  createTime?: any;
+  /** 更新时间 */
+  updateTime?: any;
   /** 备注 */
   remark?: string;
-  /** 桶权限类型(01public 2custom) */
-  accessPolicy?: string;
 }

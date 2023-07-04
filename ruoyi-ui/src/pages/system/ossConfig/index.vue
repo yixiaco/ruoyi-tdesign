@@ -161,6 +161,9 @@
         <t-form-item label="桶名称" name="bucketName">
           <t-input v-model="form.bucketName" placeholder="请输入桶名称" />
         </t-form-item>
+        <t-form-item label="创建桶" name="createBucket">
+          <t-switch v-model="form.createBucket" :custom-value="[1, 0]" />
+        </t-form-item>
         <t-form-item label="前缀" name="prefix">
           <t-input v-model="form.prefix" placeholder="请输入前缀" />
         </t-form-item>
@@ -210,6 +213,7 @@ const { proxy } = getCurrentInstance();
 const { sys_yes_no } = proxy.useDict('sys_yes_no');
 
 const ossConfigList = ref<SysOssConfigVo[]>([]);
+const ossConfigRef = ref<FormInstanceFunctions>(null);
 const open = ref(false);
 const buttonLoading = ref(false);
 const loading = ref(false);
@@ -220,7 +224,6 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
-const ossConfigRef = ref<FormInstanceFunctions>(null);
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
@@ -278,7 +281,9 @@ const rules = ref<Record<string, Array<FormRule>>>({
   accessPolicy: [{ required: true, message: 'accessPolicy不能为空', trigger: 'blur' }],
 });
 
-const form = ref<SysOssConfigVo & SysOssConfigForm>({});
+const form = ref<SysOssConfigVo & SysOssConfigForm>({
+  createBucket: 0,
+});
 // 查询参数
 const queryParams = ref<SysOssConfigQuery>({
   pageNum: 1,
@@ -315,19 +320,10 @@ function getList() {
 /** 表单重置 */
 function reset() {
   form.value = {
-    ossConfigId: undefined,
-    configKey: undefined,
-    accessKey: undefined,
-    secretKey: undefined,
-    bucketName: undefined,
-    prefix: undefined,
-    endpoint: undefined,
-    domain: undefined,
     isHttps: 'N',
     accessPolicy: '1',
-    region: undefined,
     status: '1',
-    remark: undefined,
+    createBucket: 0,
   };
   proxy.resetForm('ossConfigRef');
 }
@@ -385,7 +381,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
           proxy.$modal.msgClose(msgLoading);
         });
     } else {
-      addOssConfig(this.form)
+      addOssConfig(form.value)
         .then(() => {
           proxy.$modal.msgSuccess('新增成功');
           open.value = false;
