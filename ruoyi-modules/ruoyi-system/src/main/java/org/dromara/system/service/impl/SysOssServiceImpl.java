@@ -48,7 +48,13 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
 
     @Override
     public TableDataInfo<SysOssVo> queryPageList(SysOssQuery query) {
-        return PageQuery.of(() -> StreamUtils.toList(baseMapper.queryList(query), this::matchingUrl));
+        return PageQuery.of(() -> {
+            List<SysOssVo> vos = baseMapper.queryList(query);
+            for (SysOssVo vo : vos) {
+                matchingUrl(vo);
+            }
+            return vos;
+        });
     }
 
     @Override
