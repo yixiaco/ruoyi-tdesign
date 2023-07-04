@@ -15,6 +15,7 @@
 > 项目代码、文档 均开源免费可商用 遵循开源协议在项目中保留开源协议文件即可<br>
 活到老写到老 为兴趣而开源 为学习而开源 为让大家真正可以学到技术而开源
 
+> 交流与讨论: [交流群](https://github.com/yixiaco/ruoyi-tdesign/wiki/%E4%BA%A4%E6%B5%81%E7%BE%A4)<br>
 > 系统演示: [传送门](https://gitee.com/yixiacoco/ruoyi-tdesign/wikis/pages?sort_id=4836388&doc_id=1469725)
 
 | 功能介绍       | 使用技术                    | 文档地址                                                     | 描述                                                         |
