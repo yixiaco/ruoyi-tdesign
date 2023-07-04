@@ -9,6 +9,7 @@ import org.dromara.common.core.domain.model.EmailLoginBody;
 import org.dromara.common.core.domain.model.LoginBody;
 import org.dromara.common.core.domain.model.RegisterBody;
 import org.dromara.common.core.domain.model.SmsLoginBody;
+import org.dromara.common.core.helper.SysConfigHelper;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
@@ -140,7 +141,7 @@ public class AuthController {
      */
     @PostMapping("/register")
     public R<Void> register(@Validated @RequestBody RegisterBody user) {
-        if (!configService.selectRegisterEnabled(user.getTenantId())) {
+        if (!SysConfigHelper.getSysAccountRegisterUser()) {
             return R.fail("当前系统没有开启注册功能！");
         }
         registerService.register(user);

@@ -136,7 +136,7 @@
             width="60px"
             height="60px"
           ></image-preview>
-          <span v-if="!checkFileSuffix(row.fileSuffix) || !previewListResource" v-text="row.url" />
+          <span v-else v-text="row.url" />
         </template>
         <template #size="{ row }">
           <span>{{ bytesToSize(row.size) }}</span>
@@ -367,7 +367,7 @@ function handlePreviewListResource(preview: boolean) {
   proxy.$modal.confirm(`确认要"${text}""预览列表图片"配置吗?`, () => {
     const msgLoading = proxy.$modal.msgLoading('提交中...');
     return proxy
-      .updateConfigByKey('sys.oss.previewListResource', `${preview}`)
+      .updateConfigByKey('sys.oss.previewListResource', `${preview}`, 1)
       .then(() => {
         getList();
         proxy.$modal.msgSuccess(`${text}成功`);

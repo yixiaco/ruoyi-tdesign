@@ -41,12 +41,13 @@ export function updateConfig(data: SysConfigForm) {
 }
 
 // 修改参数配置
-export function updateConfigByKey(key: string, value: string) {
+export function updateConfigByKey(key: string, value: string, isGlobal: 1 | 0 = 0) {
   return request.put<R<void>>({
     url: '/system/config/updateByKey',
     data: {
       configKey: key,
       configValue: value,
+      isGlobal,
     },
   });
 }

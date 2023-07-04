@@ -112,6 +112,18 @@ public class TenantHelper {
     /**
      * 在忽略租户中执行
      *
+     * @param enabled 是否确认
+     * @param handle  处理执行方法
+     */
+    public static void ignore(boolean enabled, Apply handle) {
+        if (enabled) {
+            ignore(handle);
+        }
+    }
+
+    /**
+     * 在忽略租户中执行
+     *
      * @param handle 处理执行方法
      */
     public static <T> T ignore(Supplier<T> handle) {
@@ -121,6 +133,19 @@ public class TenantHelper {
         } finally {
             disableIgnore();
         }
+    }
+
+    /**
+     * 在忽略租户中执行
+     *
+     * @param enabled 是否确认
+     * @param handle  处理执行方法
+     */
+    public static <T> T ignore(boolean enabled, Supplier<T> handle) {
+        if (enabled) {
+            return ignore(handle);
+        }
+        return handle.get();
     }
 
     /**
@@ -141,6 +166,20 @@ public class TenantHelper {
     /**
      * 在忽略租户中执行
      *
+     * @param enabled 是否确认
+     * @param handle  处理执行方法
+     */
+    public static void ignore(boolean enabled, Consumer<String> handle) {
+        if (enabled) {
+            ignore(handle);
+        } else {
+            handle.accept(getTenantId());
+        }
+    }
+
+    /**
+     * 在忽略租户中执行
+     *
      * @param handle 处理执行方法
      */
     public static <T> T ignore(Function<String, T> handle) {
@@ -150,6 +189,20 @@ public class TenantHelper {
             return handle.apply(tenantId);
         } finally {
             disableIgnore();
+        }
+    }
+
+    /**
+     * 在忽略租户中执行
+     *
+     * @param enabled 是否确认
+     * @param handle  处理执行方法
+     */
+    public static <T> T ignore(boolean enabled, Function<String, T> handle) {
+        if (enabled) {
+            return ignore(handle);
+        } else {
+            return handle.apply(getTenantId());
         }
     }
 

@@ -1,10 +1,7 @@
 package org.dromara.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.dynamic.datasource.annotation.DS;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.constant.GlobalConstants;
@@ -76,23 +73,6 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     }
 
     /**
-     * 获取注册开关
-     *
-     * @param tenantId 租户id
-     * @return true开启，false关闭
-     */
-    @Override
-    public boolean selectRegisterEnabled(String tenantId) {
-        SysConfig retConfig = baseMapper.selectOne(new LambdaQueryWrapper<SysConfig>()
-            .eq(SysConfig::getConfigKey, "sys.account.registerUser")
-            .eq(TenantHelper.isEnable(), SysConfig::getTenantId, tenantId));
-        if (ObjectUtil.isNull(retConfig)) {
-            return false;
-        }
-        return Convert.toBool(retConfig.getConfigValue());
-    }
-
-    /**
      * 查询参数配置列表
      *
      * @param config 参数配置信息
@@ -113,7 +93,9 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     @Override
     public String insertConfig(SysConfigBo bo) {
         SysConfig config = MapstructUtils.convert(bo, SysConfig.class);
-        int row = baseMapper.insert(config);
+        int row = TenantHelper.ignore(Objects.equals(YesNoEnum.YES.getCodeNum(), bo.getIsGlobal()), () ->
+            baseMapper.insert(config)
+        );
         if (row > 0) {
             return config.getConfigValue();
         }
@@ -132,16 +114,22 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
         int row = 0;
         SysConfig config = MapstructUtils.convert(bo, SysConfig.class);
         if (config.getConfigId() != null) {
-            SysConfig temp = baseMapper.selectById(config.getConfigId());
-            if (!StringUtils.equals(temp.getConfigKey(), config.getConfigKey())) {
-                CacheUtils.evict(CacheNames.SYS_CONFIG, temp.getConfigKey());
-            }
-            row = baseMapper.updateById(config);
+            row = TenantHelper.ignore(Objects.equals(YesNoEnum.YES.getCodeNum(), bo.getIsGlobal()), () -> {
+                SysConfig temp = baseMapper.selectById(config.getConfigId());
+                if (!StringUtils.equals(temp.getConfigKey(), config.getConfigKey())) {
+                    CacheUtils.evict(CacheNames.SYS_CONFIG, temp.getConfigKey());
+                }
+                return baseMapper.updateById(config);
+            });
         } else {
-            row = baseMapper.update(config, new LambdaQueryWrapper<SysConfig>()
-                .eq(SysConfig::getConfigKey, config.getConfigKey()));
+            row = TenantHelper.ignore(Objects.equals(YesNoEnum.YES.getCodeNum(), bo.getIsGlobal()),
+                () -> baseMapper.update(config, lambdaQuery()
+                    .eq(SysConfig::getConfigKey, config.getConfigKey())
+                    .getWrapper()));
         }
         if (row > 0) {
+            boolean isGlobal = YesNoEnum.YES.getCodeNum().equals(config.getIsGlobal());
+            CacheUtils.evict(GlobalConstants.getGlobalKey(isGlobal, CacheNames.SYS_CONFIG), config.getConfigKey());
             return config.getConfigValue();
         }
         throw new ServiceException("操作失败");
@@ -160,7 +148,8 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
             if (StringUtils.equals(YesNoEnum.YES.getCodeStr(), config.getConfigType())) {
                 throw new ServiceException(String.format("内置参数【%1$s】不能删除 ", config.getConfigKey()));
             }
-            CacheUtils.evict(CacheNames.SYS_CONFIG, config.getConfigKey());
+            boolean isGlobal = YesNoEnum.YES.getCodeNum().equals(config.getIsGlobal());
+            CacheUtils.evict(GlobalConstants.getGlobalKey(isGlobal, CacheNames.SYS_CONFIG), config.getConfigKey());
         }
         baseMapper.deleteBatchIds(Arrays.asList(configIds));
     }
@@ -171,22 +160,24 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     @Override
     public void resetConfigCache() {
         CacheUtils.clear(CacheNames.SYS_CONFIG);
+        CacheUtils.clear(GlobalConstants.getGlobalKey(CacheNames.SYS_CONFIG));
     }
 
     /**
      * 校验参数键名是否唯一
      *
      * @param config 参数配置信息
-     * @return 结果
+     * @return 是否存在
      */
     @Override
     public boolean checkConfigKeyUnique(SysConfigBo config) {
-        long configId = ObjectUtil.isNull(config.getConfigId()) ? -1L : config.getConfigId();
-        SysConfig info = baseMapper.selectOne(new LambdaQueryWrapper<SysConfig>().eq(SysConfig::getConfigKey, config.getConfigKey()));
-        if (ObjectUtil.isNotNull(info) && !Objects.equals(info.getConfigId(), configId)) {
-            return false;
-        }
-        return true;
+        boolean isGlobal = YesNoEnum.YES.getCodeNum().equals(config.getIsGlobal());
+        return TenantHelper.ignore(isGlobal, () ->
+            lambdaQuery()
+                .ne(config.getConfigId() != null, SysConfig::getConfigId, config.getConfigId())
+                .eq(SysConfig::getConfigKey, config.getConfigKey())
+                .exists()
+        );
     }
 
     /**
