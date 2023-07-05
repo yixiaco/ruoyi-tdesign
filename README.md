@@ -16,7 +16,7 @@
 活到老写到老 为兴趣而开源 为学习而开源 为让大家真正可以学到技术而开源
 
 > 交流与讨论: [交流群](https://github.com/yixiaco/ruoyi-tdesign/wiki/%E4%BA%A4%E6%B5%81%E7%BE%A4)<br>
-> 系统演示: [传送门](https://gitee.com/yixiacoco/ruoyi-tdesign/wikis/pages?sort_id=4836388&doc_id=1469725)
+> 系统演示(感谢 [疯狂的麦克粥](https://gitee.com/CrazyMikePorridge) 贡献的演示服务器): [传送门](https://ruoyi-tdesign.hexm.online)
 
 | 功能介绍       | 使用技术                    | 文档地址                                                     | 描述                                                         |
 | -------------- | --------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
