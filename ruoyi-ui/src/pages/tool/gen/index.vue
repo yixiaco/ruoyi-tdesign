@@ -149,8 +149,8 @@
         <t-tab-panel
           v-for="(value, key) in preview.data"
           :key="value"
-          :value="(key as string).substring((key as string).lastIndexOf('/') + 1, (key as string).indexOf('.vm'))"
-          :label="(key as string).substring((key as string).lastIndexOf('/') + 1, (key as string).indexOf('.vm'))"
+          :value="getLabel(key)"
+          :label="getLabel(key)"
           class="content-scrollbar"
           style="height: 70vh"
         >
@@ -160,7 +160,6 @@
             </t-link>
           </t-tooltip>
           <highlightjs autodetect :code="value" />
-          <!--          <pre>{{ value }}</pre>-->
         </t-tab-panel>
       </t-tabs>
     </t-dialog>
@@ -174,8 +173,9 @@ export default {
 </script>
 <script lang="ts" setup>
 import 'highlight.js/styles/github.css';
-import 'highlight.js/lib/common';
 
+import hljsVuePlugin from '@highlightjs/vue-plugin';
+import hljs from 'highlight.js/lib/common';
 import {
   BrowseIcon,
   DeleteIcon,
@@ -197,6 +197,9 @@ import router from '@/router';
 
 import ImportTable from './importTable.vue';
 
+const Highlightjs = hljsVuePlugin.component;
+// 此处使用hljs对象，避免被打包后优化掉
+hljs.initHighlighting();
 const route = useRoute();
 const { proxy } = getCurrentInstance();
 
@@ -265,6 +268,10 @@ onActivated(() => {
     getList();
   }
 });
+
+function getLabel(key: string) {
+  return key.substring(key.lastIndexOf('/') + 1, key.indexOf('.vm'));
+}
 
 /** 查询多数据源名称 */
 async function getDataNameList() {

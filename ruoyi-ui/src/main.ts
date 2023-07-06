@@ -2,7 +2,6 @@ import 'tdesign-vue-next/es/style/index.css';
 import '@/style/index.less';
 import './permission';
 
-import HljsVuePlugin from '@highlightjs/vue-plugin';
 import TDesign from 'tdesign-vue-next';
 import { createApp } from 'vue';
 
@@ -58,7 +57,6 @@ app.component('ImagePreview', ImagePreview);
 app.use(store);
 app.use(router);
 app.use(plugins);
-app.use(HljsVuePlugin);
 app.use(TDesign);
 
 directive(app);
