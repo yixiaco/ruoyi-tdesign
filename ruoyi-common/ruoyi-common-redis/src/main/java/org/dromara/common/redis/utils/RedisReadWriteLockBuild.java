@@ -68,12 +68,14 @@ public class RedisReadWriteLockBuild {
         RReadWriteLock readWriteLock = RedisUtils.getClient().getReadWriteLock(getKey(key));
         RLock lock = readWriteLock.readLock();
         lock.lock();
+        boolean unlock = false;
         try {
             T data = RedisUtils.getObject(key);
             if (data == null && defaultSupplier != null) {
                 RLock writeLock = readWriteLock.writeLock();
                 // 此处读锁需要先释放才能获取写锁
                 lock.unlock();
+                unlock = true;
                 writeLock.lock();
                 try {
                     data = RedisUtils.getObject(key);
@@ -90,7 +92,10 @@ public class RedisReadWriteLockBuild {
             }
             return data;
         } finally {
-            lock.unlock();
+            // 判断是否已经提前释放锁，避免锁重入时被提前释放
+            if (!unlock) {
+                lock.unlock();
+            }
         }
     }
 
@@ -106,6 +111,7 @@ public class RedisReadWriteLockBuild {
         RReadWriteLock readWriteLock = RedisUtils.getClient().getReadWriteLock(getKey(key));
         RLock lock = readWriteLock.readLock();
         lock.lock();
+        boolean unlock = false;
         try {
             Boolean hasKey = RedisUtils.hasKey(key);
             if (hasKey) {
@@ -119,6 +125,7 @@ public class RedisReadWriteLockBuild {
                 RLock writeLock = readWriteLock.writeLock();
                 // 此处读锁需要先释放才能获取写锁
                 lock.unlock();
+                unlock = true;
                 writeLock.lock();
                 try {
                     // 双重检查
@@ -134,7 +141,10 @@ public class RedisReadWriteLockBuild {
             }
             return data;
         } finally {
-            lock.unlock();
+            // 判断是否已经提前释放锁，避免锁重入时被提前释放
+            if (!unlock) {
+                lock.unlock();
+            }
         }
     }
 
@@ -150,6 +160,7 @@ public class RedisReadWriteLockBuild {
         RReadWriteLock readWriteLock = RedisUtils.getClient().getReadWriteLock(getKey(key));
         RLock lock = readWriteLock.readLock();
         lock.lock();
+        boolean unlock = false;
         try {
             Boolean hasKey = RedisUtils.hasKey(key);
             if (hasKey) {
@@ -163,6 +174,7 @@ public class RedisReadWriteLockBuild {
                 RLock writeLock = readWriteLock.writeLock();
                 // 此处读锁需要先释放才能获取写锁
                 lock.unlock();
+                unlock = true;
                 writeLock.lock();
                 try {
                     // 双重检查
@@ -178,7 +190,10 @@ public class RedisReadWriteLockBuild {
             }
             return data;
         } finally {
-            lock.unlock();
+            // 判断是否已经提前释放锁，避免锁重入时被提前释放
+            if (!unlock) {
+                lock.unlock();
+            }
         }
     }
 
@@ -194,6 +209,7 @@ public class RedisReadWriteLockBuild {
         RReadWriteLock readWriteLock = RedisUtils.getClient().getReadWriteLock(getKey(key));
         RLock lock = readWriteLock.readLock();
         lock.lock();
+        boolean unlock = false;
         try {
             Boolean hasKey = RedisUtils.hasKey(key);
             if (hasKey) {
@@ -207,6 +223,7 @@ public class RedisReadWriteLockBuild {
                 RLock writeLock = readWriteLock.writeLock();
                 // 此处读锁需要先释放才能获取写锁
                 lock.unlock();
+                unlock = true;
                 writeLock.lock();
                 try {
                     // 双重检查
@@ -222,7 +239,10 @@ public class RedisReadWriteLockBuild {
             }
             return data;
         } finally {
-            lock.unlock();
+            // 判断是否已经提前释放锁，避免锁重入时被提前释放
+            if (!unlock) {
+                lock.unlock();
+            }
         }
     }
 
