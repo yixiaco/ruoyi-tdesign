@@ -25,11 +25,13 @@
               :column-controller="{
                 hideTriggerButton: true,
               }"
+              resizable
             >
               <template #topContent>
                 <t-row>
                   <t-col flex="auto">
                     <t-space>
+                      <t-checkbox v-model="isSort">排序</t-checkbox>
                       <t-checkbox v-model="isInsert">插入</t-checkbox>
                       <t-checkbox v-model="isEdit">编辑</t-checkbox>
                       <t-checkbox v-model="isList">列表</t-checkbox>
@@ -73,6 +75,9 @@
               </template>
               <template #isDetail="{ row }">
                 <t-custom-checkbox v-model="row.isDetail" true-label="1" false-label="0"></t-custom-checkbox>
+              </template>
+              <template #isSort="{ row }">
+                <t-custom-checkbox v-model="row.isSort" true-label="1" false-label="0"></t-custom-checkbox>
               </template>
               <template #isQuery="{ row }">
                 <t-custom-checkbox v-model="row.isQuery" true-label="1" false-label="0"></t-custom-checkbox>
@@ -184,13 +189,14 @@ const columns = ref<Array<PrimaryTableCol<GenTableColumn>>>([
   { title: `物理类型`, colKey: 'columnType', align: 'center', ellipsis: true, width: '10%' },
   { title: `Java类型`, colKey: 'javaType', align: 'center', width: '10%' },
   { title: `java属性`, colKey: 'javaField', align: 'center', width: '10%' },
-  { title: `插入`, colKey: 'isInsert', align: 'center', width: '5%' },
-  { title: `编辑`, colKey: 'isEdit', align: 'center', width: '5%' },
-  { title: `列表`, colKey: 'isList', align: 'center', width: '5%' },
-  { title: `详情`, colKey: 'isDetail', align: 'center', width: '5%' },
-  { title: `查询`, colKey: 'isQuery', align: 'center', width: '5%' },
+  { title: `排序`, colKey: 'isSort', align: 'center', width: '4%' },
+  { title: `插入`, colKey: 'isInsert', align: 'center', width: '4%' },
+  { title: `编辑`, colKey: 'isEdit', align: 'center', width: '4%' },
+  { title: `列表`, colKey: 'isList', align: 'center', width: '4%' },
+  { title: `详情`, colKey: 'isDetail', align: 'center', width: '4%' },
+  { title: `查询`, colKey: 'isQuery', align: 'center', width: '4%' },
   { title: `查询方式`, colKey: 'queryType', align: 'center', width: '10%' },
-  { title: `必填`, colKey: 'isRequired', align: 'center', width: '5%' },
+  { title: `必填`, colKey: 'isRequired', align: 'center', width: '4%' },
   { title: `显示类型`, colKey: 'htmlType', align: 'center', width: '10%' },
   { title: `字典类型`, colKey: 'dictType', align: 'center', width: '12%' },
 ]);
@@ -257,6 +263,14 @@ const isQuery = computed({
   },
   set(val) {
     columnsData.value.forEach((value) => (value.isQuery = val ? '1' : '0'));
+  },
+});
+const isSort = computed({
+  get() {
+    return !columnsData.value.some((value) => value.isSort === '0' || !value.isSort);
+  },
+  set(val) {
+    columnsData.value.forEach((value) => (value.isSort = val ? '1' : '0'));
   },
 });
 

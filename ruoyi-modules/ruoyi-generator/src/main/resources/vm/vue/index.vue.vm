@@ -81,6 +81,11 @@
         :column-controller="{
           hideTriggerButton: true,
         }"
+        #if($hasSorting)
+        :sort="sort"
+        show-sort-column-bg-color
+        @sort-change="handleSortChange"
+        #end
         @select-change="handleSelectionChange"
       >
         <template #topContent>
@@ -360,7 +365,7 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { list${BusinessName}, get${BusinessName}, del${BusinessName}, add${BusinessName}, update${BusinessName} } from '@/api/${moduleName}/${businessName}';
@@ -406,6 +411,9 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
+#if($hasSorting)
+const sort = ref<TableSort>(null);
+#end
 #foreach ($column in $columns)
 #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
@@ -441,17 +449,17 @@ const columns = ref<Array<PrimaryTableCol>>([
 #set($comment=$column.columnComment)
 #end
 #if($column.pk)
-#elseif($column.list && $column.htmlType == "datetime")
-  { title: `${comment}`, colKey: '${javaField}', align: 'center', width: 180 },
-#elseif($column.list && $column.htmlType == "imageUpload")
-  { title: `${comment}`, colKey: '${javaField}', align: 'center', width: 100 },
-#elseif($column.list && $column.htmlType == "textarea")
-  { title: `${comment}`, colKey: '${javaField}', align: 'center', ellipsis: true },
-#elseif($column.list && "" != $javaField)
-  { title: `${comment}`, colKey: '${javaField}', align: 'center' },
+#elseif($column.isList() && $column.htmlType == "datetime")
+  { title: `${comment}`, colKey: '${javaField}', align: 'center', width: 180#if($column.isSorting()), sorter: true#end },
+#elseif($column.isList() && $column.htmlType == "imageUpload")
+  { title: `${comment}`, colKey: '${javaField}', align: 'center', width: 100#if($column.isSorting()), sorter: true#end },
+#elseif($column.isList() && $column.htmlType == "textarea")
+  { title: `${comment}`, colKey: '${javaField}', align: 'center', ellipsis: true#if($column.isSorting()), sorter: true#end },
+#elseif($column.isList() && "" != $javaField)
+  { title: `${comment}`, colKey: '${javaField}', align: 'center'#if($column.isSorting()), sorter: true#end },
 #end
 #end
-  { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
+  { title: `操作`, colKey: 'operation', align: 'center', width: 180#if($column.isSorting()), sorter: true#end },
 ]);
 // 提交表单对象
 const form = ref<#if($useVO && $useBO)$vo & $bo#elseif($useVO)$vo#elseif($useBO)$bo#else$ClassName#end>({});
@@ -527,10 +535,30 @@ function resetQuery() {
 #end
 #end
   proxy.resetForm('queryRef');
+  #if($hasSorting)
+  queryParams.value.pageNum = 1;
+  handleSortChange(null);
+  #else
   handleQuery();
+  #end
 }
 
-// 多选框选中数据
+#if($hasSorting)
+/** 排序触发事件 */
+function handleSortChange(value?: TableSort) {
+  sort.value = value;
+  if (Array.isArray(value)) {
+    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
+    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
+  } else {
+    queryParams.value.orderByColumn = value?.sortBy;
+    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
+  }
+  getList();
+}
+
+#end
+/** 多选框选中数据 */
 function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;

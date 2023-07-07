@@ -147,3 +147,5 @@ insert into sys_dict_data values(48, '000000', 1, '模板内容', 'TEMPLATE_CONT
 
 -- OSS配置新增自动创建桶字段 update by 2023-07-05
 ALTER TABLE sys_oss_config ADD COLUMN create_bucket tinyint(1) NOT NULL DEFAULT '0' COMMENT '创建桶（1=是,0=否）' AFTER status;
+
+ALTER TABLE gen_table_column ADD COLUMN is_sort char(1) NULL COMMENT '是否排序字段（1是）' AFTER is_detail;

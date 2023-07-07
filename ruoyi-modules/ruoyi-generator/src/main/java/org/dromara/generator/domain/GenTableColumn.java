@@ -108,6 +108,12 @@ public class GenTableColumn extends BaseEntity {
     private String isDetail;
 
     /**
+     * 是否排序字段（1是）
+     */
+    @TableField(updateStrategy = FieldStrategy.IGNORED, jdbcType = JdbcType.VARCHAR)
+    private String isSort;
+
+    /**
      * 创建者
      */
     @TableField(fill = FieldFill.INSERT)
@@ -157,67 +163,39 @@ public class GenTableColumn extends BaseEntity {
     }
 
     public boolean isPk() {
-        return isPk(this.isPk);
-    }
-
-    public boolean isPk(String isPk) {
         return isPk != null && StringUtils.equals("1", isPk);
     }
 
     public boolean isIncrement() {
-        return isIncrement(this.isIncrement);
-    }
-
-    public boolean isIncrement(String isIncrement) {
         return isIncrement != null && StringUtils.equals("1", isIncrement);
     }
 
     public boolean isRequired() {
-        return isRequired(this.isRequired);
-    }
-
-    public boolean isRequired(String isRequired) {
         return isRequired != null && StringUtils.equals("1", isRequired);
     }
 
     public boolean isInsert() {
-        return isInsert(this.isInsert);
-    }
-
-    public boolean isInsert(String isInsert) {
         return isInsert != null && StringUtils.equals("1", isInsert);
     }
 
     public boolean isEdit() {
-        return isInsert(this.isEdit);
-    }
-
-    public boolean isEdit(String isEdit) {
         return isEdit != null && StringUtils.equals("1", isEdit);
     }
 
     public boolean isList() {
-        return isList(this.isList);
-    }
-
-    public boolean isList(String isList) {
         return isList != null && StringUtils.equals("1", isList);
     }
 
     public boolean isQuery() {
-        return isQuery(this.isQuery);
-    }
-
-    public boolean isQuery(String isQuery) {
         return isQuery != null && StringUtils.equals("1", isQuery);
     }
 
     public boolean isDetail() {
-        return isDetail(this.isDetail);
+        return isDetail != null && StringUtils.equals("1", isDetail);
     }
 
-    public boolean isDetail(String isDetail) {
-        return isDetail != null && StringUtils.equals("1", isDetail);
+    public boolean isSorting() {
+        return isSort != null && StringUtils.equals("1", isSort);
     }
 
     public boolean isSuperColumn() {

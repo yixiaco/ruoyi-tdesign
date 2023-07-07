@@ -65,8 +65,3 @@ export interface TTabRemoveOptions {
   index: number;
   e: MouseEvent;
 }
-
-export interface TableSort {
-  sortBy: string;
-  descending: boolean;
-}

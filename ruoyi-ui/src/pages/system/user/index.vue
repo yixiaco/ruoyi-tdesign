@@ -98,6 +98,9 @@
             :column-controller="{
               hideTriggerButton: true,
             }"
+            :sort="sort"
+            show-sort-column-bg-color
+            @sort-change="handleSortChange"
             @select-change="handleSelectionChange"
           >
             <template #topContent>
@@ -449,6 +452,7 @@ import {
   PrimaryTableCol,
   SubmitContext,
   SuccessContext,
+  TableSort,
   TreeNodeModel,
   UploadInstanceFunctions,
 } from 'tdesign-vue-next';
@@ -496,6 +500,7 @@ const initPassword = ref(undefined);
 const postOptions = ref<SysPostVo[]>([]);
 const roleOptions = ref<SysRoleVo[]>([]);
 const deptActived = ref<number[]>([]);
+const sort = ref<TableSort>(null);
 const { token } = storeToRefs(useUserStore());
 /** * 用户导入参数 */
 const upload = reactive({
@@ -522,7 +527,8 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `部门`, colKey: 'dept.deptName', align: 'center' },
   { title: `手机号码`, colKey: 'phonenumber', align: 'center' },
   { title: `状态`, colKey: 'status', align: 'center' },
-  { title: `创建时间`, colKey: 'createTime', align: 'center' },
+  { title: `更新时间`, colKey: 'updateTime', align: 'center', sorter: true },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
 
@@ -603,7 +609,20 @@ function resetQuery() {
   proxy.resetForm('queryRef');
   deptActived.value = [];
   queryParams.value.deptId = undefined;
-  handleQuery();
+  queryParams.value.pageNum = 1;
+  handleSortChange(null);
+}
+/** 排序触发事件 */
+function handleSortChange(value?: TableSort) {
+  sort.value = value;
+  if (Array.isArray(value)) {
+    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
+    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
+  } else {
+    queryParams.value.orderByColumn = value?.sortBy;
+    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
+  }
+  getList();
 }
 /** 删除按钮操作 */
 function handleDelete(row: SysUserVo) {

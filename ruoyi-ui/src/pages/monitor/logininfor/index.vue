@@ -60,7 +60,7 @@
           hideTriggerButton: true,
         }"
         :sort="sort"
-        :show-sort-column-bg-color="true"
+        show-sort-column-bg-color
         @select-change="handleSelectionChange"
         @sort-change="handleSortChange"
       >
@@ -129,12 +129,11 @@ export default {
 </script>
 <script lang="ts" setup>
 import { DeleteIcon, DownloadIcon, LockOffIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { PageInfo, PrimaryTableCol, SelectOptions } from 'tdesign-vue-next';
+import { PageInfo, PrimaryTableCol, SelectOptions, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { cleanLogininfor, delLogininfor, list, unlockLogininfor } from '@/api/monitor/logininfor';
 import { SysLogininforBo, SysLogininforVo } from '@/api/monitor/model/logininforModel';
-import { TableSort } from '@/types/interface';
 
 const { proxy } = getCurrentInstance();
 const { sys_common_status } = proxy.useDict('sys_common_status');
@@ -149,8 +148,7 @@ const multiple = ref(true);
 const selectName = ref('');
 const total = ref(0);
 const dateRange = ref([]);
-const defaultSort = ref<TableSort>({ sortBy: 'loginTime', descending: true });
-const sort = ref({ ...defaultSort.value });
+const sort = ref<TableSort>(null);
 
 // 查询参数
 const queryParams = ref<SysLogininforBo>({
@@ -210,7 +208,7 @@ function resetQuery() {
   dateRange.value = [];
   proxy.resetForm('queryRef');
   queryParams.value.pageNum = 1;
-  handleSortChange({ ...defaultSort.value });
+  handleSortChange(null);
 }
 /** 多选框选中数据 */
 function handleSelectionChange(selection: Array<string | number>, { selectedRowData }: SelectOptions<SysLogininforVo>) {
@@ -220,10 +218,15 @@ function handleSelectionChange(selection: Array<string | number>, { selectedRowD
   selectName.value = selectedRowData.map((item) => item.userName)[0];
 }
 /** 排序触发事件 */
-function handleSortChange(value: TableSort) {
+function handleSortChange(value?: TableSort) {
   sort.value = value;
-  queryParams.value.orderByColumn = value.sortBy;
-  queryParams.value.isAsc = value.descending ? 'descending' : 'ascending';
+  if (Array.isArray(value)) {
+    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
+    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
+  } else {
+    queryParams.value.orderByColumn = value?.sortBy;
+    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
+  }
   getList();
 }
 /** 删除按钮操作 */
