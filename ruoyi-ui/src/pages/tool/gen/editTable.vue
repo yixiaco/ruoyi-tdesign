@@ -221,7 +221,7 @@ const { tables, columnsData, info } = toRefs(form);
 
 const isInsert = computed({
   get() {
-    return !columnsData.value.some((value) => value.isInsert === '0');
+    return !columnsData.value.some((value) => value.isInsert === '0' || !value.isInsert);
   },
   set(val) {
     columnsData.value.forEach((value) => (value.isInsert = val ? '1' : '0'));
@@ -229,7 +229,7 @@ const isInsert = computed({
 });
 const isEdit = computed({
   get() {
-    return !columnsData.value.some((value) => value.isEdit === '0');
+    return !columnsData.value.some((value) => value.isEdit === '0' || !value.isEdit);
   },
   set(val) {
     columnsData.value.forEach((value) => (value.isEdit = val ? '1' : '0'));
@@ -237,7 +237,7 @@ const isEdit = computed({
 });
 const isList = computed({
   get() {
-    return !columnsData.value.some((value) => value.isList === '0');
+    return !columnsData.value.some((value) => value.isList === '0' || !value.isList);
   },
   set(val) {
     columnsData.value.forEach((value) => (value.isList = val ? '1' : '0'));
@@ -245,7 +245,7 @@ const isList = computed({
 });
 const isDetail = computed({
   get() {
-    return !columnsData.value.some((value) => value.isDetail === '0');
+    return !columnsData.value.some((value) => value.isDetail === '0' || !value.isDetail);
   },
   set(val) {
     columnsData.value.forEach((value) => (value.isDetail = val ? '1' : '0'));
@@ -253,7 +253,7 @@ const isDetail = computed({
 });
 const isQuery = computed({
   get() {
-    return !columnsData.value.some((value) => value.isQuery === '0');
+    return !columnsData.value.some((value) => value.isQuery === '0' || !value.isQuery);
   },
   set(val) {
     columnsData.value.forEach((value) => (value.isQuery = val ? '1' : '0'));
