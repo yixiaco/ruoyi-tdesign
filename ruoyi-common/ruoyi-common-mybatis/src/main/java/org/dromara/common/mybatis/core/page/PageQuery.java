@@ -128,7 +128,7 @@ public class PageQuery implements Serializable {
      * @return
      */
     public PageQuery defaultIsAsc() {
-        isAsc = getIsAsc();
+        isAsc = getRequestIsAsc();
         return this;
     }
 
