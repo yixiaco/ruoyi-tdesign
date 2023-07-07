@@ -18,7 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isMySql()">
             select table_name, table_comment, create_time, update_time
             from information_schema.tables
-            where table_schema = (select database())
+            where table_schema = database()
             AND table_name NOT LIKE 'xxl_job_%' AND table_name NOT LIKE 'gen_%'
             <if test="genTable.params.genTableNames != null and genTable.params.genTableNames.size > 0">
                 AND table_name NOT IN
