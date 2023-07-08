@@ -41,8 +41,8 @@ public class GenController extends BaseController {
      */
     @SaCheckPermission("tool:gen:list")
     @GetMapping("/list")
-    public TableDataInfo<GenTable> genList(GenTable genTable, PageQuery pageQuery) {
-        return genTableService.selectPageGenTableList(genTable, pageQuery);
+    public TableDataInfo<GenTable> genList(GenTable genTable) {
+        return genTableService.selectPageGenTableList(genTable);
     }
 
     /**

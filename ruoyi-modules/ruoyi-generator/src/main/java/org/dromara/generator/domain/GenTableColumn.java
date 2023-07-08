@@ -9,6 +9,7 @@ import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * 代码生成业务字段表 gen_table_column
@@ -167,35 +168,35 @@ public class GenTableColumn extends BaseEntity {
     }
 
     public boolean isIncrement() {
-        return isIncrement != null && StringUtils.equals("1", isIncrement);
+        return isIncrement != null && Objects.equals("1", isIncrement);
     }
 
     public boolean isRequired() {
-        return isRequired != null && StringUtils.equals("1", isRequired);
+        return isRequired != null && Objects.equals("1", isRequired);
     }
 
     public boolean isInsert() {
-        return isInsert != null && StringUtils.equals("1", isInsert);
+        return isInsert != null && Objects.equals("1", isInsert);
     }
 
     public boolean isEdit() {
-        return isEdit != null && StringUtils.equals("1", isEdit);
+        return isEdit != null && Objects.equals("1", isEdit);
     }
 
     public boolean isList() {
-        return isList != null && StringUtils.equals("1", isList);
+        return isList != null && Objects.equals("1", isList);
     }
 
     public boolean isQuery() {
-        return isQuery != null && StringUtils.equals("1", isQuery);
+        return isQuery != null && Objects.equals("1", isQuery);
     }
 
     public boolean isDetail() {
-        return isDetail != null && StringUtils.equals("1", isDetail);
+        return isDetail != null && Objects.equals("1", isDetail);
     }
 
     public boolean isSorting() {
-        return isSort != null && StringUtils.equals("1", isSort);
+        return isSort != null && Objects.equals("1", isSort) && isList();
     }
 
     public boolean isSuperColumn() {

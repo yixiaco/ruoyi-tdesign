@@ -20,9 +20,24 @@
             @enter="handleQuery"
           />
         </t-form-item>
-        <t-form-item label="类型" name="noticeType">
-          <t-select v-model="queryParams.noticeType" placeholder="公告类型" clearable style="width: 200px">
-            <t-option v-for="dict in sys_notice_type" :key="dict.value" :label="dict.label" :value="dict.value" />
+        <t-form-item label="公告类型" name="noticeType">
+          <t-select v-model="queryParams.noticeType" placeholder="请选择公告类型" clearable>
+            <t-option
+              v-for="dict in sys_notice_type"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </t-select>
+        </t-form-item>
+        <t-form-item label="公告状态" name="status">
+          <t-select v-model="queryParams.status" placeholder="请选择公告状态" clearable>
+            <t-option
+              v-for="dict in sys_notice_status"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
           </t-select>
         </t-form-item>
         <t-form-item label-width="0px">
@@ -39,8 +54,8 @@
 
       <t-table
         v-model:column-controller-visible="columnControllerVisible"
-        hover
         :loading="loading"
+        hover
         row-key="noticeId"
         :data="noticeList"
         :columns="columns"
@@ -50,6 +65,9 @@
         :column-controller="{
           hideTriggerButton: true,
         }"
+        :sort="sort"
+        show-sort-column-bg-color
+        @sort-change="handleSortChange"
         @select-change="handleSelectionChange"
       >
         <template #topContent>
@@ -177,7 +195,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import { AddIcon, DeleteIcon, EditIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { SysNoticeForm, SysNoticeQuery, SysNoticeVo } from '@/api/system/model/noticeModel';
@@ -197,8 +215,10 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
+const sort = ref<TableSort>(null);
 const noticeRef = ref<FormInstanceFunctions>(null);
 
+// 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
   noticeTitle: [{ required: true, message: '公告标题不能为空', trigger: 'blur' }],
   noticeType: [{ required: true, message: '公告类型不能为空', trigger: 'blur' }],
@@ -212,7 +232,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `状态`, colKey: 'status', align: 'center', width: 100 },
   { title: `创建人`, colKey: 'createByName', align: 'center', width: 100 },
   { title: `更新人`, colKey: 'updateByName', align: 'center', width: 100 },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180, sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
 
@@ -224,6 +244,7 @@ const queryParams = ref<SysNoticeQuery>({
   pageSize: 10,
   noticeTitle: undefined,
   createByName: undefined,
+  noticeType: undefined,
   status: undefined,
 });
 
@@ -251,6 +272,7 @@ function getList() {
     loading.value = false;
   });
 }
+
 /** 表单重置 */
 function reset() {
   form.value = {
@@ -258,28 +280,47 @@ function reset() {
   };
   proxy.resetForm('noticeRef');
 }
+
 /** 搜索按钮操作 */
 function handleQuery() {
   queryParams.value.pageNum = 1;
   getList();
 }
+
 /** 重置按钮操作 */
 function resetQuery() {
   proxy.resetForm('queryRef');
-  handleQuery();
+  queryParams.value.pageNum = 1;
+  handleSortChange(null);
 }
+
+/** 排序触发事件 */
+function handleSortChange(value?: TableSort) {
+  sort.value = value;
+  if (Array.isArray(value)) {
+    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
+    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
+  } else {
+    queryParams.value.orderByColumn = value?.sortBy;
+    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
+  }
+  getList();
+}
+
 /** 多选框选中数据 */
 function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
 }
+
 /** 新增按钮操作 */
 function handleAdd() {
   reset();
   open.value = true;
   title.value = '添加公告';
 }
+
 /** 修改按钮操作 */
 function handleUpdate(row: SysNoticeVo) {
   reset();
@@ -292,16 +333,19 @@ function handleUpdate(row: SysNoticeVo) {
     eLoading.value = false;
   });
 }
+
+/** 提交按钮 */
 function onConfirm() {
   noticeRef.value.submit();
 }
-/** 提交按钮 */
+
+/** 提交表单 */
 function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     const msgLoading = proxy.$modal.msgLoading('提交中...');
     if (form.value.noticeId) {
       updateNotice(form.value)
-        .then((response) => {
+        .then(() => {
           proxy.$modal.msgSuccess('修改成功');
           open.value = false;
           getList();
@@ -309,7 +353,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
         .finally(() => proxy.$modal.msgClose(msgLoading));
     } else {
       addNotice(form.value)
-        .then((response) => {
+        .then(() => {
           proxy.$modal.msgSuccess('新增成功');
           open.value = false;
           getList();
@@ -320,6 +364,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
     proxy.$modal.msgError(firstError);
   }
 }
+
 /** 删除按钮操作 */
 function handleDelete(row: SysNoticeVo) {
   const noticeIds = row.noticeId || ids.value;

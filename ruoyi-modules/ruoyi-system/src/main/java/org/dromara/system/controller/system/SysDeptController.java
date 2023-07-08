@@ -2,9 +2,11 @@ package org.dromara.system.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.convert.Convert;
+import jakarta.servlet.http.HttpServletResponse;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.excel.utils.ExcelUtil;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.web.core.BaseController;
@@ -36,9 +38,20 @@ public class SysDeptController extends BaseController {
      */
     @SaCheckPermission("system:dept:list")
     @GetMapping("/list")
-    public R<List<SysDeptVo>> list(SysDeptQuery dept) {
-        List<SysDeptVo> depts = deptService.selectDeptList(dept);
+    public R<List<SysDeptVo>> list(SysDeptQuery query) {
+        List<SysDeptVo> depts = deptService.selectDeptList(query);
         return R.ok(depts);
+    }
+
+    /**
+     * 导出部门列表
+     */
+    @SaCheckPermission("system:dept:export")
+    @Log(title = "部门", businessType = BusinessType.EXPORT)
+    @PostMapping("/export")
+    public void export(SysDeptQuery query, HttpServletResponse response) {
+        List<SysDeptVo> list = deptService.selectDeptList(query);
+        ExcelUtil.exportExcel(list, "部门", SysDeptVo.class, response);
     }
 
     /**

@@ -15,11 +15,11 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 #if(!$useBO)
 #foreach ($column in $columns)
-#if($column.isRequired == 1)
+#if($column.isRequired())
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import jakarta.validation.constraints.*;
-    #break
+#break
 #end
 #end
 #end
@@ -54,10 +54,10 @@ public class ${ClassName} extends ${Entity} {
     /**
      * $column.columnComment
      */
-#if(!$useBO && $column.isRequired == 1)
+#if(!$useBO && $column.isRequired())
 #set($Group0 = [])
-#if($column.isInsert && $Group0.add('AddGroup.class'))#end
-#if(($column.isEdit || $column.isPk == '1') && $Group0.add('EditGroup.class'))#end
+#if($column.isInsert() && $Group0.add('AddGroup.class'))#end
+#if(($column.isEdit() || $column.isPk()) && $Group0.add('EditGroup.class'))#end
 #set($Group = $StringUtils.join($Group0, ", "))
 #if($column.javaType == 'String')
     @NotBlank(message = "$column.columnComment不能为空"#if($Group), groups = {${Group}}#end)
@@ -77,8 +77,8 @@ public class ${ClassName} extends ${Entity} {
 #if($StringUtils.containsAnyIgnoreCase($column.javaField, "updateBy", "updateTime"))
     @TableField(fill = FieldFill.INSERT_UPDATE)
 #end
-#if($column.isPk==1)
-    @TableId(value = "$column.columnName"#if($column.isIncrement == 1), type = IdType.AUTO#end)
+#if($column.isPk())
+    @TableId(value = "$column.columnName"#if($column.isIncrement()), type = IdType.AUTO#end)
 #end
     private $column.javaType $column.javaField;
 

@@ -50,6 +50,9 @@
         :column-controller="{
           hideTriggerButton: true,
         }"
+        :sort="sort"
+        show-sort-column-bg-color
+        @sort-change="handleSortChange"
         @select-change="handleSelectionChange"
       >
         <template #topContent>
@@ -161,7 +164,7 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { SysPostForm, SysPostQuery, SysPostVo } from '@/api/system/model/postModel';
@@ -182,6 +185,7 @@ const total = ref(0);
 const title = ref('');
 const postRef = ref<FormInstanceFunctions>(null);
 const columnControllerVisible = ref(false);
+const sort = ref<TableSort>(null);
 const rules = ref<Record<string, Array<FormRule>>>({
   postName: [{ required: true, message: '岗位名称不能为空', trigger: 'blur' }],
   postCode: [{ required: true, message: '岗位编码不能为空', trigger: 'blur' }],
@@ -193,9 +197,9 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `岗位编号`, colKey: 'postId', align: 'center' },
   { title: `岗位编码`, colKey: 'postCode', align: 'center' },
   { title: `岗位名称`, colKey: 'postName', align: 'center' },
-  { title: `岗位排序`, colKey: 'postSort', align: 'center' },
+  { title: `岗位排序`, colKey: 'postSort', align: 'center', sorter: true },
   { title: `状态`, colKey: 'status', align: 'center' },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180, sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 const form = ref<SysPostForm & SysPostVo>({});
@@ -251,20 +255,37 @@ function handleQuery() {
 /** 重置按钮操作 */
 function resetQuery() {
   proxy.resetForm('queryRef');
-  handleQuery();
+  queryParams.value.pageNum = 1;
+  handleSortChange(null);
 }
+
+/** 排序触发事件 */
+function handleSortChange(value?: TableSort) {
+  sort.value = value;
+  if (Array.isArray(value)) {
+    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
+    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
+  } else {
+    queryParams.value.orderByColumn = value?.sortBy;
+    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
+  }
+  getList();
+}
+
 /** 多选框选中数据 */
 function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
 }
+
 /** 新增按钮操作 */
 function handleAdd() {
   reset();
   open.value = true;
   title.value = '添加岗位';
 }
+
 /** 修改按钮操作 */
 function handleUpdate(row: SysPostVo) {
   reset();
@@ -277,9 +298,12 @@ function handleUpdate(row: SysPostVo) {
     eLoading.value = false;
   });
 }
+
+/** 提交按钮 */
 function onConfirm() {
   postRef.value.submit();
 }
+
 /** 提交按钮 */
 function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {

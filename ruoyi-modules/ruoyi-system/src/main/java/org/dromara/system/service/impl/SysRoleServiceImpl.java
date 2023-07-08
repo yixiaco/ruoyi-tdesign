@@ -12,6 +12,7 @@ import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.SortQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
@@ -56,12 +57,12 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     /**
      * 根据条件分页查询角色数据
      *
-     * @param role 角色信息
+     * @param query 查询对象
      * @return 角色数据集合信息
      */
     @Override
-    public List<SysRoleVo> selectRoleList(SysRoleQuery role) {
-        return baseMapper.queryList(role);
+    public List<SysRoleVo> selectRoleList(SysRoleQuery query) {
+        return SortQuery.of(() -> baseMapper.queryList(query));
     }
 
     /**

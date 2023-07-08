@@ -91,9 +91,8 @@ public class GenTableServiceImpl implements IGenTableService {
     }
 
     @Override
-    public TableDataInfo<GenTable> selectPageGenTableList(GenTable genTable, PageQuery pageQuery) {
-        Page<GenTable> page = baseMapper.selectPage(pageQuery.build(), this.buildGenTableQueryWrapper(genTable));
-        return TableDataInfo.build(page);
+    public TableDataInfo<GenTable> selectPageGenTableList(GenTable genTable) {
+        return PageQuery.of(() -> baseMapper.selectList(buildGenTableQueryWrapper(genTable)));
     }
 
     private QueryWrapper<GenTable> buildGenTableQueryWrapper(GenTable genTable) {

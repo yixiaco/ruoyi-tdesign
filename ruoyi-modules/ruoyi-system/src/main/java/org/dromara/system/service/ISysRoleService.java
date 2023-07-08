@@ -29,10 +29,10 @@ public interface ISysRoleService extends IService<SysRole> {
     /**
      * 根据条件分页查询角色数据
      *
-     * @param role 角色信息
+     * @param query 查询对象
      * @return 角色数据集合信息
      */
-    List<SysRoleVo> selectRoleList(SysRoleQuery role);
+    List<SysRoleVo> selectRoleList(SysRoleQuery query);
 
     /**
      * 根据用户ID查询角色列表

@@ -17,6 +17,7 @@ import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.TreeBuildUtils;
+import org.dromara.common.mybatis.core.page.SortQuery;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.system.domain.SysMenu;
 import org.dromara.system.domain.SysRole;
@@ -74,7 +75,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         List<SysMenuVo> menuList;
         // 管理员显示所有菜单信息
         if (LoginHelper.isSuperAdmin(userId)) {
-            menuList = baseMapper.queryList(menu);
+            menuList = SortQuery.of(() -> baseMapper.queryList(menu));
         } else {
             QueryWrapper<SysMenu> wrapper = Wrappers.query();
             wrapper.eq("sur.user_id", userId)
@@ -83,7 +84,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 .eq(StringUtils.isNotBlank(menu.getStatus()), "m.status", menu.getStatus())
                 .orderByAsc("m.parent_id")
                 .orderByAsc("m.order_num");
-            List<SysMenu> list = baseMapper.selectMenuListByUserId(wrapper);
+            List<SysMenu> list = SortQuery.of(() -> baseMapper.selectMenuListByUserId(wrapper));
             menuList = MapstructUtils.convert(list, SysMenuVo.class);
         }
         return menuList;

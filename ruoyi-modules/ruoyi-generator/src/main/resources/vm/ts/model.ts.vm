@@ -14,7 +14,7 @@ import {#if($useQuery) BaseEntity,#end TreeEntity } from '@/api/model/ResultMode
  */
 export interface ${ClassName}Query extends BaseEntity {
 #foreach ($column in $columns)
-#if($column.isQuery == '1' && $column.queryType != "BETWEEN")
+#if($column.isQuery() && $column.queryType != "BETWEEN")
   /** $column.columnComment */
   $column.javaField?: ${GenUtil.javaTypeToTypescript($column.javaType)};
 #end
@@ -27,7 +27,7 @@ export interface ${ClassName}Query extends BaseEntity {
  */
 export interface ${ClassName}Form extends ${BoEntity} {
 #foreach ($column in $columns)
-#if(($column.isPk == '1' || $column.isInsert == '1' || $column.isEdit == '1'))
+#if(($column.isPk() || $column.isInsert() || $column.isEdit()))
   /** $column.columnComment */
   $column.javaField?: ${GenUtil.javaTypeToTypescript($column.javaType)};
 #end
@@ -51,7 +51,7 @@ export interface ${ClassName} extends ${Entity} {
  */
 export interface ${ClassName}Vo {
 #foreach ($column in $columns)
-#if($column.isList == '1' || $column.isPk == '1' || $column.isEdit == '1' || $column.isInsert == '1' || $column.isDetail == '1')
+#if($column.isList() || $column.isPk() || $column.isEdit() || $column.isInsert() || $column.isDetail())
   /** $column.columnComment */
   $column.javaField?: ${GenUtil.javaTypeToTypescript($column.javaType)};
 #end

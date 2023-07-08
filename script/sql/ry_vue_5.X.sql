@@ -280,11 +280,13 @@ insert into sys_menu values('1013', '菜单查询', '102', '1',  '', '', '', 0, 
 insert into sys_menu values('1014', '菜单新增', '102', '2',  '', '', '', 0, 1, 'F', '1', '1', 'system:menu:add',            '#', 103, 1, sysdate(), null, null, '');
 insert into sys_menu values('1015', '菜单修改', '102', '3',  '', '', '', 0, 1, 'F', '1', '1', 'system:menu:edit',           '#', 103, 1, sysdate(), null, null, '');
 insert into sys_menu values('1016', '菜单删除', '102', '4',  '', '', '', 0, 1, 'F', '1', '1', 'system:menu:remove',         '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1117', '菜单导出', '102', '5',  '', '', '', 0, 1, 'F', '1', '1', 'system:menu:export',         '#', 103, 1, sysdate(), null, null, '');
 -- 部门管理按钮
 insert into sys_menu values('1017', '部门查询', '103', '1',  '', '', '', 0, 1, 'F', '1', '1', 'system:dept:query',          '#', 103, 1, sysdate(), null, null, '');
 insert into sys_menu values('1018', '部门新增', '103', '2',  '', '', '', 0, 1, 'F', '1', '1', 'system:dept:add',            '#', 103, 1, sysdate(), null, null, '');
 insert into sys_menu values('1019', '部门修改', '103', '3',  '', '', '', 0, 1, 'F', '1', '1', 'system:dept:edit',           '#', 103, 1, sysdate(), null, null, '');
 insert into sys_menu values('1020', '部门删除', '103', '4',  '', '', '', 0, 1, 'F', '1', '1', 'system:dept:remove',         '#', 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1121', '部门导出', '103', '5',  '', '', '', 0, 1, 'F', '1', '1', 'system:dept:export',         '#', 103, 1, sysdate(), null, null, '');
 -- 岗位管理按钮
 insert into sys_menu values('1021', '岗位查询', '104', '1',  '', '', '', 0, 1, 'F', '1', '1', 'system:post:query',          '#', 103, 1, sysdate(), null, null, '');
 insert into sys_menu values('1022', '岗位新增', '104', '2',  '', '', '', 0, 1, 'F', '1', '1', 'system:post:add',            '#', 103, 1, sysdate(), null, null, '');
@@ -797,7 +799,8 @@ create table gen_table_column (
   is_edit           char(1)                                    comment '是否编辑字段（1是）',
   is_list           char(1)                                    comment '是否列表字段（1是）',
   is_query          char(1)                                    comment '是否查询字段（1是）',
-  is_detail          char(1)                                   comment '是否详情字段（1是）',
+  is_detail         char(1)                                    comment '是否详情字段（1是）',
+  is_sort           char(1)                                    comment '是否排序字段（1是）',
   query_type        varchar(200)    default 'EQ'               comment '查询方式（等于、不等于、大于、小于、范围）',
   html_type         varchar(200)                               comment '显示类型（文本框、文本域、下拉框、复选框、单选框、日期控件）',
   dict_type         varchar(200)    default ''                 comment '字典类型',

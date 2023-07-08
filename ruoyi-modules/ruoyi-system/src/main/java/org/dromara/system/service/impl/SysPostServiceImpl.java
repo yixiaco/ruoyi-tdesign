@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.SortQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysPost;
 import org.dromara.system.domain.SysUserPost;
@@ -41,12 +42,12 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     /**
      * 查询岗位信息集合
      *
-     * @param post 岗位信息
+     * @param query 岗位查询对象
      * @return 岗位信息集合
      */
     @Override
-    public List<SysPostVo> selectPostList(SysPostQuery post) {
-        return baseMapper.queryList(post);
+    public List<SysPostVo> selectPostList(SysPostQuery query) {
+        return SortQuery.of(() -> baseMapper.queryList(query));
     }
 
     /**

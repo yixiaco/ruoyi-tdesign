@@ -5,6 +5,7 @@ import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.SortQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysMessageKey;
 import org.dromara.system.domain.SysMessageTemplate;
@@ -64,7 +65,7 @@ public class SysMessageKeyServiceImpl extends ServiceImpl<SysMessageKeyMapper, S
      */
     @Override
     public List<SysMessageKeyVo> queryList(SysMessageKeyQuery query) {
-        return baseMapper.queryList(query);
+        return SortQuery.of(() -> baseMapper.queryList(query));
     }
 
     /**

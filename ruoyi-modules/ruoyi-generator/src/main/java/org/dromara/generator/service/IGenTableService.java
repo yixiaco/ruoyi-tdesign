@@ -29,7 +29,7 @@ public interface IGenTableService {
      * @param genTable 业务信息
      * @return 业务集合
      */
-    TableDataInfo<GenTable> selectPageGenTableList(GenTable genTable, PageQuery pageQuery);
+    TableDataInfo<GenTable> selectPageGenTableList(GenTable genTable);
 
     /**
      * 查询据库列表

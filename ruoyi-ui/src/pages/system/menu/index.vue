@@ -40,6 +40,9 @@
           hideTriggerButton: true,
         }"
         :tree="{ childrenKey: 'children', treeNodeColumnIndex: 0, expandTreeNodeOnClick: true }"
+        :sort="sort"
+        show-sort-column-bg-color
+        @sort-change="handleSortChange"
       >
         <template #topContent>
           <t-row>
@@ -51,6 +54,10 @@
               <t-button theme="default" variant="outline" @click="toggleExpandAll">
                 <template #icon> <unfold-more-icon /> </template>
                 展开/折叠
+              </t-button>
+              <t-button v-hasPermi="['system:menu:export']" theme="default" variant="outline" @click="handleExport">
+                <template #icon> <download-icon /> </template>
+                导出
               </t-button>
             </t-col>
             <t-col flex="none">
@@ -285,6 +292,7 @@ export default {
 import {
   AddIcon,
   DeleteIcon,
+  DownloadIcon,
   EditIcon,
   HelpCircleFilledIcon,
   RefreshIcon,
@@ -298,6 +306,7 @@ import {
   FormRule,
   PrimaryTableCol,
   SubmitContext,
+  TableSort,
 } from 'tdesign-vue-next';
 import { getCurrentInstance, ref } from 'vue';
 
@@ -317,6 +326,7 @@ const columnControllerVisible = ref(false);
 const title = ref('');
 const menuOptions = ref([]);
 const isExpandAll = ref(false);
+const sort = ref<TableSort>(null);
 const tableRef = ref<EnhancedTableInstanceFunctions>(null);
 const menuRef = ref<FormInstanceFunctions>(null);
 
@@ -329,11 +339,11 @@ const rules = ref<Record<string, Array<FormRule>>>({
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `菜单名称`, colKey: 'menuName', align: 'left', ellipsis: true },
   { title: `图标`, colKey: 'icon', align: 'center', width: 100 },
-  { title: `排序`, colKey: 'orderNum', align: 'center', width: 60 },
+  { title: `排序`, colKey: 'orderNum', align: 'center', width: 100, sorter: true },
   { title: `权限标识`, colKey: 'perms', align: 'center', ellipsis: true },
   { title: `组件路径`, colKey: 'component', align: 'center', ellipsis: true },
   { title: `状态`, colKey: 'status', align: 'center', width: 80 },
-  { title: `创建时间`, colKey: 'createTime', align: 'center' },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 
@@ -398,7 +408,19 @@ function handleQuery() {
 /** 重置按钮操作 */
 function resetQuery() {
   proxy.resetForm('queryRef');
-  handleQuery();
+  handleSortChange(null);
+}
+/** 排序触发事件 */
+function handleSortChange(value?: TableSort) {
+  sort.value = value;
+  if (Array.isArray(value)) {
+    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
+    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
+  } else {
+    queryParams.value.orderByColumn = value?.sortBy;
+    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
+  }
+  getList();
 }
 /** 新增按钮操作 */
 function handleAdd(row: SysMenuVo) {
@@ -482,6 +504,16 @@ function handleDelete(row: SysMenuVo) {
       })
       .finally(() => proxy.$modal.msgClose(msgLoading));
   });
+}
+/** 导出按钮操作 */
+function handleExport() {
+  proxy.download(
+    'system/menu/export',
+    {
+      ...queryParams.value,
+    },
+    `menu_${new Date().getTime()}.xlsx`,
+  );
 }
 
 getList();

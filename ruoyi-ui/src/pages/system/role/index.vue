@@ -60,6 +60,9 @@
         :column-controller="{
           hideTriggerButton: true,
         }"
+        :sort="sort"
+        show-sort-column-bg-color
+        @sort-change="handleSortChange"
         @select-change="handleSelectionChange"
       >
         <template #topContent>
@@ -286,6 +289,7 @@ import {
   PageInfo,
   PrimaryTableCol,
   SubmitContext,
+  TableSort,
   TreeInstanceFunctions,
 } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
@@ -293,7 +297,7 @@ import { useRouter } from 'vue-router';
 
 import { TreeModel } from '@/api/model/resultModel';
 import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
-import { SysRoleForm, SysRoleVo } from '@/api/system/model/roleModel';
+import { SysRoleForm, SysRoleQuery, SysRoleVo } from '@/api/system/model/roleModel';
 import {
   addRole,
   changeRoleStatus,
@@ -335,6 +339,7 @@ const deptIds = ref<number[]>([]);
 const menuExpandNode = ref<number[]>([]);
 const deptExpandNode = ref<number[]>([]);
 const columnControllerVisible = ref(false);
+const sort = ref<TableSort>(null);
 
 /** 数据范围选项 */
 const dataScopeOptions = ref([
@@ -347,12 +352,12 @@ const dataScopeOptions = ref([
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
-  { title: `角色编号`, colKey: 'roleId', align: 'center', width: '120' },
-  { title: `角色名称`, colKey: 'roleName', ellipsis: true, align: 'center', width: '150' },
-  { title: `权限字符`, colKey: 'roleKey', ellipsis: true, align: 'center', width: '150' },
-  { title: `显示顺序`, colKey: 'roleSort', align: 'center', width: '100' },
-  { title: `状态`, colKey: 'status', align: 'center', width: '100' },
-  { title: `创建时间`, colKey: 'createTime', align: 'center' },
+  { title: `角色编号`, colKey: 'roleId', align: 'center', width: 120 },
+  { title: `角色名称`, colKey: 'roleName', ellipsis: true, align: 'center', width: 150 },
+  { title: `权限字符`, colKey: 'roleKey', ellipsis: true, align: 'center', width: 150 },
+  { title: `显示顺序`, colKey: 'roleSort', align: 'center', width: 120, sorter: true },
+  { title: `状态`, colKey: 'status', align: 'center', width: 100 },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
 
@@ -367,14 +372,16 @@ const form = ref<SysRoleForm & SysRoleVo>({
   menuIds: [],
   deptIds: [],
 });
-const queryParams = ref<SysRoleForm>({
+const queryParams = ref<SysRoleQuery>({
   pageNum: 1,
   pageSize: 10,
   roleName: undefined,
   roleKey: undefined,
   status: undefined,
+  createTime: undefined,
 });
 
+// 分页
 const pagination = computed(() => {
   return {
     current: queryParams.value.pageNum,
@@ -398,17 +405,34 @@ function getList() {
     handleSelectionChange([]);
   });
 }
+
 /** 搜索按钮操作 */
 function handleQuery() {
   queryParams.value.pageNum = 1;
   getList();
 }
+
 /** 重置按钮操作 */
 function resetQuery() {
   dateRange.value = [];
   proxy.resetForm('queryRef');
-  handleQuery();
+  queryParams.value.pageNum = 1;
+  handleSortChange(null);
 }
+
+/** 排序触发事件 */
+function handleSortChange(value?: TableSort) {
+  sort.value = value;
+  if (Array.isArray(value)) {
+    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
+    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
+  } else {
+    queryParams.value.orderByColumn = value?.sortBy;
+    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
+  }
+  getList();
+}
+
 /** 删除按钮操作 */
 function handleDelete(row: SysRoleVo) {
   const roleIds = row.roleId || ids.value;
@@ -419,6 +443,7 @@ function handleDelete(row: SysRoleVo) {
     });
   });
 }
+
 /** 导出按钮操作 */
 function handleExport() {
   proxy.download(
@@ -429,12 +454,14 @@ function handleExport() {
     `role_${new Date().getTime()}.xlsx`,
   );
 }
+
 /** 多选框选中数据 */
 function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
 }
+
 /** 角色状态修改 */
 function handleStatusChange(row: SysRoleVo) {
   const role = roleList.value.find((value) => value.roleId === row.roleId);

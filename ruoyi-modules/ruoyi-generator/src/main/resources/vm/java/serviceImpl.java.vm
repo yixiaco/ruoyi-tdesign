@@ -2,7 +2,10 @@ package ${packageName}.service.impl;
 
 import org.dromara.common.core.utils.MapstructUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-#if($table.crud || $table.sub)
+#if($hasSorting)
+import org.dromara.common.mybatis.core.page.SortQuery;
+#end
+#if($table.isCrud())
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.mybatis.core.page.PageQuery;
 #end
@@ -59,7 +62,7 @@ public class ${ClassName}ServiceImpl extends ServiceImpl<${ClassName}Mapper, ${C
 #end
     }
 
-#if($table.crud || $table.sub)
+#if($table.isCrud())
     /**
      * 查询${functionName}列表
      *
@@ -80,7 +83,11 @@ public class ${ClassName}ServiceImpl extends ServiceImpl<${ClassName}Mapper, ${C
      */
     @Override
     public List<${vo}> queryList(${query} query) {
+#if($hasSorting)
+        return SortQuery.of(() -> baseMapper.queryList(query));
+#else
         return baseMapper.queryList(query);
+#end
     }
 
     /**

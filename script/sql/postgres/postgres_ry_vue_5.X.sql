@@ -413,11 +413,13 @@ insert into sys_menu values('1013', '菜单查询', '102', '1',  '', '', '', 0, 
 insert into sys_menu values('1014', '菜单新增', '102', '2',  '', '', '', 0, 1, 'F', '1', '1', 'system:menu:add',            '#', 103, 1, now(), null, null, '');
 insert into sys_menu values('1015', '菜单修改', '102', '3',  '', '', '', 0, 1, 'F', '1', '1', 'system:menu:edit',           '#', 103, 1, now(), null, null, '');
 insert into sys_menu values('1016', '菜单删除', '102', '4',  '', '', '', 0, 1, 'F', '1', '1', 'system:menu:remove',         '#', 103, 1, now(), null, null, '');
+insert into sys_menu values('1117', '菜单导出', '102', '5',  '', '', '', 0, 1, 'F', '1', '1', 'system:menu:export',         '#', 103, 1, now(), null, null, '');
 -- 部门管理按钮
 insert into sys_menu values('1017', '部门查询', '103', '1',  '', '', '', 0, 1, 'F', '1', '1', 'system:dept:query',          '#', 103, 1, now(), null, null, '');
 insert into sys_menu values('1018', '部门新增', '103', '2',  '', '', '', 0, 1, 'F', '1', '1', 'system:dept:add',            '#', 103, 1, now(), null, null, '');
 insert into sys_menu values('1019', '部门修改', '103', '3',  '', '', '', 0, 1, 'F', '1', '1', 'system:dept:edit',           '#', 103, 1, now(), null, null, '');
 insert into sys_menu values('1020', '部门删除', '103', '4',  '', '', '', 0, 1, 'F', '1', '1', 'system:dept:remove',         '#', 103, 1, now(), null, null, '');
+insert into sys_menu values('1121', '部门导出', '103', '5',  '', '', '', 0, 1, 'F', '1', '1', 'system:dept:export',         '#', 103, 1, now(), null, null, '');
 -- 岗位管理按钮
 insert into sys_menu values('1021', '岗位查询', '104', '1',  '', '', '', 0, 1, 'F', '1', '1', 'system:post:query',          '#', 103, 1, now(), null, null, '');
 insert into sys_menu values('1022', '岗位新增', '104', '2',  '', '', '', 0, 1, 'F', '1', '1', 'system:post:add',            '#', 103, 1, now(), null, null, '');
@@ -1028,27 +1030,27 @@ create table if not exists gen_table
     constraint gen_table_pk primary key (table_id)
 );
 
-comment on table gen_table is '代码生成业务表';
-comment on column gen_table.table_id is '编号';
-comment on column gen_table.data_name is '数据源名称';
-comment on column gen_table.table_name is '表名称';
-comment on column gen_table.table_comment is '表描述';
-comment on column gen_table.class_name is '实体类名称';
-comment on column gen_table.tpl_category is '使用的模板（CRUD单表操作 TREE树表操作）';
-comment on column gen_table.package_name is '生成包路径';
-comment on column gen_table.module_name is '生成模块名';
-comment on column gen_table.business_name is '生成业务名';
-comment on column gen_table.function_name is '生成功能名';
-comment on column gen_table.function_author is '生成功能作者';
-comment on column gen_table.gen_type is '生成代码方式（0zip压缩包 1自定义路径）';
-comment on column gen_table.gen_path is '生成路径（不填默认项目路径）';
-comment on column gen_table.options is '其它生成选项';
-comment on column gen_table.create_dept is '创建部门';
-comment on column gen_table.create_by is '创建者';
-comment on column gen_table.create_time is '创建时间';
-comment on column gen_table.update_by is '更新者';
-comment on column gen_table.update_time is '更新时间';
-comment on column gen_table.remark is '备注';
+comment on table  gen_table                     is '代码生成业务表';
+comment on column gen_table.table_id            is '编号';
+comment on column gen_table.data_name           is '数据源名称';
+comment on column gen_table.table_name          is '表名称';
+comment on column gen_table.table_comment       is '表描述';
+comment on column gen_table.class_name          is '实体类名称';
+comment on column gen_table.tpl_category        is '使用的模板（CRUD单表操作 TREE树表操作）';
+comment on column gen_table.package_name        is '生成包路径';
+comment on column gen_table.module_name         is '生成模块名';
+comment on column gen_table.business_name       is '生成业务名';
+comment on column gen_table.function_name       is '生成功能名';
+comment on column gen_table.function_author     is '生成功能作者';
+comment on column gen_table.gen_type            is '生成代码方式（0zip压缩包 1自定义路径）';
+comment on column gen_table.gen_path            is '生成路径（不填默认项目路径）';
+comment on column gen_table.options             is '其它生成选项';
+comment on column gen_table.create_dept         is '创建部门';
+comment on column gen_table.create_by           is '创建者';
+comment on column gen_table.create_time         is '创建时间';
+comment on column gen_table.update_by           is '更新者';
+comment on column gen_table.update_time         is '更新时间';
+comment on column gen_table.remark              is '备注';
 
 -- ----------------------------
 -- 19、代码生成业务表字段
@@ -1071,6 +1073,7 @@ create table if not exists gen_table_column
     is_list        char         default null::bpchar,
     is_query       char         default null::bpchar,
     is_detail      char         default null::bpchar,
+    is_sort        char         default null::bpchar,
     query_type     varchar(200) default 'EQ'::varchar,
     html_type      varchar(200) default null::varchar,
     dict_type      varchar(200) default ''::varchar,
@@ -1083,31 +1086,32 @@ create table if not exists gen_table_column
     constraint gen_table_column_pk primary key (column_id)
 );
 
-comment on table gen_table_column is '代码生成业务表字段';
-comment on column gen_table_column.column_id is '编号';
-comment on column gen_table_column.table_id is '归属表编号';
-comment on column gen_table_column.column_name is '列名称';
-comment on column gen_table_column.column_comment is '列描述';
-comment on column gen_table_column.column_type is '列类型';
-comment on column gen_table_column.java_type is 'JAVA类型';
-comment on column gen_table_column.java_field is 'JAVA字段名';
-comment on column gen_table_column.is_pk is '是否主键（1是）';
-comment on column gen_table_column.is_increment is '是否自增（1是）';
-comment on column gen_table_column.is_required is '是否必填（1是）';
-comment on column gen_table_column.is_insert is '是否为插入字段（1是）';
-comment on column gen_table_column.is_edit is '是否编辑字段（1是）';
-comment on column gen_table_column.is_list is '是否列表字段（1是）';
-comment on column gen_table_column.is_query is '是否查询字段（1是）';
-comment on column gen_table_column.is_detail is '是否详情字段 (1是)';
-comment on column gen_table_column.query_type is '查询方式（等于、不等于、大于、小于、范围）';
-comment on column gen_table_column.html_type is '显示类型（文本框、文本域、下拉框、复选框、单选框、日期控件）';
-comment on column gen_table_column.dict_type is '字典类型';
-comment on column gen_table_column.sort is '排序';
-comment on column gen_table_column.create_dept is '创建部门';
-comment on column gen_table_column.create_by is '创建者';
-comment on column gen_table_column.create_time is '创建时间';
-comment on column gen_table_column.update_by is '更新者';
-comment on column gen_table_column.update_time is '更新时间';
+comment on table  gen_table_column                  is '代码生成业务表字段';
+comment on column gen_table_column.column_id        is '编号';
+comment on column gen_table_column.table_id         is '归属表编号';
+comment on column gen_table_column.column_name      is '列名称';
+comment on column gen_table_column.column_comment   is '列描述';
+comment on column gen_table_column.column_type      is '列类型';
+comment on column gen_table_column.java_type        is 'JAVA类型';
+comment on column gen_table_column.java_field       is 'JAVA字段名';
+comment on column gen_table_column.is_pk            is '是否主键（1是）';
+comment on column gen_table_column.is_increment     is '是否自增（1是）';
+comment on column gen_table_column.is_required      is '是否必填（1是）';
+comment on column gen_table_column.is_insert        is '是否为插入字段（1是）';
+comment on column gen_table_column.is_edit          is '是否编辑字段（1是）';
+comment on column gen_table_column.is_list          is '是否列表字段（1是）';
+comment on column gen_table_column.is_query         is '是否查询字段（1是）';
+comment on column gen_table_column.is_detail        is '是否详情字段 (1是)';
+comment on column gen_table_column.is_sort          is '是否排序字段 (1是)';
+comment on column gen_table_column.query_type       is '查询方式（等于、不等于、大于、小于、范围）';
+comment on column gen_table_column.html_type        is '显示类型（文本框、文本域、下拉框、复选框、单选框、日期控件）';
+comment on column gen_table_column.dict_type        is '字典类型';
+comment on column gen_table_column.sort             is '排序';
+comment on column gen_table_column.create_dept      is '创建部门';
+comment on column gen_table_column.create_by        is '创建者';
+comment on column gen_table_column.create_time      is '创建时间';
+comment on column gen_table_column.update_by        is '更新者';
+comment on column gen_table_column.update_time      is '更新时间';
 
 -- ----------------------------
 -- OSS对象存储表
@@ -1367,25 +1371,25 @@ create table sys_message_log (
   constraint sys_message_log_pk primary key (message_log_id)
 );
 create index idx_sys_message_template_id on sys_message_log using btree (message_template_id);
-comment on table  sys_message_log                           IS '消息发送记录表';
-comment on column sys_message_log.message_log_id            IS '消息发送记录id';
-comment on column sys_message_log.message_template_id       IS '消息模板id';
-comment on column sys_message_log.message_key               IS '消息key';
-comment on column sys_message_log.message_template_name     IS '模板名称';
-comment on column sys_message_log.message_type              IS '消息类型 SMS、MAIL';
-comment on column sys_message_log.template_mode             IS '模板类型 模板id模式、内容模式';
-comment on column sys_message_log.account                   IS '发送账号';
-comment on column sys_message_log.title                     IS '标题';
-comment on column sys_message_log.template_id               IS '模板ID';
-comment on column sys_message_log.content                   IS '发送内容';
-comment on column sys_message_log.message_config_title      IS '消息配置标题';
-comment on column sys_message_log.supplier_type             IS '平台标识';
-comment on column sys_message_log.is_success                IS '是否成功';
-comment on column sys_message_log.error_code                IS '错误码';
-comment on column sys_message_log.error_message             IS '错误消息';
-comment on column sys_message_log.biz_id                    IS '回执消息id';
-comment on column sys_message_log.message                   IS '返回消息';
-comment on column sys_message_log.log_time                  IS '记录时间';
+comment on table  sys_message_log                           is '消息发送记录表';
+comment on column sys_message_log.message_log_id            is '消息发送记录id';
+comment on column sys_message_log.message_template_id       is '消息模板id';
+comment on column sys_message_log.message_key               is '消息key';
+comment on column sys_message_log.message_template_name     is '模板名称';
+comment on column sys_message_log.message_type              is '消息类型 SMS、MAIL';
+comment on column sys_message_log.template_mode             is '模板类型 模板id模式、内容模式';
+comment on column sys_message_log.account                   is '发送账号';
+comment on column sys_message_log.title                     is '标题';
+comment on column sys_message_log.template_id               is '模板ID';
+comment on column sys_message_log.content                   is '发送内容';
+comment on column sys_message_log.message_config_title      is '消息配置标题';
+comment on column sys_message_log.supplier_type             is '平台标识';
+comment on column sys_message_log.is_success                is '是否成功';
+comment on column sys_message_log.error_code                is '错误码';
+comment on column sys_message_log.error_message             is '错误消息';
+comment on column sys_message_log.biz_id                    is '回执消息id';
+comment on column sys_message_log.message                   is '返回消息';
+comment on column sys_message_log.log_time                  is '记录时间';
 
 -- ----------------------------
 -- 消息模板表

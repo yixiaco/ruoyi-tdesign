@@ -2,6 +2,7 @@ package org.dromara.system.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.SortQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysMessageLog;
 import org.dromara.system.domain.query.SysMessageLogQuery;
@@ -54,7 +55,7 @@ public class SysMessageLogServiceImpl extends ServiceImpl<SysMessageLogMapper, S
      */
     @Override
     public List<SysMessageLogVo> queryList(SysMessageLogQuery query) {
-        return baseMapper.queryList(query);
+        return SortQuery.of(() -> baseMapper.queryList(query));
     }
 
     /**
