@@ -1,5 +1,5 @@
 <template>
-  <t-breadcrumb :max-item-width="'150'" class="tdesign-breadcrumb">
+  <t-breadcrumb :max-item-width="'150'" class="tdesign-breadcrumb" separator="&nbsp;/&nbsp;">
     <t-breadcrumbItem v-for="item in crumbs" :key="item.to" :to="item.to">
       {{ item.title }}
     </t-breadcrumbItem>
