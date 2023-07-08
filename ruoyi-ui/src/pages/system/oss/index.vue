@@ -82,7 +82,7 @@
           hideTriggerButton: true,
         }"
         :sort="sort"
-        :show-sort-column-bg-color="true"
+        show-sort-column-bg-color
         @sort-change="handleSortChange"
         @select-change="handleSelectionChange"
       >
@@ -201,7 +201,7 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormRule, PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
+import { FormRule, PageInfo, PrimaryTableCol, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref, toRefs } from 'vue';
 
 import { getPreviewListResourceConfig } from '@/api/system/config';
@@ -211,7 +211,6 @@ import FileUpload from '@/components/file-upload/index.vue';
 import ImagePreview from '@/components/image-preview/index.vue';
 import ImageUpload from '@/components/image-upload/index.vue';
 import { useUserStore } from '@/store';
-import { TableSort } from '@/types/interface';
 
 const { proxy } = getCurrentInstance();
 const { tenantId } = toRefs(useUserStore());
@@ -231,8 +230,7 @@ const type = ref(0);
 const previewListResource = ref(true);
 const daterangeCreateTime = ref([]);
 // 默认排序
-const defaultSort = ref({ sortBy: 'createTime', descending: true });
-const sort = ref({ ...defaultSort.value });
+const sort = ref<TableSort>(null);
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
@@ -241,7 +239,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `原名`, colKey: 'originalName', align: 'center', ellipsis: true },
   { title: `文件后缀`, colKey: 'fileSuffix', align: 'center' },
   { title: `文件展示`, colKey: 'url', align: 'center' },
-  { title: `大小`, colKey: 'size', align: 'center' },
+  { title: `大小`, colKey: 'size', align: 'center', sorter: true },
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180, sorter: true },
   { title: `上传人`, colKey: 'createByName', align: 'center' },
   { title: `服务商`, colKey: 'service', align: 'center' },
@@ -318,7 +316,8 @@ function handleQuery() {
 function resetQuery() {
   daterangeCreateTime.value = [];
   proxy.resetForm('queryRef');
-  handleSortChange({ ...defaultSort.value });
+  queryParams.value.pageNum = 1;
+  handleSortChange(null);
 }
 /** 选择条数  */
 function handleSelectionChange(selection: Array<string | number>) {
@@ -327,10 +326,15 @@ function handleSelectionChange(selection: Array<string | number>) {
   multiple.value = !selection.length;
 }
 /** 排序触发事件 */
-function handleSortChange(value: TableSort) {
+function handleSortChange(value?: TableSort) {
   sort.value = value;
-  queryParams.value.orderByColumn = value.sortBy;
-  queryParams.value.isAsc = value.descending ? 'descending' : 'ascending';
+  if (Array.isArray(value)) {
+    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
+    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
+  } else {
+    queryParams.value.orderByColumn = value?.sortBy;
+    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
+  }
   getList();
 }
 /** 文件按钮操作 */

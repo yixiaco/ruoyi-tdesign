@@ -59,6 +59,9 @@
         :column-controller="{
           hideTriggerButton: true,
         }"
+        :sort="sort"
+        show-sort-column-bg-color
+        @sort-change="handleSortChange"
         @select-change="handleSelectionChange"
       >
         <template #topContent>
@@ -187,7 +190,7 @@ import {
   SettingIcon,
   UploadIcon,
 } from 'tdesign-icons-vue-next';
-import { PageInfo, PrimaryTableCol, SelectOptions } from 'tdesign-vue-next';
+import {PageInfo, PrimaryTableCol, SelectOptions, TableSort} from 'tdesign-vue-next';
 import { computed, getCurrentInstance, onActivated, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -215,6 +218,7 @@ const dataNameList = ref<Array<string>>([]);
 const dateRange = ref([]);
 const uniqueId = ref('');
 const importRef = ref(null);
+const sort = ref<TableSort>(null);
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
@@ -224,8 +228,8 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `表名称`, colKey: 'tableName', align: 'center', ellipsis: true },
   { title: `表描述`, colKey: 'tableComment', align: 'center', ellipsis: true },
   { title: `实体`, colKey: 'className', align: 'center', ellipsis: true },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 160 },
-  { title: `更新时间`, colKey: 'updateTime', align: 'center', width: 160 },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 160, sorter: true },
+  { title: `更新时间`, colKey: 'updateTime', align: 'center', width: 160, sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center', width: 330 },
 ]);
 
@@ -288,11 +292,13 @@ function getList() {
     loading.value = false;
   });
 }
+
 /** 搜索按钮操作 */
 function handleQuery() {
   queryParams.value.pageNum = 1;
   getList();
 }
+
 /** 生成代码操作 */
 function handleGenTable(row: GenTable) {
   const tbIds = row?.tableId || ids.value;
@@ -308,6 +314,7 @@ function handleGenTable(row: GenTable) {
     proxy.$download.zip(`/tool/gen/batchGenCode?tableIdStr=${tbIds}`, 'ruoyi.zip');
   }
 }
+
 /** 同步数据库操作 */
 function handleSynchDb(row: GenTable) {
   const { tableName, tableId, dataName } = row;
@@ -317,16 +324,33 @@ function handleSynchDb(row: GenTable) {
     });
   });
 }
+
 /** 打开导入表弹窗 */
 function openImportTable() {
   importRef.value.show(queryParams.value.dataName);
 }
+
 /** 重置按钮操作 */
 function resetQuery() {
   dateRange.value = [];
   proxy.resetForm('queryRef');
-  handleQuery();
+  queryParams.value.pageNum = 1;
+  handleSortChange(null);
 }
+
+/** 排序触发事件 */
+function handleSortChange(value?: TableSort) {
+  sort.value = value;
+  if (Array.isArray(value)) {
+    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
+    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
+  } else {
+    queryParams.value.orderByColumn = value?.sortBy;
+    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
+  }
+  getList();
+}
+
 /** 预览按钮 */
 function handlePreview(row: GenTable) {
   previewTable(row.tableId).then((response) => {
@@ -336,11 +360,13 @@ function handlePreview(row: GenTable) {
     // preview.value.activeName = 'domain.java';
   });
 }
+
 /** 复制代码成功 */
 function copyTextSuccess() {
   proxy.$modal.msgSuccess('复制成功');
 }
-// 多选框选中数据
+
+/** 多选框选中数据 */
 function handleSelectionChange(selection: Array<string | number>, { selectedRowData }: SelectOptions<GenTable>) {
   ids.value = selection;
   single.value = selection.length !== 1;

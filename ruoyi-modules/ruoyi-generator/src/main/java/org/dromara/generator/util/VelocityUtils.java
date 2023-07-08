@@ -74,6 +74,7 @@ public class VelocityUtils {
         velocityContext.put("permissionPrefix", getPermissionPrefix(moduleName, businessName));
         velocityContext.put("columns", genTable.getColumns());
         velocityContext.put("table", genTable);
+        velocityContext.put("hasSorting", genTable.getColumns().stream().anyMatch(GenTableColumn::isSorting));
         velocityContext.put("dicts", getDicts(genTable));
         velocityContext.put("dbName", firstLetter(genTable.getTableName(), "_"));
         velocityContext.put("GenUtil", GenUtils.class);

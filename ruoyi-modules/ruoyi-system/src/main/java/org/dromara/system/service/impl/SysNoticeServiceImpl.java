@@ -3,6 +3,7 @@ package org.dromara.system.service.impl;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.SortQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysNotice;
 import org.dromara.system.domain.bo.SysNoticeBo;
@@ -43,12 +44,12 @@ public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice
     /**
      * 查询公告列表
      *
-     * @param notice 公告信息
+     * @param query 公告信息
      * @return 公告集合
      */
     @Override
-    public List<SysNoticeVo> selectNoticeList(SysNoticeQuery notice) {
-        return baseMapper.queryList(notice);
+    public List<SysNoticeVo> selectNoticeList(SysNoticeQuery query) {
+        return SortQuery.of(() -> baseMapper.queryList(query));
     }
 
     /**

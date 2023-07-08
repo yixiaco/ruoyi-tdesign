@@ -34,16 +34,19 @@ public class SysDeptVo implements Serializable {
     /**
      * 父部门id
      */
+    @ExcelProperty(value = "父部门id")
     private Long parentId;
 
     /**
      * 父部门名称
      */
+    @ExcelProperty(value = "父部门名称")
     private String parentName;
 
     /**
      * 祖级列表
      */
+    @ExcelProperty(value = "祖级列表")
     private String ancestors;
 
     /**
@@ -55,6 +58,7 @@ public class SysDeptVo implements Serializable {
     /**
      * 显示顺序
      */
+    @ExcelProperty(value = "显示顺序")
     private Integer orderNum;
 
     /**

@@ -112,6 +112,8 @@ export interface GenTableColumn extends BaseEntity {
   isQuery?: string;
   /** 是否详情字段（1是） */
   isDetail?: string;
+  /** 是否排序字段（1是） */
+  isSort?: string;
   /** 查询方式（EQ等于、NE不等于、GT大于、LT小于、LIKE模糊、BETWEEN范围） */
   queryType?: string;
   /** 显示类型（input文本框、textarea文本域、select下拉框、checkbox复选框、radio单选框、datetime日期控件、image图片上传控件、upload文件上传控件、editor富文本控件） */

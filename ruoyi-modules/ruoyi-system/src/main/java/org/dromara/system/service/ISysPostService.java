@@ -27,10 +27,10 @@ public interface ISysPostService extends IService<SysPost> {
     /**
      * 查询岗位信息集合
      *
-     * @param post 岗位信息
+     * @param query 岗位查询对象
      * @return 岗位列表
      */
-    List<SysPostVo> selectPostList(SysPostQuery post);
+    List<SysPostVo> selectPostList(SysPostQuery query);
 
     /**
      * 查询所有岗位

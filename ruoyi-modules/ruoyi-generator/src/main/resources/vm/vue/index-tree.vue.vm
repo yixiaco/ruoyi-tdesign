@@ -3,7 +3,7 @@
     <t-space direction="vertical">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
 #foreach($column in $columns)
-#if($column.query)
+#if($column.isQuery())
 #set($dictType=$column.dictType)
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
 #set($parentheseIndex=$column.columnComment.indexOf("（"))
@@ -80,6 +80,11 @@
           hideTriggerButton: true,
         }"
         :tree="{ childrenKey: 'children', expandTreeNodeOnClick: true }"
+#if($hasSorting)
+        :sort="sort"
+        show-sort-column-bg-color
+        @sort-change="handleSortChange"
+  #end
       >
         <template #topContent>
           <t-row>
@@ -91,6 +96,10 @@
               <t-button theme="default" variant="outline" @click="toggleExpandAll">
                 <template #icon> <unfold-more-icon /> </template>
                 展开/折叠
+              </t-button>
+              <t-button v-hasPermi="['${moduleName}:${businessName}:export']" theme="default" variant="outline" @click="handleExport">
+                <template #icon> <download-icon /> </template>
+                导出
               </t-button>
             </t-col>
             <t-col flex="none">
@@ -112,11 +121,11 @@
 #else
 #set($comment=$column.columnComment)
 #end
-#if($column.list && $column.htmlType == "imageUpload")
+#if($column.isList() && $column.htmlType == "imageUpload")
         <template #${javaField}="{ row }">
           <image-preview :src="row.${javaField}" :width="60" :height="60" />
         </template>
-#elseif($column.list && $column.dictType && "" != $column.dictType)
+#elseif($column.isList() && $column.dictType && "" != $column.dictType)
         <template #${javaField}="{ row }">
 #if($column.htmlType == "checkbox")
           <dict-tag :options="${column.dictType}" :value="row.${javaField} ? row.${javaField}.split(',') : []" />
@@ -170,7 +179,7 @@
       >
 #foreach($column in $columns)
 #set($field=$column.javaField)
-#if(($column.insert || $column.edit) && !$column.pk)
+#if(($column.isInsert() || $column.isEdit()) && !$column.isPk())
 #set($parentheseIndex=$column.columnComment.indexOf("（"))
 #if($parentheseIndex != -1)
 #set($comment=$column.columnComment.substring(0, $parentheseIndex))
@@ -297,17 +306,17 @@
 #else
 #set($comment=$column.columnComment)
 #end
-#if($column.detail && $column.htmlType == "imageUpload")
+#if($column.isDetail() && $column.htmlType == "imageUpload")
             <t-col :span="6">
               <t-form-item label="${comment}">
                 <image-preview :src="form.${javaField}" :width="60" :height="60" />
               </t-form-item>
             </t-col>
-#elseif($column.list && $column.htmlType == "datetime")
+#elseif($column.isList() && $column.htmlType == "datetime")
             <t-col :span="6">
               <t-form-item label="${comment}">{{ parseTime(form.${javaField}) }}</t-form-item>
             </t-col>
-#elseif($column.detail && $column.dictType && "" != $column.dictType)
+#elseif($column.isDetail() && $column.dictType && "" != $column.dictType)
             <t-col :span="6">
               <t-form-item label="${comment}">
 #if($column.htmlType == "checkbox")
@@ -317,15 +326,15 @@
 #end
               </t-form-item>
             </t-col>
-#elseif($column.detail && $column.htmlType == "textarea")
+#elseif($column.isDetail() && $column.htmlType == "textarea")
             <t-col :span="12">
               <t-form-item label="${comment}">{{ form.${javaField} }}</t-form-item>
             </t-col>
-#elseif($column.detail && $column.htmlType == "editor")
+#elseif($column.isDetail() && $column.htmlType == "editor")
             <t-col :span="12">
               <t-form-item label="${comment}"><div v-html="form.${javaField}"></div></t-form-item>
             </t-col>
-#elseif($column.detail)
+#elseif($column.isDetail())
             <t-col :span="6">
               <t-form-item label="${comment}">{{ form.${javaField} }}</t-form-item>
             </t-col>
@@ -347,6 +356,7 @@ import {
   AddIcon,
   BrowseIcon,
   DeleteIcon,
+  DownloadIcon,
   EditIcon,
   RefreshIcon,
   SearchIcon,
@@ -359,6 +369,9 @@ import {
   FormRule,
   PrimaryTableCol,
   SubmitContext,
+#if($hasSorting)
+  TableSort,
+#end
 } from 'tdesign-vue-next';
 import { getCurrentInstance, ref } from 'vue';
 
@@ -403,6 +416,9 @@ const columnControllerVisible = ref(false);
 const showSearch = ref(true);
 const title = ref('');
 const isExpandAll = ref(true);
+#if($hasSorting)
+const sort = ref<TableSort>(null);
+#end
 const tableRef = ref<EnhancedTableInstanceFunctions>(null);
 const ${businessName}Ref = ref<FormInstanceFunctions>(null);
 #foreach ($column in $columns)
@@ -413,8 +429,8 @@ const dateRange${AttrName} = ref([]);
 #end
 const rules = ref<Record<string, Array<FormRule>>>({
 #foreach ($column in $columns)
-#if($column.isInsert == '1' || $column.isEdit == '1')
-#if($column.required)
+#if($column.isInsert() || $column.isEdit())
+#if($column.isRequired())
 #set($parentheseIndex=$column.columnComment.indexOf("（"))
 #if($parentheseIndex != -1)
 #set($comment=$column.columnComment.substring(0, $parentheseIndex))
@@ -437,29 +453,29 @@ const columns = ref<Array<PrimaryTableCol>>([
 #else
 #set($comment=$column.columnComment)
 #end
-#if($column.pk)
-#elseif($column.list && $column.htmlType == "datetime")
-  { title: `${comment}`, colKey: '${javaField}', align: 'center', width: 180 },
-#elseif($column.list && $column.htmlType == "imageUpload")
-  { title: `${comment}`, colKey: '${javaField}', align: 'center', width: 100 },
-#elseif($column.list && $column.htmlType == "textarea")
-  { title: `${comment}`, colKey: '${javaField}', align: 'center', ellipsis: true },
-#elseif($column.list && "" != $javaField)
+#if($column.isPk())
+#elseif($column.isList() && $column.htmlType == "datetime")
+  { title: `${comment}`, colKey: '${javaField}', align: 'center', width: 180#if($column.isSorting()), sorter: true#end },
+#elseif($column.isList() && $column.htmlType == "imageUpload")
+  { title: `${comment}`, colKey: '${javaField}', align: 'center', width: 100#if($column.isSorting()), sorter: true#end },
+#elseif($column.isList() && $column.htmlType == "textarea")
+  { title: `${comment}`, colKey: '${javaField}', align: 'center', ellipsis: true#if($column.isSorting()), sorter: true#end },
+#elseif($column.isList() && "" != $javaField)
 #if(${foreach.index} == 1)
-  { title: `${comment}`, colKey: '${javaField}' },
+  { title: `${comment}`, colKey: '${javaField}'#if($column.isSorting()), sorter: true#end },
 #else
-  { title: `${comment}`, colKey: '${javaField}', align: 'center' },
+  { title: `${comment}`, colKey: '${javaField}', align: 'center'#if($column.isSorting()), sorter: true#end },
 #end
 #end
 #end
-  { title: `操作`, colKey: 'operation', align: 'center', width: 240 },
+  { title: `操作`, colKey: 'operation', align: 'center', width: 240#if($column.isSorting()), sorter: true#end },
 ]);
 // 提交表单对象
 const form = ref<#if($useVO && $useBO)$vo & $bo#elseif($useVO)$vo#elseif($useBO)$bo#else$ClassName#end>({});
 // 查询对象
 const queryParams = ref<${query}>({
 #foreach ($column in $columns)
-#if($column.query)
+#if($column.isQuery())
   $column.javaField: undefined,
 #end
 #end
@@ -498,7 +514,7 @@ function getTreeselect() {
 function reset() {
   form.value = {
 #foreach ($column in $columns)
-#if($column.isInsert == '1' || $column.isEdit == '1')
+#if($column.isInsert() || $column.isEdit())
 #if($column.htmlType == "checkbox")
     $column.javaField: []#if($foreach.count != $columns.size()),#end
 #end
@@ -522,9 +538,28 @@ function resetQuery() {
 #end
 #end
   proxy.resetForm('queryRef');
+#if($hasSorting)
+  handleSortChange(null);
+#else
   handleQuery();
+#end
 }
 
+#if($hasSorting)
+/** 排序触发事件 */
+function handleSortChange(value?: TableSort) {
+  sort.value = value;
+  if (Array.isArray(value)) {
+    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
+    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
+  } else {
+    queryParams.value.orderByColumn = value?.sortBy;
+    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
+  }
+  getList();
+}
+
+#end
 /** 新增按钮操作 */
 function handleAdd(row: ${vo}) {
   reset();
@@ -644,6 +679,17 @@ function handleDelete(row: ${vo}) {
         proxy.$modal.msgClose(msgLoading);
       });
   });
+}
+
+/** 导出按钮操作 */
+function handleExport() {
+  proxy.download(
+    '${moduleName}/${businessName}/export',
+    {
+      ...queryParams.value,
+    },
+    `${businessName}_#[[${new Date().getTime()}]]#.xlsx`,
+  );
 }
 
 getList();

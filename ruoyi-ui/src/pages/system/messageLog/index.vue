@@ -74,6 +74,9 @@
         :column-controller="{
           hideTriggerButton: true,
         }"
+        :sort="sort"
+        show-sort-column-bg-color
+        @sort-change="handleSortChange"
         @select-change="handleSelectionChange"
       >
         <template #topContent>
@@ -229,7 +232,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import { BrowseIcon, DeleteIcon, DownloadIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
+import { PageInfo, PrimaryTableCol, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { clearMessageLog, delMessageLog, getMessageLog, listMessageLog } from '@/api/system/messageLog';
@@ -253,6 +256,7 @@ const ids = ref([]);
 const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
+const sort = ref<TableSort>(null);
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
@@ -266,7 +270,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `平台标识`, colKey: 'supplierType', align: 'center' },
   { title: `是否成功`, colKey: 'isSuccess', align: 'center' },
   { title: `返回消息`, colKey: 'message', align: 'center' },
-  { title: `记录时间`, colKey: 'logTime', align: 'center', width: 180 },
+  { title: `记录时间`, colKey: 'logTime', align: 'center', width: 180, sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 // 提交表单对象
@@ -326,10 +330,24 @@ function handleQuery() {
 /** 重置按钮操作 */
 function resetQuery() {
   proxy.resetForm('queryRef');
-  handleQuery();
+  queryParams.value.pageNum = 1;
+  handleSortChange(null);
 }
 
-// 多选框选中数据
+/** 排序触发事件 */
+function handleSortChange(value?: TableSort) {
+  sort.value = value;
+  if (Array.isArray(value)) {
+    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
+    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
+  } else {
+    queryParams.value.orderByColumn = value?.sortBy;
+    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
+  }
+  getList();
+}
+
+/** 多选框选中数据 */
 function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;

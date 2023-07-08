@@ -5,6 +5,7 @@ import cn.hutool.core.util.StrUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.commons.lang3.RegExUtils;
+import org.dromara.common.core.enums.YesNoEnum;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.generator.config.GenConfig;
 import org.dromara.generator.constant.GenConstants;
@@ -67,6 +68,11 @@ public class GenUtils {
         // 设置默认类型
         column.setJavaType(GenConstants.TYPE_STRING);
         column.setQueryType(GenConstants.QUERY_EQ);
+        column.setIsSort(YesNoEnum.NO.getCodeNum().toString());
+        column.setIsInsert(YesNoEnum.NO.getCodeNum().toString());
+        column.setIsEdit(YesNoEnum.NO.getCodeNum().toString());
+        column.setIsList(YesNoEnum.NO.getCodeNum().toString());
+        column.setIsDetail(YesNoEnum.NO.getCodeNum().toString());
 
         if (arraysContains(GenConstants.COLUMN_TYPE_STR, dataType) || arraysContains(GenConstants.COLUMN_TYPE_TEXT, dataType)) {
             // 字符串长度超过500设置为文本域

@@ -12,6 +12,8 @@ export interface SysRoleQuery extends BaseEntity {
   roleKey?: string;
   /** 角色状态（1正常 0停用） */
   status?: string;
+  /** 创建时间 */
+  createTime?: any;
 }
 /**
  * 角色信息业务对象

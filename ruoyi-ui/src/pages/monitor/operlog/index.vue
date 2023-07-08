@@ -65,9 +65,9 @@
           hideTriggerButton: true,
         }"
         :sort="sort"
-        :show-sort-column-bg-color="true"
-        @select-change="handleSelectionChange"
+        show-sort-column-bg-color
         @sort-change="handleSortChange"
+        @select-change="handleSelectionChange"
       >
         <template #topContent>
           <t-row>
@@ -179,12 +179,11 @@ export default {
 </script>
 <script lang="ts" setup>
 import { BrowseIcon, DeleteIcon, DownloadIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
+import { PageInfo, PrimaryTableCol, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { SysOperLogBo, SysOperLogVo } from '@/api/monitor/model/operlogModel';
 import { cleanOperlog, delOperlog, list } from '@/api/monitor/operlog';
-import { TableSort } from '@/types/interface';
 
 const { proxy } = getCurrentInstance();
 const { sys_oper_type, sys_common_status } = proxy.useDict('sys_oper_type', 'sys_common_status');
@@ -198,8 +197,7 @@ const ids = ref([]);
 const multiple = ref(true);
 const total = ref(0);
 const dateRangeOperTime = ref([]);
-const defaultSort = ref({ sortBy: 'operTime', descending: true });
-const sort = ref({ ...defaultSort.value });
+const sort = ref<TableSort>(null);
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
@@ -267,7 +265,7 @@ function resetQuery() {
   dateRangeOperTime.value = [];
   proxy.resetForm('queryRef');
   queryParams.value.pageNum = 1;
-  handleSortChange({ ...defaultSort.value });
+  handleSortChange(null);
 }
 /** 多选框选中数据 */
 function handleSelectionChange(selection: Array<string | number>) {
@@ -275,10 +273,15 @@ function handleSelectionChange(selection: Array<string | number>) {
   multiple.value = !selection.length;
 }
 /** 排序触发事件 */
-function handleSortChange(value: TableSort) {
+function handleSortChange(value?: TableSort) {
   sort.value = value;
-  queryParams.value.orderByColumn = value.sortBy;
-  queryParams.value.isAsc = value.descending ? 'descending' : 'ascending';
+  if (Array.isArray(value)) {
+    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
+    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
+  } else {
+    queryParams.value.orderByColumn = value?.sortBy;
+    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
+  }
   getList();
 }
 /** 详细按钮操作 */

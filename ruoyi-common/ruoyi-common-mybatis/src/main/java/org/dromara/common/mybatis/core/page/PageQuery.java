@@ -2,7 +2,6 @@ package org.dromara.common.mybatis.core.page;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
-import cn.hutool.core.util.StrUtil;
 import cn.hutool.http.HttpStatus;
 import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -10,26 +9,20 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import lombok.Data;
 import lombok.experimental.Accessors;
-import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.ServletUtils;
-import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.core.utils.sql.SqlUtil;
 
 import java.io.Closeable;
 import java.io.IOException;
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Supplier;
-import java.util.stream.Collectors;
 
 /**
  * 分页查询实体类
  *
- * @author Lion Li
+ * @author YiXiacoco、Lion Li
  */
-
 @Data
 @Accessors(chain = true)
 public class PageQuery implements Serializable {
@@ -48,16 +41,6 @@ public class PageQuery implements Serializable {
     public static final String PAGE_SIZE = "pageSize";
 
     /**
-     * 排序列
-     */
-    public static final String ORDER_BY_COLUMN = "orderByColumn";
-
-    /**
-     * 排序的方向 "desc" 或者 "asc".
-     */
-    public static final String IS_ASC = "isAsc";
-
-    /**
      * 分页大小
      */
     private Integer pageSize;
@@ -68,19 +51,14 @@ public class PageQuery implements Serializable {
     private Integer pageNum;
 
     /**
-     * 排序列
-     */
-    private String orderByColumn;
-
-    /**
-     * 排序的方向desc或者asc
-     */
-    private String isAsc;
-
-    /**
      * 查询时是否统计总数
      */
     private boolean isSearchCount = true;
+
+    /**
+     * 排序对象
+     */
+    private SortQuery sortQuery;
 
     /**
      * 当前记录起始索引 默认值
@@ -113,22 +91,12 @@ public class PageQuery implements Serializable {
     }
 
     /**
-     * 使用请求参数设置排序字段名称
+     * 使用请求参数设置排序
      *
      * @return
      */
-    public PageQuery defaultOrderByColumn() {
-        orderByColumn = getRequestOrderByColumn();
-        return this;
-    }
-
-    /**
-     * 使用请求参数设置排序顺序
-     *
-     * @return
-     */
-    public PageQuery defaultIsAsc() {
-        isAsc = getRequestIsAsc();
+    public PageQuery defaultOrder() {
+        sortQuery = SortQuery.of();
         return this;
     }
 
@@ -145,6 +113,20 @@ public class PageQuery implements Serializable {
     /**
      * 使用分页创建对象
      *
+     * @return
+     */
+    public static PageQuery of() {
+        PageQuery pageQuery = new PageQuery();
+        return pageQuery
+            .defaultPageNum()
+            .defaultPageSize()
+            .defaultSearchCount()
+            .defaultOrder();
+    }
+
+    /**
+     * 使用分页创建对象
+     *
      * @param pageNum  页码
      * @param pageSize 每页数量
      * @return
@@ -156,16 +138,36 @@ public class PageQuery implements Serializable {
     /**
      * 使用分页创建对象
      *
-     * @param pageNum  页码
-     * @param pageSize 每页数量
+     * @param pageNum       页码
+     * @param pageSize      每页数量
+     * @param isSearchCount 是否查询统计
      * @return
      */
     public static PageQuery of(Integer pageNum, Integer pageSize, boolean isSearchCount) {
         PageQuery pageQuery = new PageQuery();
-        pageQuery.setPageNum(pageNum);
-        pageQuery.setPageSize(pageSize);
-        pageQuery.setSearchCount(isSearchCount);
-        return pageQuery;
+        return pageQuery
+            .setPageNum(pageNum)
+            .setPageSize(pageSize)
+            .setSearchCount(isSearchCount)
+            .defaultOrder();
+    }
+
+    /**
+     * 使用分页创建对象
+     *
+     * @param pageNum       页码
+     * @param pageSize      每页数量
+     * @param isSearchCount 是否查询统计
+     * @param sortQuery     排序
+     * @return
+     */
+    public static PageQuery of(Integer pageNum, Integer pageSize, boolean isSearchCount, SortQuery sortQuery) {
+        PageQuery pageQuery = new PageQuery();
+        return pageQuery
+            .setPageNum(pageNum)
+            .setPageSize(pageSize)
+            .setSearchCount(isSearchCount)
+            .setSortQuery(sortQuery);
     }
 
     public <T> Page<T> build() {
@@ -175,9 +177,11 @@ public class PageQuery implements Serializable {
             pageNum = DEFAULT_PAGE_NUM;
         }
         Page<T> page = new Page<>(pageNum, pageSize, isSearchCount);
-        List<OrderItem> orderItems = buildOrderItem(orderByColumn, isAsc);
-        if (CollUtil.isNotEmpty(orderItems)) {
-            page.addOrder(orderItems);
+        if (sortQuery != null) {
+            List<OrderItem> orderItems = sortQuery.build();
+            if (CollUtil.isNotEmpty(orderItems)) {
+                page.addOrder(orderItems);
+            }
         }
         return page;
     }
@@ -195,10 +199,7 @@ public class PageQuery implements Serializable {
             List<OrderItem> orderItems = page.orders();
             String orderBy = "";
             if (orderItems != null) {
-                orderBy = orderItems
-                    .stream()
-                    .map(orderItem -> orderItem.getColumn() + (orderItem.isAsc() ? " asc" : " desc"))
-                    .collect(Collectors.joining(","));
+                orderBy = SortQuery.getOrderBy(orderItems);
             }
             try (Closeable close = PageHelper.startPage(pageNum, pageSize, page.searchCount()).setOrderBy(orderBy)) {
                 return wrap(supplier);
@@ -245,65 +246,6 @@ public class PageQuery implements Serializable {
     }
 
     /**
-     * 获取请求中的排序字段
-     *
-     * @return
-     */
-    public static String getRequestOrderByColumn() {
-        return ServletUtils.getParameter(ORDER_BY_COLUMN);
-    }
-
-    /**
-     * 获取请求中的排序顺序
-     *
-     * @return
-     */
-    public static String getRequestIsAsc() {
-        return ServletUtils.getParameter(IS_ASC);
-    }
-
-    /**
-     * 构建排序
-     * <p>
-     * 支持的用法如下:
-     * {isAsc:"asc",orderByColumn:"id"} order by id asc
-     * {isAsc:"asc",orderByColumn:"id,createTime"} order by id asc,create_time asc
-     * {isAsc:"desc",orderByColumn:"id,createTime"} order by id desc,create_time desc
-     * {isAsc:"asc,desc",orderByColumn:"id,createTime"} order by id asc,create_time desc
-     */
-    private static List<OrderItem> buildOrderItem(String orderByColumn, String isAsc) {
-        if (StringUtils.isBlank(orderByColumn) || StringUtils.isBlank(isAsc)) {
-            return null;
-        }
-        String orderBy = SqlUtil.escapeOrderBySql(orderByColumn);
-        orderBy = StringUtils.toUnderScoreCase(orderBy);
-
-        // 兼容前端排序类型
-        isAsc = StringUtils.replaceEach(isAsc, new String[]{"ascending", "descending"}, new String[]{"asc", "desc"});
-
-        String[] orderByArr = orderBy.split(StringUtils.SEPARATOR);
-        String[] isAscArr = isAsc.split(StringUtils.SEPARATOR);
-        if (isAscArr.length != 1 && isAscArr.length != orderByArr.length) {
-            throw new ServiceException("排序参数有误");
-        }
-
-        List<OrderItem> list = new ArrayList<>();
-        // 每个字段各自排序
-        for (int i = 0; i < orderByArr.length; i++) {
-            String orderByStr = StrUtil.toUnderlineCase(orderByArr[i]);
-            String isAscStr = isAscArr.length == 1 ? isAscArr[0] : isAscArr[i];
-            if ("asc".equals(isAscStr)) {
-                list.add(OrderItem.asc(orderByStr));
-            } else if ("desc".equals(isAscStr)) {
-                list.add(OrderItem.desc(orderByStr));
-            } else {
-                throw new ServiceException("排序参数有误");
-            }
-        }
-        return list;
-    }
-
-    /**
      * mybatis分页插件的使用
      *
      * @param supplier 查询方法
@@ -311,13 +253,7 @@ public class PageQuery implements Serializable {
      * @return TableDataInfo
      */
     public static <T> TableDataInfo<T> of(Supplier<List<T>> supplier) {
-        PageQuery pageQuery = new PageQuery();
-        return pageQuery.defaultPageNum()
-            .defaultPageSize()
-            .defaultOrderByColumn()
-            .defaultIsAsc()
-            .defaultSearchCount()
-            .execute(supplier);
+        return of().execute(supplier);
     }
 
 }

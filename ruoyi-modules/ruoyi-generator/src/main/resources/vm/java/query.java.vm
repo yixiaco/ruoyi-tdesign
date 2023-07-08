@@ -21,7 +21,7 @@ import org.dromara.common.mybatis.core.domain.BaseEntity;
 public class ${ClassName}Query extends BaseEntity {
 
 #foreach ($column in $columns)
-#if($column.isQuery == '1' && $column.queryType != "BETWEEN")
+#if($column.isQuery() && $column.queryType != "BETWEEN")
     /**
      * $column.columnComment
      */

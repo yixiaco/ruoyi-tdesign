@@ -30,10 +30,10 @@ public interface ISysNoticeService extends IService<SysNotice> {
     /**
      * 查询公告列表
      *
-     * @param notice 公告信息
+     * @param query 公告信息
      * @return 公告集合
      */
-    List<SysNoticeVo> selectNoticeList(SysNoticeQuery notice);
+    List<SysNoticeVo> selectNoticeList(SysNoticeQuery query);
 
     /**
      * 新增公告
@@ -41,7 +41,7 @@ public interface ISysNoticeService extends IService<SysNotice> {
      * @param bo 公告信息
      * @return 结果
      */
-    Boolean insertNotice(SysNoticeBo notice);
+    Boolean insertNotice(SysNoticeBo bo);
 
     /**
      * 修改公告

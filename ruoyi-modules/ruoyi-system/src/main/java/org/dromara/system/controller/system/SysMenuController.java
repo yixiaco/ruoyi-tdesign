@@ -4,10 +4,12 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.lang.tree.Tree;
+import jakarta.servlet.http.HttpServletResponse;
 import org.dromara.common.core.constant.TenantConstants;
 import org.dromara.common.core.constant.UserConstants;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.excel.utils.ExcelUtil;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.satoken.utils.LoginHelper;
@@ -53,8 +55,8 @@ public class SysMenuController extends BaseController {
      * 获取菜单列表
      */
     @SaCheckRole(value = {
-            TenantConstants.SUPER_ADMIN_ROLE_KEY,
-            TenantConstants.TENANT_ADMIN_ROLE_KEY
+        TenantConstants.SUPER_ADMIN_ROLE_KEY,
+        TenantConstants.TENANT_ADMIN_ROLE_KEY
     }, mode = SaMode.OR)
     @SaCheckPermission("system:menu:list")
     @GetMapping("/list")
@@ -64,13 +66,24 @@ public class SysMenuController extends BaseController {
     }
 
     /**
+     * 导出菜单权限列表
+     */
+    @SaCheckPermission("system:menu:export")
+    @Log(title = "菜单权限", businessType = BusinessType.EXPORT)
+    @PostMapping("/export")
+    public void export(SysMenuQuery query, HttpServletResponse response) {
+        List<SysMenuVo> list = menuService.selectMenuList(query, LoginHelper.getUserId());
+        ExcelUtil.exportExcel(list, "菜单权限", SysMenuVo.class, response);
+    }
+
+    /**
      * 根据菜单编号获取详细信息
      *
      * @param menuId 菜单ID
      */
     @SaCheckRole(value = {
-            TenantConstants.SUPER_ADMIN_ROLE_KEY,
-            TenantConstants.TENANT_ADMIN_ROLE_KEY
+        TenantConstants.SUPER_ADMIN_ROLE_KEY,
+        TenantConstants.TENANT_ADMIN_ROLE_KEY
     }, mode = SaMode.OR)
     @SaCheckPermission("system:menu:query")
     @GetMapping(value = "/{menuId}")
@@ -82,8 +95,8 @@ public class SysMenuController extends BaseController {
      * 获取菜单下拉树列表
      */
     @SaCheckRole(value = {
-            TenantConstants.SUPER_ADMIN_ROLE_KEY,
-            TenantConstants.TENANT_ADMIN_ROLE_KEY
+        TenantConstants.SUPER_ADMIN_ROLE_KEY,
+        TenantConstants.TENANT_ADMIN_ROLE_KEY
     }, mode = SaMode.OR)
     @SaCheckPermission("system:menu:query")
     @GetMapping("/treeselect")
@@ -98,8 +111,8 @@ public class SysMenuController extends BaseController {
      * @param roleId 角色ID
      */
     @SaCheckRole(value = {
-            TenantConstants.SUPER_ADMIN_ROLE_KEY,
-            TenantConstants.TENANT_ADMIN_ROLE_KEY
+        TenantConstants.SUPER_ADMIN_ROLE_KEY,
+        TenantConstants.TENANT_ADMIN_ROLE_KEY
     }, mode = SaMode.OR)
     @SaCheckPermission("system:menu:query")
     @GetMapping(value = "/roleMenuTreeselect/{roleId}")

@@ -16,6 +16,7 @@ import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.TreeBuildUtils;
 import org.dromara.common.core.utils.spring.SpringUtils;
+import org.dromara.common.mybatis.core.page.SortQuery;
 import org.dromara.common.mybatis.helper.DataBaseHelper;
 import org.dromara.common.redis.utils.CacheUtils;
 import org.dromara.common.satoken.utils.LoginHelper;
@@ -59,7 +60,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      */
     @Override
     public List<SysDeptVo> selectDeptList(SysDeptQuery dept) {
-        return baseMapper.queryList(dept);
+        return SortQuery.of(() -> baseMapper.queryList(dept));
     }
 
     /**

@@ -26,14 +26,14 @@ import java.util.Date;
 public class ${ClassName}Bo extends BaseEntity {
 
 #foreach ($column in $columns)
-#if(($column.isPk == '1' || $column.isInsert == '1' || $column.isEdit == '1'))
+#if(($column.isPk() || $column.isInsert() || $column.isEdit()))
     /**
      * $column.columnComment
      */
-#if($column.isRequired == 1)
+#if($column.isRequired())
 #set($Group0 = [])
 #if($column.isInsert && $Group0.add('AddGroup.class'))#end
-#if(($column.isEdit == '1' || $column.isPk == '1') && $Group0.add('EditGroup.class'))#end
+#if(($column.isEdit() || $column.isPk()) && $Group0.add('EditGroup.class'))#end
 #set($Group = $StringUtils.join($Group0, ", "))
 #if($column.javaType == 'String')
     @NotBlank(message = "$column.columnComment不能为空"#if($Group), groups = {${Group}}#end)

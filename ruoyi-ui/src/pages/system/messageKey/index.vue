@@ -33,6 +33,9 @@
         :column-controller="{
           hideTriggerButton: true,
         }"
+        :sort="sort"
+        show-sort-column-bg-color
+        @sort-change="handleSortChange"
         @select-change="handleSelectionChange"
       >
         <template #topContent>
@@ -194,7 +197,7 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { addMessageKey, delMessageKey, getMessageKey, listMessageKey, updateMessageKey } from '@/api/system/messageKey';
@@ -216,6 +219,7 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
+const sort = ref<TableSort>(null);
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
@@ -226,10 +230,10 @@ const rules = ref<Record<string, Array<FormRule>>>({
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
   { title: `消息名称`, colKey: 'name', align: 'center' },
-  { title: `消息key`, colKey: 'messageKey', align: 'center' },
+  { title: `消息key`, colKey: 'messageKey', align: 'center', sorter: true },
   { title: `备注`, colKey: 'remark', align: 'center', ellipsis: true },
-  { title: `更新时间`, colKey: 'updateTime', align: 'center', width: 180 },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
+  { title: `更新时间`, colKey: 'updateTime', align: 'center', width: 180, sorter: true },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180, sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 // 提交表单对象
@@ -283,10 +287,24 @@ function handleQuery() {
 /** 重置按钮操作 */
 function resetQuery() {
   proxy.resetForm('queryRef');
-  handleQuery();
+  queryParams.value.pageNum = 1;
+  handleSortChange(null);
 }
 
-// 多选框选中数据
+/** 排序触发事件 */
+function handleSortChange(value?: TableSort) {
+  sort.value = value;
+  if (Array.isArray(value)) {
+    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
+    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
+  } else {
+    queryParams.value.orderByColumn = value?.sortBy;
+    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
+  }
+  getList();
+}
+
+/** 多选框选中数据 */
 function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;

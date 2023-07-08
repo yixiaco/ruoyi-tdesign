@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.common.mybatis.core.page.SortQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysMessageConfig;
 import org.dromara.system.domain.SysMessageTemplate;
@@ -63,7 +64,7 @@ public class SysMessageConfigServiceImpl extends ServiceImpl<SysMessageConfigMap
      */
     @Override
     public List<SysMessageConfigVo> queryList(SysMessageConfigQuery query) {
-        return baseMapper.queryList(query);
+        return SortQuery.of(() -> baseMapper.queryList(query));
     }
 
     /**

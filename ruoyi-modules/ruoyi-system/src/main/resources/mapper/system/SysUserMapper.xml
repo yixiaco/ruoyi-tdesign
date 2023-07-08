@@ -34,6 +34,7 @@
                u.login_ip,
                u.login_date,
                u.create_by,
+               u.update_time,
                u.create_time,
                u.remark,
                d.dept_id,
@@ -60,7 +61,7 @@
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysUserQuery" resultMap="SysUserResult">
         select su.user_id, su.dept_id, su.nick_name, su.user_name, su.email, su.avatar, su.phonenumber, su.sex,
-        su.status, su.del_flag, su.login_ip, su.login_date, su.create_by, su.create_time, su.remark, sd.dept_name, sd.leader from
+        su.status, su.del_flag, su.login_ip, su.login_date, su.create_by, su.update_time, su.create_time, su.remark, sd.dept_name, sd.leader from
         sys_user su
         left join sys_dept sd on su.dept_id = sd.dept_id
         <where>

@@ -40,6 +40,9 @@
           hideTriggerButton: true,
         }"
         :tree="{ childrenKey: 'children', expandTreeNodeOnClick: true }"
+        :sort="sort"
+        show-sort-column-bg-color
+        @sort-change="handleSortChange"
       >
         <template #topContent>
           <t-row>
@@ -51,6 +54,10 @@
               <t-button theme="default" variant="outline" @click="toggleExpandAll">
                 <template #icon> <unfold-more-icon /> </template>
                 展开/折叠
+              </t-button>
+              <t-button v-hasPermi="['system:dept:export']" theme="default" variant="outline" @click="handleExport">
+                <template #icon> <download-icon /> </template>
+                导出
               </t-button>
             </t-col>
             <t-col flex="none">
@@ -171,6 +178,7 @@ export default {
 import {
   AddIcon,
   DeleteIcon,
+  DownloadIcon,
   EditIcon,
   RefreshIcon,
   SearchIcon,
@@ -183,6 +191,7 @@ import {
   FormRule,
   PrimaryTableCol,
   SubmitContext,
+  TableSort,
 } from 'tdesign-vue-next';
 import { getCurrentInstance, ref } from 'vue';
 
@@ -200,6 +209,7 @@ const showSearch = ref(true);
 const title = ref('');
 const deptOptions = ref([]);
 const isExpandAll = ref(true);
+const sort = ref<TableSort>(null);
 const tableRef = ref<EnhancedTableInstanceFunctions>(null);
 const deptRef = ref<FormInstanceFunctions>(null);
 const columnControllerVisible = ref(false);
@@ -212,9 +222,9 @@ const formInitValue = {
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `部门名称`, colKey: 'deptName', align: 'left', width: 260, ellipsis: true },
-  { title: `排序`, colKey: 'orderNum', align: 'center', width: 200 },
+  { title: `排序`, colKey: 'orderNum', align: 'center', width: 200, sorter: true },
   { title: `状态`, colKey: 'status', align: 'center', width: 100 },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 200, ellipsis: true },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 200, ellipsis: true, sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
 
@@ -254,7 +264,19 @@ function handleQuery() {
 /** 重置按钮操作 */
 function resetQuery() {
   proxy.resetForm('queryRef');
-  handleQuery();
+  handleSortChange(null);
+}
+/** 排序触发事件 */
+function handleSortChange(value?: TableSort) {
+  sort.value = value;
+  if (Array.isArray(value)) {
+    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
+    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
+  } else {
+    queryParams.value.orderByColumn = value?.sortBy;
+    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
+  }
+  getList();
 }
 /** 新增按钮操作 */
 function handleAdd(row: SysDeptVo) {
@@ -344,6 +366,17 @@ function handleDelete(row: SysDeptVo) {
       })
       .finally(() => proxy.$modal.msgClose(msgLoading));
   });
+}
+
+/** 导出按钮操作 */
+function handleExport() {
+  proxy.download(
+    'system/dept/export',
+    {
+      ...queryParams.value,
+    },
+    `dept_${new Date().getTime()}.xlsx`,
+  );
 }
 
 getList();
