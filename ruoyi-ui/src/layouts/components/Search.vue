@@ -5,6 +5,9 @@
       :class="['header-search', { 'hover-active': isSearchFocus }]"
       placeholder="请输入搜索内容"
       :options="options"
+      :popup-props="{
+        overlayInnerClassName: ['search-popup'],
+      }"
       @blur="changeSearchFocus(false)"
       @focus="changeSearchFocus(true)"
     >
@@ -33,6 +36,9 @@
       placeholder="输入要搜索内容"
       :autofocus="isSearchFocus"
       :options="options"
+      :popup-props="{
+        overlayInnerClassName: ['search-popup'],
+      }"
       @blur="changeSearchFocus(false)"
     >
       <template #prefix-icon>
@@ -106,6 +112,12 @@ function getLeftMenus(menus: Array<MenuRoute>, parent?: MenuRoute): MenuRoute[] 
   });
 }
 </script>
+<!-- eslint-disable-next-line vue-scoped-css/enforce-style-type -->
+<style lang="less">
+.search-popup {
+  width: auto !important;
+}
+</style>
 <style lang="less" scoped>
 .header-menu-search {
   display: flex;
