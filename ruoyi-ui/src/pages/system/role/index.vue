@@ -77,7 +77,7 @@
                 theme="default"
                 variant="outline"
                 :disabled="single"
-                @click="handleUpdate"
+                @click="handleUpdate()"
               >
                 <template #icon> <edit-icon /> </template>
                 修改
@@ -87,7 +87,7 @@
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
-                @click="handleDelete"
+                @click="handleDelete()"
               >
                 <template #icon> <delete-icon /> </template>
                 删除
@@ -291,6 +291,7 @@ import {
   SubmitContext,
   TableSort,
   TreeInstanceFunctions,
+  TreeNodeValue,
 } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 import { useRouter } from 'vue-router';
@@ -336,8 +337,8 @@ const roleRef = ref<FormInstanceFunctions>(null);
 const dataScopeRef = ref(null);
 const menuIds = ref<number[]>([]);
 const deptIds = ref<number[]>([]);
-const menuExpandNode = ref<number[]>([]);
-const deptExpandNode = ref<number[]>([]);
+const menuExpandNode = ref<TreeNodeValue[]>([]);
+const deptExpandNode = ref<TreeNodeValue[]>([]);
 const columnControllerVisible = ref(false);
 const sort = ref<TableSort>(null);
 
@@ -434,8 +435,8 @@ function handleSortChange(value?: TableSort) {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row: SysRoleVo) {
-  const roleIds = row.roleId || ids.value;
+function handleDelete(row?: SysRoleVo) {
+  const roleIds = row?.roleId || ids.value;
   proxy.$modal.confirm(`是否确认删除角色编号为"${roleIds}"的数据项?`, () => {
     return delRole(roleIds).then(() => {
       getList();
@@ -528,9 +529,9 @@ function handleAdd() {
   title.value = '添加角色';
 }
 /** 修改角色 */
-function handleUpdate(row: SysRoleVo) {
+function handleUpdate(row?: SysRoleVo) {
   reset();
-  const roleId = row.roleId || ids.value.at(0);
+  const roleId = row?.roleId || ids.value.at(0);
   const roleMenu = getRoleMenuTreeselect(roleId);
   getRole(roleId).then((response) => {
     form.value = response.data;
@@ -590,7 +591,7 @@ function handleCheckedTreeNodeAll(value: boolean, type: string) {
     }
   }
 }
-function onExpand(type: string, value: number[]) {
+function onExpand(type: string, value: TreeNodeValue[]) {
   if (type === 'menu') {
     menuExpandNode.value = value;
   } else if (type === 'dept') {

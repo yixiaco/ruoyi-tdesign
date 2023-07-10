@@ -89,7 +89,7 @@
         <template #topContent>
           <t-row>
             <t-col flex="auto">
-              <t-button v-hasPermi="['${moduleName}:${businessName}:add']" theme="primary" @click="handleAdd">
+              <t-button v-hasPermi="['${moduleName}:${businessName}:add']" theme="primary" @click="handleAdd()">
                 <template #icon> <add-icon /></template>
                 新增
               </t-button>
@@ -561,7 +561,7 @@ function handleSortChange(value?: TableSort) {
 
 #end
 /** 新增按钮操作 */
-function handleAdd(row: ${vo}) {
+function handleAdd(row?: ${vo}) {
   reset();
   getTreeselect();
   if (row != null && row.${treeCode}) {
@@ -603,7 +603,7 @@ function handleDetail(row: ${vo}) {
 }
 
 /** 修改按钮操作 */
-async function handleUpdate(row: ${vo}) {
+async function handleUpdate(row?: ${vo}) {
   buttonLoading.value = true;
   reset();
   open.value = true;

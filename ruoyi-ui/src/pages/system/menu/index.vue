@@ -47,7 +47,7 @@
         <template #topContent>
           <t-row>
             <t-col flex="auto">
-              <t-button v-hasPermi="['system:menu:add']" theme="primary" @click="handleAdd">
+              <t-button v-hasPermi="['system:menu:add']" theme="primary" @click="handleAdd()">
                 <template #icon> <add-icon /></template>
                 新增
               </t-button>
@@ -423,7 +423,7 @@ function handleSortChange(value?: TableSort) {
   getList();
 }
 /** 新增按钮操作 */
-function handleAdd(row: SysMenuVo) {
+function handleAdd(row?: SysMenuVo) {
   reset();
   open.value = true;
   title.value = '添加菜单';

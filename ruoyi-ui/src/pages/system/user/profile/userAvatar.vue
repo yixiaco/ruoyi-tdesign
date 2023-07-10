@@ -40,7 +40,7 @@
         </t-col>
         <t-col :xs="12" :md="6" :style="{ height: '350px' }">
           <div class="avatar-upload-preview">
-            <img :src="options.previews.url" :style="options.previews.img" />
+            <img :src="previews.url" :style="previews.img" />
           </div>
         </t-col>
       </t-row>
@@ -125,8 +125,9 @@ const options = reactive({
   fixedBox: true, // 固定截图框大小 不允许改变
   outputType: 'png', // 默认生成截图为PNG格式
   filename: '',
-  previews: {}, // 预览数据
 });
+// 预览数据
+const previews = ref<Record<string, any>>({});
 
 /** 编辑头像 */
 function editCropper() {
@@ -188,7 +189,7 @@ function uploadImg() {
 }
 /** 实时预览 */
 function realTime(data: any) {
-  options.previews = data;
+  previews.value = data;
 }
 /** 关闭窗口 */
 function closeDialog() {

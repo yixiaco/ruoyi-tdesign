@@ -73,7 +73,7 @@
                 theme="default"
                 variant="outline"
                 :disabled="single"
-                @click="handleUpdate"
+                @click="handleUpdate()"
               >
                 <template #icon> <edit-icon /> </template>
                 修改
@@ -83,7 +83,7 @@
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
-                @click="handleDelete"
+                @click="handleDelete()"
               >
                 <template #icon> <delete-icon /> </template>
                 删除
@@ -291,12 +291,12 @@ function handleSelectionChange(selection: Array<string | number>) {
   multiple.value = !selection.length;
 }
 /** 修改按钮操作 */
-function handleUpdate(row: SysDictTypeVo) {
+function handleUpdate(row?: SysDictTypeVo) {
   reset();
   open.value = true;
   title.value = '修改字典类型';
   eLoading.value = true;
-  const dictId = row.dictId || ids.value.at(0);
+  const dictId = row?.dictId || ids.value.at(0);
   getType(dictId).then((response) => {
     form.value = response.data;
     eLoading.value = false;
@@ -331,8 +331,8 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
   }
 }
 /** 删除按钮操作 */
-function handleDelete(row: SysDictTypeVo) {
-  const dictIds = row.dictId || ids.value;
+function handleDelete(row?: SysDictTypeVo) {
+  const dictIds = row?.dictId || ids.value;
   proxy.$modal.confirm(`是否确认删除字典编号为"${dictIds}"的数据项？`, () => {
     return delType(dictIds).then(() => {
       getList();

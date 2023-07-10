@@ -22,22 +22,12 @@
         </t-form-item>
         <t-form-item label="公告类型" name="noticeType">
           <t-select v-model="queryParams.noticeType" placeholder="请选择公告类型" clearable>
-            <t-option
-              v-for="dict in sys_notice_type"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
+            <t-option v-for="dict in sys_notice_type" :key="dict.value" :label="dict.label" :value="dict.value" />
           </t-select>
         </t-form-item>
         <t-form-item label="公告状态" name="status">
           <t-select v-model="queryParams.status" placeholder="请选择公告状态" clearable>
-            <t-option
-              v-for="dict in sys_notice_status"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
+            <t-option v-for="dict in sys_notice_status" :key="dict.value" :label="dict.label" :value="dict.value" />
           </t-select>
         </t-form-item>
         <t-form-item label-width="0px">
@@ -82,7 +72,7 @@
                 theme="default"
                 variant="outline"
                 :disabled="single"
-                @click="handleUpdate"
+                @click="handleUpdate()"
               >
                 <template #icon> <edit-icon /> </template>
                 修改
@@ -92,7 +82,7 @@
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
-                @click="handleDelete"
+                @click="handleDelete()"
               >
                 <template #icon> <delete-icon /> </template>
                 删除
@@ -322,12 +312,12 @@ function handleAdd() {
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row: SysNoticeVo) {
+function handleUpdate(row?: SysNoticeVo) {
   reset();
   open.value = true;
   title.value = '修改公告';
   eLoading.value = true;
-  const noticeId = row.noticeId || ids.value.at(0);
+  const noticeId = row?.noticeId || ids.value.at(0);
   getNotice(noticeId).then((response) => {
     form.value = response.data;
     eLoading.value = false;
@@ -366,8 +356,8 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row: SysNoticeVo) {
-  const noticeIds = row.noticeId || ids.value;
+function handleDelete(row?: SysNoticeVo) {
+  const noticeIds = row?.noticeId || ids.value;
   proxy.$modal.confirm(`是否确认删除公告编号为"${noticeIds}"的数据项？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delNotice(noticeIds)

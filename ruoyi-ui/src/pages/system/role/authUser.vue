@@ -101,7 +101,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import { AddIcon, CloseCircleIcon, CloseIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { PageInfo } from 'tdesign-vue-next';
+import { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -126,7 +126,7 @@ const columnControllerVisible = ref(false);
 const selectRef = ref(null);
 
 // 列显隐信息
-const columns = ref([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
   { title: `用户名称`, colKey: 'userName', align: 'center', ellipsis: true },
   { title: `用户昵称`, colKey: 'nickName', ellipsis: true, align: 'center' },
@@ -203,7 +203,7 @@ function cancelAuthUser(row: SysUserVo) {
   });
 }
 /** 批量取消授权按钮操作 */
-function cancelAuthUserAll(row: SysUserVo) {
+function cancelAuthUserAll() {
   const { roleId } = queryParams;
   const uIds = userIds.value.join(',');
   proxy.$modal.confirm('是否取消选中用户授权数据项?', () => {

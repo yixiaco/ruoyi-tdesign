@@ -60,7 +60,7 @@ export default {
       }
     });
   },
-  saveAs(text: any, name: any, opts: any) {
+  saveAs(text: any, name: any, opts?: any) {
     saveAs(text, name, opts);
   },
   async printErrMsg(data: { text: () => any }) {
@@ -68,6 +68,6 @@ export default {
     const rspObj = JSON.parse(resText);
     // @ts-ignore
     const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode.default;
-    MessagePlugin.error(errMsg);
+    await MessagePlugin.error(errMsg);
   },
 };
