@@ -102,7 +102,7 @@
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
-                @click="handleDelete"
+                @click="handleDelete()"
               >
                 <template #icon> <delete-icon /> </template>
                 删除
@@ -383,8 +383,8 @@ function handlePreviewListResource(preview: boolean) {
   });
 }
 /** 删除按钮操作 */
-function handleDelete(row: SysOssVo) {
-  const ossIds = row.ossId || ids.value;
+function handleDelete(row?: SysOssVo) {
+  const ossIds = row?.ossId || ids.value;
   proxy.$modal.confirm(`是否确认删除OSS对象存储编号为"${ossIds}"的数据项?`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delOss(ossIds)

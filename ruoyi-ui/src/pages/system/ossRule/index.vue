@@ -62,7 +62,7 @@
                 theme="default"
                 variant="outline"
                 :disabled="single"
-                @click="handleUpdate"
+                @click="handleUpdate()"
               >
                 <template #icon> <edit-icon /> </template>
                 修改
@@ -72,7 +72,7 @@
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
-                @click="handleDelete"
+                @click="handleDelete()"
               >
                 <template #icon> <delete-icon /> </template>
                 删除
@@ -403,12 +403,12 @@ function handleDetail(row: SysOssRuleVo) {
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row: SysOssRuleVo) {
+function handleUpdate(row?: SysOssRuleVo) {
   buttonLoading.value = true;
   reset();
   open.value = true;
   title.value = '修改OSS处理规则';
-  const ossRuleId = row.ossRuleId || ids.value.at(0);
+  const ossRuleId = row?.ossRuleId || ids.value.at(0);
   getOssRule(ossRuleId).then((response) => {
     buttonLoading.value = false;
     form.value = response.data;
@@ -454,8 +454,8 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row: SysOssRuleVo) {
-  const ossRuleIds = row.ossRuleId || ids.value;
+function handleDelete(row?: SysOssRuleVo) {
+  const ossRuleIds = row?.ossRuleId || ids.value;
   proxy.$modal.confirm(`是否确认删除OSS处理规则编号为${ossRuleIds}的数据项？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delOssRule(ossRuleIds)

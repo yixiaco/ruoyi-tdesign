@@ -67,7 +67,7 @@
         <template #topContent>
           <t-row>
             <t-col flex="auto">
-              <t-button v-hasPermi="['tool:gen:code']" theme="primary" @click="handleGenTable">
+              <t-button v-hasPermi="['tool:gen:code']" theme="primary" @click="handleGenTable()">
                 <template #icon> <download-icon /></template>
                 生成
               </t-button>
@@ -80,7 +80,7 @@
                 theme="default"
                 variant="outline"
                 :disabled="single"
-                @click="handleEditTable"
+                @click="handleEditTable()"
               >
                 <template #icon> <edit-icon /> </template>
                 修改
@@ -90,7 +90,7 @@
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
-                @click="handleDelete"
+                @click="handleDelete()"
               >
                 <template #icon> <delete-icon /> </template>
                 删除
@@ -190,7 +190,7 @@ import {
   SettingIcon,
   UploadIcon,
 } from 'tdesign-icons-vue-next';
-import {PageInfo, PrimaryTableCol, SelectOptions, TableSort} from 'tdesign-vue-next';
+import { PageInfo, PrimaryTableCol, SelectOptions, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, onActivated, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
@@ -300,7 +300,7 @@ function handleQuery() {
 }
 
 /** 生成代码操作 */
-function handleGenTable(row: GenTable) {
+function handleGenTable(row?: GenTable) {
   const tbIds = row?.tableId || ids.value;
   if (!row?.tableId && ids.value.length === 0) {
     proxy.$modal.msgError('请选择要生成的数据');
@@ -373,13 +373,13 @@ function handleSelectionChange(selection: Array<string | number>, { selectedRowD
   multiple.value = !selection.length;
 }
 /** 修改按钮操作 */
-function handleEditTable(row: GenTable) {
-  const tableId = row.tableId || ids.value[0];
+function handleEditTable(row?: GenTable) {
+  const tableId = row?.tableId || ids.value[0];
   router.push({ path: `/tool/gen-edit/index/${tableId}`, query: { pageNum: queryParams.value.pageNum } });
 }
 /** 删除按钮操作 */
-function handleDelete(row: GenTable) {
-  const tableIds = row.tableId || ids.value;
+function handleDelete(row?: GenTable) {
+  const tableIds = row?.tableId || ids.value;
   proxy.$modal.confirm(`是否确认删除表编号为"${tableIds}"的数据项？`, () => {
     return delTable(tableIds).then(() => {
       getList();

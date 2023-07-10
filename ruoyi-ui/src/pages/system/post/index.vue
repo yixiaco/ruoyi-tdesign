@@ -67,7 +67,7 @@
                 theme="default"
                 variant="outline"
                 :disabled="single"
-                @click="handleUpdate"
+                @click="handleUpdate()"
               >
                 <template #icon> <edit-icon /> </template>
                 修改
@@ -77,7 +77,7 @@
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
-                @click="handleDelete"
+                @click="handleDelete()"
               >
                 <template #icon> <delete-icon /> </template>
                 删除
@@ -287,12 +287,12 @@ function handleAdd() {
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row: SysPostVo) {
+function handleUpdate(row?: SysPostVo) {
   reset();
   open.value = true;
   title.value = '修改岗位';
   eLoading.value = true;
-  const postId = row.postId || ids.value.at(0);
+  const postId = row?.postId || ids.value.at(0);
   getPost(postId).then((response) => {
     form.value = response.data;
     eLoading.value = false;
@@ -330,8 +330,8 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
   }
 }
 /** 删除按钮操作 */
-function handleDelete(row: SysPostVo) {
-  const postIds = row.postId || ids.value;
+function handleDelete(row?: SysPostVo) {
+  const postIds = row?.postId || ids.value;
   proxy.$modal.confirm(`是否确认删除岗位编号为"${postIds}"的数据项？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delPost(postIds)

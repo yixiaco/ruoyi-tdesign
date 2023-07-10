@@ -115,7 +115,7 @@
                     theme="default"
                     variant="outline"
                     :disabled="single"
-                    @click="handleUpdate"
+                    @click="handleUpdate()"
                   >
                     <template #icon> <edit-icon /> </template>
                     修改
@@ -125,7 +125,7 @@
                     theme="danger"
                     variant="outline"
                     :disabled="multiple"
-                    @click="handleDelete"
+                    @click="handleDelete()"
                   >
                     <template #icon> <delete-icon /> </template>
                     删除
@@ -308,7 +308,7 @@
                     :key="item.postId"
                     :label="item.postName"
                     :value="item.postId"
-                    :disabled="item.status === 0"
+                    :disabled="item.status === '0'"
                   ></t-option>
                 </t-select>
               </t-form-item>
@@ -321,7 +321,7 @@
                     :key="item.roleId"
                     :label="item.roleName"
                     :value="item.roleId"
-                    :disabled="item.status === 0"
+                    :disabled="item.status === '0'"
                   ></t-option>
                 </t-select>
               </t-form-item>
@@ -625,8 +625,8 @@ function handleSortChange(value?: TableSort) {
   getList();
 }
 /** 删除按钮操作 */
-function handleDelete(row: SysUserVo) {
-  const userIds = row.userId || ids.value;
+function handleDelete(row?: SysUserVo) {
+  const userIds = row?.userId || ids.value;
   proxy.$modal.confirm(`是否确认删除用户编号为"${userIds}"的数据项？`, () => {
     return delUser(userIds).then(() => {
       getList();
@@ -714,6 +714,7 @@ const handleFileSuccess = (context: SuccessContext) => {
   upload.isUploading = false;
   uploadRef.value.uploadFiles([]);
   proxy.$modal.alert({
+    // @ts-ignore
     body: createVNode(
       'div',
       { style: 'overflow: auto;overflow-x: hidden;max-height: 70vh;padding: 10px 20px 0;' },
@@ -775,9 +776,9 @@ function handleAdd() {
     });
 }
 /** 修改按钮操作 */
-function handleUpdate(row: SysUserVo) {
+function handleUpdate(row?: SysUserVo) {
   reset();
-  const userId = row.userId || ids.value.at(0);
+  const userId = row?.userId || ids.value.at(0);
   open.value = true;
   dLoading.value = true;
   getDeptTree();

@@ -44,7 +44,7 @@
                 theme="default"
                 variant="outline"
                 :disabled="single"
-                @click="handleUpdate"
+                @click="handleUpdate()"
               >
                 <template #icon> <edit-icon /> </template>
                 修改
@@ -54,7 +54,7 @@
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
-                @click="handleDelete"
+                @click="handleDelete()"
               >
                 <template #icon> <delete-icon /> </template>
                 删除
@@ -410,12 +410,12 @@ function handleDetail(row: SysTenantPackageVo) {
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row: SysTenantPackageVo) {
+function handleUpdate(row?: SysTenantPackageVo) {
   buttonLoading.value = true;
   reset();
   open.value = true;
   title.value = '修改租户套餐';
-  const packageId = row.packageId || ids.value.at(0);
+  const packageId = row?.packageId || ids.value.at(0);
   getPackageMenuTreeselect(packageId).then((res) => {
     menuIds.value = res.data.checkedKeys;
   });
@@ -492,8 +492,8 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row: SysTenantPackageVo) {
-  const packageIds = row.packageId || ids.value;
+function handleDelete(row?: SysTenantPackageVo) {
+  const packageIds = row?.packageId || ids.value;
   proxy.$modal.confirm(`是否确认删除租户套餐编号为${packageIds}的数据项？`, () => {
     loading.value = true;
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');

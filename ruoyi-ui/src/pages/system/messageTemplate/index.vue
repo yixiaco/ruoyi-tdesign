@@ -70,7 +70,7 @@
                 theme="default"
                 variant="outline"
                 :disabled="single"
-                @click="handleUpdate"
+                @click="handleUpdate()"
               >
                 <template #icon> <edit-icon /> </template>
                 修改
@@ -80,7 +80,7 @@
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
-                @click="handleDelete"
+                @click="handleDelete()"
               >
                 <template #icon> <delete-icon /> </template>
                 删除
@@ -690,12 +690,12 @@ function handleDetail(row: SysMessageTemplateVo) {
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row: SysMessageTemplateVo) {
+function handleUpdate(row?: SysMessageTemplateVo) {
   buttonLoading.value = true;
   reset();
   open.value = true;
   title.value = '修改消息模板';
-  const messageTemplateId = row.messageTemplateId || ids.value.at(0);
+  const messageTemplateId = row?.messageTemplateId || ids.value.at(0);
   getMessageTemplate(messageTemplateId).then((response) => {
     buttonLoading.value = false;
     const varsList = JSON.parse(response.data.varsJson);
@@ -771,8 +771,8 @@ function submitFormTest({ validateResult, firstError }: SubmitContext) {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row: SysMessageTemplateVo) {
-  const messageTemplateIds = row.messageTemplateId || ids.value;
+function handleDelete(row?: SysMessageTemplateVo) {
+  const messageTemplateIds = row?.messageTemplateId || ids.value;
   proxy.$modal.confirm(`是否确认删除消息模板编号为${messageTemplateIds}的数据项？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delMessageTemplate(messageTemplateIds)

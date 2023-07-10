@@ -53,7 +53,7 @@
                 theme="default"
                 variant="outline"
                 :disabled="single"
-                @click="handleUpdate"
+                @click="handleUpdate()"
               >
                 <template #icon> <edit-icon /> </template>
                 修改
@@ -63,7 +63,7 @@
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
-                @click="handleDelete"
+                @click="handleDelete()"
               >
                 <template #icon> <delete-icon /> </template>
                 删除
@@ -473,12 +473,12 @@ function handleDetail(row: SysTenantVo) {
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row: SysTenantVo) {
+function handleUpdate(row?: SysTenantVo) {
   buttonLoading.value = true;
   reset();
   open.value = true;
   title.value = '修改租户';
-  const id = row.id || ids.value.at(0);
+  const id = row?.id || ids.value.at(0);
   getTenantPackage();
   getTenant(id).then((response) => {
     buttonLoading.value = false;
@@ -525,9 +525,9 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row: SysTenantVo) {
-  const $ids = row.id || ids.value.at(0);
-  proxy.$modal.confirm(`是否确认删除租户编号为${row.tenantId}的数据项？`, () => {
+function handleDelete(row?: SysTenantVo) {
+  const $ids = row?.id || ids.value.at(0);
+  proxy.$modal.confirm(`是否确认删除租户编号为${$ids}的数据项？`, () => {
     loading.value = true;
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delTenant($ids)

@@ -50,7 +50,7 @@
                 theme="default"
                 variant="outline"
                 :disabled="single"
-                @click="handleUpdate"
+                @click="handleUpdate()"
               >
                 <template #icon> <edit-icon /> </template>
                 修改
@@ -60,7 +60,7 @@
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
-                @click="handleDelete"
+                @click="handleDelete()"
               >
                 <template #icon> <delete-icon /> </template>
                 删除
@@ -331,12 +331,12 @@ function handleDetail(row: SysMessageKeyVo) {
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row: SysMessageKeyVo) {
+function handleUpdate(row?: SysMessageKeyVo) {
   buttonLoading.value = true;
   reset();
   open.value = true;
   title.value = '修改消息常量';
-  const messageKeyId = row.messageKeyId || ids.value.at(0);
+  const messageKeyId = row?.messageKeyId || ids.value.at(0);
   getMessageKey(messageKeyId).then((response) => {
     buttonLoading.value = false;
     form.value = response.data;
@@ -382,8 +382,8 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row: SysMessageKeyVo) {
-  const messageKeyIds = row.messageKeyId || ids.value;
+function handleDelete(row?: SysMessageKeyVo) {
+  const messageKeyIds = row?.messageKeyId || ids.value;
   proxy.$modal.confirm(`是否确认删除消息常量编号为${messageKeyIds}的数据项？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delMessageKey(messageKeyIds)

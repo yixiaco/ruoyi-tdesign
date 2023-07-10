@@ -52,7 +52,7 @@
                 theme="default"
                 variant="outline"
                 :disabled="single"
-                @click="handleUpdate"
+                @click="handleUpdate()"
               >
                 <template #icon> <edit-icon /> </template>
                 修改
@@ -62,7 +62,7 @@
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
-                @click="handleDelete"
+                @click="handleDelete()"
               >
                 <template #icon> <delete-icon /> </template>
                 删除
@@ -315,12 +315,12 @@ function handleDetail(row: SysAppVo) {
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row: SysAppVo) {
+function handleUpdate(row?: SysAppVo) {
   buttonLoading.value = true;
   reset();
   open.value = true;
   title.value = '修改应用管理';
-  const appid = row.appid || ids.value.at(0);
+  const appid = row?.appid || ids.value.at(0);
   getApp(appid).then((response) => {
     buttonLoading.value = false;
     form.value = response.data;
@@ -366,8 +366,8 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row: SysAppVo) {
-  const appids = row.appid || ids.value;
+function handleDelete(row?: SysAppVo) {
+  const appids = row?.appid || ids.value;
   proxy.$modal.confirm(`是否确认删除应用管理编号为${appids}的数据项？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delApp(appids)

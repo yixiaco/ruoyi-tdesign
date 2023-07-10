@@ -25,7 +25,7 @@ export interface FieldConfig<T extends string | number | boolean | Array<string 
   /** 其他校验规则 */
   rules?: FormRule[];
   /** 组件类型 */
-  type?: string;
+  type?: 'number' | 'submit' | 'url' | 'text' | 'search' | 'password' | 'hidden' | 'tel';
 }
 export type SupplierConfig = Record<string, FieldConfig<any>>;
 export class MessageConfig {

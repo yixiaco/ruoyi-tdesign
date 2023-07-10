@@ -72,7 +72,7 @@
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
-                @click="handleDelete"
+                @click="handleDelete()"
               >
                 <template #icon> <delete-icon /> </template>
                 删除
@@ -230,8 +230,8 @@ function handleSortChange(value?: TableSort) {
   getList();
 }
 /** 删除按钮操作 */
-function handleDelete(row: SysLogininforVo) {
-  const infoIds = row.infoId || ids.value;
+function handleDelete(row?: SysLogininforVo) {
+  const infoIds = row?.infoId || ids.value;
   proxy.$modal.confirm(`是否确认删除访问编号为"${infoIds}"的数据项?`, () => {
     return delLogininfor(infoIds).then(() => {
       getList();

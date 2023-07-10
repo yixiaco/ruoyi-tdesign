@@ -65,7 +65,7 @@
                 theme="default"
                 variant="outline"
                 :disabled="single"
-                @click="handleUpdate"
+                @click="handleUpdate()"
               >
                 <template #icon> <edit-icon /> </template>
                 修改
@@ -75,7 +75,7 @@
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
-                @click="handleDelete"
+                @click="handleDelete()"
               >
                 <template #icon> <delete-icon /> </template>
                 删除
@@ -350,10 +350,10 @@ function handleAdd() {
   title.value = '添加对象存储配置';
 }
 /** 修改按钮操作 */
-function handleUpdate(row: SysOssConfigVo) {
+function handleUpdate(row?: SysOssConfigVo) {
   loading.value = true;
   reset();
-  const ossConfigId = row.ossConfigId || ids.value.at(0);
+  const ossConfigId = row?.ossConfigId || ids.value.at(0);
   getOssConfig(ossConfigId).then((response) => {
     loading.value = false;
     form.value = response.data;
@@ -420,8 +420,8 @@ function handleStatusChange(row: SysOssConfigVo) {
   );
 }
 /** 删除按钮操作 */
-function handleDelete(row: SysOssConfigVo) {
-  const ossConfigIds = row.ossConfigId || ids.value;
+function handleDelete(row?: SysOssConfigVo) {
+  const ossConfigIds = row?.ossConfigId || ids.value;
   proxy.$modal.confirm(`是否确认删除OSS配置编号为"${ossConfigIds}"的数据项?`, () => {
     loading.value = true;
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');

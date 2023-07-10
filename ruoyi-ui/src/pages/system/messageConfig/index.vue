@@ -67,7 +67,7 @@
                 theme="default"
                 variant="outline"
                 :disabled="single"
-                @click="handleUpdate"
+                @click="handleUpdate()"
               >
                 <template #icon> <edit-icon /> </template>
                 修改
@@ -77,7 +77,7 @@
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
-                @click="handleDelete"
+                @click="handleDelete()"
               >
                 <template #icon> <delete-icon /> </template>
                 删除
@@ -210,7 +210,10 @@
             </t-form-item>
           </t-col>
           <template v-for="(value, key) in messageConfig.supplierConfig" :key="key">
-            <t-col v-if="!value.visible || form.configJson[value.visible]" :span="value.span ?? 12">
+            <t-col
+              v-if="!value.visible || (form.configJson as Record<string, any>)[value.visible]"
+              :span="value.span ?? 12"
+            >
               <t-form-item
                 :label="value.name"
                 :name="`configJson[${key}]`"
@@ -219,19 +222,22 @@
               >
                 <t-input
                   v-if="value.component === 'input'"
-                  v-model="form.configJson[key]"
+                  v-model="(form.configJson as Record<string, any>)[key]"
                   :placeholder="`请输入${value.name}`"
                   :type="value.type"
                 />
                 <t-input-number
                   v-else-if="value.component === 'input-number'"
-                  v-model="form.configJson[key]"
+                  v-model="(form.configJson as Record<string, any>)[key]"
                   :allow-input-over-limit="false"
                   :min="value.min"
                   :max="value.max"
                   :decimal-places="0"
                 />
-                <t-switch v-else-if="value.component === 'switch'" v-model="form.configJson[key]" />
+                <t-switch
+                  v-else-if="value.component === 'switch'"
+                  v-model="(form.configJson as Record<string, any>)[key]"
+                />
               </t-form-item>
             </t-col>
           </template>
@@ -486,12 +492,12 @@ function handleDetail(row: SysMessageConfigVo) {
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row: SysMessageConfigVo) {
+function handleUpdate(row?: SysMessageConfigVo) {
   buttonLoading.value = true;
   reset();
   open.value = true;
   title.value = '修改消息配置';
-  const messageConfigId = row.messageConfigId || ids.value.at(0);
+  const messageConfigId = row?.messageConfigId || ids.value.at(0);
   getMessageConfig(messageConfigId).then((response) => {
     buttonLoading.value = false;
     form.value = { ...response.data, configJson: JSON.parse(response.data.configJson as string) };
@@ -538,8 +544,8 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row: SysMessageConfigVo) {
-  const messageConfigIds = row.messageConfigId || ids.value;
+function handleDelete(row?: SysMessageConfigVo) {
+  const messageConfigIds = row?.messageConfigId || ids.value;
   proxy.$modal.confirm(`是否确认删除消息配置编号为${messageConfigIds}的数据项？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delMessageConfig(messageConfigIds)
