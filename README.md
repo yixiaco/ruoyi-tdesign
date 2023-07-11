@@ -41,7 +41,7 @@
 | 分布式幂等     | Redisson                    | [Lock4j文档](https://gitee.com/baomidou/lock4j)              | 拦截重复提交                                                 |
 | 监控框架       | SpringBoot-Admin            | [GItHub](https://github.com/codecentric/spring-boot-admin)   | 采用 SpringBoot-Admin 基于SpringBoot官方 actuator 探针机制<br/>实时监控服务状态 框架还为其扩展了在线日志查看监控 |
 | 分布式链路追踪 | Apache SkyWalking           | [Apache SkyWalking文档](https://skywalking.apache.org/docs/) | 链路追踪、网格分析、度量聚合、可视化                         |
-| 分布式任务调度 | Xxl-Job                     | [Xxl-Job官网](https://www.xuxueli.com/xxl-job/)              | 高性能 高可靠 易扩展                                         |
+| 分布式任务调度 | PowerJob                     | [PowerJob官网](http://www.powerjob.tech/)              | 天生支持分布式 统一的管理中心                                         |
 | 文件存储       | Minio                       | [Minio文档](https://docs.min.io/)                            | 采用 Minio 分布式文件存储 天生支持多机、多硬盘、多分片、多副本存储<br/>支持权限管理 安全可靠 文件可加密存储 |
 | 云存储         | 七牛、阿里、腾讯            | [OSS使用文档](https://gitee.com/yixiacoco/ruoyi-tdesign/wikis/pages?sort_id=4359146&doc_id=1469725) | 采用 AWS S3 协议客户端 支持 七牛、阿里、腾讯 等一切支持S3协议的厂家 |
 | 短信           | 支持数十种短信厂家                  | [短信使用文档](https://wind.kim/) | 采用 sms4j 短信融合包 支持数十种短信厂家 只需在yml配置好厂家密钥即可使用 可多厂家共用 |

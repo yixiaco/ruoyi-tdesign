@@ -10,7 +10,7 @@ export interface ImportMetaEnv {
   /** Admin监控地址 */
   readonly VITE_APP_MONITRO_ADMIN: string;
   /** Job监控地址 */
-  readonly VITE_APP_XXL_JOB_ADMIN: string;
+  readonly VITE_APP_POWERJOB_ADMIN: string;
   /** 若依管理系统/生产环境 api前缀 */
   readonly VITE_APP_BASE_API: string;
   /** 是否在打包时开启压缩，支持 gzip 和 brotli */

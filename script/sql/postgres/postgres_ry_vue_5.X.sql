@@ -385,8 +385,8 @@ insert into sys_menu values('122',  '租户套餐管理',  '6',   '2', 'tenantPa
 insert into sys_menu values('117',  'Admin监控',   '2',   '5',  'Admin',            'monitor/admin/index',         '', 0, 1, 'C', '1', '1', 'monitor:admin:list',          'dashboard',     103, 1, now(), null, null, 'Admin监控菜单');
 -- oss菜单
 insert into sys_menu values('1510', '对象存储', '1', '10', 'store', NULL, NULL, 0, 1, 'M', '1', '1', NULL, 'cloud', 103, 1, now(), 1, null, '');
--- xxl-job-admin控制台
-insert into sys_menu values('120',  '任务调度中心',  '2',   '5',  'XxlJob',           'monitor/xxljob/index',        '', 0, 1, 'C', '1', '1', 'monitor:xxljob:list',         'video',           103, 1, now(), null, null, 'Xxl-Job控制台菜单');
+-- powerjob server控制台
+insert into sys_menu values('120',  '任务调度中心',  '2',   '5',  'powerjob',           'monitor/powerjob/index',        '', 0, 1, 'C', '1', '1', 'monitor:powerjob:list',         'video',           103, 1, now(), null, null, 'PowerJob控制台菜单');
 
 -- 三级菜单
 insert into sys_menu values('500',  '操作日志', '108', '1', 'operlog',    'monitor/operlog/index',    '', 0, 1, 'C', '1', '1', 'monitor:operlog:list',    'edit-1',          103, 1, now(), null, null, '操作日志菜单');
