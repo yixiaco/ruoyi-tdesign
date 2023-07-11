@@ -144,12 +144,3 @@ insert into sys_dict_data values(45, '000000', 0, '邮箱', 'MAIL', 'sys_message
 insert into sys_dict_data values(46, '000000', 10, '网易云短信', 'NETEASE', 'sys_message_supplier_type', NULL, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), NULL);
 insert into sys_dict_data values(47, '000000', 0, '模板ID', 'TEMPLATE_ID', 'sys_message_template_mode', NULL, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), NULL);
 insert into sys_dict_data values(48, '000000', 1, '模板内容', 'TEMPLATE_CONTENT', 'sys_message_template_mode', NULL, 'primary', 'N', '1', 103, 1, sysdate(), 1, sysdate(), NULL);
-
--- OSS配置新增自动创建桶字段 update by 2023-07-05
-ALTER TABLE sys_oss_config ADD COLUMN create_bucket tinyint(1) NOT NULL DEFAULT '0' COMMENT '创建桶（1=是,0=否）' AFTER status;
-
--- 代码生成新增排序字段 update by 2023-07-07
-ALTER TABLE gen_table_column ADD COLUMN is_sort char(1) NULL COMMENT '是否排序字段（1是）' AFTER is_detail;
--- 新增部门、菜单导出 update by 2023-07-07
-insert into sys_menu values('1117', '菜单导出', '102', '5',  '', '', '', 0, 1, 'F', '1', '1', 'system:menu:export',         '#', 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1121', '部门导出', '103', '5',  '', '', '', 0, 1, 'F', '1', '1', 'system:dept:export',         '#', 103, 1, sysdate(), null, null, '');
