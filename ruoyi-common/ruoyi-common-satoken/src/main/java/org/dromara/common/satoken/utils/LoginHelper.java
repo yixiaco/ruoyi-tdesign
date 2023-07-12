@@ -108,7 +108,11 @@ public class LoginHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T extends LoginUser> T getUser(String token) {
-        return (T) MultipleStpUtil.SYSTEM.getTokenSessionByToken(token).get(LOGIN_USER_KEY);
+        SaSession session = SYSTEM.getTokenSessionByToken(token);
+        if (session == null) {
+            return null;
+        }
+        return (T) session.get(LOGIN_USER_KEY);
     }
 
     /**
@@ -208,8 +212,8 @@ public class LoginHelper {
      * 获取用户类型
      */
     public static UserType getUserType() {
-        String loginId = MultipleStpUtil.SYSTEM.getLoginIdAsString();
-        return UserType.getUserType(loginId);
+        String loginType = MultipleStpUtil.SYSTEM.getLoginIdAsString();
+        return UserType.getUserType(loginType);
     }
 
     /**
