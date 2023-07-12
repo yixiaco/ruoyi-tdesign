@@ -164,7 +164,7 @@
           </t-space>
         </t-form-item>
         <t-form-item label="备注" name="remark">
-          <t-input v-model="form.remark" placeholder="请输入备注" />
+          <t-textarea v-model="form.remark" placeholder="请输入备注" />
         </t-form-item>
       </t-form>
     </t-dialog>
@@ -223,6 +223,7 @@ import {
   PrimaryTableCol,
   SubmitContext,
   TreeInstanceFunctions,
+  TreeNodeValue,
 } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
@@ -237,6 +238,7 @@ import {
   listTenantPackage,
   updateTenantPackage,
 } from '@/api/system/tenantPackage';
+import { handleChangeStatus } from '@/utils/ruoyi';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
@@ -260,7 +262,7 @@ const menuIds = ref<number[]>([]);
 const menuExpand = ref(false);
 const menuNodeAll = ref(false);
 const menuOptions = ref<TreeModel<number>[]>([]);
-const menuExpandNode = ref<number[]>([]);
+const menuExpandNode = ref<TreeNodeValue[]>([]);
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
@@ -328,7 +330,7 @@ function getList() {
   });
 }
 
-function onExpand(type: string, value: number[]) {
+function onExpand(type: string, value: TreeNodeValue[]) {
   if (type === 'menu') {
     menuExpandNode.value = value;
   }
@@ -367,25 +369,8 @@ function handleSelectionChange(selection: Array<string | number>) {
 
 // 租户套餐状态修改
 function handleStatusChange(row: SysTenantPackageVo) {
-  const data = tenantPackageList.value.find((value) => value.packageId === row.packageId);
-  const text = data.status === '1' ? '启用' : '停用';
-  proxy.$modal.confirm(
-    `确认要"${text}""${data.packageName}"套餐吗？`,
-    () => {
-      const msgLoading = proxy.$modal.msgLoading('提交中...');
-      return changePackageStatus(data.packageId, data.status)
-        .then(() => {
-          getList();
-          proxy.$modal.msgSuccess(`${text}成功`);
-        })
-        .catch(() => {
-          data.status = data.status === '0' ? '1' : '0';
-        })
-        .finally(() => proxy.$modal.msgClose(msgLoading));
-    },
-    () => {
-      data.status = data.status === '0' ? '1' : '0';
-    },
+  handleChangeStatus(tenantPackageList.value, row, 'packageId', 'status', `${row.packageName}套餐`, (data) =>
+    changePackageStatus(data.packageId, data.status).then(() => getList()),
   );
 }
 

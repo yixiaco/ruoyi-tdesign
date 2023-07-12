@@ -365,7 +365,7 @@ function copyTextSuccess() {
 function handleDownload(row: SysOssVo) {
   proxy.$download.oss(row.ossId);
 }
-/** 用户状态修改  */
+/** 预览状态修改  */
 function handlePreviewListResource(preview: boolean) {
   const text = preview ? '启用' : '停用';
   proxy.$modal.confirm(`确认要"${text}""预览列表图片"配置吗?`, () => {

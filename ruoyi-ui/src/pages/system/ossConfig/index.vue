@@ -208,6 +208,7 @@ import {
   listOssConfig,
   updateOssConfig,
 } from '@/api/system/ossConfig';
+import { handleChangeStatus } from '@/utils/ruoyi';
 
 const { proxy } = getCurrentInstance();
 const { sys_yes_no } = proxy.useDict('sys_yes_no');
@@ -398,25 +399,8 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
 }
 /** 用户状态修改  */
 function handleStatusChange(row: SysOssConfigVo) {
-  const ossConfig = ossConfigList.value.find((value) => value.ossConfigId === row.ossConfigId);
-  const text = ossConfig.status === '1' ? '启用' : '停用';
-  proxy.$modal.confirm(
-    `确认要"${text}""${ossConfig.configKey}"配置吗?`,
-    () => {
-      const msgLoading = proxy.$modal.msgLoading('提交中...');
-      return changeOssConfigStatus(ossConfig.ossConfigId, ossConfig.status, ossConfig.configKey)
-        .then(() => {
-          getList();
-          proxy.$modal.msgSuccess(`${text}成功`);
-        })
-        .catch(() => {
-          ossConfig.status = ossConfig.status === '0' ? '1' : '0';
-        })
-        .finally(() => proxy.$modal.msgClose(msgLoading));
-    },
-    () => {
-      ossConfig.status = ossConfig.status === '0' ? '1' : '0';
-    },
+  handleChangeStatus(ossConfigList.value, row, 'ossConfigId', 'status', `${row.configKey}配置`, (ossConfig) =>
+    changeOssConfigStatus(ossConfig.ossConfigId, ossConfig.status, ossConfig.configKey).then(() => getList()),
   );
 }
 /** 删除按钮操作 */

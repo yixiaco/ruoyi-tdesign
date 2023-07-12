@@ -309,6 +309,7 @@ import {
   listRole,
   updateRole,
 } from '@/api/system/role';
+import { handleChangeStatus } from '@/utils/ruoyi';
 
 const router = useRouter();
 const { proxy } = getCurrentInstance();
@@ -465,22 +466,8 @@ function handleSelectionChange(selection: Array<string | number>) {
 
 /** 角色状态修改 */
 function handleStatusChange(row: SysRoleVo) {
-  const role = roleList.value.find((value) => value.roleId === row.roleId);
-  const text = role.status === '1' ? '启用' : '停用';
-  proxy.$modal.confirm(
-    `确认要"${text}""${role.roleName}"角色吗?`,
-    () => {
-      return changeRoleStatus(role.roleId, role.status)
-        .then(() => {
-          proxy.$modal.msgSuccess(`${text}成功`);
-        })
-        .catch(() => {
-          role.status = role.status === '0' ? '1' : '0';
-        });
-    },
-    () => {
-      role.status = role.status === '0' ? '1' : '0';
-    },
+  handleChangeStatus(roleList.value, row, 'roleId', 'status', `${row.roleName}角色`, (row1) =>
+    changeRoleStatus(row1.roleId, row1.status).then(() => getList()),
   );
 }
 /** 分配用户 */

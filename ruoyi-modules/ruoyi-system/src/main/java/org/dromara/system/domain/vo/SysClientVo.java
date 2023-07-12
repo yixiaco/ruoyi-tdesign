@@ -1,16 +1,16 @@
 package org.dromara.system.domain.vo;
 
-import org.dromara.system.domain.SysClient;
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
-import org.dromara.common.excel.annotation.ExcelDictFormat;
-import org.dromara.common.excel.convert.ExcelDictConvert;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
+import org.dromara.common.excel.annotation.ExcelDictFormat;
+import org.dromara.common.excel.convert.ExcelDictConvert;
+import org.dromara.system.domain.SysClient;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.List;
+import java.util.Date;
 
 
 /**
@@ -54,17 +54,15 @@ public class SysClientVo implements Serializable {
     /**
      * 授权类型
      */
-    @ExcelProperty(value = "授权类型")
-    private List<String> grantTypeList;
-
-    /**
-     * 授权类型
-     */
+    @ExcelProperty(value = "授权类型", converter = ExcelDictConvert.class)
+    @ExcelDictFormat(dictType = "sys_grant_type")
     private String grantType;
 
     /**
      * 设备类型
      */
+    @ExcelProperty(value = "设备类型", converter = ExcelDictConvert.class)
+    @ExcelDictFormat(dictType = "sys_device_type")
     private String deviceType;
 
     /**
@@ -80,11 +78,22 @@ public class SysClientVo implements Serializable {
     private Long timeout;
 
     /**
-     * 状态（0正常 1停用）
+     * 状态（1正常 0停用）
      */
     @ExcelProperty(value = "状态", converter = ExcelDictConvert.class)
-    @ExcelDictFormat(readConverterExp = "0=正常,1=停用")
+    @ExcelDictFormat(dictType = "sys_normal_disable")
     private String status;
 
+    /**
+     * 创建时间
+     */
+    @ExcelProperty(value = "创建时间")
+    private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    @ExcelProperty(value = "更新时间")
+    private Date updateTime;
 
 }

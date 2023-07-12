@@ -2,6 +2,7 @@ package org.dromara.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
+import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -160,6 +161,10 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
             .set(SysOssConfig::getStatus, NormalDisableEnum.DISABLE.getCode()));
         row += baseMapper.updateById(sysOssConfig);
         if (row > 0) {
+            String json = CacheUtils.get(CacheNames.SYS_OSS_CONFIG, sysOssConfig.getConfigKey());
+            if (StrUtil.isBlank(json)) {
+                CacheUtils.put(CacheNames.SYS_OSS_CONFIG, sysOssConfig.getConfigKey(), JsonUtils.toJsonString(getById(sysOssConfig.getOssConfigId())));
+            }
             RedisUtils.setObject(OssConstant.DEFAULT_CONFIG_KEY, sysOssConfig.getConfigKey());
         }
         return row;

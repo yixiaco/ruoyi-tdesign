@@ -1,11 +1,12 @@
 package org.dromara.system.domain;
 
-import org.dromara.common.mybatis.core.domain.BaseEntity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 import java.io.Serial;
+import java.util.Date;
 
 /**
  * 授权管理对象 sys_client
@@ -63,15 +64,45 @@ public class SysClient extends BaseEntity {
     private Long timeout;
 
     /**
-     * 状态（0正常 1停用）
+     * 状态（1正常 0停用）
      */
     private String status;
 
     /**
-     * 删除标志（0代表存在 2代表删除）
+     * 删除标志（0代表存在 1代表删除）
      */
     @TableLogic
+    @TableField(fill = FieldFill.INSERT)
     private String delFlag;
 
+    /**
+     * 创建部门
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private Long createDept;
+
+    /**
+     * 创建者
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private Long createBy;
+
+    /**
+     * 创建时间
+     */
+    @TableField(fill = FieldFill.INSERT)
+    private Date createTime;
+
+    /**
+     * 更新者
+     */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Long updateBy;
+
+    /**
+     * 更新时间
+     */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Date updateTime;
 
 }

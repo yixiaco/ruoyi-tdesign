@@ -2,6 +2,7 @@
  * 通用js方法封装处理
  * Copyright (c) 2019 ruoyi
  */
+import modal from '@/plugins/modal';
 import { DictModel } from '@/utils/dict';
 
 // 日期格式化
@@ -325,4 +326,46 @@ export function bytesToSize(bytes: number) {
   const i = Math.floor(Math.log(bytes) / Math.log(k));
   return `${(bytes / k ** i).toFixed(3)} ${sizes[i]}`;
   // toPrecision(3) 后面保留两位小数，如1.00GB
+}
+
+/**
+ * 处理状态改变
+ * @param list 列表数据，用来从列表中获取相同id的对象
+ * @param obj 对象
+ * @param id 对象id属性
+ * @param status 对象状态属性
+ * @param title 提示标题
+ * @param ok 选择确定后的回调
+ * @param yesValue 启用值
+ * @param noValue 停用值
+ */
+export function handleChangeStatus<T>(
+  list: T[],
+  obj: T,
+  id: keyof T,
+  status: keyof T,
+  title: string,
+  ok: (row: T) => Promise<any>,
+  yesValue = '1',
+  noValue = '0',
+) {
+  const rowObj: T = list.find((value) => value[id] === obj[id]);
+  const text = rowObj[status] === yesValue ? '启用' : '停用';
+  modal.confirm(
+    `确认要${text}"${title}"吗?`,
+    () => {
+      return ok(rowObj)
+        .then(() => {
+          modal.msgSuccess(`${text}成功`);
+        })
+        .catch(() => {
+          // @ts-ignore
+          rowObj[status] = rowObj[status] === noValue ? yesValue : noValue;
+        });
+    },
+    () => {
+      // @ts-ignore
+      rowObj[status] = rowObj[status] === noValue ? yesValue : noValue;
+    },
+  );
 }

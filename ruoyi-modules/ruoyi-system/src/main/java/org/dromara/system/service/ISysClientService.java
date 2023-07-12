@@ -1,24 +1,28 @@
 package org.dromara.system.service;
 
-import org.dromara.system.domain.SysClient;
-import org.dromara.system.domain.vo.SysClientVo;
-import org.dromara.system.domain.bo.SysClientBo;
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
-import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.system.domain.SysClient;
+import org.dromara.system.domain.bo.SysClientBo;
+import org.dromara.system.domain.query.SysClientQuery;
+import org.dromara.system.domain.vo.SysClientVo;
 
 import java.util.Collection;
 import java.util.List;
 
 /**
- * 客户端管理Service接口
+ * 系统授权Service接口
  *
  * @author Michelle.Chung
  * @date 2023-06-18
  */
-public interface ISysClientService {
+public interface ISysClientService extends IService<SysClient> {
 
     /**
-     * 查询客户端管理
+     * 查询系统授权
+     *
+     * @param id 主键
+     * @return SysClientVo
      */
     SysClientVo queryById(Long id);
 
@@ -28,22 +32,34 @@ public interface ISysClientService {
     SysClient queryByClientId(String clientId);
 
     /**
-     * 查询客户端管理列表
+     * 查询系统授权列表
+     *
+     * @param query 查询对象
+     * @return SysClientVo
      */
-    TableDataInfo<SysClientVo> queryPageList(SysClientBo bo, PageQuery pageQuery);
+    TableDataInfo<SysClientVo> queryPageList(SysClientQuery query);
 
     /**
-     * 查询客户端管理列表
+     * 查询系统授权列表
+     *
+     * @param query 查询对象
+     * @return SysClientVo
      */
-    List<SysClientVo> queryList(SysClientBo bo);
+    List<SysClientVo> queryList(SysClientQuery query);
 
     /**
-     * 新增客户端管理
+     * 新增系统授权
+     *
+     * @param bo 系统授权新增业务对象
+     * @return Boolean
      */
     Boolean insertByBo(SysClientBo bo);
 
     /**
-     * 修改客户端管理
+     * 修改系统授权
+     *
+     * @param bo 系统授权编辑业务对象
+     * @return Boolean
      */
     Boolean updateByBo(SysClientBo bo);
 
@@ -53,8 +69,11 @@ public interface ISysClientService {
     int updateUserStatus(Long id, String status);
 
     /**
-     * 校验并批量删除客户端管理信息
+     * 校验并批量删除系统授权信息
+     *
+     * @param ids 主键集合
+     * @return Boolean
      */
-    Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+    Boolean deleteWithValidByIds(Collection<Long> ids);
 
 }

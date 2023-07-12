@@ -43,15 +43,15 @@ export interface LoginData {
  */
 export interface LoginVo {
   /** 授权令牌 */
-  accessToken?: string;
+  access_token?: string;
   /** 刷新令牌 */
-  refreshToken?: string;
+  refresh_token?: string;
   /** 授权令牌 access_token 的有效期 */
-  expireIn?: number;
+  expire_in?: number;
   /** 刷新令牌 refresh_token 的有效期 */
-  refreshExpireIn?: number;
+  refresh_expire_in?: number;
   /** 应用id */
-  clientId?: string;
+  client_id?: string;
   /** 令牌权限 */
   scope?: string;
   /** 用户 openid */

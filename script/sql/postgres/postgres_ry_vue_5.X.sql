@@ -64,7 +64,7 @@ comment on column  sys_social.create_by         is '创建者';
 comment on column  sys_social.create_time       is '创建时间';
 comment on column  sys_social.update_by         is '更新者';
 comment on column  sys_social.update_time       is '更新时间';
-comment on column  sys_social.del_flag          is '删除标志（0代表存在 2代表删除）';
+comment on column  sys_social.del_flag          is '删除标志（0代表存在 1代表删除）';
 
 -- ----------------------------
 -- 租户表
@@ -448,7 +448,7 @@ insert into sys_menu values('114',  '表单构建',     '3',   '1', 'build',    
 insert into sys_menu values('115',  '代码生成',     '3',   '2', 'gen',              'tool/gen/index',               '', 0, 1, 'C', '1', '1', 'tool:gen:list',               'code',          103, 1, now(), null, null, '代码生成菜单');
 insert into sys_menu values('121',  '租户管理',     '6',   '1', 'tenant',           'system/tenant/index',          '', 0, 1, 'C', '1', '1', 'system:tenant:list',          'bulletpoint',          103, 1, now(), null, null, '租户管理菜单');
 insert into sys_menu values('122',  '租户套餐管理',  '6',   '2', 'tenantPackage',    'system/tenantPackage/index',   '', 0, 1, 'C', '1', '1', 'system:tenantPackage:list',   'edit-1',          103, 1, now(), null, null, '租户套餐管理菜单');
-insert into sys_menu values('123',  '客户端管理',   '1',   '11', 'client',           'system/client/index',          '', 0, 1, 'C', '1', '1', 'system:client:list',          'international', 103, 1, now(), null, null, '客户端管理菜单');
+insert into sys_menu values('123',  '客户端管理',   '1',   '12', 'client',           'system/client/index',          '', 0, 1, 'C', '1', '1', 'system:client:list',          'internet', 103, 1, now(), null, null, '客户端管理菜单');
 
 -- springboot-admin监控
 insert into sys_menu values('117',  'Admin监控',   '2',   '5',  'Admin',            'monitor/admin/index',         '', 0, 1, 'C', '1', '1', 'monitor:admin:list',          'dashboard',     103, 1, now(), null, null, 'Admin监控菜单');
@@ -1312,7 +1312,7 @@ create table sys_client (
     device_type         varchar(32)   default ''::varchar,
     active_timeout      int4          default 1800,
     timeout             int4          default 604800,
-    status              char(1)       default '0'::bpchar,
+    status              char(1)       default '1'::bpchar,
     del_flag            char(1)       default '0'::bpchar,
     create_dept         int8,
     create_by           int8,

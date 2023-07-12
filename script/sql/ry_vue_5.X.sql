@@ -32,7 +32,7 @@ create table sys_social
     create_time        datetime                         comment '创建时间',
     update_by          bigint(20)                       comment '更新者',
     update_time        datetime                         comment '更新时间',
-    del_flag           char(1)          default '0'     comment '删除标志（0代表存在 2代表删除）',
+    del_flag           char(1)          default '0'     comment '删除标志（0代表存在 1代表删除）',
     PRIMARY KEY (id)
 ) engine=innodb comment = '社会化关系表';
 
@@ -285,7 +285,7 @@ insert into sys_menu values('114',  '表单构建',     '3',   '1', 'build',    
 insert into sys_menu values('115',  '代码生成',     '3',   '2', 'gen',              'tool/gen/index',               '', 0, 1, 'C', '1', '1', 'tool:gen:list',               'code',          103, 1, sysdate(), null, null, '代码生成菜单');
 insert into sys_menu values('121',  '租户管理',     '6',   '1', 'tenant',           'system/tenant/index',          '', 0, 1, 'C', '1', '1', 'system:tenant:list',          'bulletpoint',          103, 1, sysdate(), null, null, '租户管理菜单');
 insert into sys_menu values('122',  '租户套餐管理',  '6',   '2', 'tenantPackage',    'system/tenantPackage/index',   '', 0, 1, 'C', '1', '1', 'system:tenantPackage:list',   'edit-1',          103, 1, sysdate(), null, null, '租户套餐管理菜单');
-insert into sys_menu values('123',  '客户端管理',   '1',   '11', 'client',           'system/client/index',          '', 0, 1, 'C', '1', '1', 'system:client:list',          'international', 103, 1, sysdate(), null, null, '客户端管理菜单');
+insert into sys_menu values('123',  '客户端管理',   '1',   '12', 'client',           'system/client/index',          '', 0, 1, 'C', '1', '1', 'system:client:list',          'internet', 103, 1, sysdate(), null, null, '客户端管理菜单');
 
 -- springboot-admin监控
 insert into sys_menu values('117',  'Admin监控',   '2',   '5',  'Admin',            'monitor/admin/index',         '', 0, 1, 'C', '1', '1', 'monitor:admin:list',           'dashboard',     103, 1, sysdate(), null, null, 'Admin监控菜单');
@@ -943,7 +943,7 @@ create table sys_client (
     device_type         varchar(32)   default null        comment '设备类型',
     active_timeout      int(11)       default 1800        comment 'token活跃超时时间',
     timeout             int(11)       default 604800      comment 'token固定超时',
-    status              char(1)       default '0'         comment '状态（1正常 0停用）',
+    status              char(1)       default '1'         comment '状态（1正常 0停用）',
     del_flag            char(1)       default '0'         comment '删除标志（0代表存在 1代表删除）',
     create_dept         bigint(20)    default null        comment '创建部门',
     create_by           bigint(20)    default null        comment '创建者',

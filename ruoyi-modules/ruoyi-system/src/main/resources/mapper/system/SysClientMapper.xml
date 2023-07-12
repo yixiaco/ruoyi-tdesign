@@ -4,4 +4,23 @@
     "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="org.dromara.system.mapper.SysClientMapper">
 
+    <resultMap id="SysClientResult" autoMapping="true" type="org.dromara.system.domain.SysClient">
+    </resultMap>
+    <resultMap id="SysClientResultVo" autoMapping="true" type="org.dromara.system.domain.vo.SysClientVo">
+    </resultMap>
+
+    <sql id="selectSysClientVo">
+        select sc.id, sc.client_id, sc.client_key, sc.client_secret, sc.grant_type, sc.device_type, sc.active_timeout, sc.timeout, sc.`status`, sc.del_flag, sc.create_dept, sc.create_by, sc.create_time, sc.update_by, sc.update_time from sys_client sc
+    </sql>
+    <select id="queryList" parameterType="org.dromara.system.domain.query.SysClientQuery" resultMap="SysClientResultVo">
+        <include refid="selectSysClientVo"/>
+        <where>
+            <if test="clientId != null and clientId != ''"> and sc.client_id like concat('%', #{clientId}, '%')</if>
+            <if test="clientKey != null and clientKey != ''"> and sc.client_key like concat('%', #{clientKey}, '%')</if>
+            <if test="status != null and status != ''"> and sc.`status` = #{status}</if>
+            and sc.del_flag = '0'
+        </where>
+        order by sc.create_time desc
+    </select>
+
 </mapper>

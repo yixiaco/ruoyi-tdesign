@@ -38,7 +38,7 @@ export const useUserStore = defineStore('user', {
       return new Promise<void>((resolve, reject) => {
         login({ username, password, code, uuid })
           .then((res) => {
-            this.token = res.data.accessToken;
+            this.token = res.data.access_token;
             this.$persist();
             resolve();
           })
