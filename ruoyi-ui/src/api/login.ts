@@ -1,6 +1,9 @@
-import { CaptchaImage, LoginModel, LoginTenantVo, RegisterBody, UserInfo } from '@/api/model/loginModel';
+import { CaptchaImage, LoginData, LoginTenantVo, LoginVo, RegisterBody, UserInfo } from '@/api/model/loginModel';
 import { R } from '@/api/model/resultModel';
 import { request } from '@/utils/request';
+
+// pc端固定客户端授权id
+const clientId = 'e5cd7e4891bf95d1d19206ce24a7b32e';
 
 /**
  * 是否登录状态
@@ -12,14 +15,13 @@ export function isLogin() {
 }
 
 // 登录方法
-export function login(username: string, password: string, code: string, uuid: string) {
+export function login(loginData: LoginData) {
   const data = {
-    username,
-    password,
-    code,
-    uuid,
+    ...loginData,
+    clientId: loginData.clientId || clientId,
+    grantType: loginData.grantType || 'password',
   };
-  return request.post<R<LoginModel>>(
+  return request.post<R<LoginVo>>(
     {
       url: '/auth/login',
       data,
@@ -41,6 +43,21 @@ export function register(data: RegisterBody) {
       withToken: false,
     },
   );
+}
+
+/**
+ * 第三方登录
+ */
+export function callback(data: LoginData) {
+  const LoginData = {
+    ...data,
+    clientId,
+    grantType: 'social',
+  };
+  return request.post<R<LoginVo>>({
+    url: '/auth/social/callback',
+    data: LoginData,
+  });
 }
 
 // 获取用户详细信息

@@ -173,6 +173,7 @@ tenant:
     - sys_role_menu
     - sys_user_post
     - sys_user_role
+    - sys_client
     - sys_message_config
     - sys_message_key
     - sys_message_log

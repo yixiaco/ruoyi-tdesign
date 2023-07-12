@@ -39,9 +39,9 @@ comment on table   sys_social                   is '社会化关系表';
 comment on column  sys_social.id                is '主键';
 comment on column  sys_social.user_id           is '用户ID';
 comment on column  sys_social.tenant_id         is '租户id';
-comment on column  sys_social.auth_id           is '授权+授权openid';
+comment on column  sys_social.auth_id           is '平台+平台唯一id';
 comment on column  sys_social.source            is '用户来源';
-comment on column  sys_social.open_id           is '原生openid';
+comment on column  sys_social.open_id           is '平台编号唯一id';
 comment on column  sys_social.user_name         is '登录账号';
 comment on column  sys_social.nick_name         is '用户昵称';
 comment on column  sys_social.email             is '用户邮箱';
@@ -448,6 +448,7 @@ insert into sys_menu values('114',  '表单构建',     '3',   '1', 'build',    
 insert into sys_menu values('115',  '代码生成',     '3',   '2', 'gen',              'tool/gen/index',               '', 0, 1, 'C', '1', '1', 'tool:gen:list',               'code',          103, 1, now(), null, null, '代码生成菜单');
 insert into sys_menu values('121',  '租户管理',     '6',   '1', 'tenant',           'system/tenant/index',          '', 0, 1, 'C', '1', '1', 'system:tenant:list',          'bulletpoint',          103, 1, now(), null, null, '租户管理菜单');
 insert into sys_menu values('122',  '租户套餐管理',  '6',   '2', 'tenantPackage',    'system/tenantPackage/index',   '', 0, 1, 'C', '1', '1', 'system:tenantPackage:list',   'edit-1',          103, 1, now(), null, null, '租户套餐管理菜单');
+insert into sys_menu values('123',  '客户端管理',   '1',   '11', 'client',           'system/client/index',          '', 0, 1, 'C', '1', '1', 'system:client:list',          'international', 103, 1, now(), null, null, '客户端管理菜单');
 
 -- springboot-admin监控
 insert into sys_menu values('117',  'Admin监控',   '2',   '5',  'Admin',            'monitor/admin/index',         '', 0, 1, 'C', '1', '1', 'monitor:admin:list',          'dashboard',     103, 1, now(), null, null, 'Admin监控菜单');
@@ -556,6 +557,12 @@ insert into sys_menu values('1612', '租户套餐新增', '122', '2', '#', '', '
 insert into sys_menu values('1613', '租户套餐修改', '122', '3', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenantPackage:edit',    '#', 103, 1, now(), null, null, '');
 insert into sys_menu values('1614', '租户套餐删除', '122', '4', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenantPackage:remove',  '#', 103, 1, now(), null, null, '');
 insert into sys_menu values('1615', '租户套餐导出', '122', '5', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenantPackage:export',  '#', 103, 1, now(), null, null, '');
+-- 客户端管理按钮
+insert into sys_menu values('1061', '客户端管理查询', '123', '1',  '#', '', '', 0, 1, 'F', '1', '1', 'system:client:query',        '#', 103, 1, now(), null, null, '');
+insert into sys_menu values('1062', '客户端管理新增', '123', '2',  '#', '', '', 0, 1, 'F', '1', '1', 'system:client:add',          '#', 103, 1, now(), null, null, '');
+insert into sys_menu values('1063', '客户端管理修改', '123', '3',  '#', '', '', 0, 1, 'F', '1', '1', 'system:client:edit',         '#', 103, 1, now(), null, null, '');
+insert into sys_menu values('1064', '客户端管理删除', '123', '4',  '#', '', '', 0, 1, 'F', '1', '1', 'system:client:remove',       '#', 103, 1, now(), null, null, '');
+insert into sys_menu values('1065', '客户端管理导出', '123', '5',  '#', '', '', 0, 1, 'F', '1', '1', 'system:client:export',       '#', 103, 1, now(), null, null, '');
 -- 应用管理
 insert into sys_menu values('1701', '应用管理', 6, 3, 'app', 'system/app/index', NULL, 0, 1, 'C', '1', '1', 'system:app:list', 'app', 103, 1, now(), 1, now(), '应用管理菜单');
 insert into sys_menu values('1702', '应用管理查询', '1701', 1, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:app:query', '#', 103, 1, now(), NULL, NULL, '');
@@ -714,6 +721,11 @@ insert into sys_role_menu values ('2', '1057');
 insert into sys_role_menu values ('2', '1058');
 insert into sys_role_menu values ('2', '1059');
 insert into sys_role_menu values ('2', '1060');
+insert into sys_role_menu values ('2', '1061');
+insert into sys_role_menu values ('2', '1062');
+insert into sys_role_menu values ('2', '1063');
+insert into sys_role_menu values ('2', '1064');
+insert into sys_role_menu values ('2', '1065');
 
 -- ----------------------------
 -- 8、角色和部门关联表  角色1-N部门
@@ -854,10 +866,12 @@ insert into sys_dict_type values(7, '000000', '通知类型', 'sys_notice_type',
 insert into sys_dict_type values(8, '000000', '通知状态', 'sys_notice_status',   '1', 103, 1, now(), null, null, '通知状态列表');
 insert into sys_dict_type values(9, '000000', '操作类型', 'sys_oper_type',       '1', 103, 1, now(), null, null, '操作类型列表');
 insert into sys_dict_type values(10, '000000', '系统状态', 'sys_common_status',   '1', 103, 1, now(), null, null, '登录状态列表');
-insert into sys_dict_type values(11, '000000', '应用类型', 'sys_app_type', '1', 103, 1, now(), 1, now(), '应用管理列表');
-insert into sys_dict_type values(12, '000000', '消息类型', 'sys_message_type', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_type values(11, '000000', '应用类型', 'sys_app_type',      '1', 103, 1, now(), 1, now(), '应用管理列表');
+insert into sys_dict_type values(12, '000000', '消息类型', 'sys_message_type',  '1', 103, 1, now(), 1, now(), NULL);
 insert into sys_dict_type values(13, '000000', '消息支持平台', 'sys_message_supplier_type', '1', 103, 1, now(), 1, now(), NULL);
 insert into sys_dict_type values(14, '000000', '消息模板类型', 'sys_message_template_mode', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_type values(15, '000000', '授权类型', 'sys_grant_type',     '1', 103, 1, now(), null, null, '认证授权类型');
+insert into sys_dict_type values(16, '000000', '设备类型', 'sys_device_type',    '1', 103, 1, now(), null, null, '客户端设备类型');
 
 
 -- ----------------------------
@@ -947,6 +961,14 @@ insert into sys_dict_data values(45, '000000', 0, '邮箱', 'MAIL', 'sys_message
 insert into sys_dict_data values(46, '000000', 10, '网易云短信', 'NETEASE', 'sys_message_supplier_type', NULL, 'primary', 'N', '1', 103, 1, now(), 1, now(), NULL);
 insert into sys_dict_data values(47, '000000', 0, '模板ID', 'TEMPLATE_ID', 'sys_message_template_mode', NULL, 'primary', 'N', '1', 103, 1, now(), 1, now(), NULL);
 insert into sys_dict_data values(48, '000000', 1, '模板内容', 'TEMPLATE_CONTENT', 'sys_message_template_mode', NULL, 'primary', 'N', '1', 103, 1, now(), 1, now(), NULL);
+insert into sys_dict_data values(49, '000000', 0,  '密码认证', 'password',   'sys_grant_type',   '',   'default', 'N', '1', 103, 1, now(), null, null, '密码认证');
+insert into sys_dict_data values(50, '000000', 0,  '短信认证', 'sms',        'sys_grant_type',   '',   'default', 'N', '1', 103, 1, now(), null, null, '短信认证');
+insert into sys_dict_data values(51, '000000', 0,  '邮件认证', 'email',      'sys_grant_type',   '',   'default', 'N', '1', 103, 1, now(), null, null, '邮件认证');
+insert into sys_dict_data values(52, '000000', 0,  '小程序认证', 'xcx',      'sys_grant_type',   '',   'default', 'N', '1', 103, 1, now(), null, null, '小程序认证');
+insert into sys_dict_data values(53, '000000', 0,  '三方登录认证', 'social', 'sys_grant_type',   '',   'default', 'N', '1', 103, 1, now(), null, null, '三方登录认证');
+insert into sys_dict_data values(54, '000000', 0,  'PC端', 'pc',            'sys_device_type',   '',   'default', 'N', '1', 103, 1, now(), null, null, 'PC端');
+insert into sys_dict_data values(55, '000000', 0,  'APP端', 'app',          'sys_device_type',   '',   'default', 'N', '1', 103, 1, now(), null, null, 'APP端');
+
 
 
 -- ----------------------------
@@ -1276,6 +1298,49 @@ insert into sys_oss_config values (2, '000000', 'qiniu',  'XXXXXXXXXXXXXXX',  'X
 insert into sys_oss_config values (3, '000000', 'aliyun', 'XXXXXXXXXXXXXXX',  'XXXXXXXXXXXXXXX', 'ruoyi',             '', 'oss-cn-beijing.aliyuncs.com',         '','N', '',            '1', '0', 0,'', 103, 1, now(), 1, now(), null);
 insert into sys_oss_config values (4, '000000', 'qcloud', 'XXXXXXXXXXXXXXX',  'XXXXXXXXXXXXXXX', 'ruoyi-1250000000',  '', 'cos.ap-beijing.myqcloud.com',         '','N', 'ap-beijing',  '1', '0', 0,'', 103, 1, now(), 1, now(), null);
 insert into sys_oss_config values (5, '000000', 'image',  'ruoyi',            'ruoyi123',        'ruoyi',             'image', '127.0.0.1:9000',                 '','N', '',            '1', '0', 0,'', 103, 1, now(), 1, now(), NULL);
+
+-- ----------------------------
+-- 系统授权表
+-- ----------------------------
+drop table if exists sys_client;
+create table sys_client (
+    id                  int8,
+    client_id           varchar(64)   default ''::varchar,
+    client_key          varchar(32)   default ''::varchar,
+    client_secret       varchar(255)  default ''::varchar,
+    grant_type          varchar(255)  default ''::varchar,
+    device_type         varchar(32)   default ''::varchar,
+    active_timeout      int4          default 1800,
+    timeout             int4          default 604800,
+    status              char(1)       default '0'::bpchar,
+    del_flag            char(1)       default '0'::bpchar,
+    create_dept         int8,
+    create_by           int8,
+    create_time         timestamp,
+    update_by           int8,
+    update_time         timestamp,
+    constraint sys_client_pk primary key (id)
+);
+
+comment on table sys_client                         is '系统授权表';
+comment on column sys_client.id                     is '主建';
+comment on column sys_client.client_id              is '客户端id';
+comment on column sys_client.client_key             is '客户端key';
+comment on column sys_client.client_secret          is '客户端秘钥';
+comment on column sys_client.grant_type             is '授权类型';
+comment on column sys_client.device_type            is '设备类型';
+comment on column sys_client.active_timeout         is 'token活跃超时时间';
+comment on column sys_client.timeout                is 'token固定超时';
+comment on column sys_client.status                 is '状态（1正常 0停用）';
+comment on column sys_client.del_flag               is '删除标志（0代表存在 1代表删除）';
+comment on column sys_client.create_dept            is '创建部门';
+comment on column sys_client.create_by              is '创建者';
+comment on column sys_client.create_time            is '创建时间';
+comment on column sys_client.update_by              is '更新者';
+comment on column sys_client.update_time            is '更新时间';
+
+insert into sys_client values (1, 'e5cd7e4891bf95d1d19206ce24a7b32e', 'pc', 'pc123', 'password,social', 'pc', 1800, 604800, 1, 0, 103, 1, now(), 1, now());
+insert into sys_client values (2, '428a8310cd442757ae699df5d894f051', 'app', 'app123', 'password,sms,social', 'app', 1800, 604800, 1, 0, 103, 1, now(), 1, now());
 
 -- ----------------------------
 -- OSS处理规则表

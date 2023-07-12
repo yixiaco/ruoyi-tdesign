@@ -57,30 +57,19 @@ public class LoginHelper {
     }
 
     /**
-     * 登录系统
-     *
-     * @param loginUser 登录用户信息
-     */
-    public static void login(LoginUser loginUser) {
-        loginByDevice(loginUser, null);
-    }
-
-    /**
      * 登录系统 基于 设备类型
      * 针对相同用户体系不同设备
      *
      * @param loginUser 登录用户信息
+     * @param model     配置参数
      */
-    public static void loginByDevice(LoginUser loginUser, DeviceType deviceType) {
+    public static void login(LoginUser loginUser, SaLoginModel model) {
         loginUser.setLoginType(getLoginType());
         SaStorage storage = SaHolder.getStorage();
         storage.set(getLoginType() + LOGIN_USER_KEY, loginUser);
         storage.set(getLoginType() + TENANT_KEY, loginUser.getTenantId());
         storage.set(getLoginType() + USER_KEY, loginUser.getUserId());
-        SaLoginModel model = new SaLoginModel();
-        if (ObjectUtil.isNotNull(deviceType)) {
-            model.setDevice(deviceType.getDevice());
-        }
+        model = ObjectUtil.defaultIfNull(model, new SaLoginModel());
         SaSecurityContext.setContext(loginUser);
         MultipleStpUtil.SYSTEM.login(loginUser.getLoginId(), model);
         MultipleStpUtil.SYSTEM.getTokenSession().set(LOGIN_USER_KEY, loginUser);

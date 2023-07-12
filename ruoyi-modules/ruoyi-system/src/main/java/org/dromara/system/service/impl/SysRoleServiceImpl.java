@@ -442,6 +442,11 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     @Override
     public void cleanOnlineUserByRole(Long roleId) {
+        // 如果角色未绑定用户 直接返回
+        Long num = userRoleMapper.selectCount(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getRoleId, roleId));
+        if (num == 0) {
+            return;
+        }
         List<String> keys = MultipleStpUtil.SYSTEM.searchTokenValue("", 0, -1, false);
         if (CollUtil.isEmpty(keys)) {
             return;

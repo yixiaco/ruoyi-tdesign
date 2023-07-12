@@ -45,7 +45,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
         name: 'singleHMR',
         handleHotUpdate({ modules }) {
           modules.forEach((m) => {
-            m.importedModules = new Set();
+            m.importedModules?.clear();
             m.importers = new Set();
           });
           return modules;
@@ -92,7 +92,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
         '/api': 'http://127.0.0.1:3000/',
         // https://cn.vitejs.dev/config/#server-proxy
         '/dev-api': {
-          target: 'http://localhost:8080',
+          target: 'http://localhost:8081',
           changeOrigin: true,
           rewrite: (p) => p.replace(/^\/dev-api/, ''),
         },

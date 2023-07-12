@@ -12,7 +12,7 @@ import { store } from '@/store';
 const modules = import.meta.glob('./../../pages/**/*.vue');
 
 export const usePermissionStore = defineStore('permission', () => {
-  const whiteListRouters = ref(['/login', '/register']);
+  const whiteListRouters = ref(['/login', '/register', '/social-login']);
   const routers = ref<RouteRecordRaw[]>([]);
   const addRoutes = ref<RouteRecordRaw[]>([]);
   const defaultRoutes = ref<RouteRecordRaw[]>([]);

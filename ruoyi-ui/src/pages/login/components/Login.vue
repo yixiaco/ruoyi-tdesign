@@ -90,6 +90,20 @@
       <span v-show="false" v-if="type !== 'qrcode'" class="tip" @click="switchType('qrcode')">使用微信扫码登录</span>
       <span v-show="false" v-if="type !== 'phone'" class="tip" @click="switchType('phone')">使用手机号登录</span>
     </div>
+    <div style="display: flex; justify-content: flex-end; flex-direction: row">
+      <t-button shape="circle" variant="outline">
+        <logo-qq-icon @click="doSocialLogin('qq')" />
+      </t-button>
+      <t-button shape="circle" variant="outline">
+        <logo-wechat-icon @click="doSocialLogin('wechat')" />
+      </t-button>
+      <t-button shape="circle" variant="outline">
+        <gitee-svg class="t-icon" @click="doSocialLogin('gitee')" />
+      </t-button>
+      <t-button shape="circle" variant="outline">
+        <logo-github-filled-icon @click="doSocialLogin('github')" />
+      </t-button>
+    </div>
   </t-form>
 </template>
 
@@ -100,6 +114,9 @@ import {
   BrowseIcon,
   BrowseOffIcon,
   LockOnIcon,
+  LogoGithubFilledIcon,
+  LogoQqIcon,
+  LogoWechatIcon,
   MobileIcon,
   RefreshIcon,
   SecuredIcon,
@@ -112,6 +129,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { getCodeImg } from '@/api/login';
 import { LoginParam } from '@/api/model/loginModel';
+import GiteeSvg from '@/assets/icons/svg/gitee.svg?component';
 import { useCounter } from '@/hooks';
 import { useTabsRouterStore, useUserStore } from '@/store';
 import { decrypt, encrypt } from '@/utils/jsencrypt';

@@ -27,7 +27,7 @@ export const isRelogin = { show: false };
 // 数据处理，方便区分多种处理方式
 const transform: AxiosTransform = {
   // 处理请求数据。如果数据不是预期格式，可直接抛出错误
-  transformRequestHook: (res, options) => {
+  transformRequestHook: (res, options): any => {
     const { isTransformResponse, isReturnNativeResponse } = options;
 
     // 如果204无内容直接返回
