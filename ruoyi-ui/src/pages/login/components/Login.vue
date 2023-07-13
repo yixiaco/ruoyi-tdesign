@@ -268,6 +268,7 @@ const onSubmit = async (ctx: SubmitContext) => {
  */
 function doSocialLogin(type: string) {
   authBinding(type).then((res) => {
+    // 获取授权地址跳转
     window.location.href = res.data;
   });
 }

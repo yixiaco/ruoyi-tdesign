@@ -21,7 +21,7 @@
 | 功能介绍       | 使用技术                    | 文档地址                                                     | 描述                                                         |
 | -------------- | --------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | 当前框架       | ruoyi-tdesign               | [ruoyi-tdesign文档](https://gitee.com/yixiacoco/ruoyi-tdesign/wikis/pages) | 重写RuoYi-Vue-Plus部分逻辑，UI框架                           |
-| 原框架         | RuoYi-Vue-Plus              | [RuoYi-Vue-Plus](https://gitee.com/JavaLionLi/RuoYi-Vue-Plus) | 定期同步需要的功能                                           |
+| 原框架         | RuoYi-Vue-Plus              | [RuoYi-Vue-Plus](https://gitee.com/dromara/RuoYi-Vue-Plus) | 定期同步需要的功能                                           |
 | 前端开发框架   | Vue3、Tdesign UI            | [Tdesign UI官网](https://tdesign.tencent.com/vue-next/overview) | 腾讯研发前端Vue3框架                                         |
 | 后端开发框架   | SpringBoot                  | [SpringBoot官网](https://spring.io/projects/spring-boot/#learn) |                                                              |
 | 容器框架       | Undertow                    | [Undertow官网](https://undertow.io/)                         | 采用 Undertow 基于 XNIO 的高性能容器                         |

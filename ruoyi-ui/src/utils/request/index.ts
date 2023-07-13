@@ -9,8 +9,10 @@ import { DialogPlugin, LoadingInstance, LoadingPlugin, MessagePlugin, NotifyPlug
 import { ContentTypeEnum } from '@/constants';
 import cache from '@/plugins/cache';
 import { useUserStore } from '@/store/modules/user';
+import { encryptBase64, encryptWithAes, generateAesKey } from '@/utils/crypto';
 // @ts-ignore
 import errorCode from '@/utils/errorCode';
+import { encrypt } from '@/utils/jsencrypt';
 import { blobValidate, tansParams } from '@/utils/ruoyi';
 
 import { VAxios } from './Axios';
@@ -186,6 +188,8 @@ const transform: AxiosTransform = {
     }
     // 是否需要防止数据重复提交
     const isRepeatSubmit = (config as Recordable)?.requestOptions?.repeatSubmit === false;
+    // 是否需要加密
+    const isEncrypt = !!(config as Recordable)?.requestOptions?.isEncrypt;
     if (!isRepeatSubmit && (config.method.toUpperCase() === 'POST' || config.method.toUpperCase() === 'PUT')) {
       const requestObj = {
         url: config.url,
@@ -207,6 +211,16 @@ const transform: AxiosTransform = {
         }
         cache.session.setJSON('sessionObj', requestObj);
       }
+    }
+    // 当开启参数加密
+    if (isEncrypt && (config.method === 'post' || config.method === 'put')) {
+      // 生成一个 AES 密钥
+      const aesKey = generateAesKey();
+      config.headers['encrypt-key'] = encrypt(encryptBase64(aesKey));
+      config.data =
+        typeof config.data === 'object'
+          ? encryptWithAes(JSON.stringify(config.data), aesKey)
+          : encryptWithAes(config.data, aesKey);
     }
     return config;
   },
@@ -298,6 +312,8 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
           ignoreCancelToken: true,
           // 是否携带token
           withToken: true,
+          // 是否加密
+          withEncrypt: false,
           // 重试
           retry: {
             count: 0,
@@ -318,7 +334,11 @@ let downloadLoadingInstance: LoadingInstance;
 
 // 通用下载方法
 export function download(url: string, params: any, filename: string, config?: AxiosRequestConfig<any>) {
-  downloadLoadingInstance = LoadingPlugin({ text: '正在下载数据，请稍候' /* , background: 'rgba(0, 0, 0, 0.7)' */ });
+  downloadLoadingInstance = LoadingPlugin({
+    text: '正在下载数据，请稍候',
+    attach: 'body',
+    fullscreen: true,
+  });
   return request
     .post({
       url,

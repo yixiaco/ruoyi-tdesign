@@ -103,6 +103,11 @@ public class SysLoginService {
                 MultipleStpUtil.SYSTEM.logout();
             }
         } catch (NotLoginException ignored) {
+        } finally {
+            try {
+                MultipleStpUtil.SYSTEM.logout();
+            } catch (NotLoginException ignored) {
+            }
         }
     }
 
@@ -226,7 +231,7 @@ public class SysLoginService {
             log.info("登录租户：{} 已被停用.", tenantId);
             throw new TenantException("tenant.blocked");
         } else if (ObjectUtil.isNotNull(tenant.getExpireTime())
-                   && new Date().after(tenant.getExpireTime())) {
+            && new Date().after(tenant.getExpireTime())) {
             log.info("登录租户：{} 已超过有效期.", tenantId);
             throw new TenantException("tenant.expired");
         }

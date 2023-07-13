@@ -87,7 +87,6 @@
             <artifactId>JustAuth</artifactId>
         </dependency>
 
-
         <!-- skywalking 整合 logback -->
 <!--        <dependency>-->
 <!--            <groupId>org.apache.skywalking</groupId>-->

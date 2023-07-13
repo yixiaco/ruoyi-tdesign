@@ -177,6 +177,7 @@
                 <artifactId>ruoyi-common-amqp</artifactId>
                 <version>${revision}</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 </project>
