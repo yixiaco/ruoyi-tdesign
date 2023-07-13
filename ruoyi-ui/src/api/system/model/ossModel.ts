@@ -63,3 +63,15 @@ export interface SysOssVo {
   /** 服务商 */
   service?: string;
 }
+
+/**
+ * 上传对象信息
+ */
+export interface SysOssUploadVo {
+  /** URL地址 */
+  url?: string;
+  /** 文件名 */
+  fileName?: string;
+  /** 对象存储主键 */
+  ossId?: string;
+}

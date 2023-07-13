@@ -1,5 +1,6 @@
 import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
+import { SysOssQuery, SysOssUploadVo, SysOssVo } from '@/api/system/model/ossModel';
+import { ContentTypeEnum } from '@/constants';
 import { request } from '@/utils/request';
 
 // 查询OSS对象存储列表
@@ -29,5 +30,15 @@ export function listByUrls(urls: string) {
 export function delOss(ossId: number | number[]) {
   return request.delete<R<void>>({
     url: `/resource/oss/${ossId}`,
+  });
+}
+
+export function uploader(formData: FormData) {
+  return request.post<R<SysOssUploadVo>>({
+    url: '/resource/oss/upload',
+    headers: {
+      'Content-Type': ContentTypeEnum.FormData,
+    },
+    data: formData,
   });
 }
