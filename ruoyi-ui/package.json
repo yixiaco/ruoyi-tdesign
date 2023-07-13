@@ -24,6 +24,7 @@
     "@highlightjs/vue-plugin": "^2.1.0",
     "axios": "^1.4.0",
     "ckeditor5-overall-build": "^0.1.6",
+    "crypto-js": "^4.1.1",
     "dayjs": "^1.11.9",
     "echarts": "5.1.2",
     "file-saver": "^2.0.5",
@@ -48,6 +49,7 @@
   "devDependencies": {
     "@commitlint/cli": "^17.6.6",
     "@commitlint/config-conventional": "^17.6.6",
+    "@types/crypto-js": "^4.1.1",
     "@types/echarts": "^4.9.18",
     "@types/js-cookie": "^3.0.3",
     "@types/lodash": "^4.14.195",

@@ -41,6 +41,7 @@ export function register(data: RegisterBody) {
     },
     {
       withToken: false,
+      withEncrypt: true,
     },
   );
 }

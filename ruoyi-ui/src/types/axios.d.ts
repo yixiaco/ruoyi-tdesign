@@ -56,6 +56,10 @@ export interface RequestOptions {
    */
   withToken?: boolean;
   /**
+   * 是否加密
+   */
+  withEncrypt?: boolean;
+  /**
    * 重试配置
    */
   retry?: {
