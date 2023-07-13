@@ -42,6 +42,7 @@ declare module 'vue' {
     TDropdown: typeof import('tdesign-vue-next')['Dropdown']
     TDropdownItem: typeof import('tdesign-vue-next')['DropdownItem']
     TDropdownMenu: typeof import('tdesign-vue-next')['DropdownMenu']
+    TEditor: typeof import('@/components/editor/index.vue')['default']
     TEnhancedTable: typeof import('tdesign-vue-next')['EnhancedTable']
     TFooter: typeof import('tdesign-vue-next')['Footer']
     TForm: typeof import('tdesign-vue-next')['Form']
