@@ -23,6 +23,7 @@ import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.dromara.common.social.config.properties.SocialLoginConfigProperties;
 import org.dromara.common.social.config.properties.SocialProperties;
 import org.dromara.common.social.utils.SocialUtils;
+import org.dromara.common.tenant.annotation.IgnoreTenant;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.system.domain.SysClient;
 import org.dromara.system.domain.query.SysTenantQuery;
@@ -96,8 +97,6 @@ public class AuthController {
             log.info("客户端id: {} 认证类型：{} 异常!.", clientId, grantType);
             return R.fail(MessageUtils.message("auth.grant.type.error"));
         }
-        // 校验租户
-        loginService.checkTenant(TenantHelper.getTenantId());
         // 登录
         return R.ok(IAuthStrategy.login(loginBody, client));
     }

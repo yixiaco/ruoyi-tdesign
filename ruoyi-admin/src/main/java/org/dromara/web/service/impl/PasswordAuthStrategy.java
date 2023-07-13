@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.Constants;
 import org.dromara.common.core.constant.GlobalConstants;
+import org.dromara.common.core.constant.TenantConstants;
 import org.dromara.common.core.domain.model.LoginBody;
 import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.enums.LoginType;
@@ -22,6 +23,7 @@ import org.dromara.common.core.validate.auth.PasswordGroup;
 import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
+import org.dromara.common.tenant.annotation.IgnoreTenant;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.common.web.config.properties.CaptchaProperties;
 import org.dromara.system.domain.SysClient;
@@ -53,8 +55,8 @@ public class PasswordAuthStrategy implements IAuthStrategy {
     }
 
     @Override
+    @IgnoreTenant
     public LoginVo login(String clientId, LoginBody loginBody, SysClient client) {
-        String tenantId = TenantHelper.getTenantId();
         String username = loginBody.getUsername();
         String password = loginBody.getPassword();
         String code = loginBody.getCode();
@@ -63,10 +65,12 @@ public class PasswordAuthStrategy implements IAuthStrategy {
         boolean captchaEnabled = captchaProperties.getEnable();
         // 验证码开关
         if (captchaEnabled) {
-            validateCaptcha(tenantId, username, code, uuid);
+            validateCaptcha(TenantConstants.DEFAULT_TENANT_ID, username, code, uuid);
         }
 
         SysUserVo user = loadUserByUsername(username);
+        String tenantId = user.getTenantId();
+
         loginService.checkLogin(LoginType.PASSWORD, tenantId, username, () -> !BCrypt.checkpw(password, user.getPassword()));
         // 此处可根据登录用户的数据不同 自行创建 loginUser
         LoginUser loginUser = loginService.buildLoginUser(user);

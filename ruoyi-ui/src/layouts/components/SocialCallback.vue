@@ -34,12 +34,12 @@ const processResponse = async (res: any) => {
     token.value = res.data.access_token;
   }
   MessagePlugin.success(res.msg);
-  location.href = `${import.meta.env.VITE_APP_CONTEXT_PATH}index`;
+  window.location.href = `${import.meta.env.VITE_APP_CONTEXT_PATH}index`;
 };
 
 const handleError = (error: any) => {
   MessagePlugin.error(error.message);
-  location.href = `${import.meta.env.VITE_APP_CONTEXT_PATH}index`;
+  window.location.href = `${import.meta.env.VITE_APP_CONTEXT_PATH}index`;
 };
 
 const callbackByCode = async (data: LoginData) => {
@@ -53,7 +53,6 @@ const callbackByCode = async (data: LoginData) => {
 };
 
 const loginByCode = async (data: LoginData) => {
-  console.log(2);
   try {
     const res = await login(data);
     await processResponse(res);

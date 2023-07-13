@@ -21,6 +21,7 @@ import org.dromara.common.core.validate.auth.SmsGroup;
 import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
+import org.dromara.common.tenant.annotation.IgnoreTenant;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.system.domain.SysClient;
 import org.dromara.system.domain.SysUser;
@@ -50,13 +51,14 @@ public class SmsAuthStrategy implements IAuthStrategy {
     }
 
     @Override
+    @IgnoreTenant
     public LoginVo login(String clientId, LoginBody loginBody, SysClient client) {
-        String tenantId = TenantHelper.getTenantId();
         String phonenumber = loginBody.getPhonenumber();
         String smsCode = loginBody.getSmsCode();
 
         // 通过手机号查找用户
         SysUserVo user = loadUserByPhonenumber(phonenumber);
+        String tenantId = user.getTenantId();
 
         loginService.checkLogin(LoginType.SMS, tenantId, user.getUserName(), () -> !validateSmsCode(tenantId, phonenumber, smsCode));
         // 此处可根据登录用户的数据不同 自行创建 loginUser 属性不够用继承扩展就行了
@@ -74,6 +76,7 @@ public class SmsAuthStrategy implements IAuthStrategy {
         loginService.recordLoginInfo(user.getUserId());
         LoginVo loginVo = new LoginVo();
         loginVo.setAccessToken(MultipleStpUtil.SYSTEM.getTokenValue());
+        loginVo.setExpireIn(ObjectUtil.defaultIfNull(client.getTimeout(), MultipleStpUtil.SYSTEM.getTokenTimeout()));
         return loginVo;
     }
 
@@ -90,6 +93,7 @@ public class SmsAuthStrategy implements IAuthStrategy {
     }
 
     private SysUserVo loadUserByPhonenumber(String phonenumber) {
+        userMapper.selectUserByPhonenumber(phonenumber);
         SysUser user = userMapper.selectOne(new LambdaQueryWrapper<SysUser>()
             .select(SysUser::getPhonenumber, SysUser::getStatus)
 //            .eq(TenantHelper.isEnable(), SysUser::getTenantId, tenantId)

@@ -1,7 +1,6 @@
 package org.dromara.web.service.impl;
 
 import cn.dev33.satoken.stp.SaLoginModel;
-import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -14,6 +13,7 @@ import org.dromara.common.core.utils.ValidatorUtils;
 import org.dromara.common.core.validate.auth.WechatGroup;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
+import org.dromara.common.tenant.annotation.IgnoreTenant;
 import org.dromara.system.domain.SysClient;
 import org.dromara.system.domain.vo.SysUserVo;
 import org.dromara.web.domain.vo.LoginVo;
@@ -22,7 +22,7 @@ import org.dromara.web.service.SysLoginService;
 import org.springframework.stereotype.Service;
 
 /**
- * 邮件认证策略
+ * 小程序认证策略
  *
  * @author Michelle.Chung
  */
@@ -39,6 +39,7 @@ public class XcxAuthStrategy implements IAuthStrategy {
     }
 
     @Override
+    @IgnoreTenant
     public LoginVo login(String clientId, LoginBody loginBody, SysClient client) {
         // xcxCode 为 小程序调用 wx.login 授权后获取
         String xcxCode = loginBody.getXcxCode();
@@ -69,6 +70,7 @@ public class XcxAuthStrategy implements IAuthStrategy {
         loginService.recordLoginInfo(user.getUserId());
         LoginVo loginVo = new LoginVo();
         loginVo.setAccessToken(MultipleStpUtil.SYSTEM.getTokenValue());
+        loginVo.setExpireIn(ObjectUtil.defaultIfNull(client.getTimeout(), MultipleStpUtil.SYSTEM.getTokenTimeout()));
         return loginVo;
     }
 

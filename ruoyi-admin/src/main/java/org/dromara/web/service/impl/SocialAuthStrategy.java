@@ -22,6 +22,7 @@ import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.dromara.common.social.config.properties.SocialProperties;
 import org.dromara.common.social.utils.SocialUtils;
+import org.dromara.common.tenant.annotation.IgnoreTenant;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.system.domain.SysClient;
 import org.dromara.system.domain.SysUser;
@@ -63,6 +64,7 @@ public class SocialAuthStrategy implements IAuthStrategy {
      * @param client    客户端信息
      */
     @Override
+    @IgnoreTenant
     public LoginVo login(String clientId, LoginBody loginBody, SysClient client) {
         AuthResponse<AuthUser> response = SocialUtils.loginAuth(loginBody, socialProperties);
         if (!response.ok()) {
@@ -79,6 +81,8 @@ public class SocialAuthStrategy implements IAuthStrategy {
             && !tenantId.contains(TenantHelper.getTenantId())) {
             throw new ServiceException("对不起，你没有权限登录当前租户！");
         }
+        // 校验租户
+        loginService.checkTenant(tenantId);
 
         // 查找用户
         SysUserVo user = loadUser(tenantId, social.getUserId());
@@ -98,6 +102,7 @@ public class SocialAuthStrategy implements IAuthStrategy {
         loginService.recordLoginInfo(user.getUserId());
         LoginVo loginVo = new LoginVo();
         loginVo.setAccessToken(MultipleStpUtil.SYSTEM.getTokenValue());
+        loginVo.setExpireIn(ObjectUtil.defaultIfNull(client.getTimeout(), MultipleStpUtil.SYSTEM.getTokenTimeout()));
         return loginVo;
     }
 

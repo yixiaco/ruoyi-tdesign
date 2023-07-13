@@ -2,6 +2,7 @@ import { BaseEntity } from '@/api/model/resultModel';
 import { SysDeptVo } from '@/api/system/model/deptModel';
 import { SysPostVo } from '@/api/system/model/postModel';
 import { SysRoleVo } from '@/api/system/model/roleModel';
+import { SysSocialVo } from "@/api/system/model/socialModel";
 
 /**
  * 用户信息查询对象

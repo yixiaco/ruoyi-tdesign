@@ -95,7 +95,7 @@
         <logo-qq-icon @click="doSocialLogin('qq')" />
       </t-button>
       <t-button shape="circle" variant="outline">
-        <logo-wechat-icon @click="doSocialLogin('wechat')" />
+        <logo-wechat-icon @click="doSocialLogin('wechat_open')" />
       </t-button>
       <t-button shape="circle" variant="outline">
         <gitee-svg class="t-icon" @click="doSocialLogin('gitee')" />
@@ -129,6 +129,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { getCodeImg } from '@/api/login';
 import { LoginParam } from '@/api/model/loginModel';
+import { authBinding } from '@/api/system/social';
 import GiteeSvg from '@/assets/icons/svg/gitee.svg?component';
 import { useCounter } from '@/hooks';
 import { useTabsRouterStore, useUserStore } from '@/store';
@@ -260,6 +261,16 @@ const onSubmit = async (ctx: SubmitContext) => {
     }
   }
 };
+
+/**
+ * 第三方登录
+ * @param type
+ */
+function doSocialLogin(type: string) {
+  authBinding(type).then((res) => {
+    window.location.href = res.data;
+  });
+}
 
 getCode();
 getCookie();
