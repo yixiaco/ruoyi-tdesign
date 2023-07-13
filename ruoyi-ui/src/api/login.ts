@@ -3,7 +3,7 @@ import { R } from '@/api/model/resultModel';
 import { request } from '@/utils/request';
 
 // pc端固定客户端授权id
-const clientId = 'e5cd7e4891bf95d1d19206ce24a7b32e';
+const clientId = import.meta.env.VITE_CLIENT_ID;
 
 /**
  * 是否登录状态

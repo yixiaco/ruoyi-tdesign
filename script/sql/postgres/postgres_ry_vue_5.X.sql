@@ -14,7 +14,7 @@ create table sys_social
     email              varchar(255)     default ''::varchar,
     avatar             varchar(500)     default ''::varchar,
     access_token       varchar(255)     not null,
-    expire_in          int8             default null::varchar,
+    expire_in          int8             default null,
     refresh_token      varchar(255)     default null::varchar,
     access_code        varchar(255)     default null::varchar,
     union_id           varchar(255)     default null::varchar,

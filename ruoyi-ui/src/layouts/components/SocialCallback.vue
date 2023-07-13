@@ -68,7 +68,7 @@ const init = async () => {
     socialState: state,
     tenantId: tenantId.value,
     source,
-    clientId: 'e5cd7e4891bf95d1d19206ce24a7b32e',
+    clientId: import.meta.env.VITE_CLIENT_ID,
     grantType: 'social',
   };
 
