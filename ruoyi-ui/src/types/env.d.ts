@@ -17,4 +17,6 @@ export interface ImportMetaEnv {
   readonly VITE_BUILD_COMPRESS: string;
   /** 客户端ID */
   readonly VITE_CLIENT_ID: string;
+  /** 接口加密传输 RSA */
+  VITE_APP_RSA_PUBLIC_KEY: string;
 }

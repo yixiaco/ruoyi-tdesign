@@ -185,9 +185,9 @@
           <t-space direction="vertical">
             <t-space>
               <t-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">展开/折叠</t-checkbox>
-              <t-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')"
-                >全选/全不选</t-checkbox
-              >
+              <t-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">
+                全选/全不选
+              </t-checkbox>
               <t-checkbox v-model="form.menuCheckStrictly">父子联动</t-checkbox>
             </t-space>
             <t-tree

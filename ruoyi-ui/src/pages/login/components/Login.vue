@@ -91,17 +91,20 @@
       <span v-show="false" v-if="type !== 'phone'" class="tip" @click="switchType('phone')">使用手机号登录</span>
     </div>
     <div style="display: flex; justify-content: flex-end; flex-direction: row">
-      <t-button shape="circle" variant="outline">
-        <logo-qq-icon @click="doSocialLogin('qq')" />
+      <t-button shape="circle" variant="outline" @click="doSocialLogin('wechat_open')">
+        <logo-wechat-icon />
       </t-button>
-      <t-button shape="circle" variant="outline">
-        <logo-wechat-icon @click="doSocialLogin('wechat_open')" />
+      <t-button shape="circle" variant="outline" @click="doSocialLogin('qq')">
+        <logo-qq-icon />
       </t-button>
-      <t-button shape="circle" variant="outline">
-        <gitee-svg class="t-icon" @click="doSocialLogin('gitee')" />
+      <t-button shape="circle" variant="outline" @click="doSocialLogin('maxkey')">
+        <max-key class="t-icon" />
       </t-button>
-      <t-button shape="circle" variant="outline">
-        <logo-github-filled-icon @click="doSocialLogin('github')" />
+      <t-button shape="circle" variant="outline" @click="doSocialLogin('gitee')">
+        <gitee-svg class="t-icon" />
+      </t-button>
+      <t-button shape="circle" variant="outline" @click="doSocialLogin('github')">
+        <logo-github-filled-icon />
       </t-button>
     </div>
   </t-form>
@@ -131,6 +134,7 @@ import { getCodeImg } from '@/api/login';
 import { LoginParam } from '@/api/model/loginModel';
 import { authBinding } from '@/api/system/social';
 import GiteeSvg from '@/assets/icons/svg/gitee.svg?component';
+import MaxKey from '@/assets/icons/svg/maxkey.svg?component';
 import { useCounter } from '@/hooks';
 import { useTabsRouterStore, useUserStore } from '@/store';
 import { decrypt, encrypt } from '@/utils/jsencrypt';

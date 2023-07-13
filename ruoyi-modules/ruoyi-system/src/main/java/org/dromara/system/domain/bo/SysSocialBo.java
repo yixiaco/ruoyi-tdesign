@@ -49,7 +49,7 @@ public class SysSocialBo extends TenantEntity {
     /**
      * 用户的授权令牌的有效期，部分平台可能没有
      */
-    private int expireIn;
+    private Integer expireIn;
 
     /**
      * 刷新令牌，部分平台可能没有

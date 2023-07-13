@@ -18,7 +18,8 @@ powerjob:
     enable-test-mode: false
     max-appended-wf-context-length: 4096
     max-result-length: 4096
-    port: 27777
+    # 28080 端口 随着主应用端口飘逸 避免集群冲突
+    port: 2${server.port}
     protocol: http
     server-address: 127.0.0.1:7700
     store-strategy: disk
@@ -137,7 +138,7 @@ redisson:
 justauth:
   enabled: true
   # 前端外网访问地址
-  address: http://localhost:80
+  address: http://localhost:3002
   type:
     maxkey:
       # maxkey 服务器地址
@@ -156,8 +157,8 @@ justauth:
       client-secret: 1f7d08**********5b7**********29e
       redirect-uri: ${justauth.address}/social-callback?source=weibo
     gitee:
-      client-id: 91436b7940090d09c72c7daf85b959cfd5f215d67eea73acbf61b6b590751a98
-      client-secret: 02c6fcfd70342980cd8dd2f2c06c1a350645d76c754d7a264c4e125f9ba915ac
+      client-id: 369877363892632657c49225ac9b7a6d808a2b3a7d625839d4e1b1bd9f55c797
+      client-secret: 497db6afab15782791b9df4c930cc4c69ceb53c80e20f7362ffa607878894879
       redirect-uri: ${justauth.address}/social-callback?source=gitee
     dingtalk:
       client-id: 10**********6

@@ -8,6 +8,7 @@ import org.dromara.system.domain.SysSocial;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Date;
 
 
 /**
@@ -53,24 +54,6 @@ public class SysSocialVo implements Serializable {
     private String source;
 
     /**
-     * 用户的授权令牌
-     */
-    @ExcelProperty(value = "用户的授权令牌")
-    private String accessToken;
-
-    /**
-     * 用户的授权令牌的有效期，部分平台可能没有
-     */
-    @ExcelProperty(value = "用户的授权令牌的有效期，部分平台可能没有")
-    private int expireIn;
-
-    /**
-     * 刷新令牌，部分平台可能没有
-     */
-    @ExcelProperty(value = "刷新令牌，部分平台可能没有")
-    private String refreshToken;
-
-    /**
      * 用户的 open id
      */
     @ExcelProperty(value = "平台的唯一id")
@@ -100,6 +83,23 @@ public class SysSocialVo implements Serializable {
     @ExcelProperty(value = "授权的第三方头像地址")
     private String avatar;
 
+    /**
+     * 用户的授权令牌
+     */
+    @ExcelProperty(value = "用户的授权令牌")
+    private String accessToken;
+
+    /**
+     * 用户的授权令牌的有效期，部分平台可能没有
+     */
+    @ExcelProperty(value = "用户的授权令牌的有效期，部分平台可能没有")
+    private Integer expireIn;
+
+    /**
+     * 刷新令牌，部分平台可能没有
+     */
+    @ExcelProperty(value = "刷新令牌，部分平台可能没有")
+    private String refreshToken;
 
     /**
      * 平台的授权信息，部分平台可能没有
@@ -161,5 +161,16 @@ public class SysSocialVo implements Serializable {
     @ExcelProperty(value = "Twitter平台用户的附带属性，部分平台可能没有")
     private String oauthTokenSecret;
 
+    /**
+     * 创建时间
+     */
+    @ExcelProperty(value = "创建时间")
+    private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    @ExcelProperty(value = "更新时间")
+    private Date updateTime;
 
 }

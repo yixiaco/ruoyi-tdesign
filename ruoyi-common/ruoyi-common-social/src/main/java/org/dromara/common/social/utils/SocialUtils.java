@@ -8,7 +8,7 @@ import me.zhyd.oauth.model.AuthResponse;
 import me.zhyd.oauth.model.AuthUser;
 import me.zhyd.oauth.request.*;
 import org.dromara.common.core.domain.model.LoginBody;
-import org.dromara.common.core.utils.SpringUtils;
+import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.social.config.properties.SocialLoginConfigProperties;
 import org.dromara.common.social.config.properties.SocialProperties;
 import org.dromara.common.social.maxkey.AuthMaxKeyRequest;

@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <t-space direction="vertical">
     <t-table
       :loading="loading"
       hover
@@ -16,32 +16,35 @@
       </template>
     </t-table>
 
-    <div id="git-user-binding">
-      <h4 class="provider-desc">你可以绑定以下第三方帐号</h4>
-      <t-space>
-        <t-button shape="circle" variant="outline" @click="authUrl('gitee')">
-          <template #icon>
-            <gitee-svg class="t-icon" />
-          </template>
-        </t-button>
-        <t-button shape="circle" variant="outline" @click="authUrl('github')">
-          <template #icon>
-            <logo-github-filled-icon />
-          </template>
-        </t-button>
-        <t-button shape="circle" variant="outline" @click="authUrl('wechat_open')">
-          <template #icon>
-            <logo-wechat-icon />
-          </template>
-        </t-button>
-        <t-button shape="circle" variant="outline" @click="authUrl('qq')">
-          <template #icon>
-            <logo-qq-icon />
-          </template>
-        </t-button>
-      </t-space>
-    </div>
-  </div>
+    <h3>你可以绑定以下第三方帐号</h3>
+    <t-space>
+      <t-button shape="circle" variant="outline" @click="authUrl('wechat_open')">
+        <template #icon>
+          <logo-wechat-icon />
+        </template>
+      </t-button>
+      <t-button shape="circle" variant="outline" @click="authUrl('qq')">
+        <template #icon>
+          <logo-qq-icon />
+        </template>
+      </t-button>
+      <t-button shape="circle" variant="outline" @click="authUrl('maxkey')">
+        <template #icon>
+          <max-key class="t-icon" />
+        </template>
+      </t-button>
+      <t-button shape="circle" variant="outline" @click="authUrl('gitee')">
+        <template #icon>
+          <gitee-svg class="t-icon" />
+        </template>
+      </t-button>
+      <t-button shape="circle" variant="outline" @click="authUrl('github')">
+        <template #icon>
+          <logo-github-filled-icon />
+        </template>
+      </t-button>
+    </t-space>
+  </t-space>
 </template>
 
 <script lang="ts" setup>
@@ -52,6 +55,7 @@ import { getCurrentInstance, onMounted, ref } from 'vue';
 import { SysSocialVo } from '@/api/system/model/socialModel';
 import { authBinding, authUnlock, getAuthList } from '@/api/system/social';
 import GiteeSvg from '@/assets/icons/svg/gitee.svg?component';
+import MaxKey from '@/assets/icons/svg/maxkey.svg?component';
 
 const { proxy } = getCurrentInstance();
 const loading = ref(false);
@@ -89,7 +93,7 @@ function unlockAuth(row: SysSocialVo) {
 function authUrl(source: string) {
   authBinding(source).then((res: any) => {
     if (res.code === 200) {
-      window.location.href = res.data;
+      window.open(res.data, '_blank');
     } else {
       proxy?.$modal.msgError(res.msg);
     }
@@ -100,52 +104,3 @@ onMounted(() => {
   getList();
 });
 </script>
-
-<style lang="less" scoped>
-.user-bind .third-app {
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-orient: vertical;
-  -webkit-box-direction: normal;
-  -ms-flex-direction: column;
-  flex-direction: column;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  min-width: 80px;
-  float: left;
-}
-
-.user-bind {
-  font-size: 1rem;
-  text-align: start;
-  height: 50px;
-  margin-top: 10px;
-}
-
-.git-other-login-icon > img {
-  height: 32px;
-}
-
-a {
-  text-decoration: none;
-  cursor: pointer;
-  color: #005980;
-}
-
-.provider-desc {
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Helvetica, Arial, 'Apple Color Emoji', 'Segoe UI Emoji',
-    'Segoe UI Symbol', 'Liberation Sans', 'PingFang SC', 'Microsoft YaHei', 'Hiragino Sans GB', 'Wenquanyi Micro Hei',
-    'WenQuanYi Zen Hei', 'ST Heiti', SimHei, SimSun, 'WenQuanYi Zen Hei Sharp', sans-serif;
-  font-size: 1.071rem;
-}
-
-td > img {
-  height: 20px;
-  width: 20px;
-  display: inline-block;
-  border-radius: 50%;
-  margin-right: 5px;
-}
-</style>
