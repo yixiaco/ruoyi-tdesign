@@ -1,7 +1,7 @@
 package org.dromara.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import lombok.RequiredArgsConstructor;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.system.domain.SysSocial;
 import org.dromara.system.domain.bo.SysSocialBo;
@@ -18,12 +18,8 @@ import java.util.List;
  * @author thiszhc
  * @date 2023-06-12
  */
-@RequiredArgsConstructor
 @Service
-public class SysSocialServiceImpl implements ISysSocialService {
-
-    private final SysSocialMapper baseMapper;
-
+public class SysSocialServiceImpl extends ServiceImpl<SysSocialMapper, SysSocial> implements ISysSocialService {
 
     /**
      * 查询社会化关系

@@ -1,5 +1,7 @@
 package org.dromara.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
+import org.dromara.system.domain.SysSocial;
 import org.dromara.system.domain.bo.SysSocialBo;
 import org.dromara.system.domain.vo.SysSocialVo;
 
@@ -10,8 +12,7 @@ import java.util.List;
  *
  * @author thiszhc
  */
-public interface ISysSocialService {
-
+public interface ISysSocialService extends IService<SysSocial> {
 
     /**
      * 查询社会化关系

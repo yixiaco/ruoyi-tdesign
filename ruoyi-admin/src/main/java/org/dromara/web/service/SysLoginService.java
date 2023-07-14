@@ -18,6 +18,7 @@ import org.dromara.common.core.domain.dto.RoleDTO;
 import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.enums.LoginType;
 import org.dromara.common.core.enums.TenantStatus;
+import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.exception.user.UserException;
 import org.dromara.common.core.utils.DateUtils;
 import org.dromara.common.core.utils.MessageUtils;
@@ -31,6 +32,7 @@ import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.dromara.common.tenant.annotation.IgnoreTenant;
 import org.dromara.common.tenant.exception.TenantException;
 import org.dromara.common.tenant.helper.TenantHelper;
+import org.dromara.system.domain.SysSocial;
 import org.dromara.system.domain.SysUser;
 import org.dromara.system.domain.bo.SysSocialBo;
 import org.dromara.system.domain.vo.SysTenantVo;
@@ -47,6 +49,8 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.function.Supplier;
 
 /**
@@ -83,6 +87,18 @@ public class SysLoginService {
         bo.setUserName(authUserData.getUsername());
         BeanUtils.copyProperties(authUserData, bo);
         BeanUtils.copyProperties(authUserData.getToken(), bo);
+        // 检查是否已经被绑定到其他账号上
+        Optional<SysSocial> optional = sysSocialService.lambdaQuery()
+            .eq(SysSocial::getAuthId, bo.getAuthId())
+            .select(SysSocial::getUserId)
+            .oneOpt();
+        if (optional.isPresent()) {
+            if (Objects.equals(bo.getUserId(), optional.get().getUserId())) {
+                throw new ServiceException("已绑定该平台账号");
+            } else {
+                throw new ServiceException("该平台账号已绑定其他用户");
+            }
+        }
         sysSocialService.insertByBo(bo);
         return R.ok();
     }

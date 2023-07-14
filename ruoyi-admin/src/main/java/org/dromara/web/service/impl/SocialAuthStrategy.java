@@ -76,8 +76,7 @@ public class SocialAuthStrategy implements IAuthStrategy {
         }
         // 验证授权表里面的租户id是否包含当前租户id
         String tenantId = social.getTenantId();
-        if (ObjectUtil.isNotNull(social) && StrUtil.isNotBlank(tenantId)
-            && !tenantId.contains(TenantHelper.getTenantId())) {
+        if (ObjectUtil.isNull(social) || StrUtil.isBlank(tenantId)) {
             throw new ServiceException("对不起，你没有权限登录当前租户！");
         }
         // 校验租户
