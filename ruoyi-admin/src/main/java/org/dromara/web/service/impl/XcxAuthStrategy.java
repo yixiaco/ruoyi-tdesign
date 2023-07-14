@@ -61,8 +61,12 @@ public class XcxAuthStrategy implements IAuthStrategy {
         model.setDevice(client.getDeviceType());
         // 自定义分配 不同用户体系 不同 token 授权时间 不设置默认走全局 yml 配置
         // 例如: 后台用户30分钟过期 app用户1天过期
-        model.setTimeout(client.getTimeout());
-        model.setActiveTimeout(client.getActiveTimeout());
+        if (client.getTimeout() != null) {
+            model.setTimeout(client.getTimeout());
+        }
+        if (client.getActiveTimeout() != null) {
+            model.setActiveTimeout(client.getActiveTimeout());
+        }
         // 生成token
         LoginHelper.login(loginUser, model);
 

@@ -221,6 +221,8 @@ public class TenantHelper {
             String cacheKey = DYNAMIC_TENANT_KEY + ":" + user.getUserId();
             RedisUtils.setObject(cacheKey, tenantId);
             SaHolder.getStorage().set(cacheKey, tenantId);
+        } else {
+            TEMP_DYNAMIC_TENANT.set(tenantId);
         }
     }
 
@@ -234,17 +236,20 @@ public class TenantHelper {
             return TEMP_DYNAMIC_TENANT.get();
         }
         BaseUser user = SaSecurityContext.getContext();
+        String tenantId = null;
         if (user != null) {
             String cacheKey = DYNAMIC_TENANT_KEY + ":" + user.getUserId();
-            String tenantId = (String) SaHolder.getStorage().get(cacheKey);
+            tenantId = (String) SaHolder.getStorage().get(cacheKey);
             if (StringUtils.isNotBlank(tenantId)) {
                 return tenantId;
             }
             tenantId = RedisUtils.getObject(cacheKey);
             SaHolder.getStorage().set(cacheKey, tenantId);
-            return tenantId;
         }
-        return null;
+        if (tenantId == null) {
+            return TEMP_DYNAMIC_TENANT.get();
+        }
+        return tenantId;
     }
 
     /**
@@ -261,6 +266,8 @@ public class TenantHelper {
             RedisUtils.deleteObject(cacheKey);
             SaHolder.getStorage().delete(cacheKey);
         }
+        // 防止登录后没有清理动态租户
+        TEMP_DYNAMIC_TENANT.remove();
     }
 
     /**

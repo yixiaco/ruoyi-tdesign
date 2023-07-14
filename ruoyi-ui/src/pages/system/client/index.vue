@@ -153,10 +153,10 @@
           </t-select>
         </t-form-item>
         <t-form-item label="token活跃超时时间" name="activeTimeout">
-          <t-input-number v-model="form.activeTimeout" clearable :min="0" />
+          <t-input-number v-model="form.activeTimeout" clearable :min="60" :allow-input-over-limit="false" />
         </t-form-item>
         <t-form-item label="token固定超时" name="timeout">
-          <t-input-number v-model="form.timeout" clearable :min="0" />
+          <t-input-number v-model="form.timeout" clearable :min="180" :allow-input-over-limit="false" />
         </t-form-item>
         <t-form-item label="状态" name="status">
           <t-radio-group v-model="form.status">

@@ -3,6 +3,7 @@ package org.dromara.common.satoken.listener;
 import cn.dev33.satoken.config.SaTokenConfig;
 import cn.dev33.satoken.listener.SaTokenListener;
 import cn.dev33.satoken.stp.SaLoginModel;
+import cn.hutool.core.util.ObjectUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.enums.UserType;
 import org.dromara.common.satoken.online.OnlineUserCacheManager;
@@ -30,10 +31,11 @@ public class UserActionListener implements SaTokenListener {
     public void doLogin(String loginType, Object loginId, String tokenValue, SaLoginModel loginModel) {
         UserType userType = UserType.getUserType(loginId.toString());
         if (userType == UserType.SYS_USER) {
-            if (tokenConfig.getTimeout() == -1) {
+            Long timeout = ObjectUtil.defaultIfNull(loginModel.getTimeout(), tokenConfig.getTimeout());
+            if (timeout <= 0) {
                 onlineUserCacheManager.setCache(userType, tokenValue, loginModel);
             } else {
-                onlineUserCacheManager.setCache(userType, tokenValue, loginModel, tokenConfig.getTimeout());
+                onlineUserCacheManager.setCache(userType, tokenValue, loginModel, timeout);
             }
             log.info("user doLogin, userId:{}, token:{}", loginId, tokenValue);
         } else if (userType == UserType.APP_USER) {
