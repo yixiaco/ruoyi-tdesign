@@ -8,12 +8,10 @@ import org.dromara.common.core.domain.dto.UserOnlineDTO;
 import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.enums.UserType;
 import org.dromara.common.redis.utils.RedisUtils;
-import org.dromara.common.satoken.online.OnlineUserCacheManagerInterface;
+import org.dromara.common.satoken.online.OnlineUserCacheManager;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.OnlineUserUtil;
 import org.dromara.common.tenant.helper.TenantHelper;
-import org.springframework.context.annotation.Primary;
-import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
@@ -23,9 +21,7 @@ import java.time.Duration;
  * @author hexm
  * @date 2023/07/14 17:29
  */
-@Primary
-@Component
-public class TenantOnlineUserCacheManager implements OnlineUserCacheManagerInterface {
+public class TenantOnlineUserCacheManager implements OnlineUserCacheManager {
 
     /**
      * 保存在线用户

@@ -5,7 +5,7 @@ import cn.dev33.satoken.listener.SaTokenListener;
 import cn.dev33.satoken.stp.SaLoginModel;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.enums.UserType;
-import org.dromara.common.satoken.online.OnlineUserCacheManagerInterface;
+import org.dromara.common.satoken.online.OnlineUserCacheManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +21,7 @@ public class UserActionListener implements SaTokenListener {
     @Autowired
     private SaTokenConfig tokenConfig;
     @Autowired
-    private OnlineUserCacheManagerInterface onlineUserCacheManager;
+    private OnlineUserCacheManager onlineUserCacheManager;
 
     /**
      * 每次登录时触发

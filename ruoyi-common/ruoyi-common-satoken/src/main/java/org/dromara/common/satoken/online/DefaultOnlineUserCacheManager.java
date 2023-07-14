@@ -6,8 +6,6 @@ import org.dromara.common.core.domain.dto.UserOnlineDTO;
 import org.dromara.common.core.enums.UserType;
 import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.satoken.utils.OnlineUserUtil;
-import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.stereotype.Component;
 
 import java.time.Duration;
 
@@ -17,9 +15,7 @@ import java.time.Duration;
  * @author hexm
  * @date 2023/07/14 17:22
  */
-@Component
-@ConditionalOnMissingBean(OnlineUserCacheManagerInterface.class)
-public class DefaultOnlineUserCacheManager implements OnlineUserCacheManagerInterface {
+public class DefaultOnlineUserCacheManager implements OnlineUserCacheManager {
 
     /**
      * 保存在线用户

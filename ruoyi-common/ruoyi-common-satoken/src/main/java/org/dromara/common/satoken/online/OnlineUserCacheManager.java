@@ -9,7 +9,7 @@ import org.dromara.common.core.enums.UserType;
  * @author hexm
  * @date 2023/07/14 17:14
  */
-public interface OnlineUserCacheManagerInterface {
+public interface OnlineUserCacheManager {
 
     /**
      * 保存在线用户

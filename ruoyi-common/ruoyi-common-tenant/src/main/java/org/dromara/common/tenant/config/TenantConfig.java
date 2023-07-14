@@ -9,11 +9,14 @@ import org.dromara.common.core.utils.reflect.ReflectUtils;
 import org.dromara.common.mybatis.config.MybatisPlusConfig;
 import org.dromara.common.redis.config.RedisConfig;
 import org.dromara.common.redis.config.properties.RedissonProperties;
+import org.dromara.common.satoken.config.SaTokenConfiguration;
+import org.dromara.common.satoken.online.OnlineUserCacheManager;
 import org.dromara.common.tenant.aspect.TenantAspect;
 import org.dromara.common.tenant.core.TenantSaTokenDao;
 import org.dromara.common.tenant.handle.PlusTenantLineHandler;
 import org.dromara.common.tenant.handle.TenantKeyPrefixHandler;
 import org.dromara.common.tenant.manager.TenantSpringCacheManager;
+import org.dromara.common.tenant.online.TenantOnlineUserCacheManager;
 import org.dromara.common.tenant.properties.TenantProperties;
 import org.redisson.config.ClusterServersConfig;
 import org.redisson.config.SingleServerConfig;
@@ -34,7 +37,7 @@ import java.util.List;
  * @author Lion Li
  */
 @EnableConfigurationProperties(TenantProperties.class)
-@AutoConfiguration(after = {RedisConfig.class, MybatisPlusConfig.class})
+@AutoConfiguration(before = SaTokenConfiguration.class, after = {RedisConfig.class, MybatisPlusConfig.class,})
 @ConditionalOnProperty(value = "tenant.enable", havingValue = "true")
 public class TenantConfig {
 
@@ -106,5 +109,15 @@ public class TenantConfig {
     @Bean
     public TenantAspect tenantAspect() {
         return new TenantAspect();
+    }
+
+    /**
+     * 在线用户管理
+     *
+     * @return
+     */
+    @Bean
+    public OnlineUserCacheManager tenantOnlineUserCacheManager() {
+        return new TenantOnlineUserCacheManager();
     }
 }
