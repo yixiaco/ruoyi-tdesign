@@ -51,7 +51,6 @@ import java.util.List;
  * @author Lion Li
  */
 @Slf4j
-@SaIgnore
 @Validated
 @RestController
 @RequestMapping("/auth")
@@ -75,6 +74,7 @@ public class AuthController {
      *
      * @return
      */
+    @SaIgnore
     @GetMapping("/isLogin")
     public R<Boolean> isLogin() {
         return R.ok(MultipleStpUtil.SYSTEM.isLogin());
@@ -86,6 +86,7 @@ public class AuthController {
      * @param loginBody 登录信息
      * @return 结果
      */
+    @SaIgnore
     @PostMapping("/login")
     public R<LoginVo> login(@Validated @RequestBody LoginBody loginBody) {
         // 授权类型和客户端id
@@ -107,6 +108,7 @@ public class AuthController {
      * @param source 登录来源
      * @return 结果
      */
+    @SaIgnore
     @GetMapping("/binding/{source}")
     public R<String> authBinding(@PathVariable("source") String source) {
         SocialLoginConfigProperties obj = socialProperties.getType().get(source);
@@ -148,10 +150,10 @@ public class AuthController {
         return rows ? R.ok() : R.fail("取消授权失败");
     }
 
-
     /**
      * 退出登录
      */
+    @SaIgnore
     @PostMapping("/logout")
     public R<Void> logout() {
         loginService.logout();
@@ -161,6 +163,7 @@ public class AuthController {
     /**
      * 用户注册
      */
+    @SaIgnore
     @PostMapping("/register")
     public R<Void> register(@Validated @RequestBody RegisterBody user) {
         if (!SysConfigHelper.getSysAccountRegisterUser()) {
@@ -175,6 +178,7 @@ public class AuthController {
      *
      * @return 租户列表
      */
+    @SaIgnore
     @GetMapping("/tenant/list")
     public R<LoginTenantVo> tenantList(HttpServletRequest request) throws Exception {
         List<SysTenantVo> tenantList = tenantService.queryList(new SysTenantQuery());

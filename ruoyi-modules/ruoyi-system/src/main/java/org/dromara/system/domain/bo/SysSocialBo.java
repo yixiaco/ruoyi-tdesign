@@ -29,9 +29,9 @@ public class SysSocialBo extends TenantEntity {
     private Long id;
 
     /**
-     * 的唯一ID
+     * 平台唯一ID
      */
-    @NotBlank(message = "的唯一ID不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotBlank(message = "平台唯一ID不能为空", groups = { AddGroup.class, EditGroup.class })
     private String authId;
 
     /**

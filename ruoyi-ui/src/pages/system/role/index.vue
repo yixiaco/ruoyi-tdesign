@@ -1,6 +1,6 @@
 <template>
   <t-card>
-    <t-space direction="vertical">
+    <t-space direction="vertical" style="width: 100%">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
         <t-form-item label="角色名称" name="roleName">
           <t-input
@@ -241,9 +241,9 @@
           <t-space direction="vertical">
             <t-space>
               <t-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</t-checkbox>
-              <t-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')"
-                >全选/全不选</t-checkbox
-              >
+              <t-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">
+                全选/全不选
+              </t-checkbox>
               <t-checkbox v-model="form.deptCheckStrictly">父子联动</t-checkbox>
             </t-space>
             <t-tree

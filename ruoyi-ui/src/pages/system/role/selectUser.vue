@@ -9,7 +9,7 @@
     attach="body"
     @confirm="handleSelectUser"
   >
-    <t-space direction="vertical">
+    <t-space direction="vertical" style="width: 100%">
       <t-form ref="queryRef" :data="queryParams" layout="inline">
         <t-form-item label="用户名称" name="userName">
           <t-input

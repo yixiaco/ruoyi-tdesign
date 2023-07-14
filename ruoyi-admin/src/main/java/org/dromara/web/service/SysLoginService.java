@@ -28,6 +28,7 @@ import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.satoken.context.SaSecurityContext;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
+import org.dromara.common.tenant.annotation.IgnoreTenant;
 import org.dromara.common.tenant.exception.TenantException;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.system.domain.SysUser;
@@ -89,6 +90,7 @@ public class SysLoginService {
     /**
      * 退出登录
      */
+    @IgnoreTenant
     public void logout() {
         try {
             LoginUser loginUser = LoginHelper.getUser();

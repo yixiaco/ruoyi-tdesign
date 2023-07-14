@@ -1,6 +1,6 @@
 <template>
   <div>
-    <result v-if="hasError" title="授权登录失败" type="401" :tip="errorMessage || '未知原因'">
+    <result v-if="hasError" title="授权失败" type="401" :tip="errorMessage || '未知原因'">
       <t-button @click="() => $router.push('/login')">返回登录</t-button>
     </result>
     <t-loading :loading="loading" :text="lodingText" :fullscreen="true"> </t-loading>

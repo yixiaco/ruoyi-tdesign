@@ -1,13 +1,6 @@
 <template>
-  <t-space direction="vertical">
-    <t-table
-      :loading="loading"
-      hover
-      row-key="id"
-      :data="socialList"
-      :columns="columns"
-      style="width: 100%; height: 100%; font-size: 10px"
-    >
+  <t-space direction="vertical" style="width: 100%">
+    <t-table :loading="loading" hover row-key="id" :data="socialList" :columns="columns" style="font-size: 10px">
       <template #avatar="{ row }">
         <image-preview :src="row.avatar" :width="45" :height="45" />
       </template>
@@ -71,10 +64,10 @@ function getList() {
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `序号`, colKey: 'serial-number', width: 80, align: 'center' },
   { title: `绑定账号平台`, colKey: 'source', align: 'center' },
-  { title: `头像`, colKey: 'avatar', align: 'center', width: 120 },
-  { title: `登录账号`, colKey: 'userName', align: 'center', width: 180 },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
-  { title: `操作`, colKey: 'operation', align: 'center', width: 80 },
+  { title: `头像`, colKey: 'avatar', align: 'center', minWidth: 120 },
+  { title: `登录账号`, colKey: 'userName', align: 'center', minWidth: 180 },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', minWidth: 180 },
+  { title: `操作`, colKey: 'operation', align: 'center', minWidth: 80 },
 ]);
 // 取消授权
 function unlockAuth(row: SysSocialVo) {
