@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://gitee.com/yixiacoco/ruoyi-tdesign/blob/master/LICENSE)
 [![使用IntelliJ IDEA开发维护](https://img.shields.io/badge/IntelliJ%20IDEA-提供支持-blue.svg)](https://www.jetbrains.com/?from=ruoyi-tdesign)
 <br>
-[![ruoyi-tdesign](https://img.shields.io/badge/ruoyi%20tdesign-1.0.4-success.svg)](https://gitee.com/yixiacoco/ruoyi-tdesign)
+[![ruoyi-tdesign](https://img.shields.io/badge/ruoyi%20tdesign-1.0.5-success.svg)](https://gitee.com/yixiacoco/ruoyi-tdesign)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.0-blue.svg)]()
 [![JDK-17](https://img.shields.io/badge/JDK-17-green.svg)]()
 [![JDK-19](https://img.shields.io/badge/JDK-19-green.svg)]()
@@ -26,6 +26,7 @@
 | 后端开发框架   | SpringBoot                  | [SpringBoot官网](https://spring.io/projects/spring-boot/#learn) |                                                              |
 | 容器框架       | Undertow                    | [Undertow官网](https://undertow.io/)                         | 采用 Undertow 基于 XNIO 的高性能容器                         |
 | 权限认证框架   | Sa-Token、Jwt               | [Sa-Token官网](https://sa-token.dev33.cn/)                   | 采用 Sa-Token、Jwt 静态使用功能齐全 低耦合 高扩展<br/>采用 Sa-Token 支持注解 登录校验、角色校验、权限校验、二级认证校验、HttpBasic校验、忽略校验<br/>角色与权限校验支持多种条件 如 `AND` `OR` 或 `权限 OR 角色` 等复杂表达式 |
+| 三方鉴权 | JustAuth | [JustAuth官网](https://www.justauth.cn/) | 采用 JustAuth 第三方登录组件 支持微信、钉钉等数十种三方认证 |
 | 关系数据库     | MySQL                       | [MySQL官网](https://dev.mysql.com/)                          | 适配 8.X 最低 5.7，可同时使用异构切换                        |
 | 关系数据库     | Oracle                      | [Oracle官网](https://www.oracle.com/cn/database/)            | 适配 11g 12c，可同时使用异构切换                             |
 | 关系数据库     | PostgreSQL                  | [PostgreSQL官网](https://www.postgresql.org/)                | 适配 13 14，可同时使用异构切换                               |
@@ -74,6 +75,9 @@
 | 功能         | 介绍                                                         |
 | ------------ | ------------------------------------------------------------ |
 | 租户管理     | 配置系统租户，支持 SaaS 场景下的多租户功能。                 |
+| 租户套餐管理 | 系统内租户所能使用的套餐管理 如:套餐内所包含的菜单等         |
+| 应用管理     | 配置租户识别key，将域名、appid等动态地址转换为租户ID         |
+| 客户端管理   | 系统内对接的所有客户端管理 如: pc端、小程序端等<br/>支持动态授权登录方式 如: 短信登录、密码登录等 支持动态控制token时效 |
 | 用户管理     | 用户是系统操作者，该功能主要完成系统用户配置。               |
 | 部门管理     | 配置系统组织机构（公司、部门、小组），树结构展现支持数据权限。 |
 | 岗位管理     | 配置系统用户所属担任职务。                                   |
@@ -142,18 +146,21 @@
         </tr>
         <tr>
             <td><img src="./doc/images/消息发送记录.png" width="1920" /></td>
+            <td><img src="./doc/images/客户端管理.png" width="1920" /></td>
+        </tr>
+        <tr>
             <td><img src="./doc/images/租户管理.png" width="1920" /></td>
-        </tr>
-        <tr>
             <td><img src="./doc/images/租户套餐管理.png" width="1920" /></td>
+        </tr>
+        <tr>
             <td><img src="./doc/images/应用管理.png" width="1920" /></td>
-        </tr>
-        <tr>
             <td><img src="./doc/images/登录日志.png" width="1920" /></td>
-            <td><img src="./doc/images/在线用户.png" width="1920" /></td>
         </tr>
         <tr>
+            <td><img src="./doc/images/在线用户.png" width="1920" /></td>
             <td><img src="./doc/images/缓存监控.png" width="1920" /></td>
+        </tr>
+        <tr>
             <td><img src="./doc/images/代码生成.png" width="1920" /></td>
         </tr>
     </tbody>
