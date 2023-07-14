@@ -239,8 +239,8 @@ const onSubmit = async (ctx: SubmitContext) => {
       // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
       if (formData.value.rememberMe && type.value === 'password') {
         Cookies.set('account', formData.value.account, { expires: 30 });
-        Cookies.set('password', encrypt(formData.value.password), { expires: 30 });
-        Cookies.set('rememberMe', formData.value.rememberMe.toString(), { expires: 30 });
+        Cookies.set('password', String(formData.value.password), { expires: 30 });
+        Cookies.set('rememberMe', String(formData.value.rememberMe), { expires: 30 });
       } else {
         // 否则移除
         Cookies.remove('account');
