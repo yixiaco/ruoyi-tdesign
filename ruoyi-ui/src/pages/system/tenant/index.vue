@@ -1,6 +1,6 @@
 <template>
   <t-card>
-    <t-space direction="vertical">
+    <t-space direction="vertical" style="width: 100%">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
         <t-form-item label="租户编号" name="tenantId">
           <t-input v-model="queryParams.tenantId" placeholder="请输入租户编号" clearable @enter="handleQuery" />
@@ -306,6 +306,7 @@ import {
   updateTenant,
 } from '@/api/system/tenant';
 import { selectTenantPackage } from '@/api/system/tenantPackage';
+import { handleChangeStatus } from '@/utils/ruoyi';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
@@ -411,25 +412,8 @@ function getTenantPackage() {
 
 // 租户套餐状态修改
 function handleStatusChange(row: SysTenantVo) {
-  const data = tenantList.value.find((value) => value.tenantId === row.tenantId);
-  const text = data.status === '1' ? '启用' : '停用';
-  proxy.$modal.confirm(
-    `确认要"${text}""${data.companyName}"租户吗？`,
-    () => {
-      const msgLoading = proxy.$modal.msgLoading('提交中...');
-      return changeTenantStatus(data.id, data.tenantId, data.status)
-        .then(() => {
-          getList();
-          proxy.$modal.msgSuccess(`${text}成功`);
-        })
-        .catch(() => {
-          data.status = data.status === '0' ? '1' : '0';
-        })
-        .finally(() => proxy.$modal.msgClose(msgLoading));
-    },
-    () => {
-      data.status = data.status === '0' ? '1' : '0';
-    },
+  handleChangeStatus(tenantList.value, row, 'tenantId', 'status', `${row.companyName}租户`, (data) =>
+    changeTenantStatus(data.id, data.tenantId, data.status).then(() => getList()),
   );
 }
 

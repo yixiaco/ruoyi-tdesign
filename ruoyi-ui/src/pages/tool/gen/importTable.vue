@@ -10,7 +10,7 @@
     @opened="handleOpen"
     @confirm="handleImportTable"
   >
-    <t-space direction="vertical">
+    <t-space direction="vertical" style="width: 100%">
       <t-form ref="queryRef" :data="queryParams" layout="inline" label-width="70px">
         <t-form-item label="数据源" name="dataName">
           <t-select

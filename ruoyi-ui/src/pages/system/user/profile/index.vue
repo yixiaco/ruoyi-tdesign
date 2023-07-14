@@ -57,6 +57,9 @@
             <t-tab-panel label="修改密码" value="resetPwd">
               <reset-pwd />
             </t-tab-panel>
+            <t-tab-panel label="第三方应用" value="thirdParty" :destroy-on-hide="false">
+              <third-party />
+            </t-tab-panel>
           </t-tabs>
         </t-card>
       </t-col>
@@ -75,6 +78,7 @@ import { reactive, ref } from 'vue';
 import { ProfileVo } from '@/api/system/model/userModel';
 import { getUserProfile } from '@/api/system/user';
 import ResetPwd from '@/pages/system/user/profile/resetPwd.vue';
+import ThirdParty from '@/pages/system/user/profile/thirdParty.vue';
 import UserAvatar from '@/pages/system/user/profile/userAvatar.vue';
 import UserInfo from '@/pages/system/user/profile/userInfo.vue';
 

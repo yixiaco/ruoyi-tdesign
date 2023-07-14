@@ -1,6 +1,6 @@
 <template>
   <t-card>
-    <t-space direction="vertical">
+    <t-space direction="vertical" style="width: 100%">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline">
         <t-form-item label="数据源" name="dataName">
           <t-select v-model="queryParams.dataName" filterable clearable placeholder="请选择/输入数据源名称">

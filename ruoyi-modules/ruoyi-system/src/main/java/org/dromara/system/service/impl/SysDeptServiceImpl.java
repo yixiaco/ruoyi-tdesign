@@ -72,7 +72,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @Override
     public List<Tree<Long>> selectDeptTreeList(SysDeptQuery bo) {
         List<SysDeptVo> depts = this.selectDeptList(bo);
-        return buildDeptTreeSelect(BeanUtil.copyToList(depts, SysDept.class));
+        return buildDeptTreeSelect(depts);
     }
 
     /**
@@ -82,7 +82,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      * @return 下拉树结构列表
      */
     @Override
-    public List<Tree<Long>> buildDeptTreeSelect(List<SysDept> depts) {
+    public List<Tree<Long>> buildDeptTreeSelect(List<SysDeptVo> depts) {
         if (CollUtil.isEmpty(depts)) {
             return CollUtil.newArrayList();
         }

@@ -1,6 +1,6 @@
 <template>
   <t-card>
-    <t-space direction="vertical">
+    <t-space direction="vertical" style="width: 100%">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
         <t-form-item label="模板名称" name="templateName">
           <t-input v-model="queryParams.templateName" placeholder="请输入模板名称" clearable @enter="handleQuery" />

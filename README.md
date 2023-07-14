@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://gitee.com/yixiacoco/ruoyi-tdesign/blob/master/LICENSE)
 [![使用IntelliJ IDEA开发维护](https://img.shields.io/badge/IntelliJ%20IDEA-提供支持-blue.svg)](https://www.jetbrains.com/?from=ruoyi-tdesign)
 <br>
-[![ruoyi-tdesign](https://img.shields.io/badge/ruoyi%20tdesign-1.0.4-success.svg)](https://gitee.com/yixiacoco/ruoyi-tdesign)
+[![ruoyi-tdesign](https://img.shields.io/badge/ruoyi%20tdesign-1.0.5-success.svg)](https://gitee.com/yixiacoco/ruoyi-tdesign)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.0-blue.svg)]()
 [![JDK-17](https://img.shields.io/badge/JDK-17-green.svg)]()
 [![JDK-19](https://img.shields.io/badge/JDK-19-green.svg)]()
@@ -21,11 +21,12 @@
 | 功能介绍       | 使用技术                    | 文档地址                                                     | 描述                                                         |
 | -------------- | --------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | 当前框架       | ruoyi-tdesign               | [ruoyi-tdesign文档](https://gitee.com/yixiacoco/ruoyi-tdesign/wikis/pages) | 重写RuoYi-Vue-Plus部分逻辑，UI框架                           |
-| 原框架         | RuoYi-Vue-Plus              | [RuoYi-Vue-Plus](https://gitee.com/JavaLionLi/RuoYi-Vue-Plus) | 定期同步需要的功能                                           |
+| 原框架         | RuoYi-Vue-Plus              | [RuoYi-Vue-Plus](https://gitee.com/dromara/RuoYi-Vue-Plus) | 定期同步需要的功能                                           |
 | 前端开发框架   | Vue3、Tdesign UI            | [Tdesign UI官网](https://tdesign.tencent.com/vue-next/overview) | 腾讯研发前端Vue3框架                                         |
 | 后端开发框架   | SpringBoot                  | [SpringBoot官网](https://spring.io/projects/spring-boot/#learn) |                                                              |
 | 容器框架       | Undertow                    | [Undertow官网](https://undertow.io/)                         | 采用 Undertow 基于 XNIO 的高性能容器                         |
 | 权限认证框架   | Sa-Token、Jwt               | [Sa-Token官网](https://sa-token.dev33.cn/)                   | 采用 Sa-Token、Jwt 静态使用功能齐全 低耦合 高扩展<br/>采用 Sa-Token 支持注解 登录校验、角色校验、权限校验、二级认证校验、HttpBasic校验、忽略校验<br/>角色与权限校验支持多种条件 如 `AND` `OR` 或 `权限 OR 角色` 等复杂表达式 |
+| 三方鉴权 | JustAuth | [JustAuth官网](https://www.justauth.cn/) | 采用 JustAuth 第三方登录组件 支持微信、钉钉等数十种三方认证 |
 | 关系数据库     | MySQL                       | [MySQL官网](https://dev.mysql.com/)                          | 适配 8.X 最低 5.7，可同时使用异构切换                        |
 | 关系数据库     | Oracle                      | [Oracle官网](https://www.oracle.com/cn/database/)            | 适配 11g 12c，可同时使用异构切换                             |
 | 关系数据库     | PostgreSQL                  | [PostgreSQL官网](https://www.postgresql.org/)                | 适配 13 14，可同时使用异构切换                               |
@@ -41,7 +42,7 @@
 | 分布式幂等     | Redisson                    | [Lock4j文档](https://gitee.com/baomidou/lock4j)              | 拦截重复提交                                                 |
 | 监控框架       | SpringBoot-Admin            | [GItHub](https://github.com/codecentric/spring-boot-admin)   | 采用 SpringBoot-Admin 基于SpringBoot官方 actuator 探针机制<br/>实时监控服务状态 框架还为其扩展了在线日志查看监控 |
 | 分布式链路追踪 | Apache SkyWalking           | [Apache SkyWalking文档](https://skywalking.apache.org/docs/) | 链路追踪、网格分析、度量聚合、可视化                         |
-| 分布式任务调度 | Xxl-Job                     | [Xxl-Job官网](https://www.xuxueli.com/xxl-job/)              | 高性能 高可靠 易扩展                                         |
+| 分布式任务调度 | PowerJob                     | [PowerJob官网](http://www.powerjob.tech/)              | 天生支持分布式 统一的管理中心                                         |
 | 文件存储       | Minio                       | [Minio文档](https://docs.min.io/)                            | 采用 Minio 分布式文件存储 天生支持多机、多硬盘、多分片、多副本存储<br/>支持权限管理 安全可靠 文件可加密存储 |
 | 云存储         | 七牛、阿里、腾讯            | [OSS使用文档](https://gitee.com/yixiacoco/ruoyi-tdesign/wikis/pages?sort_id=4359146&doc_id=1469725) | 采用 AWS S3 协议客户端 支持 七牛、阿里、腾讯 等一切支持S3协议的厂家 |
 | 短信           | 支持数十种短信厂家                  | [短信使用文档](https://wind.kim/) | 采用 sms4j 短信融合包 支持数十种短信厂家 只需在yml配置好厂家密钥即可使用 可多厂家共用 |
@@ -74,6 +75,9 @@
 | 功能         | 介绍                                                         |
 | ------------ | ------------------------------------------------------------ |
 | 租户管理     | 配置系统租户，支持 SaaS 场景下的多租户功能。                 |
+| 租户套餐管理 | 系统内租户所能使用的套餐管理 如:套餐内所包含的菜单等         |
+| 应用管理     | 配置租户识别key，将域名、appid等动态地址转换为租户ID         |
+| 客户端管理   | 系统内对接的所有客户端管理 如: pc端、小程序端等<br/>支持动态授权登录方式 如: 短信登录、密码登录等 支持动态控制token时效 |
 | 用户管理     | 用户是系统操作者，该功能主要完成系统用户配置。               |
 | 部门管理     | 配置系统组织机构（公司、部门、小组），树结构展现支持数据权限。 |
 | 岗位管理     | 配置系统用户所属担任职务。                                   |
@@ -142,18 +146,21 @@
         </tr>
         <tr>
             <td><img src="./doc/images/消息发送记录.png" width="1920" /></td>
+            <td><img src="./doc/images/客户端管理.png" width="1920" /></td>
+        </tr>
+        <tr>
             <td><img src="./doc/images/租户管理.png" width="1920" /></td>
-        </tr>
-        <tr>
             <td><img src="./doc/images/租户套餐管理.png" width="1920" /></td>
+        </tr>
+        <tr>
             <td><img src="./doc/images/应用管理.png" width="1920" /></td>
-        </tr>
-        <tr>
             <td><img src="./doc/images/登录日志.png" width="1920" /></td>
-            <td><img src="./doc/images/在线用户.png" width="1920" /></td>
         </tr>
         <tr>
+            <td><img src="./doc/images/在线用户.png" width="1920" /></td>
             <td><img src="./doc/images/缓存监控.png" width="1920" /></td>
+        </tr>
+        <tr>
             <td><img src="./doc/images/代码生成.png" width="1920" /></td>
         </tr>
     </tbody>

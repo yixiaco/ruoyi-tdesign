@@ -15,27 +15,32 @@ public interface GlobalConstants {
     /**
      * 验证码 redis key
      */
-    String CAPTCHA_CODE_KEY = getGlobalKey("captcha_codes:");
+    String CAPTCHA_CODE_KEY = GLOBAL_REDIS_KEY + "captcha_codes:";
 
     /**
      * 防重提交 redis key
      */
-    String REPEAT_SUBMIT_KEY = getGlobalKey("repeat_submit:");
+    String REPEAT_SUBMIT_KEY = GLOBAL_REDIS_KEY + "repeat_submit:";
 
     /**
      * 限流 redis key
      */
-    String RATE_LIMIT_KEY = getGlobalKey("rate_limit:");
+    String RATE_LIMIT_KEY = GLOBAL_REDIS_KEY + "rate_limit:";
 
     /**
      * 登录账户密码错误次数 redis key
      */
-    String PWD_ERR_CNT_KEY = getGlobalKey("pwd_err_cnt:");
+    String PWD_ERR_CNT_KEY = GLOBAL_REDIS_KEY + "pwd_err_cnt:";
 
     /**
      * 应用key redis key
      */
-    String APP_KEY = getGlobalKey("app_key");
+    String APP_KEY = GLOBAL_REDIS_KEY + "app_key";
+
+    /**
+     * 三方认证 redis key
+     */
+    String SOCIAL_AUTH_CODE_KEY = GLOBAL_REDIS_KEY + "social_auth_codes:";
 
     /**
      * 获取全局key

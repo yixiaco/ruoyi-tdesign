@@ -32,6 +32,13 @@ export const defaultRouterList: Array<RouteRecordRaw> = [
     },
   },
   {
+    path: '/social-callback',
+    component: () => import('@/layouts/components/SocialCallback.vue'),
+    meta: {
+      hidden: true,
+    },
+  },
+  {
     path: '/',
     redirect: '/index',
   },

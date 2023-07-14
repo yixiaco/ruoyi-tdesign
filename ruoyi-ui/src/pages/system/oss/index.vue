@@ -1,6 +1,6 @@
 <template>
   <t-card>
-    <t-space direction="vertical">
+    <t-space direction="vertical" style="width: 100%">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline">
         <t-form-item label="文件名" name="fileName">
           <t-input
@@ -365,7 +365,7 @@ function copyTextSuccess() {
 function handleDownload(row: SysOssVo) {
   proxy.$download.oss(row.ossId);
 }
-/** 用户状态修改  */
+/** 预览状态修改  */
 function handlePreviewListResource(preview: boolean) {
   const text = preview ? '启用' : '停用';
   proxy.$modal.confirm(`确认要"${text}""预览列表图片"配置吗?`, () => {

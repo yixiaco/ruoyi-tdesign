@@ -13,7 +13,7 @@
     </description>
 
     <properties>
-        <revision>1.0.4</revision>
+        <revision>1.0.5</revision>
     </properties>
 
     <dependencyManagement>
@@ -116,6 +116,12 @@
                 <version>${revision}</version>
             </dependency>
 
+            <dependency>
+                <groupId>org.dromara</groupId>
+                <artifactId>ruoyi-common-social</artifactId>
+                <version>${revision}</version>
+            </dependency>
+
             <!-- web服务 -->
             <dependency>
                 <groupId>org.dromara</groupId>
@@ -171,6 +177,7 @@
                 <artifactId>ruoyi-common-amqp</artifactId>
                 <version>${revision}</version>
             </dependency>
+
         </dependencies>
     </dependencyManagement>
 </project>

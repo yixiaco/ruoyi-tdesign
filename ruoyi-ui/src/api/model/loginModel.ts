@@ -1,10 +1,5 @@
 import { SysUserVo } from '@/api/system/model/userModel';
 
-// 登录返回
-export interface LoginModel {
-  token: string;
-}
-
 // 登录用户信息
 export interface UserInfo {
   user: SysUserVo;
@@ -25,6 +20,42 @@ export interface LoginParam {
   password: string;
   code: string;
   uuid: string;
+}
+
+/**
+ * 登录请求
+ */
+export interface LoginData {
+  tenantId?: string;
+  username?: string;
+  password?: string;
+  rememberMe?: boolean;
+  socialCode?: string;
+  socialState?: string;
+  source?: string;
+  code?: string;
+  uuid?: string;
+  clientId?: string;
+  grantType?: string;
+}
+/**
+ * 登录验证信息
+ */
+export interface LoginVo {
+  /** 授权令牌 */
+  access_token?: string;
+  /** 刷新令牌 */
+  refresh_token?: string;
+  /** 授权令牌 access_token 的有效期 */
+  expire_in?: number;
+  /** 刷新令牌 refresh_token 的有效期 */
+  refresh_expire_in?: number;
+  /** 应用id */
+  client_id?: string;
+  /** 令牌权限 */
+  scope?: string;
+  /** 用户 openid */
+  openid?: string;
 }
 
 /**

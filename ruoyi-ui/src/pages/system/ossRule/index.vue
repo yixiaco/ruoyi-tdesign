@@ -1,6 +1,6 @@
 <template>
   <t-card>
-    <t-space direction="vertical">
+    <t-space direction="vertical" style="width: 100%">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="calc(5em + 24px)">
         <t-form-item label="规则名称" name="ruleName">
           <t-input v-model="queryParams.ruleName" placeholder="请输入规则名称" clearable @enter="handleQuery" />
