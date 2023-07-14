@@ -102,7 +102,6 @@ public class SysLoginService {
                     TenantHelper.clearDynamic();
                 }
                 recordLogininfor(loginUser.getTenantId(), loginUser.getUsername(), Constants.LOGOUT, MessageUtils.message("user.logout.success"));
-                MultipleStpUtil.SYSTEM.logout();
             }
         } catch (NotLoginException ignored) {
         } finally {

@@ -3,21 +3,11 @@ package org.dromara.common.satoken.listener;
 import cn.dev33.satoken.config.SaTokenConfig;
 import cn.dev33.satoken.listener.SaTokenListener;
 import cn.dev33.satoken.stp.SaLoginModel;
-import cn.hutool.http.useragent.UserAgent;
-import cn.hutool.http.useragent.UserAgentUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.common.core.constant.CacheConstants;
-import org.dromara.common.core.domain.dto.UserOnlineDTO;
-import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.enums.UserType;
-import org.dromara.common.core.utils.ServletUtils;
-import org.dromara.common.core.utils.ip.AddressUtils;
-import org.dromara.common.redis.utils.RedisUtils;
-import org.dromara.common.satoken.utils.LoginHelper;
+import org.dromara.common.satoken.online.OnlineUserCacheManagerInterface;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
-
-import java.time.Duration;
 
 /**
  * 用户行为 侦听器的实现
@@ -30,6 +20,8 @@ public class UserActionListener implements SaTokenListener {
 
     @Autowired
     private SaTokenConfig tokenConfig;
+    @Autowired
+    private OnlineUserCacheManagerInterface onlineUserCacheManager;
 
     /**
      * 每次登录时触发
@@ -38,22 +30,10 @@ public class UserActionListener implements SaTokenListener {
     public void doLogin(String loginType, Object loginId, String tokenValue, SaLoginModel loginModel) {
         UserType userType = UserType.getUserType(loginId.toString());
         if (userType == UserType.SYS_USER) {
-            UserAgent userAgent = UserAgentUtil.parse(ServletUtils.getRequest().getHeader("User-Agent"));
-            String ip = ServletUtils.getClientIP();
-            LoginUser user = LoginHelper.getUser();
-            UserOnlineDTO dto = new UserOnlineDTO();
-            dto.setIpaddr(ip);
-            dto.setLoginLocation(AddressUtils.getRealAddressByIP(ip));
-            dto.setBrowser(userAgent.getBrowser().getName());
-            dto.setOs(userAgent.getOs().getName());
-            dto.setLoginTime(System.currentTimeMillis());
-            dto.setTokenId(tokenValue);
-            dto.setUserName(user.getUsername());
-            dto.setDeptName(user.getDeptName());
-            if(tokenConfig.getTimeout() == -1) {
-                RedisUtils.setObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue, dto);
+            if (tokenConfig.getTimeout() == -1) {
+                onlineUserCacheManager.setCache(userType, tokenValue, loginModel);
             } else {
-                RedisUtils.setObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue, dto, Duration.ofSeconds(tokenConfig.getTimeout()));
+                onlineUserCacheManager.setCache(userType, tokenValue, loginModel, tokenConfig.getTimeout());
             }
             log.info("user doLogin, userId:{}, token:{}", loginId, tokenValue);
         } else if (userType == UserType.APP_USER) {
@@ -66,7 +46,7 @@ public class UserActionListener implements SaTokenListener {
      */
     @Override
     public void doLogout(String loginType, Object loginId, String tokenValue) {
-        RedisUtils.deleteObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue);
+        onlineUserCacheManager.deleteCache(loginType, loginId, tokenValue);
         log.info("user doLogout, userId:{}, token:{}", loginId, tokenValue);
     }
 
@@ -75,7 +55,7 @@ public class UserActionListener implements SaTokenListener {
      */
     @Override
     public void doKickout(String loginType, Object loginId, String tokenValue) {
-        RedisUtils.deleteObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue);
+        onlineUserCacheManager.deleteCache(loginType, loginId, tokenValue);
         log.info("user doKickout, userId:{}, token:{}", loginId, tokenValue);
     }
 
@@ -84,7 +64,7 @@ public class UserActionListener implements SaTokenListener {
      */
     @Override
     public void doReplaced(String loginType, Object loginId, String tokenValue) {
-        RedisUtils.deleteObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue);
+        onlineUserCacheManager.deleteCache(loginType, loginId, tokenValue);
         log.info("user doReplaced, userId:{}, token:{}", loginId, tokenValue);
     }
 
