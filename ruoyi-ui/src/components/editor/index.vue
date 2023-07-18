@@ -45,6 +45,7 @@ import 'tinymce/plugins/template'; // 内容模板
 import 'tinymce/plugins/emoticons'; // 表情
 import 'tinymce/plugins/help/js/i18n/keynav/en.js'; // 导入这个help才能够显示
 
+import 'prismjs'; // 代码高亮
 import Editor from '@tinymce/tinymce-vue';
 import type { RawEditorOptions } from 'tinymce';
 import emojisURL from 'tinymce/plugins/emoticons/js/emojis.js?url';
@@ -214,7 +215,7 @@ const conf = computed<RawEditorOptions>(() => {
     menu: props.menu,
     toolbar: props.toolbar,
     codesample_languages: [
-      { text: 'HTML/XML', value: 'xml' },
+      { text: 'HTML/XML', value: 'markup' },
       { text: 'Bash', value: 'bash' },
       { text: 'PlainText', value: 'plaintext' },
       { text: 'JavaScript', value: 'javascript' },
@@ -237,7 +238,6 @@ const conf = computed<RawEditorOptions>(() => {
       { text: 'Lua', value: 'lua' },
       { text: 'Kotlin', value: 'kotlin' },
       { text: 'Objective-C', value: 'objectivec' },
-      { text: 'Markdown', value: 'markup' },
       { text: 'Scss', value: 'scss' },
       { text: 'Shell', value: 'shell' },
       { text: 'SQL', value: 'sql' },
@@ -245,6 +245,7 @@ const conf = computed<RawEditorOptions>(() => {
       { text: 'Yaml', value: 'yaml' },
       { text: 'Typescript', value: 'typescript' },
     ],
+    codesample_global_prismjs: true, // 使用全局加载
     autosave_ask_before_unload: true,
     autosave_interval: '30s',
     autosave_prefix: '{path}{query}-{id}-',

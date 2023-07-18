@@ -148,7 +148,7 @@
       attach="body"
       :confirm-btn="null"
     >
-      <t-tabs v-model="preview.activeName" placement="left">
+      <t-tabs v-model="preview.activeName" placement="top">
         <t-tab-panel
           v-for="(value, key) in preview.data"
           :key="value"
@@ -162,7 +162,7 @@
               <template #prefixIcon> <file-copy-icon></file-copy-icon> </template>
             </t-link>
           </t-tooltip>
-          <highlightjs autodetect :code="value" />
+          <preview-code :code="value" :language="getLanguage(getLabel(key))" />
         </t-tab-panel>
       </t-tabs>
     </t-dialog>
@@ -175,10 +175,6 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import 'highlight.js/styles/github.css';
-
-import hljsVuePlugin from '@highlightjs/vue-plugin';
-import hljs from 'highlight.js/lib/common';
 import {
   BrowseIcon,
   DeleteIcon,
@@ -200,9 +196,6 @@ import router from '@/router';
 
 import ImportTable from './importTable.vue';
 
-const Highlightjs = hljsVuePlugin.component;
-// 此处使用hljs对象，避免被打包后优化掉
-hljs.initHighlighting();
 const route = useRoute();
 const { proxy } = getCurrentInstance();
 
@@ -275,6 +268,12 @@ onActivated(() => {
 
 function getLabel(key: string) {
   return key.substring(key.lastIndexOf('/') + 1, key.indexOf('.vm'));
+}
+
+// 获取代码语言
+function getLanguage(label: string) {
+  const language = label.substring(label.lastIndexOf('.') + 1);
+  return language === 'vue' ? 'html' : language;
 }
 
 /** 查询多数据源名称 */
