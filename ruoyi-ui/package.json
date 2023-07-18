@@ -21,7 +21,7 @@
   },
   "dependencies": {
     "@highlightjs/vue-plugin": "^2.1.0",
-    "@tinymce/tinymce-vue": "^5",
+    "@tinymce/tinymce-vue": "^5.1.0",
     "axios": "^1.4.0",
     "dayjs": "^1.11.9",
     "echarts": "5.1.2",
