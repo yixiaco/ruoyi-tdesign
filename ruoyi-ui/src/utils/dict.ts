@@ -7,7 +7,7 @@ import useDictStore from '@/store/modules/dict';
 export interface DictModel {
   label: string;
   value: string;
-  elTagType?: string;
+  elTagType?: 'default' | 'warning' | 'danger' | 'success' | 'primary';
   elTagClass?: string;
 }
 

@@ -55,7 +55,7 @@ export interface SysDictDataVo {
   /** 样式属性（其他样式扩展） */
   cssClass?: string;
   /** 表格回显样式 */
-  listClass?: string;
+  listClass?: 'default' | 'warning' | 'danger' | 'success' | 'primary';
   /** 是否默认（Y是 N否） */
   isDefault?: string;
   /** 状态（1正常 0停用） */

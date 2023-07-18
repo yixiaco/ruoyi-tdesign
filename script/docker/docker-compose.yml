@@ -102,7 +102,7 @@ services:
     network_mode: "host"
 
   ruoyi-admin:
-    image: ruoyi/ruoyi-server:1.0.4
+    image: ruoyi/ruoyi-server:1.0.5
     container_name: ruoyi-admin
     environment:
       # 时区上海
@@ -117,7 +117,7 @@ services:
     network_mode: "host"
 
   ruoyi-server2:
-    image: ruoyi/ruoyi-server:1.0.4
+    image: ruoyi/ruoyi-server:1.0.5
     container_name: ruoyi-server2
     environment:
       # 时区上海
@@ -132,7 +132,7 @@ services:
     network_mode: "host"
 
   ruoyi-monitor-admin:
-    image: ruoyi/ruoyi-monitor-admin:1.0.4
+    image: ruoyi/ruoyi-monitor-admin:1.0.5
     container_name: ruoyi-monitor-admin
     environment:
       # 时区上海
@@ -143,14 +143,18 @@ services:
     privileged: true
     network_mode: "host"
 
-  ruoyi-xxl-job-admin:
-    image: ruoyi/ruoyi-xxl-job-admin:1.0.4
-    container_name: ruoyi-xxl-job-admin
+  ruoyi-powerjob-server:
+    image: ruoyi/ruoyi-powerjob-server:1.0.5
+    container_name: ruoyi-powerjob-server
     environment:
       # 时区上海
       TZ: Asia/Shanghai
+    ports:
+      - "7700:7700"
+      - "10086:10086"
+      - "10010:10010"
     volumes:
-      # 配置文件
-      - /docker/xxljob/logs/:/ruoyi/xxljob/logs
+      - /docker/powerjob/logs/:/ruoyi/powerjob/logs
     privileged: true
     network_mode: "host"
+

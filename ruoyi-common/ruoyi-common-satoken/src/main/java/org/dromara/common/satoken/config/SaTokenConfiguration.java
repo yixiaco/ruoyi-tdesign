@@ -8,10 +8,13 @@ import cn.dev33.satoken.strategy.SaStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.satoken.core.dao.PlusSaTokenDao;
 import org.dromara.common.satoken.core.service.SaPermissionImpl;
+import org.dromara.common.satoken.online.DefaultOnlineUserCacheManager;
+import org.dromara.common.satoken.online.OnlineUserCacheManager;
 import org.dromara.common.satoken.stp.DynamicStpLogic;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -69,5 +72,16 @@ public class SaTokenConfiguration implements WebMvcConfigurer {
     public void rewriteSaStrategy() {
         // 重写Sa-Token的注解处理器，增加注解合并功能
         SaStrategy.me.getAnnotation = AnnotatedElementUtils::getMergedAnnotation;
+    }
+
+    /**
+     * 在线用户管理
+     *
+     * @return
+     */
+    @Bean
+    @ConditionalOnMissingBean(OnlineUserCacheManager.class)
+    public OnlineUserCacheManager defaultOnlineUserCacheManager() {
+        return new DefaultOnlineUserCacheManager();
     }
 }

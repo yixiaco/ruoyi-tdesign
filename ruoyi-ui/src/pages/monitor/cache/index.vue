@@ -106,8 +106,9 @@ export default {
 </script>
 <script lang="ts" setup>
 import * as echarts from 'echarts';
+import { ECharts } from 'echarts';
 import { ChartPieIcon, DashboardIcon, DesktopIcon } from 'tdesign-icons-vue-next';
-import { getCurrentInstance, ref } from 'vue';
+import { getCurrentInstance, onDeactivated, onMounted, ref } from 'vue';
 
 import { getCache } from '@/api/monitor/cache';
 import { SysCacheInfo } from '@/api/monitor/model/cacheModel';
@@ -116,6 +117,8 @@ const cache = ref(<SysCacheInfo>{});
 const commandstats = ref(null);
 const usedmemory = ref(null);
 const { proxy } = getCurrentInstance();
+const commandstatsIntance = ref<ECharts>(null);
+const usedmemoryInstance = ref<ECharts>(null);
 
 function getList() {
   proxy.$modal.loading('正在加载缓存监控数据，请稍候！');
@@ -123,8 +126,8 @@ function getList() {
     proxy.$modal.closeLoading();
     cache.value = response.data;
 
-    const commandstatsIntance = echarts.init(commandstats.value, 'macarons');
-    commandstatsIntance.setOption({
+    commandstatsIntance.value = echarts.init(commandstats.value, 'macarons');
+    commandstatsIntance.value.setOption({
       tooltip: {
         trigger: 'item',
         formatter: '{a} <br/>{b} : {c} ({d}%)',
@@ -143,8 +146,8 @@ function getList() {
       ],
     });
 
-    const usedmemoryInstance = echarts.init(usedmemory.value, 'macarons');
-    usedmemoryInstance.setOption({
+    usedmemoryInstance.value = echarts.init(usedmemory.value, 'macarons');
+    usedmemoryInstance.value.setOption({
       tooltip: {
         formatter: `{b} <br/>{a} : ${cache.value.info.used_memory_human}`,
       },
@@ -168,6 +171,19 @@ function getList() {
     });
   });
 }
+
+const listener = () => {
+  commandstatsIntance.value.resize();
+  usedmemoryInstance.value.resize();
+};
+
+onMounted(() => {
+  window.addEventListener('resize', listener);
+});
+
+onDeactivated(() => {
+  window.removeEventListener('resize', listener);
+});
 
 getList();
 </script>

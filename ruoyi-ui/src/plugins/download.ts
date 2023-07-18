@@ -16,6 +16,8 @@ export default {
     const url = `${baseURL}/resource/oss/download/${ossId}`;
     downloadLoadingInstance = LoadingPlugin({
       text: '正在下载数据，请稍候',
+      attach: 'body',
+      fullscreen: true,
     });
     axios({
       method: 'get',
@@ -42,6 +44,11 @@ export default {
   zip(url: string, name: string) {
     const { token } = useUserStore();
     url = baseURL + url;
+    downloadLoadingInstance = LoadingPlugin({
+      text: '正在下载数据，请稍候',
+      attach: 'body',
+      fullscreen: true,
+    });
     axios({
       method: 'get',
       url,
@@ -50,15 +57,21 @@ export default {
         Authorization: `Bearer ${token}`,
         datasource: localStorage.getItem('dataName'),
       },
-    }).then((res) => {
-      const isBlob = blobValidate(res.data);
-      if (isBlob) {
-        const blob = new Blob([res.data], { type: 'application/zip' });
-        this.saveAs(blob, name);
-      } else {
-        this.printErrMsg(res.data);
-      }
-    });
+    })
+      .then((res) => {
+        const isBlob = blobValidate(res.data);
+        if (isBlob) {
+          const blob = new Blob([res.data], { type: 'application/zip' });
+          this.saveAs(blob, name);
+        } else {
+          this.printErrMsg(res.data);
+        }
+      })
+      .catch((r) => {
+        console.error(r);
+        MessagePlugin.error('下载文件出现错误，请联系管理员！');
+        downloadLoadingInstance.hide();
+      });
   },
   saveAs(text: any, name: any, opts?: any) {
     saveAs(text, name, opts);

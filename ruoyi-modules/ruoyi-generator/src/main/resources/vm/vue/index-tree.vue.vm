@@ -1,6 +1,6 @@
 <template>
   <t-card>
-    <t-space direction="vertical">
+    <t-space direction="vertical" style="width: 100%">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
 #foreach($column in $columns)
 #if($column.isQuery())
@@ -641,7 +641,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
     if (form.value.${pkColumn.javaField}) {
       update${BusinessName}(form.value)
         .then(() => {
-          proxy.#[[$modal]]#.msgSuccess('修改成功');
+          proxy.$modal.msgSuccess('修改成功');
           open.value = false;
           getList();
         })
@@ -652,7 +652,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
     } else {
       add${BusinessName}(form.value)
         .then(() => {
-          proxy.#[[$modal]]#.msgSuccess('新增成功');
+          proxy.$modal.msgSuccess('新增成功');
           open.value = false;
           getList();
         })
@@ -662,7 +662,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
         });
     }
   } else {
-    proxy.#[[$modal]]#.msgError(firstError);
+    proxy.$modal.msgError(firstError);
   }
 }
 
@@ -673,7 +673,7 @@ function handleDelete(row: ${vo}) {
     return del${BusinessName}(row.${pkColumn.javaField})
       .then(() => {
         getList();
-        proxy.#[[$modal]]#.msgSuccess('删除成功');
+        proxy.$modal.msgSuccess('删除成功');
       })
       .finally(() => {
         proxy.$modal.msgClose(msgLoading);

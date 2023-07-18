@@ -90,6 +90,23 @@
       <span v-show="false" v-if="type !== 'qrcode'" class="tip" @click="switchType('qrcode')">使用微信扫码登录</span>
       <span v-show="false" v-if="type !== 'phone'" class="tip" @click="switchType('phone')">使用手机号登录</span>
     </div>
+    <div style="display: flex; justify-content: flex-end; flex-direction: row">
+      <t-button shape="circle" variant="outline" @click="doSocialLogin('wechat_open')">
+        <logo-wechat-icon />
+      </t-button>
+      <t-button shape="circle" variant="outline" @click="doSocialLogin('qq')">
+        <logo-qq-icon />
+      </t-button>
+      <t-button shape="circle" variant="outline" @click="doSocialLogin('maxkey')">
+        <max-key class="t-icon" />
+      </t-button>
+      <t-button shape="circle" variant="outline" @click="doSocialLogin('gitee')">
+        <gitee-svg class="t-icon" />
+      </t-button>
+      <t-button shape="circle" variant="outline" @click="doSocialLogin('github')">
+        <logo-github-filled-icon />
+      </t-button>
+    </div>
   </t-form>
 </template>
 
@@ -100,6 +117,9 @@ import {
   BrowseIcon,
   BrowseOffIcon,
   LockOnIcon,
+  LogoGithubFilledIcon,
+  LogoQqIcon,
+  LogoWechatIcon,
   MobileIcon,
   RefreshIcon,
   SecuredIcon,
@@ -112,6 +132,9 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { getCodeImg } from '@/api/login';
 import { LoginParam } from '@/api/model/loginModel';
+import { authBinding } from '@/api/system/social';
+import GiteeSvg from '@/assets/icons/svg/gitee.svg?component';
+import MaxKey from '@/assets/icons/svg/maxkey.svg?component';
 import { useCounter } from '@/hooks';
 import { useTabsRouterStore, useUserStore } from '@/store';
 import { decrypt, encrypt } from '@/utils/jsencrypt';
@@ -216,8 +239,8 @@ const onSubmit = async (ctx: SubmitContext) => {
       // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
       if (formData.value.rememberMe && type.value === 'password') {
         Cookies.set('account', formData.value.account, { expires: 30 });
-        Cookies.set('password', encrypt(formData.value.password), { expires: 30 });
-        Cookies.set('rememberMe', formData.value.rememberMe.toString(), { expires: 30 });
+        Cookies.set('password', String(formData.value.password), { expires: 30 });
+        Cookies.set('rememberMe', String(formData.value.rememberMe), { expires: 30 });
       } else {
         // 否则移除
         Cookies.remove('account');
@@ -242,6 +265,17 @@ const onSubmit = async (ctx: SubmitContext) => {
     }
   }
 };
+
+/**
+ * 第三方登录
+ * @param type
+ */
+function doSocialLogin(type: string) {
+  authBinding(type).then((res) => {
+    // 获取授权地址跳转
+    window.location.href = res.data;
+  });
+}
 
 getCode();
 getCookie();

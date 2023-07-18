@@ -1,6 +1,6 @@
 <template>
   <t-card>
-    <t-space direction="vertical">
+    <t-space direction="vertical" style="width: 100%">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
         <t-form-item label="角色名称" name="roleName">
           <t-input
@@ -185,9 +185,9 @@
           <t-space direction="vertical">
             <t-space>
               <t-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">展开/折叠</t-checkbox>
-              <t-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')"
-                >全选/全不选</t-checkbox
-              >
+              <t-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">
+                全选/全不选
+              </t-checkbox>
               <t-checkbox v-model="form.menuCheckStrictly">父子联动</t-checkbox>
             </t-space>
             <t-tree
@@ -241,9 +241,9 @@
           <t-space direction="vertical">
             <t-space>
               <t-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</t-checkbox>
-              <t-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')"
-                >全选/全不选</t-checkbox
-              >
+              <t-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">
+                全选/全不选
+              </t-checkbox>
               <t-checkbox v-model="form.deptCheckStrictly">父子联动</t-checkbox>
             </t-space>
             <t-tree
@@ -309,6 +309,7 @@ import {
   listRole,
   updateRole,
 } from '@/api/system/role';
+import { handleChangeStatus } from '@/utils/ruoyi';
 
 const router = useRouter();
 const { proxy } = getCurrentInstance();
@@ -465,22 +466,8 @@ function handleSelectionChange(selection: Array<string | number>) {
 
 /** 角色状态修改 */
 function handleStatusChange(row: SysRoleVo) {
-  const role = roleList.value.find((value) => value.roleId === row.roleId);
-  const text = role.status === '1' ? '启用' : '停用';
-  proxy.$modal.confirm(
-    `确认要"${text}""${role.roleName}"角色吗?`,
-    () => {
-      return changeRoleStatus(role.roleId, role.status)
-        .then(() => {
-          proxy.$modal.msgSuccess(`${text}成功`);
-        })
-        .catch(() => {
-          role.status = role.status === '0' ? '1' : '0';
-        });
-    },
-    () => {
-      role.status = role.status === '0' ? '1' : '0';
-    },
+  handleChangeStatus(roleList.value, row, 'roleId', 'status', `${row.roleName}角色`, (row1) =>
+    changeRoleStatus(row1.roleId, row1.status).then(() => getList()),
   );
 }
 /** 分配用户 */

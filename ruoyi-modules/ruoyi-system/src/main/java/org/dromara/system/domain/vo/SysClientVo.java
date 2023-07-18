@@ -1,0 +1,99 @@
+package org.dromara.system.domain.vo;
+
+import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
+import com.alibaba.excel.annotation.ExcelProperty;
+import io.github.linpeilie.annotations.AutoMapper;
+import lombok.Data;
+import org.dromara.common.excel.annotation.ExcelDictFormat;
+import org.dromara.common.excel.convert.ExcelDictConvert;
+import org.dromara.system.domain.SysClient;
+
+import java.io.Serial;
+import java.io.Serializable;
+import java.util.Date;
+
+
+/**
+ * 授权管理视图对象 sys_client
+ *
+ * @author Michelle.Chung
+ * @date 2023-05-15
+ */
+@Data
+@ExcelIgnoreUnannotated
+@AutoMapper(target = SysClient.class)
+public class SysClientVo implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
+
+    /**
+     * id
+     */
+    @ExcelProperty(value = "id")
+    private Long id;
+
+    /**
+     * 客户端id
+     */
+    @ExcelProperty(value = "客户端id")
+    private String clientId;
+
+    /**
+     * 客户端key
+     */
+    @ExcelProperty(value = "客户端key")
+    private String clientKey;
+
+    /**
+     * 客户端秘钥
+     */
+    @ExcelProperty(value = "客户端秘钥")
+    private String clientSecret;
+
+    /**
+     * 授权类型
+     */
+    @ExcelProperty(value = "授权类型", converter = ExcelDictConvert.class)
+    @ExcelDictFormat(dictType = "sys_grant_type")
+    private String grantType;
+
+    /**
+     * 设备类型
+     */
+    @ExcelProperty(value = "设备类型", converter = ExcelDictConvert.class)
+    @ExcelDictFormat(dictType = "sys_device_type")
+    private String deviceType;
+
+    /**
+     * token活跃超时时间
+     */
+    @ExcelProperty(value = "token活跃超时时间")
+    private Long activeTimeout;
+
+    /**
+     * token固定超时时间
+     */
+    @ExcelProperty(value = "token固定超时时间")
+    private Long timeout;
+
+    /**
+     * 状态（1正常 0停用）
+     */
+    @ExcelProperty(value = "状态", converter = ExcelDictConvert.class)
+    @ExcelDictFormat(dictType = "sys_normal_disable")
+    private String status;
+
+    /**
+     * 创建时间
+     */
+    @ExcelProperty(value = "创建时间")
+    private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    @ExcelProperty(value = "更新时间")
+    private Date updateTime;
+
+}

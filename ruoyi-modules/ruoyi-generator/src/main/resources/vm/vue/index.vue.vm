@@ -1,6 +1,6 @@
 <template>
   <t-card>
-    <t-space direction="vertical">
+    <t-space direction="vertical" style="width: 100%">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
 #foreach($column in $columns)
 #if($column.isQuery())
@@ -620,7 +620,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
     if (form.value.${pkColumn.javaField}) {
       update${BusinessName}(form.value)
         .then(() => {
-          proxy.#[[$modal]]#.msgSuccess('修改成功');
+          proxy.$modal.msgSuccess('修改成功');
           open.value = false;
           getList();
         })
@@ -631,7 +631,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
     } else {
       add${BusinessName}(form.value)
         .then(() => {
-          proxy.#[[$modal]]#.msgSuccess('新增成功');
+          proxy.$modal.msgSuccess('新增成功');
           open.value = false;
           getList();
         })
@@ -641,19 +641,24 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
         });
     }
   } else {
-    proxy.#[[$modal]]#.msgError(firstError);
+    proxy.$modal.msgError(firstError);
   }
 }
 
 /** 删除按钮操作 */
 function handleDelete(row?: ${vo}) {
-  const ${pkColumn.javaField}s = row?.${pkColumn.javaField} || ids.value;
-  proxy.#[[$modal]]#.confirm(`是否确认删除${functionName}编号为${${pkColumn.javaField}s}的数据项？`, () => {
+#if(${pkColumn.javaField} == 'id')
+#set($delIds = '$' + ${pkColumn.javaField} + 's')
+#else
+#set($delIds = ${pkColumn.javaField} + 's')
+#end
+  const $delIds = row?.${pkColumn.javaField} || ids.value;
+  proxy.#[[$modal]]#.confirm(`是否确认删除${functionName}编号为${${delIds}}的数据项？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
-    return del${BusinessName}(${pkColumn.javaField}s)
+    return del${BusinessName}($delIds)
       .then(() => {
         getList();
-        proxy.#[[$modal]]#.msgSuccess('删除成功');
+        proxy.$modal.msgSuccess('删除成功');
       })
       .finally(() => {
         proxy.$modal.msgClose(msgLoading);

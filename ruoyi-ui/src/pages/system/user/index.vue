@@ -28,7 +28,7 @@
       </t-col>
       <!--用户数据-->
       <t-col :sm="10" :xs="12">
-        <t-space direction="vertical">
+        <t-space direction="vertical" style="width: 100%">
           <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
             <t-form-item label="用户名称" name="userName">
               <t-input
@@ -473,6 +473,7 @@ import {
   updateUser,
 } from '@/api/system/user';
 import { useUserStore } from '@/store';
+import { handleChangeStatus } from '@/utils/ruoyi';
 
 const router = useRouter();
 const { proxy } = getCurrentInstance();
@@ -646,24 +647,8 @@ function handleExport() {
 }
 /** 用户状态修改  */
 function handleStatusChange(row: SysUserVo) {
-  const user = userList.value.find((value) => value.userId === row.userId);
-  const text = user.status === '1' ? '启用' : '停用';
-  proxy.$modal.confirm(
-    `确认要"${text}""${user.userName}"用户吗?`,
-    () => {
-      const msgLoading = proxy.$modal.msgLoading('提交中...');
-      return changeUserStatus(user.userId, user.status)
-        .then(() => {
-          proxy.$modal.msgSuccess(`${text}成功`);
-        })
-        .catch(() => {
-          user.status = user.status === '0' ? '1' : '0';
-        })
-        .finally(() => proxy.$modal.msgClose(msgLoading));
-    },
-    () => {
-      user.status = user.status === '0' ? '1' : '0';
-    },
+  handleChangeStatus(userList.value, row, 'userId', 'status', `${row.userName}用户`, (user) =>
+    changeUserStatus(user.userId, user.status).then(() => getList()),
   );
 }
 /** 跳转角色分配 */

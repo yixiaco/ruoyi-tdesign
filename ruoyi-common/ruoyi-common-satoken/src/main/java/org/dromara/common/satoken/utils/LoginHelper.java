@@ -57,30 +57,19 @@ public class LoginHelper {
     }
 
     /**
-     * 登录系统
-     *
-     * @param loginUser 登录用户信息
-     */
-    public static void login(LoginUser loginUser) {
-        loginByDevice(loginUser, null);
-    }
-
-    /**
      * 登录系统 基于 设备类型
      * 针对相同用户体系不同设备
      *
      * @param loginUser 登录用户信息
+     * @param model     配置参数
      */
-    public static void loginByDevice(LoginUser loginUser, DeviceType deviceType) {
+    public static void login(LoginUser loginUser, SaLoginModel model) {
         loginUser.setLoginType(getLoginType());
         SaStorage storage = SaHolder.getStorage();
         storage.set(getLoginType() + LOGIN_USER_KEY, loginUser);
         storage.set(getLoginType() + TENANT_KEY, loginUser.getTenantId());
         storage.set(getLoginType() + USER_KEY, loginUser.getUserId());
-        SaLoginModel model = new SaLoginModel();
-        if (ObjectUtil.isNotNull(deviceType)) {
-            model.setDevice(deviceType.getDevice());
-        }
+        model = ObjectUtil.defaultIfNull(model, new SaLoginModel());
         SaSecurityContext.setContext(loginUser);
         MultipleStpUtil.SYSTEM.login(loginUser.getLoginId(), model);
         MultipleStpUtil.SYSTEM.getTokenSession().set(LOGIN_USER_KEY, loginUser);
@@ -108,7 +97,11 @@ public class LoginHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T extends LoginUser> T getUser(String token) {
-        return (T) MultipleStpUtil.SYSTEM.getTokenSessionByToken(token).get(LOGIN_USER_KEY);
+        SaSession session = SYSTEM.getTokenSessionByToken(token);
+        if (session == null) {
+            return null;
+        }
+        return (T) session.get(LOGIN_USER_KEY);
     }
 
     /**
@@ -208,8 +201,8 @@ public class LoginHelper {
      * 获取用户类型
      */
     public static UserType getUserType() {
-        String loginId = MultipleStpUtil.SYSTEM.getLoginIdAsString();
-        return UserType.getUserType(loginId);
+        String loginType = MultipleStpUtil.SYSTEM.getLoginIdAsString();
+        return UserType.getUserType(loginType);
     }
 
     /**

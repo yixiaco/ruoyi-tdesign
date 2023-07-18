@@ -4,17 +4,13 @@
 export interface TableDataInfo<T> {
   /** 总记录数 */
   total: number;
-
   /** 列表数据 */
   rows: Array<T>;
-
   /** 消息状态码 */
   code: number;
-
   /** 消息内容 */
   msg: string;
 }
-
 /**
  * 返回结果
  */
@@ -26,7 +22,6 @@ export interface R<T> {
   // 数据
   data: T;
 }
-
 /**
  * 基本类型
  */
@@ -51,7 +46,6 @@ export interface TenantEntity extends BaseEntity {
   /** 租户编号 */
   tenantId?: string;
 }
-
 export interface TreeModel<ID> {
   id: ID;
   parentId?: ID;

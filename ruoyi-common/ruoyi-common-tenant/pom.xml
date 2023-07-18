@@ -31,6 +31,11 @@
             <artifactId>transmittable-thread-local</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>org.dromara</groupId>
+            <artifactId>ruoyi-common-satoken</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

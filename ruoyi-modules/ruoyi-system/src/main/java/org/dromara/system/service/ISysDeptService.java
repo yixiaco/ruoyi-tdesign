@@ -37,7 +37,7 @@ public interface ISysDeptService extends IService<SysDept> {
      * @param depts 部门列表
      * @return 下拉树结构列表
      */
-    List<Tree<Long>> buildDeptTreeSelect(List<SysDept> depts);
+    List<Tree<Long>> buildDeptTreeSelect(List<SysDeptVo> depts);
 
     /**
      * 根据角色ID查询部门树信息

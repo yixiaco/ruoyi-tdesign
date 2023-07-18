@@ -45,7 +45,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
         name: 'singleHMR',
         handleHotUpdate({ modules }) {
           modules.forEach((m) => {
-            m.importedModules = new Set();
+            m.importedModules?.clear();
             m.importers = new Set();
           });
           return modules;
