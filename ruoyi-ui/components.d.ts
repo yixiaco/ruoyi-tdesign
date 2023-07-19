@@ -23,6 +23,7 @@ declare module 'vue' {
     RIcon: typeof import('./src/components/r-icon/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
+    TAffix: typeof import('tdesign-vue-next')['Affix']
     TAside: typeof import('tdesign-vue-next')['Aside']
     TAutoComplete: typeof import('tdesign-vue-next')['AutoComplete']
     TAvatar: typeof import('tdesign-vue-next')['Avatar']

@@ -7,6 +7,7 @@ import Components from 'unplugin-vue-components/vite';
 import { ConfigEnv, loadEnv, UserConfig } from 'vite';
 import viteCompression from 'vite-plugin-compression';
 import { viteMockServe } from 'vite-plugin-mock';
+import prismjs from 'vite-plugin-prismjs';
 import VueDevTools from 'vite-plugin-vue-devtools';
 import svgLoader from 'vite-svg-loader';
 
@@ -41,6 +42,44 @@ export default ({ mode }: ConfigEnv): UserConfig => {
     },
 
     plugins: [
+      prismjs({
+        // 放置常用的代码
+        languages: [
+          'markup',
+          'bash',
+          'javascript',
+          'java',
+          'json',
+          'css',
+          'c',
+          'csharp',
+          'cpp',
+          'diff',
+          'dart',
+          'php',
+          'python',
+          'r',
+          'rust',
+          'ruby',
+          'go',
+          'graphql',
+          'ini',
+          'less',
+          'lua',
+          'kotlin',
+          'objectivec',
+          'scss',
+          'shell',
+          'sql',
+          'swift',
+          'yaml',
+          'typescript',
+        ],
+        // languages: 'all',
+        plugins: ['line-numbers'], // 配置显示行号插件
+        theme: 'default', // 主题名称
+        css: true,
+      }),
       {
         name: 'singleHMR',
         handleHotUpdate({ modules }) {

@@ -42,7 +42,14 @@ function renderHtml() {
   });
 }
 
+// 注册语言别名
+function register() {
+  // vue使用markup解析
+  Prism.languages.vue = Prism.languages.markup;
+}
+
 onMounted(() => {
+  register();
   renderHtml();
 });
 onUpdated(() => {

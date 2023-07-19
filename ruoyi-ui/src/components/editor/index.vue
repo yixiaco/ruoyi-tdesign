@@ -72,8 +72,6 @@ interface Props {
   menubar?: string | boolean;
   // 自定义菜单栏
   menu?: Record<string, { title: string; items: string }>;
-  // 语言
-  language?: string;
   // 宽度
   width?: string | number;
   // 高度
@@ -102,7 +100,6 @@ const props = withDefaults(defineProps<Props>(), {
     'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons template',
   toolbar: `undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | code fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl`,
   menubar: 'file edit view insert format tools table help',
-  language: 'zh-Hans',
   width: '100%',
   height: 600,
   disabled: false,
@@ -207,15 +204,16 @@ const filePickerTypes = computed(() => {
 const conf = computed<RawEditorOptions>(() => {
   const config: RawEditorOptions = {
     promotion: false,
-    language_url: `${baseURL}/langs/${props.language}.js`,
+    language_url: `${baseURL}/langs/zh-Hans.js`,
     base_url: '/',
-    language: props.language,
+    language: 'zh-Hans',
     plugins: props.plugins,
     menubar: props.menubar,
     menu: props.menu,
     toolbar: props.toolbar,
     codesample_languages: [
       { text: 'HTML/XML', value: 'markup' },
+      { text: 'Vue', value: 'vue' },
       { text: 'Bash', value: 'bash' },
       { text: 'PlainText', value: 'plaintext' },
       { text: 'JavaScript', value: 'javascript' },
@@ -226,6 +224,7 @@ const conf = computed<RawEditorOptions>(() => {
       { text: 'C#', value: 'csharp' },
       { text: 'C++', value: 'cpp' },
       { text: 'Diff', value: 'diff' },
+      { text: 'Dart', value: 'dart' },
       { text: 'PHP', value: 'php' },
       { text: 'Python', value: 'python' },
       { text: 'R', value: 'r' },

@@ -28,7 +28,14 @@ defineProps({
   },
 });
 
+// 注册语言别名
+function register() {
+  // vue使用markup解析
+  Prism.languages.vue = Prism.languages.markup;
+}
+
 onMounted(() => {
+  register();
   Prism.highlightElement(html.value); // 切换菜单重新渲染
 });
 

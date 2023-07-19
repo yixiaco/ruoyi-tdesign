@@ -155,14 +155,21 @@
           :value="getLabel(key)"
           :label="getLabel(key)"
           class="content-scrollbar"
-          style="height: 70vh"
+          style="max-height: calc(100vh - 5vh - 119px - 96px - 48px)"
         >
-          <t-tooltip content="复制" placement="top">
-            <t-link v-copyText="value" v-copyText:callback="copyTextSuccess" hover="color" style="float: right">
-              <template #prefixIcon> <file-copy-icon />复制</template>
-            </t-link>
-          </t-tooltip>
           <preview-code :code="value" :language="getLanguage(getLabel(key))" />
+          <t-tooltip content="复制" placement="top">
+            <t-button
+              v-copyText="value"
+              v-copyText:callback="copyTextSuccess"
+              variant="text"
+              theme="primary"
+              style="position: absolute; top: 8px; right: 12px"
+            >
+              <template #icon> <file-copy-icon /></template>
+              复制
+            </t-button>
+          </t-tooltip>
         </t-tab-panel>
       </t-tabs>
     </t-dialog>
@@ -266,14 +273,14 @@ onActivated(() => {
   }
 });
 
+// 获取vm名称
 function getLabel(key: string) {
   return key.substring(key.lastIndexOf('/') + 1, key.indexOf('.vm'));
 }
 
 // 获取代码语言
 function getLanguage(label: string) {
-  const language = label.substring(label.lastIndexOf('.') + 1);
-  return language === 'vue' ? 'html' : language;
+  return label.substring(label.lastIndexOf('.') + 1);
 }
 
 /** 查询多数据源名称 */
