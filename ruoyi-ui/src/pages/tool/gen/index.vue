@@ -125,7 +125,7 @@
               </t-link>
             </t-tooltip>
             <t-tooltip content="同步" placement="top">
-              <t-link v-hasPermi="['tool:gen:edit']" theme="primary" hover="color" @click.stop="handleSynchDb(row)">
+              <t-link v-hasPermi="['tool:gen:edit']" theme="primary" hover="color" @click.stop="handleSyncDb(row)">
                 <refresh-icon />
               </t-link>
             </t-tooltip>
@@ -148,21 +148,28 @@
       attach="body"
       :confirm-btn="null"
     >
-      <t-tabs v-model="preview.activeName" placement="left">
+      <t-tabs v-model="preview.activeName" placement="top">
         <t-tab-panel
           v-for="(value, key) in preview.data"
           :key="value"
           :value="getLabel(key)"
           :label="getLabel(key)"
           class="content-scrollbar"
-          style="height: 70vh"
+          style="max-height: calc(100vh - 5vh - 119px - 96px - 48px)"
         >
+          <preview-code :code="value" :language="getLanguage(getLabel(key))" />
           <t-tooltip content="复制" placement="top">
-            <t-link v-copyText="value" v-copyText:callback="copyTextSuccess" hover="color" style="float: right">
-              <template #prefixIcon> <file-copy-icon></file-copy-icon> </template>
-            </t-link>
+            <t-button
+              v-copyText="value"
+              v-copyText:callback="copyTextSuccess"
+              variant="text"
+              theme="primary"
+              style="position: absolute; top: 8px; right: 12px"
+            >
+              <template #icon> <file-copy-icon /></template>
+              复制
+            </t-button>
           </t-tooltip>
-          <highlightjs autodetect :code="value" />
         </t-tab-panel>
       </t-tabs>
     </t-dialog>
@@ -175,10 +182,6 @@ export default {
 };
 </script>
 <script lang="ts" setup>
-import 'highlight.js/styles/github.css';
-
-import hljsVuePlugin from '@highlightjs/vue-plugin';
-import hljs from 'highlight.js/lib/common';
 import {
   BrowseIcon,
   DeleteIcon,
@@ -200,9 +203,6 @@ import router from '@/router';
 
 import ImportTable from './importTable.vue';
 
-const Highlightjs = hljsVuePlugin.component;
-// 此处使用hljs对象，避免被打包后优化掉
-hljs.initHighlighting();
 const route = useRoute();
 const { proxy } = getCurrentInstance();
 
@@ -273,8 +273,14 @@ onActivated(() => {
   }
 });
 
+// 获取vm名称
 function getLabel(key: string) {
   return key.substring(key.lastIndexOf('/') + 1, key.indexOf('.vm'));
+}
+
+// 获取代码语言
+function getLanguage(label: string) {
+  return label.substring(label.lastIndexOf('.') + 1);
 }
 
 /** 查询多数据源名称 */
@@ -316,7 +322,7 @@ function handleGenTable(row?: GenTable) {
 }
 
 /** 同步数据库操作 */
-function handleSynchDb(row: GenTable) {
+function handleSyncDb(row: GenTable) {
   const { tableName, tableId, dataName } = row;
   proxy.$modal.confirm(`确认要强制同步"${dataName}.${tableName}"表结构吗？`, () => {
     return synchDb(tableId).then(() => {
