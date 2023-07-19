@@ -159,7 +159,7 @@
         >
           <t-tooltip content="复制" placement="top">
             <t-link v-copyText="value" v-copyText:callback="copyTextSuccess" hover="color" style="float: right">
-              <template #prefixIcon> <file-copy-icon></file-copy-icon> </template>
+              <template #prefixIcon> <file-copy-icon />复制</template>
             </t-link>
           </t-tooltip>
           <preview-code :code="value" :language="getLanguage(getLabel(key))" />

@@ -7,10 +7,16 @@
 import Prism from 'prismjs';
 import { nextTick, onMounted, onUpdated, ref } from 'vue';
 
-defineProps({
+const props = defineProps({
+  // html文本
   htmlText: {
     type: String,
     required: true,
+  },
+  // 是否显示代码块行号
+  isShowLineNumbers: {
+    type: Boolean,
+    default: true,
   },
 });
 
@@ -25,8 +31,12 @@ function renderHtml() {
       Prism.highlightElement(el, false);
     });
     html.value.querySelectorAll('pre[class*="language-"]').forEach((value) => {
-      if (!value.classList.contains('line-numbers')) {
-        value.classList.add('line-numbers');
+      if (props.isShowLineNumbers) {
+        if (!value.classList.contains('line-numbers')) {
+          value.classList.add('line-numbers');
+        }
+      } else if (value.classList.contains('line-numbers')) {
+        value.classList.remove('line-numbers');
       }
     });
   });
