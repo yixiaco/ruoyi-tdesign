@@ -11,8 +11,6 @@ import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.system.domain.SysOssConfig;
 
-import java.util.Date;
-
 /**
  * 对象存储配置业务对象 sys_oss_config
  *
