@@ -35,7 +35,7 @@ export default {
     return MessagePlugin.warning(message, duration);
   },
   // 消息类型的加载中
-  msgLoading(message: string | MessageInfoOptions, duration?: number) {
+  msgLoading(message: string | MessageInfoOptions, duration = 30000) {
     return MessagePlugin.loading(message, duration);
   },
   // 关闭消息
