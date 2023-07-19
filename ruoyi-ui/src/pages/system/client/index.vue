@@ -95,7 +95,13 @@
           <dict-tag :options="sys_device_type" :value="row.deviceType" />
         </template>
         <template #status="{ row }">
-          <t-switch v-model="row.status" :custom-value="['1', '0']" @click.stop @change="handleStatusChange(row)" />
+          <t-switch
+            v-if="row.clientId !== clientId"
+            v-model="row.status"
+            :custom-value="['1', '0']"
+            @click.stop
+            @change="handleStatusChange(row)"
+          />
         </template>
         <template #operation="{ row }">
           <t-space :size="8" break-line>
@@ -105,7 +111,13 @@
             <t-link v-hasPermi="['system:client:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
               <edit-icon />修改
             </t-link>
-            <t-link v-hasPermi="['system:client:remove']" theme="danger" hover="color" @click.stop="handleDelete(row)">
+            <t-link
+              v-if="row.clientId !== clientId"
+              v-hasPermi="['system:client:remove']"
+              theme="danger"
+              hover="color"
+              @click.stop="handleDelete(row)"
+            >
               <delete-icon />删除
             </t-link>
           </t-space>
@@ -158,7 +170,7 @@
         <t-form-item label="token固定超时" name="timeout">
           <t-input-number v-model="form.timeout" clearable :min="180" :allow-input-over-limit="false" />
         </t-form-item>
-        <t-form-item label="状态" name="status">
+        <t-form-item v-if="form.clientId !== clientId" label="状态" name="status">
           <t-radio-group v-model="form.status">
             <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{ dict.label }}</t-radio>
           </t-radio-group>
@@ -258,6 +270,7 @@ const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
 const sort = ref<TableSort>(null);
+const clientId = import.meta.env.VITE_CLIENT_ID;
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
@@ -268,7 +281,14 @@ const rules = ref<Record<string, Array<FormRule>>>({
 });
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
-  { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
+  {
+    title: `选择列`,
+    colKey: 'row-select',
+    type: 'multiple',
+    width: 50,
+    align: 'center',
+    disabled: (options: { row: SysClientVo; rowIndex: number }) => options.row.clientId === clientId,
+  },
   { title: `客户端id`, colKey: 'clientId', align: 'center' },
   { title: `客户端key`, colKey: 'clientKey', align: 'center' },
   { title: `授权类型`, colKey: 'grantType', align: 'center' },

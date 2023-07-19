@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
+import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.SortQuery;
@@ -82,11 +83,12 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean insertByBo(SysClientBo bo) {
+        checkRepeat(bo);
         SysClient add = MapstructUtils.convert(bo, SysClient.class);
         // 生成clientid
         String clientKey = bo.getClientKey();
         String clientSecret = bo.getClientSecret();
-        add.setClientId(SecureUtil.md5(clientKey + clientSecret));
+        add.setClientId(SecureUtil.md5(clientKey + clientSecret + System.currentTimeMillis()));
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());
@@ -103,6 +105,7 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateByBo(SysClientBo bo) {
+        checkRepeat(bo);
         SysClient update = MapstructUtils.convert(bo, SysClient.class);
         return updateById(update);
     }
@@ -128,5 +131,19 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteWithValidByIds(Collection<Long> ids) {
         return removeByIds(ids);
+    }
+
+    /**
+     * 检查重复key
+     *
+     * @param bo 业务对象
+     */
+    private void checkRepeat(SysClientBo bo) {
+        boolean exists = lambdaQuery().ne(bo.getId() != null, SysClient::getId, bo.getId())
+            .eq(SysClient::getClientKey, bo.getClientKey())
+            .exists();
+        if (exists) {
+            throw new ServiceException("已经存在相同的客户端key");
+        }
     }
 }
