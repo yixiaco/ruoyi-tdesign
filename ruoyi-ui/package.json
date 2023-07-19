@@ -1,7 +1,7 @@
 {
   "private": "true",
   "name": "@tencent/tdesign-vue-next-starter",
-  "version": "0.7.7",
+  "version": "0.8.0",
   "description": "Ruoyi-Tdesign多租户管理系统",
   "scripts": {
     "dev:mock": "vite --open --mode mock",
