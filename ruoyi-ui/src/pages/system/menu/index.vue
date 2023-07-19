@@ -186,7 +186,7 @@
               <t-form-item name="component">
                 <template #label>
                   <span>
-                    <t-tooltip content="访问的组件路径，如：`system/user/index`，默认在`views`目录下" placement="top">
+                    <t-tooltip content="访问的组件路径，如：`system/user/index`，默认在`pages`目录下" placement="top">
                       <help-circle-filled-icon />
                     </t-tooltip>
                     组件路径
