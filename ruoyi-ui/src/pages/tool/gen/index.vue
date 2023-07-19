@@ -125,7 +125,7 @@
               </t-link>
             </t-tooltip>
             <t-tooltip content="同步" placement="top">
-              <t-link v-hasPermi="['tool:gen:edit']" theme="primary" hover="color" @click.stop="handleSynchDb(row)">
+              <t-link v-hasPermi="['tool:gen:edit']" theme="primary" hover="color" @click.stop="handleSyncDb(row)">
                 <refresh-icon />
               </t-link>
             </t-tooltip>
@@ -315,7 +315,7 @@ function handleGenTable(row?: GenTable) {
 }
 
 /** 同步数据库操作 */
-function handleSynchDb(row: GenTable) {
+function handleSyncDb(row: GenTable) {
   const { tableName, tableId, dataName } = row;
   proxy.$modal.confirm(`确认要强制同步"${dataName}.${tableName}"表结构吗？`, () => {
     return synchDb(tableId).then(() => {
