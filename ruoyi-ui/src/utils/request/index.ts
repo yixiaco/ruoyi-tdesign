@@ -330,11 +330,9 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
 
 export const request = createAxios();
 
-let downloadLoadingInstance: LoadingInstance;
-
 // 通用下载方法
 export function download(url: string, params: any, filename: string, config?: AxiosRequestConfig<any>) {
-  downloadLoadingInstance = LoadingPlugin({
+  const downloadLoadingInstance = LoadingPlugin({
     text: '正在下载数据，请稍候',
     attach: 'body',
     fullscreen: true,
@@ -364,11 +362,10 @@ export function download(url: string, params: any, filename: string, config?: Ax
         const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode.default;
         MessagePlugin.error(errMsg);
       }
-      downloadLoadingInstance.hide();
     })
     .catch((r) => {
       console.error(r);
       MessagePlugin.error('下载文件出现错误，请联系管理员！');
-      downloadLoadingInstance.hide();
-    });
+    })
+    .finally(() => downloadLoadingInstance.hide());
 }

@@ -1,20 +1,19 @@
 import axios from 'axios';
 // @ts-ignore
 import { saveAs } from 'file-saver';
-import { LoadingInstance, LoadingPlugin, MessagePlugin } from 'tdesign-vue-next';
+import { LoadingPlugin, MessagePlugin } from 'tdesign-vue-next';
 
 import { useUserStore } from '@/store';
 import errorCode from '@/utils/errorCode';
 import { blobValidate } from '@/utils/ruoyi';
 
 const baseURL = import.meta.env.VITE_APP_BASE_API;
-let downloadLoadingInstance: LoadingInstance;
 
 export default {
   oss(ossId: number) {
     const { token } = useUserStore();
     const url = `${baseURL}/resource/oss/download/${ossId}`;
-    downloadLoadingInstance = LoadingPlugin({
+    const downloadLoadingInstance = LoadingPlugin({
       text: '正在下载数据，请稍候',
       attach: 'body',
       fullscreen: true,
@@ -33,18 +32,17 @@ export default {
         } else {
           this.printErrMsg(res.data);
         }
-        downloadLoadingInstance.hide();
       })
       .catch((r) => {
         console.error(r);
         MessagePlugin.error('下载文件出现错误，请联系管理员！');
-        downloadLoadingInstance.hide();
-      });
+      })
+      .finally(() => downloadLoadingInstance.hide());
   },
   zip(url: string, name: string) {
     const { token } = useUserStore();
     url = baseURL + url;
-    downloadLoadingInstance = LoadingPlugin({
+    const downloadLoadingInstance = LoadingPlugin({
       text: '正在下载数据，请稍候',
       attach: 'body',
       fullscreen: true,
@@ -70,8 +68,8 @@ export default {
       .catch((r) => {
         console.error(r);
         MessagePlugin.error('下载文件出现错误，请联系管理员！');
-        downloadLoadingInstance.hide();
-      });
+      })
+      .finally(() => downloadLoadingInstance.hide());
   },
   saveAs(text: any, name: any, opts?: any) {
     saveAs(text, name, opts);
