@@ -15,7 +15,7 @@
         <search-icon class="icon" size="16" />
       </template>
       <template #option="{ option }">
-        <t-highlight-option :content="option.text" :keyword="searchData" @click="() => $router.push(option.value)" />
+        <t-highlight-option :content="option.text" :keyword="searchData" @click="handleClick(option.value)" />
       </template>
     </t-auto-complete>
   </div>
@@ -45,7 +45,7 @@
         <search-icon size="16" />
       </template>
       <template #option="{ option }">
-        <t-highlight-option :content="option.text" :keyword="searchData" @click="() => $router.push(option.value)" />
+        <t-highlight-option :content="option.text" :keyword="searchData" @click="handleClick(option.value)" />
       </template>
     </t-auto-complete>
   </div>
@@ -56,6 +56,7 @@ import { storeToRefs } from 'pinia';
 import { SearchIcon } from 'tdesign-icons-vue-next';
 import { HighlightOption as THighlightOption } from 'tdesign-vue-next';
 import { computed, ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 import { usePermissionStore } from '@/store';
 import { MenuRoute } from '@/types/interface';
@@ -66,15 +67,11 @@ defineProps({
 
 const permissionStore = usePermissionStore();
 const { defaultRoutes: menuRouters } = storeToRefs(permissionStore);
+const router = useRouter();
 
 const isSearchFocus = ref(false);
 const searchData = ref('');
 const changeSearchFocus = (value: boolean) => {
-  if (!value && searchData.value) {
-    setTimeout(() => {
-      searchData.value = '';
-    }, 100);
-  }
   isSearchFocus.value = value;
 };
 const menus = computed(() => {
@@ -89,6 +86,12 @@ const options = computed(() => {
   }
   return menus.value;
 });
+
+// 处理跳转
+function handleClick(url: string) {
+  searchData.value = '';
+  router.push(url);
+}
 
 /** 获取叶子节点的菜单结构 */
 function getLeftMenus(menus: Array<MenuRoute>, parent?: MenuRoute): MenuRoute[] {

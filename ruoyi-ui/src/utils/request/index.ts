@@ -4,7 +4,7 @@ import type { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { saveAs } from 'file-saver';
 import isString from 'lodash/isString';
 import merge from 'lodash/merge';
-import { DialogPlugin, LoadingInstance, LoadingPlugin, MessagePlugin, NotifyPlugin } from 'tdesign-vue-next';
+import { DialogPlugin, LoadingPlugin, MessagePlugin, NotifyPlugin } from 'tdesign-vue-next';
 
 import { ContentTypeEnum } from '@/constants';
 import cache from '@/plugins/cache';
