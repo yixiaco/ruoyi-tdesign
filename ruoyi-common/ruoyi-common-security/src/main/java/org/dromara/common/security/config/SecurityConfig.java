@@ -1,5 +1,7 @@
 package org.dromara.common.security.config;
 
+import cn.dev33.satoken.error.SaErrorCode;
+import cn.dev33.satoken.exception.NotLoginException;
 import cn.dev33.satoken.interceptor.SaInterceptor;
 import cn.dev33.satoken.router.SaRouter;
 import cn.dev33.satoken.stp.StpLogic;
@@ -54,25 +56,15 @@ public class SecurityConfig implements WebMvcConfigurer {
                                 BaseUser user = (BaseUser) logic.getTokenSession().get(MultipleStpUtil.LOGIN_USER_KEY);
                                 SaSecurityContext.setContext(user);
                             });
+                        if (SaSecurityContext.getContext() != null) {
+                            break;
+                        }
                     }
                 }
-            /*AllUrlHandler allUrlHandler = SpringUtils.getBean(AllUrlHandler.class);
-            // 登录验证 -- 排除多个路径
-            SaRouter
-                // 获取所有的
-                .match(allUrlHandler.getUrls())
-                // 对未排除的路径进行检查
-                .check(() -> {
-                    // 检查是否登录 是否有token
-                    MultipleStpUtil.SYSTEM.checkLogin();
-
-                    // 有效率影响 用于临时测试
-                    // if (log.isDebugEnabled()) {
-                    //     log.debug("剩余有效时间: {}", StpUtil.getTokenTimeout());
-                    //     log.debug("临时有效时间: {}", StpUtil.getTokenActivityTimeout());
-                    // }
-
-                });*/
+                if (SaSecurityContext.getContext() == null) {
+                    throw NotLoginException.newInstance("unknown", NotLoginException.NOT_TOKEN, NotLoginException.NOT_TOKEN_MESSAGE, null)
+                        .setCode(SaErrorCode.CODE_11011);
+                }
             })).addPathPatterns("/**")
             // 排除不需要拦截的路径
             .excludePathPatterns(securityProperties.getExcludes());
