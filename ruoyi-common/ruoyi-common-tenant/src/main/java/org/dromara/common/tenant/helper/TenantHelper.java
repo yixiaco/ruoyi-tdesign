@@ -18,6 +18,7 @@ import org.dromara.common.core.utils.funtion.Apply;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.satoken.context.SaSecurityContext;
+import org.dromara.common.tenant.annotation.DynamicTenant;
 
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -274,7 +275,10 @@ public class TenantHelper {
      * 获取当前租户id(动态租户优先)
      */
     public static String getTenantId() {
-        String tenantId = TenantHelper.getDynamic();
+        String tenantId = DynamicTenant.DYNAMIC_TENANT_AOP.get();
+        if (StringUtils.isBlank(tenantId)) {
+            tenantId = TenantHelper.getDynamic();
+        }
         if (StringUtils.isBlank(tenantId)) {
             BaseUser user = SaSecurityContext.getContext();
             if (user != null) {

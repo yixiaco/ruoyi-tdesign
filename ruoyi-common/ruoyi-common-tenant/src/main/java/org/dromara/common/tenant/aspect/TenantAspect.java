@@ -1,8 +1,12 @@
 package org.dromara.common.tenant.aspect;
 
+import cn.hutool.core.util.StrUtil;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
+import org.dromara.common.core.exception.ServiceException;
+import org.dromara.common.core.utils.spring.SpringExpressionUtil;
+import org.dromara.common.tenant.annotation.DynamicTenant;
 import org.dromara.common.tenant.annotation.IgnoreTenant;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.springframework.core.annotation.Order;
@@ -42,6 +46,31 @@ public class TenantAspect {
             if (ignoreTenant.cache()) {
                 TenantHelper.disableIgnoreCache();
             }
+        }
+    }
+
+    /**
+     * 处理动态租户
+     *
+     * @param point
+     * @param dynamicTenant
+     * @return
+     * @throws Throwable
+     */
+    @Around("@within(dynamicTenant) || @annotation(dynamicTenant)")
+    public Object handleDynamic(ProceedingJoinPoint point, DynamicTenant dynamicTenant) throws Throwable {
+        if (StrUtil.isBlank(dynamicTenant.value())) {
+            throw new ServiceException("动态租户不存在！");
+        }
+        String tenantId = SpringExpressionUtil.parseAspectExpression(dynamicTenant.value(), point);
+        if (StrUtil.isBlank(tenantId)) {
+            throw new ServiceException("动态租户不存在！");
+        }
+        DynamicTenant.DYNAMIC_TENANT_AOP.set(tenantId);
+        try {
+            return point.proceed();
+        } finally {
+            DynamicTenant.DYNAMIC_TENANT_AOP.remove();
         }
     }
 }
