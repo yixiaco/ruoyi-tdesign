@@ -306,11 +306,6 @@ public class SysMessageSendServiceImpl implements ISysMessageSendService {
         });
     }
 
-    public static void main(String[] args) {
-        String html = "<div style=\"width:700px;background-color:#fff;margin:0 auto;border: 1px solid #ccc;\"><div style=\"height:64px;margin:0;padding:0;width:100%;\"><a href=\"http://localhost:3004\" style=\"display:block;padding: 12px 30px;text-decoration: none;font-size: 24px;letter-spacing: 3px;border-bottom: 1px solid #ccc;\" rel=\"noopener\" target=\"_blank\">2bss论坛</a></div><div style=\"padding: 30px;margin:0;\"><p style=\"font-size:14px;color:#333;\">您的邮箱为：<span style=\"font-size:14px;color:#333;\"><a rel=\"noopener\" target=\"_blank\">627428179@qq.com</a></span>，验证码为：</p><p style=\"font-size:34px;color: green;\">735880</p><p style=\"font-size:14px;color:#333;\">验证码的有效期为5分钟，请在有效期内输入！</p><p style=\"font-size:14px;color: #999;\">— 2bss论坛</p><p style=\"font-size:12px;color:#999;border-top:1px dotted #E3E3E3;margin-top:30px;padding-top:30px;\">本邮件为系统邮件不能回复，请勿回复。</p></div></div>";
-        System.out.println(isHtml(html));
-    }
-
     /**
      * 是否是html
      *
