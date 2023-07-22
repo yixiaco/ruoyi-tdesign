@@ -36,42 +36,42 @@ public class ServletUtils extends JakartaServletUtil {
      * 获取String参数
      */
     public static String getParameter(String name) {
-        return getRequest().getParameter(name);
+        return FunctionUtils.getNonNull(getRequest(), request -> request.getParameter(name));
     }
 
     /**
      * 获取String参数
      */
     public static String getParameter(String name, String defaultValue) {
-        return Convert.toStr(getRequest().getParameter(name), defaultValue);
+        return Convert.toStr(FunctionUtils.getNonNullElseGet(getRequest(), request -> request.getParameter(name), defaultValue));
     }
 
     /**
      * 获取Integer参数
      */
     public static Integer getParameterToInt(String name) {
-        return Convert.toInt(getRequest().getParameter(name));
+        return Convert.toInt(FunctionUtils.getNonNull(getRequest(), request -> request.getParameter(name)));
     }
 
     /**
      * 获取Integer参数
      */
     public static Integer getParameterToInt(String name, Integer defaultValue) {
-        return Convert.toInt(getRequest().getParameter(name), defaultValue);
+        return Convert.toInt(FunctionUtils.getNonNullElseGet(getRequest(), request -> request.getParameter(name), defaultValue));
     }
 
     /**
      * 获取Boolean参数
      */
     public static Boolean getParameterToBool(String name) {
-        return Convert.toBool(getRequest().getParameter(name));
+        return Convert.toBool(FunctionUtils.getNonNull(getRequest(), request -> request.getParameter(name)));
     }
 
     /**
      * 获取Boolean参数
      */
     public static Boolean getParameterToBool(String name, Boolean defaultValue) {
-        return Convert.toBool(getRequest().getParameter(name), defaultValue);
+        return Convert.toBool(FunctionUtils.getNonNullElseGet(getRequest(), request -> request.getParameter(name), defaultValue));
     }
 
     /**
@@ -100,6 +100,15 @@ public class ServletUtils extends JakartaServletUtil {
     }
 
     /**
+     * 是否是web环境
+     *
+     * @return
+     */
+    public static boolean isWeb() {
+        return getRequestAttributes() != null;
+    }
+
+    /**
      * 获取request
      */
     public static HttpServletRequest getRequest() {
@@ -125,7 +134,7 @@ public class ServletUtils extends JakartaServletUtil {
      * 获取session
      */
     public static HttpSession getSession() {
-        return getRequest().getSession();
+        return FunctionUtils.getNonNull(getRequest(), HttpServletRequest::getSession);
     }
 
     public static ServletRequestAttributes getRequestAttributes() {
