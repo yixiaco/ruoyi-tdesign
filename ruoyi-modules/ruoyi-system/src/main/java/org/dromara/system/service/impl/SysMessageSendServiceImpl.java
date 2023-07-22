@@ -158,6 +158,9 @@ public class SysMessageSendServiceImpl implements ISysMessageSendService {
         PropertyPlaceholderHelper helper = new PropertyPlaceholderHelper("${", "}", ":", true);
         Properties properties = new Properties();
         properties.putAll(message);
+        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
+            entry.setValue(entry.getValue().toString());
+        }
         if (!outputVars.isEmpty()) {
             outputVars.forEach((key, value) -> outputVars.put(key, helper.replacePlaceholders(value, properties)));
         }
