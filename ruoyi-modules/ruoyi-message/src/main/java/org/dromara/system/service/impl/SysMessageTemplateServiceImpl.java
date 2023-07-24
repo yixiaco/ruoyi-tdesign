@@ -1,12 +1,14 @@
 package org.dromara.system.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.json.utils.JsonUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.redis.utils.CacheUtils;
 import org.dromara.system.domain.SysMessageTemplate;
 import org.dromara.system.domain.bo.SysMessageTemplateBo;
 import org.dromara.system.domain.query.SysMessageTemplateQuery;
@@ -15,6 +17,7 @@ import org.dromara.system.mapper.SysMessageTemplateMapper;
 import org.dromara.system.service.ISysMessageKeyService;
 import org.dromara.system.service.ISysMessageTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -96,6 +99,7 @@ public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplat
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateByBo(SysMessageTemplateBo bo) {
         checkRepeat(bo);
+        SysMessageTemplate template = getById(bo.getMessageTemplateId());
         String messageKey = messageKeyService.getKeyById(bo.getMessageKeyId());
         if (messageKey == null) {
             throw new ServiceException("消息常量不存在");
@@ -103,7 +107,12 @@ public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplat
         SysMessageTemplate update = MapstructUtils.convert(bo, SysMessageTemplate.class);
         update.setVarsJson(JsonUtils.toJsonString(bo.getVarsList()));
         update.setMessageKey(messageKey);
-        return updateById(update);
+        boolean b = updateById(update);
+        if (b) {
+            CacheUtils.evict(CacheNames.SYS_MESSAGE_TEMPLATE, template.getMessageKey() + ":" + template.getMessageType());
+            CacheUtils.evict(CacheNames.SYS_MESSAGE_TEMPLATE_ID, template.getMessageTemplateId());
+        }
+        return b;
     }
 
     /**
@@ -115,6 +124,11 @@ public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplat
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteWithValidByIds(Collection<Long> ids) {
+        List<SysMessageTemplate> templates = listByIds(ids);
+        for (SysMessageTemplate template : templates) {
+            CacheUtils.evict(CacheNames.SYS_MESSAGE_TEMPLATE, template.getMessageKey() + ":" + template.getMessageType());
+            CacheUtils.evict(CacheNames.SYS_MESSAGE_TEMPLATE_ID, template.getMessageTemplateId());
+        }
         return removeByIds(ids);
     }
 
@@ -144,9 +158,52 @@ public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplat
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateMessageKey(Long messageKeyId, String messageKey) {
+        List<SysMessageTemplate> list = lambdaQuery().eq(SysMessageTemplate::getMessageKey, messageKey).list();
+        for (SysMessageTemplate template : list) {
+            CacheUtils.evict(CacheNames.SYS_MESSAGE_TEMPLATE, template.getMessageKey() + ":" + template.getMessageType());
+            CacheUtils.evict(CacheNames.SYS_MESSAGE_TEMPLATE_ID, template.getMessageTemplateId());
+        }
         lambdaUpdate()
             .eq(SysMessageTemplate::getMessageKeyId, messageKeyId)
             .set(SysMessageTemplate::getMessageKey, messageKey)
             .update();
+    }
+
+    /**
+     * 从缓存中获取消息模板
+     *
+     * @param messageType 消息类型
+     * @param messageKey  消息key
+     * @return
+     */
+    @Override
+    @Cacheable(cacheNames = CacheNames.SYS_MESSAGE_TEMPLATE, key = "#messageKey+':'+#messageType", condition = "#messageType != null && #messageKey != null")
+    public SysMessageTemplate getCache(String messageType, String messageKey) {
+        return lambdaQuery()
+            .eq(SysMessageTemplate::getMessageKey, messageKey)
+            .eq(SysMessageTemplate::getMessageType, messageType)
+            .eq(SysMessageTemplate::getStatus, NormalDisableEnum.NORMAL.getCode())
+            .one();
+    }
+
+    /**
+     * 从缓存中获取消息模板
+     *
+     * @param messageTemplateId 消息模板id
+     * @return
+     */
+    @Override
+    @Cacheable(cacheNames = CacheNames.SYS_MESSAGE_TEMPLATE_ID, key = "#messageTemplateId", condition = "#messageTemplateId != null")
+    public SysMessageTemplate getCacheById(Long messageTemplateId) {
+        return getById(messageTemplateId);
+    }
+
+    /**
+     * 删除缓存
+     */
+    @Override
+    public void removeCache() {
+        CacheUtils.clear(CacheNames.SYS_MESSAGE_TEMPLATE);
+        CacheUtils.clear(CacheNames.SYS_MESSAGE_TEMPLATE_ID);
     }
 }

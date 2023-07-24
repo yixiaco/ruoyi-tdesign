@@ -1,4 +1,4 @@
-package org.dromara.system.controller.system;
+package org.dromara.system.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
@@ -101,5 +101,16 @@ public class SysMessageConfigController extends BaseController {
     @DeleteMapping("/{messageConfigIds}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空") @PathVariable Long[] messageConfigIds) {
         return toAjax(sysMessageConfigService.deleteWithValidByIds(List.of(messageConfigIds)));
+    }
+
+    /**
+     * 刷新消息配置缓存
+     */
+    @SaCheckPermission("system:messageConfig:remove")
+    @Log(title = "消息配置", businessType = BusinessType.CLEAN)
+    @DeleteMapping("/refreshCache")
+    public R<Void> refreshCache() {
+        sysMessageConfigService.removeCache();
+        return R.ok();
     }
 }

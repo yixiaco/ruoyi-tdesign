@@ -73,4 +73,26 @@ public interface ISysMessageTemplateService extends IService<SysMessageTemplate>
      * @param messageKey   消息key
      */
     void updateMessageKey(Long messageKeyId, String messageKey);
+
+    /**
+     * 从缓存中获取消息模板
+     *
+     * @param messageType 消息类型
+     * @param messageKey  消息key
+     * @return
+     */
+    SysMessageTemplate getCache(String messageType, String messageKey);
+
+    /**
+     * 从缓存中获取消息模板
+     *
+     * @param messageTemplateId 消息模板id
+     * @return
+     */
+    SysMessageTemplate getCacheById(Long messageTemplateId);
+
+    /**
+     * 删除缓存
+     */
+    void removeCache();
 }

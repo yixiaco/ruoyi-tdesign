@@ -63,6 +63,8 @@ export interface SysMessageLog extends BaseEntity {
   message?: string;
   /** 记录时间 */
   logTime?: any;
+  /** 消耗时间 */
+  costTime?: number;
 }
 /**
  * 消息发送记录视图对象
@@ -104,4 +106,6 @@ export interface SysMessageLogVo {
   message?: string;
   /** 记录时间 */
   logTime?: any;
+  /** 消耗时间 */
+  costTime?: number;
 }

@@ -1,4 +1,4 @@
-package org.dromara.system.controller.system;
+package org.dromara.system.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
@@ -159,6 +159,17 @@ public class SysMessageTemplateController extends BaseController {
     @SaCheckPermission(value = "system:messageTemplate:test")
     public R<Void> sendTest(@Validated @RequestBody SysMessageTemplateTestBo templateTestBo) {
         messageSendService.send(templateTestBo.getMessageTemplateId(), templateTestBo.getAccount(), templateTestBo.getVars());
+        return R.ok();
+    }
+
+    /**
+     * 刷新消息模板缓存
+     */
+    @SaCheckPermission("system:messageTemplate:remove")
+    @Log(title = "消息模板", businessType = BusinessType.CLEAN)
+    @DeleteMapping("/refreshCache")
+    public R<Void> refreshCache() {
+        sysMessageTemplateService.removeCache();
         return R.ok();
     }
 

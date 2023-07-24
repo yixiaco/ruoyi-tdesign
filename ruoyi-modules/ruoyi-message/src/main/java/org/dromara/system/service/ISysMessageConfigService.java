@@ -65,4 +65,16 @@ public interface ISysMessageConfigService extends IService<SysMessageConfig> {
      * @return Boolean
      */
     Boolean deleteWithValidByIds(Collection<Long> ids);
+
+    /**
+     * 获取消息配置缓存
+     *
+     * @param messageConfigId 消息配置id
+     */
+    SysMessageConfig getCacheById(Long messageConfigId);
+
+    /**
+     * 删除缓存
+     */
+    void removeCache();
 }

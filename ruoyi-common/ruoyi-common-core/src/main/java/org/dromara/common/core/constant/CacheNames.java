@@ -60,4 +60,18 @@ public interface CacheNames {
      */
     String ONLINE_TOKEN = "online_tokens";
 
+    /**
+     * 消息模板
+     */
+    String SYS_MESSAGE_TEMPLATE = GlobalConstants.GLOBAL_REDIS_KEY + "sys_message_template#30d";
+
+    /**
+     * 消息模板
+     */
+    String SYS_MESSAGE_TEMPLATE_ID = GlobalConstants.GLOBAL_REDIS_KEY + "sys_message_template_id#30d";
+
+    /**
+     * 消息配置
+     */
+    String SYS_MESSAGE_CONFIG = GlobalConstants.GLOBAL_REDIS_KEY + "sys_message_config#30d";
 }

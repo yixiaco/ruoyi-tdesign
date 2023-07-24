@@ -138,4 +138,10 @@ public class SysMessageLogVo implements Serializable {
     @ExcelProperty(value = "记录时间")
     private Date logTime;
 
+    /**
+     * 消耗时间
+     */
+    @ExcelProperty(value = "消耗时间")
+    private Long costTime;
+
 }

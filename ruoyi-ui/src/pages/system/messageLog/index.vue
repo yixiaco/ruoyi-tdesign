@@ -129,6 +129,7 @@
         <template #isSuccess="{ row }">
           <dict-tag :options="sys_common_status" :value="row.isSuccess" />
         </template>
+        <template #costTime="{ row }"> {{ row.costTime }}毫秒 </template>
         <template #operation="{ row }">
           <t-space :size="8" break-line>
             <t-link
@@ -219,6 +220,9 @@
             <t-col :span="6">
               <t-form-item label="记录时间">{{ parseTime(form.logTime) }}</t-form-item>
             </t-col>
+            <t-col :span="6">
+              <t-form-item label="消耗时间">{{ form.costTime ?? 0 }}毫秒</t-form-item>
+            </t-col>
           </t-row>
         </t-form>
       </t-loading>
@@ -269,7 +273,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `发送内容`, colKey: 'content', align: 'center', ellipsis: true },
   { title: `平台标识`, colKey: 'supplierType', align: 'center' },
   { title: `是否成功`, colKey: 'isSuccess', align: 'center' },
-  { title: `返回消息`, colKey: 'message', align: 'center' },
+  { title: `消耗`, colKey: 'costTime', align: 'center', sorter: true },
   { title: `记录时间`, colKey: 'logTime', align: 'center', width: 180, sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);

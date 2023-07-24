@@ -1,11 +1,13 @@
 package org.dromara.system.service.impl;
 
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.SortQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.redis.utils.CacheUtils;
 import org.dromara.system.domain.SysMessageConfig;
 import org.dromara.system.domain.SysMessageTemplate;
 import org.dromara.system.domain.bo.SysMessageConfigBo;
@@ -15,6 +17,7 @@ import org.dromara.system.mapper.SysMessageConfigMapper;
 import org.dromara.system.service.ISysMessageConfigService;
 import org.dromara.system.service.ISysMessageTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -97,7 +100,11 @@ public class SysMessageConfigServiceImpl extends ServiceImpl<SysMessageConfigMap
             }
         }
         SysMessageConfig update = MapstructUtils.convert(bo, SysMessageConfig.class);
-        return updateById(update);
+        boolean b = updateById(update);
+        if (b) {
+            CacheUtils.evict(CacheNames.SYS_MESSAGE_CONFIG, bo.getMessageConfigId());
+        }
+        return b;
     }
 
     /**
@@ -113,6 +120,28 @@ public class SysMessageConfigServiceImpl extends ServiceImpl<SysMessageConfigMap
         if (exists) {
             throw new ServiceException("存在关联的消息模板，取消关联后重试");
         }
+        for (Long id : ids) {
+            CacheUtils.evict(CacheNames.SYS_MESSAGE_CONFIG, id);
+        }
         return removeByIds(ids);
+    }
+
+    /**
+     * 获取消息配置缓存
+     *
+     * @param messageConfigId 消息配置id
+     */
+    @Override
+    @Cacheable(cacheNames = CacheNames.SYS_MESSAGE_CONFIG, key = "#messageConfigId", condition = "#messageConfigId != null")
+    public SysMessageConfig getCacheById(Long messageConfigId) {
+        return getById(messageConfigId);
+    }
+
+    /**
+     * 删除缓存
+     */
+    @Override
+    public void removeCache() {
+        CacheUtils.clear(CacheNames.SYS_MESSAGE_CONFIG);
     }
 }

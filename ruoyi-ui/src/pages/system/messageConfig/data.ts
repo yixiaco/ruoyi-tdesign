@@ -119,7 +119,7 @@ const mail: MailConfig = {
   socketFactoryPort: {
     value: 465,
     component: 'input-number',
-    name: 'SMTP服务端口',
+    name: 'Socket端口',
     required: true,
     min: 0,
     max: 65535,

@@ -39,3 +39,10 @@ export function delMessageConfig(messageConfigIds: number | Array<number>) {
     url: `/system/messageConfig/${messageConfigIds}`,
   });
 }
+
+// 刷新消息配置缓存
+export function refreshCache() {
+  return request.delete<R<void>>({
+    url: '/system/messageConfig/refreshCache',
+  });
+}

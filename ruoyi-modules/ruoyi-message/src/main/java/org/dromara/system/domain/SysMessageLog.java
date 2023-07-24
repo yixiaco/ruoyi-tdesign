@@ -114,4 +114,9 @@ public class SysMessageLog extends BaseEntity {
      */
     private Date logTime;
 
+    /**
+     * 消耗时间
+     */
+    private Long costTime;
+
 }

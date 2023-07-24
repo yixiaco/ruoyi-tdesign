@@ -69,3 +69,10 @@ export function sendMessageTest(data: SysMessageTemplateTest) {
     data,
   });
 }
+
+// 刷新消息模板缓存
+export function refreshCache() {
+  return request.delete<R<void>>({
+    url: '/system/messageTemplate/refreshCache',
+  });
+}

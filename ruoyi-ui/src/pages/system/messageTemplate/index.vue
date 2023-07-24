@@ -94,6 +94,15 @@
                 <template #icon> <download-icon /> </template>
                 导出
               </t-button>
+              <t-button
+                v-hasPermi="['system:messageTemplate:remove']"
+                theme="danger"
+                variant="outline"
+                @click="handleRefreshCache"
+              >
+                <template #icon> <refresh-icon /> </template>
+                刷新缓存
+              </t-button>
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -424,6 +433,7 @@ import {
   getMessageKeys,
   getMessageTemplate,
   listMessageTemplate,
+  refreshCache,
   sendMessageTest,
   updateMessageTemplate,
 } from '@/api/system/messageTemplate';
@@ -783,6 +793,15 @@ function handleDelete(row?: SysMessageTemplateVo) {
       .finally(() => {
         proxy.$modal.msgClose(msgLoading);
       });
+  });
+}
+
+/** 刷新缓存 */
+function handleRefreshCache() {
+  proxy.$modal.confirm(`是否确认刷新消息模板缓存？`, () => {
+    return refreshCache().then(() => {
+      proxy.$modal.msgSuccess('刷新成功');
+    });
   });
 }
 

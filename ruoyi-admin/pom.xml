@@ -87,6 +87,12 @@
             <artifactId>JustAuth</artifactId>
         </dependency>
 
+        <!-- 消息模块 -->
+        <dependency>
+            <groupId>org.dromara</groupId>
+            <artifactId>ruoyi-message</artifactId>
+        </dependency>
+
         <!-- skywalking 整合 logback -->
 <!--        <dependency>-->
 <!--            <groupId>org.apache.skywalking</groupId>-->
