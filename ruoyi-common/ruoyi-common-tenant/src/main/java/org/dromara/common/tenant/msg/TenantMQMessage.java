@@ -1,19 +1,22 @@
 package org.dromara.common.tenant.msg;
 
+import cn.hutool.core.util.IdUtil;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.dromara.amqp.msg.BaseMqMessage;
 import org.dromara.common.tenant.helper.TenantHelper;
 
 /**
- * 租户MQ消息
+ * 租户消息基础类，默认分配一个消息id、租户id
  *
  * @author hexm
  * @date 2023/07/22 12:14
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-public class TenantMQMessage extends BaseMqMessage {
+public class TenantMQMessage {
+
+    /**
+     * 消息id
+     */
+    private String msgId;
 
     /**
      * 租户id
@@ -21,6 +24,7 @@ public class TenantMQMessage extends BaseMqMessage {
     private String tenantId;
 
     public TenantMQMessage() {
+        this.msgId = IdUtil.objectId();
         this.tenantId = TenantHelper.getTenantId();
     }
 }
