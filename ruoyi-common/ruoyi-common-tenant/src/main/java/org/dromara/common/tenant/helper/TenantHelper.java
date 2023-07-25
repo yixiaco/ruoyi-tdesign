@@ -113,12 +113,14 @@ public class TenantHelper {
     /**
      * 在忽略租户中执行
      *
-     * @param enabled 是否确认
+     * @param enabled 是否忽略租户
      * @param handle  处理执行方法
      */
     public static void ignore(boolean enabled, Apply handle) {
         if (enabled) {
             ignore(handle);
+        } else {
+            handle.apply();
         }
     }
 
@@ -167,7 +169,7 @@ public class TenantHelper {
     /**
      * 在忽略租户中执行
      *
-     * @param enabled 是否确认
+     * @param enabled 是否忽略租户
      * @param handle  处理执行方法
      */
     public static void ignore(boolean enabled, Consumer<String> handle) {
@@ -196,7 +198,7 @@ public class TenantHelper {
     /**
      * 在忽略租户中执行
      *
-     * @param enabled 是否确认
+     * @param enabled 是否忽略租户
      * @param handle  处理执行方法
      */
     public static <T> T ignore(boolean enabled, Function<String, T> handle) {

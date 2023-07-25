@@ -66,7 +66,7 @@ export function refreshCache() {
   });
 }
 
-// 查询BBS网站参数配置详细
+// 查询参数配置详细
 export function getConfigByKeys(keys: string) {
   return request.get<R<Record<string, SysConfigVo>>>({
     url: `/system/config/configKeys`,
@@ -74,7 +74,7 @@ export function getConfigByKeys(keys: string) {
   });
 }
 
-// 修改BBS网站参数配置
+// 修改参数配置
 export function updateConfigs(configs: Array<SysConfigForm>) {
   return request.put<R<void>>({
     url: '/system/config/updateConfigs',
