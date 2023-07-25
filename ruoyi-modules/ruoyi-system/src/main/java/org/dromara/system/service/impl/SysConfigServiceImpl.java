@@ -21,7 +21,6 @@ import org.dromara.system.domain.bo.SysConfigBo;
 import org.dromara.system.domain.vo.SysConfigVo;
 import org.dromara.system.mapper.SysConfigMapper;
 import org.dromara.system.service.ISysConfigService;
-import org.springframework.cache.annotation.CachePut;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -65,6 +64,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
         Optional<SysConfig> oneOpt = lambdaQuery()
             .eq(SysConfig::getConfigKey, configKey)
             .select(SysConfig::getConfigId, SysConfig::getConfigValue)
+            .eq(SysConfig::getIsGlobal, YesNoEnum.NO.getCodeNum())
             .oneOpt();
         if (oneOpt.isPresent()) {
             return oneOpt.get().getConfigValue();
@@ -89,14 +89,15 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
      * @param bo 参数配置信息
      * @return 结果
      */
-    @CachePut(cacheNames = CacheNames.SYS_CONFIG, key = "#bo.configKey")
     @Override
     public String insertConfig(SysConfigBo bo) {
         SysConfig config = MapstructUtils.convert(bo, SysConfig.class);
-        int row = TenantHelper.ignore(Objects.equals(YesNoEnum.YES.getCodeNum(), bo.getIsGlobal()), () ->
+        boolean isGlobal = Objects.equals(YesNoEnum.YES.getCodeNum(), bo.getIsGlobal());
+        int row = TenantHelper.ignore(isGlobal, () ->
             baseMapper.insert(config)
         );
         if (row > 0) {
+            CacheUtils.put(GlobalConstants.getGlobalKey(isGlobal, CacheNames.SYS_CONFIG), config.getConfigKey(), config.getConfigValue());
             return config.getConfigValue();
         }
         throw new ServiceException("操作失败");
@@ -108,21 +109,24 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
      * @param bo 参数配置信息
      * @return 结果
      */
-    @CachePut(cacheNames = CacheNames.SYS_CONFIG, key = "#bo.configKey")
     @Override
     public String updateConfigs(SysConfigBo bo) {
         int row = 0;
         SysConfig config = MapstructUtils.convert(bo, SysConfig.class);
+        boolean enabled = Objects.equals(YesNoEnum.YES.getCodeNum(), bo.getIsGlobal());
         if (config.getConfigId() != null) {
-            row = TenantHelper.ignore(Objects.equals(YesNoEnum.YES.getCodeNum(), bo.getIsGlobal()), () -> {
+            // 更新
+            row = TenantHelper.ignore(enabled, () -> {
                 SysConfig temp = baseMapper.selectById(config.getConfigId());
                 if (!StringUtils.equals(temp.getConfigKey(), config.getConfigKey())) {
-                    CacheUtils.evict(CacheNames.SYS_CONFIG, temp.getConfigKey());
+                    boolean isGlobal = YesNoEnum.YES.getCodeNum().equals(temp.getIsGlobal());
+                    CacheUtils.evict(GlobalConstants.getGlobalKey(isGlobal, CacheNames.SYS_CONFIG), temp.getConfigKey());
                 }
                 return baseMapper.updateById(config);
             });
         } else {
-            row = TenantHelper.ignore(Objects.equals(YesNoEnum.YES.getCodeNum(), bo.getIsGlobal()),
+            // 新增
+            row = TenantHelper.ignore(enabled,
                 () -> baseMapper.update(config, lambdaQuery()
                     .eq(SysConfig::getConfigKey, config.getConfigKey())
                     .getWrapper()));
@@ -216,6 +220,50 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     /**
      * 更新配置
      *
+     * @param isGlobal   是否全局配置
+     * @param configsMap 更新的配置
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateMaps(Integer isGlobal, Map<String, String> configsMap) {
+        if (CollUtil.isEmpty(configsMap)) {
+            return;
+        }
+        boolean enabled = Objects.equals(YesNoEnum.YES.getCodeNum(), isGlobal);
+        TenantHelper.ignore(enabled, () -> {
+            Set<String> keySet = configsMap.keySet();
+            List<SysConfig> list = lambdaQuery()
+                .in(SysConfig::getConfigKey, keySet)
+                .eq(SysConfig::getIsGlobal, isGlobal)
+                .list();
+            // 更新
+            for (SysConfig config : list) {
+                String value = configsMap.remove(config.getConfigKey());
+                config.setConfigValue(value);
+            }
+            if (CollUtil.isNotEmpty(list)) {
+                updateBatchById(list);
+                updateCache(enabled, list);
+            }
+            // 新增
+            List<SysConfig> configs = configsMap.entrySet().stream().map(entry -> {
+                SysConfig config = new SysConfig();
+                config.setConfigKey(entry.getKey());
+                config.setConfigValue(entry.getValue());
+                config.setConfigType(YesNoEnum.NO.getCodeStr());
+                config.setIsGlobal(isGlobal);
+                return config;
+            }).toList();
+            if (CollUtil.isNotEmpty(configs)) {
+                saveBatch(configs);
+                updateCache(enabled, configs);
+            }
+        });
+    }
+
+    /**
+     * 更新配置
+     *
      * @param configs  配置
      * @param isGlobal 是否是全局配置
      */
@@ -243,6 +291,16 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
         // 更新租户配置
         saveOrUpdateBatch(configList);
         // 更新缓存
+        updateCache(isGlobal, configList);
+    }
+
+    /**
+     * 更新缓存
+     *
+     * @param isGlobal   是否全局缓存
+     * @param configList 缓存列表
+     */
+    private static void updateCache(boolean isGlobal, List<SysConfig> configList) {
         for (SysConfig sysConfig : configList) {
             String cacheNames = GlobalConstants.getGlobalKey(isGlobal, CacheNames.SYS_CONFIG);
             CacheUtils.put(cacheNames, sysConfig.getConfigKey(), sysConfig.getConfigValue());

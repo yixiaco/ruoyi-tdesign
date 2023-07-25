@@ -3,6 +3,7 @@ package org.dromara.system.controller.system;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.helper.SysConfigHelper;
 import org.dromara.common.excel.utils.ExcelUtil;
@@ -160,6 +161,22 @@ public class SysConfigController extends BaseController {
     @PutMapping("/updateConfigs")
     public R<Void> updateConfigs(@RequestBody List<SysConfigBo> configs) {
         configService.updateConfigs(configs);
+        return R.ok();
+    }
+
+    /**
+     * 修改参数配置
+     *
+     * @param isGlobal   是否全局变量
+     * @param configsMap 参数配置
+     */
+    @RepeatSubmit()
+    @SaCheckPermission("system:config:edit")
+    @Log(title = "参数管理", businessType = BusinessType.UPDATE)
+    @PutMapping("/{isGlobal}/updateConfigMaps")
+    public R<Void> updateConfigMaps(@PathVariable @NotNull(message = "是否全局配置不能为空") Integer isGlobal,
+                                    @RequestBody Map<String, String> configsMap) {
+        configService.updateMaps(isGlobal, configsMap);
         return R.ok();
     }
 

@@ -7,21 +7,22 @@
         :data="form"
         :rules="rules"
         reset-type="initial"
-        label-width="calc(6em + 24px)"
+        label-width="calc(15em + 24px)"
         scroll-to-first-error="smooth"
         :disabled="disabled"
         @submit="submitForm"
       >
-        <t-form-item :label="form[captchaTemplateId].configName" :name="`['${captchaTemplateId}'].configValue`">
-          <t-input
-            v-model="form[captchaTemplateId].configValue"
-            placeholder="请输入登录模板ID"
-            :maxlength="50"
-            show-limit-number
-          ></t-input>
-          <template #help>
-            需要验证码场景，例如：注册、登录、修改密码、修改绑定手机号（阿里云模板固定参数${code}）
-          </template>
+        <t-form-item label="账号自助-是否开启用户注册功能" name="sys.account.registerUser">
+          <t-select v-model="form['sys.account.registerUser']" auto-width>
+            <t-option label="开启" value="true" />
+            <t-option label="关闭" value="false" />
+          </t-select>
+        </t-form-item>
+        <t-form-item label="OSS预览列表资源开关" name="sys.oss.previewListResource">
+          <t-select v-model="form['sys.oss.previewListResource']" auto-width>
+            <t-option label="开启" value="true" />
+            <t-option label="关闭" value="false" />
+          </t-select>
         </t-form-item>
         <t-form-item v-hasPermi="['system:config:edit']">
           <t-button theme="default" variant="outline" @click="init()">还原</t-button>
@@ -37,15 +38,14 @@
 
 <script lang="ts">
 export default {
-  name: 'SystemSmsTemplate',
+  name: 'SystemGlobalConfig',
 };
 </script>
 <script lang="ts" setup>
 import { FormRule, SubmitContext } from 'tdesign-vue-next';
 import { getCurrentInstance, ref, watch } from 'vue';
 
-import { getConfigByKeys, refreshCache, updateConfigs } from '@/api/system/config';
-import { SysConfigForm, SysConfigVo } from '@/api/system/model/configModel';
+import { getConfigByKeys, refreshCache, updateConfigMaps } from '@/api/system/config';
 
 const props = defineProps({
   action: {
@@ -59,26 +59,17 @@ const props = defineProps({
   },
 });
 
-// 登录模板ID key
-const captchaTemplateId = 'sys.sms.captchaTemplateId';
-
 const isInit = ref(false);
 const loading = ref(false);
 const buttonLoading = ref(false);
-const form = ref<Record<string, SysConfigForm & SysConfigVo>>({
-  [captchaTemplateId]: {
-    configKey: captchaTemplateId,
-    configName: '登录模板ID',
-    configType: 'Y',
-    configValue: '',
-    isGlobal: 1,
-    // eslint-disable-next-line no-template-curly-in-string
-    remark: '需要验证码场景，例如：注册、登录、修改密码、修改绑定手机号（阿里云模板固定参数${code}）',
-  },
-});
 
 const rules = ref<Record<string, Array<FormRule>>>({
-  [`['${captchaTemplateId}'].configValue`]: [{ required: true, message: '登录模板ID不能为空', trigger: 'blur' }],
+  'sys.user.initPassword': [{ required: true, message: '账号初始密码不能为空', trigger: 'blur' }],
+});
+
+const form = ref<Record<string, string>>({
+  'sys.account.registerUser': 'false',
+  'sys.oss.previewListResource': 'true',
 });
 
 const { proxy } = getCurrentInstance();
@@ -92,7 +83,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');
-    updateConfigs(Object.values(form.value))
+    updateConfigMaps(1, form.value)
       .then(() => {
         proxy.$modal.msgSuccess('更新成功');
       })
@@ -113,7 +104,7 @@ function init() {
   const keys = Object.keys(form.value);
   getConfigByKeys(keys.join(',')).then((res) => {
     keys.forEach((key) => {
-      form.value[key] = { ...form.value[key], ...res.data[key] };
+      form.value[key] = res.data[key].configValue ?? form.value[key];
     });
     loading.value = false;
   });

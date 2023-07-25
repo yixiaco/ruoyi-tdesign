@@ -82,6 +82,14 @@ export function updateConfigs(configs: Array<SysConfigForm>) {
   });
 }
 
+// 修改参数配置
+export function updateConfigMaps(isGlobal: 1 | 0, configs: Record<string, string>) {
+  return request.put<R<void>>({
+    url: `/system/config/${isGlobal}/updateConfigMaps`,
+    data: configs,
+  });
+}
+
 // 获取注册用户开关配置
 export function getRegisterUserConfig() {
   return request.get<R<boolean>>({

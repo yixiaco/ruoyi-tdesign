@@ -3,7 +3,12 @@
     <t-tabs v-model="action" @change="handleChange">
       <t-tab-panel :value="1" label="系统配置" :destroy-on-hide="false">
         <div class="panel-content">
-          <system-config :action="action === 1" :disabled="disabled" :is-system="isSystem" />
+          <system-config :action="action === 1" :disabled="disabled" />
+        </div>
+      </t-tab-panel>
+      <t-tab-panel v-if="isSystem" :value="2" label="全局配置" :destroy-on-hide="false">
+        <div class="panel-content">
+          <system-global-config :action="action === 2" :disabled="disabled" />
         </div>
       </t-tab-panel>
     </t-tabs>
@@ -22,6 +27,7 @@ import { useUserStore } from '@/store';
 import { useHasPermission } from '@/utils/auth';
 
 import SystemConfig from './components/SystemConfig.vue';
+import SystemGlobalConfig from './components/SystemGlobalConfig.vue';
 
 const route = useRoute();
 const router = useRouter();

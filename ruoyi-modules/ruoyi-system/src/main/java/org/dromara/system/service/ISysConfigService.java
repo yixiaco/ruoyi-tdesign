@@ -98,4 +98,12 @@ public interface ISysConfigService extends IService<SysConfig> {
      * @param configs
      */
     void updateConfigs(List<SysConfigBo> configs);
+
+    /**
+     * 更新配置
+     *
+     * @param isGlobal   是否全局配置
+     * @param configsMap 更新的配置
+     */
+    void updateMaps(Integer isGlobal, Map<String, String> configsMap);
 }
