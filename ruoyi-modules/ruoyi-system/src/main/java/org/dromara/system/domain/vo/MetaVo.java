@@ -1,5 +1,6 @@
 package org.dromara.system.domain.vo;
 
+import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
 import org.dromara.common.core.utils.StringUtils;
 
@@ -8,8 +9,8 @@ import org.dromara.common.core.utils.StringUtils;
  *
  * @author ruoyi
  */
-
 @Data
+@JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class MetaVo {
 
     /**

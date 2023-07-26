@@ -23,6 +23,7 @@ public class RouterVo {
     /**
      * 路由地址
      */
+    @JsonInclude
     private String path;
 
     /**

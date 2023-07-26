@@ -62,7 +62,7 @@ const getMenuList = (list: ComplexRoute[], basePath?: string): ListItemType[] =>
   });
   return list
     .map<ListItemType>((item: MenuRoute) => {
-      const path = basePath && !item.path.includes(basePath) ? `${basePath}/${item.path}` : item.path;
+      const path = basePath && !item.path?.includes(basePath) ? `${basePath}/${item.path}` : item.path;
 
       return {
         path,

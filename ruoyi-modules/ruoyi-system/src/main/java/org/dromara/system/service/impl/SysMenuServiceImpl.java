@@ -202,13 +202,13 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 router.setRedirect("noRedirect");
                 router.setChildren(buildMenus(cMenus));
             } else if (menu.isMenuFrame()) {
-                router.setMeta(null);
+                router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), Objects.equals(YesNoEnum.NO.getCodeNum(), menu.getIsCache()), menu.getPath()));
+                router.setPath(router.getPath() + menu.getPath());
                 List<RouterVo> childrenList = new ArrayList<>();
                 RouterVo children = new RouterVo();
-                children.setPath(menu.getPath());
-                children.setComponent(menu.getComponentInfo());
+                children.setPath("");
+                children.setComponent(menu.getComponent());
                 children.setName(StringUtils.capitalize(menu.getPath()));
-                children.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), Objects.equals(YesNoEnum.NO.getCodeNum(), menu.getIsCache()), menu.getPath()));
                 children.setQuery(getQueryParam(menu.getQueryParam()));
                 childrenList.add(children);
                 router.setChildren(childrenList);
@@ -335,9 +335,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Override
     public boolean checkMenuNameUnique(SysMenuBo menu) {
         boolean exist = baseMapper.exists(new LambdaQueryWrapper<SysMenu>()
-                                              .eq(SysMenu::getMenuName, menu.getMenuName())
-                                              .eq(SysMenu::getParentId, menu.getParentId())
-                                              .ne(ObjectUtil.isNotNull(menu.getMenuId()), SysMenu::getMenuId, menu.getMenuId()));
+            .eq(SysMenu::getMenuName, menu.getMenuName())
+            .eq(SysMenu::getParentId, menu.getParentId())
+            .ne(ObjectUtil.isNotNull(menu.getMenuId()), SysMenu::getMenuId, menu.getMenuId()));
         return !exist;
     }
 
