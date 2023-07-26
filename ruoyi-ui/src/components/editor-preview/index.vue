@@ -18,6 +18,10 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  // pre代码块最大高度
+  codeMaxHeight: {
+    type: String,
+  },
 });
 
 const html = ref<HTMLElement>();
@@ -27,16 +31,19 @@ const html = ref<HTMLElement>();
  */
 function renderHtml() {
   nextTick(() => {
-    html.value?.querySelectorAll('pre[class*="language-"] code')?.forEach((el) => {
-      Prism.highlightElement(el, false);
-    });
-    html.value.querySelectorAll('pre[class*="language-"]').forEach((value) => {
+    Prism.highlightAllUnder(html.value!);
+    html.value?.querySelectorAll('pre[class*="language-"]').forEach((value) => {
       if (props.isShowLineNumbers) {
         if (!value.classList.contains('line-numbers')) {
           value.classList.add('line-numbers');
         }
       } else if (value.classList.contains('line-numbers')) {
         value.classList.remove('line-numbers');
+      }
+      if (props.codeMaxHeight) {
+        if (!value.classList.contains('content-scrollbar')) {
+          value.classList.add('content-scrollbar');
+        }
       }
     });
   });
@@ -63,6 +70,9 @@ onUpdated(() => {
     'Helvetica Neue', sans-serif;
   line-height: 1.4;
   margin: 1rem;
+  pre.content-scrollbar {
+    max-height: v-bind(codeMaxHeight);
+  }
   pre.line-numbers {
     white-space: pre-wrap;
   }
