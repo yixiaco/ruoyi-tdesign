@@ -55,7 +55,7 @@
       <t-table
         ref="table"
         hover
-        height="260px"
+        max-height="90vh"
         :loading="loading"
         row-key="tableName"
         :data="dbTableList"
