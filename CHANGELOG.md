@@ -1,3 +1,44 @@
+## 🌈 1.0.7 `2023-07-30`
+> 本次更新需要执行`update_1.0.6-1.0.7.sql`脚本
+### 🚀 New Features
+- 系统设置新增使用map直接修改参数；使用便捷方式修改系统参数，拆分租户参数与全局参数设置
+- 优化消息模块抽取为新模块，新增耗时字段；从缓存中读取消息模板、消息配置
+- 新增动态租户注解，与原有动态租户分开存储，优先级更高，不支持嵌套使用
+- 提供租户消息的MQ基础消息对象，方便在使用消息队列时与动态租户注解组合
+### 🔥 Performance
+- 设置滚动条最小高度；富文本预览新增代码块最大高度
+
+### 🐞 Bug Fixes
+- 修复根路由为菜单类型时，不显示或显示错误问题
+- 修复在不启用忽略租户方法中，不执行回调
+- 修复后台权限匹配路径缺少`gen/`问题
+- 修复依赖`ruoyi-common-amqp`报错问题
+- 修复判断消息内容是否是HTML的正则不够准确
+- 修复权限未匹配命中url时，请求资源被放行
+- 修复消息发送时，值对象不是String类型时，不会替换变量引起的报错问题
+- 修复在非web环境下构建PageQuery请求对象时报错
+- 修复富文本弹出层z-index小于弹窗的问题
+- 修复菜单搜索时，偶发性无法跳转问题
+- 修复下载文件时，加载插件不关闭问题
+
+### 🏡 Chore
+- 更新gitee客户端id
+- 优化字典类型链接显示效果
+- 修改config遗留注释
+
+### 🔨 Dependency Upgrades
+- Upgrade to pinia-plugin-persistedstate@^3.2.0
+- Upgrade to tdesign-vue-next@^1.4.1
+- Upgrade to @commitlint/cli@^17.6.7
+- Upgrade to @commitlint/config-conventional@^17.6.7
+- Upgrade to @types/lodash@^4.14.196
+- Upgrade to @typescript-eslint/eslint-plugin@^6.2.0
+- Upgrade to @typescript-eslint/parser@^6.2.0
+- Upgrade to eslint@^8.45.0
+- Upgrade to stylelint@~15.10.2
+- Upgrade to vite@^4.4.7
+- Upgrade to vue-tsc@^1.8.6
+
 ## 🌈 1.0.6 `2023-07-20`
 ### 🚀 New Features
 - 富文本编辑器使用TinyMCE替换CKEditor
