@@ -5,7 +5,7 @@
 [![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://gitee.com/yixiacoco/ruoyi-tdesign/blob/master/LICENSE)
 [![使用IntelliJ IDEA开发维护](https://img.shields.io/badge/IntelliJ%20IDEA-提供支持-blue.svg)](https://www.jetbrains.com/?from=ruoyi-tdesign)
 <br>
-[![ruoyi-tdesign](https://img.shields.io/badge/ruoyi%20tdesign-1.0.6-success.svg)](https://gitee.com/yixiacoco/ruoyi-tdesign)
+[![ruoyi-tdesign](https://img.shields.io/badge/ruoyi%20tdesign-1.0.7-success.svg)](https://gitee.com/yixiacoco/ruoyi-tdesign)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.0-blue.svg)]()
 [![JDK-17](https://img.shields.io/badge/JDK-17-green.svg)]()
 [![JDK-19](https://img.shields.io/badge/JDK-19-green.svg)]()
@@ -17,6 +17,8 @@
 
 > 交流与讨论: [交流群](https://github.com/yixiaco/ruoyi-tdesign/wiki/%E4%BA%A4%E6%B5%81%E7%BE%A4)<br>
 > 系统演示(感谢 [疯狂的麦克粥](https://gitee.com/CrazyMikePorridge) 贡献的演示服务器): [传送门](https://ruoyi-tdesign.hexm.online)
+
+> 查看项目[更新日志](./CHANGELOG.md)
 
 | 功能介绍       | 使用技术                    | 文档地址                                                     | 描述                                                         |
 | -------------- | --------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
