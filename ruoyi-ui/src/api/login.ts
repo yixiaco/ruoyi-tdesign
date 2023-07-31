@@ -55,7 +55,7 @@ export function callback(data: LoginData) {
     clientId,
     grantType: 'social',
   };
-  return request.post<R<LoginVo>>({
+  return request.post<R<void>>({
     url: '/auth/social/callback',
     data: LoginData,
   });
