@@ -22,6 +22,7 @@
             hover
             line
             check-strictly
+            allow-fold-node-on-filter
             @active="handleQuery"
           />
         </div>
