@@ -40,7 +40,6 @@ import org.dromara.system.mapper.SysUserMapper;
 import org.dromara.system.service.ISysPermissionService;
 import org.dromara.system.service.ISysSocialService;
 import org.dromara.system.service.ISysTenantService;
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -78,13 +77,13 @@ public class SysLoginService {
      * @return 统一响应实体
      */
     public void socialRegister(AuthUser authUserData) {
-        SysSocialBo bo = new SysSocialBo();
+        SysSocialBo bo = BeanUtil.toBean(authUserData, SysSocialBo.class);
+        BeanUtil.copyProperties(authUserData.getToken(), bo);
         bo.setUserId(LoginHelper.getUserId());
         bo.setAuthId(authUserData.getSource() + authUserData.getUuid());
         bo.setOpenId(authUserData.getUuid());
         bo.setUserName(authUserData.getUsername());
-        BeanUtils.copyProperties(authUserData, bo);
-        BeanUtils.copyProperties(authUserData.getToken(), bo);
+        bo.setNickName(authUserData.getNickname());
         // 检查是否已经被绑定到其他账号上
         Optional<SysSocial> optional = sysSocialService.lambdaQuery()
             .eq(SysSocial::getAuthId, bo.getAuthId())
