@@ -4,6 +4,8 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
+import org.dromara.common.excel.annotation.ExcelDictFormat;
+import org.dromara.common.excel.convert.ExcelDictConvert;
 import org.dromara.system.domain.SysMenu;
 
 import java.io.Serial;
@@ -89,13 +91,15 @@ public class SysMenuVo implements Serializable {
     /**
      * 显示状态（1显示 0隐藏）
      */
-    @ExcelProperty(value = "显示状态")
+    @ExcelProperty(value = "显示状态", converter = ExcelDictConvert.class)
+    @ExcelDictFormat(dictType = "sys_show_hide")
     private String visible;
 
     /**
      * 菜单状态（1正常 0停用）
      */
-    @ExcelProperty(value = "菜单状态")
+    @ExcelProperty(value = "菜单状态", converter = ExcelDictConvert.class)
+    @ExcelDictFormat(dictType = "sys_normal_disable")
     private String status;
 
     /**
