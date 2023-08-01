@@ -79,7 +79,7 @@ export function logout() {
 export function getCodeImg() {
   return request.get<R<CaptchaImage>>(
     {
-      url: '/code',
+      url: '/auth/code',
       timeout: 20000,
     },
     {

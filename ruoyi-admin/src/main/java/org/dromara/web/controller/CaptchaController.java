@@ -86,7 +86,7 @@ public class CaptchaController {
     /**
      * 生成验证码
      */
-    @GetMapping("/code")
+    @GetMapping("/auth/code")
     public R<CaptchaVo> getCode() {
         CaptchaVo captchaVo = new CaptchaVo();
         boolean captchaEnabled = captchaProperties.getEnable();
