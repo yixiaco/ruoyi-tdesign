@@ -17,6 +17,7 @@ import org.apache.poi.xssf.usermodel.XSSFDataValidation;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.service.DictService;
 import org.dromara.common.core.utils.StreamUtils;
+import org.dromara.common.core.utils.reflect.ReflectUtils;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.excel.annotation.ExcelDictFormat;
 import org.dromara.common.excel.annotation.ExcelEnumFormat;
@@ -83,7 +84,7 @@ public class ExcelDownHandler implements SheetWriteHandler {
         Sheet sheet = writeSheetHolder.getSheet();
         // 开始设置下拉框 HSSFWorkbook
         DataValidationHelper helper = sheet.getDataValidationHelper();
-        Field[] fields = writeWorkbookHolder.getClazz().getDeclaredFields();
+        Field[] fields = ReflectUtils.getFields(writeWorkbookHolder.getClazz(), field -> !"serialVersionUID".equals(field.getName()));
         Workbook workbook = writeWorkbookHolder.getWorkbook();
         int length = fields.length;
         for (int i = 0; i < length; i++) {
@@ -117,7 +118,8 @@ public class ExcelDownHandler implements SheetWriteHandler {
                 int index = i;
                 if (fields[i].isAnnotationPresent(ExcelProperty.class)) {
                     // 如果指定了列下标，以指定的为主
-                    index = fields[i].getDeclaredAnnotation(ExcelProperty.class).index();
+                    ExcelProperty annotation = fields[i].getDeclaredAnnotation(ExcelProperty.class);
+                    index = annotation.index() == -1 ? index : annotation.index();
                 }
                 if (options.size() > 20) {
                     // 这里限制如果可选项大于20，则使用额外表形式
@@ -127,6 +129,9 @@ public class ExcelDownHandler implements SheetWriteHandler {
                     dropDownWithSimple(helper, sheet, index, options);
                 }
             }
+        }
+        if (CollUtil.isEmpty(dropDownOptions)) {
+            return;
         }
         dropDownOptions.forEach(everyOptions -> {
             // 如果传递了下拉框选择器参数
