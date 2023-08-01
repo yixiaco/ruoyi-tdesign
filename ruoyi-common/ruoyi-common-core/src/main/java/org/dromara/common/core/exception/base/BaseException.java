@@ -1,5 +1,6 @@
 package org.dromara.common.core.exception.base;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
@@ -16,6 +17,7 @@ import java.io.Serial;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
+@AllArgsConstructor
 public class BaseException extends RuntimeException {
 
     @Serial
@@ -40,13 +42,6 @@ public class BaseException extends RuntimeException {
      * 错误消息
      */
     private String defaultMessage;
-
-    public BaseException(String module, String code, Object[] args, String defaultMessage) {
-        this.module = module;
-        this.code = code;
-        this.args = args;
-        this.defaultMessage = defaultMessage;
-    }
 
     public BaseException(String module, String code, Object[] args) {
         this(module, code, args, null);

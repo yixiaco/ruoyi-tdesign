@@ -55,7 +55,7 @@ export function callback(data: LoginData) {
     clientId,
     grantType: 'social',
   };
-  return request.post<R<LoginVo>>({
+  return request.post<R<void>>({
     url: '/auth/social/callback',
     data: LoginData,
   });
@@ -79,7 +79,7 @@ export function logout() {
 export function getCodeImg() {
   return request.get<R<CaptchaImage>>(
     {
-      url: '/code',
+      url: '/auth/code',
       timeout: 20000,
     },
     {

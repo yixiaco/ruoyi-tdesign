@@ -102,9 +102,11 @@ public class SocialAuthStrategy implements IAuthStrategy {
 
         loginService.recordLogininfor(loginUser.getTenantId(), user.getUserName(), Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"));
         loginService.recordLoginInfo(user.getUserId());
+
         LoginVo loginVo = new LoginVo();
         loginVo.setAccessToken(MultipleStpUtil.SYSTEM.getTokenValue());
         loginVo.setExpireIn(ObjectUtil.defaultIfNull(client.getTimeout(), MultipleStpUtil.SYSTEM.getTokenTimeout()));
+        loginVo.setClientId(clientId);
         return loginVo;
     }
 

@@ -18,6 +18,18 @@ import java.util.List;
 public interface SysRoleMapper extends BaseMapperPlus<SysRole, SysRoleVo> {
 
     /**
+     * 查询角色信息列表
+     *
+     * @param query 查询对象
+     * @return {@link SysRoleVo}
+     */
+    @DataPermission({
+        @DataColumn(key = "deptName", value = "d.dept_id"),
+        @DataColumn(key = "userName", value = "r.create_by")
+    })
+    List<SysRoleVo> queryList(SysRoleQuery query);
+
+    /**
      * 根据用户ID查询角色
      *
      * @param userId 用户ID
@@ -34,8 +46,15 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole, SysRoleVo> {
      */
     List<Long> selectRoleListByUserId(@Param("userId") Long userId);
 
+    /**
+     * 通过角色ID查询角色
+     *
+     * @param roleId 角色id
+     * @return 角色对象信息
+     */
     @DataPermission({
-        @DataColumn(key = "deptName", value = "d.dept_id")
+        @DataColumn(key = "deptName", value = "d.dept_id"),
+        @DataColumn(key = "userName", value = "r.create_by")
     })
     SysRoleVo selectRoleById(@Param("roleId") Long roleId);
 
@@ -47,14 +66,4 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole, SysRoleVo> {
      */
     List<SysRoleVo> selectRolesByUserName(@Param("userName") String userName);
 
-    /**
-     * 查询角色信息列表
-     *
-     * @param query 查询对象
-     * @return {@link SysRoleVo}
-     */
-    @DataPermission({
-        @DataColumn(key = "deptName", value = "d.dept_id")
-    })
-    List<SysRoleVo> queryList(SysRoleQuery query);
 }

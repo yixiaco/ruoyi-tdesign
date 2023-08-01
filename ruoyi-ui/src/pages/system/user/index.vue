@@ -303,7 +303,13 @@
             </t-col>
             <t-col :span="6">
               <t-form-item label="岗位">
-                <t-select v-model="form.postIds" clearable multiple placeholder="请选择">
+                <t-select
+                  v-model="form.postIds"
+                  clearable
+                  multiple
+                  placeholder="请选择"
+                  :tag-props="{ theme: 'primary', variant: 'light' }"
+                >
                   <t-option
                     v-for="item in postOptions"
                     :key="item.postId"
@@ -316,7 +322,13 @@
             </t-col>
             <t-col :span="6">
               <t-form-item label="角色">
-                <t-select v-model="form.roleIds" clearable multiple placeholder="请选择">
+                <t-select
+                  v-model="form.roleIds"
+                  clearable
+                  multiple
+                  placeholder="请选择"
+                  :tag-props="{ theme: 'primary', variant: 'light' }"
+                >
                   <t-option
                     v-for="item in roleOptions"
                     :key="item.roleId"

@@ -155,7 +155,13 @@
           <t-input v-model="form.clientSecret" placeholder="请输入客户端秘钥" clearable />
         </t-form-item>
         <t-form-item label="授权类型" name="grantTypeList">
-          <t-select v-model="form.grantTypeList" multiple placeholder="请选择授权类型" clearable>
+          <t-select
+            v-model="form.grantTypeList"
+            multiple
+            placeholder="请选择授权类型"
+            clearable
+            :tag-props="{ theme: 'primary', variant: 'light' }"
+          >
             <t-option v-for="dict in sys_grant_type" :key="dict.value" :label="dict.label" :value="dict.value" />
           </t-select>
         </t-form-item>
