@@ -3,7 +3,7 @@ import cache from '@/plugins/cache';
 import $download from '@/plugins/download';
 import modal from '@/plugins/modal';
 
-declare module 'vue' {
+declare module '@vue/runtime-core' {
   interface ComponentCustomProperties {
     useDict: typeof import('@/utils/dict')['useDict'];
     getConfigKey: typeof import('@/api/system/config')['getConfigKey'];
