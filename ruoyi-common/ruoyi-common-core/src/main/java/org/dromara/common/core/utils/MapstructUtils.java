@@ -31,10 +31,7 @@ public class MapstructUtils {
      * @return desc
      */
     public static <T, V> V convert(T source, Class<V> desc) {
-        if (ObjectUtil.isNull(source)) {
-            return null;
-        }
-        if (ObjectUtil.isNull(desc)) {
+        if (source == null || desc == null) {
             return null;
         }
         return CONVERTER.convert(source, desc);
@@ -48,10 +45,7 @@ public class MapstructUtils {
      * @return desc
      */
     public static <T, V> V convert(T source, V desc) {
-        if (ObjectUtil.isNull(source)) {
-            return null;
-        }
-        if (ObjectUtil.isNull(desc)) {
+        if (source == null || desc == null) {
             return null;
         }
         return CONVERTER.convert(source, desc);
@@ -65,11 +59,8 @@ public class MapstructUtils {
      * @return desc
      */
     public static <T, V> List<V> convert(List<T> sourceList, Class<V> desc) {
-        if (ObjectUtil.isNull(sourceList)) {
+        if (sourceList == null) {
             return null;
-        }
-        if (CollUtil.isEmpty(sourceList)) {
-            return CollUtil.newArrayList();
         }
         return CONVERTER.convert(sourceList, desc);
     }
@@ -82,10 +73,7 @@ public class MapstructUtils {
      * @return bean对象
      */
     public static <T> T convert(Map<String, Object> map, Class<T> beanClass) {
-        if (MapUtil.isEmpty(map)) {
-            return null;
-        }
-        if (ObjectUtil.isNull(beanClass)) {
+        if (map == null || beanClass == null) {
             return null;
         }
         return CONVERTER.convert(map, beanClass);
