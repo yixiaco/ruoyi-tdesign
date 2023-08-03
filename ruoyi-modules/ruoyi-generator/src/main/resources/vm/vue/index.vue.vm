@@ -468,7 +468,7 @@ const queryParams = ref<${query}>({
   pageNum: 1,
   pageSize: 10,
 #foreach ($column in $columns)
-#if($column.isQuery())
+#if($column.isQuery() && $column.queryType != "BETWEEN")
   $column.javaField: undefined,
 #end
 #end

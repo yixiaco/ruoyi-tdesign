@@ -475,7 +475,7 @@ const form = ref<#if($useVO && $useBO)$vo & $bo#elseif($useVO)$vo#elseif($useBO)
 // 查询对象
 const queryParams = ref<${query}>({
 #foreach ($column in $columns)
-#if($column.isQuery())
+#if($column.isQuery() && $column.queryType != "BETWEEN")
   $column.javaField: undefined,
 #end
 #end
