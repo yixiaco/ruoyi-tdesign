@@ -1,12 +1,95 @@
 import { BaseEntity } from '@/api/model/resultModel';
 
 /**
- * 代码生成查询
+ * 代码生成业务查询对象
  */
-export interface DbTableQuery extends BaseEntity {
-  dataName: string;
-  tableName: string;
-  tableComment: string;
+export interface GenTableQuery extends BaseEntity {
+  /** 数据源名称 */
+  dataName?: string;
+  /** 表名称 */
+  tableName?: string;
+  /** 表描述 */
+  tableComment?: string;
+}
+/**
+ * 代码生成业务业务对象
+ */
+export interface GenTableForm extends BaseEntity {
+  /** 编号 */
+  tableId?: number;
+  /** 数据源名称 */
+  dataName?: string;
+  /** 表名称 */
+  tableName?: string;
+  /** 表描述 */
+  tableComment?: string;
+  /** 实体类名称 */
+  className?: string;
+  /** 使用的模板（crud单表操作 tree树表操作） */
+  tplCategory?: string;
+  /** 生成包路径 */
+  packageName?: string;
+  /** 生成模块名 */
+  moduleName?: string;
+  /** 生成业务名 */
+  businessName?: string;
+  /** 生成功能名 */
+  functionName?: string;
+  /** 生成功能作者 */
+  functionAuthor?: string;
+  /** 生成代码方式（0zip压缩包 1自定义路径） */
+  genType?: string;
+  /** 生成路径（不填默认项目路径） */
+  genPath?: string;
+  /** 其它生成选项 */
+  options?: string;
+  /** 备注 */
+  remark?: string;
+  /** 表列信息 */
+  columns?: Array<GenTableColumn>;
+}
+/**
+ * 代码生成业务视图对象
+ */
+export interface GenTableVo {
+  /** 编号 */
+  tableId?: number;
+  /** 数据源名称 */
+  dataName?: string;
+  /** 表名称 */
+  tableName?: string;
+  /** 表描述 */
+  tableComment?: string;
+  /** 实体类名称 */
+  className?: string;
+  /** 使用的模板（crud单表操作 tree树表操作） */
+  tplCategory?: string;
+  /** 生成包路径 */
+  packageName?: string;
+  /** 生成模块名 */
+  moduleName?: string;
+  /** 生成业务名 */
+  businessName?: string;
+  /** 生成功能名 */
+  functionName?: string;
+  /** 生成功能作者 */
+  functionAuthor?: string;
+  /** 生成代码方式（0zip压缩包 1自定义路径） */
+  genType?: string;
+  /** 生成路径（不填默认项目路径） */
+  genPath?: string;
+  /** 其它生成选项 */
+  options?: string;
+  /** 创建时间 */
+  createTime?: any;
+  /** 更新时间 */
+  updateTime?: any;
+  /** 备注 */
+  remark?: string;
+  /** 主键信息 */
+  pkColumn?: GenTableColumn;
+  /** 表列信息 */
+  columns?: Array<GenTableColumn>;
 }
 /**
  * 代码生成
@@ -20,10 +103,6 @@ export interface GenTable extends BaseEntity {
   tableName?: string;
   /** 表描述 */
   tableComment?: string;
-  /** 关联父表的表名 */
-  subTableName?: string;
-  /** 本表关联父表的外键名 */
-  subTableFkName?: string;
   /** 实体类名称(首字母大写) */
   className?: string;
   /** 使用的模板（crud单表操作 tree树表操作） */

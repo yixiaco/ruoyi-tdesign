@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.generator.domain.GenTable;
+import org.dromara.generator.domain.vo.GenTableVo;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ import java.util.List;
  * @author Lion Li
  */
 @InterceptorIgnore(dataPermission = "true", tenantLine = "true")
-public interface GenTableMapper extends BaseMapperPlus<GenTable, GenTable> {
+public interface GenTableMapper extends BaseMapperPlus<GenTable, GenTableVo> {
 
     /**
      * 查询数据库列表

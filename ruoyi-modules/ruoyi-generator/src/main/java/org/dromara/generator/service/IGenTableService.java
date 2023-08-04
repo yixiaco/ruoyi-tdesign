@@ -1,9 +1,11 @@
 package org.dromara.generator.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
+import org.dromara.generator.domain.query.GenTableQuery;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +15,7 @@ import java.util.Map;
  *
  * @author Lion Li
  */
-public interface IGenTableService {
+public interface IGenTableService extends IService<GenTable> {
 
     /**
      * 查询业务字段列表
@@ -26,10 +28,10 @@ public interface IGenTableService {
     /**
      * 查询业务列表
      *
-     * @param genTable 业务信息
+     * @param query 业务信息
      * @return 业务集合
      */
-    TableDataInfo<GenTable> selectPageGenTableList(GenTable genTable);
+    TableDataInfo<GenTable> selectPageGenTableList(GenTableQuery query);
 
     /**
      * 查询据库列表

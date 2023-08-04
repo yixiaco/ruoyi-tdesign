@@ -13,6 +13,7 @@ import org.dromara.common.mybatis.helper.DataBaseHelper;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
+import org.dromara.generator.domain.query.GenTableQuery;
 import org.dromara.generator.service.IGenTableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -41,8 +42,8 @@ public class GenController extends BaseController {
      */
     @SaCheckPermission("tool:gen:list")
     @GetMapping("/list")
-    public TableDataInfo<GenTable> genList(GenTable genTable) {
-        return genTableService.selectPageGenTableList(genTable);
+    public TableDataInfo<GenTable> genList(GenTableQuery query) {
+        return genTableService.selectPageGenTableList(query);
     }
 
     /**

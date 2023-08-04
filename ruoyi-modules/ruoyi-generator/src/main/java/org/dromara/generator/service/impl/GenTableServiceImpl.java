@@ -1,4 +1,4 @@
-package org.dromara.generator.service;
+package org.dromara.generator.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IoUtil;
@@ -11,6 +11,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -28,8 +29,10 @@ import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.generator.constant.GenConstants;
 import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
+import org.dromara.generator.domain.query.GenTableQuery;
 import org.dromara.generator.mapper.GenTableColumnMapper;
 import org.dromara.generator.mapper.GenTableMapper;
+import org.dromara.generator.service.IGenTableService;
 import org.dromara.generator.util.GenUtils;
 import org.dromara.generator.util.VelocityInitializer;
 import org.dromara.generator.util.VelocityUtils;
@@ -55,10 +58,8 @@ import java.util.zip.ZipOutputStream;
  */
 @Slf4j
 @Service
-public class GenTableServiceImpl implements IGenTableService {
+public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> implements IGenTableService {
 
-    @Autowired
-    private GenTableMapper baseMapper;
     @Autowired
     private GenTableColumnMapper genTableColumnMapper;
     @Autowired
@@ -91,17 +92,17 @@ public class GenTableServiceImpl implements IGenTableService {
     }
 
     @Override
-    public TableDataInfo<GenTable> selectPageGenTableList(GenTable genTable) {
-        return PageQuery.of(() -> baseMapper.selectList(buildGenTableQueryWrapper(genTable)));
+    public TableDataInfo<GenTable> selectPageGenTableList(GenTableQuery query) {
+        return PageQuery.of(() -> baseMapper.selectList(buildGenTableQueryWrapper(query)));
     }
 
-    private QueryWrapper<GenTable> buildGenTableQueryWrapper(GenTable genTable) {
-        Map<String, Object> params = genTable.getParams();
+    private QueryWrapper<GenTable> buildGenTableQueryWrapper(GenTableQuery query) {
+        Map<String, Object> params = query.getParams();
         QueryWrapper<GenTable> wrapper = Wrappers.query();
         wrapper
-            .eq(StringUtils.isNotEmpty(genTable.getDataName()), "data_name", genTable.getDataName())
-            .like(StringUtils.isNotBlank(genTable.getTableName()), "lower(table_name)", StringUtils.lowerCase(genTable.getTableName()))
-            .like(StringUtils.isNotBlank(genTable.getTableComment()), "lower(table_comment)", StringUtils.lowerCase(genTable.getTableComment()))
+            .eq(StringUtils.isNotEmpty(query.getDataName()), "data_name", query.getDataName())
+            .like(StringUtils.isNotBlank(query.getTableName()), "lower(table_name)", StringUtils.lowerCase(query.getTableName()))
+            .like(StringUtils.isNotBlank(query.getTableComment()), "lower(table_comment)", StringUtils.lowerCase(query.getTableComment()))
             .between(params.get("beginTime") != null && params.get("endTime") != null,
                 "create_time", params.get("beginTime"), params.get("endTime"))
             .orderByDesc("table_id");
@@ -185,7 +186,6 @@ public class GenTableServiceImpl implements IGenTableService {
     @DSTransactional
     @Override
     public void importGenTable(List<GenTable> tableList, String dataName) {
-        String operName = LoginHelper.getUsername();
         try {
             for (GenTable table : tableList) {
                 String tableName = table.getTableName();

@@ -198,7 +198,7 @@ import { computed, getCurrentInstance, onActivated, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { delTable, genCode, getDataNames, listTable, previewTable, synchDb } from '@/api/tool/gen';
-import { DbTableQuery, GenTable } from '@/api/tool/model/genModel';
+import { GenTable, GenTableQuery } from '@/api/tool/model/genModel';
 import router from '@/router';
 
 import ImportTable from './importTable.vue';
@@ -233,7 +233,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 330 },
 ]);
 
-const queryParams = ref<DbTableQuery>({
+const queryParams = ref<GenTableQuery>({
   pageNum: 1,
   pageSize: 10,
   tableName: undefined,

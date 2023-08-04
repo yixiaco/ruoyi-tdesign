@@ -3,7 +3,7 @@
     <t-col :span="6">
       <t-form-item name="info.tplCategory">
         <template #label>生成模板</template>
-        <t-select v-model="info.tplCategory" @change="tplSelectChange">
+        <t-select v-model="info.tplCategory">
           <t-option label="单表（增删改查）" value="crud" />
           <t-option label="树表（增删改查）" value="tree" />
         </t-select>
@@ -212,7 +212,6 @@ import { listMenu } from '@/api/system/menu';
 import { SysMenuVo } from '@/api/system/model/menuModel';
 import { GenTable } from '@/api/tool/model/genModel';
 
-const subColumns = ref([]);
 const menuOptions = ref<SysMenuVo[]>([]);
 const { proxy } = getCurrentInstance();
 
@@ -228,34 +227,12 @@ const props = defineProps({
 });
 const { info } = toRefs(props);
 
-function tplSelectChange(value: string) {
-  if (value !== 'sub') {
-    info.value.subTableName = '';
-    info.value.subTableFkName = '';
-  }
-}
-function setSubTableColumns(value: string) {
-  for (const item in props.tables) {
-    const name = props.tables[item].tableName;
-    if (value === name) {
-      subColumns.value = props.tables[item].columns;
-      break;
-    }
-  }
-}
 /** 查询菜单下拉树结构 */
 function getMenuTreeselect() {
   listMenu().then((response) => {
     menuOptions.value = proxy.handleTree(response.data, 'menuId');
   });
 }
-
-watch(
-  () => props.info.subTableName,
-  (val) => {
-    setSubTableColumns(val);
-  },
-);
 
 getMenuTreeselect();
 </script>

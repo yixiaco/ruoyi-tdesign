@@ -76,7 +76,7 @@ import { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, reactive, ref } from 'vue';
 
 import { getDataNames, importTable, listDbTable } from '@/api/tool/gen';
-import { DbTableQuery, GenTable } from '@/api/tool/model/genModel';
+import { GenTable, GenTableQuery } from '@/api/tool/model/genModel';
 
 const total = ref(0);
 const loading = ref(false);
@@ -86,7 +86,7 @@ const dbTableList = ref<GenTable[]>([]);
 const dataNameList = ref<Array<string>>([]);
 const { proxy } = getCurrentInstance();
 
-const queryParams = reactive<DbTableQuery>({
+const queryParams = reactive<GenTableQuery>({
   pageNum: 1,
   pageSize: 10,
   dataName: '',
