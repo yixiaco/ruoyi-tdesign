@@ -339,7 +339,7 @@ function handleUpdate(row?: SysDictDataVo) {
   reset();
   open.value = true;
   title.value = '修改字典数据';
-  const dictCode = row.dictCode || ids.value.at(0);
+  const dictCode = row?.dictCode || ids.value.at(0);
   eLoading.value = true;
   getData(dictCode).then((response) => {
     form.value = response.data;
