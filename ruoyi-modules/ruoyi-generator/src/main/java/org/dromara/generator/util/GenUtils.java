@@ -11,6 +11,7 @@ import org.dromara.generator.config.GenConfig;
 import org.dromara.generator.constant.GenConstants;
 import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
+import org.dromara.generator.domain.vo.GenTableVo;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -58,7 +59,7 @@ public class GenUtils {
     /**
      * 初始化列属性字段
      */
-    public static void initColumnField(GenTableColumn column, GenTable table) {
+    public static void initColumnField(GenTableColumn column, GenTableVo table) {
         String dataType = getDbType(column.getColumnType());
         String columnName = column.getColumnName();
         column.setTableId(table.getTableId());

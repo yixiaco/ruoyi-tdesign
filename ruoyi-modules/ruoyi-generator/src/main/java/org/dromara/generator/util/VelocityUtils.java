@@ -14,6 +14,7 @@ import org.dromara.common.mybatis.helper.DataBaseHelper;
 import org.dromara.generator.constant.GenConstants;
 import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
+import org.dromara.generator.domain.vo.GenTableVo;
 
 import java.util.*;
 
@@ -45,7 +46,7 @@ public class VelocityUtils {
      *
      * @return 模板列表
      */
-    public static VelocityContext prepareContext(GenTable genTable) {
+    public static VelocityContext prepareContext(GenTableVo genTable) {
         String moduleName = genTable.getModuleName();
         String businessName = genTable.getBusinessName();
         String packageName = genTable.getPackageName();
@@ -106,14 +107,14 @@ public class VelocityUtils {
         return sb.toString().toLowerCase();
     }
 
-    public static void setMenuVelocityContext(VelocityContext context, GenTable genTable) {
+    public static void setMenuVelocityContext(VelocityContext context, GenTableVo genTable) {
         String options = genTable.getOptions();
         Dict paramsObj = JsonUtils.parseMap(options);
         String parentMenuId = getParentMenuId(paramsObj);
         context.put("parentMenuId", parentMenuId);
     }
 
-    public static void setTreeVelocityContext(VelocityContext context, GenTable genTable) {
+    public static void setTreeVelocityContext(VelocityContext context, GenTableVo genTable) {
         String options = genTable.getOptions();
         Dict paramsObj = JsonUtils.parseMap(options);
         String treeCode = getTreecode(paramsObj);
@@ -139,7 +140,7 @@ public class VelocityUtils {
      *
      * @return 模板列表
      */
-    public static List<String> getTemplateList(GenTable table) {
+    public static List<String> getTemplateList(GenTableVo table) {
         String tplCategory = table.getTplCategory();
         List<String> templates = new ArrayList<>();
         templates.add("vm/java/domain.java.vm");
@@ -179,7 +180,7 @@ public class VelocityUtils {
     /**
      * 获取文件名
      */
-    public static String getFileName(String template, GenTable genTable) {
+    public static String getFileName(String template, GenTableVo genTable) {
         // 文件名称
         String fileName = "";
         // 包路径
@@ -248,7 +249,7 @@ public class VelocityUtils {
      * @param genTable 业务表对象
      * @return 返回需要导入的包列表
      */
-    public static HashSet<String> getImportList(GenTable genTable) {
+    public static HashSet<String> getImportList(GenTableVo genTable) {
         List<GenTableColumn> columns = genTable.getColumns();
         HashSet<String> importList = new HashSet<>();
         for (GenTableColumn column : columns) {
@@ -270,7 +271,7 @@ public class VelocityUtils {
      * @param genTable 业务表对象
      * @return 返回字典组
      */
-    public static String getDicts(GenTable genTable) {
+    public static String getDicts(GenTableVo genTable) {
         List<GenTableColumn> columns = genTable.getColumns();
         Set<String> dicts = new HashSet<>();
         addDicts(dicts, columns);
@@ -365,7 +366,7 @@ public class VelocityUtils {
      * @param genTable 业务表对象
      * @return 展开按钮列序号
      */
-    public static int getExpandColumn(GenTable genTable) {
+    public static int getExpandColumn(GenTableVo genTable) {
         String options = genTable.getOptions();
         Dict paramsObj = JsonUtils.parseMap(options);
         String treeName = paramsObj.getStr(GenConstants.TREE_NAME);

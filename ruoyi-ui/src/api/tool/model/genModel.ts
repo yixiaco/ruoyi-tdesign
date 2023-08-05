@@ -80,6 +80,10 @@ export interface GenTableVo {
   genPath?: string;
   /** 其它生成选项 */
   options?: string;
+  /** 更新者 */
+  updateBy?: string;
+  /** 创建者 */
+  createBy?: string;
   /** 创建时间 */
   createTime?: any;
   /** 更新时间 */
@@ -212,7 +216,6 @@ export interface GenTableColumn extends BaseEntity {
 }
 
 export interface GenTableInfo {
-  info?: GenTable;
+  info?: GenTableVo;
   rows?: Array<GenTableColumn>;
-  tables?: Array<GenTable>;
 }

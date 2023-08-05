@@ -1,11 +1,11 @@
 package org.dromara.generator.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
 import org.dromara.generator.domain.query.GenTableQuery;
+import org.dromara.generator.domain.vo.GenTableVo;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +28,7 @@ public interface IGenTableService extends IService<GenTable> {
     /**
      * 查询业务列表
      *
-     * @param query 业务信息
+     * @param query 查询对象
      * @return 业务集合
      */
     TableDataInfo<GenTable> selectPageGenTableList(GenTableQuery query);
@@ -36,10 +36,10 @@ public interface IGenTableService extends IService<GenTable> {
     /**
      * 查询据库列表
      *
-     * @param genTable 业务信息
+     * @param query 查询对象
      * @return 数据库表集合
      */
-    TableDataInfo<GenTable> selectPageDbTableList(GenTable genTable, PageQuery pageQuery);
+    TableDataInfo<GenTable> selectPageDbTableList(GenTableQuery query);
 
     /**
      * 查询据库列表
@@ -48,14 +48,14 @@ public interface IGenTableService extends IService<GenTable> {
      * @param dataName   数据源名称
      * @return 数据库表集合
      */
-    List<GenTable> selectDbTableListByNames(String[] tableNames, String dataName);
+    List<GenTableVo> selectDbTableListByNames(String[] tableNames, String dataName);
 
     /**
      * 查询所有表信息
      *
      * @return 表信息集合
      */
-    List<GenTable> selectGenTableAll();
+    List<GenTableVo> selectGenTableAll();
 
     /**
      * 查询业务信息
@@ -63,7 +63,7 @@ public interface IGenTableService extends IService<GenTable> {
      * @param id 业务ID
      * @return 业务信息
      */
-    GenTable selectGenTableById(Long id);
+    GenTableVo selectGenTableById(Long id);
 
     /**
      * 修改业务
@@ -85,7 +85,7 @@ public interface IGenTableService extends IService<GenTable> {
      * @param tableList 导入表列表
      * @param dataName  数据源名称
      */
-    void importGenTable(List<GenTable> tableList, String dataName);
+    void importGenTable(List<GenTableVo> tableList, String dataName);
 
     /**
      * 预览代码

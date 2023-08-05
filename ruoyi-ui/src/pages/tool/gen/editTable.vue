@@ -141,7 +141,7 @@
         </t-tab-panel>
         <t-tab-panel label="生成信息" value="genInfo" :destroy-on-hide="false">
           <div class="panel-top">
-            <gen-info-form :info="info" :tables="tables" />
+            <gen-info-form :info="info" />
           </div>
         </t-tab-panel>
       </t-tabs>
@@ -211,19 +211,20 @@ const rules = ref<Record<string, Array<FormRule>>>({
   tableComment: [{ required: true, message: '请输入表描述', trigger: 'blur' }],
   className: [{ required: true, message: '请输入实体类名称', trigger: 'blur' }],
   functionAuthor: [{ required: true, message: '请输入作者', trigger: 'blur' }],
+  treeCode: [{ required: true, message: '请选择树编码字段', trigger: 'blur' }],
+  treeParentCode: [{ required: true, message: '请选择树父编码字段', trigger: 'blur' }],
+  treeName: [{ required: true, message: '请选择树名称字段', trigger: 'blur' }],
 });
 
 const form = reactive<{
   columnsData: GenTableColumn[];
   info: GenTable;
-  tables: GenTable[];
 }>({
   columnsData: [],
   info: {},
-  tables: [],
 });
 
-const { tables, columnsData, info } = toRefs(form);
+const { columnsData, info } = toRefs(form);
 
 const isInsert = computed({
   get() {
@@ -315,7 +316,6 @@ function close() {
     getGenTable(String(tableId)).then((res) => {
       columnsData.value = res.data.rows;
       info.value = res.data.info;
-      tables.value = res.data.tables;
     });
     /** 查询字典下拉列表 */
     getDictOptionselect().then((response) => {

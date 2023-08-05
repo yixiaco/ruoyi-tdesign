@@ -113,6 +113,18 @@ public class GenTableVo implements Serializable {
     private String options;
 
     /**
+     * 更新者
+     */
+    @ExcelProperty(value = "更新者")
+    private Long updateBy;
+
+    /**
+     * 创建者
+     */
+    @ExcelProperty(value = "创建者")
+    private Long createBy;
+
+    /**
      * 创建时间
      */
     @ExcelProperty(value = "创建时间")

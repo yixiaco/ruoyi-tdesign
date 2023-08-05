@@ -7,13 +7,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
-import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.mybatis.helper.DataBaseHelper;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
 import org.dromara.generator.domain.query.GenTableQuery;
+import org.dromara.generator.domain.vo.GenTableVo;
 import org.dromara.generator.service.IGenTableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -54,13 +54,11 @@ public class GenController extends BaseController {
     @SaCheckPermission("tool:gen:query")
     @GetMapping(value = "/{tableId}")
     public R<Map<String, Object>> getInfo(@PathVariable Long tableId) {
-        GenTable table = genTableService.selectGenTableById(tableId);
-        List<GenTable> tables = genTableService.selectGenTableAll();
+        GenTableVo table = genTableService.selectGenTableById(tableId);
         List<GenTableColumn> list = genTableService.selectGenTableColumnListByTableId(tableId);
         Map<String, Object> map = new HashMap<>(3);
         map.put("info", table);
         map.put("rows", list);
-        map.put("tables", tables);
         return R.ok(map);
     }
 
@@ -69,8 +67,8 @@ public class GenController extends BaseController {
      */
     @SaCheckPermission("tool:gen:list")
     @GetMapping("/db/list")
-    public TableDataInfo<GenTable> dataList(GenTable genTable, PageQuery pageQuery) {
-        return genTableService.selectPageDbTableList(genTable, pageQuery);
+    public TableDataInfo<GenTable> dataList(GenTableQuery query) {
+        return genTableService.selectPageDbTableList(query);
     }
 
     /**
@@ -99,7 +97,7 @@ public class GenController extends BaseController {
     public R<Void> importTableSave(String tables, String dataName) {
         String[] tableNames = Convert.toStrArray(tables);
         // 查询表信息
-        List<GenTable> tableList = genTableService.selectDbTableListByNames(tableNames, dataName);
+        List<GenTableVo> tableList = genTableService.selectDbTableListByNames(tableNames, dataName);
         genTableService.importGenTable(tableList, dataName);
         return R.ok();
     }
@@ -212,7 +210,7 @@ public class GenController extends BaseController {
      */
     @SaCheckPermission("tool:gen:list")
     @GetMapping(value = "/getDataNames")
-    public R<List<String>> getCurrentDataSourceNameList(){
+    public R<List<String>> getCurrentDataSourceNameList() {
         return R.ok(DataBaseHelper.getDataSourceNameList());
     }
 }

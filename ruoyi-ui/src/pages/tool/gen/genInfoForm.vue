@@ -145,16 +145,16 @@
 
   <template v-if="info.tplCategory === 'tree'">
     <t-divider align="left" dashed>其他信息</t-divider>
-    <t-row v-show="info.tplCategory === 'tree'" :gutter="[0, 20]">
+    <t-row v-show="info.tplCategory === 'tree'" :gutter="[5, 20]">
       <t-col :span="6">
-        <t-form-item>
+        <t-form-item name="info.treeCode">
           <template #label>
             树编码字段
-            <t-tooltip content="树显示的编码字段名， 如：dept_id" placement="top">
+            <t-tooltip content="树的编码字段名， 如：dept_id" placement="top">
               <help-circle-filled-icon />
             </t-tooltip>
           </template>
-          <t-select v-model="info.treeCode" placeholder="请选择">
+          <t-select v-model="info.treeCode" placeholder="请选择编码字段">
             <t-option
               v-for="(column, index) in info.columns"
               :key="index"
@@ -165,14 +165,14 @@
         </t-form-item>
       </t-col>
       <t-col :span="6">
-        <t-form-item>
+        <t-form-item name="info.treeParentCode">
           <template #label>
             树父编码字段
-            <t-tooltip content="树显示的父编码字段名， 如：parent_Id" placement="top">
+            <t-tooltip content="树的父编码字段名， 如：parent_Id" placement="top">
               <help-circle-filled-icon />
             </t-tooltip>
           </template>
-          <t-select v-model="info.treeParentCode" placeholder="请选择">
+          <t-select v-model="info.treeParentCode" placeholder="请选择父编码字段">
             <t-option
               v-for="(column, index) in info.columns"
               :key="index"
@@ -183,14 +183,14 @@
         </t-form-item>
       </t-col>
       <t-col :span="6">
-        <t-form-item>
+        <t-form-item name="info.treeName">
           <template #label>
             树名称字段
-            <t-tooltip content="树节点的显示名称字段名， 如：dept_name" placement="top">
+            <t-tooltip content="树节点名称字段， 如：dept_name" placement="top">
               <help-circle-filled-icon />
             </t-tooltip>
           </template>
-          <t-select v-model="info.treeName" placeholder="请选择">
+          <t-select v-model="info.treeName" placeholder="请选择树节点名称字段">
             <t-option
               v-for="(column, index) in info.columns"
               :key="index"
@@ -206,22 +206,18 @@
 
 <script lang="ts" setup>
 import { ChevronDownIcon, HelpCircleFilledIcon } from 'tdesign-icons-vue-next';
-import { getCurrentInstance, PropType, ref, toRefs, watch } from 'vue';
+import { getCurrentInstance, PropType, ref, toRefs } from 'vue';
 
 import { listMenu } from '@/api/system/menu';
 import { SysMenuVo } from '@/api/system/model/menuModel';
-import { GenTable } from '@/api/tool/model/genModel';
+import { GenTableVo } from '@/api/tool/model/genModel';
 
 const menuOptions = ref<SysMenuVo[]>([]);
 const { proxy } = getCurrentInstance();
 
 const props = defineProps({
   info: {
-    type: Object as PropType<GenTable>,
-    default: null,
-  },
-  tables: {
-    type: Array as PropType<GenTable[]>,
+    type: Object as PropType<GenTableVo>,
     default: null,
   },
 });
