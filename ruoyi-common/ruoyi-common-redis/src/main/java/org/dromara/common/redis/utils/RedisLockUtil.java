@@ -287,6 +287,38 @@ public class RedisLockUtil {
     }
 
     /**
+     * 在锁中执行过程
+     *
+     * @param key      锁key
+     * @param runnable 运行过程
+     */
+    public static void execute(String key, Runnable runnable) {
+        RLock lock = RedisUtils.getClient().getLock(getKey(key));
+        lock.lock();
+        try {
+            runnable.run();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
+     * 在锁中执行过程
+     *
+     * @param key      锁key
+     * @param runnable 运行过程
+     */
+    public static <T> T execute(String key, Supplier<T> runnable) {
+        RLock lock = RedisUtils.getClient().getLock(getKey(key));
+        lock.lock();
+        try {
+            return runnable.get();
+        } finally {
+            lock.unlock();
+        }
+    }
+
+    /**
      * 获取key
      *
      * @param key
