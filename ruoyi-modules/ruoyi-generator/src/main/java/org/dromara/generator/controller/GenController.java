@@ -10,8 +10,8 @@ import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.mybatis.helper.DataBaseHelper;
 import org.dromara.common.web.core.BaseController;
-import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
+import org.dromara.generator.domain.bo.GenTableBo;
 import org.dromara.generator.domain.query.GenTableQuery;
 import org.dromara.generator.domain.vo.GenTableVo;
 import org.dromara.generator.service.IGenTableService;
@@ -42,7 +42,7 @@ public class GenController extends BaseController {
      */
     @SaCheckPermission("tool:gen:list")
     @GetMapping("/list")
-    public TableDataInfo<GenTable> genList(GenTableQuery query) {
+    public TableDataInfo<GenTableVo> genList(GenTableQuery query) {
         return genTableService.selectPageGenTableList(query);
     }
 
@@ -67,7 +67,7 @@ public class GenController extends BaseController {
      */
     @SaCheckPermission("tool:gen:list")
     @GetMapping("/db/list")
-    public TableDataInfo<GenTable> dataList(GenTableQuery query) {
+    public TableDataInfo<GenTableVo> dataList(GenTableQuery query) {
         return genTableService.selectPageDbTableList(query);
     }
 
@@ -108,9 +108,9 @@ public class GenController extends BaseController {
     @SaCheckPermission("tool:gen:edit")
     @Log(title = "代码生成", businessType = BusinessType.UPDATE)
     @PutMapping
-    public R<Void> editSave(@Validated @RequestBody GenTable genTable) {
-        genTableService.validateEdit(genTable);
-        genTableService.updateGenTable(genTable);
+    public R<Void> editSave(@Validated @RequestBody GenTableBo tableBo) {
+        genTableService.validateEdit(tableBo);
+        genTableService.updateGenTable(tableBo);
         return R.ok();
     }
 
@@ -134,7 +134,7 @@ public class GenController extends BaseController {
      */
     @SaCheckPermission("tool:gen:preview")
     @GetMapping("/preview/{tableId}")
-    public R<Map<String, String>> preview(@PathVariable("tableId") Long tableId) throws IOException {
+    public R<Map<String, String>> preview(@PathVariable("tableId") Long tableId) {
         Map<String, String> dataMap = genTableService.previewCode(tableId);
         return R.ok(dataMap);
     }
@@ -160,7 +160,7 @@ public class GenController extends BaseController {
     @SaCheckPermission("tool:gen:code")
     @Log(title = "代码生成", businessType = BusinessType.GENCODE)
     @GetMapping("/genCode/{tableId}")
-    public R<Void> genCode(@PathVariable("tableId") Long tableId) {
+    public R<Void> genCode(@PathVariable Long tableId) {
         genTableService.generatorCode(tableId);
         return R.ok();
     }
@@ -173,7 +173,7 @@ public class GenController extends BaseController {
     @SaCheckPermission("tool:gen:edit")
     @Log(title = "代码生成", businessType = BusinessType.UPDATE)
     @GetMapping("/synchDb/{tableId}")
-    public R<Void> synchDb(@PathVariable("tableId") Long tableId) {
+    public R<Void> synchDb(@PathVariable Long tableId) {
         genTableService.synchDb(tableId);
         return R.ok();
     }

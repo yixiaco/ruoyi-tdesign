@@ -166,7 +166,7 @@ import { useRoute, useRouter } from 'vue-router';
 import { optionselect as getDictOptionselect } from '@/api/system/dict/type';
 import { SysDictTypeVo } from '@/api/system/model/dictModel';
 import { getGenTable, updateGenTable } from '@/api/tool/gen';
-import { GenTable, GenTableColumn } from '@/api/tool/model/genModel';
+import { GenTableColumn, GenTableForm, GenTableVo } from '@/api/tool/model/genModel';
 import { useTabsRouterStore } from '@/store';
 
 import BasicInfoForm from './basicInfoForm.vue';
@@ -218,7 +218,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
 
 const form = reactive<{
   columnsData: GenTableColumn[];
-  info: GenTable;
+  info: GenTableForm & GenTableVo;
 }>({
   columnsData: [],
   info: {},

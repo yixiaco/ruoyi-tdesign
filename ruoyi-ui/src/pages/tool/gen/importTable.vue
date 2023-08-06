@@ -76,13 +76,13 @@ import { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, reactive, ref } from 'vue';
 
 import { getDataNames, importTable, listDbTable } from '@/api/tool/gen';
-import { GenTable, GenTableQuery } from '@/api/tool/model/genModel';
+import { GenTableQuery, GenTableVo } from '@/api/tool/model/genModel';
 
 const total = ref(0);
 const loading = ref(false);
 const visible = ref(false);
 const tables = ref([]);
-const dbTableList = ref<GenTable[]>([]);
+const dbTableList = ref<GenTableVo[]>([]);
 const dataNameList = ref<Array<string>>([]);
 const { proxy } = getCurrentInstance();
 

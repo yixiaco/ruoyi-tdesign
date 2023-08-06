@@ -1,16 +1,12 @@
 package org.dromara.generator.domain;
 
 import com.baomidou.mybatisplus.annotation.*;
-import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
-import org.dromara.generator.constant.GenConstants;
 
 import java.util.Date;
-import java.util.List;
 
 /**
  * 业务表 gen_table
@@ -99,12 +95,6 @@ public class GenTable extends BaseEntity {
     private String genPath;
 
     /**
-     * 主键信息
-     */
-    @TableField(exist = false)
-    private GenTableColumn pkColumn;
-
-    /**
      * 创建者
      */
     @TableField(fill = FieldFill.INSERT)
@@ -129,13 +119,6 @@ public class GenTable extends BaseEntity {
     private Date updateTime;
 
     /**
-     * 表列信息
-     */
-    @Valid
-    @TableField(exist = false)
-    private List<GenTableColumn> columns;
-
-    /**
      * 其它生成选项
      */
     private String options;
@@ -144,94 +127,4 @@ public class GenTable extends BaseEntity {
      * 备注
      */
     private String remark;
-
-    /**
-     * 树编码字段
-     */
-    @TableField(exist = false)
-    private String treeCode;
-
-    /**
-     * 树父编码字段
-     */
-    @TableField(exist = false)
-    private String treeParentCode;
-
-    /**
-     * 树名称字段
-     */
-    @TableField(exist = false)
-    private String treeName;
-
-    /**
-     * 菜单id列表
-     */
-    @TableField(exist = false)
-    private List<Long> menuIds;
-
-    /**
-     * 上级菜单ID字段
-     */
-    @TableField(exist = false)
-    private Long parentMenuId;
-
-    /**
-     * 上级菜单名称字段
-     */
-    @TableField(exist = false)
-    private String parentMenuName;
-
-    /**
-     * 是否使用query对象
-     */
-    @TableField(exist = false)
-    private Boolean isUseQuery;
-
-    /**
-     * 是否使用bo对象
-     */
-    @TableField(exist = false)
-    private Boolean isUseBO;
-
-    /**
-     * 是否使用vo对象
-     */
-    @TableField(exist = false)
-    private Boolean isUseVO;
-
-    public boolean isTree() {
-        return isTree(this.tplCategory);
-    }
-
-    public static boolean isTree(String tplCategory) {
-        return tplCategory != null && StringUtils.equals(GenConstants.TPL_TREE, tplCategory);
-    }
-
-    public boolean isCrud() {
-        return isCrud(this.tplCategory);
-    }
-
-    public static boolean isCrud(String tplCategory) {
-        return tplCategory != null && StringUtils.equals(GenConstants.TPL_CRUD, tplCategory);
-    }
-
-    public boolean isSuperColumn(String javaField) {
-        return isSuperColumn(this.tplCategory, javaField);
-    }
-
-    public static boolean isSuperColumn(String tplCategory, String javaField) {
-        return StringUtils.equalsAnyIgnoreCase(javaField, GenConstants.BASE_ENTITY);
-    }
-
-    public Boolean getIsUseQuery() {
-        return isUseQuery == null || isUseQuery;
-    }
-
-    public Boolean getIsUseBO() {
-        return isUseBO == null || isUseBO;
-    }
-
-    public Boolean getIsUseVO() {
-        return isUseVO == null || isUseVO;
-    }
 }

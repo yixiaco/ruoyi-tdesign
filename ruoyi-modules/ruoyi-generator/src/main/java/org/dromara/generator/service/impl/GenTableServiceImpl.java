@@ -29,6 +29,7 @@ import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.generator.constant.GenConstants;
 import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
+import org.dromara.generator.domain.bo.GenTableBo;
 import org.dromara.generator.domain.query.GenTableQuery;
 import org.dromara.generator.domain.vo.GenTableVo;
 import org.dromara.generator.mapper.GenTableColumnMapper;
@@ -93,8 +94,8 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
     }
 
     @Override
-    public TableDataInfo<GenTable> selectPageGenTableList(GenTableQuery query) {
-        return PageQuery.of(() -> baseMapper.selectList(buildGenTableQueryWrapper(query)));
+    public TableDataInfo<GenTableVo> selectPageGenTableList(GenTableQuery query) {
+        return PageQuery.of(() -> baseMapper.selectVoList(buildGenTableQueryWrapper(query)));
     }
 
     private QueryWrapper<GenTable> buildGenTableQueryWrapper(GenTableQuery query) {
@@ -118,7 +119,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
      */
     @DS("#query.dataName")
     @Override
-    public TableDataInfo<GenTable> selectPageDbTableList(GenTableQuery query) {
+    public TableDataInfo<GenTableVo> selectPageDbTableList(GenTableQuery query) {
         query.getParams().put("genTableNames", baseMapper.selectTableNameList(query.getDataName()));
         return PageQuery.of(() -> baseMapper.selectDbTableList(query));
     }
@@ -149,16 +150,17 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
     /**
      * 修改业务
      *
-     * @param genTable 业务信息
+     * @param tableBo 业务信息
      */
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public void updateGenTable(GenTable genTable) {
-        String options = JsonUtils.toJsonString(genTable.getParams());
-        genTable.setOptions(options);
-        int row = baseMapper.updateById(genTable);
+    public void updateGenTable(GenTableBo tableBo) {
+        String options = JsonUtils.toJsonString(tableBo.getParams());
+        tableBo.setOptions(options);
+        GenTable table = MapstructUtils.convert(tableBo, GenTable.class);
+        int row = baseMapper.updateById(table);
         if (row > 0) {
-            for (GenTableColumn cenTableColumn : genTable.getColumns()) {
+            for (GenTableColumn cenTableColumn : tableBo.getColumns()) {
                 genTableColumnMapper.updateById(cenTableColumn);
             }
         }
@@ -420,12 +422,12 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
     /**
      * 修改保存参数校验
      *
-     * @param genTable 业务信息
+     * @param tableBo 业务信息
      */
     @Override
-    public void validateEdit(GenTable genTable) {
-        if (GenConstants.TPL_TREE.equals(genTable.getTplCategory())) {
-            String options = JsonUtils.toJsonString(genTable.getParams());
+    public void validateEdit(GenTableBo tableBo) {
+        if (GenConstants.TPL_TREE.equals(tableBo.getTplCategory())) {
+            String options = JsonUtils.toJsonString(tableBo.getParams());
             Dict paramsObj = JsonUtils.parseMap(options);
             if (StringUtils.isEmpty(paramsObj.getStr(GenConstants.TREE_CODE))) {
                 throw new ServiceException("树编码字段不能为空");

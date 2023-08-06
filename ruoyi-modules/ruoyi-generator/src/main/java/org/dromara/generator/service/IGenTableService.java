@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
+import org.dromara.generator.domain.bo.GenTableBo;
 import org.dromara.generator.domain.query.GenTableQuery;
 import org.dromara.generator.domain.vo.GenTableVo;
 
@@ -31,7 +32,7 @@ public interface IGenTableService extends IService<GenTable> {
      * @param query 查询对象
      * @return 业务集合
      */
-    TableDataInfo<GenTable> selectPageGenTableList(GenTableQuery query);
+    TableDataInfo<GenTableVo> selectPageGenTableList(GenTableQuery query);
 
     /**
      * 查询据库列表
@@ -39,7 +40,7 @@ public interface IGenTableService extends IService<GenTable> {
      * @param query 查询对象
      * @return 数据库表集合
      */
-    TableDataInfo<GenTable> selectPageDbTableList(GenTableQuery query);
+    TableDataInfo<GenTableVo> selectPageDbTableList(GenTableQuery query);
 
     /**
      * 查询据库列表
@@ -68,9 +69,9 @@ public interface IGenTableService extends IService<GenTable> {
     /**
      * 修改业务
      *
-     * @param genTable 业务信息
+     * @param tableBo 业务信息
      */
-    void updateGenTable(GenTable genTable);
+    void updateGenTable(GenTableBo tableBo);
 
     /**
      * 删除业务信息
@@ -128,7 +129,7 @@ public interface IGenTableService extends IService<GenTable> {
     /**
      * 修改保存参数校验
      *
-     * @param genTable 业务信息
+     * @param tableBo 业务信息
      */
-    void validateEdit(GenTable genTable);
+    void validateEdit(GenTableBo tableBo);
 }

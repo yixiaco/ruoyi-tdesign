@@ -200,7 +200,7 @@ import { computed, getCurrentInstance, onActivated, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { delTable, genCode, getDataNames, listTable, previewTable, synchDb } from '@/api/tool/gen';
-import { GenTable, GenTableQuery } from '@/api/tool/model/genModel';
+import { GenTableQuery, GenTableVo } from '@/api/tool/model/genModel';
 import router from '@/router';
 
 import ImportTable from './importTable.vue';
@@ -208,7 +208,7 @@ import ImportTable from './importTable.vue';
 const route = useRoute();
 const { proxy } = getCurrentInstance();
 
-const tableList = ref<GenTable[]>([]);
+const tableList = ref<GenTableVo[]>([]);
 const loading = ref(false);
 const columnControllerVisible = ref(false);
 const showSearch = ref(true);
@@ -309,7 +309,7 @@ function handleQuery() {
 }
 
 /** 生成代码操作 */
-function handleGenTable(row?: GenTable) {
+function handleGenTable(row?: GenTableVo) {
   const tbIds = row?.tableId || ids.value;
   if (!row?.tableId && ids.value.length === 0) {
     proxy.$modal.msgError('请选择要生成的数据');
@@ -325,7 +325,7 @@ function handleGenTable(row?: GenTable) {
 }
 
 /** 同步数据库操作 */
-function handleSyncDb(row: GenTable) {
+function handleSyncDb(row: GenTableVo) {
   const { tableName, tableId, dataName } = row;
   proxy.$modal.confirm(`确认要强制同步"${dataName}.${tableName}"表结构吗？`, () => {
     return synchDb(tableId).then(() => {
@@ -361,7 +361,7 @@ function handleSortChange(value?: TableSort) {
 }
 
 /** 预览按钮 */
-function handlePreview(row: GenTable) {
+function handlePreview(row: GenTableVo) {
   preview.value.loading = true;
   preview.value.open = true;
   previewTable(row.tableId)
@@ -382,18 +382,18 @@ function copyTextSuccess() {
 }
 
 /** 多选框选中数据 */
-function handleSelectionChange(selection: Array<string | number>, { selectedRowData }: SelectOptions<GenTable>) {
+function handleSelectionChange(selection: Array<string | number>, { selectedRowData }: SelectOptions<GenTableVo>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
 }
 /** 修改按钮操作 */
-function handleEditTable(row?: GenTable) {
+function handleEditTable(row?: GenTableVo) {
   const tableId = row?.tableId || ids.value[0];
   router.push({ path: `/tool/gen-edit/index/${tableId}`, query: { pageNum: queryParams.value.pageNum } });
 }
 /** 删除按钮操作 */
-function handleDelete(row?: GenTable) {
+function handleDelete(row?: GenTableVo) {
   const tableIds = row?.tableId || ids.value;
   proxy.$modal.confirm(`是否确认删除表编号为"${tableIds}"的数据项？`, () => {
     return delTable(tableIds).then(() => {
