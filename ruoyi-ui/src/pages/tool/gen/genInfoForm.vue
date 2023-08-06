@@ -97,30 +97,6 @@
         <icon-select v-model="info.tableOptions.menuIcon" />
       </t-form-item>
     </t-col>
-    <t-col :span="12">
-      <t-form-item name="info.genType">
-        <template #label>
-          选择生成对象
-          <t-tooltip placement="top">
-            <template #content>
-              <p>BO对象：保存和编辑时，会使用BO对象替代原始对象</p>
-              <p>VO对象：列表查询、查看详情时，会使用VO对象替代原始对象</p>
-              <p>Query对象：查询条件传递时，会使用Query对象替代原始对象</p>
-            </template>
-            <help-circle-filled-icon />
-          </t-tooltip>
-        </template>
-        <t-space break-line>
-          <t-checkbox v-model="info.tableOptions.isUseQuery">使用Query对象</t-checkbox>
-          <t-checkbox v-model="info.tableOptions.isUseBO">使用BO对象</t-checkbox>
-          <t-checkbox v-model="info.tableOptions.isUseVO">使用VO对象</t-checkbox>
-          <t-checkbox v-model="info.tableOptions.isUseController">使用Controller对象</t-checkbox>
-          <t-checkbox v-model="info.tableOptions.isUseVue">生成Vue</t-checkbox>
-          <t-checkbox v-model="info.tableOptions.isUseSql">生成Sql</t-checkbox>
-        </t-space>
-      </t-form-item>
-    </t-col>
-
     <t-col v-if="info.genType === '1'" :span="12">
       <t-form-item name="info.genPath">
         <template #label>
@@ -146,6 +122,29 @@
             </t-dropdown>
           </template>
         </t-input-adornment>
+      </t-form-item>
+    </t-col>
+    <t-col :span="12">
+      <t-form-item name="info.genType">
+        <template #label>
+          选择生成对象
+          <t-tooltip placement="top">
+            <template #content>
+              <p>BO对象：保存和编辑时，会使用BO对象替代原始对象</p>
+              <p>VO对象：列表查询、查看详情时，会使用VO对象替代原始对象</p>
+              <p>Query对象：查询条件传递时，会使用Query对象替代原始对象</p>
+            </template>
+            <help-circle-filled-icon />
+          </t-tooltip>
+        </template>
+        <t-space break-line>
+          <t-checkbox v-model="info.tableOptions.isUseQuery">使用Query对象</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseBO">使用BO对象</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseVO">使用VO对象</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseController">使用Controller对象</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseVue">生成Vue</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseSql">生成Sql</t-checkbox>
+        </t-space>
       </t-form-item>
     </t-col>
   </t-row>

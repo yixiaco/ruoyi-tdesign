@@ -1,12 +1,6 @@
 <template>
   <t-card>
-    <t-form
-      :data="form"
-      label-width="calc(8em + 24px)"
-      :rules="rules"
-      scroll-to-first-error="smooth"
-      @submit="onSubmit"
-    >
+    <t-form :data="form" label-width="calc(8em + 24px)" :rules="rules" @submit="onSubmit">
       <t-tabs v-model="activeName">
         <t-tab-panel label="基本信息" value="basic" :destroy-on-hide="false">
           <div class="panel-top">
@@ -320,6 +314,6 @@ onMounted(() => {
 </script>
 <style lang="less" scoped>
 .panel-top {
-  margin-top: 8px;
+  margin: 20px 0;
 }
 </style>
