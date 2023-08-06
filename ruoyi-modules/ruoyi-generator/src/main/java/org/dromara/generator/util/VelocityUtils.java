@@ -12,8 +12,8 @@ import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.json.utils.JsonUtils;
 import org.dromara.common.mybatis.helper.DataBaseHelper;
 import org.dromara.generator.constant.GenConstants;
-import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
+import org.dromara.generator.domain.vo.GenTableOptions;
 import org.dromara.generator.domain.vo.GenTableVo;
 
 import java.util.*;
@@ -52,6 +52,7 @@ public class VelocityUtils {
         String packageName = genTable.getPackageName();
         String tplCategory = genTable.getTplCategory();
         String functionName = genTable.getFunctionName();
+        GenTableOptions options = genTable.getTableOptions();
 
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("tplCategory", genTable.getTplCategory());
@@ -77,9 +78,9 @@ public class VelocityUtils {
         velocityContext.put("GenUtil", GenUtils.class);
         velocityContext.put("StringUtils", StringUtils.class);
         velocityContext.put("StrUtil", StrUtil.class);
-        velocityContext.put("useQuery", genTable.getIsUseQuery());
-        velocityContext.put("useBO", genTable.getIsUseBO());
-        velocityContext.put("useVO", genTable.getIsUseVO());
+        velocityContext.put("useQuery", options.getIsUseQuery());
+        velocityContext.put("useBO", options.getIsUseBO());
+        velocityContext.put("useVO", options.getIsUseVO());
         setMenuVelocityContext(velocityContext, genTable);
         if (GenConstants.TPL_TREE.equals(tplCategory)) {
             setTreeVelocityContext(velocityContext, genTable);
@@ -144,13 +145,14 @@ public class VelocityUtils {
         String tplCategory = table.getTplCategory();
         List<String> templates = new ArrayList<>();
         templates.add("vm/java/domain.java.vm");
-        if (table.getIsUseQuery()) {
+        GenTableOptions options = table.getTableOptions();
+        if (options.getIsUseQuery()) {
             templates.add("vm/java/query.java.vm");
         }
-        if (table.getIsUseVO()) {
+        if (options.getIsUseVO()) {
             templates.add("vm/java/vo.java.vm");
         }
-        if (table.getIsUseBO()) {
+        if (options.getIsUseBO()) {
             templates.add("vm/java/bo.java.vm");
         }
         templates.add("vm/java/controller.java.vm");

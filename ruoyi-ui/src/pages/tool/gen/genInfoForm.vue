@@ -59,7 +59,7 @@
     </t-col>
 
     <t-col :span="6">
-      <t-form-item>
+      <t-form-item name="info.tableOptions.parentMenuId">
         <template #label>
           上级菜单
           <t-tooltip content="分配到指定菜单下，例如 系统管理" placement="top">
@@ -67,7 +67,7 @@
           </t-tooltip>
         </template>
         <t-tree-select
-          v-model="info.parentMenuId"
+          v-model="info.tableOptions.parentMenuId"
           :data="menuOptions"
           :tree-props="{
             keys: { value: 'menuId', label: 'menuName', children: 'children' },
@@ -91,10 +91,13 @@
             <help-circle-filled-icon />
           </t-tooltip>
         </template>
-        <t-space>
-          <t-checkbox v-model="info.isUseQuery">使用Query对象</t-checkbox>
-          <t-checkbox v-model="info.isUseBO">使用BO对象</t-checkbox>
-          <t-checkbox v-model="info.isUseVO">使用VO对象</t-checkbox>
+        <t-space break-line>
+          <t-checkbox v-model="info.tableOptions.isUseQuery">使用Query对象</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseBO">使用BO对象</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseVO">使用VO对象</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseController">使用Controller对象</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseVue">生成Vue</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseSql">生成Sql</t-checkbox>
         </t-space>
       </t-form-item>
     </t-col>
@@ -145,16 +148,16 @@
 
   <template v-if="info.tplCategory === 'tree'">
     <t-divider align="left" dashed>其他信息</t-divider>
-    <t-row v-show="info.tplCategory === 'tree'" :gutter="[5, 20]">
+    <t-row :gutter="[5, 20]">
       <t-col :span="6">
-        <t-form-item name="info.treeCode">
+        <t-form-item name="info.tableOptions.treeCode">
           <template #label>
             树编码字段
             <t-tooltip content="树的编码字段名， 如：dept_id" placement="top">
               <help-circle-filled-icon />
             </t-tooltip>
           </template>
-          <t-select v-model="info.treeCode" placeholder="请选择编码字段">
+          <t-select v-model="info.tableOptions.treeCode" placeholder="请选择编码字段">
             <t-option
               v-for="(column, index) in info.columns"
               :key="index"
@@ -165,14 +168,14 @@
         </t-form-item>
       </t-col>
       <t-col :span="6">
-        <t-form-item name="info.treeParentCode">
+        <t-form-item name="info.tableOptions.treeParentCode">
           <template #label>
             树父编码字段
             <t-tooltip content="树的父编码字段名， 如：parent_Id" placement="top">
               <help-circle-filled-icon />
             </t-tooltip>
           </template>
-          <t-select v-model="info.treeParentCode" placeholder="请选择父编码字段">
+          <t-select v-model="info.tableOptions.treeParentCode" placeholder="请选择父编码字段">
             <t-option
               v-for="(column, index) in info.columns"
               :key="index"
@@ -183,14 +186,14 @@
         </t-form-item>
       </t-col>
       <t-col :span="6">
-        <t-form-item name="info.treeName">
+        <t-form-item name="info.tableOptions.treeName">
           <template #label>
             树名称字段
             <t-tooltip content="树节点名称字段， 如：dept_name" placement="top">
               <help-circle-filled-icon />
             </t-tooltip>
           </template>
-          <t-select v-model="info.treeName" placeholder="请选择树节点名称字段">
+          <t-select v-model="info.tableOptions.treeName" placeholder="请选择树节点名称字段">
             <t-option
               v-for="(column, index) in info.columns"
               :key="index"

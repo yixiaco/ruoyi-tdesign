@@ -130,9 +130,9 @@
                     class="gen-option"
                   >
                     <span style="float: left">{{ dict.dictName }}</span>
-                    <span style="float: right; color: #8492a6; font-size: 13px; margin-left: 5px">{{
-                      dict.dictType
-                    }}</span>
+                    <span style="float: right; color: #8492a6; font-size: 13px; margin-left: 5px">
+                      {{ dict.dictType }}
+                    </span>
                   </t-option>
                 </t-select>
               </template>
@@ -221,7 +221,9 @@ const form = reactive<{
   info: GenTableForm & GenTableVo;
 }>({
   columnsData: [],
-  info: {},
+  info: {
+    tableOptions: {},
+  },
 });
 
 const { columnsData, info } = toRefs(form);
@@ -280,13 +282,13 @@ function onSubmit({ validateResult, firstError }: SubmitContext) {
     const genTable = { ...info.value };
     genTable.columns = columnsData.value;
     genTable.params = {
-      treeCode: info.value.treeCode,
-      treeName: info.value.treeName,
-      treeParentCode: info.value.treeParentCode,
-      parentMenuId: info.value.parentMenuId,
-      isUseQuery: info.value.isUseQuery,
-      isUseBO: info.value.isUseBO,
-      isUseVO: info.value.isUseVO,
+      treeCode: info.value.tableOptions?.treeCode,
+      treeName: info.value.tableOptions?.treeName,
+      treeParentCode: info.value.tableOptions?.treeParentCode,
+      parentMenuId: info.value.tableOptions?.parentMenuId,
+      isUseQuery: info.value.tableOptions?.isUseQuery,
+      isUseBO: info.value.tableOptions?.isUseBO,
+      isUseVO: info.value.tableOptions?.isUseVO,
     };
     updateGenTable(genTable).then((res) => {
       proxy.$modal.msgSuccess(res.msg);

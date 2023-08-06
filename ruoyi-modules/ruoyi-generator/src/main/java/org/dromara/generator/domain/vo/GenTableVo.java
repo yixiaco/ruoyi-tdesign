@@ -153,49 +153,15 @@ public class GenTableVo implements Serializable {
     private List<GenTableColumn> columns;
 
     /**
-     * 树编码字段
-     */
-    private String treeCode;
-
-    /**
-     * 树父编码字段
-     */
-    private String treeParentCode;
-
-    /**
-     * 树名称字段
-     */
-    private String treeName;
-
-    /**
      * 菜单id列表
      */
     private List<Long> menuIds;
 
     /**
-     * 上级菜单ID字段
+     * 代码生成选项
      */
-    private Long parentMenuId;
+    private GenTableOptions tableOptions;
 
-    /**
-     * 上级菜单名称字段
-     */
-    private String parentMenuName;
-
-    /**
-     * 是否使用query对象
-     */
-    private Boolean isUseQuery;
-
-    /**
-     * 是否使用bo对象
-     */
-    private Boolean isUseBO;
-
-    /**
-     * 是否使用vo对象
-     */
-    private Boolean isUseVO;
 
     public boolean isTree() {
         return isTree(this.tplCategory);
@@ -219,17 +185,5 @@ public class GenTableVo implements Serializable {
 
     public static boolean isSuperColumn(String tplCategory, String javaField) {
         return StringUtils.equalsAnyIgnoreCase(javaField, GenConstants.BASE_ENTITY);
-    }
-
-    public Boolean getIsUseQuery() {
-        return isUseQuery == null || isUseQuery;
-    }
-
-    public Boolean getIsUseBO() {
-        return isUseBO == null || isUseBO;
-    }
-
-    public Boolean getIsUseVO() {
-        return isUseVO == null || isUseVO;
     }
 }

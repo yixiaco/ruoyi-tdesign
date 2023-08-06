@@ -31,6 +31,7 @@ import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
 import org.dromara.generator.domain.bo.GenTableBo;
 import org.dromara.generator.domain.query.GenTableQuery;
+import org.dromara.generator.domain.vo.GenTableOptions;
 import org.dromara.generator.domain.vo.GenTableVo;
 import org.dromara.generator.mapper.GenTableColumnMapper;
 import org.dromara.generator.mapper.GenTableMapper;
@@ -318,7 +319,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
         if (CollUtil.isEmpty(dbTableColumns)) {
             throw new ServiceException("同步数据失败，原表结构不存在");
         }
-        List<String> dbTableColumnNames = dbTableColumns.stream().map(GenTableColumn::getColumnName).collect(Collectors.toList());
+        List<String> dbTableColumnNames = dbTableColumns.stream().map(GenTableColumn::getColumnName).toList();
 
         // 本地中不存在的字段，待增加
         List<GenTableColumn> saveColumns = new ArrayList<>();
@@ -355,7 +356,6 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
         if (!genTables.isEmpty()) {
             GenTableVo genTableVo = genTables.get(0);
             GenTable genTable = MapstructUtils.convert(genTableVo, GenTable.class);
-//            GenUtils.initTable(genTable, LoginHelper.getUserId());
             genTable.setFunctionName(genTableVo.getFunctionName());
             genTable.setTableComment(genTableVo.getTableComment());
             baseMapper.updateById(genTable);
@@ -459,29 +459,14 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
     /**
      * 设置代码生成其他选项值
      *
-     * @param genTable 设置后的生成对象
+     * @param tableVo 设置后的生成对象
      */
-    public void setTableFromOptions(GenTableVo genTable) {
-        Dict paramsObj = JsonUtils.parseMap(genTable.getOptions());
-        if (ObjectUtil.isNotNull(paramsObj)) {
-            String treeCode = paramsObj.getStr(GenConstants.TREE_CODE);
-            String treeParentCode = paramsObj.getStr(GenConstants.TREE_PARENT_CODE);
-            String treeName = paramsObj.getStr(GenConstants.TREE_NAME);
-            Long parentMenuId = paramsObj.getLong(GenConstants.PARENT_MENU_ID);
-            String parentMenuName = paramsObj.getStr(GenConstants.PARENT_MENU_NAME);
-            Boolean isUseBO = paramsObj.get(GenConstants.IS_USE_BO, true);
-            Boolean isUseQuery = paramsObj.get(GenConstants.IS_USE_QUERY, true);
-            Boolean isUseVO = paramsObj.get(GenConstants.IS_USE_VO, true);
-
-            genTable.setTreeCode(treeCode);
-            genTable.setTreeParentCode(treeParentCode);
-            genTable.setTreeName(treeName);
-            genTable.setParentMenuId(parentMenuId);
-            genTable.setParentMenuName(parentMenuName);
-            genTable.setIsUseBO(isUseBO);
-            genTable.setIsUseQuery(isUseQuery);
-            genTable.setIsUseVO(isUseVO);
+    public void setTableFromOptions(GenTableVo tableVo) {
+        GenTableOptions options = JsonUtils.parseObject(tableVo.getOptions(), GenTableOptions.class);
+        if (options == null) {
+            options = new GenTableOptions();
         }
+        tableVo.setTableOptions(options);
     }
 
     /**

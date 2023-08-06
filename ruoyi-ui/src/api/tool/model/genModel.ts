@@ -47,6 +47,8 @@ export interface GenTableForm extends BaseEntity {
   remark?: string;
   /** 表列信息 */
   columns?: Array<GenTableColumn>;
+  /** 代码生成选项 */
+  tableOptions?: GenTableOptions;
 }
 /**
  * 代码生成业务视图对象
@@ -94,24 +96,10 @@ export interface GenTableVo {
   pkColumn?: GenTableColumn;
   /** 表列信息 */
   columns?: GenTableColumn[];
-  /** 树编码字段 */
-  treeCode?: string;
-  /** 树父编码字段 */
-  treeParentCode?: string;
-  /** 树名称字段 */
-  treeName?: string;
   /** 菜单id列表 */
   menuIds?: number[];
-  /** 上级菜单ID字段 */
-  parentMenuId?: number;
-  /** 上级菜单名称字段 */
-  parentMenuName?: string;
-  /** 是否使用query对象 */
-  isUseQuery?: boolean;
-  /** 是否使用bo对象 */
-  isUseBO?: boolean;
-  /** 是否使用vo对象 */
-  isUseVO?: boolean;
+  /** 代码生成选项 */
+  tableOptions?: GenTableOptions;
 }
 /**
  * 代码生成业务字段
@@ -165,6 +153,46 @@ export interface GenTableColumn extends BaseEntity {
   updateBy?: string;
   /** 更新时间 */
   updateTime?: object;
+}
+
+/**
+ * 代码生成选项
+ */
+export interface GenTableOptions {
+  /** 树编码字段 */
+  treeCode?: string;
+  /** 树父编码字段 */
+  treeParentCode?: string;
+  /** 树名称字段 */
+  treeName?: string;
+  /** 上级菜单ID字段 */
+  parentMenuId?: number;
+  /** 是否使用query对象 */
+  isUseQuery?: boolean;
+  /** 是否使用bo对象 */
+  isUseBO?: boolean;
+  /** 是否使用vo对象 */
+  isUseVO?: boolean;
+  /** 是否使用controller对象 */
+  isUseController?: boolean;
+  /** 是否生成vue文件 */
+  isUseVue?: boolean;
+  /** 是否生成sql文件 */
+  isUseSql?: boolean;
+  /** 菜单icon */
+  icon?: string;
+  /** 是否使用新增方法 */
+  isUseAddMethod?: boolean;
+  /** 是否使用修改方法 */
+  isUseEditMethod?: boolean;
+  /** 是否使用删除方法 */
+  isUseRemoveMethod?: boolean;
+  /** 是否使用导出方法 */
+  isUseExportMethod?: boolean;
+  /** 是否使用详情方法 */
+  isUseDetailMethod?: boolean;
+  /** 是否使用查询方法 */
+  isUseQueryMethod?: boolean;
 }
 
 export interface GenTableInfo {

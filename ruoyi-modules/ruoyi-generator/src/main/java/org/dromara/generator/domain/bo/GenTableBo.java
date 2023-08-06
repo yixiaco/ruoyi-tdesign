@@ -11,6 +11,7 @@ import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
+import org.dromara.generator.domain.vo.GenTableOptions;
 
 import java.util.List;
 
@@ -118,4 +119,8 @@ public class GenTableBo extends BaseEntity {
     @Valid
     private List<GenTableColumn> columns;
 
+    /**
+     * 选项
+     */
+    private GenTableOptions tableOptions;
 }
