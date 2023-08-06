@@ -81,6 +81,7 @@ public class VelocityUtils {
         velocityContext.put("useQuery", options.getIsUseQuery());
         velocityContext.put("useBO", options.getIsUseBO());
         velocityContext.put("useVO", options.getIsUseVO());
+        velocityContext.put("menuIcon", options.getMenuIcon());
         setMenuVelocityContext(velocityContext, genTable);
         if (GenConstants.TPL_TREE.equals(tplCategory)) {
             setTreeVelocityContext(velocityContext, genTable);
@@ -155,26 +156,32 @@ public class VelocityUtils {
         if (options.getIsUseBO()) {
             templates.add("vm/java/bo.java.vm");
         }
-        templates.add("vm/java/controller.java.vm");
+        if (options.getIsUseController()) {
+            templates.add("vm/java/controller.java.vm");
+        }
         templates.add("vm/java/service.java.vm");
         templates.add("vm/java/serviceImpl.java.vm");
         templates.add("vm/java/mapper.java.vm");
         templates.add("vm/xml/mapper.xml.vm");
-        templates.add("vm/ts/model.ts.vm");
-        templates.add("vm/ts/api.ts.vm");
-        if (GenConstants.TPL_CRUD.equals(tplCategory)) {
-            templates.add("vm/vue/index.vue.vm");
-        } else if (GenConstants.TPL_TREE.equals(tplCategory)) {
-            templates.add("vm/vue/index-tree.vue.vm");
+        if (options.getIsUseVue()) {
+            templates.add("vm/ts/model.ts.vm");
+            templates.add("vm/ts/api.ts.vm");
+            if (GenConstants.TPL_CRUD.equals(tplCategory)) {
+                templates.add("vm/vue/index.vue.vm");
+            } else if (GenConstants.TPL_TREE.equals(tplCategory)) {
+                templates.add("vm/vue/index-tree.vue.vm");
+            }
         }
-        if (DataBaseHelper.isOracle()) {
-            templates.add("vm/sql/oracle/sql.vm");
-        } else if (DataBaseHelper.isPostgerSql()) {
-            templates.add("vm/sql/postgres/sql.vm");
-        } else if (DataBaseHelper.isSqlServer()) {
-            templates.add("vm/sql/sqlserver/sql.vm");
-        } else {
-            templates.add("vm/sql/sql.vm");
+        if (options.getIsUseSql()) {
+            if (DataBaseHelper.isOracle()) {
+                templates.add("vm/sql/oracle/sql.vm");
+            } else if (DataBaseHelper.isPostgerSql()) {
+                templates.add("vm/sql/postgres/sql.vm");
+            } else if (DataBaseHelper.isSqlServer()) {
+                templates.add("vm/sql/sqlserver/sql.vm");
+            } else {
+                templates.add("vm/sql/sql.vm");
+            }
         }
         return templates;
     }

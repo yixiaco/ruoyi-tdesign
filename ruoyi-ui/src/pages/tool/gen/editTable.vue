@@ -160,7 +160,7 @@ export default {
 <script lang="ts" setup>
 import { SettingIcon } from 'tdesign-icons-vue-next';
 import { FormRule, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
-import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { computed, getCurrentInstance, onMounted, reactive, ref, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { optionselect as getDictOptionselect } from '@/api/system/dict/type';
@@ -281,15 +281,7 @@ function onSubmit({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     const genTable = { ...info.value };
     genTable.columns = columnsData.value;
-    genTable.params = {
-      treeCode: info.value.tableOptions?.treeCode,
-      treeName: info.value.tableOptions?.treeName,
-      treeParentCode: info.value.tableOptions?.treeParentCode,
-      parentMenuId: info.value.tableOptions?.parentMenuId,
-      isUseQuery: info.value.tableOptions?.isUseQuery,
-      isUseBO: info.value.tableOptions?.isUseBO,
-      isUseVO: info.value.tableOptions?.isUseVO,
-    };
+    genTable.tableOptions = info.value.tableOptions;
     updateGenTable(genTable).then((res) => {
       proxy.$modal.msgSuccess(res.msg);
       if (res.code === 200) {
@@ -311,7 +303,7 @@ function close() {
   tabsRouterStore.removeCurrentTab(route, '/tool/gen', router);
 }
 
-(() => {
+onMounted(() => {
   const tableId = route.params && route.params.tableId;
   if (tableId) {
     // 获取表详细信息
@@ -324,7 +316,7 @@ function close() {
       dictOptions.value = response.data;
     });
   }
-})();
+});
 </script>
 <style lang="less" scoped>
 .panel-top {

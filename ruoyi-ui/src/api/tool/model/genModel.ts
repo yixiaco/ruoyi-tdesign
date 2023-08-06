@@ -180,7 +180,7 @@ export interface GenTableOptions {
   /** 是否生成sql文件 */
   isUseSql?: boolean;
   /** 菜单icon */
-  icon?: string;
+  menuIcon?: string;
   /** 是否使用新增方法 */
   isUseAddMethod?: boolean;
   /** 是否使用修改方法 */

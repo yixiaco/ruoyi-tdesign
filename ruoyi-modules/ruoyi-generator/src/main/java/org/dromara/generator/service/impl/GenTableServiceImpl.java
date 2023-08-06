@@ -156,7 +156,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void updateGenTable(GenTableBo tableBo) {
-        String options = JsonUtils.toJsonString(tableBo.getParams());
+        String options = JsonUtils.toJsonString(tableBo.getTableOptions());
         tableBo.setOptions(options);
         GenTable table = MapstructUtils.convert(tableBo, GenTable.class);
         int row = baseMapper.updateById(table);

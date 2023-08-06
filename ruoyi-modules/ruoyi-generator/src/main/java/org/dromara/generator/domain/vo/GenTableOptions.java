@@ -55,7 +55,7 @@ public class GenTableOptions implements Serializable {
     /**
      * 菜单icon
      */
-    private String icon;
+    private String menuIcon = "#";
     /**
      * 是否使用新增方法
      */

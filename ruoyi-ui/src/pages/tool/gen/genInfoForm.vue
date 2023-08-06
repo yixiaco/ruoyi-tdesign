@@ -81,6 +81,25 @@
     <t-col :span="6">
       <t-form-item name="info.genType">
         <template #label>
+          生成代码方式
+          <t-tooltip content="默认为zip压缩包下载，也可以自定义生成路径" placement="top">
+            <help-circle-filled-icon />
+          </t-tooltip>
+        </template>
+        <t-radio-group v-model="info.genType">
+          <t-radio value="0">zip压缩包</t-radio>
+          <t-radio value="1">自定义路径</t-radio>
+        </t-radio-group>
+      </t-form-item>
+    </t-col>
+    <t-col :span="6">
+      <t-form-item name="info.tableOptions.menuIcon" label="菜单图标">
+        <icon-select v-model="info.tableOptions.menuIcon" />
+      </t-form-item>
+    </t-col>
+    <t-col :span="12">
+      <t-form-item name="info.genType">
+        <template #label>
           选择生成对象
           <t-tooltip placement="top">
             <template #content>
@@ -99,21 +118,6 @@
           <t-checkbox v-model="info.tableOptions.isUseVue">生成Vue</t-checkbox>
           <t-checkbox v-model="info.tableOptions.isUseSql">生成Sql</t-checkbox>
         </t-space>
-      </t-form-item>
-    </t-col>
-
-    <t-col :span="6">
-      <t-form-item name="info.genType">
-        <template #label>
-          生成代码方式
-          <t-tooltip content="默认为zip压缩包下载，也可以自定义生成路径" placement="top">
-            <help-circle-filled-icon />
-          </t-tooltip>
-        </template>
-        <t-radio-group v-model="info.genType">
-          <t-radio value="0">zip压缩包</t-radio>
-          <t-radio value="1">自定义路径</t-radio>
-        </t-radio-group>
       </t-form-item>
     </t-col>
 
