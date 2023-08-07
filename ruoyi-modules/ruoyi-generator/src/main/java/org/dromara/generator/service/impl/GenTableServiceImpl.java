@@ -427,13 +427,12 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
     @Override
     public void validateEdit(GenTableBo tableBo) {
         if (GenConstants.TPL_TREE.equals(tableBo.getTplCategory())) {
-            String options = JsonUtils.toJsonString(tableBo.getParams());
-            Dict paramsObj = JsonUtils.parseMap(options);
-            if (StringUtils.isEmpty(paramsObj.getStr(GenConstants.TREE_CODE))) {
+            GenTableOptions options = tableBo.getTableOptions();
+            if (StringUtils.isBlank(options.getTreeCode())) {
                 throw new ServiceException("树编码字段不能为空");
-            } else if (StringUtils.isEmpty(paramsObj.getStr(GenConstants.TREE_PARENT_CODE))) {
+            } else if (StringUtils.isBlank(options.getTreeParentCode())) {
                 throw new ServiceException("树父编码字段不能为空");
-            } else if (StringUtils.isEmpty(paramsObj.getStr(GenConstants.TREE_NAME))) {
+            } else if (StringUtils.isBlank(options.getTreeName())) {
                 throw new ServiceException("树名称字段不能为空");
             }
         }

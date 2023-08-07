@@ -91,10 +91,13 @@
         <template #topContent>
           <t-row>
             <t-col flex="auto">
+#if($isUseAddMethod)
               <t-button v-hasPermi="['${moduleName}:${businessName}:add']" theme="primary" @click="handleAdd">
                 <template #icon> <add-icon /></template>
                 新增
               </t-button>
+#end
+#if($isUseEditMethod)
               <t-button
                 v-hasPermi="['${moduleName}:${businessName}:edit']"
                 theme="default"
@@ -105,6 +108,8 @@
                 <template #icon> <edit-icon /> </template>
                 修改
               </t-button>
+#end
+#if($isUseRemoveMethod)
               <t-button
                 v-hasPermi="['${moduleName}:${businessName}:remove']"
                 theme="danger"
@@ -115,10 +120,13 @@
                 <template #icon> <delete-icon /> </template>
                 删除
               </t-button>
+#end
+#if($isUseExportMethod)
               <t-button v-hasPermi="['${moduleName}:${businessName}:export']" theme="default" variant="outline" @click="handleExport">
                 <template #icon> <download-icon /> </template>
                 导出
               </t-button>
+#end
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -153,21 +161,30 @@
         </template>
 #end
 #end
+#if($isUseDetailMethod || $isUseEditMethod || $isUseRemoveMethod)
         <template #operation="{ row }">
           <t-space :size="8" break-line>
+#if($isUseDetailMethod)
             <t-link v-hasPermi="['${moduleName}:${businessName}:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
               <browse-icon />详情
             </t-link>
+#end
+#if($isUseEditMethod)
             <t-link v-hasPermi="['${moduleName}:${businessName}:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
               <edit-icon />修改
             </t-link>
+#end
+#if($isUseRemoveMethod)
             <t-link v-hasPermi="['${moduleName}:${businessName}:remove']" theme="danger" hover="color" @click.stop="handleDelete(row)">
               <delete-icon />删除
             </t-link>
+#end
           </t-space>
         </template>
+#end
       </t-table>
     </t-space>
+#if($isUseAddMethod || $isUseEditMethod)
 
     <!-- 添加或修改${functionName}对话框 -->
     <t-dialog
@@ -295,6 +312,8 @@
 #end
       </t-form>
     </t-dialog>
+#end
+#if($isUseDetailMethod)
 
     <!-- ${functionName}详情 -->
     <t-dialog v-model:visible="openView" header="${functionName}详情" width="700px" attach="body" :footer="false">
@@ -347,6 +366,7 @@
         </t-form>
       </t-loading>
     </t-dialog>
+#end
   </t-card>
 </template>
 <script lang="ts">
@@ -369,24 +389,24 @@ import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitConte
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { list${BusinessName}, get${BusinessName}, del${BusinessName}, add${BusinessName}, update${BusinessName} } from '@/api/${moduleName}/${businessName}';
-import { #if(!$useBO || !$useQuery || !$useVO)${ClassName}#if($useBO || $useQuery || $useVO), #end#end#if($useBO)${ClassName}Form#if($useQuery || $useVO), #end#end#if($useQuery)${ClassName}Query#if($useVO), #end#end#if($useVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
+import { #if(!$isUseBO || !$isUseQuery || !$isUseVO)${ClassName}#if($isUseBO || $isUseQuery || $isUseVO), #end#end#if($isUseBO)${ClassName}Form#if($isUseQuery || $isUseVO), #end#end#if($isUseQuery)${ClassName}Query#if($isUseVO), #end#end#if($isUseVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
 #foreach($column in $columns)
 #if($column.htmlType == "editor")
 import Editor from '@/components/editor/index.vue';
 #end
 #end
 
-#if($useVO)
+#if($isUseVO)
 #set($vo="${ClassName}Vo")
 #else
 #set($vo=$ClassName)
 #end
-#if($useQuery)
+#if($isUseQuery)
 #set($query="${ClassName}Query")
 #else
 #set($query=$ClassName)
 #end
-#if($useBO)
+#if($isUseBO)
 #set($bo="${ClassName}Form")
 #else
 #set($bo=$ClassName)
@@ -459,10 +479,12 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `${comment}`, colKey: '${javaField}', align: 'center'#if($column.isSorting()), sorter: true#end },
 #end
 #end
-  { title: `操作`, colKey: 'operation', align: 'center', width: 180#if($column.isSorting()), sorter: true#end },
+#if($isUseDetailMethod || $isUseEditMethod || $isUseRemoveMethod)
+  { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
+#end
 ]);
 // 提交表单对象
-const form = ref<#if($useVO && $useBO)$vo & $bo#elseif($useVO)$vo#elseif($useBO)$bo#else$ClassName#end>({});
+const form = ref<#if($isUseVO && $isUseBO)$vo & $bo#elseif($isUseVO)$vo#elseif($isUseBO)$bo#else$ClassName#end>({});
 // 查询对象
 const queryParams = ref<${query}>({
   pageNum: 1,
@@ -564,6 +586,7 @@ function handleSelectionChange(selection: Array<string | number>) {
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
 }
+#if($isUseAddMethod)
 
 /** 新增按钮操作 */
 function handleAdd() {
@@ -571,6 +594,8 @@ function handleAdd() {
   open.value = true;
   title.value = '添加${functionName}';
 }
+#end
+#if($isUseDetailMethod)
 
 /** 详情按钮操作 */
 function handleDetail(row: ${vo}) {
@@ -583,6 +608,8 @@ function handleDetail(row: ${vo}) {
     openViewLoading.value = false;
   });
 }
+#end
+#if($isUseEditMethod)
 
 /** 修改按钮操作 */
 function handleUpdate(row?: ${vo}) {
@@ -601,6 +628,7 @@ function handleUpdate(row?: ${vo}) {
 #end
   });
 }
+#end
 
 /** 提交按钮 */
 function onConfirm() {
@@ -644,6 +672,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
     proxy.$modal.msgError(firstError);
   }
 }
+#if($isUseRemoveMethod)
 
 /** 删除按钮操作 */
 function handleDelete(row?: ${vo}) {
@@ -665,6 +694,8 @@ function handleDelete(row?: ${vo}) {
       });
   });
 }
+#end
+#if($isUseExportMethod)
 
 /** 导出按钮操作 */
 function handleExport() {
@@ -676,6 +707,7 @@ function handleExport() {
     `${businessName}_#[[${new Date().getTime()}]]#.xlsx`,
   );
 }
+#end
 
 getList();
 </script>

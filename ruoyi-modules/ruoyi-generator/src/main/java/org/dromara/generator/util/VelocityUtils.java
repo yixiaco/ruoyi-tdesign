@@ -1,5 +1,6 @@
 package org.dromara.generator.util;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Dict;
@@ -53,6 +54,7 @@ public class VelocityUtils {
         String tplCategory = genTable.getTplCategory();
         String functionName = genTable.getFunctionName();
         GenTableOptions options = genTable.getTableOptions();
+        Map<String, Object> optionsMap = BeanUtil.beanToMap(options);
 
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("tplCategory", genTable.getTplCategory());
@@ -78,10 +80,7 @@ public class VelocityUtils {
         velocityContext.put("GenUtil", GenUtils.class);
         velocityContext.put("StringUtils", StringUtils.class);
         velocityContext.put("StrUtil", StrUtil.class);
-        velocityContext.put("useQuery", options.getIsUseQuery());
-        velocityContext.put("useBO", options.getIsUseBO());
-        velocityContext.put("useVO", options.getIsUseVO());
-        velocityContext.put("menuIcon", options.getMenuIcon());
+        optionsMap.forEach(velocityContext::put);
         setMenuVelocityContext(velocityContext, genTable);
         if (GenConstants.TPL_TREE.equals(tplCategory)) {
             setTreeVelocityContext(velocityContext, genTable);
@@ -156,14 +155,14 @@ public class VelocityUtils {
         if (options.getIsUseBO()) {
             templates.add("vm/java/bo.java.vm");
         }
-        if (options.getIsUseController()) {
+        if (options.getIsUseController() && options.getIsUseQueryMethod()) {
             templates.add("vm/java/controller.java.vm");
         }
         templates.add("vm/java/service.java.vm");
         templates.add("vm/java/serviceImpl.java.vm");
         templates.add("vm/java/mapper.java.vm");
         templates.add("vm/xml/mapper.xml.vm");
-        if (options.getIsUseVue()) {
+        if (options.getIsUseVue() && options.getIsUseQueryMethod()) {
             templates.add("vm/ts/model.ts.vm");
             templates.add("vm/ts/api.ts.vm");
             if (GenConstants.TPL_CRUD.equals(tplCategory)) {
@@ -172,7 +171,7 @@ public class VelocityUtils {
                 templates.add("vm/vue/index-tree.vue.vm");
             }
         }
-        if (options.getIsUseSql()) {
+        if (options.getIsUseSql() && options.getIsUseQueryMethod()) {
             if (DataBaseHelper.isOracle()) {
                 templates.add("vm/sql/oracle/sql.vm");
             } else if (DataBaseHelper.isPostgerSql()) {

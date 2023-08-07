@@ -1,7 +1,7 @@
 package ${packageName}.service;
 
 import ${packageName}.domain.${ClassName};
-#if($useBO)
+#if($isUseBO)
 #set($bo="${ClassName}Bo")
 #set($boObjName="bo")
 import ${packageName}.domain.bo.${ClassName}Bo;
@@ -9,20 +9,20 @@ import ${packageName}.domain.bo.${ClassName}Bo;
 #set($bo=$ClassName)
 #set($boObjName="${className}")
 #end
-#if($useQuery)
+#if($isUseQuery)
 #set($query="${ClassName}Query")
 import ${packageName}.domain.query.${ClassName}Query;
 #else
 #set($query=$ClassName)
 #end
-#if($useVO)
+#if($isUseVO)
 #set($vo="${ClassName}Vo")
 import ${packageName}.domain.vo.${ClassName}Vo;
 #else
 #set($vo=$ClassName)
 #end
 import com.baomidou.mybatisplus.extension.service.IService;
-#if($table.crud || $table.sub)
+#if($table.isCrud())
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 #end
 
@@ -36,6 +36,7 @@ import java.util.List;
  * @date ${datetime}
  */
 public interface I${ClassName}Service extends IService<${ClassName}> {
+#if($isUseDetailMethod || $isUseEditMethod)
 
     /**
      * 查询${functionName}
@@ -44,8 +45,9 @@ public interface I${ClassName}Service extends IService<${ClassName}> {
      * @return ${vo}
      */
     ${vo} queryById(${pkColumn.javaType} ${pkColumn.javaField});
+#end
+#if($isUseQueryMethod && $table.isCrud())
 
-#if($table.crud || $table.sub)
     /**
      * 查询${functionName}列表
      *
@@ -54,6 +56,7 @@ public interface I${ClassName}Service extends IService<${ClassName}> {
      */
     TableDataInfo<${vo}> queryPageList(${query} query);
 #end
+#if($isUseExportMethod || ($isUseQueryMethod && $table.isTree()))
 
     /**
      * 查询${functionName}列表
@@ -62,6 +65,8 @@ public interface I${ClassName}Service extends IService<${ClassName}> {
      * @return ${vo}
      */
     List<${vo}> queryList(${query} query);
+#end
+#if($isUseAddMethod)
 
     /**
      * 新增${functionName}
@@ -70,6 +75,8 @@ public interface I${ClassName}Service extends IService<${ClassName}> {
      * @return Boolean
      */
     Boolean insertByBo(${bo} $boObjName);
+#end
+#if($isUseEditMethod)
 
     /**
      * 修改${functionName}
@@ -78,6 +85,8 @@ public interface I${ClassName}Service extends IService<${ClassName}> {
      * @return Boolean
      */
     Boolean updateByBo(${bo} $boObjName);
+#end
+#if($isUseRemoveMethod)
 
     /**
      * 校验并批量删除${functionName}信息
@@ -86,4 +95,5 @@ public interface I${ClassName}Service extends IService<${ClassName}> {
      * @return Boolean
      */
     Boolean deleteWithValidByIds(Collection<${pkColumn.javaType}> ids);
+#end
 }

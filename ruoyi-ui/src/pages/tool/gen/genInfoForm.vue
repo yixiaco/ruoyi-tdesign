@@ -147,6 +147,28 @@
         </t-space>
       </t-form-item>
     </t-col>
+    <t-col :span="12">
+      <t-form-item name="info.genType">
+        <template #label>
+          选择生成方法
+          <t-tooltip placement="top">
+            <template #content>
+              <p>在vue和后台代码中生成的方法</p>
+              <p>查询比较特殊，如果不生成查询方法，则会删除controller、vue、sql文件，并删除列表查询</p>
+            </template>
+            <help-circle-filled-icon />
+          </t-tooltip>
+        </template>
+        <t-space break-line>
+          <t-checkbox v-model="info.tableOptions.isUseAddMethod">新增</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseEditMethod">编辑</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseRemoveMethod">删除</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseExportMethod">导出</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseDetailMethod">详情</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseQueryMethod">查询</t-checkbox>
+        </t-space>
+      </t-form-item>
+    </t-col>
   </t-row>
 
   <template v-if="info.tplCategory === 'tree'">

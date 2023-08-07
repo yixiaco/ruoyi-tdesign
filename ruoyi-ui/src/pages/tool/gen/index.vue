@@ -143,7 +143,7 @@
       v-model:visible="preview.open"
       :header="preview.title"
       :close-on-overlay-click="false"
-      width="80%"
+      width="90%"
       top="5vh"
       attach="body"
       :confirm-btn="null"

@@ -3,12 +3,12 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="${packageName}.mapper.${ClassName}Mapper">
-#if($useVO)
+#if($isUseVO)
 #set($vo="${ClassName}Vo")
 #else
 #set($vo=$ClassName)
 #end
-#if($useQuery)
+#if($isUseQuery)
 #set($query="${ClassName}Query")
 #set($className = $packageName + ".domain.query." + ${query})
 #else
@@ -19,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 #set($result = ${ClassName} + "Result")
     <resultMap id="$result" autoMapping="true" type="${packageName}.domain.${ClassName}">
     </resultMap>
-#if($useVO)
+#if($isUseVO)
     <resultMap id="${ClassName}ResultVo" autoMapping="true" type="${packageName}.domain.vo.${ClassName}Vo">
     </resultMap>
 #end
@@ -27,7 +27,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="select${vo}">
         select#foreach($column in $columns) ${dbName}.#if($GenUtil.isMysqlKeyword($column.columnName))`$column.columnName`#else$column.columnName#end#if($foreach.hasNext),#end#end from $tableName $dbName
     </sql>
-    <select id="queryList" parameterType="$className" resultMap="#if($useVO)${ClassName}ResultVo#else$result#end">
+#if($isUseQueryMethod || $isUseExportMethod)
+    <select id="queryList" parameterType="$className" resultMap="#if($isUseVO)${ClassName}ResultVo#else$result#end">
         <include refid="select${vo}"/>
         <where>
 #set($string = 'String')
@@ -80,5 +81,6 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 #end
         </where>
     </select>
+#end
 
 </mapper>

@@ -1,13 +1,13 @@
 package ${packageName}.mapper;
 
 import ${packageName}.domain.${ClassName};
-#if($useQuery)
+#if($isUseQuery)
 #set($query="${ClassName}Query")
 import ${packageName}.domain.query.${ClassName}Query;
 #else
 #set($query=$ClassName)
 #end
-#if($useVO)
+#if($isUseVO)
 #set($vo="${ClassName}Vo")
 #set($extend="BaseMapperPlus<${ClassName}, ${ClassName}Vo>")
 import ${packageName}.domain.vo.${ClassName}Vo;
@@ -27,6 +27,7 @@ import java.util.List;
  * @date ${datetime}
  */
 public interface ${ClassName}Mapper extends $extend {
+#if($isUseQueryMethod || $isUseExportMethod)
 
     /**
      * 查询${table.functionName}列表
@@ -35,4 +36,5 @@ public interface ${ClassName}Mapper extends $extend {
      * @return {@link ${vo}}
      */
     List<${vo}> queryList(${query} query);
+#end
 }

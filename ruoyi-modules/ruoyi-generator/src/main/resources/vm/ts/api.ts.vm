@@ -1,28 +1,29 @@
 import { request } from '@/utils/request';
-#if($useVO)
+#if($isUseVO)
 #set($vo="${ClassName}Vo")
 #else
 #set($vo=$ClassName)
 #end
-#if($useQuery)
+#if($isUseQuery)
 #set($query="${ClassName}Query")
 #else
 #set($query=$ClassName)
 #end
-#if($useBO)
+#if($isUseBO)
 #set($bo="${ClassName}Form")
 #else
 #set($bo=$ClassName)
 #end
-#if($table.crud || $table.sub)
+#if($table.isCrud())
 #set($Result="TableDataInfo<$vo>")
 import { R, TableDataInfo } from '@/api/model/resultModel';
-#elseif($table.tree)
+#elseif($table.isTree())
 #set($Result="R<Array<$vo>>")
 import { R } from '@/api/model/resultModel';
 #end
 #set($idType=${GenUtil.javaTypeToTypescript(${pkColumn.javaType})})
-import { #if(!$useBO || !$useQuery || !$useVO)${ClassName}#if($useBO || $useQuery || $useVO), #end#end#if($useBO)${ClassName}Form#if($useQuery || $useVO), #end#end#if($useQuery)${ClassName}Query#if($useVO), #end#end#if($useVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
+import { #if(!$isUseBO || !$isUseQuery || !$isUseVO)${ClassName}#if($isUseBO || $isUseQuery || $isUseVO), #end#end#if($isUseBO)${ClassName}Form#if($isUseQuery || $isUseVO), #end#end#if($isUseQuery)${ClassName}Query#if($isUseVO), #end#end#if($isUseVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
+#if($isUseQueryMethod)
 
 // 查询${functionName}列表
 export function list${BusinessName}(query?: ${query}) {
@@ -31,6 +32,8 @@ export function list${BusinessName}(query?: ${query}) {
     params: query,
   });
 }
+#end
+#if($isUseDetailMethod || $isUseEditMethod)
 
 // 查询${functionName}详细
 export function get${BusinessName}(${pkColumn.javaField}: $idType) {
@@ -38,6 +41,8 @@ export function get${BusinessName}(${pkColumn.javaField}: $idType) {
     url: `/${moduleName}/${businessName}/${${pkColumn.javaField}}`,
   });
 }
+#end
+#if($isUseAddMethod)
 
 // 新增${functionName}
 export function add${BusinessName}(data: ${bo}) {
@@ -46,6 +51,8 @@ export function add${BusinessName}(data: ${bo}) {
     data,
   });
 }
+#end
+#if($isUseEditMethod)
 
 // 修改${functionName}
 export function update${BusinessName}(data: ${bo}) {
@@ -54,6 +61,8 @@ export function update${BusinessName}(data: ${bo}) {
     data,
   });
 }
+#end
+#if($isUseRemoveMethod)
 
 // 删除${functionName}
 export function del${BusinessName}(${pkColumn.javaField}s: $idType | Array<$idType>) {
@@ -61,3 +70,4 @@ export function del${BusinessName}(${pkColumn.javaField}s: $idType | Array<$idTy
     url: `/${moduleName}/${businessName}/${${pkColumn.javaField}s}`,
   });
 }
+#end
