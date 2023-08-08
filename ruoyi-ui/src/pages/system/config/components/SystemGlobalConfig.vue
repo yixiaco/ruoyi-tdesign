@@ -104,7 +104,7 @@ function init() {
   const keys = Object.keys(form.value);
   getConfigByKeys(keys.join(',')).then((res) => {
     keys.forEach((key) => {
-      form.value[key] = res.data[key].configValue ?? form.value[key];
+      form.value[key] = res.data[key]?.configValue ?? form.value[key];
     });
     loading.value = false;
   });
