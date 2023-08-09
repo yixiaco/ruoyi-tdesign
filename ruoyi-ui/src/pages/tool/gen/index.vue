@@ -139,42 +139,7 @@
       </t-table>
     </t-space>
     <!-- 预览界面 -->
-    <t-dialog
-      v-model:visible="preview.open"
-      :header="preview.title"
-      :close-on-overlay-click="false"
-      width="90%"
-      top="5vh"
-      attach="body"
-      :confirm-btn="null"
-    >
-      <t-loading :loading="preview.loading">
-        <t-tabs v-model="preview.activeName" placement="top">
-          <t-tab-panel
-            v-for="(value, key) in preview.data"
-            :key="value"
-            :value="getLabel(key)"
-            :label="getLabel(key)"
-            class="content-scrollbar"
-            style="max-height: calc(100vh - 5vh - 119px - 96px - 48px)"
-          >
-            <preview-code :code="value" :language="getLanguage(getLabel(key))" />
-            <t-tooltip content="复制" placement="top">
-              <t-button
-                v-copyText="value"
-                v-copyText:callback="copyTextSuccess"
-                variant="text"
-                theme="primary"
-                style="position: absolute; top: 8px; right: 12px"
-              >
-                <template #icon> <file-copy-icon /></template>
-                复制
-              </t-button>
-            </t-tooltip>
-          </t-tab-panel>
-        </t-tabs>
-      </t-loading>
-    </t-dialog>
+    <gen-preview v-model:visible="preview.open" :data="preview.data" :loading="preview.loading" />
     <import-table ref="importRef" @ok="handleQuery" />
   </t-card>
 </template>
@@ -189,7 +154,6 @@ import {
   DeleteIcon,
   DownloadIcon,
   EditIcon,
-  FileCopyIcon,
   RefreshIcon,
   SearchIcon,
   SettingIcon,
@@ -201,6 +165,7 @@ import { useRoute } from 'vue-router';
 
 import { delTable, genCode, getDataNames, listTable, previewTable, synchDb } from '@/api/tool/gen';
 import { GenTableQuery, GenTableVo } from '@/api/tool/model/genModel';
+import GenPreview from '@/pages/tool/gen/components/preview.vue';
 import router from '@/router';
 
 import ImportTable from './importTable.vue';
@@ -245,9 +210,7 @@ const queryParams = ref<GenTableQuery>({
 const preview = ref({
   open: false,
   loading: true,
-  title: '代码预览',
   data: {},
-  activeName: 'domain.java',
 });
 
 // 分页
@@ -275,16 +238,6 @@ onActivated(() => {
     getList();
   }
 });
-
-// 获取vm名称
-function getLabel(key: string) {
-  return key.substring(key.lastIndexOf('/') + 1, key.indexOf('.vm'));
-}
-
-// 获取代码语言
-function getLanguage(label: string) {
-  return label.substring(label.lastIndexOf('.') + 1);
-}
 
 /** 查询多数据源名称 */
 async function getDataNameList() {
@@ -367,18 +320,8 @@ function handlePreview(row: GenTableVo) {
   previewTable(row.tableId)
     .then((response) => {
       preview.value.data = response.data;
-      const keys = Object.keys(response.data);
-      const includes = keys.find((value) => value.includes(preview.value.activeName));
-      if (!includes) {
-        preview.value.activeName = getLabel(keys[0]);
-      }
     })
     .finally(() => (preview.value.loading = false));
-}
-
-/** 复制代码成功 */
-function copyTextSuccess() {
-  proxy.$modal.msgSuccess('复制成功');
 }
 
 /** 多选框选中数据 */

@@ -48,6 +48,14 @@ export function previewTable(tableId: number) {
   });
 }
 
+// 临时预览生成代码
+export function tempPreviewTable(data: GenTableForm) {
+  return request.post<R<Record<string, string>>>({
+    url: `/tool/gen/temp/preview`,
+    data,
+  });
+}
+
 // 删除表数据
 export function delTable(tableId: number | number[]) {
   return request.delete<R<void>>({

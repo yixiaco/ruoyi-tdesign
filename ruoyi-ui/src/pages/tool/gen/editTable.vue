@@ -1,6 +1,13 @@
 <template>
   <t-card>
-    <t-form :data="form" label-width="calc(8em + 24px)" :rules="rules" @submit="onSubmit">
+    <t-form
+      ref="formRef"
+      :data="form"
+      label-width="calc(8em + 24px)"
+      :rules="rules"
+      @submit="onSubmit"
+      @validate="onValidate"
+    >
       <t-tabs v-model="activeName">
         <t-tab-panel label="基本信息" value="basic" :destroy-on-hide="false">
           <div class="panel-top">
@@ -140,10 +147,13 @@
         </t-tab-panel>
       </t-tabs>
       <div style="text-align: center; margin-left: -100px; margin-top: 10px">
+        <t-button theme="default" variant="outline" @click="handlePreview">实时预览</t-button>
         <t-button theme="primary" type="submit">提交</t-button>
         <t-button theme="default" variant="outline" @click="close()">返回</t-button>
       </div>
     </t-form>
+    <!-- 预览界面 -->
+    <gen-preview v-model:visible="preview.open" :data="preview.data" :loading="preview.loading" />
   </t-card>
 </template>
 <script lang="ts">
@@ -153,14 +163,15 @@ export default {
 </script>
 <script lang="ts" setup>
 import { SettingIcon } from 'tdesign-icons-vue-next';
-import { FormRule, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, onMounted, reactive, ref, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { optionselect as getDictOptionselect } from '@/api/system/dict/type';
 import { SysDictTypeVo } from '@/api/system/model/dictModel';
-import { getGenTable, updateGenTable } from '@/api/tool/gen';
+import { getGenTable, tempPreviewTable, updateGenTable } from '@/api/tool/gen';
 import { GenTableColumn, GenTableForm, GenTableVo } from '@/api/tool/model/genModel';
+import GenPreview from '@/pages/tool/gen/components/preview.vue';
 import { useTabsRouterStore } from '@/store';
 
 import BasicInfoForm from './basicInfoForm.vue';
@@ -172,10 +183,16 @@ const route = useRoute();
 const router = useRouter();
 const { proxy } = getCurrentInstance();
 
+const formRef = ref<FormInstanceFunctions>(null);
 const columnControllerVisible = ref(false);
 const activeName = ref('columnInfo');
 const tableHeight = ref(`${document.documentElement.scrollHeight - 277}px`);
 const dictOptions = ref<SysDictTypeVo[]>([]);
+const preview = ref({
+  open: false,
+  loading: true,
+  data: {},
+});
 const columns = ref<Array<PrimaryTableCol<GenTableColumn>>>([
   { title: '序号', colKey: 'serial-number', width: '5%', align: 'center' },
   { title: `字段列名`, colKey: 'columnName', align: 'center', ellipsis: true, width: '10%' },
@@ -271,6 +288,38 @@ const isSort = computed({
   },
 });
 
+/** 实时预览按钮 */
+async function handlePreview() {
+  const result = await formRef.value.validate();
+  const genTable = { ...info.value };
+  genTable.columns = columnsData.value;
+  genTable.tableOptions = info.value.tableOptions;
+  if (result === true) {
+    preview.value.loading = true;
+    preview.value.open = true;
+    tempPreviewTable(genTable)
+      .then((response) => {
+        preview.value.data = response.data;
+      })
+      .finally(() => (preview.value.loading = false));
+  }
+}
+
+/** 表单校验 */
+function onValidate({ validateResult, firstError }: SubmitContext) {
+  if (validateResult !== true) {
+    const basicInfo = ['info.tableName', 'info.tableComment', 'info.className', 'info.functionAuthor'];
+    const isBasic = Object.keys(validateResult).some((value) => basicInfo.includes(value));
+    if (isBasic) {
+      activeName.value = 'basic';
+    } else {
+      activeName.value = 'genInfo';
+    }
+    proxy.$modal.msgError(firstError);
+  }
+}
+
+/** 表单提交 */
 function onSubmit({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     const genTable = { ...info.value };
@@ -282,15 +331,6 @@ function onSubmit({ validateResult, firstError }: SubmitContext) {
         close();
       }
     });
-  } else {
-    const basicInfo = ['info.tableName', 'info.tableComment', 'info.className', 'info.functionAuthor'];
-    const isBasic = Object.keys(validateResult).some((value) => basicInfo.includes(value));
-    if (isBasic) {
-      activeName.value = 'basic';
-    } else {
-      activeName.value = 'genInfo';
-    }
-    proxy.$modal.msgError(firstError);
   }
 }
 function close() {

@@ -1,6 +1,7 @@
 package org.dromara.generator.domain.bo;
 
 import io.github.linpeilie.annotations.AutoMapper;
+import io.github.linpeilie.annotations.AutoMappers;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -12,6 +13,7 @@ import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
 import org.dromara.generator.domain.vo.GenTableOptions;
+import org.dromara.generator.domain.vo.GenTableVo;
 
 import java.util.List;
 
@@ -23,7 +25,10 @@ import java.util.List;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@AutoMapper(target = GenTable.class, reverseConvertGenerate = false)
+@AutoMappers({
+    @AutoMapper(target = GenTable.class, reverseConvertGenerate = false),
+    @AutoMapper(target = GenTableVo.class, reverseConvertGenerate = false),
+})
 public class GenTableBo extends BaseEntity {
 
     /**

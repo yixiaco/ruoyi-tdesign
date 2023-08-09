@@ -2,7 +2,6 @@ package org.dromara.generator.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.io.IoUtil;
-import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
@@ -223,9 +222,28 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
      */
     @Override
     public Map<String, String> previewCode(Long tableId) {
-        Map<String, String> dataMap = new LinkedHashMap<>();
         // 查询表信息
         GenTableVo tableVo = baseMapper.selectGenTableById(tableId);
+        return previewCode(tableVo);
+    }
+
+    /**
+     * 临时预览代码
+     *
+     * @param tableBo 业务信息
+     */
+    @Override
+    public Map<String, String> tempPreviewCode(GenTableBo tableBo) {
+        String options = JsonUtils.toJsonString(tableBo.getTableOptions());
+        tableBo.setOptions(options);
+        // 查询表信息
+        GenTableVo tableVo = baseMapper.selectGenTableById(tableBo.getTableId());
+        MapstructUtils.convert(tableBo, tableVo);
+        tableVo.setColumns(tableBo.getColumns());
+        return previewCode(tableVo);
+    }
+
+    private Map<String, String> previewCode(GenTableVo tableVo) {
         List<Long> menuIds = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
             menuIds.add(identifierGenerator.nextId(null).longValue());
@@ -239,6 +257,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
 
         VelocityContext context = VelocityUtils.prepareContext(tableVo);
 
+        Map<String, String> dataMap = new LinkedHashMap<>();
         // 获取模板列表
         List<String> templates = VelocityUtils.getTemplateList(tableVo);
         for (String template : templates) {

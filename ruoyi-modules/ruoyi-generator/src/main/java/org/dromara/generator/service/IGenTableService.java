@@ -97,6 +97,13 @@ public interface IGenTableService extends IService<GenTable> {
     Map<String, String> previewCode(Long tableId);
 
     /**
+     * 临时预览代码
+     *
+     * @param tableBo 业务信息
+     */
+    Map<String, String> tempPreviewCode(GenTableBo tableBo);
+
+    /**
      * 生成代码（下载方式）
      *
      * @param tableId 表名称

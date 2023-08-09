@@ -140,6 +140,16 @@ public class GenController extends BaseController {
     }
 
     /**
+     * 临时预览代码
+     */
+    @SaCheckPermission("tool:gen:preview")
+    @PostMapping("/temp/preview")
+    public R<Map<String, String>> tempPreview(@Validated @RequestBody GenTableBo tableBo) {
+        Map<String, String> dataMap = genTableService.tempPreviewCode(tableBo);
+        return R.ok(dataMap);
+    }
+
+    /**
      * 生成代码（下载方式）
      *
      * @param tableId 表ID
