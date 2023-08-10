@@ -3,7 +3,7 @@
     v-model:visible="modelVisible"
     :header="title"
     :close-on-overlay-click="false"
-    width="90%"
+    width="calc(min(90%, 1400px))"
     top="5vh"
     attach="body"
     :confirm-btn="null"

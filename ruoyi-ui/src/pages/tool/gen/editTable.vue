@@ -22,7 +22,7 @@
               :data="columnsData"
               :columns="columns"
               row-key="columnId"
-              :max-height="tableHeight"
+              max-height="calc(100vh - 385px)"
               :column-controller="{
                 hideTriggerButton: true,
               }"
@@ -149,6 +149,7 @@
       <div style="text-align: center; margin-left: -100px; margin-top: 10px">
         <t-button theme="default" variant="outline" @click="handlePreview">实时预览</t-button>
         <t-button theme="primary" type="submit">提交</t-button>
+        <t-button theme="primary" variant="outline" @click="handleSyncDb()">同步代码</t-button>
         <t-button theme="default" variant="outline" @click="close()">返回</t-button>
       </div>
     </t-form>
@@ -169,7 +170,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import { optionselect as getDictOptionselect } from '@/api/system/dict/type';
 import { SysDictTypeVo } from '@/api/system/model/dictModel';
-import { getGenTable, tempPreviewTable, updateGenTable } from '@/api/tool/gen';
+import { getGenTable, synchDb, tempPreviewTable, updateGenTable } from '@/api/tool/gen';
 import { GenTableColumn, GenTableForm, GenTableVo } from '@/api/tool/model/genModel';
 import GenPreview from '@/pages/tool/gen/components/preview.vue';
 import { useTabsRouterStore } from '@/store';
@@ -186,7 +187,6 @@ const { proxy } = getCurrentInstance();
 const formRef = ref<FormInstanceFunctions>(null);
 const columnControllerVisible = ref(false);
 const activeName = ref('columnInfo');
-const tableHeight = ref(`${document.documentElement.scrollHeight - 277}px`);
 const dictOptions = ref<SysDictTypeVo[]>([]);
 const preview = ref({
   open: false,
@@ -303,6 +303,31 @@ async function handlePreview() {
       })
       .finally(() => (preview.value.loading = false));
   }
+}
+
+/** 同步数据库操作 */
+function handleSyncDb() {
+  const { tableName, tableId, dataName } = info.value;
+  proxy.$modal.confirm(`未保存的编辑将被覆盖，确认要强制同步"${dataName}.${tableName}"表结构吗？`, () => {
+    const msgLoading = proxy.$modal.msgLoading('正在同步中...');
+    return synchDb(tableId)
+      .then(() => {
+        // 重新获取表详细信息
+        const msgLoading = proxy.$modal.msgLoading('同步成功，正在重新获取表数据中...');
+        getGenTable(tableId)
+          .then((res) => {
+            proxy.$modal.msgSuccess('同步完成');
+            columnsData.value = res.data.rows;
+            info.value = res.data.info;
+          })
+          .finally(() => {
+            proxy.$modal.msgClose(msgLoading);
+          });
+      })
+      .finally(() => {
+        proxy.$modal.msgClose(msgLoading);
+      });
+  });
 }
 
 /** 表单校验 */

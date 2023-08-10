@@ -281,9 +281,14 @@ function handleGenTable(row?: GenTableVo) {
 function handleSyncDb(row: GenTableVo) {
   const { tableName, tableId, dataName } = row;
   proxy.$modal.confirm(`确认要强制同步"${dataName}.${tableName}"表结构吗？`, () => {
-    return synchDb(tableId).then(() => {
-      proxy.$modal.msgSuccess('同步成功');
-    });
+    const msgLoading = proxy.$modal.msgLoading('正在同步中...');
+    return synchDb(tableId)
+      .then(() => {
+        proxy.$modal.msgSuccess('同步成功');
+      })
+      .finally(() => {
+        proxy.$modal.msgClose(msgLoading);
+      });
   });
 }
 
