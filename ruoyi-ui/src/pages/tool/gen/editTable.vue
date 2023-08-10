@@ -148,7 +148,7 @@
         </t-tab-panel>
       </t-tabs>
       <div style="text-align: center; margin-left: -100px; margin-top: 10px">
-        <t-button theme="default" variant="outline" @click="handlePreview">实时预览</t-button>
+        <t-button theme="default" variant="outline" @click="handlePreview()">实时预览</t-button>
         <t-button theme="primary" type="submit">提交</t-button>
         <t-button theme="primary" variant="outline" @click="handleSyncDb()">同步代码</t-button>
         <t-button theme="default" variant="outline" @click="close()">返回</t-button>

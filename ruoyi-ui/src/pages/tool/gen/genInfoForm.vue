@@ -130,8 +130,8 @@
           选择生成对象
           <t-tooltip placement="top">
             <template #content>
-              <p>BO对象：保存和编辑时，会使用BO对象替代原始对象</p>
-              <p>VO对象：列表查询、查看详情时，会使用VO对象替代原始对象</p>
+              <p>Bo对象：保存和编辑时，会使用Bo对象替代原始对象</p>
+              <p>Vo对象：列表查询、查看详情时，会使用Vo对象替代原始对象</p>
               <p>Query对象：查询条件传递时，会使用Query对象替代原始对象</p>
             </template>
             <help-circle-filled-icon />
@@ -139,8 +139,8 @@
         </template>
         <t-space break-line>
           <t-checkbox v-model="info.tableOptions.isUseQuery">使用Query对象</t-checkbox>
-          <t-checkbox v-model="info.tableOptions.isUseBO">使用BO对象</t-checkbox>
-          <t-checkbox v-model="info.tableOptions.isUseVO">使用VO对象</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseBO">使用Bo对象</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseVO">使用Vo对象</t-checkbox>
           <t-checkbox v-model="info.tableOptions.isUseController">使用Controller对象</t-checkbox>
           <t-checkbox v-model="info.tableOptions.isUseVue">生成Vue</t-checkbox>
           <t-checkbox v-model="info.tableOptions.isUseSql">生成Sql</t-checkbox>
