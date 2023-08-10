@@ -1,14 +1,14 @@
-#if($table.crud || $table.sub)
+#if($table.isCrud())
 import { BaseEntity } from '@/api/model/resultModel';
 #set($Entity="BaseEntity")
 #set($BoEntity=$Entity)
-#elseif($table.tree)
-import {#if($useQuery) BaseEntity,#end TreeEntity } from '@/api/model/ResultModel';
+#elseif($table.isTree())
+import {#if($isUseQuery) BaseEntity,#end TreeEntity } from '@/api/model/ResultModel';
 #set($Entity="TreeEntity<${ClassName}>")
 #set($BoEntity="TreeEntity<${ClassName}Bo>")
 #end
 
-#if($useQuery)
+#if($isUseQuery)
 /**
  * ${functionName}查询对象
  */
@@ -21,7 +21,7 @@ export interface ${ClassName}Query extends BaseEntity {
 #end
 }
 #end
-#if($useBO)
+#if($isUseBO)
 /**
  * ${functionName}业务对象
  */
@@ -34,7 +34,7 @@ export interface ${ClassName}Form extends ${BoEntity} {
 #end
 }
 #end
-#if(!$useBO || !$useQuery || !$useVO)
+#if(!$isUseBO || !$isUseQuery || !$isUseVO)
 /**
  * ${functionName}对象 ${tableName}
  */
@@ -45,7 +45,7 @@ export interface ${ClassName} extends ${Entity} {
 #end
 }
 #end
-#if($useVO)
+#if($isUseVO)
 /**
  * ${functionName}视图对象
  */

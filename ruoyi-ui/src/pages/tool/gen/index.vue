@@ -139,40 +139,7 @@
       </t-table>
     </t-space>
     <!-- 预览界面 -->
-    <t-dialog
-      v-model:visible="preview.open"
-      :header="preview.title"
-      :close-on-overlay-click="false"
-      width="80%"
-      top="5vh"
-      attach="body"
-      :confirm-btn="null"
-    >
-      <t-tabs v-model="preview.activeName" placement="top">
-        <t-tab-panel
-          v-for="(value, key) in preview.data"
-          :key="value"
-          :value="getLabel(key)"
-          :label="getLabel(key)"
-          class="content-scrollbar"
-          style="max-height: calc(100vh - 5vh - 119px - 96px - 48px)"
-        >
-          <preview-code :code="value" :language="getLanguage(getLabel(key))" />
-          <t-tooltip content="复制" placement="top">
-            <t-button
-              v-copyText="value"
-              v-copyText:callback="copyTextSuccess"
-              variant="text"
-              theme="primary"
-              style="position: absolute; top: 8px; right: 12px"
-            >
-              <template #icon> <file-copy-icon /></template>
-              复制
-            </t-button>
-          </t-tooltip>
-        </t-tab-panel>
-      </t-tabs>
-    </t-dialog>
+    <gen-preview v-model:visible="preview.open" :data="preview.data" :loading="preview.loading" />
     <import-table ref="importRef" @ok="handleQuery" />
   </t-card>
 </template>
@@ -187,7 +154,6 @@ import {
   DeleteIcon,
   DownloadIcon,
   EditIcon,
-  FileCopyIcon,
   RefreshIcon,
   SearchIcon,
   SettingIcon,
@@ -198,7 +164,8 @@ import { computed, getCurrentInstance, onActivated, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { delTable, genCode, getDataNames, listTable, previewTable, synchDb } from '@/api/tool/gen';
-import { DbTableQuery, GenTable } from '@/api/tool/model/genModel';
+import { GenTableQuery, GenTableVo } from '@/api/tool/model/genModel';
+import GenPreview from '@/pages/tool/gen/components/preview.vue';
 import router from '@/router';
 
 import ImportTable from './importTable.vue';
@@ -206,7 +173,7 @@ import ImportTable from './importTable.vue';
 const route = useRoute();
 const { proxy } = getCurrentInstance();
 
-const tableList = ref<GenTable[]>([]);
+const tableList = ref<GenTableVo[]>([]);
 const loading = ref(false);
 const columnControllerVisible = ref(false);
 const showSearch = ref(true);
@@ -233,7 +200,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 330 },
 ]);
 
-const queryParams = ref<DbTableQuery>({
+const queryParams = ref<GenTableQuery>({
   pageNum: 1,
   pageSize: 10,
   tableName: undefined,
@@ -242,9 +209,8 @@ const queryParams = ref<DbTableQuery>({
 });
 const preview = ref({
   open: false,
-  title: '代码预览',
+  loading: true,
   data: {},
-  activeName: 'domain.java',
 });
 
 // 分页
@@ -273,16 +239,6 @@ onActivated(() => {
   }
 });
 
-// 获取vm名称
-function getLabel(key: string) {
-  return key.substring(key.lastIndexOf('/') + 1, key.indexOf('.vm'));
-}
-
-// 获取代码语言
-function getLanguage(label: string) {
-  return label.substring(label.lastIndexOf('.') + 1);
-}
-
 /** 查询多数据源名称 */
 async function getDataNameList() {
   const res = await getDataNames();
@@ -306,7 +262,7 @@ function handleQuery() {
 }
 
 /** 生成代码操作 */
-function handleGenTable(row?: GenTable) {
+function handleGenTable(row?: GenTableVo) {
   const tbIds = row?.tableId || ids.value;
   if (!row?.tableId && ids.value.length === 0) {
     proxy.$modal.msgError('请选择要生成的数据');
@@ -322,12 +278,17 @@ function handleGenTable(row?: GenTable) {
 }
 
 /** 同步数据库操作 */
-function handleSyncDb(row: GenTable) {
+function handleSyncDb(row: GenTableVo) {
   const { tableName, tableId, dataName } = row;
   proxy.$modal.confirm(`确认要强制同步"${dataName}.${tableName}"表结构吗？`, () => {
-    return synchDb(tableId).then(() => {
-      proxy.$modal.msgSuccess('同步成功');
-    });
+    const msgLoading = proxy.$modal.msgLoading('正在同步中...');
+    return synchDb(tableId)
+      .then(() => {
+        proxy.$modal.msgSuccess('同步成功');
+      })
+      .finally(() => {
+        proxy.$modal.msgClose(msgLoading);
+      });
   });
 }
 
@@ -358,33 +319,29 @@ function handleSortChange(value?: TableSort) {
 }
 
 /** 预览按钮 */
-function handlePreview(row: GenTable) {
-  previewTable(row.tableId).then((response) => {
-    preview.value.data = response.data;
-    preview.value.open = true;
-    // 不变更页面
-    // preview.value.activeName = 'domain.java';
-  });
-}
-
-/** 复制代码成功 */
-function copyTextSuccess() {
-  proxy.$modal.msgSuccess('复制成功');
+function handlePreview(row: GenTableVo) {
+  preview.value.loading = true;
+  preview.value.open = true;
+  previewTable(row.tableId)
+    .then((response) => {
+      preview.value.data = response.data;
+    })
+    .finally(() => (preview.value.loading = false));
 }
 
 /** 多选框选中数据 */
-function handleSelectionChange(selection: Array<string | number>, { selectedRowData }: SelectOptions<GenTable>) {
+function handleSelectionChange(selection: Array<string | number>, { selectedRowData }: SelectOptions<GenTableVo>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
 }
 /** 修改按钮操作 */
-function handleEditTable(row?: GenTable) {
+function handleEditTable(row?: GenTableVo) {
   const tableId = row?.tableId || ids.value[0];
   router.push({ path: `/tool/gen-edit/index/${tableId}`, query: { pageNum: queryParams.value.pageNum } });
 }
 /** 删除按钮操作 */
-function handleDelete(row?: GenTable) {
+function handleDelete(row?: GenTableVo) {
   const tableIds = row?.tableId || ids.value;
   proxy.$modal.confirm(`是否确认删除表编号为"${tableIds}"的数据项？`, () => {
     return delTable(tableIds).then(() => {

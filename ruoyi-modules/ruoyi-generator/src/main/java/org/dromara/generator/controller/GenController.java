@@ -7,12 +7,13 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
-import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.mybatis.helper.DataBaseHelper;
 import org.dromara.common.web.core.BaseController;
-import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
+import org.dromara.generator.domain.bo.GenTableBo;
+import org.dromara.generator.domain.query.GenTableQuery;
+import org.dromara.generator.domain.vo.GenTableVo;
 import org.dromara.generator.service.IGenTableService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
@@ -41,8 +42,8 @@ public class GenController extends BaseController {
      */
     @SaCheckPermission("tool:gen:list")
     @GetMapping("/list")
-    public TableDataInfo<GenTable> genList(GenTable genTable) {
-        return genTableService.selectPageGenTableList(genTable);
+    public TableDataInfo<GenTableVo> genList(GenTableQuery query) {
+        return genTableService.selectPageGenTableList(query);
     }
 
     /**
@@ -53,13 +54,11 @@ public class GenController extends BaseController {
     @SaCheckPermission("tool:gen:query")
     @GetMapping(value = "/{tableId}")
     public R<Map<String, Object>> getInfo(@PathVariable Long tableId) {
-        GenTable table = genTableService.selectGenTableById(tableId);
-        List<GenTable> tables = genTableService.selectGenTableAll();
+        GenTableVo table = genTableService.selectGenTableById(tableId);
         List<GenTableColumn> list = genTableService.selectGenTableColumnListByTableId(tableId);
         Map<String, Object> map = new HashMap<>(3);
         map.put("info", table);
         map.put("rows", list);
-        map.put("tables", tables);
         return R.ok(map);
     }
 
@@ -68,8 +67,8 @@ public class GenController extends BaseController {
      */
     @SaCheckPermission("tool:gen:list")
     @GetMapping("/db/list")
-    public TableDataInfo<GenTable> dataList(GenTable genTable, PageQuery pageQuery) {
-        return genTableService.selectPageDbTableList(genTable, pageQuery);
+    public TableDataInfo<GenTableVo> dataList(GenTableQuery query) {
+        return genTableService.selectPageDbTableList(query);
     }
 
     /**
@@ -98,7 +97,7 @@ public class GenController extends BaseController {
     public R<Void> importTableSave(String tables, String dataName) {
         String[] tableNames = Convert.toStrArray(tables);
         // 查询表信息
-        List<GenTable> tableList = genTableService.selectDbTableListByNames(tableNames, dataName);
+        List<GenTableVo> tableList = genTableService.selectDbTableListByNames(tableNames, dataName);
         genTableService.importGenTable(tableList, dataName);
         return R.ok();
     }
@@ -109,9 +108,9 @@ public class GenController extends BaseController {
     @SaCheckPermission("tool:gen:edit")
     @Log(title = "代码生成", businessType = BusinessType.UPDATE)
     @PutMapping
-    public R<Void> editSave(@Validated @RequestBody GenTable genTable) {
-        genTableService.validateEdit(genTable);
-        genTableService.updateGenTable(genTable);
+    public R<Void> editSave(@Validated @RequestBody GenTableBo tableBo) {
+        genTableService.validateEdit(tableBo);
+        genTableService.updateGenTable(tableBo);
         return R.ok();
     }
 
@@ -135,8 +134,18 @@ public class GenController extends BaseController {
      */
     @SaCheckPermission("tool:gen:preview")
     @GetMapping("/preview/{tableId}")
-    public R<Map<String, String>> preview(@PathVariable("tableId") Long tableId) throws IOException {
+    public R<Map<String, String>> preview(@PathVariable("tableId") Long tableId) {
         Map<String, String> dataMap = genTableService.previewCode(tableId);
+        return R.ok(dataMap);
+    }
+
+    /**
+     * 临时预览代码
+     */
+    @SaCheckPermission("tool:gen:preview")
+    @PostMapping("/temp/preview")
+    public R<Map<String, String>> tempPreview(@Validated @RequestBody GenTableBo tableBo) {
+        Map<String, String> dataMap = genTableService.tempPreviewCode(tableBo);
         return R.ok(dataMap);
     }
 
@@ -161,7 +170,7 @@ public class GenController extends BaseController {
     @SaCheckPermission("tool:gen:code")
     @Log(title = "代码生成", businessType = BusinessType.GENCODE)
     @GetMapping("/genCode/{tableId}")
-    public R<Void> genCode(@PathVariable("tableId") Long tableId) {
+    public R<Void> genCode(@PathVariable Long tableId) {
         genTableService.generatorCode(tableId);
         return R.ok();
     }
@@ -174,7 +183,7 @@ public class GenController extends BaseController {
     @SaCheckPermission("tool:gen:edit")
     @Log(title = "代码生成", businessType = BusinessType.UPDATE)
     @GetMapping("/synchDb/{tableId}")
-    public R<Void> synchDb(@PathVariable("tableId") Long tableId) {
+    public R<Void> synchDb(@PathVariable Long tableId) {
         genTableService.synchDb(tableId);
         return R.ok();
     }
@@ -211,7 +220,7 @@ public class GenController extends BaseController {
      */
     @SaCheckPermission("tool:gen:list")
     @GetMapping(value = "/getDataNames")
-    public R<List<String>> getCurrentDataSourceNameList(){
+    public R<List<String>> getCurrentDataSourceNameList() {
         return R.ok(DataBaseHelper.getDataSourceNameList());
     }
 }

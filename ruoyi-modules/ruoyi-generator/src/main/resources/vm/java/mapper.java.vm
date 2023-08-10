@@ -1,13 +1,13 @@
 package ${packageName}.mapper;
 
 import ${packageName}.domain.${ClassName};
-#if($useQuery)
+#if($isUseQuery && $isUseQueryMethod)
 #set($query="${ClassName}Query")
 import ${packageName}.domain.query.${ClassName}Query;
 #else
 #set($query=$ClassName)
 #end
-#if($useVO)
+#if($isUseVO)
 #set($vo="${ClassName}Vo")
 #set($extend="BaseMapperPlus<${ClassName}, ${ClassName}Vo>")
 import ${packageName}.domain.vo.${ClassName}Vo;
@@ -18,15 +18,18 @@ import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 #end
 
+#if($isUseExportMethod || ($isUseQueryMethod && $table.isTree()))
 import java.util.List;
+#end
 
 /**
  * ${functionName}Mapper接口
  *
- * @author ${author}
- * @date ${datetime}
+ * @author $author
+ * @date $datetime
  */
 public interface ${ClassName}Mapper extends $extend {
+#if($isUseQueryMethod || $isUseExportMethod)
 
     /**
      * 查询${table.functionName}列表
@@ -35,4 +38,5 @@ public interface ${ClassName}Mapper extends $extend {
      * @return {@link ${vo}}
      */
     List<${vo}> queryList(${query} query);
+#end
 }

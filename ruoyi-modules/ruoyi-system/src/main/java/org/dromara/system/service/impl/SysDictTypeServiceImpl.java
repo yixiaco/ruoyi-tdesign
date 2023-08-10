@@ -17,6 +17,7 @@ import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.redis.utils.CacheUtils;
+import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.system.domain.SysDictData;
 import org.dromara.system.domain.SysDictType;
 import org.dromara.system.domain.bo.SysDictTypeBo;
@@ -72,7 +73,12 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
      */
     @Override
     public List<SysDictTypeVo> selectDictTypeAll() {
-        return baseMapper.selectVoList();
+        List<SysDictTypeVo> list = RedisUtils.getList(CacheConstants.SYS_ALL_DICT_TYPE_KEY);
+        if (CollUtil.isEmpty(list)) {
+            list = baseMapper.selectVoList();
+            RedisUtils.setList(CacheConstants.SYS_ALL_DICT_TYPE_KEY, list);
+        }
+        return list;
     }
 
     /**
@@ -130,6 +136,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
             CacheUtils.evict(CacheNames.SYS_DICT, dictType.getDictType());
         }
         baseMapper.deleteBatchIds(Arrays.asList(dictIds));
+        clearAllDictTypeCache();
     }
 
     /**
@@ -138,6 +145,14 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     @Override
     public void resetDictCache() {
         CacheUtils.clear(CacheNames.SYS_DICT);
+        clearAllDictTypeCache();
+    }
+
+    /**
+     * 清理缓存类型数据
+     */
+    private void clearAllDictTypeCache() {
+        RedisUtils.deleteObject(CacheConstants.SYS_ALL_DICT_TYPE_KEY);
     }
 
     /**
@@ -152,6 +167,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
         SysDictType dict = MapstructUtils.convert(bo, SysDictType.class);
         int row = baseMapper.insert(dict);
         if (row > 0) {
+            clearAllDictTypeCache();
             // 新增 type 下无 data 数据 返回空防止缓存穿透
             return new ArrayList<>();
         }
@@ -176,6 +192,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
         int row = baseMapper.updateById(dict);
         if (row > 0) {
             CacheUtils.evict(CacheNames.SYS_DICT, oldDict.getDictType());
+            clearAllDictTypeCache();
             return dictDataMapper.selectDictDataByType(dict.getDictType());
         }
         throw new ServiceException("操作失败");

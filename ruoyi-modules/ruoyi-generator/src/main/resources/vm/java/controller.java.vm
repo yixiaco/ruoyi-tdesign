@@ -1,26 +1,50 @@
 package ${packageName}.controller;
 
+#if($isUseQueryMethod || $isUseExportMethod || $isUseRemoveMethod)
 import java.util.List;
+#end
 
+#if($isUseExportMethod)
 import jakarta.servlet.http.HttpServletResponse;
+#end
+#if($isUseEditMethod || $isUseDetailMethod || $isUseRemoveMethod)
 import jakarta.validation.constraints.*;
+#end
+#if($isUseQueryMethod || $isUseDetailMethod || $isUseAddMethod|| $isUseEditMethod || $isUseRemoveMethod)
 import cn.dev33.satoken.annotation.SaCheckPermission;
+#end
+#if($isUseEditMethod || $isUseDetailMethod)
 import cn.dev33.satoken.annotation.SaMode;
+#end
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
+#if($isUseAddMethod|| $isUseEditMethod)
 import org.dromara.common.idempotent.annotation.RepeatSubmit;
+#end
+#if($isUseExportMethod || $isUseAddMethod || $isUseEditMethod || $isUseRemoveMethod)
 import org.dromara.common.log.annotation.Log;
+#end
 import org.dromara.common.web.core.BaseController;
+#if($isUseQueryMethod && $table.isTree() || $isUseDetailMethod || $isUseAddMethod || $isUseEditMethod || $isUseRemoveMethod)
 import org.dromara.common.core.domain.R;
+#end
+#if($isUseAddMethod)
 import org.dromara.common.core.validate.AddGroup;
+#end
+#if($isUseEditMethod)
 import org.dromara.common.core.validate.EditGroup;
+#end
+#if($isUseExportMethod || $isUseAddMethod|| $isUseEditMethod || $isUseRemoveMethod)
 import org.dromara.common.log.enums.BusinessType;
+#end
+#if($isUseExportMethod)
 import org.dromara.common.excel.utils.ExcelUtil;
-#if(!$useBO || !$useQuery || !$useVO)
+#end
+#if((!$isUseBO || !$isUseQuery || !$isUseVO) && ($isUseExportMethod || $isUseQueryMethod || $isUseAddMethod || $isUseEditMethod))
 import ${packageName}.domain.${ClassName};
 #end
-#if($useBO)
+#if($isUseBO && ($isUseAddMethod || $isUseEditMethod))
 #set($bo="${ClassName}Bo")
 #set($boObjName="bo")
 import ${packageName}.domain.bo.${ClassName}Bo;
@@ -28,22 +52,22 @@ import ${packageName}.domain.bo.${ClassName}Bo;
 #set($bo=$ClassName)
 #set($boObjName="${className}")
 #end
-#if($useQuery)
+#if($isUseQuery && $isUseQueryMethod)
 #set($query="${ClassName}Query")
 import ${packageName}.domain.query.${ClassName}Query;
 #else
 #set($query=$ClassName)
 #end
-#if($useVO)
+#if($isUseVO && ($isUseQueryMethod || $isUseDetailMethod || $isUseEditMethod || $isUseExportMethod))
 #set($vo="${ClassName}Vo")
 import ${packageName}.domain.vo.${ClassName}Vo;
 #else
 #set($vo=$ClassName)
 #end
 import ${packageName}.service.I${ClassName}Service;
-#if($table.crud || $table.sub)
+#if($table.isCrud())
 import org.dromara.common.mybatis.core.page.TableDataInfo;
-#elseif($table.tree)
+#elseif($table.isTree())
 #end
 
 /**
@@ -59,22 +83,25 @@ public class ${ClassName}Controller extends BaseController {
 
     @Autowired
     private I${ClassName}Service ${className}Service;
+#if($isUseQueryMethod)
 
     /**
      * 查询${functionName}列表
      */
     @SaCheckPermission("${permissionPrefix}:list")
     @GetMapping("/list")
-#if($table.crud || $table.sub)
+#if($table.isCrud())
     public TableDataInfo<${vo}> list(${query} query) {
         return ${className}Service.queryPageList(query);
     }
-#elseif($table.tree)
+#elseif($table.isTree())
     public R<List<${vo}>> list(${query} query) {
         List<${vo}> list = ${className}Service.queryList(query);
         return R.ok(list);
     }
 #end
+#end
+#if($isUseExportMethod)
 
     /**
      * 导出${functionName}列表
@@ -86,6 +113,8 @@ public class ${ClassName}Controller extends BaseController {
         List<${vo}> list = ${className}Service.queryList(query);
         ExcelUtil.exportExcel(list, "${functionName}", ${vo}.class, response);
     }
+#end
+#if($isUseEditMethod || $isUseDetailMethod)
 
     /**
      * 获取${functionName}详细信息
@@ -97,6 +126,8 @@ public class ${ClassName}Controller extends BaseController {
     public R<${vo}> getInfo(@NotNull(message = "主键不能为空") @PathVariable ${pkColumn.javaType} ${pkColumn.javaField}) {
         return R.ok(${className}Service.queryById(${pkColumn.javaField}));
     }
+#end
+#if($isUseAddMethod)
 
     /**
      * 新增${functionName}
@@ -108,6 +139,8 @@ public class ${ClassName}Controller extends BaseController {
     public R<Void> add(@Validated(AddGroup.class) @RequestBody ${bo} $boObjName) {
         return toAjax(${className}Service.insertByBo($boObjName));
     }
+#end
+#if($isUseEditMethod)
 
     /**
      * 修改${functionName}
@@ -119,6 +152,8 @@ public class ${ClassName}Controller extends BaseController {
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody ${bo} $boObjName) {
         return toAjax(${className}Service.updateByBo($boObjName));
     }
+#end
+#if($isUseRemoveMethod)
 
     /**
      * 删除${functionName}
@@ -131,4 +166,5 @@ public class ${ClassName}Controller extends BaseController {
     public R<Void> remove(@NotEmpty(message = "主键不能为空") @PathVariable ${pkColumn.javaType}[] ${pkColumn.javaField}s) {
         return toAjax(${className}Service.deleteWithValidByIds(List.of(${pkColumn.javaField}s)));
     }
+#end
 }

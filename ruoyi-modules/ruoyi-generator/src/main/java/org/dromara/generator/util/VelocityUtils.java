@@ -1,5 +1,6 @@
 package org.dromara.generator.util;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.Dict;
@@ -12,8 +13,9 @@ import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.json.utils.JsonUtils;
 import org.dromara.common.mybatis.helper.DataBaseHelper;
 import org.dromara.generator.constant.GenConstants;
-import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
+import org.dromara.generator.domain.vo.GenTableOptions;
+import org.dromara.generator.domain.vo.GenTableVo;
 
 import java.util.*;
 
@@ -45,12 +47,14 @@ public class VelocityUtils {
      *
      * @return 模板列表
      */
-    public static VelocityContext prepareContext(GenTable genTable) {
+    public static VelocityContext prepareContext(GenTableVo genTable) {
         String moduleName = genTable.getModuleName();
         String businessName = genTable.getBusinessName();
         String packageName = genTable.getPackageName();
         String tplCategory = genTable.getTplCategory();
         String functionName = genTable.getFunctionName();
+        GenTableOptions options = genTable.getTableOptions();
+        Map<String, Object> optionsMap = BeanUtil.beanToMap(options);
 
         VelocityContext velocityContext = new VelocityContext();
         velocityContext.put("tplCategory", genTable.getTplCategory());
@@ -76,9 +80,7 @@ public class VelocityUtils {
         velocityContext.put("GenUtil", GenUtils.class);
         velocityContext.put("StringUtils", StringUtils.class);
         velocityContext.put("StrUtil", StrUtil.class);
-        velocityContext.put("useQuery", genTable.getIsUseQuery());
-        velocityContext.put("useBO", genTable.getIsUseBO());
-        velocityContext.put("useVO", genTable.getIsUseVO());
+        optionsMap.forEach(velocityContext::put);
         setMenuVelocityContext(velocityContext, genTable);
         if (GenConstants.TPL_TREE.equals(tplCategory)) {
             setTreeVelocityContext(velocityContext, genTable);
@@ -106,14 +108,14 @@ public class VelocityUtils {
         return sb.toString().toLowerCase();
     }
 
-    public static void setMenuVelocityContext(VelocityContext context, GenTable genTable) {
+    public static void setMenuVelocityContext(VelocityContext context, GenTableVo genTable) {
         String options = genTable.getOptions();
         Dict paramsObj = JsonUtils.parseMap(options);
         String parentMenuId = getParentMenuId(paramsObj);
         context.put("parentMenuId", parentMenuId);
     }
 
-    public static void setTreeVelocityContext(VelocityContext context, GenTable genTable) {
+    public static void setTreeVelocityContext(VelocityContext context, GenTableVo genTable) {
         String options = genTable.getOptions();
         Dict paramsObj = JsonUtils.parseMap(options);
         String treeCode = getTreecode(paramsObj);
@@ -139,39 +141,46 @@ public class VelocityUtils {
      *
      * @return 模板列表
      */
-    public static List<String> getTemplateList(GenTable table) {
+    public static List<String> getTemplateList(GenTableVo table) {
         String tplCategory = table.getTplCategory();
         List<String> templates = new ArrayList<>();
         templates.add("vm/java/domain.java.vm");
-        if (table.getIsUseQuery()) {
+        GenTableOptions options = table.getTableOptions();
+        if (options.getIsUseQuery()) {
             templates.add("vm/java/query.java.vm");
         }
-        if (table.getIsUseVO()) {
+        if (options.getIsUseVO()) {
             templates.add("vm/java/vo.java.vm");
         }
-        if (table.getIsUseBO()) {
+        if (options.getIsUseBO()) {
             templates.add("vm/java/bo.java.vm");
         }
-        templates.add("vm/java/controller.java.vm");
+        if (options.getIsUseController()) {
+            templates.add("vm/java/controller.java.vm");
+        }
         templates.add("vm/java/service.java.vm");
         templates.add("vm/java/serviceImpl.java.vm");
         templates.add("vm/java/mapper.java.vm");
         templates.add("vm/xml/mapper.xml.vm");
-        templates.add("vm/ts/model.ts.vm");
-        templates.add("vm/ts/api.ts.vm");
-        if (GenConstants.TPL_CRUD.equals(tplCategory)) {
-            templates.add("vm/vue/index.vue.vm");
-        } else if (GenConstants.TPL_TREE.equals(tplCategory)) {
-            templates.add("vm/vue/index-tree.vue.vm");
+        if (options.getIsUseVue()) {
+            templates.add("vm/ts/model.ts.vm");
+            templates.add("vm/ts/api.ts.vm");
+            if (GenConstants.TPL_CRUD.equals(tplCategory)) {
+                templates.add("vm/vue/index.vue.vm");
+            } else if (GenConstants.TPL_TREE.equals(tplCategory)) {
+                templates.add("vm/vue/index-tree.vue.vm");
+            }
         }
-        if (DataBaseHelper.isOracle()) {
-            templates.add("vm/sql/oracle/sql.vm");
-        } else if (DataBaseHelper.isPostgerSql()) {
-            templates.add("vm/sql/postgres/sql.vm");
-        } else if (DataBaseHelper.isSqlServer()) {
-            templates.add("vm/sql/sqlserver/sql.vm");
-        } else {
-            templates.add("vm/sql/sql.vm");
+        if (options.getIsUseSql()) {
+            if (DataBaseHelper.isOracle()) {
+                templates.add("vm/sql/oracle/sql.vm");
+            } else if (DataBaseHelper.isPostgerSql()) {
+                templates.add("vm/sql/postgres/sql.vm");
+            } else if (DataBaseHelper.isSqlServer()) {
+                templates.add("vm/sql/sqlserver/sql.vm");
+            } else {
+                templates.add("vm/sql/sql.vm");
+            }
         }
         return templates;
     }
@@ -179,7 +188,7 @@ public class VelocityUtils {
     /**
      * 获取文件名
      */
-    public static String getFileName(String template, GenTable genTable) {
+    public static String getFileName(String template, GenTableVo genTable) {
         // 文件名称
         String fileName = "";
         // 包路径
@@ -248,7 +257,7 @@ public class VelocityUtils {
      * @param genTable 业务表对象
      * @return 返回需要导入的包列表
      */
-    public static HashSet<String> getImportList(GenTable genTable) {
+    public static HashSet<String> getImportList(GenTableVo genTable) {
         List<GenTableColumn> columns = genTable.getColumns();
         HashSet<String> importList = new HashSet<>();
         for (GenTableColumn column : columns) {
@@ -270,7 +279,7 @@ public class VelocityUtils {
      * @param genTable 业务表对象
      * @return 返回字典组
      */
-    public static String getDicts(GenTable genTable) {
+    public static String getDicts(GenTableVo genTable) {
         List<GenTableColumn> columns = genTable.getColumns();
         Set<String> dicts = new HashSet<>();
         addDicts(dicts, columns);
@@ -365,7 +374,7 @@ public class VelocityUtils {
      * @param genTable 业务表对象
      * @return 展开按钮列序号
      */
-    public static int getExpandColumn(GenTable genTable) {
+    public static int getExpandColumn(GenTableVo genTable) {
         String options = genTable.getOptions();
         Dict paramsObj = JsonUtils.parseMap(options);
         String treeName = paramsObj.getStr(GenConstants.TREE_NAME);

@@ -1,11 +1,12 @@
 <template>
   <t-card>
     <t-form
+      ref="formRef"
       :data="form"
       label-width="calc(8em + 24px)"
       :rules="rules"
-      scroll-to-first-error="smooth"
       @submit="onSubmit"
+      @validate="onValidate"
     >
       <t-tabs v-model="activeName">
         <t-tab-panel label="基本信息" value="basic" :destroy-on-hide="false">
@@ -21,7 +22,7 @@
               :data="columnsData"
               :columns="columns"
               row-key="columnId"
-              :max-height="tableHeight"
+              max-height="calc(100vh - 385px)"
               :column-controller="{
                 hideTriggerButton: true,
               }"
@@ -104,6 +105,7 @@
               <template #htmlType="{ row }">
                 <t-select v-model="row.htmlType">
                   <t-option label="文本框" value="input" />
+                  <t-option label="数字输入框" value="input-number" />
                   <t-option label="文本域" value="textarea" />
                   <t-option label="下拉框" value="select" />
                   <t-option label="单选框" value="radio" />
@@ -130,9 +132,9 @@
                     class="gen-option"
                   >
                     <span style="float: left">{{ dict.dictName }}</span>
-                    <span style="float: right; color: #8492a6; font-size: 13px; margin-left: 5px">{{
-                      dict.dictType
-                    }}</span>
+                    <span style="float: right; color: #8492a6; font-size: 13px; margin-left: 5px">
+                      {{ dict.dictType }}
+                    </span>
                   </t-option>
                 </t-select>
               </template>
@@ -141,15 +143,19 @@
         </t-tab-panel>
         <t-tab-panel label="生成信息" value="genInfo" :destroy-on-hide="false">
           <div class="panel-top">
-            <gen-info-form :info="info" :tables="tables" />
+            <gen-info-form :info="info" />
           </div>
         </t-tab-panel>
       </t-tabs>
       <div style="text-align: center; margin-left: -100px; margin-top: 10px">
+        <t-button theme="default" variant="outline" @click="handlePreview()">实时预览</t-button>
         <t-button theme="primary" type="submit">提交</t-button>
+        <t-button theme="primary" variant="outline" @click="handleSyncDb()">同步代码</t-button>
         <t-button theme="default" variant="outline" @click="close()">返回</t-button>
       </div>
     </t-form>
+    <!-- 预览界面 -->
+    <gen-preview v-model:visible="preview.open" :data="preview.data" :loading="preview.loading" />
   </t-card>
 </template>
 <script lang="ts">
@@ -159,14 +165,15 @@ export default {
 </script>
 <script lang="ts" setup>
 import { SettingIcon } from 'tdesign-icons-vue-next';
-import { FormRule, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
-import { computed, getCurrentInstance, reactive, ref, toRefs } from 'vue';
+import { FormInstanceFunctions, FormRule, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
+import { computed, getCurrentInstance, onMounted, reactive, ref, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { optionselect as getDictOptionselect } from '@/api/system/dict/type';
 import { SysDictTypeVo } from '@/api/system/model/dictModel';
-import { getGenTable, updateGenTable } from '@/api/tool/gen';
-import { GenTable, GenTableColumn } from '@/api/tool/model/genModel';
+import { getGenTable, synchDb, tempPreviewTable, updateGenTable } from '@/api/tool/gen';
+import { GenTableColumn, GenTableForm, GenTableVo } from '@/api/tool/model/genModel';
+import GenPreview from '@/pages/tool/gen/components/preview.vue';
 import { useTabsRouterStore } from '@/store';
 
 import BasicInfoForm from './basicInfoForm.vue';
@@ -178,10 +185,15 @@ const route = useRoute();
 const router = useRouter();
 const { proxy } = getCurrentInstance();
 
+const formRef = ref<FormInstanceFunctions>(null);
 const columnControllerVisible = ref(false);
 const activeName = ref('columnInfo');
-const tableHeight = ref(`${document.documentElement.scrollHeight - 277}px`);
 const dictOptions = ref<SysDictTypeVo[]>([]);
+const preview = ref({
+  open: false,
+  loading: true,
+  data: {},
+});
 const columns = ref<Array<PrimaryTableCol<GenTableColumn>>>([
   { title: '序号', colKey: 'serial-number', width: '5%', align: 'center' },
   { title: `字段列名`, colKey: 'columnName', align: 'center', ellipsis: true, width: '10%' },
@@ -211,19 +223,22 @@ const rules = ref<Record<string, Array<FormRule>>>({
   tableComment: [{ required: true, message: '请输入表描述', trigger: 'blur' }],
   className: [{ required: true, message: '请输入实体类名称', trigger: 'blur' }],
   functionAuthor: [{ required: true, message: '请输入作者', trigger: 'blur' }],
+  treeCode: [{ required: true, message: '请选择树编码字段', trigger: 'blur' }],
+  treeParentCode: [{ required: true, message: '请选择树父编码字段', trigger: 'blur' }],
+  treeName: [{ required: true, message: '请选择树名称字段', trigger: 'blur' }],
 });
 
 const form = reactive<{
   columnsData: GenTableColumn[];
-  info: GenTable;
-  tables: GenTable[];
+  info: GenTableForm & GenTableVo;
 }>({
   columnsData: [],
-  info: {},
-  tables: [],
+  info: {
+    tableOptions: {},
+  },
 });
 
-const { tables, columnsData, info } = toRefs(form);
+const { columnsData, info } = toRefs(form);
 
 const isInsert = computed({
   get() {
@@ -274,26 +289,51 @@ const isSort = computed({
   },
 });
 
-function onSubmit({ validateResult, firstError }: SubmitContext) {
-  if (validateResult === true) {
-    const genTable = { ...info.value };
-    genTable.columns = columnsData.value;
-    genTable.params = {
-      treeCode: info.value.treeCode,
-      treeName: info.value.treeName,
-      treeParentCode: info.value.treeParentCode,
-      parentMenuId: info.value.parentMenuId,
-      isUseQuery: info.value.isUseQuery,
-      isUseBO: info.value.isUseBO,
-      isUseVO: info.value.isUseVO,
-    };
-    updateGenTable(genTable).then((res) => {
-      proxy.$modal.msgSuccess(res.msg);
-      if (res.code === 200) {
-        close();
-      }
-    });
-  } else {
+/** 实时预览按钮 */
+async function handlePreview() {
+  const result = await formRef.value.validate();
+  const genTable = { ...info.value };
+  genTable.columns = columnsData.value;
+  genTable.tableOptions = info.value.tableOptions;
+  if (result === true) {
+    preview.value.loading = true;
+    preview.value.open = true;
+    tempPreviewTable(genTable)
+      .then((response) => {
+        preview.value.data = response.data;
+      })
+      .finally(() => (preview.value.loading = false));
+  }
+}
+
+/** 同步数据库操作 */
+function handleSyncDb() {
+  const { tableName, tableId, dataName } = info.value;
+  proxy.$modal.confirm(`未保存的编辑将被覆盖，确认要强制同步"${dataName}.${tableName}"表结构吗？`, () => {
+    const msgLoading = proxy.$modal.msgLoading('正在同步中...');
+    return synchDb(tableId)
+      .then(() => {
+        // 重新获取表详细信息
+        const msgLoading = proxy.$modal.msgLoading('同步成功，正在重新获取表数据中...');
+        getGenTable(tableId)
+          .then((res) => {
+            proxy.$modal.msgSuccess('同步完成');
+            columnsData.value = res.data.rows;
+            info.value = res.data.info;
+          })
+          .finally(() => {
+            proxy.$modal.msgClose(msgLoading);
+          });
+      })
+      .finally(() => {
+        proxy.$modal.msgClose(msgLoading);
+      });
+  });
+}
+
+/** 表单校验 */
+function onValidate({ validateResult, firstError }: SubmitContext) {
+  if (validateResult !== true) {
     const basicInfo = ['info.tableName', 'info.tableComment', 'info.className', 'info.functionAuthor'];
     const isBasic = Object.keys(validateResult).some((value) => basicInfo.includes(value));
     if (isBasic) {
@@ -304,28 +344,42 @@ function onSubmit({ validateResult, firstError }: SubmitContext) {
     proxy.$modal.msgError(firstError);
   }
 }
+
+/** 表单提交 */
+function onSubmit({ validateResult, firstError }: SubmitContext) {
+  if (validateResult === true) {
+    const genTable = { ...info.value };
+    genTable.columns = columnsData.value;
+    genTable.tableOptions = info.value.tableOptions;
+    updateGenTable(genTable).then((res) => {
+      proxy.$modal.msgSuccess(res.msg);
+      if (res.code === 200) {
+        close();
+      }
+    });
+  }
+}
 function close() {
   tabsRouterStore.removeCurrentTab(route, '/tool/gen', router);
 }
 
-(() => {
+onMounted(() => {
   const tableId = route.params && route.params.tableId;
   if (tableId) {
     // 获取表详细信息
     getGenTable(String(tableId)).then((res) => {
       columnsData.value = res.data.rows;
       info.value = res.data.info;
-      tables.value = res.data.tables;
     });
     /** 查询字典下拉列表 */
     getDictOptionselect().then((response) => {
       dictOptions.value = response.data;
     });
   }
-})();
+});
 </script>
 <style lang="less" scoped>
 .panel-top {
-  margin-top: 8px;
+  margin: 20px 0;
 }
 </style>

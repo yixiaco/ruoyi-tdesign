@@ -3,7 +3,7 @@
     <t-col :span="6">
       <t-form-item name="info.tplCategory">
         <template #label>生成模板</template>
-        <t-select v-model="info.tplCategory" @change="tplSelectChange">
+        <t-select v-model="info.tplCategory">
           <t-option label="单表（增删改查）" value="crud" />
           <t-option label="树表（增删改查）" value="tree" />
         </t-select>
@@ -59,7 +59,7 @@
     </t-col>
 
     <t-col :span="6">
-      <t-form-item>
+      <t-form-item name="info.tableOptions.parentMenuId">
         <template #label>
           上级菜单
           <t-tooltip content="分配到指定菜单下，例如 系统管理" placement="top">
@@ -67,7 +67,7 @@
           </t-tooltip>
         </template>
         <t-tree-select
-          v-model="info.parentMenuId"
+          v-model="info.tableOptions.parentMenuId"
           :data="menuOptions"
           :tree-props="{
             keys: { value: 'menuId', label: 'menuName', children: 'children' },
@@ -75,27 +75,6 @@
           }"
           placeholder="请选择系统菜单"
         />
-      </t-form-item>
-    </t-col>
-
-    <t-col :span="6">
-      <t-form-item name="info.genType">
-        <template #label>
-          选择生成对象
-          <t-tooltip placement="top">
-            <template #content>
-              <p>BO对象：保存和编辑时，会使用BO对象替代原始对象</p>
-              <p>VO对象：列表查询、查看详情时，会使用VO对象替代原始对象</p>
-              <p>Query对象：查询条件传递时，会使用Query对象替代原始对象</p>
-            </template>
-            <help-circle-filled-icon />
-          </t-tooltip>
-        </template>
-        <t-space>
-          <t-checkbox v-model="info.isUseQuery">使用Query对象</t-checkbox>
-          <t-checkbox v-model="info.isUseBO">使用BO对象</t-checkbox>
-          <t-checkbox v-model="info.isUseVO">使用VO对象</t-checkbox>
-        </t-space>
       </t-form-item>
     </t-col>
 
@@ -113,7 +92,11 @@
         </t-radio-group>
       </t-form-item>
     </t-col>
-
+    <t-col :span="6">
+      <t-form-item name="info.tableOptions.menuIcon" label="菜单图标">
+        <icon-select v-model="info.tableOptions.menuIcon" />
+      </t-form-item>
+    </t-col>
     <t-col v-if="info.genType === '1'" :span="12">
       <t-form-item name="info.genPath">
         <template #label>
@@ -141,20 +124,64 @@
         </t-input-adornment>
       </t-form-item>
     </t-col>
+    <t-col :span="12">
+      <t-form-item name="info.genType">
+        <template #label>
+          选择生成对象
+          <t-tooltip placement="top">
+            <template #content>
+              <p>Bo对象：保存和编辑时，会使用Bo对象替代原始对象</p>
+              <p>Vo对象：列表查询、查看详情时，会使用Vo对象替代原始对象</p>
+              <p>Query对象：查询条件传递时，会使用Query对象替代原始对象</p>
+            </template>
+            <help-circle-filled-icon />
+          </t-tooltip>
+        </template>
+        <t-space break-line>
+          <t-checkbox v-model="info.tableOptions.isUseQuery">使用Query对象</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseBO">使用Bo对象</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseVO">使用Vo对象</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseController">使用Controller对象</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseVue">生成Vue</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseSql">生成Sql</t-checkbox>
+        </t-space>
+      </t-form-item>
+    </t-col>
+    <t-col :span="12">
+      <t-form-item name="info.genType">
+        <template #label>
+          选择生成方法
+          <t-tooltip placement="top">
+            <template #content>
+              <p>在vue和后台代码中生成的方法</p>
+            </template>
+            <help-circle-filled-icon />
+          </t-tooltip>
+        </template>
+        <t-space break-line>
+          <t-checkbox v-model="info.tableOptions.isUseAddMethod">新增</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseEditMethod">编辑</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseRemoveMethod">删除</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseExportMethod">导出</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseDetailMethod">详情</t-checkbox>
+          <t-checkbox v-model="info.tableOptions.isUseQueryMethod">查询</t-checkbox>
+        </t-space>
+      </t-form-item>
+    </t-col>
   </t-row>
 
   <template v-if="info.tplCategory === 'tree'">
     <t-divider align="left" dashed>其他信息</t-divider>
-    <t-row v-show="info.tplCategory === 'tree'" :gutter="[0, 20]">
+    <t-row :gutter="[5, 20]">
       <t-col :span="6">
-        <t-form-item>
+        <t-form-item name="info.tableOptions.treeCode">
           <template #label>
             树编码字段
-            <t-tooltip content="树显示的编码字段名， 如：dept_id" placement="top">
+            <t-tooltip content="树的编码字段名， 如：dept_id" placement="top">
               <help-circle-filled-icon />
             </t-tooltip>
           </template>
-          <t-select v-model="info.treeCode" placeholder="请选择">
+          <t-select v-model="info.tableOptions.treeCode" placeholder="请选择编码字段">
             <t-option
               v-for="(column, index) in info.columns"
               :key="index"
@@ -165,14 +192,14 @@
         </t-form-item>
       </t-col>
       <t-col :span="6">
-        <t-form-item>
+        <t-form-item name="info.tableOptions.treeParentCode">
           <template #label>
             树父编码字段
-            <t-tooltip content="树显示的父编码字段名， 如：parent_Id" placement="top">
+            <t-tooltip content="树的父编码字段名， 如：parent_Id" placement="top">
               <help-circle-filled-icon />
             </t-tooltip>
           </template>
-          <t-select v-model="info.treeParentCode" placeholder="请选择">
+          <t-select v-model="info.tableOptions.treeParentCode" placeholder="请选择父编码字段">
             <t-option
               v-for="(column, index) in info.columns"
               :key="index"
@@ -183,14 +210,14 @@
         </t-form-item>
       </t-col>
       <t-col :span="6">
-        <t-form-item>
+        <t-form-item name="info.tableOptions.treeName">
           <template #label>
             树名称字段
-            <t-tooltip content="树节点的显示名称字段名， 如：dept_name" placement="top">
+            <t-tooltip content="树节点名称字段， 如：dept_name" placement="top">
               <help-circle-filled-icon />
             </t-tooltip>
           </template>
-          <t-select v-model="info.treeName" placeholder="请选择">
+          <t-select v-model="info.tableOptions.treeName" placeholder="请选择树节点名称字段">
             <t-option
               v-for="(column, index) in info.columns"
               :key="index"
@@ -206,56 +233,29 @@
 
 <script lang="ts" setup>
 import { ChevronDownIcon, HelpCircleFilledIcon } from 'tdesign-icons-vue-next';
-import { getCurrentInstance, PropType, ref, toRefs, watch } from 'vue';
+import { getCurrentInstance, PropType, ref, toRefs } from 'vue';
 
 import { listMenu } from '@/api/system/menu';
 import { SysMenuVo } from '@/api/system/model/menuModel';
-import { GenTable } from '@/api/tool/model/genModel';
+import { GenTableVo } from '@/api/tool/model/genModel';
 
-const subColumns = ref([]);
 const menuOptions = ref<SysMenuVo[]>([]);
 const { proxy } = getCurrentInstance();
 
 const props = defineProps({
   info: {
-    type: Object as PropType<GenTable>,
-    default: null,
-  },
-  tables: {
-    type: Array as PropType<GenTable[]>,
+    type: Object as PropType<GenTableVo>,
     default: null,
   },
 });
 const { info } = toRefs(props);
 
-function tplSelectChange(value: string) {
-  if (value !== 'sub') {
-    info.value.subTableName = '';
-    info.value.subTableFkName = '';
-  }
-}
-function setSubTableColumns(value: string) {
-  for (const item in props.tables) {
-    const name = props.tables[item].tableName;
-    if (value === name) {
-      subColumns.value = props.tables[item].columns;
-      break;
-    }
-  }
-}
 /** 查询菜单下拉树结构 */
 function getMenuTreeselect() {
   listMenu().then((response) => {
     menuOptions.value = proxy.handleTree(response.data, 'menuId');
   });
 }
-
-watch(
-  () => props.info.subTableName,
-  (val) => {
-    setSubTableColumns(val);
-  },
-);
 
 getMenuTreeselect();
 </script>

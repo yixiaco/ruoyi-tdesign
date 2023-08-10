@@ -1,9 +1,12 @@
 package org.dromara.generator.service;
 
-import org.dromara.common.mybatis.core.page.PageQuery;
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
+import org.dromara.generator.domain.bo.GenTableBo;
+import org.dromara.generator.domain.query.GenTableQuery;
+import org.dromara.generator.domain.vo.GenTableVo;
 
 import java.util.List;
 import java.util.Map;
@@ -13,7 +16,7 @@ import java.util.Map;
  *
  * @author Lion Li
  */
-public interface IGenTableService {
+public interface IGenTableService extends IService<GenTable> {
 
     /**
      * 查询业务字段列表
@@ -26,18 +29,18 @@ public interface IGenTableService {
     /**
      * 查询业务列表
      *
-     * @param genTable 业务信息
+     * @param query 查询对象
      * @return 业务集合
      */
-    TableDataInfo<GenTable> selectPageGenTableList(GenTable genTable);
+    TableDataInfo<GenTableVo> selectPageGenTableList(GenTableQuery query);
 
     /**
      * 查询据库列表
      *
-     * @param genTable 业务信息
+     * @param query 查询对象
      * @return 数据库表集合
      */
-    TableDataInfo<GenTable> selectPageDbTableList(GenTable genTable, PageQuery pageQuery);
+    TableDataInfo<GenTableVo> selectPageDbTableList(GenTableQuery query);
 
     /**
      * 查询据库列表
@@ -46,14 +49,14 @@ public interface IGenTableService {
      * @param dataName   数据源名称
      * @return 数据库表集合
      */
-    List<GenTable> selectDbTableListByNames(String[] tableNames, String dataName);
+    List<GenTableVo> selectDbTableListByNames(String[] tableNames, String dataName);
 
     /**
      * 查询所有表信息
      *
      * @return 表信息集合
      */
-    List<GenTable> selectGenTableAll();
+    List<GenTableVo> selectGenTableAll();
 
     /**
      * 查询业务信息
@@ -61,14 +64,14 @@ public interface IGenTableService {
      * @param id 业务ID
      * @return 业务信息
      */
-    GenTable selectGenTableById(Long id);
+    GenTableVo selectGenTableById(Long id);
 
     /**
      * 修改业务
      *
-     * @param genTable 业务信息
+     * @param tableBo 业务信息
      */
-    void updateGenTable(GenTable genTable);
+    void updateGenTable(GenTableBo tableBo);
 
     /**
      * 删除业务信息
@@ -83,7 +86,7 @@ public interface IGenTableService {
      * @param tableList 导入表列表
      * @param dataName  数据源名称
      */
-    void importGenTable(List<GenTable> tableList, String dataName);
+    void importGenTable(List<GenTableVo> tableList, String dataName);
 
     /**
      * 预览代码
@@ -92,6 +95,13 @@ public interface IGenTableService {
      * @return 预览数据列表
      */
     Map<String, String> previewCode(Long tableId);
+
+    /**
+     * 临时预览代码
+     *
+     * @param tableBo 业务信息
+     */
+    Map<String, String> tempPreviewCode(GenTableBo tableBo);
 
     /**
      * 生成代码（下载方式）
@@ -126,7 +136,7 @@ public interface IGenTableService {
     /**
      * 修改保存参数校验
      *
-     * @param genTable 业务信息
+     * @param tableBo 业务信息
      */
-    void validateEdit(GenTable genTable);
+    void validateEdit(GenTableBo tableBo);
 }

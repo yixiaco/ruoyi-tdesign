@@ -11,6 +11,7 @@ import org.dromara.generator.config.GenConfig;
 import org.dromara.generator.constant.GenConstants;
 import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
+import org.dromara.generator.domain.vo.GenTableVo;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -58,7 +59,7 @@ public class GenUtils {
     /**
      * 初始化列属性字段
      */
-    public static void initColumnField(GenTableColumn column, GenTable table) {
+    public static void initColumnField(GenTableColumn column, GenTableVo table) {
         String dataType = getDbType(column.getColumnType());
         String columnName = column.getColumnName();
         column.setTableId(table.getTableId());
@@ -86,7 +87,7 @@ public class GenUtils {
             column.setJavaType(GenConstants.TYPE_TIME);
             column.setHtmlType(GenConstants.HTML_TIME);
         } else if (arraysContains(GenConstants.COLUMN_TYPE_NUMBER, dataType)) {
-            column.setHtmlType(GenConstants.HTML_INPUT);
+            column.setHtmlType(GenConstants.HTML_INPUT_NUMBER);
 
             // 如果是浮点型 统一用BigDecimal
             String[] str = StringUtils.split(StringUtils.substringBetween(column.getColumnType(), "(", ")"), StringUtils.SEPARATOR);

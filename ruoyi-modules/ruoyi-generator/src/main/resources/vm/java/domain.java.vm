@@ -13,7 +13,7 @@ import org.dromara.common.mybatis.core.domain.BaseEntity;
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-#if(!$useBO)
+#if(!$isUseBO)
 #foreach ($column in $columns)
 #if($column.isRequired())
 import org.dromara.common.core.validate.AddGroup;
@@ -54,7 +54,7 @@ public class ${ClassName} extends ${Entity} {
     /**
      * $column.columnComment
      */
-#if(!$useBO && $column.isRequired())
+#if(!$isUseBO && $column.isRequired())
 #set($Group0 = [])
 #if($column.isInsert() && $Group0.add('AddGroup.class'))#end
 #if(($column.isEdit() || $column.isPk()) && $Group0.add('EditGroup.class'))#end

@@ -3,12 +3,12 @@
 PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="${packageName}.mapper.${ClassName}Mapper">
-#if($useVO)
+#if($isUseVO)
 #set($vo="${ClassName}Vo")
 #else
 #set($vo=$ClassName)
 #end
-#if($useQuery)
+#if($isUseQuery)
 #set($query="${ClassName}Query")
 #set($className = $packageName + ".domain.query." + ${query})
 #else
@@ -19,7 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 #set($result = ${ClassName} + "Result")
     <resultMap id="$result" autoMapping="true" type="${packageName}.domain.${ClassName}">
     </resultMap>
-#if($useVO)
+#if($isUseVO)
     <resultMap id="${ClassName}ResultVo" autoMapping="true" type="${packageName}.domain.vo.${ClassName}Vo">
     </resultMap>
 #end
@@ -27,7 +27,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="select${vo}">
         select#foreach($column in $columns) ${dbName}.#if($GenUtil.isMysqlKeyword($column.columnName))`$column.columnName`#else$column.columnName#end#if($foreach.hasNext),#end#end from $tableName $dbName
     </sql>
-    <select id="queryList" parameterType="$className" resultMap="#if($useVO)${ClassName}ResultVo#else$result#end">
+#if($isUseQueryMethod || $isUseExportMethod)
+    <select id="queryList" parameterType="$className" resultMap="#if($isUseVO)${ClassName}ResultVo#else$result#end">
         <include refid="select${vo}"/>
         <where>
 #set($string = 'String')
@@ -44,41 +45,39 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 #if($columnName == 'del_flag')
             and $dbName.$columnName =#if($javaType == $string) '0'#else 0#end
 #end
-#if($column.isQuery == "1")
+#if($column.isQuery())
 #if($column.queryType == "EQ")
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName = #{$javaField}</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName = #{$javaField}</if>
 #elseif($queryType == "NE")
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName != #{$javaField}</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName != #{$javaField}</if>
 #elseif($queryType == "GT")
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName &gt; #{$javaField}</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName &gt; #{$javaField}</if>
 #elseif($queryType == "GE")
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName &gt;= #{$javaField}</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName &gt;= #{$javaField}</if>
 #elseif($queryType == "LT")
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName &lt; #{$javaField}</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName &lt; #{$javaField}</if>
 #elseif($queryType == "LE")
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName &lt;= #{$javaField}</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName &lt;= #{$javaField}</if>
 #elseif($queryType.equalsIgnoreCase("LIKE"))
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName like concat('%', #{$javaField}, '%')</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName like concat('%', #{$javaField}, '%')</if>
 #elseif($queryType.equalsIgnoreCase("NOT_LIKE"))
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName not like concat('%', #{$javaField}, '%')</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName not like concat('%', #{$javaField}, '%')</if>
 #elseif($queryType.equalsIgnoreCase("IS_NULL"))
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName is null</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName is null</if>
 #elseif($queryType.equalsIgnoreCase("IS_NOT_NULL"))
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName is not null</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName is not null</if>
 #elseif($queryType.equalsIgnoreCase("IN"))
-            <if test="$javaField != null and !${javaField}.isEmpty()">
-                and $dbName.$columnName in
-                <foreach collection="$javaField" index="index" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
+            <foreach collection="$javaField" index="index" item="item" open="and $dbName.$columnName in (" separator="," close=")" nullable="true">
+                #{item}
+            </foreach>
 #elseif($queryType.equalsIgnoreCase("BETWEEN"))
-    #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
             <if test="params.begin$AttrName != null and params.end$AttrName != null">and $dbName.$columnName between #{params.begin${AttrName}} and #{params.end${AttrName}}</if>
 #end
 #end
 #end
         </where>
     </select>
+#end
 
 </mapper>

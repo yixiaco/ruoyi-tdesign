@@ -1,18 +1,18 @@
 import { R, TableDataInfo } from '@/api/model/resultModel';
-import { GenTable, GenTableInfo } from '@/api/tool/model/genModel';
+import { GenTableForm, GenTableInfo, GenTableQuery, GenTableVo } from '@/api/tool/model/genModel';
 import { request } from '@/utils/request';
 
 // 查询生成表数据
-export function listTable(query: GenTable) {
-  return request.get<TableDataInfo<GenTable>>({
+export function listTable(query: GenTableQuery) {
+  return request.get<TableDataInfo<GenTableVo>>({
     url: '/tool/gen/list',
     params: query,
   });
 }
 
 // 查询db数据库列表
-export function listDbTable(query: GenTable) {
-  return request.get<TableDataInfo<GenTable>>({
+export function listDbTable(query: GenTableQuery) {
+  return request.get<TableDataInfo<GenTableVo>>({
     url: '/tool/gen/db/list',
     params: query,
   });
@@ -26,7 +26,7 @@ export function getGenTable(tableId: number | string) {
 }
 
 // 修改代码生成信息
-export function updateGenTable(data: GenTable) {
+export function updateGenTable(data: GenTableForm) {
   return request.put<R<void>>({
     url: '/tool/gen',
     data,
@@ -45,6 +45,14 @@ export function importTable(tables: string, dataName: string) {
 export function previewTable(tableId: number) {
   return request.get<R<Record<string, string>>>({
     url: `/tool/gen/preview/${tableId}`,
+  });
+}
+
+// 临时预览生成代码
+export function tempPreviewTable(data: GenTableForm) {
+  return request.post<R<Record<string, string>>>({
+    url: `/tool/gen/temp/preview`,
+    data,
   });
 }
 

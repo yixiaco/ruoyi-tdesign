@@ -5,32 +5,36 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="org.dromara.generator.mapper.GenTableMapper">
 
     <!-- 多结构嵌套自动映射需带上每个实体的主键id 否则映射会失败 -->
-    <resultMap type="org.dromara.generator.domain.GenTable" id="GenTableResult">
+    <resultMap id="GenTableResult" type="org.dromara.generator.domain.GenTable">
+        <id property="tableId" column="table_id" />
+        <collection property="columns" javaType="java.util.List" resultMap="GenTableColumnResult" />
+    </resultMap>
+    <resultMap id="GenTableResultVo" type="org.dromara.generator.domain.vo.GenTableVo">
         <id property="tableId" column="table_id" />
         <collection property="columns" javaType="java.util.List" resultMap="GenTableColumnResult" />
     </resultMap>
 
-    <resultMap type="org.dromara.generator.domain.GenTableColumn" id="GenTableColumnResult">
+    <resultMap id="GenTableColumnResult" type="org.dromara.generator.domain.GenTableColumn">
         <id property="columnId" column="column_id"/>
     </resultMap>
 
-    <select id="selectPageDbTableList" resultMap="GenTableResult">
+    <select id="selectDbTableList" resultMap="GenTableResultVo">
         <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isMySql()">
             select table_name, table_comment, create_time, update_time
             from information_schema.tables
             where table_schema = database()
-            AND table_name NOT LIKE 'pj_%' AND table_name NOT LIKE 'gen_%'
-            <if test="genTable.params.genTableNames != null and genTable.params.genTableNames.size > 0">
+            AND table_name NOT LIKE 'pj_%'
+            <if test="params.genTableNames != null and params.genTableNames.size > 0">
                 AND table_name NOT IN
-                <foreach collection="genTable.params.genTableNames" open="(" close=")" separator="," item="item">
+                <foreach collection="params.genTableNames" open="(" close=")" separator="," item="item">
                     #{item}
                 </foreach>
             </if>
-            <if test="genTable.tableName != null and genTable.tableName != ''">
-                AND lower(table_name) like lower(concat('%', #{genTable.tableName}, '%'))
+            <if test="tableName != null and tableName != ''">
+                AND lower(table_name) like lower(concat('%', #{tableName}, '%'))
             </if>
-            <if test="genTable.tableComment != null and genTable.tableComment != ''">
-                AND lower(table_comment) like lower(concat('%', #{genTable.tableComment}, '%'))
+            <if test="tableComment != null and tableComment != ''">
+                AND lower(table_comment) like lower(concat('%', #{tableComment}, '%'))
             </if>
             order by create_time desc
         </if>
@@ -40,18 +44,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             where dt.table_name = dtc.table_name
             and dt.table_name = uo.object_name
             and uo.object_type = 'TABLE'
-            AND dt.table_name NOT LIKE 'pj_%' AND dt.table_name NOT LIKE 'GEN_%'
-            <if test="genTable.params.genTableNames != null and genTable.params.genTableNames.size > 0">
+            AND dt.table_name NOT LIKE 'pj_%'
+            <if test="params.genTableNames != null and params.genTableNames.size > 0">
                 AND lower(dt.table_name) NOT IN
-                <foreach collection="genTable.params.genTableNames" open="(" close=")" separator="," item="item">
+                <foreach collection="params.genTableNames" open="(" close=")" separator="," item="item">
                     #{item}
                 </foreach>
             </if>
-            <if test="genTable.tableName != null and genTable.tableName != ''">
-                AND lower(dt.table_name) like lower(concat(concat('%', #{genTable.tableName}), '%'))
+            <if test="tableName != null and tableName != ''">
+                AND lower(dt.table_name) like lower(concat(concat('%', #{tableName}), '%'))
             </if>
-            <if test="genTable.tableComment != null and genTable.tableComment != ''">
-                AND lower(dtc.comments) like lower(concat(concat('%', #{genTable.tableComment}), '%'))
+            <if test="tableComment != null and tableComment != ''">
+                AND lower(dtc.comments) like lower(concat(concat('%', #{tableComment}), '%'))
             </if>
             order by create_time desc
         </if>
@@ -69,18 +73,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     AND n.nspname = 'public'::name
                     AND n.nspname <![CDATA[ <> ]]> ''::name
             ) list_table
-            where table_name NOT LIKE 'pj_%' AND table_name NOT LIKE 'gen_%'
-            <if test="genTable.params.genTableNames != null and genTable.params.genTableNames.size > 0">
+            where table_name NOT LIKE 'pj_%'
+            <if test="params.genTableNames != null and params.genTableNames.size > 0">
                 AND table_name NOT IN
-                <foreach collection="genTable.params.genTableNames" open="(" close=")" separator="," item="item">
+                <foreach collection="params.genTableNames" open="(" close=")" separator="," item="item">
                     #{item}
                 </foreach>
             </if>
-            <if test="genTable.tableName != null and genTable.tableName != ''">
-                AND lower(table_name) like lower(concat('%', #{genTable.tableName}, '%'))
+            <if test="tableName != null and tableName != ''">
+                AND lower(table_name) like lower(concat('%', #{tableName}, '%'))
             </if>
-            <if test="genTable.tableComment != null and genTable.tableComment != ''">
-                AND lower(table_comment) like lower(concat('%', #{genTable.tableComment}, '%'))
+            <if test="tableComment != null and tableComment != ''">
+                AND lower(table_comment) like lower(concat('%', #{tableComment}, '%'))
             </if>
             order by create_time desc
         </if>
@@ -92,27 +96,27 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             FROM SYSOBJECTS D
                 INNER JOIN SYS.EXTENDED_PROPERTIES F ON D.ID = F.MAJOR_ID
                     AND F.MINOR_ID = 0 AND D.XTYPE = 'U' AND D.NAME != 'DTPROPERTIES'
-                    AND D.NAME NOT LIKE 'pj_%' AND D.NAME NOT LIKE 'gen_%'
-            <if test="genTable.params.genTableNames != null and genTable.params.genTableNames.size > 0">
+                    AND D.NAME NOT LIKE 'pj_%'
+            <if test="params.genTableNames != null and params.genTableNames.size > 0">
                 AND D.NAME NOT IN
-                <foreach collection="genTable.params.genTableNames" open="(" close=")" separator="," item="item">
+                <foreach collection="params.genTableNames" open="(" close=")" separator="," item="item">
                     #{item}
                 </foreach>
             </if>
-            <if test="genTable.tableName != null and genTable.tableName != ''">
-                AND lower(D.NAME) like lower(concat(N'%', N'${genTable.tableName}', N'%'))
+            <if test="tableName != null and tableName != ''">
+                AND lower(D.NAME) like lower(concat(N'%', N'${tableName}', N'%'))
             </if>
-            <if test="genTable.tableComment != null and genTable.tableComment != ''">
-                AND lower(CAST(F.VALUE AS nvarchar)) like lower(concat(N'%', N'${genTable.tableComment}', N'%'))
+            <if test="tableComment != null and tableComment != ''">
+                AND lower(CAST(F.VALUE AS nvarchar)) like lower(concat(N'%', N'${tableComment}', N'%'))
             </if>
             order by crdate desc
         </if>
     </select>
 
-    <select id="selectDbTableListByNames" resultMap="GenTableResult">
+    <select id="selectDbTableListByNames" resultMap="GenTableResultVo">
         <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isMySql()">
             select table_name, table_comment, create_time, update_time from information_schema.tables
-            where table_name NOT LIKE 'pj_%' and table_name NOT LIKE 'gen_%' and table_schema = (select database())
+            where table_name NOT LIKE 'pj_%' and table_schema = (select database())
             and table_name in
             <foreach collection="array" item="name" open="(" separator="," close=")">
                  #{name}
@@ -124,7 +128,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             where dt.table_name = dtc.table_name
             and dt.table_name = uo.object_name
             and uo.object_type = 'TABLE'
-            AND dt.table_name NOT LIKE 'pj_%' AND dt.table_name NOT LIKE 'GEN_%'
+            AND dt.table_name NOT LIKE 'pj_%'
             and lower(dt.table_name) in
             <foreach collection="array" item="name" open="(" separator="," close=")">
                 #{name}
@@ -144,7 +148,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     AND n.nspname = 'public'::name
                     AND n.nspname <![CDATA[ <> ]]> ''::name
             ) list_table
-            where table_name NOT LIKE 'pj_%' and table_name NOT LIKE 'gen_%'
+            where table_name NOT LIKE 'pj_%'
             and table_name in
             <foreach collection="array" item="name" open="(" separator="," close=")">
                 #{name}
@@ -158,7 +162,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             FROM SYSOBJECTS D
                 INNER JOIN SYS.EXTENDED_PROPERTIES F ON D.ID = F.MAJOR_ID
                     AND F.MINOR_ID = 0 AND D.XTYPE = 'U' AND D.NAME != 'DTPROPERTIES'
-                    AND D.NAME NOT LIKE 'pj_%' AND D.NAME NOT LIKE 'gen_%'
+                    AND D.NAME NOT LIKE 'pj_%'
                     AND D.NAME in
                     <foreach collection="array" item="name" open="(" separator="," close=")">
                         #{name}
@@ -169,7 +173,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectTableByName" parameterType="String" resultMap="GenTableResult">
         <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isMySql()">
             select table_name, table_comment, create_time, update_time from information_schema.tables
-            where table_name NOT LIKE 'pj_%' and table_name NOT LIKE 'gen_%' and table_schema = (select database())
+            where table_name NOT LIKE 'pj_%' and table_schema = (select database())
             and table_name = #{tableName}
         </if>
         <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isOracle()">
@@ -178,7 +182,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             where dt.table_name = dtc.table_name
             and dt.table_name = uo.object_name
             and uo.object_type = 'TABLE'
-            AND dt.table_name NOT LIKE 'pj_%' AND dt.table_name NOT LIKE 'GEN_%'
+            AND dt.table_name NOT LIKE 'pj_%'
             AND dt.table_name NOT IN (select table_name from gen_table)
             and lower(dt.table_name) = #{tableName}
         </if>
@@ -196,7 +200,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     AND n.nspname = 'public'::name
                     AND n.nspname <![CDATA[ <> ]]> ''::name
             ) list_table
-            where table_name NOT LIKE 'pj_%' and table_name NOT LIKE 'gen_%'
+            where table_name NOT LIKE 'pj_%'
             and table_name = #{tableName}
         </if>
         <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isSqlServer()">
@@ -207,12 +211,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             FROM SYSOBJECTS D
                 INNER JOIN SYS.EXTENDED_PROPERTIES F ON D.ID = F.MAJOR_ID
                     AND F.MINOR_ID = 0 AND D.XTYPE = 'U' AND D.NAME != 'DTPROPERTIES'
-                    AND D.NAME NOT LIKE 'pj_%' AND D.NAME NOT LIKE 'gen_%'
+                    AND D.NAME NOT LIKE 'pj_%'
                     AND D.NAME = #{tableName}
         </if>
     </select>
 
-    <select id="selectGenTableById" parameterType="Long" resultMap="GenTableResult">
+    <select id="selectGenTableById" parameterType="Long" resultMap="GenTableResultVo">
         SELECT t.table_id, t.data_name, t.table_name, t.table_comment, t.class_name, t.tpl_category, t.package_name, t.module_name, t.business_name, t.function_name, t.function_author, t.gen_type, t.gen_path, t.options, t.remark,
                c.column_id, c.column_name, c.column_comment, c.column_type, c.java_type, c.java_field, c.is_pk, c.is_increment, c.is_required, c.is_insert, c.is_edit, c.is_list, c.is_query, c.is_detail, c.is_sort, c.query_type, c.html_type, c.dict_type, c.sort
         FROM gen_table t
@@ -220,7 +224,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where t.table_id = #{tableId} order by c.sort
     </select>
 
-    <select id="selectGenTableByName" parameterType="String" resultMap="GenTableResult">
+    <select id="selectGenTableByName" parameterType="String" resultMap="GenTableResultVo">
         SELECT t.table_id, t.data_name, t.table_name, t.table_comment, t.class_name, t.tpl_category, t.package_name, t.module_name, t.business_name, t.function_name, t.function_author, t.gen_type, t.gen_path, t.options, t.remark,
                c.column_id, c.column_name, c.column_comment, c.column_type, c.java_type, c.java_field, c.is_pk, c.is_increment, c.is_required, c.is_insert, c.is_edit, c.is_list, c.is_query,c.is_detail, c.is_sort, c.query_type, c.html_type, c.dict_type, c.sort
         FROM gen_table t
@@ -228,7 +232,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         where t.table_name = #{tableName} order by c.sort
     </select>
 
-    <select id="selectGenTableAll" parameterType="String" resultMap="GenTableResult">
+    <select id="selectGenTableAll" parameterType="String" resultMap="GenTableResultVo">
         SELECT t.table_id, t.data_name, t.table_name, t.table_comment, t.class_name, t.tpl_category, t.package_name, t.module_name, t.business_name, t.function_name, t.function_author, t.options, t.remark,
                c.column_id, c.column_name, c.column_comment, c.column_type, c.java_type, c.java_field, c.is_pk, c.is_increment, c.is_required, c.is_insert, c.is_edit, c.is_list, c.is_query,c.is_detail, c.is_sort, c.query_type, c.html_type, c.dict_type, c.sort
         FROM gen_table t

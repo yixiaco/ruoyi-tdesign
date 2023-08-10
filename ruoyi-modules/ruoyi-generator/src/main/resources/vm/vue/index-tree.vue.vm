@@ -1,5 +1,8 @@
+#set($modal = '$modal')
+#set($addOrUpdate = $addOrUpdate)
 <template>
   <t-card>
+#if($isUseQueryMethod)
     <t-space direction="vertical" style="width: 100%">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
 #foreach($column in $columns)
@@ -12,7 +15,7 @@
 #else
 #set($comment=$column.columnComment)
 #end
-#if($column.htmlType == "input" || $column.htmlType == "textarea")
+#if($column.htmlType == "input" || $column.htmlType == "input-number" || $column.htmlType == "textarea")
         <t-form-item label="${comment}" name="${column.javaField}">
           <t-input v-model="queryParams.${column.javaField}" placeholder="请输入${comment}" clearable @enter="handleQuery" />
         </t-form-item>
@@ -89,18 +92,22 @@
         <template #topContent>
           <t-row>
             <t-col flex="auto">
+#if($isUseAddMethod)
               <t-button v-hasPermi="['${moduleName}:${businessName}:add']" theme="primary" @click="handleAdd()">
                 <template #icon> <add-icon /></template>
                 新增
               </t-button>
+#end
               <t-button theme="default" variant="outline" @click="toggleExpandAll">
                 <template #icon> <unfold-more-icon /> </template>
                 展开/折叠
               </t-button>
+#if($isUseExportMethod)
               <t-button v-hasPermi="['${moduleName}:${businessName}:export']" theme="default" variant="outline" @click="handleExport">
                 <template #icon> <download-icon /> </template>
                 导出
               </t-button>
+#end
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -135,24 +142,36 @@
         </template>
 #end
 #end
+#if($isUseAddMethod || $isUseDetailMethod || $isUseEditMethod || $isUseRemoveMethod)
         <template #operation="{ row }">
           <t-space :size="8" break-line>
+#if($isUseDetailMethod)
             <t-link v-hasPermi="['${moduleName}:${businessName}:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
               <browse-icon />详情
             </t-link>
+#end
+#if($isUseEditMethod)
             <t-link v-hasPermi="['${moduleName}:${businessName}:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
               <edit-icon />修改
             </t-link>
+#end
+#if($isUseAddMethod)
             <t-link v-hasPermi="['${moduleName}:${businessName}:add']" theme="primary" hover="color" @click.stop="handleAdd(row)">
               <add-icon />新增
             </t-link>
+#end
+#if($isUseRemoveMethod)
             <t-link v-hasPermi="['${moduleName}:${businessName}:remove']" theme="danger" hover="color" @click.stop="handleDelete(row)">
               <delete-icon />删除
             </t-link>
+#end
           </t-space>
         </template>
+#end
       </t-enhanced-table>
     </t-space>
+#end
+#if($addOrUpdate)
 
     <!-- 添加或修改${functionName}对话框 -->
     <t-dialog
@@ -202,6 +221,10 @@
 #elseif($column.htmlType == "input")
         <t-form-item label="${comment}" name="${field}">
           <t-input v-model="form.${field}" placeholder="请输入${comment}" clearable />
+        </t-form-item>
+#elseif($column.htmlType == "input-number")
+        <t-form-item label="${comment}" name="${field}">
+          <t-input-number v-model="form.${field}" placeholder="请输入" />
         </t-form-item>
 #elseif($column.htmlType == "imageUpload")
         <t-form-item label="${comment}" name="${field}">
@@ -292,6 +315,8 @@
 #end
       </t-form>
     </t-dialog>
+#end
+#if($isUseDetailMethod)
 
     <!-- ${functionName}详情 -->
     <t-dialog v-model:visible="openView" header="${functionName}详情" width="700px" attach="body" :footer="false">
@@ -306,17 +331,18 @@
 #else
 #set($comment=$column.columnComment)
 #end
-#if($column.isDetail() && $column.htmlType == "imageUpload")
+#if($column.isDetail())
+#if($column.htmlType == "imageUpload")
             <t-col :span="6">
               <t-form-item label="${comment}">
                 <image-preview :src="form.${javaField}" :width="60" :height="60" />
               </t-form-item>
             </t-col>
-#elseif($column.isList() && $column.htmlType == "datetime")
+#elseif($column.htmlType == "datetime")
             <t-col :span="6">
               <t-form-item label="${comment}">{{ parseTime(form.${javaField}) }}</t-form-item>
             </t-col>
-#elseif($column.isDetail() && $column.dictType && "" != $column.dictType)
+#elseif($column.dictType && "" != $column.dictType)
             <t-col :span="6">
               <t-form-item label="${comment}">
 #if($column.htmlType == "checkbox")
@@ -326,24 +352,26 @@
 #end
               </t-form-item>
             </t-col>
-#elseif($column.isDetail() && $column.htmlType == "textarea")
+#elseif($column.htmlType == "textarea")
             <t-col :span="12">
               <t-form-item label="${comment}">{{ form.${javaField} }}</t-form-item>
             </t-col>
-#elseif($column.isDetail() && $column.htmlType == "editor")
+#elseif($column.htmlType == "editor")
             <t-col :span="12">
               <t-form-item label="${comment}"><div v-html="form.${javaField}"></div></t-form-item>
             </t-col>
-#elseif($column.isDetail())
+#else
             <t-col :span="6">
               <t-form-item label="${comment}">{{ form.${javaField} }}</t-form-item>
             </t-col>
+#end
 #end
 #end
           </t-row>
         </t-form>
       </t-loading>
     </t-dialog>
+#end
   </t-card>
 </template>
 <script lang="ts">
@@ -352,48 +380,69 @@ export default {
 };
 </script>
 <script lang="ts" setup>
+#if($isUseQueryMethod)
 import {
+#if($isUseAddMethod)
   AddIcon,
+#end
+#if($isUseDetailMethod)
   BrowseIcon,
+#end
+#if($isUseRemoveMethod)
   DeleteIcon,
+#end
+#if($isUseExportMethod)
   DownloadIcon,
+#end
+#if($isUseEditMethod)
   EditIcon,
+#end
   RefreshIcon,
   SearchIcon,
   SettingIcon,
   UnfoldMoreIcon,
 } from 'tdesign-icons-vue-next';
+#end
 import {
+#if($isUseQueryMethod)
   EnhancedTableInstanceFunctions,
+#end
+#if($addOrUpdate)
   FormInstanceFunctions,
   FormRule,
+#end
+#if($isUseQueryMethod)
   PrimaryTableCol,
+#end
+#if($addOrUpdate)
   SubmitContext,
-#if($hasSorting)
+#end
+#if($hasSorting && $isUseQueryMethod)
   TableSort,
 #end
 } from 'tdesign-vue-next';
 import { getCurrentInstance, ref } from 'vue';
 
-import { list${BusinessName}, get${BusinessName}, del${BusinessName}, add${BusinessName}, update${BusinessName} } from '@/api/${moduleName}/${businessName}';
-import { #if(!$useBO || !$useQuery || !$useVO)${ClassName}#if($useBO || $useQuery || $useVO), #end#end#if($useBO)${ClassName}Form#if($useQuery || $useVO), #end#end#if($useQuery)${ClassName}Query#if($useVO), #end#end#if($useVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
+#if($isUseQueryMethod || $isUseAddMethod || $isUseEditMethod || $isUseDetailMethod || $isUseRemoveMethod)
+import { #if($isUseQueryMethod)list${BusinessName}, #end#if($isUseEditMethod || $isUseDetailMethod)get${BusinessName}, #end#if($isUseRemoveMethod)del${BusinessName}, #end#if($isUseAddMethod)add${BusinessName}, #end#if($isUseEditMethod)update${BusinessName}#end } from '@/api/${moduleName}/${businessName}';
+#end
+import { #if(!$isUseBO || !$isUseQuery || !$isUseVO)${ClassName}#if($isUseBO || $isUseQuery || $isUseVO), #end#end#if($isUseBO && $addOrUpdate)${ClassName}Form#if($isUseQuery || $isUseVO), #end#end#if($isUseQuery && $isUseQueryMethod)${ClassName}Query#if($isUseVO), #end#end#if($isUseVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
 #foreach($column in $columns)
 #if($column.htmlType == "editor")
 import Editor from '@/components/editor/index.vue';
 #end
 #end
-
-#if($useVO)
+#if($isUseVO)
 #set($vo="${ClassName}Vo")
 #else
 #set($vo=$ClassName)
 #end
-#if($useQuery)
+#if($isUseQuery)
 #set($query="${ClassName}Query")
 #else
 #set($query=$ClassName)
 #end
-#if($useBO)
+#if($isUseBO)
 #set($bo="${ClassName}Form")
 #else
 #set($bo=$ClassName)
@@ -405,28 +454,36 @@ const { proxy } = getCurrentInstance();
 const { ${dictsNoSymbol} } = proxy.useDict(${dicts});
 #end
 
-const ${businessName}List = ref<${vo}[]>([]);
-const ${businessName}Options = ref([]);
-const open = ref(false);
+#if($isUseDetailMethod)
 const openView = ref(false);
 const openViewLoading = ref(false);
-const buttonLoading = ref(false);
+#end
+#if($isUseQueryMethod)
+const ${businessName}List = ref<${vo}[]>([]);
 const loading = ref(false);
 const columnControllerVisible = ref(false);
 const showSearch = ref(true);
-const title = ref('');
 const isExpandAll = ref(true);
-#if($hasSorting)
+const tableRef = ref<EnhancedTableInstanceFunctions>(null);
+#end
+#if($hasSorting && $isUseQueryMethod)
 const sort = ref<TableSort>(null);
 #end
-const tableRef = ref<EnhancedTableInstanceFunctions>(null);
+#if($addOrUpdate)
+const ${businessName}Options = ref([]);
+const open = ref(false);
+const buttonLoading = ref(false);
+const title = ref('');
 const ${businessName}Ref = ref<FormInstanceFunctions>(null);
+#end
 #foreach ($column in $columns)
 #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
 const dateRange${AttrName} = ref([]);
 #end
 #end
+#if($addOrUpdate)
+
 const rules = ref<Record<string, Array<FormRule>>>({
 #foreach ($column in $columns)
 #if($column.isInsert() || $column.isEdit())
@@ -442,9 +499,11 @@ const rules = ref<Record<string, Array<FormRule>>>({
 #end
 #end
 });
+#end
+#if($isUseQueryMethod)
+
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
-  { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
 #foreach($column in $columns)
 #set($javaField=$column.javaField)
 #set($parentheseIndex=$column.columnComment.indexOf("（"))
@@ -468,10 +527,16 @@ const columns = ref<Array<PrimaryTableCol>>([
 #end
 #end
 #end
-  { title: `操作`, colKey: 'operation', align: 'center', width: 240#if($column.isSorting()), sorter: true#end },
+#if($isUseAddMethod || $isUseDetailMethod || $isUseEditMethod || $isUseRemoveMethod)
+  { title: `操作`, colKey: 'operation', align: 'center', width: 240 },
+#end
 ]);
+#end
+#if($addOrUpdate || $isUseDetailMethod)
 // 提交表单对象
-const form = ref<#if($useVO && $useBO)$vo & $bo#elseif($useVO)$vo#elseif($useBO)$bo#else$ClassName#end>({});
+const form = ref<$vo#if($isUseBO && $addOrUpdate) & $bo#end>({});
+#end
+#if($isUseQueryMethod)
 // 查询对象
 const queryParams = ref<${query}>({
 #foreach ($column in $columns)
@@ -480,6 +545,8 @@ const queryParams = ref<${query}>({
 #end
 #end
 });
+#end
+#if($isUseQueryMethod)
 
 /** 查询${functionName}列表 */
 function getList() {
@@ -498,17 +565,8 @@ function getList() {
     })
     .finally(() => (loading.value = false));
 }
-
-/** 查询${functionName}下拉树结构 */
-function getTreeselect() {
-  list${BusinessName}().then((response) => {
-    ${businessName}Options.value = [];
-    // @ts-ignore
-    const data = { ${treeCode}: 0, ${treeName}: '顶级节点', children: [] };
-    data.children = proxy.handleTree(response.data, '${treeCode}', '${treeParentCode}');
-    ${businessName}Options.value = [data];
-  });
-}
+#end
+#if($isUseAddMethod || $isUseDetailMethod || $isUseEditMethod)
 
 // 表单重置
 function reset() {
@@ -521,8 +579,12 @@ function reset() {
 #end
 #end
   };
+#if($addOrUpdate)
   proxy.resetForm('${businessName}Ref');
+#end
 }
+#end
+#if($isUseQueryMethod)
 
 /** 搜索按钮操作 */
 function handleQuery() {
@@ -544,8 +606,8 @@ function resetQuery() {
   handleQuery();
 #end
 }
-
 #if($hasSorting)
+
 /** 排序触发事件 */
 function handleSortChange(value?: TableSort) {
   sort.value = value;
@@ -558,20 +620,7 @@ function handleSortChange(value?: TableSort) {
   }
   getList();
 }
-
 #end
-/** 新增按钮操作 */
-function handleAdd(row?: ${vo}) {
-  reset();
-  getTreeselect();
-  if (row != null && row.${treeCode}) {
-    form.value.${treeParentCode} = row.${treeCode};
-  } else {
-    form.value.${treeParentCode} = 0;
-  }
-  open.value = true;
-  title.value = '添加${functionName}';
-}
 
 /** 展开/折叠操作 */
 function toggleExpandAll() {
@@ -589,6 +638,25 @@ function refreshExpandAll() {
     }
   });
 }
+#end
+#if($isUseAddMethod)
+
+/** 新增按钮操作 */
+function handleAdd(row?: ${vo}) {
+  reset();
+#if($isUseQueryMethod)
+  getTreeselect();
+#end
+  if (row != null && row.${treeCode}) {
+    form.value.${treeParentCode} = row.${treeCode};
+  } else {
+    form.value.${treeParentCode} = 0;
+  }
+  open.value = true;
+  title.value = '添加${functionName}';
+}
+#end
+#if($isUseDetailMethod)
 
 /** 详情按钮操作 */
 function handleDetail(row: ${vo}) {
@@ -601,6 +669,8 @@ function handleDetail(row: ${vo}) {
     openViewLoading.value = false;
   });
 }
+#end
+#if($isUseEditMethod)
 
 /** 修改按钮操作 */
 async function handleUpdate(row?: ${vo}) {
@@ -622,6 +692,21 @@ async function handleUpdate(row?: ${vo}) {
 #end
   });
 }
+#end
+#if($addOrUpdate)
+#if($isUseQueryMethod)
+
+/** 查询${functionName}下拉树结构 */
+function getTreeselect() {
+  list${BusinessName}().then((response) => {
+    ${businessName}Options.value = [];
+    // @ts-ignore
+    const data = { ${treeCode}: 0, ${treeName}: '顶级节点', children: [] };
+    data.children = proxy.handleTree(response.data, '${treeCode}', '${treeParentCode}');
+    ${businessName}Options.value = [data];
+  });
+}
+#end
 
 /** 提交按钮 */
 function onConfirm() {
@@ -637,49 +722,68 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
     form.value.$column.javaField = form.value.${column.javaField}.join(",");
 #end
 #end
-    const msgLoading = proxy.$modal.msgLoading('提交中...');
+    const msgLoading = proxy.${modal}.msgLoading('提交中...');
     if (form.value.${pkColumn.javaField}) {
+#if($isUseEditMethod)
       update${BusinessName}(form.value)
         .then(() => {
-          proxy.$modal.msgSuccess('修改成功');
+          proxy.${modal}.msgSuccess('修改成功');
           open.value = false;
+#if($isUseQueryMethod)
           getList();
+#end
         })
         .finally(() => {
           buttonLoading.value = false;
-          proxy.$modal.msgClose(msgLoading);
+          proxy.${modal}.msgClose(msgLoading);
         });
+#else
+      proxy.${modal}.msgError('不支持编辑${functionName}');
+#end
     } else {
+#if($isUseAddMethod)
       add${BusinessName}(form.value)
         .then(() => {
-          proxy.$modal.msgSuccess('新增成功');
+          proxy.${modal}.msgSuccess('新增成功');
           open.value = false;
+#if($isUseQueryMethod)
           getList();
+#end
         })
         .finally(() => {
           buttonLoading.value = false;
-          proxy.$modal.msgClose(msgLoading);
+          proxy.${modal}.msgClose(msgLoading);
         });
+#else
+      proxy.${modal}.msgError('不支持新增${functionName}');
+#end
     }
   } else {
-    proxy.$modal.msgError(firstError);
+    proxy.${modal}.msgError(firstError);
   }
 }
+#end
+#if($isUseRemoveMethod)
 
 /** 删除按钮操作 */
 function handleDelete(row: ${vo}) {
   proxy.#[[$modal]]#.confirm(`是否确认删除${functionName}编号为#[[$]]#{row.${pkColumn.javaField}}的数据项？`, () => {
-    const msgLoading = proxy.$modal.msgLoading('正在删除中...');
+    const msgLoading = proxy.${modal}.msgLoading('正在删除中...');
     return del${BusinessName}(row.${pkColumn.javaField})
       .then(() => {
+#if($isUseQueryMethod)
         getList();
-        proxy.$modal.msgSuccess('删除成功');
+#end
+        proxy.${modal}.msgSuccess('删除成功');
       })
       .finally(() => {
-        proxy.$modal.msgClose(msgLoading);
+        proxy.${modal}.msgClose(msgLoading);
       });
   });
 }
+#end
+#if($isUseQueryMethod)
+#if($isUseExportMethod)
 
 /** 导出按钮操作 */
 function handleExport() {
@@ -691,6 +795,8 @@ function handleExport() {
     `${businessName}_#[[${new Date().getTime()}]]#.xlsx`,
   );
 }
+#end
 
 getList();
+#end
 </script>
