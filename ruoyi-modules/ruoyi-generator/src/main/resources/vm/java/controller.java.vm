@@ -1,26 +1,50 @@
 package ${packageName}.controller;
 
+#if($isUseQueryMethod || $isUseExportMethod || $isUseRemoveMethod)
 import java.util.List;
+#end
 
+#if($isUseExportMethod)
 import jakarta.servlet.http.HttpServletResponse;
+#end
+#if($isUseEditMethod || $isUseDetailMethod || $isUseRemoveMethod)
 import jakarta.validation.constraints.*;
+#end
+#if($isUseQueryMethod || $isUseDetailMethod || $isUseAddMethod|| $isUseEditMethod || $isUseRemoveMethod)
 import cn.dev33.satoken.annotation.SaCheckPermission;
+#end
+#if($isUseEditMethod || $isUseDetailMethod)
 import cn.dev33.satoken.annotation.SaMode;
+#end
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.validation.annotation.Validated;
+#if($isUseAddMethod|| $isUseEditMethod)
 import org.dromara.common.idempotent.annotation.RepeatSubmit;
+#end
+#if($isUseExportMethod || $isUseAddMethod || $isUseEditMethod || $isUseRemoveMethod)
 import org.dromara.common.log.annotation.Log;
+#end
 import org.dromara.common.web.core.BaseController;
+#if($isUseQueryMethod && $table.isTree() || $isUseDetailMethod || $isUseAddMethod || $isUseEditMethod || $isUseRemoveMethod)
 import org.dromara.common.core.domain.R;
+#end
+#if($isUseAddMethod)
 import org.dromara.common.core.validate.AddGroup;
+#end
+#if($isUseEditMethod)
 import org.dromara.common.core.validate.EditGroup;
+#end
+#if($isUseExportMethod || $isUseAddMethod|| $isUseEditMethod || $isUseRemoveMethod)
 import org.dromara.common.log.enums.BusinessType;
+#end
+#if($isUseExportMethod)
 import org.dromara.common.excel.utils.ExcelUtil;
-#if(!$isUseBO || !$isUseQuery || !$isUseVO)
+#end
+#if((!$isUseBO || !$isUseQuery || !$isUseVO) && ($isUseExportMethod || $isUseQueryMethod || $isUseAddMethod || $isUseEditMethod))
 import ${packageName}.domain.${ClassName};
 #end
-#if($isUseBO)
+#if($isUseBO && ($isUseAddMethod || $isUseEditMethod))
 #set($bo="${ClassName}Bo")
 #set($boObjName="bo")
 import ${packageName}.domain.bo.${ClassName}Bo;
@@ -28,13 +52,13 @@ import ${packageName}.domain.bo.${ClassName}Bo;
 #set($bo=$ClassName)
 #set($boObjName="${className}")
 #end
-#if($isUseQuery)
+#if($isUseQuery && $isUseQueryMethod)
 #set($query="${ClassName}Query")
 import ${packageName}.domain.query.${ClassName}Query;
 #else
 #set($query=$ClassName)
 #end
-#if($isUseVO)
+#if($isUseVO && ($isUseQueryMethod || $isUseDetailMethod || $isUseEditMethod || $isUseExportMethod))
 #set($vo="${ClassName}Vo")
 import ${packageName}.domain.vo.${ClassName}Vo;
 #else

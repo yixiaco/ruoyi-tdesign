@@ -121,6 +121,11 @@ public interface GenConstants {
     String HTML_INPUT = "input";
 
     /**
+     * 数字输入框
+     */
+    String HTML_INPUT_NUMBER = "input-number";
+
+    /**
      * 文本域
      */
     String HTML_TEXTAREA = "textarea";

@@ -1,18 +1,22 @@
 package ${packageName}.service.impl;
 
+#if($isUseAddMethod || $isUseEditMethod)
 import org.dromara.common.core.utils.MapstructUtils;
+#end
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-#if($hasSorting)
+#if($hasSorting && ($isUseExportMethod || ($isUseQueryMethod && $table.isTree())))
 import org.dromara.common.mybatis.core.page.SortQuery;
 #end
-#if($table.isCrud())
+#if($table.isCrud() && $isUseQueryMethod)
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.mybatis.core.page.PageQuery;
 #end
 import org.springframework.stereotype.Service;
+#if($isUseAddMethod || $isUseEditMethod || $isUseRemoveMethod)
 import org.springframework.transaction.annotation.Transactional;
+#end
 import ${packageName}.domain.${ClassName};
-#if($isUseBO)
+#if($isUseBO && ($isUseAddMethod || $isUseEditMethod))
 #set($bo="${ClassName}Bo")
 #set($boObjName="bo")
 import ${packageName}.domain.bo.${ClassName}Bo;
@@ -20,13 +24,13 @@ import ${packageName}.domain.bo.${ClassName}Bo;
 #set($bo=$ClassName)
 #set($boObjName="${className}")
 #end
-#if($isUseQuery)
+#if($isUseQuery && $isUseQueryMethod)
 #set($query="${ClassName}Query")
 import ${packageName}.domain.query.${ClassName}Query;
 #else
 #set($query=$ClassName)
 #end
-#if($isUseVO)
+#if($isUseVO && ($isUseQueryMethod || $isUseDetailMethod || $isUseEditMethod || $isUseExportMethod))
 #set($vo="${ClassName}Vo")
 import ${packageName}.domain.vo.${ClassName}Vo;
 #else
@@ -35,8 +39,12 @@ import ${packageName}.domain.vo.${ClassName}Vo;
 import ${packageName}.mapper.${ClassName}Mapper;
 import ${packageName}.service.I${ClassName}Service;
 
-import java.util.List;
+#if($isUseRemoveMethod)
 import java.util.Collection;
+#end
+#if($isUseExportMethod || ($isUseQueryMethod && $table.isTree()))
+import java.util.List;
+#end
 
 /**
  * ${functionName}Service业务层处理

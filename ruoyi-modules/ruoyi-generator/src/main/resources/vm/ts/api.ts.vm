@@ -1,4 +1,5 @@
 import { request } from '@/utils/request';
+#set($addOrUpdate = $isUseAddMethod || $isUseEditMethod)
 #if($isUseVO)
 #set($vo="${ClassName}Vo")
 #else
@@ -22,7 +23,7 @@ import { R, TableDataInfo } from '@/api/model/resultModel';
 import { R } from '@/api/model/resultModel';
 #end
 #set($idType=${GenUtil.javaTypeToTypescript(${pkColumn.javaType})})
-import { #if(!$isUseBO || !$isUseQuery || !$isUseVO)${ClassName}#if($isUseBO || $isUseQuery || $isUseVO), #end#end#if($isUseBO)${ClassName}Form#if($isUseQuery || $isUseVO), #end#end#if($isUseQuery)${ClassName}Query#if($isUseVO), #end#end#if($isUseVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
+import { #if(!$isUseBO || !$isUseQuery || !$isUseVO)${ClassName}#if($isUseBO || $isUseQuery || $isUseVO), #end#end#if($isUseBO && $addOrUpdate)${ClassName}Form#if($isUseQuery || $isUseVO), #end#end#if($isUseQuery)${ClassName}Query#if($isUseVO), #end#end#if($isUseVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
 #if($isUseQueryMethod)
 
 // 查询${functionName}列表

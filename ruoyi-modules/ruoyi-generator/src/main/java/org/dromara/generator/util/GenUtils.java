@@ -87,7 +87,7 @@ public class GenUtils {
             column.setJavaType(GenConstants.TYPE_TIME);
             column.setHtmlType(GenConstants.HTML_TIME);
         } else if (arraysContains(GenConstants.COLUMN_TYPE_NUMBER, dataType)) {
-            column.setHtmlType(GenConstants.HTML_INPUT);
+            column.setHtmlType(GenConstants.HTML_INPUT_NUMBER);
 
             // 如果是浮点型 统一用BigDecimal
             String[] str = StringUtils.split(StringUtils.substringBetween(column.getColumnType(), "(", ")"), StringUtils.SEPARATOR);

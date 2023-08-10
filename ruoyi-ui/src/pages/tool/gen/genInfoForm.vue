@@ -154,7 +154,7 @@
           <t-tooltip placement="top">
             <template #content>
               <p>在vue和后台代码中生成的方法</p>
-              <p>查询比较特殊，如果不生成查询方法，则会删除controller、vue、sql文件，并删除列表查询</p>
+              <p>查询比较特殊，如果不生成查询方法，则会删除vue、sql文件，并删除列表查询方法</p>
             </template>
             <help-circle-filled-icon />
           </t-tooltip>

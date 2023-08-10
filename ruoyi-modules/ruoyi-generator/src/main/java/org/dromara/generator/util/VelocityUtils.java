@@ -155,14 +155,14 @@ public class VelocityUtils {
         if (options.getIsUseBO()) {
             templates.add("vm/java/bo.java.vm");
         }
-        if (options.getIsUseController() && options.getIsUseQueryMethod()) {
+        if (options.getIsUseController()) {
             templates.add("vm/java/controller.java.vm");
         }
         templates.add("vm/java/service.java.vm");
         templates.add("vm/java/serviceImpl.java.vm");
         templates.add("vm/java/mapper.java.vm");
         templates.add("vm/xml/mapper.xml.vm");
-        if (options.getIsUseVue() && options.getIsUseQueryMethod()) {
+        if (options.getIsUseVue()) {
             templates.add("vm/ts/model.ts.vm");
             templates.add("vm/ts/api.ts.vm");
             if (GenConstants.TPL_CRUD.equals(tplCategory)) {
@@ -171,7 +171,7 @@ public class VelocityUtils {
                 templates.add("vm/vue/index-tree.vue.vm");
             }
         }
-        if (options.getIsUseSql() && options.getIsUseQueryMethod()) {
+        if (options.getIsUseSql()) {
             if (DataBaseHelper.isOracle()) {
                 templates.add("vm/sql/oracle/sql.vm");
             } else if (DataBaseHelper.isPostgerSql()) {

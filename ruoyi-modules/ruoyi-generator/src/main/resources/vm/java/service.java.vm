@@ -1,7 +1,7 @@
 package ${packageName}.service;
 
 import ${packageName}.domain.${ClassName};
-#if($isUseBO)
+#if($isUseBO && ($isUseAddMethod || $isUseEditMethod))
 #set($bo="${ClassName}Bo")
 #set($boObjName="bo")
 import ${packageName}.domain.bo.${ClassName}Bo;
@@ -9,25 +9,29 @@ import ${packageName}.domain.bo.${ClassName}Bo;
 #set($bo=$ClassName)
 #set($boObjName="${className}")
 #end
-#if($isUseQuery)
+#if($isUseQuery && $isUseQueryMethod)
 #set($query="${ClassName}Query")
 import ${packageName}.domain.query.${ClassName}Query;
 #else
 #set($query=$ClassName)
 #end
-#if($isUseVO)
+#if($isUseVO && ($isUseQueryMethod || $isUseDetailMethod || $isUseEditMethod || $isUseExportMethod))
 #set($vo="${ClassName}Vo")
 import ${packageName}.domain.vo.${ClassName}Vo;
 #else
 #set($vo=$ClassName)
 #end
 import com.baomidou.mybatisplus.extension.service.IService;
-#if($table.isCrud())
+#if($table.isCrud() && $isUseQueryMethod)
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 #end
 
+#if($isUseRemoveMethod)
 import java.util.Collection;
+#end
+#if($isUseExportMethod || ($isUseQueryMethod && $table.isTree()))
 import java.util.List;
+#end
 
 /**
  * ${functionName}Service接口

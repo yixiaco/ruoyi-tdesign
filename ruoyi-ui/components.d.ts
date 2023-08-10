@@ -33,6 +33,7 @@ declare module 'vue' {
     TButton: typeof import('tdesign-vue-next')['Button']
     TCard: typeof import('tdesign-vue-next')['Card']
     TCheckbox: typeof import('tdesign-vue-next')['Checkbox']
+    TCheckboxGroup: typeof import('tdesign-vue-next')['CheckboxGroup']
     TCol: typeof import('tdesign-vue-next')['Col']
     TColorPickerPanel: typeof import('tdesign-vue-next')['ColorPickerPanel']
     TContent: typeof import('tdesign-vue-next')['Content']

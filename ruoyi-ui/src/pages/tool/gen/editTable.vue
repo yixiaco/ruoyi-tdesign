@@ -105,6 +105,7 @@
               <template #htmlType="{ row }">
                 <t-select v-model="row.htmlType">
                   <t-option label="文本框" value="input" />
+                  <t-option label="数字输入框" value="input-number" />
                   <t-option label="文本域" value="textarea" />
                   <t-option label="下拉框" value="select" />
                   <t-option label="单选框" value="radio" />
