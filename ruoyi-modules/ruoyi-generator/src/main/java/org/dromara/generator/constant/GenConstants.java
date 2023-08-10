@@ -17,47 +17,6 @@ public interface GenConstants {
     String TPL_TREE = "tree";
 
     /**
-     * 树编码字段
-     */
-    String TREE_CODE = "treeCode";
-
-    /**
-     * 树父编码字段
-     */
-    String TREE_PARENT_CODE = "treeParentCode";
-
-    /**
-     * 树名称字段
-     */
-    String TREE_NAME = "treeName";
-
-    /**
-     * 上级菜单ID字段
-     */
-    String PARENT_MENU_ID = "parentMenuId";
-
-    /**
-     * 上级菜单名称字段
-     */
-    String PARENT_MENU_NAME = "parentMenuName";
-
-    /**
-     * 是否使用bo对象
-     */
-    String IS_USE_BO = "isUseBO";
-
-    /**
-     * 是否使用bo对象
-     */
-    String IS_USE_QUERY = "isUseQuery";
-
-    /**
-     * 是否使用bo对象
-     */
-    String IS_USE_VO = "isUseVO";
-
-
-    /**
      * 数据库字符串类型
      */
     String[] COLUMN_TYPE_STR = {"char", "varchar", "enum", "set", "nchar", "nvarchar", "varchar2"};

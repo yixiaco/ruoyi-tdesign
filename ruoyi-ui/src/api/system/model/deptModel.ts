@@ -59,4 +59,6 @@ export interface SysDeptVo {
   status?: string;
   /** 创建时间 */
   createTime?: any;
+  /** 子部门 */
+  children?: SysDeptVo[];
 }

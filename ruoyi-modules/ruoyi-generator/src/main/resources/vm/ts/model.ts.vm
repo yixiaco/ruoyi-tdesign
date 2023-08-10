@@ -32,6 +32,10 @@ export interface ${ClassName}Form extends ${BoEntity} {
   $column.javaField?: ${GenUtil.javaTypeToTypescript($column.javaType)};
 #end
 #end
+#if($table.isTree() && !$isUseVO)
+  /** 子${functionName} */
+  children?: ${ClassName}Vo[];
+#end
 }
 #end
 #if(!$isUseBO || !$isUseQuery || !$isUseVO)
@@ -55,6 +59,10 @@ export interface ${ClassName}Vo {
   /** $column.columnComment */
   $column.javaField?: ${GenUtil.javaTypeToTypescript($column.javaType)};
 #end
+#end
+#if($table.isTree())
+  /** 子${functionName} */
+  children?: ${ClassName}Vo[];
 #end
 }
 #end

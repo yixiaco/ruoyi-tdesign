@@ -292,10 +292,10 @@ const isSort = computed({
 /** 实时预览按钮 */
 async function handlePreview() {
   const result = await formRef.value.validate();
-  const genTable = { ...info.value };
-  genTable.columns = columnsData.value;
-  genTable.tableOptions = info.value.tableOptions;
   if (result === true) {
+    const genTable = { ...info.value };
+    genTable.columns = columnsData.value;
+    genTable.tableOptions = info.value.tableOptions;
     preview.value.loading = true;
     preview.value.open = true;
     tempPreviewTable(genTable)

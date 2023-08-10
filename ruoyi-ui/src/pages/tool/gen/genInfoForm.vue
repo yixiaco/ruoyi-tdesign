@@ -253,7 +253,7 @@ const { info } = toRefs(props);
 /** 查询菜单下拉树结构 */
 function getMenuTreeselect() {
   listMenu().then((response) => {
-    menuOptions.value = proxy.handleTree(response.data, 'menuId');
+    menuOptions.value = [{ menuId: 0, menuName: '主类目', children: proxy.handleTree(response.data, 'menuId') }];
   });
 }
 

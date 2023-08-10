@@ -324,7 +324,7 @@ const eLoading = ref(true);
 const showSearch = ref(true);
 const columnControllerVisible = ref(false);
 const title = ref('');
-const menuOptions = ref([]);
+const menuOptions = ref<SysMenuVo[]>([]);
 const isExpandAll = ref(false);
 const sort = ref<TableSort>(null);
 const tableRef = ref<EnhancedTableInstanceFunctions>(null);
@@ -379,10 +379,7 @@ function getList() {
 function getTreeselect() {
   menuOptions.value = [];
   return listMenu().then((response) => {
-    // @ts-ignore
-    const menu = { menuId: 0, menuName: '主类目', children: [] };
-    menu.children = proxy.handleTree(response.data, 'menuId');
-    menuOptions.value = [menu];
+    menuOptions.value = [{ menuId: 0, menuName: '主类目', children: proxy.handleTree(response.data, 'menuId') }];
   });
 }
 /** 表单重置 */

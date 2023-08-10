@@ -207,17 +207,12 @@ const loading = ref(true);
 const eLoading = ref(true);
 const showSearch = ref(true);
 const title = ref('');
-const deptOptions = ref([]);
+const deptOptions = ref<SysDeptVo[]>([]);
 const isExpandAll = ref(true);
 const sort = ref<TableSort>(null);
 const tableRef = ref<EnhancedTableInstanceFunctions>(null);
 const deptRef = ref<FormInstanceFunctions>(null);
 const columnControllerVisible = ref(false);
-
-const formInitValue = {
-  orderNum: 0,
-  status: '1',
-};
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
@@ -236,7 +231,10 @@ const rules = ref<Record<string, Array<FormRule>>>({
   phone: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
 });
 
-const form = ref<SysDeptForm & SysDeptVo>({ ...formInitValue });
+const form = ref<SysDeptForm & SysDeptVo>({
+  orderNum: 0,
+  status: '1',
+});
 const queryParams = ref<SysDeptQuery>({
   deptName: undefined,
   status: undefined,
@@ -254,7 +252,10 @@ function getList() {
 }
 /** 表单重置 */
 function reset() {
-  form.value = { ...formInitValue };
+  form.value = {
+    orderNum: 0,
+    status: '1',
+  };
   proxy.resetForm('deptRef');
 }
 /** 搜索按钮操作 */
@@ -320,9 +321,7 @@ function handleUpdate(row: SysDeptVo) {
     listDeptExcludeChild(row.deptId).then((response) => {
       deptOptions.value = proxy.handleTree(response.data, 'deptId');
       if (deptOptions.value.length === 0) {
-        // @ts-ignore
-        const noResultsOptions = { deptId: 0, deptName: '根部门', children: [] };
-        deptOptions.value = [noResultsOptions];
+        deptOptions.value = [{ deptId: 0, deptName: '根部门', children: [] }];
       }
     });
   });

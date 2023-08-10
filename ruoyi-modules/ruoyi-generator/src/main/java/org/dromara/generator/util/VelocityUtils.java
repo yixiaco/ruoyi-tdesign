@@ -1,16 +1,12 @@
 package org.dromara.generator.util;
 
 import cn.hutool.core.bean.BeanUtil;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.lang.Dict;
 import cn.hutool.core.util.StrUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.apache.velocity.VelocityContext;
 import org.dromara.common.core.utils.DateUtils;
 import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.json.utils.JsonUtils;
 import org.dromara.common.mybatis.helper.DataBaseHelper;
 import org.dromara.generator.constant.GenConstants;
 import org.dromara.generator.domain.GenTableColumn;
@@ -38,11 +34,6 @@ public class VelocityUtils {
     private static final String MYBATIS_PATH = "main/resources/mapper";
 
     /**
-     * 默认上级菜单
-     */
-    private static final String DEFAULT_PARENT_MENU_ID = "0";
-
-    /**
      * 设置模板变量信息
      *
      * @return 模板列表
@@ -51,7 +42,6 @@ public class VelocityUtils {
         String moduleName = genTable.getModuleName();
         String businessName = genTable.getBusinessName();
         String packageName = genTable.getPackageName();
-        String tplCategory = genTable.getTplCategory();
         String functionName = genTable.getFunctionName();
         GenTableOptions options = genTable.getTableOptions();
         Map<String, Object> optionsMap = BeanUtil.beanToMap(options);
@@ -81,10 +71,9 @@ public class VelocityUtils {
         velocityContext.put("StringUtils", StringUtils.class);
         velocityContext.put("StrUtil", StrUtil.class);
         optionsMap.forEach(velocityContext::put);
-        setMenuVelocityContext(velocityContext, genTable);
-        if (GenConstants.TPL_TREE.equals(tplCategory)) {
-            setTreeVelocityContext(velocityContext, genTable);
-        }
+        velocityContext.put("treeCode", StringUtils.toCamelCase(options.getTreeCode()));
+        velocityContext.put("treeName", StringUtils.toCamelCase(options.getTreeName()));
+        velocityContext.put("treeParentCode", StringUtils.toCamelCase(options.getTreeParentCode()));
         return velocityContext;
     }
 
@@ -106,34 +95,6 @@ public class VelocityUtils {
             sb.append(s.charAt(0));
         }
         return sb.toString().toLowerCase();
-    }
-
-    public static void setMenuVelocityContext(VelocityContext context, GenTableVo genTable) {
-        String options = genTable.getOptions();
-        Dict paramsObj = JsonUtils.parseMap(options);
-        String parentMenuId = getParentMenuId(paramsObj);
-        context.put("parentMenuId", parentMenuId);
-    }
-
-    public static void setTreeVelocityContext(VelocityContext context, GenTableVo genTable) {
-        String options = genTable.getOptions();
-        Dict paramsObj = JsonUtils.parseMap(options);
-        String treeCode = getTreecode(paramsObj);
-        String treeParentCode = getTreeParentCode(paramsObj);
-        String treeName = getTreeName(paramsObj);
-
-        context.put("treeCode", treeCode);
-        context.put("treeParentCode", treeParentCode);
-        context.put("treeName", treeName);
-        context.put("expandColumn", getExpandColumn(genTable));
-        if (paramsObj != null) {
-            if (paramsObj.containsKey(GenConstants.TREE_PARENT_CODE)) {
-                context.put("tree_parent_code", paramsObj.get(GenConstants.TREE_PARENT_CODE));
-            }
-            if (paramsObj.containsKey(GenConstants.TREE_NAME)) {
-                context.put("tree_name", paramsObj.get(GenConstants.TREE_NAME));
-            }
-        }
     }
 
     /**
@@ -313,81 +274,5 @@ public class VelocityUtils {
      */
     public static String getPermissionPrefix(String moduleName, String businessName) {
         return StringUtils.format("{}:{}", moduleName, businessName);
-    }
-
-    /**
-     * 获取上级菜单ID字段
-     *
-     * @param paramsObj 生成其他选项
-     * @return 上级菜单ID字段
-     */
-    public static String getParentMenuId(Dict paramsObj) {
-        if (CollUtil.isNotEmpty(paramsObj) && paramsObj.containsKey(GenConstants.PARENT_MENU_ID)
-            && StringUtils.isNotEmpty(paramsObj.getStr(GenConstants.PARENT_MENU_ID))) {
-            return paramsObj.getStr(GenConstants.PARENT_MENU_ID);
-        }
-        return DEFAULT_PARENT_MENU_ID;
-    }
-
-    /**
-     * 获取树编码
-     *
-     * @param paramsObj 生成其他选项
-     * @return 树编码
-     */
-    public static String getTreecode(Map<String, Object> paramsObj) {
-        if (CollUtil.isNotEmpty(paramsObj) && paramsObj.containsKey(GenConstants.TREE_CODE)) {
-            return StringUtils.toCamelCase(Convert.toStr(paramsObj.get(GenConstants.TREE_CODE)));
-        }
-        return StringUtils.EMPTY;
-    }
-
-    /**
-     * 获取树父编码
-     *
-     * @param paramsObj 生成其他选项
-     * @return 树父编码
-     */
-    public static String getTreeParentCode(Dict paramsObj) {
-        if (CollUtil.isNotEmpty(paramsObj) && paramsObj.containsKey(GenConstants.TREE_PARENT_CODE)) {
-            return StringUtils.toCamelCase(paramsObj.getStr(GenConstants.TREE_PARENT_CODE));
-        }
-        return StringUtils.EMPTY;
-    }
-
-    /**
-     * 获取树名称
-     *
-     * @param paramsObj 生成其他选项
-     * @return 树名称
-     */
-    public static String getTreeName(Dict paramsObj) {
-        if (CollUtil.isNotEmpty(paramsObj) && paramsObj.containsKey(GenConstants.TREE_NAME)) {
-            return StringUtils.toCamelCase(paramsObj.getStr(GenConstants.TREE_NAME));
-        }
-        return StringUtils.EMPTY;
-    }
-
-    /**
-     * 获取需要在哪一列上面显示展开按钮
-     *
-     * @param genTable 业务表对象
-     * @return 展开按钮列序号
-     */
-    public static int getExpandColumn(GenTableVo genTable) {
-        String options = genTable.getOptions();
-        Dict paramsObj = JsonUtils.parseMap(options);
-        String treeName = paramsObj.getStr(GenConstants.TREE_NAME);
-        int num = 0;
-        for (GenTableColumn column : genTable.getColumns()) {
-            if (column.isList()) {
-                num++;
-                String columnName = column.getColumnName();
-                if (columnName.equals(treeName)) {
-                    break;
-                }
-            }
-        }
-        return num;
     }
 }

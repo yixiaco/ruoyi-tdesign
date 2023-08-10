@@ -470,7 +470,7 @@ const tableRef = ref<EnhancedTableInstanceFunctions>(null);
 const sort = ref<TableSort>(null);
 #end
 #if($addOrUpdate)
-const ${businessName}Options = ref([]);
+const ${businessName}Options = ref<${vo}[]>([]);
 const open = ref(false);
 const buttonLoading = ref(false);
 const title = ref('');
@@ -699,11 +699,9 @@ async function handleUpdate(row?: ${vo}) {
 /** 查询${functionName}下拉树结构 */
 function getTreeselect() {
   list${BusinessName}().then((response) => {
-    ${businessName}Options.value = [];
-    // @ts-ignore
-    const data = { ${treeCode}: 0, ${treeName}: '顶级节点', children: [] };
-    data.children = proxy.handleTree(response.data, '${treeCode}', '${treeParentCode}');
-    ${businessName}Options.value = [data];
+    ${businessName}Options.value = [
+      { ${treeCode}: 0, ${treeName}: '顶级节点', children: proxy.handleTree(response.data, '${treeCode}', '${treeParentCode}') }
+    ];
   });
 }
 #end
