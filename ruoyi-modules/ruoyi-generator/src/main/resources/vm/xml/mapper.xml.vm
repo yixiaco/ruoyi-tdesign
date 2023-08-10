@@ -45,36 +45,33 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 #if($columnName == 'del_flag')
             and $dbName.$columnName =#if($javaType == $string) '0'#else 0#end
 #end
-#if($column.isQuery == "1")
+#if($column.isQuery())
 #if($column.queryType == "EQ")
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName = #{$javaField}</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName = #{$javaField}</if>
 #elseif($queryType == "NE")
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName != #{$javaField}</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName != #{$javaField}</if>
 #elseif($queryType == "GT")
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName &gt; #{$javaField}</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName &gt; #{$javaField}</if>
 #elseif($queryType == "GE")
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName &gt;= #{$javaField}</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName &gt;= #{$javaField}</if>
 #elseif($queryType == "LT")
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName &lt; #{$javaField}</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName &lt; #{$javaField}</if>
 #elseif($queryType == "LE")
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName &lt;= #{$javaField}</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName &lt;= #{$javaField}</if>
 #elseif($queryType.equalsIgnoreCase("LIKE"))
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName like concat('%', #{$javaField}, '%')</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName like concat('%', #{$javaField}, '%')</if>
 #elseif($queryType.equalsIgnoreCase("NOT_LIKE"))
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName not like concat('%', #{$javaField}, '%')</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName not like concat('%', #{$javaField}, '%')</if>
 #elseif($queryType.equalsIgnoreCase("IS_NULL"))
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName is null</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName is null</if>
 #elseif($queryType.equalsIgnoreCase("IS_NOT_NULL"))
-            <if test="$javaField != null #if($javaType == $string)and $javaField.trim() != ''#end"> and $dbName.$columnName is not null</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName is not null</if>
 #elseif($queryType.equalsIgnoreCase("IN"))
-            <if test="$javaField != null and !${javaField}.isEmpty()">
-                and $dbName.$columnName in
-                <foreach collection="$javaField" index="index" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
+            <foreach collection="$javaField" index="index" item="item" open="and $dbName.$columnName in (" separator="," close=")" nullable="true">
+                #{item}
+            </foreach>
 #elseif($queryType.equalsIgnoreCase("BETWEEN"))
-    #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
             <if test="params.begin$AttrName != null and params.end$AttrName != null">and $dbName.$columnName between #{params.begin${AttrName}} and #{params.end${AttrName}}</if>
 #end
 #end
