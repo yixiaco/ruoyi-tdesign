@@ -2,7 +2,8 @@
   <router-view v-if="!isRefreshing" v-slot="{ Component }">
     <transition name="fade" mode="out-in">
       <keep-alive :include="aliveViews">
-        <component :is="Component" />
+        <component :is="Component" v-if="$route.meta?.key" :key="getKey($route.meta?.key)" />
+        <component :is="Component" v-else :key="Component.key" />
       </keep-alive>
     </transition>
   </router-view>
@@ -14,6 +15,7 @@ import isBoolean from 'lodash/isBoolean';
 import isUndefined from 'lodash/isUndefined';
 import type { ComputedRef } from 'vue';
 import { computed } from 'vue';
+import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router';
 
 import FramePage from '@/layouts/frame/index.vue';
 import { useTabsRouterStore } from '@/store';
@@ -24,11 +26,14 @@ import { useTabsRouterStore } from '@/store';
 //  <component :is="Component" :key="activeRouteFullPath" />
 // </suspense>
 
-// import { useRouter } from 'vue-router';
-// const activeRouteFullPath = computed(() => {
-//   const router = useRouter();
-//   return router.currentRoute.value.fullPath;
-// });
+const route = useRoute();
+
+function getKey(key: string | ((route: RouteLocationNormalizedLoaded) => string)) {
+  if (typeof key === 'function') {
+    return key(route);
+  }
+  return key;
+}
 
 const aliveViews = computed(() => {
   const tabsRouterStore = useTabsRouterStore();

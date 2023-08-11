@@ -281,7 +281,7 @@
               </t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="用户性别">
+              <t-form-item label="用户性别" name="sex">
                 <t-select v-model="form.sex" placeholder="请选择">
                   <t-option
                     v-for="dict in sys_user_sex"
@@ -293,7 +293,7 @@
               </t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="状态">
+              <t-form-item label="状态" name="status">
                 <t-radio-group v-model="form.status">
                   <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">
                     {{ dict.label }}
@@ -302,7 +302,7 @@
               </t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="岗位">
+              <t-form-item label="岗位" name="postIds">
                 <t-select
                   v-model="form.postIds"
                   clearable
@@ -321,7 +321,7 @@
               </t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="角色">
+              <t-form-item label="角色" name="roleIds">
                 <t-select
                   v-model="form.roleIds"
                   clearable
@@ -340,7 +340,7 @@
               </t-form-item>
             </t-col>
             <t-col :span="12">
-              <t-form-item label="备注">
+              <t-form-item label="备注" name="remark">
                 <t-textarea v-model="form.remark" placeholder="请输入备注"></t-textarea>
               </t-form-item>
             </t-col>
@@ -558,6 +558,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
   ],
   email: [{ email: true, message: '请输入正确的邮箱地址', trigger: 'change' }],
   phonenumber: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
+  roleIds: [{ required: true, message: '用户角色不能为空', trigger: 'blur' }],
 });
 const form = ref<SysUserForm & SysUserVo>({
   status: '1',
