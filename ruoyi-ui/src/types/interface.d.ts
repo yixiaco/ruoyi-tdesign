@@ -1,4 +1,5 @@
-import { LocationQueryRaw, RouteRecordName, RouteRecordRaw } from 'vue-router';
+import { TabValue } from 'tdesign-vue-next';
+import { LocationQueryRaw, RouteMeta, RouteRecordName, RouteRecordRaw } from 'vue-router';
 
 import STYLE_CONFIG from '@/config/style';
 
@@ -13,7 +14,7 @@ export interface MenuRoute {
       };
   redirect?: string;
   children: MenuRoute[];
-  meta: any;
+  meta: Record<string, any>;
   query: any;
 }
 
@@ -52,7 +53,7 @@ export interface TRouterInfo {
   name?: RouteRecordName;
   isAlive?: boolean;
   isHome?: boolean;
-  meta?: any;
+  meta?: RouteMeta;
 }
 
 export interface TTabRouterType {
