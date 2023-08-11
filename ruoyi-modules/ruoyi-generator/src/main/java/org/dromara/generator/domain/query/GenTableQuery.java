@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 
+import java.util.List;
+
 /**
  * 代码生成业务查询对象 gen_table
  *
@@ -28,5 +30,10 @@ public class GenTableQuery extends BaseEntity {
      * 表描述
      */
     private String tableComment;
+
+    /**
+     * 已生成的表名称
+     */
+    private List<String> genTableNames;
 
 }

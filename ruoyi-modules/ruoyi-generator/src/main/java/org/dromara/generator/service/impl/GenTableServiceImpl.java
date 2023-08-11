@@ -6,9 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.Template;
@@ -93,22 +91,17 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
         return genTable;
     }
 
+    /**
+     * 查询代码生成业务列表
+     *
+     * @param query 查询对象
+     * @return GenTableVo
+     */
     @Override
     public TableDataInfo<GenTableVo> selectPageGenTableList(GenTableQuery query) {
-        return PageQuery.of(() -> baseMapper.selectVoList(buildGenTableQueryWrapper(query)));
-    }
-
-    private QueryWrapper<GenTable> buildGenTableQueryWrapper(GenTableQuery query) {
-        Map<String, Object> params = query.getParams();
-        QueryWrapper<GenTable> wrapper = Wrappers.query();
-        wrapper
-            .eq(StringUtils.isNotEmpty(query.getDataName()), "data_name", query.getDataName())
-            .like(StringUtils.isNotBlank(query.getTableName()), "lower(table_name)", StringUtils.lowerCase(query.getTableName()))
-            .like(StringUtils.isNotBlank(query.getTableComment()), "lower(table_comment)", StringUtils.lowerCase(query.getTableComment()))
-            .between(params.get("beginTime") != null && params.get("endTime") != null,
-                "create_time", params.get("beginTime"), params.get("endTime"))
-            .orderByDesc("table_id");
-        return wrapper;
+        query.setTableName(StringUtils.lowerCase(query.getTableName()));
+        query.setTableComment(StringUtils.lowerCase(query.getTableComment()));
+        return PageQuery.of(() -> baseMapper.queryList(query));
     }
 
     /**
@@ -120,7 +113,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
     @DS("#query.dataName")
     @Override
     public TableDataInfo<GenTableVo> selectPageDbTableList(GenTableQuery query) {
-        query.getParams().put("genTableNames", baseMapper.selectTableNameList(query.getDataName()));
+        query.setGenTableNames(baseMapper.selectTableNameList(query.getDataName()));
         return PageQuery.of(() -> baseMapper.selectDbTableList(query));
     }
 

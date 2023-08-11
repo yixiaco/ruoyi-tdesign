@@ -19,6 +19,14 @@ import java.util.List;
 public interface GenTableMapper extends BaseMapperPlus<GenTable, GenTableVo> {
 
     /**
+     * 查询代码生成业务列表
+     *
+     * @param query 查询对象
+     * @return {@link GenTableVo}
+     */
+    List<GenTableVo> queryList(GenTableQuery query);
+
+    /**
      * 查询数据库列表
      *
      * @param query 查询条件

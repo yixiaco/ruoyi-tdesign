@@ -7,16 +7,28 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <!-- 多结构嵌套自动映射需带上每个实体的主键id 否则映射会失败 -->
     <resultMap id="GenTableResult" type="org.dromara.generator.domain.GenTable">
         <id property="tableId" column="table_id" />
-        <collection property="columns" javaType="java.util.List" resultMap="GenTableColumnResult" />
     </resultMap>
     <resultMap id="GenTableResultVo" type="org.dromara.generator.domain.vo.GenTableVo">
         <id property="tableId" column="table_id" />
         <collection property="columns" javaType="java.util.List" resultMap="GenTableColumnResult" />
     </resultMap>
-
     <resultMap id="GenTableColumnResult" type="org.dromara.generator.domain.GenTableColumn">
         <id property="columnId" column="column_id"/>
     </resultMap>
+    <sql id="selectGenTableVo">
+        select gt.table_id, gt.data_name, gt.table_name, gt.table_comment, gt.class_name, gt.tpl_category, gt.package_name, gt.module_name, gt.business_name, gt.function_name, gt.function_author, gt.gen_type, gt.gen_path, gt.options, gt.create_dept, gt.create_by, gt.create_time, gt.update_by, gt.update_time, gt.remark from gen_table gt
+    </sql>
+
+    <select id="queryList" parameterType="org.dromara.generator.domain.query.GenTableQuery" resultType="org.dromara.generator.domain.vo.GenTableVo">
+        <include refid="selectGenTableVo"/>
+        <where>
+            <if test="dataName != null and dataName != ''"> and gt.data_name = #{dataName}</if>
+            <if test="tableName != null and tableName != ''"> and lower(gt.table_name) like concat('%', #{tableName}, '%')</if>
+            <if test="tableComment != null and tableComment != ''"> and lower(gt.table_comment) like concat('%', #{tableComment}, '%')</if>
+            <if test="params.beginTime != null and params.endTime != null">and gt.create_time between #{params.beginTime} and #{params.endTime}</if>
+        </where>
+        order by gt.create_time desc
+    </select>
 
     <select id="selectDbTableList" resultMap="GenTableResultVo">
         <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isMySql()">
@@ -24,12 +36,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             from information_schema.tables
             where table_schema = database()
             AND table_name NOT LIKE 'pj_%'
-            <if test="params.genTableNames != null and params.genTableNames.size > 0">
-                AND table_name NOT IN
-                <foreach collection="params.genTableNames" open="(" close=")" separator="," item="item">
-                    #{item}
-                </foreach>
-            </if>
+            <foreach collection="genTableNames" open="AND table_name NOT IN(" close=")" separator="," item="item" nullable="true">
+                #{item}
+            </foreach>
             <if test="tableName != null and tableName != ''">
                 AND lower(table_name) like lower(concat('%', #{tableName}, '%'))
             </if>
@@ -45,12 +54,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             and dt.table_name = uo.object_name
             and uo.object_type = 'TABLE'
             AND dt.table_name NOT LIKE 'pj_%'
-            <if test="params.genTableNames != null and params.genTableNames.size > 0">
-                AND lower(dt.table_name) NOT IN
-                <foreach collection="params.genTableNames" open="(" close=")" separator="," item="item">
-                    #{item}
-                </foreach>
-            </if>
+            <foreach collection="genTableNames" open="AND lower(dt.table_name) NOT IN(" close=")" separator="," item="item" nullable="true">
+                #{item}
+            </foreach>
             <if test="tableName != null and tableName != ''">
                 AND lower(dt.table_name) like lower(concat(concat('%', #{tableName}), '%'))
             </if>
@@ -74,12 +80,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     AND n.nspname <![CDATA[ <> ]]> ''::name
             ) list_table
             where table_name NOT LIKE 'pj_%'
-            <if test="params.genTableNames != null and params.genTableNames.size > 0">
-                AND table_name NOT IN
-                <foreach collection="params.genTableNames" open="(" close=")" separator="," item="item">
-                    #{item}
-                </foreach>
-            </if>
+            <foreach collection="genTableNames" open="AND table_name NOT IN(" close=")" separator="," item="item" nullable="true">
+                #{item}
+            </foreach>
             <if test="tableName != null and tableName != ''">
                 AND lower(table_name) like lower(concat('%', #{tableName}, '%'))
             </if>
@@ -97,12 +100,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 INNER JOIN SYS.EXTENDED_PROPERTIES F ON D.ID = F.MAJOR_ID
                     AND F.MINOR_ID = 0 AND D.XTYPE = 'U' AND D.NAME != 'DTPROPERTIES'
                     AND D.NAME NOT LIKE 'pj_%'
-            <if test="params.genTableNames != null and params.genTableNames.size > 0">
-                AND D.NAME NOT IN
-                <foreach collection="params.genTableNames" open="(" close=")" separator="," item="item">
-                    #{item}
-                </foreach>
-            </if>
+            <foreach collection="genTableNames" open="AND D.NAME NOT IN(" close=")" separator="," item="item" nullable="true">
+                #{item}
+            </foreach>
             <if test="tableName != null and tableName != ''">
                 AND lower(D.NAME) like lower(concat(N'%', N'${tableName}', N'%'))
             </if>
