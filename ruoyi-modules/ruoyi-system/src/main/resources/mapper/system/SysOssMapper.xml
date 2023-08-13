@@ -8,30 +8,42 @@
     </resultMap>
 
     <sql id="selectSysOssVo">
-        select so.oss_id, so.file_name, so.original_name, so.file_suffix, so.url, so.size, so.create_time, so.create_by, so.update_time, so.update_by, so.service from sys_oss so
+        select so.oss_id, so.tenant_id, so.file_name, so.original_name, so.file_suffix, so.url, so.size, so.user_type, so.is_lock, so.is_list, so.create_dept, so.create_time, so.create_by, so.update_time, so.update_by, so.service from sys_oss so
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysOssQuery" resultMap="SysOssResultVo">
         select so.oss_id,
+               so.tenant_id,
                so.file_name,
                so.original_name,
                so.file_suffix,
                so.url,
                so.size,
+               so.user_type,
+               so.is_lock,
+               so.is_list,
+               so.create_dept,
                so.create_time,
                so.create_by,
                so.update_time,
                so.update_by,
                so.service,
                su.user_name as create_by_name
-        from sys_oss so left join sys_user su on so.create_by = su.user_id
+        from sys_oss so
+                 left join sys_user su on so.create_by = su.user_id
         <where>
             <if test="fileName != null and fileName != ''"> and so.file_name like concat('%', #{fileName}, '%')</if>
             <if test="originalName != null and originalName != ''"> and so.original_name like concat('%', #{originalName}, '%')</if>
-            <if test="fileSuffix != null and fileSuffix != ''"> and so.file_suffix = #{fileSuffix}</if>
+            <if test="fileSuffix != null and fileSuffix != ''"> and so.file_suffix like concat('%', #{fileSuffix}, '%')</if>
             <if test="url != null and url != ''"> and so.url = #{url}</if>
-            <if test="params.beginCreateTime != null and params.endCreateTime != null">and so.create_time between #{params.beginCreateTime} and #{params.endCreateTime}</if>
-            <if test="createByName != null"> and so.create_by = #{createByName}</if>
-            <if test="service != null and service != ''"> and su.user_name = #{service}</if>
+            <if test="userType != null and userType != ''"> and so.user_type = #{userType}</if>
+            <if test="isLock != null"> and so.is_lock = #{isLock}</if>
+            <if test="isList != null"> and so.is_list = #{isList}</if>
+            <if test="params.beginCreateTime != null and params.endCreateTime != null">
+              and so.create_time between #{params.beginCreateTime} and #{params.endCreateTime}
+            </if>
+            <if test="createBy != null"> and so.create_by = #{createBy}</if>
+            <if test="createByName != null"> and su.user_name like concat('%', #{createByName}, '%')</if>
+            <if test="service != null and service != ''"> and so.service like concat('%', #{service}, '%')</if>
         </where>
         order by create_time desc
     </select>

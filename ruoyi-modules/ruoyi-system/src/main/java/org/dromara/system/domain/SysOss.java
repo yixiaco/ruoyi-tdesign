@@ -27,6 +27,11 @@ public class SysOss extends TenantEntity {
     private Long ossId;
 
     /**
+     * 租户编号
+     */
+    private String tenantId;
+
+    /**
      * 文件名
      */
     private String fileName;
@@ -52,9 +57,19 @@ public class SysOss extends TenantEntity {
     private Long size;
 
     /**
-     * 服务商
+     * 用户类型
      */
-    private String service;
+    private String userType;
+
+    /**
+     * 是否锁定状态
+     */
+    private Integer isLock;
+
+    /**
+     * 是否显示在列表
+     */
+    private Integer isList;
 
     /**
      * 创建部门
@@ -63,27 +78,32 @@ public class SysOss extends TenantEntity {
     private Long createDept;
 
     /**
-     * 创建者
-     */
-    @TableField(fill = FieldFill.INSERT)
-    private Long createBy;
-
-    /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
     /**
-     * 更新者
+     * 上传人
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Long updateBy;
+    @TableField(fill = FieldFill.INSERT)
+    private Long createBy;
 
     /**
      * 更新时间
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
+
+    /**
+     * 更新人
+     */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Long updateBy;
+
+    /**
+     * 服务商
+     */
+    private String service;
 
 }

@@ -3,15 +3,14 @@ package org.dromara.system.domain.bo;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dromara.common.core.enums.UserType;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.system.domain.SysOss;
 
-import java.util.Date;
-
 /**
- * OSS对象存储分页查询对象 sys_oss
+ * OSS对象存储业务对象 sys_oss
  *
- * @author Lion Li
+ * @author yixiacoco
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -19,52 +18,22 @@ import java.util.Date;
 public class SysOssBo extends BaseEntity {
 
     /**
-     * ossId
+     * 用户类型
      */
-    private Long ossId;
+    private UserType userType;
 
     /**
-     * 文件名
+     * 是否锁定状态
      */
-    private String fileName;
+    private Integer isLock = 0;
 
     /**
-     * 原名
+     * 是否显示在列表
      */
-    private String originalName;
+    private Integer isList = 1;
 
     /**
-     * 文件后缀名
-     */
-    private String fileSuffix;
-
-    /**
-     * URL地址
-     */
-    private String url;
-
-    /**
-     * 服务商
-     */
-    private String service;
-
-    /**
-     * 创建者
+     * 上传人
      */
     private Long createBy;
-
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新者
-     */
-    private Long updateBy;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
 }

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysOss;
+import org.dromara.system.domain.bo.SysOssBo;
 import org.dromara.system.domain.query.SysOssQuery;
 import org.dromara.system.domain.vo.SysOssVo;
 import org.springframework.web.multipart.MultipartFile;
@@ -35,7 +36,7 @@ public interface ISysOssService extends IService<SysOss> {
     /**
      * 通过id获取oss对象
      *
-     * @param ossId
+     * @param ossId ossId
      * @return
      */
     SysOssVo getById(Long ossId);
@@ -44,15 +45,17 @@ public interface ISysOssService extends IService<SysOss> {
      * 上传OSS对象存储
      *
      * @param file 文件
+     * @param bo   业务对象
      */
-    SysOssVo upload(MultipartFile file);
+    SysOssVo upload(MultipartFile file, SysOssBo bo);
 
     /**
      * 上传OSS对象存储
      *
      * @param file 文件
+     * @param bo   业务对象
      */
-    SysOssVo upload(File file);
+    SysOssVo upload(File file, SysOssBo bo);
 
     /**
      * 下载OSS对象

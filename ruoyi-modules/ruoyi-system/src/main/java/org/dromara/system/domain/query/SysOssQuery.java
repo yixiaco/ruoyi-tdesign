@@ -37,9 +37,24 @@ public class SysOssQuery extends BaseEntity {
     private String url;
 
     /**
-     * 创建时间
+     * 用户类型
      */
-    private Date createTime;
+    private String userType;
+
+    /**
+     * 是否锁定状态
+     */
+    private Integer isLock;
+
+    /**
+     * 是否显示在列表
+     */
+    private Integer isList;
+
+    /**
+     * 上传人
+     */
+    private Long createBy;
 
     /**
      * 上传人
