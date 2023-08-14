@@ -1,14 +1,8 @@
-#if($table.isCrud())
+#if($isUseQueryMethod)
 import { BaseEntity } from '@/api/model/resultModel';
-#set($Entity="BaseEntity")
-#set($BoEntity=$Entity)
-#elseif($table.isTree())
-import {#if($isUseQuery) BaseEntity,#end TreeEntity } from '@/api/model/ResultModel';
-#set($Entity="TreeEntity<${ClassName}>")
-#set($BoEntity="TreeEntity<${ClassName}Bo>")
 #end
 
-#if($isUseQuery)
+#if($isUseQuery && $isUseQueryMethod)
 /**
  * ${functionName}查询对象
  */
@@ -25,7 +19,7 @@ export interface ${ClassName}Query extends BaseEntity {
 /**
  * ${functionName}业务对象
  */
-export interface ${ClassName}Form extends ${BoEntity} {
+export interface ${ClassName}Form {
 #foreach ($column in $columns)
 #if(($column.isPk() || $column.isInsert() || $column.isEdit()))
   /** $column.columnComment */
@@ -38,11 +32,11 @@ export interface ${ClassName}Form extends ${BoEntity} {
 #end
 }
 #end
-#if(!$isUseBO || !$isUseQuery || !$isUseVO)
+#if(!$isUseBO || (!$isUseQuery && !$isUseBO) || !$isUseVO)
 /**
  * ${functionName}对象 ${tableName}
  */
-export interface ${ClassName} extends ${Entity} {
+export interface ${ClassName}#if($isUseQueryMethod && !$isUseQuery) extends BaseEntity#end {
 #foreach ($column in $columns)
   /** $column.columnComment */
   $column.javaField?: ${GenUtil.javaTypeToTypescript($column.javaType)};

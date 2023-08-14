@@ -426,7 +426,7 @@ import { getCurrentInstance, ref } from 'vue';
 #if($isUseQueryMethod || $isUseAddMethod || $isUseEditMethod || $isUseDetailMethod || $isUseRemoveMethod)
 import { #if($isUseQueryMethod)list${BusinessName}, #end#if($isUseEditMethod || $isUseDetailMethod)get${BusinessName}, #end#if($isUseRemoveMethod)del${BusinessName}, #end#if($isUseAddMethod)add${BusinessName}, #end#if($isUseEditMethod)update${BusinessName}#end } from '@/api/${moduleName}/${businessName}';
 #end
-import { #if(!$isUseBO || !$isUseQuery || !$isUseVO)${ClassName}#if($isUseBO || $isUseQuery || $isUseVO), #end#end#if($isUseBO && $addOrUpdate)${ClassName}Form#if($isUseQuery || $isUseVO), #end#end#if($isUseQuery && $isUseQueryMethod)${ClassName}Query#if($isUseVO), #end#end#if($isUseVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
+import { #if(!$isUseBO || (!$isUseQuery && !$isUseBO) || !$isUseVO)${ClassName}#if($isUseBO || $isUseQuery || $isUseVO), #end#end#if($isUseBO && ($addOrUpdate || !$isUseQuery))${ClassName}Form#if($isUseQuery || $isUseVO), #end#end#if($isUseQuery && $isUseQueryMethod)${ClassName}Query#if($isUseVO), #end#end#if($isUseVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
 #foreach($column in $columns)
 #if($column.htmlType == "editor")
 import Editor from '@/components/editor/index.vue';
@@ -437,15 +437,15 @@ import Editor from '@/components/editor/index.vue';
 #else
 #set($vo=$ClassName)
 #end
-#if($isUseQuery)
-#set($query="${ClassName}Query")
-#else
-#set($query=$ClassName)
-#end
 #if($isUseBO)
 #set($bo="${ClassName}Form")
 #else
 #set($bo=$ClassName)
+#end
+#if($isUseQuery)
+#set($query="${ClassName}Query")
+#else
+#set($query=$bo)
 #end
 
 const { proxy } = getCurrentInstance();
@@ -534,7 +534,7 @@ const columns = ref<Array<PrimaryTableCol>>([
 #end
 #if($addOrUpdate || $isUseDetailMethod)
 // 提交表单对象
-const form = ref<$vo#if($isUseBO && $addOrUpdate) & $bo#end>({});
+const form = ref<$vo#if($addOrUpdate)#if($isUseBO) & $bo#elseif($isUseVO) & $ClassName#end#end>({});
 #end
 #if($isUseQueryMethod)
 // 查询对象

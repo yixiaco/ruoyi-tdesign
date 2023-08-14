@@ -41,10 +41,10 @@ import org.dromara.common.log.enums.BusinessType;
 #if($isUseExportMethod)
 import org.dromara.common.excel.utils.ExcelUtil;
 #end
-#if((!$isUseBO || !$isUseQuery || !$isUseVO) && ($isUseExportMethod || $isUseQueryMethod || $isUseAddMethod || $isUseEditMethod))
+#if((!$isUseBO || (!$isUseQuery && !$isUseBO) || !$isUseVO) && ($isUseExportMethod || $isUseQueryMethod || $isUseAddMethod || $isUseEditMethod))
 import ${packageName}.domain.${ClassName};
 #end
-#if($isUseBO && ($isUseAddMethod || $isUseEditMethod))
+#if($isUseBO && ($isUseAddMethod || $isUseEditMethod || !$isUseQuery))
 #set($bo="${ClassName}Bo")
 #set($boObjName="bo")
 import ${packageName}.domain.bo.${ClassName}Bo;
@@ -56,7 +56,7 @@ import ${packageName}.domain.bo.${ClassName}Bo;
 #set($query="${ClassName}Query")
 import ${packageName}.domain.query.${ClassName}Query;
 #else
-#set($query=$ClassName)
+#set($query=$bo)
 #end
 #if($isUseVO && ($isUseQueryMethod || $isUseDetailMethod || $isUseEditMethod || $isUseExportMethod))
 #set($vo="${ClassName}Vo")

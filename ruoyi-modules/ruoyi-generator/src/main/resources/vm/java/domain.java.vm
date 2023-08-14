@@ -1,15 +1,6 @@
 package ${packageName}.domain;
 
-#foreach ($column in $columns)
-#if($column.javaField=='tenantId')
-#set($IsTenant=1)
-#end
-#end
-#if($IsTenant==1)
-import org.dromara.common.tenant.core.TenantEntity;
-#else
 import org.dromara.common.mybatis.core.domain.BaseEntity;
-#end
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -28,6 +19,7 @@ import jakarta.validation.constraints.*;
 import ${import};
 #end
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.Date;
 import java.math.BigDecimal;
 
@@ -37,15 +29,10 @@ import java.math.BigDecimal;
  * @author ${author}
  * @date ${datetime}
  */
-#if($IsTenant==1)
-#set($Entity="TenantEntity")
-#else
-#set($Entity="BaseEntity")
-#end
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("${tableName}")
-public class ${ClassName} extends ${Entity} {
+public class ${ClassName} implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
