@@ -4,8 +4,6 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 
-import java.util.Date;
-
 /**
  * OSS对象存储查询对象 sys_oss
  *
@@ -35,6 +33,11 @@ public class SysOssQuery extends BaseEntity {
      * URL地址
      */
     private String url;
+
+    /**
+     * 分类id
+     */
+    private Long ossCategoryId;
 
     /**
      * 用户类型

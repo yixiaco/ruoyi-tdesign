@@ -18,6 +18,16 @@ import org.dromara.system.domain.SysOss;
 public class SysOssBo extends BaseEntity {
 
     /**
+     * 对象存储主键
+     */
+    private Long ossId;
+
+    /**
+     * 分类id
+     */
+    private Long ossCategoryId = 0L;
+
+    /**
      * 用户类型
      */
     private UserType userType;
@@ -36,4 +46,5 @@ public class SysOssBo extends BaseEntity {
      * 上传人
      */
     private Long createBy;
+
 }

@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.dromara.common.tenant.core.TenantEntity;
 
+import java.io.Serial;
 import java.util.Date;
 
 /**
@@ -19,6 +20,9 @@ import java.util.Date;
 @EqualsAndHashCode(callSuper = true)
 @TableName("sys_oss")
 public class SysOss extends TenantEntity {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * 对象存储主键
@@ -55,6 +59,11 @@ public class SysOss extends TenantEntity {
      * 字节长度
      */
     private Long size;
+
+    /**
+     * 分类id
+     */
+    private Long ossCategoryId;
 
     /**
      * 用户类型
