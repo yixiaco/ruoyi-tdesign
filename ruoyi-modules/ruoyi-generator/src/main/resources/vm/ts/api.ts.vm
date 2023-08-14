@@ -1,19 +1,19 @@
 import { request } from '@/utils/request';
-#set($addOrUpdate = $isUseAddMethod || $isUseEditMethod)
+#set($addOrUpdate = ($isUseAddMethod || $isUseEditMethod))
 #if($isUseVO)
 #set($vo="${ClassName}Vo")
 #else
 #set($vo=$ClassName)
 #end
-#if($isUseQuery)
-#set($query="${ClassName}Query")
-#else
-#set($query=$ClassName)
-#end
 #if($isUseBO)
 #set($bo="${ClassName}Form")
 #else
 #set($bo=$ClassName)
+#end
+#if($isUseQuery)
+#set($query="${ClassName}Query")
+#else
+#set($query=$bo)
 #end
 #if($table.isCrud())
 #set($Result="TableDataInfo<$vo>")
@@ -23,7 +23,14 @@ import { R, TableDataInfo } from '@/api/model/resultModel';
 import { R } from '@/api/model/resultModel';
 #end
 #set($idType=${GenUtil.javaTypeToTypescript(${pkColumn.javaType})})
-import { #if(!$isUseBO || !$isUseQuery || !$isUseVO)${ClassName}#if($isUseBO || $isUseQuery || $isUseVO), #end#end#if($isUseBO && $addOrUpdate)${ClassName}Form#if($isUseQuery || $isUseVO), #end#end#if($isUseQuery)${ClassName}Query#if($isUseVO), #end#end#if($isUseVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
+#set($importApiModel = [])
+#if((!$isUseBO && $addOrUpdate || (!$isUseQuery && !$isUseBO) || !$isUseVO) && $importApiModel.add(${ClassName}))#end
+#if($isUseBO && ($addOrUpdate  || !$isUseQuery) && $importApiModel.add($bo))#end
+#if($isUseQuery && $isUseQueryMethod && $importApiModel.add(${query}))#end
+#if($isUseVO && ($isUseQueryMethod || $isUseDetailMethod || $isUseEditMethod) && $importApiModel.add(${vo}))#end
+#if(!$importApiModel.isEmpty())
+import { $StringUtils.join($importApiModel, ", ") } from '@/api/${moduleName}/model/${businessName}Model';
+#end
 #if($isUseQueryMethod)
 
 // 查询${functionName}列表

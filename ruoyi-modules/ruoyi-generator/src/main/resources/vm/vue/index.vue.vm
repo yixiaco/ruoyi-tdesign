@@ -410,10 +410,25 @@ import {
 import { FormInstanceFunctions, FormRule#if($isUseQueryMethod), PageInfo, PrimaryTableCol#end, SubmitContext#if($hasSorting && $isUseQueryMethod), TableSort#end } from 'tdesign-vue-next';
 import { #if($isUseQueryMethod)computed, #{end}getCurrentInstance, ref } from 'vue';
 
-#if($isUseQueryMethod || $isUseAddMethod || $isUseEditMethod || $isUseDetailMethod || $isUseRemoveMethod)
-import { #if($isUseQueryMethod)list${BusinessName}, #end#if($isUseEditMethod || $isUseDetailMethod)get${BusinessName}, #end#if($isUseRemoveMethod)del${BusinessName}, #end#if($isUseAddMethod)add${BusinessName}, #end#if($isUseEditMethod)update${BusinessName}#end } from '@/api/${moduleName}/${businessName}';
+## 导入api
+#set($importApi = [])
+#if($isUseQueryMethod && $importApi.add('list'+${BusinessName}))#end
+#if(($isUseEditMethod || $isUseDetailMethod) && $importApi.add('get'+${BusinessName}))#end
+#if($isUseRemoveMethod && $importApi.add('del'+${BusinessName}))#end
+#if($isUseAddMethod && $importApi.add('add'+${BusinessName}))#end
+#if($isUseEditMethod && $importApi.add('update'+${BusinessName}))#end
+#if(!$importApi.isEmpty())
+import { $StringUtils.join($importApi, ", ") } from '@/api/${moduleName}/${businessName}';
 #end
-import { #if(!$isUseBO || !$isUseQuery || !$isUseVO)${ClassName}#if($isUseBO || $isUseQuery || $isUseVO), #end#end#if($isUseBO && $addOrUpdate)${ClassName}Form#if($isUseQuery || $isUseVO), #end#end#if($isUseQuery && $isUseQueryMethod)${ClassName}Query#if($isUseVO), #end#end#if($isUseVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
+## 导入对象类型
+#set($importApiModel = [])
+#if((!$isUseBO && $addOrUpdate || (!$isUseQuery && !$isUseBO) || !$isUseVO) && $importApiModel.add(${ClassName}))#end
+#if($isUseBO && ($addOrUpdate  || !$isUseQuery) && $importApiModel.add($bo))#end
+#if($isUseQuery && $isUseQueryMethod && $importApiModel.add(${query}))#end
+#if($isUseVO && ($isUseQueryMethod || $isUseDetailMethod || $isUseEditMethod) && $importApiModel.add(${vo}))#end
+#if(!$importApiModel.isEmpty())
+import { $StringUtils.join($importApiModel, ", ") } from '@/api/${moduleName}/model/${businessName}Model';
+#end
 #foreach($column in $columns)
 #if($column.htmlType == "editor")
 import Editor from '@/components/editor/index.vue';
@@ -425,15 +440,15 @@ import Editor from '@/components/editor/index.vue';
 #else
 #set($vo=$ClassName)
 #end
-#if($isUseQuery)
-#set($query="${ClassName}Query")
-#else
-#set($query=$ClassName)
-#end
 #if($isUseBO)
 #set($bo="${ClassName}Form")
 #else
 #set($bo=$ClassName)
+#end
+#if($isUseQuery)
+#set($query="${ClassName}Query")
+#else
+#set($query=$bo)
 #end
 const { proxy } = getCurrentInstance();
 #if(${dicts} != '')
@@ -522,7 +537,7 @@ const columns = ref<Array<PrimaryTableCol>>([
 #end
 #if($addOrUpdate || $isUseDetailMethod)
 // 提交表单对象
-const form = ref<$vo#if($isUseBO && $addOrUpdate) & $bo#end>({});
+const form = ref<$vo#if($addOrUpdate)#if($isUseBO) & $bo#elseif($isUseVO) & $ClassName#end#end>({});
 #end
 #if($isUseQueryMethod)
 // 查询对象

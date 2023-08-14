@@ -13,6 +13,8 @@ import ${import};
 #end
 
 import java.util.Date;
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * ${functionName}业务对象 ${tableName}
@@ -21,9 +23,11 @@ import java.util.Date;
  * @date ${datetime}
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @AutoMapper(target = ${ClassName}.class, reverseConvertGenerate = false)
-public class ${ClassName}Bo extends BaseEntity {
+public class ${ClassName}Bo#if(!$isUseQuery && $isUseQueryMethod) extends BaseEntity#end {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
 #foreach ($column in $columns)
 #if(($column.isPk() || $column.isInsert() || $column.isEdit()))

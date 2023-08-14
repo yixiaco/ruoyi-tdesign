@@ -74,6 +74,9 @@
         <template #icon="{ row }">
           <r-icon :name="row.icon" />
         </template>
+        <template #visible="{ row }">
+          <dict-tag :options="sys_show_hide" :value="row.visible" />
+        </template>
         <template #status="{ row }">
           <dict-tag :options="sys_normal_disable" :value="row.status" />
         </template>
@@ -342,6 +345,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `排序`, colKey: 'orderNum', align: 'center', width: 100, sorter: true },
   { title: `权限标识`, colKey: 'perms', align: 'center', ellipsis: true },
   { title: `组件路径`, colKey: 'component', align: 'center', ellipsis: true },
+  { title: `显示状态`, colKey: 'visible', align: 'center' },
   { title: `状态`, colKey: 'status', align: 'center', width: 80 },
   { title: `创建时间`, colKey: 'createTime', align: 'center', sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },

@@ -11,6 +11,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 #if($isUseQuery)
 #set($query="${ClassName}Query")
 #set($className = $packageName + ".domain.query." + ${query})
+#elseif($isUseBO)
+#set($query="${ClassName}Bo")
+#set($className = $packageName + ".domain.bo." + ${query})
 #else
 #set($query=$ClassName)
 #set($className = $packageName + ".domain." + ${query})

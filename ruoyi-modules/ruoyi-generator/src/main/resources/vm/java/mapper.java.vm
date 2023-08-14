@@ -1,11 +1,17 @@
 package ${packageName}.mapper;
 
 import ${packageName}.domain.${ClassName};
+#if($isUseBO && ($isUseAddMethod || $isUseEditMethod || !$isUseQuery))
+#set($bo="${ClassName}Bo")
+import ${packageName}.domain.bo.${ClassName}Bo;
+#else
+#set($bo=$ClassName)
+#end
 #if($isUseQuery && $isUseQueryMethod)
 #set($query="${ClassName}Query")
 import ${packageName}.domain.query.${ClassName}Query;
 #else
-#set($query=$ClassName)
+#set($query=$bo)
 #end
 #if($isUseVO)
 #set($vo="${ClassName}Vo")
