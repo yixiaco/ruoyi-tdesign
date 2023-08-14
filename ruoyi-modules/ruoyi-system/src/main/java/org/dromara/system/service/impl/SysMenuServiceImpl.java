@@ -190,19 +190,25 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         List<RouterVo> routers = new LinkedList<>();
         for (SysMenu menu : menus) {
             RouterVo router = new RouterVo();
-            router.setHidden(ShowHiddenEnum.HIDDEN.getCode().equals(menu.getVisible()));
             router.setName(menu.getRouteName());
             router.setPath(menu.getRouterPath());
             router.setComponent(menu.getComponentInfo());
             router.setQuery(getQueryParam(menu.getQueryParam()));
-            router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), Objects.equals(YesNoEnum.NO.getCodeNum(), menu.getIsCache()), menu.getPath()));
+            MetaVo meta = new MetaVo();
+            meta.setTitle(menu.getMenuName());
+            meta.setIcon(menu.getIcon());
+            meta.setNoCache(Objects.equals(YesNoEnum.NO.getCodeNum(), menu.getIsCache()));
+            meta.setLink(menu.getPath());
+            meta.setHidden(ShowHiddenEnum.HIDDEN.getCode().equals(menu.getVisible()));
+
+            router.setMeta(meta);
             List<SysMenu> cMenus = menu.getChildren();
             if (CollUtil.isNotEmpty(cMenus) && UserConstants.TYPE_DIR.equals(menu.getMenuType())) {
                 router.setAlwaysShow(true);
                 router.setRedirect("noRedirect");
                 router.setChildren(buildMenus(cMenus));
             } else if (menu.isMenuFrame()) {
-                router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon(), Objects.equals(YesNoEnum.NO.getCodeNum(), menu.getIsCache()), menu.getPath()));
+                router.setMeta(meta);
                 router.setPath(router.getPath() + menu.getPath());
                 List<RouterVo> childrenList = new ArrayList<>();
                 RouterVo children = new RouterVo();

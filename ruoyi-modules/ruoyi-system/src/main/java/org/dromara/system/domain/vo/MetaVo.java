@@ -33,6 +33,14 @@ public class MetaVo {
      */
     private String link;
 
+    /**
+     * 是否隐藏路由，当设置 true 的时候该路由不会再侧边栏出现
+     */
+    private boolean hidden;
+
+    public MetaVo() {
+    }
+
     public MetaVo(String title, String icon) {
         this.title = title;
         this.icon = icon;

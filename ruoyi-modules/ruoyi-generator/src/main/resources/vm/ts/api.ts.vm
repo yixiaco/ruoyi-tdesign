@@ -23,7 +23,14 @@ import { R, TableDataInfo } from '@/api/model/resultModel';
 import { R } from '@/api/model/resultModel';
 #end
 #set($idType=${GenUtil.javaTypeToTypescript(${pkColumn.javaType})})
-import { #if(!$isUseBO || (!$isUseQuery && !$isUseBO) || !$isUseVO)${ClassName}#if($isUseBO || $isUseQuery || $isUseVO), #end#end#if($isUseBO && ($addOrUpdate  || !$isUseQuery))${ClassName}Form#if($isUseQuery || $isUseVO), #end#end#if($isUseQuery)${ClassName}Query#if($isUseVO), #end#end#if($isUseVO)${ClassName}Vo#end } from '@/api/${moduleName}/model/${businessName}Model';
+#set($importApiModel = [])
+#if((!$isUseBO && $addOrUpdate || (!$isUseQuery && !$isUseBO) || !$isUseVO) && $importApiModel.add(${ClassName}))#end
+#if($isUseBO && ($addOrUpdate  || !$isUseQuery) && $importApiModel.add($bo))#end
+#if($isUseQuery && $isUseQueryMethod && $importApiModel.add(${query}))#end
+#if($isUseVO && ($isUseQueryMethod || $isUseDetailMethod || $isUseEditMethod) && $importApiModel.add(${vo}))#end
+#if(!$importApiModel.isEmpty())
+import { $StringUtils.join($importApiModel, ", ") } from '@/api/${moduleName}/model/${businessName}Model';
+#end
 #if($isUseQueryMethod)
 
 // 查询${functionName}列表
