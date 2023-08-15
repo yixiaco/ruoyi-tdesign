@@ -1,7 +1,11 @@
 package org.dromara.system.service.impl;
 
+import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.dromara.system.domain.SysOss;
+import org.dromara.system.service.ISysOssService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.dromara.system.domain.SysOssCategory;
@@ -22,6 +26,9 @@ import java.util.List;
  */
 @Service
 public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper, SysOssCategory> implements ISysOssCategoryService {
+
+    @Autowired
+    private ISysOssService ossService;
 
     /**
      * 查询OSS分类
@@ -80,6 +87,14 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteWithValidByIds(Collection<Long> ids) {
+        boolean exists = ossService.lambdaQuery().in(SysOss::getOssCategoryId, ids).exists();
+        if (exists) {
+            throw new ServiceException("无法删除非空分类");
+        }
+        exists = lambdaQuery().in(SysOssCategory::getParentId, ids).exists();
+        if (exists) {
+            throw new ServiceException("请先删除子分类");
+        }
         return removeByIds(ids);
     }
 }

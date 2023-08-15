@@ -11,20 +11,66 @@
           </t-input>
         </div>
         <div class="head-container">
-          <t-tree
-            ref="deptTreeRef"
-            v-model:actived="categoryActived"
-            :data="ossCategoryOptions"
-            :keys="{ value: 'ossCategoryId', label: 'categoryName', children: 'children' }"
-            :filter="filterNode"
-            activable
-            expand-all
-            hover
-            line
-            check-strictly
-            allow-fold-node-on-filter
-            @active="handleQuery"
-          />
+          <t-skeleton animation="gradient" :loading="loadingOptions">
+            <t-tree
+              ref="categoryTreeRef"
+              v-model:actived="categoryActived"
+              class="left-tree t-tree--block-node"
+              :data="ossCategoryTree"
+              :keys="{ value: 'ossCategoryId', label: 'categoryName', children: 'children' }"
+              :filter="filterNode"
+              activable
+              hover
+              line
+              allow-fold-node-on-filter
+              transition
+              @active="handleQuery"
+            >
+              <template #empty>
+                <t-link v-hasPermi="['system:ossCategory:add']" theme="primary" hover="color" @click.stop="handleAdd()">
+                  新建目录
+                </t-link>
+              </template>
+              <template #operations="{ node }">
+                <t-dropdown placement="bottom" :max-column-width="120" :popup-props="{ showArrow: true }">
+                  <t-button size="small" theme="primary" variant="text"> 操作 </t-button>
+                  <t-dropdown-menu>
+                    <t-dropdown-item content="新增子目录" @click="handleAdd(node.data)">
+                      <template #prefix-icon><add-icon /></template>
+                    </t-dropdown-item>
+                    <t-dropdown-item
+                      v-if="node.value !== 0"
+                      content="前插目录"
+                      @click="handleAdd(node.getParent()?.data, node.data.orderNum - 1)"
+                    >
+                      <template #prefix-icon><arrow-up-icon /></template>
+                    </t-dropdown-item>
+                    <t-dropdown-item
+                      v-if="node.value !== 0"
+                      content="后插目录"
+                      @click="handleAdd(node.getParent()?.data, node.data.orderNum + 1)"
+                    >
+                      <template #prefix-icon><arrow-down-icon /></template>
+                    </t-dropdown-item>
+                    <t-dropdown-item v-if="node.value !== 0" content="查看详情" @click="handleDetail(node.data)">
+                      <template #prefix-icon><browse-icon /></template>
+                    </t-dropdown-item>
+                    <t-dropdown-item v-if="node.value !== 0" content="编辑目录" @click="handleUpdate(node.data)">
+                      <template #prefix-icon><edit-icon /></template>
+                    </t-dropdown-item>
+                    <t-dropdown-item
+                      v-if="node.value !== 0"
+                      content="删除目录"
+                      theme="error"
+                      @click="handleDelete(node.data)"
+                    >
+                      <template #prefix-icon><delete-icon /></template>
+                    </t-dropdown-item>
+                  </t-dropdown-menu>
+                </t-dropdown>
+              </template>
+            </t-tree>
+          </t-skeleton>
         </div>
       </t-col>
       <!-- 文件数据 -->
@@ -147,9 +193,9 @@
         @submit="submitForm"
       >
         <t-form-item label="分类名称" name="categoryName">
-          <t-input v-model="form.categoryName" placeholder="请输入分类名称" clearable />
+          <t-input v-model="form.categoryName" placeholder="请输入分类名称" clearable :maxlength="10" />
         </t-form-item>
-        <t-form-item label="父级分类id" name="parentId">
+        <t-form-item label="父级分类" name="parentId">
           <t-tree-select
             v-model="form.parentId"
             :data="ossCategoryOptions"
@@ -157,14 +203,11 @@
               keys: { value: 'ossCategoryId', label: 'categoryName', children: 'children' },
               checkStrictly: true,
             }"
-            placeholder="请选择父级分类id"
+            placeholder="请选择父级分类"
           />
         </t-form-item>
         <t-form-item label="显示顺序" name="orderNum">
           <t-input-number v-model="form.orderNum" placeholder="请输入" />
-        </t-form-item>
-        <t-form-item label="上传人" name="createBy">
-          <t-input-number v-model="form.createBy" placeholder="请输入" />
         </t-form-item>
       </t-form>
     </t-dialog>
@@ -206,6 +249,8 @@ export default {
 <script lang="ts" setup>
 import {
   AddIcon,
+  ArrowDownIcon,
+  ArrowUpIcon,
   BrowseIcon,
   DeleteIcon,
   EditIcon,
@@ -239,10 +284,12 @@ const openView = ref(false);
 const openViewLoading = ref(false);
 const ossCategoryList = ref<SysOssCategoryVo[]>([]);
 const loading = ref(false);
+const loadingOptions = ref(false);
 const columnControllerVisible = ref(false);
 const showSearch = ref(true);
 const isExpandAll = ref(true);
 const tableRef = ref<EnhancedTableInstanceFunctions>(null);
+const ossCategoryTree = ref<SysOssCategoryVo[]>([]);
 const ossCategoryOptions = ref<SysOssCategoryVo[]>([]);
 const open = ref(false);
 const buttonLoading = ref(false);
@@ -253,14 +300,13 @@ const categoryActived = ref<number[]>([]);
 
 const rules = ref<Record<string, Array<FormRule>>>({
   categoryName: [{ required: true, message: '分类名称不能为空', trigger: 'blur' }],
-  parentId: [{ required: true, message: '父级分类id不能为空', trigger: 'blur' }],
+  parentId: [{ required: true, message: '父级分类不能为空', trigger: 'blur' }],
   orderNum: [{ required: true, message: '显示顺序不能为空', trigger: 'blur' }],
 });
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `分类名称`, colKey: 'categoryName' },
-  { title: `父级分类id`, colKey: 'parentId', align: 'center' },
   { title: `显示顺序`, colKey: 'orderNum', align: 'center' },
   { title: `更新时间`, colKey: 'updateTime', align: 'center', width: 180 },
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
@@ -295,7 +341,9 @@ function filterNode(node: TreeNodeModel) {
 
 // 表单重置
 function reset() {
-  form.value = {};
+  form.value = {
+    orderNum: 0,
+  };
   proxy.resetForm('ossCategoryRef');
 }
 
@@ -328,13 +376,16 @@ function refreshExpandAll() {
 }
 
 /** 新增按钮操作 */
-function handleAdd(row?: SysOssCategoryVo) {
+function handleAdd(row?: SysOssCategoryVo, orderNum?: number) {
   reset();
-  getTreeselect();
+  getCategoryOptions();
   if (row != null && row.ossCategoryId) {
     form.value.parentId = row.ossCategoryId;
   } else {
     form.value.parentId = 0;
+  }
+  if (orderNum) {
+    form.value.orderNum = orderNum;
   }
   open.value = true;
   title.value = '添加OSS分类';
@@ -358,7 +409,7 @@ async function handleUpdate(row?: SysOssCategoryVo) {
   reset();
   open.value = true;
   title.value = '修改OSS分类';
-  await getTreeselect();
+  await getCategoryOptions();
   if (row != null) {
     form.value.parentId = row.ossCategoryId;
   }
@@ -368,17 +419,26 @@ async function handleUpdate(row?: SysOssCategoryVo) {
   });
 }
 
-/** 查询OSS分类下拉树结构 */
-function getTreeselect() {
-  listOssCategory().then((response) => {
+/** 查询OSS分类下拉树选项结构 */
+function getCategoryOptions() {
+  return listOssCategory().then((response) => {
     ossCategoryOptions.value = [
       {
         ossCategoryId: 0,
-        categoryName: '顶级节点',
+        categoryName: '根目录',
         children: proxy.handleTree(response.data, 'ossCategoryId', 'parentId'),
       },
     ];
   });
+}
+/** 查询OSS分类树结构 */
+function getCategoryTree() {
+  loadingOptions.value = true;
+  listOssCategory()
+    .then((response) => {
+      ossCategoryTree.value = proxy.handleTree(response.data, 'ossCategoryId', 'parentId');
+    })
+    .finally(() => (loadingOptions.value = false));
 }
 
 /** 提交按钮 */
@@ -397,6 +457,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
           proxy.$modal.msgSuccess('修改成功');
           open.value = false;
           getList();
+          getCategoryTree();
         })
         .finally(() => {
           buttonLoading.value = false;
@@ -408,6 +469,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
           proxy.$modal.msgSuccess('新增成功');
           open.value = false;
           getList();
+          getCategoryTree();
         })
         .finally(() => {
           buttonLoading.value = false;
@@ -421,11 +483,12 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
 
 /** 删除按钮操作 */
 function handleDelete(row: SysOssCategoryVo) {
-  proxy.$modal.confirm(`是否确认删除OSS分类编号为${row.ossCategoryId}的数据项？`, () => {
+  proxy.$modal.confirm(`是否确认删除【${row.categoryName}】目录？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delOssCategory(row.ossCategoryId)
       .then(() => {
         getList();
+        getCategoryTree();
         proxy.$modal.msgSuccess('删除成功');
       })
       .finally(() => {
@@ -434,6 +497,15 @@ function handleDelete(row: SysOssCategoryVo) {
   });
 }
 
-getTreeselect();
+getCategoryTree();
 getList();
 </script>
+<style lang="less" scoped>
+.left-tree {
+  :deep(.t-tree__empty) {
+    display: flex;
+    justify-content: center;
+    min-height: 200px;
+  }
+}
+</style>

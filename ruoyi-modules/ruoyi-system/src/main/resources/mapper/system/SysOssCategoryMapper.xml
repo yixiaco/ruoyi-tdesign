@@ -19,6 +19,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="userType != null and userType != ''"> and soc.user_type = #{userType}</if>
             <if test="createBy != null"> and soc.create_by = #{createBy}</if>
         </where>
+        order by soc.order_num
     </select>
 
 </mapper>

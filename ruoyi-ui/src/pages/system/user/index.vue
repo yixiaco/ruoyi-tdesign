@@ -14,6 +14,7 @@
           <t-tree
             ref="deptTreeRef"
             v-model:actived="deptActived"
+            class="t-tree--block-node"
             :data="deptOptions"
             :keys="{ value: 'id', label: 'label', children: 'children' }"
             :filter="filterNode"

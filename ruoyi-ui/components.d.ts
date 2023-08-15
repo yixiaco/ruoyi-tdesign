@@ -72,6 +72,7 @@ declare module 'vue' {
     Trend: typeof import('./src/components/trend/index.vue')['default']
     TRow: typeof import('tdesign-vue-next')['Row']
     TSelect: typeof import('tdesign-vue-next')['Select']
+    TSkeleton: typeof import('tdesign-vue-next')['Skeleton']
     TSpace: typeof import('tdesign-vue-next')['Space']
     TSubmenu: typeof import('tdesign-vue-next')['Submenu']
     TSwitch: typeof import('tdesign-vue-next')['Switch']
