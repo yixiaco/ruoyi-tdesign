@@ -3,35 +3,18 @@
     <t-space direction="vertical" style="width: 100%">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline">
         <t-form-item label="文件名" name="fileName">
-          <t-input
-            v-model="queryParams.fileName"
-            placeholder="请输入文件名"
-            clearable
-            style="width: 200px"
-            @enter="handleQuery"
-          />
+          <t-input v-model="queryParams.fileName" placeholder="请输入文件名" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="原名" name="originalName">
-          <t-input
-            v-model="queryParams.originalName"
-            placeholder="请输入原名"
-            clearable
-            style="width: 200px"
-            @enter="handleQuery"
-          />
+          <t-input v-model="queryParams.originalName" placeholder="请输入原名" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="文件后缀" name="fileSuffix">
-          <t-input
-            v-model="queryParams.fileSuffix"
-            placeholder="请输入文件后缀"
-            clearable
-            style="width: 200px"
-            @enter="handleQuery"
-          />
+          <t-input v-model="queryParams.fileSuffix" placeholder="请输入文件后缀" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="创建时间">
           <t-date-range-picker
             v-model="daterangeCreateTime"
+            style="width: 240px"
             allow-input
             clearable
             separator="-"
@@ -39,22 +22,10 @@
           />
         </t-form-item>
         <t-form-item label="上传人" name="createByName">
-          <t-input
-            v-model="queryParams.createByName"
-            placeholder="请输入上传人"
-            clearable
-            style="width: 200px"
-            @enter="handleQuery"
-          />
+          <t-input v-model="queryParams.createByName" placeholder="请输入上传人" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="服务商" name="service">
-          <t-input
-            v-model="queryParams.service"
-            placeholder="请输入服务商"
-            clearable
-            style="width: 200px"
-            @enter="handleQuery"
-          />
+          <t-input v-model="queryParams.service" placeholder="请输入服务商" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label-width="0px">
           <t-button theme="primary" @click="handleQuery">
