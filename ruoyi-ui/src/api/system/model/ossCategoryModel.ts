@@ -38,6 +38,8 @@ export interface SysOssCategoryVo {
   categoryName?: string;
   /** 父级分类id */
   parentId?: number;
+  /** 父级分类名称 */
+  parentCategoryName?: string;
   /** 显示顺序 */
   orderNum?: number;
   /** 用户类型 */

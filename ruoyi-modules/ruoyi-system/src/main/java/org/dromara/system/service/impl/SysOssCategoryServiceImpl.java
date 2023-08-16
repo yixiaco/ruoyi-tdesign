@@ -38,7 +38,7 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
      */
     @Override
     public SysOssCategoryVo queryById(Long ossCategoryId) {
-        return baseMapper.selectVoById(ossCategoryId);
+        return baseMapper.queryVoById(ossCategoryId);
     }
 
     /**

@@ -1,5 +1,6 @@
 package org.dromara.system.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import org.dromara.system.domain.SysOssCategory;
 import org.dromara.system.domain.query.SysOssCategoryQuery;
 import org.dromara.system.domain.vo.SysOssCategoryVo;
@@ -22,4 +23,11 @@ public interface SysOssCategoryMapper extends BaseMapperPlus<SysOssCategory, Sys
      * @return {@link SysOssCategoryVo}
      */
     List<SysOssCategoryVo> queryList(SysOssCategoryQuery query);
+
+    /**
+     * 查询OSS分类
+     * @param ossCategoryId
+     * @return
+     */
+    SysOssCategoryVo queryVoById(@Param("ossCategoryId") Long ossCategoryId);
 }

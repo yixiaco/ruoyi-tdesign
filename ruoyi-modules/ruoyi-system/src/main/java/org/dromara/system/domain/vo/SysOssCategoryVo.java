@@ -44,6 +44,12 @@ public class SysOssCategoryVo implements Serializable {
     private Long parentId;
 
     /**
+     * 父级分类名称
+     */
+    @ExcelProperty(value = "父级分类名称")
+    private String parentCategoryName;
+
+    /**
      * 显示顺序
      */
     @ExcelProperty(value = "显示顺序")
