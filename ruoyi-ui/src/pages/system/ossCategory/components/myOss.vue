@@ -36,10 +36,13 @@
               <figure class="list-card-gallery-figure" data-visible="true">
                 <figcaption class="list-card-gallery-figure__caption">{{ oss.fileSuffix.substring(1) }}</figcaption>
                 <div class="list-card-gallery-figure__content">
-<!--                  <div class="gallery-doc-icon gallery-doc-icon&#45;&#45;unknown">
-                    <archive-svg class="gallery-doc-icon__icon" />
-                  </div>-->
-                  <picture class="list-card-gallery-responsive-image list-card-gallery-responsive-image--fit">
+                  <div
+                    v-if="getMediaType(oss) !== 'image'"
+                    :class="`gallery-doc-icon gallery-doc-icon--${getMediaType(oss)}`"
+                  >
+                    <component :is="getMediaType(oss) + '-svg'" class="gallery-doc-icon__icon" />
+                  </div>
+                  <picture v-else class="list-card-gallery-responsive-image list-card-gallery-responsive-image--fit">
                     <img
                       class="list-card-gallery-responsive-image__img--fit list-card-gallery-responsive-image__img--cover"
                       :src="oss.url"
@@ -95,31 +98,15 @@
     </t-dialog>
   </div>
 </template>
-<script lang="ts">
-export default {
-  name: 'MyOss',
-};
-</script>
+
 <script lang="ts" setup>
-import {
-  AddIcon,
-  CheckIcon,
-  DeleteIcon,
-  DownloadIcon,
-  RefreshIcon,
-  RelativityIcon,
-  SearchIcon,
-  SettingIcon,
-} from 'tdesign-icons-vue-next';
+import { CheckIcon, SearchIcon } from 'tdesign-icons-vue-next';
 import { FormRule, PageInfo, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
-import { getPreviewListResourceConfig } from '@/api/system/config';
 import { SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
 import { delOss, listOss } from '@/api/system/oss';
-import ArchiveSvg from '@/assets/file-type/archive.svg?component';
 import FileUpload from '@/components/file-upload/index.vue';
-import ImagePreview from '@/components/image-preview/index.vue';
 import ImageUpload from '@/components/image-upload/index.vue';
 
 const { proxy } = getCurrentInstance();
@@ -129,17 +116,66 @@ const open = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
 const ids = ref([]);
-const single = ref(true);
-const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
 const type = ref(0);
-const previewListResource = ref(true);
 const daterangeCreateTime = ref([]);
 // 默认排序
 const sort = ref<TableSort>(null);
 // 密度
 const gallerySize = ref('140px');
+// 文件格式
+const fileType = {
+  image: [
+    'jpg',
+    'jpeg',
+    'bmp',
+    'gif',
+    'png',
+    'svg',
+    'ico',
+    'tif',
+    'tiff',
+    'webp',
+    'pic',
+    'tga',
+    'jng',
+    'mng',
+    'jbg',
+    'jpe',
+    'heic',
+    'lbm',
+  ],
+  archive: ['zip', '7z', 'rar', 'gz', 'jar', 'lzh', 'taz', 'arj', 'z', 'ace', 'tar', 'xz', 'bz2', 'win'],
+  excel: ['xls', 'xlsx'],
+  pdf: ['pdf'],
+  ppt: ['ppt', 'pptx'],
+  radio: ['wav', 'aif', 'au', 'mp3', 'ram', 'wma', 'mmf', 'amr', 'aac', 'flac', 'aifc', 'awr', 'cda', 'cdr', 'dig'],
+  text: ['txt', 'sql', 'ini', 'xml', 'html', 'htm', 'css', 'scss', 'less', 'js', 'ts', 'java', 'htt', 'inf', 'py'],
+  video: [
+    'avi',
+    'mp4',
+    'm4v',
+    'mkv',
+    'webm',
+    'flv',
+    'mov',
+    'wmv',
+    '3gp',
+    '3g2',
+    'mpg',
+    'vob',
+    'ogg',
+    'swf',
+    'dxr',
+    'fla',
+    'rm',
+    'mpe',
+    'mpeg',
+    'ts',
+  ],
+  word: ['doc', 'docx', 'wps', 'rtf'],
+};
 
 const rules = ref<Record<string, Array<FormRule>>>({
   file: [{ required: true, message: '文件不能为空', trigger: 'blur' }],
@@ -175,12 +211,23 @@ const pagination = computed(() => {
   };
 });
 
+function getMediaType(oss: SysOssVo) {
+  const suffix = oss.fileSuffix?.substring(1)?.toLowerCase();
+  if (suffix) {
+    const entries = Object.entries(fileType);
+    const type = entries.find((value) => {
+      return value[1].includes(suffix);
+    });
+    if (type) {
+      return type[0];
+    }
+  }
+  return 'unknown';
+}
+
 /** 查询OSS对象存储列表 */
 function getList() {
   loading.value = true;
-  getPreviewListResourceConfig().then((response) => {
-    previewListResource.value = response.data === undefined ? true : response.data;
-  });
   listOss(proxy.addDateRange(queryParams.value, daterangeCreateTime.value, 'CreateTime'))
     .then((response) => {
       ossList.value = response.rows;
@@ -188,12 +235,6 @@ function getList() {
       loading.value = false;
     })
     .finally(() => (loading.value = false));
-}
-function checkFileSuffix(fileSuffix: string | string[]) {
-  const arr = ['png', 'jpg', 'jpeg', 'ico', 'bmp', 'webp', 'gif', 'svg'];
-  return arr.some((type) => {
-    return fileSuffix.indexOf(type) > -1;
-  });
 }
 /** 表单重置 */
 function reset() {
@@ -213,12 +254,6 @@ function resetQuery() {
   proxy.resetForm('queryRef');
   queryParams.value.pageNum = 1;
   handleSortChange(null);
-}
-/** 选择条数  */
-function handleSelectionChange(selection: Array<string | number>) {
-  ids.value = selection;
-  single.value = selection.length !== 1;
-  multiple.value = !selection.length;
 }
 /** 排序触发事件 */
 function handleSortChange(value?: TableSort) {
@@ -260,23 +295,6 @@ function copyTextSuccess() {
 function handleDownload(row: SysOssVo) {
   proxy.$download.oss(row.ossId);
 }
-/** 预览状态修改  */
-function handlePreviewListResource(preview: boolean) {
-  const text = preview ? '启用' : '停用';
-  proxy.$modal.confirm(`确认要"${text}""预览列表图片"配置吗?`, () => {
-    const msgLoading = proxy.$modal.msgLoading('提交中...');
-    return proxy
-      .updateConfigByKey('sys.oss.previewListResource', `${preview}`, 1)
-      .then(() => {
-        getList();
-        proxy.$modal.msgSuccess(`${text}成功`);
-      })
-      .catch(() => {
-        previewListResource.value = previewListResource.value !== true;
-      })
-      .finally(() => proxy.$modal.msgClose(msgLoading));
-  });
-}
 /** 删除按钮操作 */
 function handleDelete(row?: SysOssVo) {
   const ossIds = row?.ossId || ids.value;
@@ -301,6 +319,21 @@ function handleCheck(row: SysOssVo) {
 }
 
 getList();
+</script>
+<script lang="ts">
+import ArchiveSvg from '@/assets/file-type/archive.svg?component';
+import ExcelSvg from '@/assets/file-type/excel.svg?component';
+import PdfSvg from '@/assets/file-type/pdf.svg?component';
+import PptSvg from '@/assets/file-type/ppt.svg?component';
+import RadioSvg from '@/assets/file-type/radio.svg?component';
+import TextSvg from '@/assets/file-type/text.svg?component';
+import VideoSvg from '@/assets/file-type/video.svg?component';
+import WordSvg from '@/assets/file-type/word.svg?component';
+
+export default {
+  name: 'MyOss',
+  components: { ArchiveSvg, ExcelSvg, PdfSvg, PptSvg, RadioSvg, TextSvg, VideoSvg, WordSvg },
+};
 </script>
 <style lang="less" scoped>
 @neutral-h: 220;
@@ -505,13 +538,13 @@ getList();
 .gallery-doc-icon--excel {
   background-color: #e8f5ef;
 }
-.gallery-doc-icon--img {
+.gallery-doc-icon--image {
   background-color: #f5f5f5;
 }
-.gallery-doc-icon--movie {
+.gallery-doc-icon--video {
   background-color: #e5f5f7;
 }
-.gallery-doc-icon--music {
+.gallery-doc-icon--radio {
   background-color: #fff6ea;
 }
 .gallery-doc-icon--pdf {
@@ -520,7 +553,7 @@ getList();
 .gallery-doc-icon--ppt {
   background-color: #f9ebe8;
 }
-.gallery-doc-icon--txt {
+.gallery-doc-icon--text {
   background-color: #f8f8fb;
 }
 .gallery-doc-icon--word {
