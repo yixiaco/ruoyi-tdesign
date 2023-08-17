@@ -88,7 +88,7 @@
       </t-col>
       <!-- 文件数据 -->
       <t-col :sm="10" :xs="12">
-        <my-oss />
+        <my-oss :category-id="categoryActived[0]" />
       </t-col>
     </t-row>
 

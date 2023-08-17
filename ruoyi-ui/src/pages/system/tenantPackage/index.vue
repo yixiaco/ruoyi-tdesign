@@ -484,6 +484,7 @@ function handleDelete(row?: SysTenantPackageVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delTenantPackage(packageIds)
       .then(() => {
+        if (!row) ids.value = [];
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

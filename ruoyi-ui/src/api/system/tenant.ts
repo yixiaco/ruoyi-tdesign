@@ -47,7 +47,7 @@ export function changeTenantStatus(id: number, tenantId: string, status: string)
 }
 
 // 删除租户
-export function delTenant(id: string) {
+export function delTenant(id: number | number[]) {
   return request.delete<R<void>>({
     url: `/system/tenant/${id}`,
   });

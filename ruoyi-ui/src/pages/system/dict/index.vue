@@ -337,6 +337,7 @@ function handleDelete(row?: SysDictTypeVo) {
   const dictIds = row?.dictId || ids.value;
   proxy.$modal.confirm(`是否确认删除字典编号为"${dictIds}"的数据项？`, () => {
     return delType(dictIds).then(() => {
+      if (!row) ids.value = [];
       getList();
       proxy.$modal.msgSuccess('删除成功');
     });

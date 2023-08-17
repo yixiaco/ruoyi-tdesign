@@ -234,8 +234,8 @@ function handleDelete(row?: SysLogininforVo) {
   const infoIds = row?.infoId || ids.value;
   proxy.$modal.confirm(`是否确认删除访问编号为"${infoIds}"的数据项?`, () => {
     return delLogininfor(infoIds).then(() => {
+      if (!row) ids.value = [];
       getList();
-      ids.value = [];
       proxy.$modal.msgSuccess('删除成功');
     });
   });
@@ -244,8 +244,8 @@ function handleDelete(row?: SysLogininforVo) {
 function handleClean() {
   proxy.$modal.confirm('是否确认清空所有登录日志数据项?', () => {
     return cleanLogininfor().then(() => {
-      getList();
       ids.value = [];
+      getList();
       proxy.$modal.msgSuccess('清空成功');
     });
   });

@@ -645,6 +645,7 @@ function handleDelete(row?: SysUserVo) {
   const userIds = row?.userId || ids.value;
   proxy.$modal.confirm(`是否确认删除用户编号为"${userIds}"的数据项？`, () => {
     return delUser(userIds).then(() => {
+      if (!row) ids.value = [];
       getList();
       proxy.$modal.msgSuccess('删除成功');
     });

@@ -440,6 +440,7 @@ function handleDelete(row?: SysRoleVo) {
   const roleIds = row?.roleId || ids.value;
   proxy.$modal.confirm(`是否确认删除角色编号为"${roleIds}"的数据项?`, () => {
     return delRole(roleIds).then(() => {
+      if (!row) ids.value = [];
       getList();
       proxy.$modal.msgSuccess('删除成功');
     });

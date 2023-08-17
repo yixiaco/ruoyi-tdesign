@@ -294,6 +294,7 @@ function handleDelete(row?: SysOperLogVo) {
   const operIds = row?.operId || ids.value;
   proxy.$modal.confirm(`是否确认删除日志编号为"${operIds}"的数据项?`, () => {
     return delOperlog(operIds).then(() => {
+      if (!row) ids.value = [];
       getList();
       proxy.$modal.msgSuccess('删除成功');
     });
@@ -303,6 +304,7 @@ function handleDelete(row?: SysOperLogVo) {
 function handleClean() {
   proxy.$modal.confirm('是否确认清空所有操作日志数据项?', () => {
     return cleanOperlog().then(() => {
+      ids.value = [];
       getList();
       proxy.$modal.msgSuccess('清空成功');
     });

@@ -383,6 +383,7 @@ function handleDelete(row?: SysDictDataVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delData(dictCodes)
       .then(() => {
+        if (!row) ids.value = [];
         getList();
         proxy.$modal.msgSuccess('删除成功');
         useDictStore().removeDict(queryParams.value.dictType);

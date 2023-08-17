@@ -51,6 +51,17 @@ public class SysOssController extends BaseController {
     }
 
     /**
+     * 查询我的OSS对象存储列表
+     */
+    @SaCheckPermission("system:oss:list")
+    @GetMapping("/my/list")
+    public TableDataInfo<SysOssVo> myList(SysOssQuery query) {
+        query.setCreateBy(LoginHelper.getUserId());
+        query.setUserType(UserType.SYS_USER.getUserType());
+        return ossService.queryPageList(query);
+    }
+
+    /**
      * 查询OSS对象基于id串
      *
      * @param ossIds OSS对象ID串

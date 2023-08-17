@@ -411,7 +411,7 @@ function handleDelete(row?: SysOssConfigVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delOssConfig(ossConfigIds)
       .then(() => {
-        loading.value = false;
+        if (!row) ids.value = [];
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

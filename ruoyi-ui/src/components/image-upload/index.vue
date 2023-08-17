@@ -4,14 +4,14 @@
       ref="imageUpload"
       v-model="fileList"
       multiple
+      :theme="theme"
+      :accept="rawAccept"
       :action="uploadImgUrl"
       :before-upload="handleBeforeUpload"
       :max="limit"
       :on-fail="handleUploadError"
       :headers="headers"
-      :theme="theme"
       :draggable="draggable"
-      :accept="rawAccept"
       :size-limit="{ size: fileSize, unit: 'MB', message: '上传图片大小不能超过 {sizeLimit} MB!' }"
       :tips="isShowTip ? `请上传大小不超过 ${fileSize}MB 格式为 ${fileType.join('/')} 的文件` : ''"
       :disabled="disabled"
@@ -108,7 +108,7 @@ const uploadImgUrl = ref(`${baseUrl}/resource/oss/upload`); // 上传的图片�
 const headers = ref({ Authorization: `Bearer ${token.value}` });
 const fileList = ref<UploadFile[]>([]);
 const rawAccept = computed(() => {
-  return props.accept || props.fileType.map((value) => `.${value}`).join(',');
+  return props.accept?.join(',') || props.fileType.map((value) => `.${value}`).join(',');
 });
 
 watch(

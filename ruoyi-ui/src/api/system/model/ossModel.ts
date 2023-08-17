@@ -12,6 +12,8 @@ export interface SysOssQuery extends BaseEntity {
   fileSuffix?: string;
   /** URL地址 */
   url?: string;
+  /** 分类id */
+  ossCategoryId?: number;
   /** 创建时间 */
   createTime?: any;
   /** 上传人 */

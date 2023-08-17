@@ -11,6 +11,14 @@ export function listOss(query: SysOssQuery) {
   });
 }
 
+// 查询我的OSS对象存储列表
+export function listMyOss(query: SysOssQuery) {
+  return request.get<TableDataInfo<SysOssVo>>({
+    url: '/resource/oss/my/list',
+    params: query,
+  });
+}
+
 // 查询OSS对象基于id串
 export function listByIds(ossId: string) {
   return request.get<R<Array<SysOssVo>>>({

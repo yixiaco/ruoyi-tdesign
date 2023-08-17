@@ -1,32 +1,38 @@
 <template>
   <div>
-    <div class="list-card-operation">
-      <t-button> 新建产品 </t-button>
-      <div class="search-input">
+    <t-space direction="vertical" style="width: 100%">
+      <t-space>
+        <t-button v-hasPermi="['system:oss:upload']" theme="primary" @click="handleUpload">
+          <template #icon> <cloud-upload-icon /></template>
+          上传
+        </t-button>
+        <t-button v-hasPermi="['system:oss:remove']" theme="danger" :disabled="!ids.length" @click="handleDelete()">
+          <template #icon> <delete-icon /> </template>
+          删除
+        </t-button>
+        <t-button v-if="ids.length === 1" v-hasPermi="['system:oss:download']" @click="handleDownload()">
+          <template #icon> <download-icon /> </template>
+          下载
+        </t-button>
         <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline">
           <t-form-item label-width="0px" name="originalName">
-            <t-input v-model="queryParams.originalName" placeholder="请输入文件名" clearable @enter="handleQuery">
-              <template #prefix-icon>
+            <t-input v-model="queryParams.originalName" placeholder="搜索文件名" @enter="handleQuery">
+              <template #suffix-icon>
                 <search-icon :style="{ cursor: 'pointer' }" size="var(--td-comp-size-xxxs)" @click="handleQuery" />
               </template>
             </t-input>
           </t-form-item>
         </t-form>
-      </div>
-    </div>
-
-    <div class="list-card-items">
+      </t-space>
       <t-loading :loading="loading">
         <div class="list-card-gallery">
           <div
-            v-for="oss in ossList"
+            v-for="(oss, index) in ossList"
             :key="oss.ossId"
-            aria-checked="false"
+            :aria-checked="ids.includes(oss.ossId) ? 'true' : 'false'"
             class="list-card-gallery-item"
-            data-ckbox-gallery-item="true"
-            data-ckbox-gallery-item-id="qbCNv7OaeH1H"
             role="checkbox"
-            tabindex="0"
+            :tabindex="index"
             @click="handleCheck(oss)"
           >
             <div
@@ -34,7 +40,9 @@
               :class="{ 'list-card-gallery-item__label--active': ids.includes(oss.ossId) }"
             >
               <figure class="list-card-gallery-figure" data-visible="true">
-                <figcaption class="list-card-gallery-figure__caption">{{ oss.fileSuffix.substring(1) }}</figcaption>
+                <figcaption class="list-card-gallery-figure__caption">
+                  {{ oss.fileSuffix.substring(1) }} ({{ bytesToSize(oss.size).replace(' ', '') }})
+                </figcaption>
                 <div class="list-card-gallery-figure__content">
                   <div
                     v-if="getMediaType(oss) !== 'image'"
@@ -46,6 +54,7 @@
                     <img
                       class="list-card-gallery-responsive-image__img--fit list-card-gallery-responsive-image__img--cover"
                       :src="oss.url"
+                      :alt="oss.originalName"
                     />
                   </picture>
                 </div>
@@ -53,11 +62,9 @@
               <div class="list-card-gallery-item__details">
                 <span class="list-card-gallery-item__name" :title="oss.originalName">{{ oss.originalName }}</span>
                 <button
-                  aria-label="Select asset"
                   class="gallery-btn gallery-btn--neutral gallery-btn--plain gallery-btn--small gallery-btn--icon-only-small list-card-gallery-item__checkmark"
                   :class="{ 'list-card-gallery-item__checkmark--active': ids.includes(oss.ossId) }"
                   type="button"
-                  tabindex="-1"
                 >
                   <span>
                     <check-icon class="gallery-icon gallery-icon--base gallery-btn__icon" />
@@ -68,17 +75,17 @@
           </div>
         </div>
       </t-loading>
-    </div>
-    <div class="list-card-pagination">
-      <t-pagination
-        v-model="pagination.current"
-        v-model:page-size="pagination.pageSize"
-        :total="pagination.total"
-        :show-jumper="pagination.showJumper"
-        :page-size-options="[10, 20, 50]"
-        @change="pagination.onChange"
-      />
-    </div>
+      <div class="list-card-pagination">
+        <t-pagination
+          v-model="pagination.current"
+          v-model:page-size="pagination.pageSize"
+          :total="pagination.total"
+          :show-jumper="pagination.showJumper"
+          :page-size-options="[10, 20, 50]"
+          @change="pagination.onChange"
+        />
+      </div>
+    </t-space>
 
     <!-- 添加或修改OSS对象存储对话框 -->
     <t-dialog
@@ -90,7 +97,13 @@
       @confirm="submitForm"
     >
       <t-form ref="ossRef" :data="form" label-align="right" :rules="rules" label-width="80px">
-        <t-form-item label="文件名">
+        <t-form-item label="上传类型">
+          <t-radio-group v-model="type" variant="default-filled">
+            <t-radio-button :value="0">上传文件</t-radio-button>
+            <t-radio-button :value="1">上传图片</t-radio-button>
+          </t-radio-group>
+        </t-form-item>
+        <t-form-item label="选择文件">
           <file-upload v-if="type === 0" v-model="form.file" theme="file-flow" />
           <image-upload v-if="type === 1" v-model="form.file" theme="image-flow" />
         </t-form-item>
@@ -100,14 +113,37 @@
 </template>
 
 <script lang="ts" setup>
-import { CheckIcon, SearchIcon } from 'tdesign-icons-vue-next';
+import { CheckIcon, CloudUploadIcon, DeleteIcon, DownloadIcon, SearchIcon } from 'tdesign-icons-vue-next';
 import { FormRule, PageInfo, TableSort } from 'tdesign-vue-next';
-import { computed, getCurrentInstance, ref } from 'vue';
+import { computed, getCurrentInstance, ref, watch } from 'vue';
 
 import { SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
-import { delOss, listOss } from '@/api/system/oss';
+import { delOss, listMyOss } from '@/api/system/oss';
 import FileUpload from '@/components/file-upload/index.vue';
 import ImageUpload from '@/components/image-upload/index.vue';
+
+const props = defineProps({
+  /** 分类id */
+  categoryId: [Number],
+  /** 启用多选 */
+  multiple: {
+    type: Boolean,
+    default: false,
+  },
+});
+watch(
+  () => props.categoryId,
+  (value) => getList(),
+);
+watch(
+  () => props.multiple,
+  (value, oldValue, onCleanup) => {
+    if (oldValue) {
+      // 从多选变更多单选，需要清理多余的选项
+      ids.value.splice(1);
+    }
+  },
+);
 
 const { proxy } = getCurrentInstance();
 
@@ -117,7 +153,6 @@ const loading = ref(true);
 const showSearch = ref(true);
 const ids = ref([]);
 const total = ref(0);
-const title = ref('');
 const type = ref(0);
 const daterangeCreateTime = ref([]);
 // 默认排序
@@ -126,54 +161,14 @@ const sort = ref<TableSort>(null);
 const gallerySize = ref('140px');
 // 文件格式
 const fileType = {
-  image: [
-    'jpg',
-    'jpeg',
-    'bmp',
-    'gif',
-    'png',
-    'svg',
-    'ico',
-    'tif',
-    'tiff',
-    'webp',
-    'pic',
-    'tga',
-    'jng',
-    'mng',
-    'jbg',
-    'jpe',
-    'heic',
-    'lbm',
-  ],
-  archive: ['zip', '7z', 'rar', 'gz', 'jar', 'lzh', 'taz', 'arj', 'z', 'ace', 'tar', 'xz', 'bz2', 'win'],
-  excel: ['xls', 'xlsx'],
+  image: 'jpg,jpeg,bmp,gif,png,svg,ico,tif,tiff,webp,pic,tga,jng,mng,jbg,jpe,heic,lbm'.split(','),
+  archive: 'zip,7z,rar,gz,jar,lzh,taz,arj,z,ace,tar,xz,bz2,win'.split(','),
+  excel: ['xls', 'xlsx', 'csv'],
   pdf: ['pdf'],
   ppt: ['ppt', 'pptx'],
   radio: ['wav', 'aif', 'au', 'mp3', 'ram', 'wma', 'mmf', 'amr', 'aac', 'flac', 'aifc', 'awr', 'cda', 'cdr', 'dig'],
-  text: ['txt', 'sql', 'ini', 'xml', 'html', 'htm', 'css', 'scss', 'less', 'js', 'ts', 'java', 'htt', 'inf', 'py'],
-  video: [
-    'avi',
-    'mp4',
-    'm4v',
-    'mkv',
-    'webm',
-    'flv',
-    'mov',
-    'wmv',
-    '3gp',
-    '3g2',
-    'mpg',
-    'vob',
-    'ogg',
-    'swf',
-    'dxr',
-    'fla',
-    'rm',
-    'mpe',
-    'mpeg',
-    'ts',
-  ],
+  text: 'txt,sql,ini,xml,html,htm,css,scss,less,js,ts,java,inf,py,json'.split(','),
+  video: 'avi,mp4,m4v,mkv,webm,flv,mov,wmv,3gp,3g2,mpg,vob,ogg,swf,dxr,fla,rm,mpe,mpeg,ts'.split(','),
   word: ['doc', 'docx', 'wps', 'rtf'],
 };
 
@@ -194,6 +189,13 @@ const queryParams = ref<SysOssQuery>({
   service: undefined,
   orderByColumn: undefined,
   isAsc: undefined,
+});
+
+const title = computed(() => {
+  if (type.value === 0) {
+    return '上传文件';
+  }
+  return '上传图片';
 });
 
 // 分页
@@ -228,7 +230,8 @@ function getMediaType(oss: SysOssVo) {
 /** 查询OSS对象存储列表 */
 function getList() {
   loading.value = true;
-  listOss(proxy.addDateRange(queryParams.value, daterangeCreateTime.value, 'CreateTime'))
+  queryParams.value.ossCategoryId = props.categoryId;
+  listMyOss(proxy.addDateRange(queryParams.value, daterangeCreateTime.value, 'CreateTime'))
     .then((response) => {
       ossList.value = response.rows;
       total.value = response.total;
@@ -267,19 +270,10 @@ function handleSortChange(value?: TableSort) {
   }
   getList();
 }
-/** 文件按钮操作 */
-function handleFile() {
+/** 上传按钮操作 */
+function handleUpload() {
   reset();
   open.value = true;
-  title.value = '上传文件';
-  type.value = 0;
-}
-/** 图片按钮操作 */
-function handleImage() {
-  reset();
-  open.value = true;
-  title.value = '上传图片';
-  type.value = 1;
 }
 /** 提交按钮 */
 function submitForm() {
@@ -292,16 +286,18 @@ function copyTextSuccess() {
   proxy.$modal.msgSuccess('复制成功');
 }
 /** 下载按钮操作 */
-function handleDownload(row: SysOssVo) {
-  proxy.$download.oss(row.ossId);
+function handleDownload() {
+  proxy.$download.oss(ids.value.at(0));
 }
 /** 删除按钮操作 */
-function handleDelete(row?: SysOssVo) {
-  const ossIds = row?.ossId || ids.value;
+function handleDelete() {
+  const ossIds = ids.value;
+  const files = ossList.value.filter((value) => ids.value.includes(value.ossId));
   proxy.$modal.confirm(`是否确认删除OSS对象存储编号为"${ossIds}"的数据项?`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delOss(ossIds)
       .then(() => {
+        ids.value = [];
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })
@@ -309,12 +305,19 @@ function handleDelete(row?: SysOssVo) {
   });
 }
 
+/** 处理选中 */
 function handleCheck(row: SysOssVo) {
-  const index = ids.value.indexOf(row.ossId);
-  if (index !== -1) {
-    ids.value.splice(index, 1);
+  if (props.multiple) {
+    const index = ids.value.indexOf(row.ossId);
+    if (index !== -1) {
+      ids.value.splice(index, 1);
+    } else {
+      ids.value.push(row.ossId);
+    }
+  } else if (ids.value[0] === row.ossId) {
+    ids.value = [];
   } else {
-    ids.value.push(row.ossId);
+    ids.value = [row.ossId];
   }
 }
 
@@ -327,12 +330,13 @@ import PdfSvg from '@/assets/file-type/pdf.svg?component';
 import PptSvg from '@/assets/file-type/ppt.svg?component';
 import RadioSvg from '@/assets/file-type/radio.svg?component';
 import TextSvg from '@/assets/file-type/text.svg?component';
+import UnknownSvg from '@/assets/file-type/unknown.svg?component';
 import VideoSvg from '@/assets/file-type/video.svg?component';
 import WordSvg from '@/assets/file-type/word.svg?component';
 
 export default {
   name: 'MyOss',
-  components: { ArchiveSvg, ExcelSvg, PdfSvg, PptSvg, RadioSvg, TextSvg, VideoSvg, WordSvg },
+  components: { ArchiveSvg, ExcelSvg, PdfSvg, PptSvg, RadioSvg, TextSvg, UnknownSvg, VideoSvg, WordSvg },
 };
 </script>
 <style lang="less" scoped>
@@ -341,33 +345,6 @@ export default {
 .list-card {
   height: 100%;
 
-  &-operation {
-    display: flex;
-    justify-content: space-between;
-    margin-bottom: var(--td-comp-margin-xxl);
-
-    .search-input {
-      width: 360px;
-    }
-  }
-
-  &-item {
-    padding: var(--td-comp-paddingTB-xl) var(--td-comp-paddingTB-xl);
-
-    :deep(.t-card__header) {
-      padding: 0;
-    }
-
-    :deep(.t-card__body) {
-      padding: 0;
-      margin-top: var(--td-comp-margin-xxl);
-      margin-bottom: var(--td-comp-margin-xxl);
-    }
-
-    :deep(.t-card__footer) {
-      padding: 0;
-    }
-  }
   &-gallery {
     display: grid;
     grid-gap: 13.5px;
@@ -469,18 +446,6 @@ export default {
         opacity: 1;
       }
     }
-  }
-
-  &-pagination {
-    padding: var(--td-comp-paddingTB-xl) var(--td-comp-paddingTB-xl);
-  }
-
-  &-loading {
-    height: 100%;
-    width: 100%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
   }
 }
 

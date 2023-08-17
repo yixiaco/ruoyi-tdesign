@@ -4,8 +4,8 @@
       ref="fileUpload"
       v-model="fileList"
       multiple
-      :accept="accept"
       :theme="theme"
+      :accept="accept"
       :action="uploadFileUrl"
       :before-upload="handleBeforeUpload"
       :max="limit"
@@ -50,7 +50,7 @@ const props = defineProps({
   },
   draggable: {
     type: Boolean,
-    default: false,
+    default: undefined,
   },
   // 大小限制(MB)
   fileSize: {

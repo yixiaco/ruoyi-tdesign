@@ -35,6 +35,7 @@
             <if test="originalName != null and originalName != ''"> and so.original_name like concat('%', #{originalName}, '%')</if>
             <if test="fileSuffix != null and fileSuffix != ''"> and so.file_suffix like concat('%', #{fileSuffix}, '%')</if>
             <if test="url != null and url != ''"> and so.url = #{url}</if>
+            <if test="ossCategoryId != null"> and so.oss_category_id = #{ossCategoryId}</if>
             <if test="userType != null and userType != ''"> and so.user_type = #{userType}</if>
             <if test="isLock != null"> and so.is_lock = #{isLock}</if>
             <if test="isList != null"> and so.is_list = #{isList}</if>

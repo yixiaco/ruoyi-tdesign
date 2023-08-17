@@ -388,6 +388,7 @@ function handleDelete(row?: SysMessageKeyVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delMessageKey(messageKeyIds)
       .then(() => {
+        if (!row) ids.value = [];
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

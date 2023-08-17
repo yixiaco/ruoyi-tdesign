@@ -372,6 +372,7 @@ function handleDelete(row?: SysAppVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delApp(appids)
       .then(() => {
+        if (!row) ids.value = [];
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

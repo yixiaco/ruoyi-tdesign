@@ -61,11 +61,11 @@
           <t-row>
             <t-col flex="auto">
               <t-button v-hasPermi="['system:oss:upload']" theme="primary" @click="handleFile">
-                <template #icon> <add-icon /></template>
+                <template #icon> <cloud-upload-icon /></template>
                 上传文件
               </t-button>
               <t-button v-hasPermi="['system:oss:upload']" theme="primary" @click="handleImage">
-                <template #icon> <add-icon /></template>
+                <template #icon> <cloud-upload-icon /></template>
                 上传图片
               </t-button>
               <t-button
@@ -164,7 +164,7 @@ export default {
 </script>
 <script lang="ts" setup>
 import {
-  AddIcon,
+  CloudUploadIcon,
   DeleteIcon,
   DownloadIcon,
   RefreshIcon,
@@ -360,6 +360,7 @@ function handleDelete(row?: SysOssVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delOss(ossIds)
       .then(() => {
+        if (!row) ids.value = [];
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })
