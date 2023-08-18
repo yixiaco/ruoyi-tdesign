@@ -10,9 +10,21 @@
           <template #icon> <delete-icon /> </template>
           删除
         </t-button>
-        <t-button v-if="ids.length === 1" v-hasPermi="['system:oss:download']" @click="handleDownload()">
+        <t-button v-hasPermi="['system:oss:download']" :disabled="ids.length !== 1" @click="handleDownload()">
           <template #icon> <download-icon /> </template>
           下载
+        </t-button>
+        <t-image-viewer v-model:index="imagePreviewIndex" :images="previewList">
+          <template #trigger="{ open }">
+            <t-button v-hasPermi="['system:oss:query']" :disabled="previewList.length === 0" @click="open">
+              <template #icon> <browse-icon /> </template>
+              预览
+            </t-button>
+          </template>
+        </t-image-viewer>
+        <t-button v-hasPermi="['system:oss:update']" :disabled="ids.length !== 1" @click="handleUpdate()">
+          <template #icon> <edit-icon /> </template>
+          编辑
         </t-button>
         <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline">
           <t-form-item label-width="0px" name="originalName">
@@ -25,23 +37,24 @@
         </t-form>
       </t-space>
       <t-loading :loading="loading">
-        <div class="list-card-gallery">
+        <rect-select class="list-card-gallery" border-animate :disabled="!multiple" @change="handleRectChange">
           <div
-            v-for="(oss, index) in ossList"
+            v-for="(oss, index) in effectiveOssList"
             :key="oss.ossId"
-            :aria-checked="ids.includes(oss.ossId) ? 'true' : 'false'"
+            :aria-checked="oss.active ? 'true' : 'false'"
             class="list-card-gallery-item"
             role="checkbox"
             :tabindex="index"
-            @click="handleCheck(oss)"
+            :title="oss.originalName"
+            @mousedown.stop
+            @click.exact.stop="handleSingleChecked(oss)"
+            @click.ctrl.stop="handleMultipleChecked(oss)"
           >
-            <div
-              class="list-card-gallery-item__label"
-              :class="{ 'list-card-gallery-item__label--active': ids.includes(oss.ossId) }"
-            >
+            <div class="list-card-gallery-item__label" :class="{ 'list-card-gallery-item__label--active': oss.active }">
               <figure class="list-card-gallery-figure" data-visible="true">
                 <figcaption class="list-card-gallery-figure__caption">
-                  {{ oss.fileSuffix.substring(1) }} ({{ bytesToSize(oss.size).replace(' ', '') }})
+                  {{ oss.fileSuffix.substring(1) }}
+                  <template v-if="thumbnailSize >= 100"> ({{ bytesToSize(oss.size).replace(' ', '') }}) </template>
                 </figcaption>
                 <div class="list-card-gallery-figure__content">
                   <div
@@ -52,6 +65,7 @@
                   </div>
                   <picture v-else class="list-card-gallery-responsive-image list-card-gallery-responsive-image--fit">
                     <img
+                      draggable="false"
                       class="list-card-gallery-responsive-image__img--fit list-card-gallery-responsive-image__img--cover"
                       :src="oss.url"
                       :alt="oss.originalName"
@@ -60,11 +74,12 @@
                 </div>
               </figure>
               <div class="list-card-gallery-item__details">
-                <span class="list-card-gallery-item__name" :title="oss.originalName">{{ oss.originalName }}</span>
+                <span class="list-card-gallery-item__name">{{ oss.originalName }}</span>
                 <button
                   class="gallery-btn gallery-btn--neutral gallery-btn--plain gallery-btn--small gallery-btn--icon-only-small list-card-gallery-item__checkmark"
-                  :class="{ 'list-card-gallery-item__checkmark--active': ids.includes(oss.ossId) }"
+                  :class="{ 'list-card-gallery-item__checkmark--active': oss.active }"
                   type="button"
+                  @click.stop="buttonChecked(oss)"
                 >
                   <span>
                     <check-icon class="gallery-icon gallery-icon--base gallery-btn__icon" />
@@ -73,7 +88,7 @@
               </div>
             </div>
           </div>
-        </div>
+        </rect-select>
       </t-loading>
       <div class="list-card-pagination">
         <t-pagination
@@ -113,14 +128,23 @@
 </template>
 
 <script lang="ts" setup>
-import { CheckIcon, CloudUploadIcon, DeleteIcon, DownloadIcon, SearchIcon } from 'tdesign-icons-vue-next';
+import {
+  BrowseIcon,
+  CheckIcon,
+  CloudUploadIcon,
+  DeleteIcon,
+  DownloadIcon,
+  EditIcon,
+  SearchIcon,
+} from 'tdesign-icons-vue-next';
 import { FormRule, PageInfo, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref, watch } from 'vue';
 
-import { SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
+import { SysOssActiveVo, SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
 import { delOss, listMyOss } from '@/api/system/oss';
 import FileUpload from '@/components/file-upload/index.vue';
 import ImageUpload from '@/components/image-upload/index.vue';
+import RectSelect from '@/components/rect-select/index.vue';
 
 const props = defineProps({
   /** 分类id */
@@ -128,7 +152,11 @@ const props = defineProps({
   /** 启用多选 */
   multiple: {
     type: Boolean,
-    default: false,
+    default: true,
+  },
+  thumbnailSize: {
+    type: Number,
+    default: 120,
   },
 });
 watch(
@@ -155,10 +183,12 @@ const ids = ref([]);
 const total = ref(0);
 const type = ref(0);
 const daterangeCreateTime = ref([]);
+// 预览图下标
+const imagePreviewIndex = ref(0);
 // 默认排序
 const sort = ref<TableSort>(null);
-// 密度
-const gallerySize = ref('140px');
+// 缩略图大小尺寸
+const thumbnailSizePixel = computed(() => `${props.thumbnailSize}px`);
 // 文件格式
 const fileType = {
   image: 'jpg,jpeg,bmp,gif,png,svg,ico,tif,tiff,webp,pic,tga,jng,mng,jbg,jpe,heic,lbm'.split(','),
@@ -197,6 +227,23 @@ const title = computed(() => {
   }
   return '上传图片';
 });
+const effectiveOssList = computed(() => {
+  const ossCollection: SysOssActiveVo[] = [];
+  ossList.value.forEach((oss) => {
+    ossCollection.push({
+      ...oss,
+      active: ids.value.includes(oss.ossId),
+    });
+  });
+  return ossCollection;
+});
+const previewList = computed(() => {
+  return effectiveOssList.value
+    .filter((oss) => {
+      return oss.active && getMediaType(oss) === 'image';
+    })
+    .map((value) => value.url);
+});
 
 // 分页
 const pagination = computed(() => {
@@ -233,6 +280,7 @@ function getList() {
   queryParams.value.ossCategoryId = props.categoryId;
   listMyOss(proxy.addDateRange(queryParams.value, daterangeCreateTime.value, 'CreateTime'))
     .then((response) => {
+      ids.value = [];
       ossList.value = response.rows;
       total.value = response.total;
       loading.value = false;
@@ -250,13 +298,6 @@ function reset() {
 function handleQuery() {
   queryParams.value.pageNum = 1;
   getList();
-}
-/** 重置按钮操作 */
-function resetQuery() {
-  daterangeCreateTime.value = [];
-  proxy.resetForm('queryRef');
-  queryParams.value.pageNum = 1;
-  handleSortChange(null);
 }
 /** 排序触发事件 */
 function handleSortChange(value?: TableSort) {
@@ -289,11 +330,21 @@ function copyTextSuccess() {
 function handleDownload() {
   proxy.$download.oss(ids.value.at(0));
 }
+/** 修改按钮操作 */
+function handleUpdate(row?: SysOssVo) {
+
+}
 /** 删除按钮操作 */
 function handleDelete() {
   const ossIds = ids.value;
   const files = ossList.value.filter((value) => ids.value.includes(value.ossId));
-  proxy.$modal.confirm(`是否确认删除OSS对象存储编号为"${ossIds}"的数据项?`, () => {
+  let content;
+  if (files.length === 1) {
+    content = `是否确认删除文件【"${files.at(0).originalName}"】?`;
+  } else {
+    content = `是否确认删除选中的${ossIds.length}项的文件?`;
+  }
+  proxy.$modal.confirm(content, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delOss(ossIds)
       .then(() => {
@@ -305,19 +356,43 @@ function handleDelete() {
   });
 }
 
-/** 处理选中 */
-function handleCheck(row: SysOssVo) {
+/** 处理鼠标区域选择 */
+function handleRectChange(checkedIndexes: number[]) {
+  imagePreviewIndex.value = 0;
+  ids.value = ossList.value.filter((value, index) => checkedIndexes.includes(index)).map((value) => value.ossId);
+}
+
+/** 处理单选 */
+function handleSingleChecked(oss: SysOssVo) {
+  imagePreviewIndex.value = 0;
+  ids.value = [oss.ossId];
+}
+
+/** 处理多选 */
+function handleMultipleChecked(oss: SysOssVo) {
+  imagePreviewIndex.value = 0;
   if (props.multiple) {
-    const index = ids.value.indexOf(row.ossId);
+    const index = ids.value.indexOf(oss.ossId);
     if (index !== -1) {
       ids.value.splice(index, 1);
     } else {
-      ids.value.push(row.ossId);
+      ids.value.push(oss.ossId);
     }
-  } else if (ids.value[0] === row.ossId) {
-    ids.value = [];
   } else {
-    ids.value = [row.ossId];
+    handleSingleChecked(oss);
+  }
+}
+
+/** 按钮选中 */
+function buttonChecked(oss: SysOssVo) {
+  imagePreviewIndex.value = 0;
+  const index = ids.value.indexOf(oss.ossId);
+  if (index !== -1) {
+    ids.value.splice(index, 1);
+  } else if (props.multiple) {
+    ids.value.push(oss.ossId);
+  } else {
+    ids.value = [oss.ossId];
   }
 }
 
@@ -346,9 +421,11 @@ export default {
   height: 100%;
 
   &-gallery {
+    padding: var(--td-pop-padding-xl);
+    background-color: var(--td-bg-color-container-hover);
     display: grid;
     grid-gap: 13.5px;
-    grid-template-columns: repeat(auto-fill, minmax(v-bind(gallerySize), 1fr));
+    grid-template-columns: repeat(auto-fill, minmax(v-bind(thumbnailSizePixel), 1fr));
     -webkit-user-select: none;
     user-select: none;
     outline: none;
@@ -368,7 +445,7 @@ export default {
       height: 100%;
     }
     &-figure {
-      height: v-bind(gallerySize);
+      height: v-bind(thumbnailSizePixel);
       cursor: pointer;
       margin: 0;
       overflow: hidden;
@@ -397,19 +474,20 @@ export default {
       }
     }
     &-item {
-      color: hsl(@neutral-h, @neutral-s, 10%);
+      color: var(--td-text-color-primary);
       box-sizing: border-box;
-      min-width: v-bind(gallerySize);
+      min-width: v-bind(thumbnailSizePixel);
       &__label {
-        background-color: hsl(@neutral-h, @neutral-s, 100%);
-        box-shadow: 0 0 4px 2px hsl(@neutral-h @neutral-s 20% / 15%);
+        background-color: var(--td-bg-color-container);
+        box-shadow: var(--td-shadow-1);
+        //box-shadow: 0 0 4px 2px var(--td-border-level-1-color);
         display: block;
         overflow: hidden;
         position: relative;
         outline: 1px solid rgba(0, 0, 0, 0);
         transition: outline 200ms;
         &--active {
-          outline: 1px solid hsl(214, 100%, 50%);
+          outline: 1px solid var(--td-brand-color);
         }
       }
       &__details {
@@ -438,7 +516,7 @@ export default {
           opacity 200ms;
         isolation: isolate;
         &--active {
-          color: hsl(214, 100%, 50%);
+          color: var(--td-brand-color);
           opacity: 1;
         }
       }

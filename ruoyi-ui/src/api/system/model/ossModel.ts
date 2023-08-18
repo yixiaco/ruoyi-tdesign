@@ -66,6 +66,10 @@ export interface SysOssVo {
   service?: string;
 }
 
+export interface SysOssActiveVo extends SysOssVo {
+  active: boolean;
+}
+
 /**
  * 上传对象信息
  */
