@@ -58,6 +58,7 @@
             :tabindex="index"
             :title="oss.originalName"
             @mousedown.stop
+            @dblclick.stop="handleUpdate(oss)"
             @click.exact.stop="handleClick(oss)"
             @click.ctrl.exact.stop="handleCtrlClick(oss)"
             @click.shift.exact.stop="handleShiftClick(oss)"
@@ -87,7 +88,9 @@
                 </div>
               </figure>
               <div class="list-card-gallery-item__details">
-                <span class="list-card-gallery-item__name">{{ oss.originalName }}</span>
+                <span class="list-card-gallery-item__name">
+                  <lock-on-icon v-if="oss.isLock === 1" /><span>{{ oss.originalName }}</span>
+                </span>
                 <button
                   class="gallery-btn gallery-btn--neutral gallery-btn--plain gallery-btn--small gallery-btn--icon-only-small list-card-gallery-item__checkmark"
                   :class="{ 'list-card-gallery-item__checkmark--active': oss.active }"
@@ -265,6 +268,7 @@ import {
   DeleteIcon,
   DownloadIcon,
   InfoCircleIcon,
+  LockOnIcon,
   SearchIcon,
   SwapIcon,
 } from 'tdesign-icons-vue-next';
