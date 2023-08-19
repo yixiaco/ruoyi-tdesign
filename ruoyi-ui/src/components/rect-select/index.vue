@@ -1,12 +1,9 @@
 <template>
-  <div v-if="disabled">
-    <slot />
-  </div>
-  <div v-else ref="boxRef" v-bind="$attrs" @mousedown.left="handleMousedown($event)">
+  <div ref="boxRef" v-bind="$attrs" @mousedown.left="handleMousedown($event)">
     <slot />
     <Teleport to="body">
       <div
-        v-if="active"
+        v-if="effectiveActive"
         class="rect-select"
         :class="{ 'rect-select-animate': borderAnimate }"
         :style="{
@@ -27,7 +24,7 @@ export default {
 <script lang="ts" setup>
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 
-defineProps({
+const props = defineProps({
   borderAnimate: {
     type: Boolean,
     default: false,
@@ -55,15 +52,21 @@ const boxRect = ref([0, 0, Number.MAX_VALUE, Number.MAX_VALUE]);
 const emit = defineEmits<{
   (e: 'change', checkedIndexes: number[]): void;
 }>();
+const effectiveActive = computed(() => {
+  return active.value && !props.disabled;
+});
 
 /**
  * 鼠标按下事件
  * @param event
  */
 function handleMousedown(event: MouseEvent) {
+  if (props.disabled) {
+    return;
+  }
   initBoxRect();
   // 启用区域选择时，获取一次dom元素的区域
-  initDomRects();
+  initChildrenRects();
   active.value = true;
   start.value[0] = event.clientX;
   start.value[1] = event.clientY;
@@ -75,7 +78,7 @@ function handleMousedown(event: MouseEvent) {
  * @param event
  */
 function handleMouseMove(event: MouseEvent) {
-  if (active.value) {
+  if (effectiveActive.value) {
     current.value[0] = range(event.clientX, boxRect.value[0], boxRect.value[2]);
     current.value[1] = range(event.clientY, boxRect.value[1], boxRect.value[3]);
     triggerChange();
@@ -120,7 +123,8 @@ function triggerChange() {
   emit('change', checked);
 }
 
-function initDomRects() {
+/** 初始化子元素的区域 */
+function initChildrenRects() {
   const rects = [];
   const children: HTMLCollection = boxRef.value!.children;
   for (let i = 0; i < children.length; i++) {
@@ -132,6 +136,7 @@ function initDomRects() {
   domRects.value = rects;
 }
 
+/** 初始化可选区的区域 */
 function initBoxRect() {
   const clientRect = boxRef.value.getBoundingClientRect();
   boxRect.value[0] = clientRect.left;
@@ -147,9 +152,11 @@ function initBoxRect() {
  * @param rec2
  */
 function isRectangleOverlap(rec1: number[], rec2: number[]) {
+  // 判断矩形区域长度不小于0
   if (rec1[0] === rec1[2] || rec1[1] === rec1[3] || rec2[0] === rec2[2] || rec2[1] === rec2[3]) {
     return false;
   }
+  // 判断矩形1是否在矩形2的四周，如果不在四周则存在重叠区域
   return !(
     rec1[2] < rec2[0] || // left
     rec1[3] < rec2[1] || // bottom

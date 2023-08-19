@@ -121,7 +121,7 @@ public class SysProfileController extends BaseController {
             }
             SysOssBo bo = new SysOssBo();
             bo.setCreateBy(LoginHelper.getUserId());
-            bo.setUserType(UserType.SYS_USER);
+            bo.setUserTypeEnum(UserType.SYS_USER);
             bo.setIsLock(0);
             bo.setIsList(0);
             bo.setOssCategoryId(0L);

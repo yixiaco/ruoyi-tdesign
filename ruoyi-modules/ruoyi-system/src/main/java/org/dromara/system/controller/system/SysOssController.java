@@ -2,12 +2,16 @@ package org.dromara.system.controller.system;
 
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.net.URLDecoder;
 import cn.hutool.core.util.ObjectUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.enums.UserType;
+import org.dromara.common.core.validate.EditGroup;
+import org.dromara.common.idempotent.annotation.RepeatSubmit;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
@@ -62,6 +66,17 @@ public class SysOssController extends BaseController {
     }
 
     /**
+     * 获取OSS对象存储详细信息
+     *
+     * @param ossId 主键
+     */
+    @SaCheckPermission(value = {"system:oss:query", "system:oss:edit"}, mode = SaMode.OR)
+    @GetMapping("/{ossId}")
+    public R<SysOssVo> getInfo(@NotNull(message = "主键不能为空") @PathVariable Long ossId) {
+        return R.ok(ossService.queryById(ossId));
+    }
+
+    /**
      * 查询OSS对象基于id串
      *
      * @param ossIds OSS对象ID串
@@ -101,7 +116,7 @@ public class SysOssController extends BaseController {
         }
         SysOssBo bo = new SysOssBo();
         bo.setCreateBy(LoginHelper.getUserId());
-        bo.setUserType(UserType.SYS_USER);
+        bo.setUserTypeEnum(UserType.SYS_USER);
         bo.setIsLock(0);
         bo.setIsList(0);
         bo.setOssCategoryId(0L);
@@ -125,6 +140,17 @@ public class SysOssController extends BaseController {
     }
 
     /**
+     * 修改OSS对象存储
+     */
+    @SaCheckPermission("system:oss:edit")
+    @Log(title = "OSS对象存储", businessType = BusinessType.UPDATE)
+    @RepeatSubmit()
+    @PutMapping()
+    public R<Void> edit(@Validated(EditGroup.class) @RequestBody SysOssBo bo) {
+        return toAjax(ossService.updateByBo(bo));
+    }
+
+    /**
      * 删除OSS对象存储
      *
      * @param ossIds OSS对象ID串
@@ -135,6 +161,20 @@ public class SysOssController extends BaseController {
     public R<Void> remove(@NotEmpty(message = "主键不能为空")
                           @PathVariable Long[] ossIds) {
         return toAjax(ossService.deleteWithValidByIds(List.of(ossIds), true));
+    }
+
+    /**
+     * 移动到分类
+     *
+     * @param categoryId 分类id
+     * @param ossIds     主键id
+     * @return
+     */
+    @PostMapping("/{categoryId}/move")
+    public R<Void> move(@NotNull(message = "分类id不能为空") @PathVariable Long categoryId,
+                        @RequestBody @NotEmpty(message = "主键不能为空") List<Long> ossIds) {
+        ossService.move(categoryId, ossIds);
+        return R.ok();
     }
 
 }

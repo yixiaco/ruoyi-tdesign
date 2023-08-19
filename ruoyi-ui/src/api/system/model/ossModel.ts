@@ -14,6 +14,8 @@ export interface SysOssQuery extends BaseEntity {
   url?: string;
   /** 分类id */
   ossCategoryId?: number;
+  /** 是否锁定状态 */
+  isLock?: number;
   /** 创建时间 */
   createTime?: any;
   /** 上传人 */
@@ -21,29 +23,27 @@ export interface SysOssQuery extends BaseEntity {
   /** 服务商 */
   service?: string;
 }
-
-export interface SysOssForm extends BaseEntity {
-  /** 文件名 */
-  fileName?: string;
+/**
+ * OSS对象存储业务对象
+ */
+export interface SysOssForm {
+  /** 对象存储主键 */
+  ossId?: number;
   /** 原名 */
   originalName?: string;
-  /** 文件后缀名 */
-  fileSuffix?: string;
-  /** URL地址 */
-  url?: string;
-  /** 服务商 */
-  service?: string;
-  /** 创建者 */
-  createBy?: string;
-  /** 创建时间 */
-  createTime?: string;
-  /** 更新者 */
-  updateBy?: string;
-  /** 更新时间 */
-  updateTime?: string;
+  /** 分类id */
+  ossCategoryId?: number;
+  /** 用户类型 */
+  userType?: string;
+  /** 是否锁定状态 */
+  isLock?: number;
+  /** 是否显示在列表 */
+  isList?: number;
+  /** 上传人 */
+  createBy?: number;
 }
 /**
- * oss
+ * OSS对象存储视图对象
  */
 export interface SysOssVo {
   /** 对象存储主键 */
@@ -58,10 +58,26 @@ export interface SysOssVo {
   url?: string;
   /** 字节长度 */
   size?: number;
+  /** 分类id */
+  ossCategoryId?: number;
+  /** 用户类型 */
+  userType?: string;
+  /** 是否锁定状态 */
+  isLock?: number;
+  /** 是否显示在列表 */
+  isList?: number;
+  /** 创建部门 */
+  createDept?: number;
   /** 创建时间 */
-  createTime?: string;
+  createTime?: any;
   /** 上传人 */
-  createBy?: string;
+  createBy?: number;
+  /** 上传人名称 */
+  createByName?: string;
+  /** 更新时间 */
+  updateTime?: any;
+  /** 更新人 */
+  updateBy?: number;
   /** 服务商 */
   service?: string;
 }

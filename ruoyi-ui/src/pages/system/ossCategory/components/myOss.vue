@@ -26,6 +26,10 @@
           <template #icon> <edit-icon /> </template>
           编辑
         </t-button>
+        <t-button v-hasPermi="['system:oss:update']" :disabled="ids.length === 0" @click="handleMove()">
+          <template #icon> <swap-icon /> </template>
+          移动到
+        </t-button>
         <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline">
           <t-form-item label-width="0px" name="originalName">
             <t-input v-model="queryParams.originalName" placeholder="搜索文件名" @enter="handleQuery">
@@ -37,7 +41,14 @@
         </t-form>
       </t-space>
       <t-loading :loading="loading">
-        <rect-select class="list-card-gallery" border-animate :disabled="!multiple" @change="handleRectChange">
+        <div v-if="ossList.length === 0" class="t-table__empty">暂无数据</div>
+        <rect-select
+          v-else
+          class="list-card-gallery"
+          :disabled="!multiple"
+          @change="handleRectChange"
+          @keydown.ctrl.a.stop.prevent="handleCheckedAll"
+        >
           <div
             v-for="(oss, index) in effectiveOssList"
             :key="oss.ossId"
@@ -47,8 +58,10 @@
             :tabindex="index"
             :title="oss.originalName"
             @mousedown.stop
-            @click.exact.stop="handleSingleChecked(oss)"
-            @click.ctrl.stop="handleMultipleChecked(oss)"
+            @click.exact.stop="handleClick(oss)"
+            @click.ctrl.exact.stop="handleCtrlClick(oss)"
+            @click.shift.exact.stop="handleShiftClick(oss)"
+            @click.ctrl.shift.stop="handleShiftClick(oss, true)"
           >
             <div class="list-card-gallery-item__label" :class="{ 'list-card-gallery-item__label--active': oss.active }">
               <figure class="list-card-gallery-figure" data-visible="true">
@@ -98,20 +111,27 @@
           :show-jumper="pagination.showJumper"
           :page-size-options="[10, 20, 50]"
           @change="pagination.onChange"
-        />
+        >
+          <template #totalContent>
+            <div class="t-pagination__total">
+              共 {{ pagination.total }} 项数据
+              <template v-if="ids.length !== 0">&nbsp;&nbsp;选中 {{ ids.length }} 项</template>
+            </div>
+          </template>
+        </t-pagination>
       </div>
     </t-space>
 
-    <!-- 添加或修改OSS对象存储对话框 -->
+    <!-- 上传OSS对象存储对话框 -->
     <t-dialog
-      v-model:visible="open"
+      v-model:visible="openUpload"
       :close-on-overlay-click="false"
-      :header="title"
+      :header="uploadTitle"
       width="700px"
       attach="body"
-      @confirm="submitForm"
+      @confirm="submitUploadForm"
     >
-      <t-form ref="ossRef" :data="form" label-align="right" :rules="rules" label-width="80px">
+      <t-form :data="uploadForm" label-align="right" label-width="80px">
         <t-form-item label="上传类型">
           <t-radio-group v-model="type" variant="default-filled">
             <t-radio-button :value="0">上传文件</t-radio-button>
@@ -119,8 +139,93 @@
           </t-radio-group>
         </t-form-item>
         <t-form-item label="选择文件">
-          <file-upload v-if="type === 0" v-model="form.file" theme="file-flow" />
-          <image-upload v-if="type === 1" v-model="form.file" theme="image-flow" />
+          <file-upload v-if="type === 0" v-model="uploadForm.file" theme="file-flow" />
+          <image-upload v-if="type === 1" v-model="uploadForm.file" theme="image-flow" />
+        </t-form-item>
+      </t-form>
+    </t-dialog>
+    <!-- 添加或修改OSS对象存储对话框 -->
+    <t-dialog
+      v-model:visible="open"
+      :close-on-overlay-click="false"
+      :header="title"
+      width="500px"
+      attach="body"
+      :confirm-btn="{
+        content: '确 定',
+        theme: 'primary',
+        loading: buttonLoading,
+      }"
+      @confirm="onConfirm"
+    >
+      <t-form
+        ref="ossRef"
+        label-align="right"
+        :data="form"
+        :rules="rules"
+        label-width="calc(5em + 24px)"
+        scroll-to-first-error="smooth"
+        @submit="submitForm"
+      >
+        <t-form-item label="原名" name="originalName">
+          <t-input v-model="form.originalName" placeholder="请输入原名" clearable />
+        </t-form-item>
+        <t-form-item label="分类" name="ossCategoryId">
+          <t-tree-select
+            v-model="form.ossCategoryId"
+            :data="ossCategoryOptions"
+            :tree-props="{
+              keys: { value: 'ossCategoryId', label: 'categoryName', children: 'children' },
+              checkStrictly: true,
+            }"
+            placeholder="请选择分类"
+          />
+        </t-form-item>
+        <t-form-item label="锁定状态" name="isLock">
+          <t-switch v-model="form.isLock" :custom-value="[1, 0]" />
+        </t-form-item>
+        <t-form-item label="URL" name="url">
+          <t-input v-model="form.url" :readonly="true">
+            <template #suffix-icon>
+              <file-copy-icon style="cursor: pointer" @click="copyText(form.url)" />
+            </template>
+          </t-input>
+        </t-form-item>
+      </t-form>
+    </t-dialog>
+    <!-- 移动OSS对象存储对话框 -->
+    <t-dialog
+      v-model:visible="openMove"
+      :close-on-overlay-click="false"
+      :header="title"
+      width="500px"
+      attach="body"
+      :confirm-btn="{
+        content: '确 定',
+        theme: 'primary',
+        loading: buttonLoading,
+      }"
+      @confirm="onConfirmMove"
+    >
+      <t-form
+        ref="ossMoveRef"
+        label-align="right"
+        :data="form"
+        :rules="rules"
+        label-width="calc(5em + 24px)"
+        scroll-to-first-error="smooth"
+        @submit="submitMoveForm"
+      >
+        <t-form-item label="分类" name="ossCategoryId">
+          <t-tree-select
+            v-model="form.ossCategoryId"
+            :data="ossCategoryOptions"
+            :tree-props="{
+              keys: { value: 'ossCategoryId', label: 'categoryName', children: 'children' },
+              checkStrictly: true,
+            }"
+            placeholder="请选择分类"
+          />
         </t-form-item>
       </t-form>
     </t-dialog>
@@ -135,13 +240,18 @@ import {
   DeleteIcon,
   DownloadIcon,
   EditIcon,
+  FileCopyIcon,
   SearchIcon,
+  SwapIcon,
 } from 'tdesign-icons-vue-next';
-import { FormRule, PageInfo, TableSort } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, PageInfo, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref, watch } from 'vue';
+import useClipboard from 'vue-clipboard3';
 
-import { SysOssActiveVo, SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
-import { delOss, listMyOss } from '@/api/system/oss';
+import { SysOssCategoryVo } from '@/api/system/model/ossCategoryModel';
+import { SysOssActiveVo, SysOssForm, SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
+import { delOss, getOss, listMyOss, moveOss, updateOss } from '@/api/system/oss';
+import { listOssCategory } from '@/api/system/ossCategory';
 import FileUpload from '@/components/file-upload/index.vue';
 import ImageUpload from '@/components/image-upload/index.vue';
 import RectSelect from '@/components/rect-select/index.vue';
@@ -174,19 +284,26 @@ watch(
 );
 
 const { proxy } = getCurrentInstance();
+const { toClipboard } = useClipboard();
 
+const ossRef = ref<FormInstanceFunctions>(null);
+const ossMoveRef = ref<FormInstanceFunctions>(null);
 const ossList = ref<SysOssVo[]>([]);
+const ossCategoryOptions = ref<SysOssCategoryVo[]>([]);
+const openUpload = ref(false);
+const openMove = ref(false);
 const open = ref(false);
+const buttonLoading = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
 const ids = ref([]);
 const total = ref(0);
 const type = ref(0);
+const title = ref('');
+const shiftId = ref<number>();
 const daterangeCreateTime = ref([]);
 // 预览图下标
 const imagePreviewIndex = ref(0);
-// 默认排序
-const sort = ref<TableSort>(null);
 // 缩略图大小尺寸
 const thumbnailSizePixel = computed(() => `${props.thumbnailSize}px`);
 // 文件格式
@@ -203,10 +320,16 @@ const fileType = {
 };
 
 const rules = ref<Record<string, Array<FormRule>>>({
-  file: [{ required: true, message: '文件不能为空', trigger: 'blur' }],
+  originalName: [{ required: true, message: '原名不能为空', trigger: 'blur' }],
+  ossCategoryId: [{ required: true, message: '分类不能为空', trigger: 'blur' }],
+  isLock: [{ required: true, message: '是否锁定状态不能为空', trigger: 'blur' }],
 });
 
-const form = ref<{ file?: any }>({});
+const uploadForm = ref<{ file?: any }>({});
+// 提交表单对象
+const form = ref<SysOssVo & SysOssForm>({
+  isLock: 0,
+});
 const queryParams = ref<SysOssQuery>({
   pageNum: 1,
   pageSize: 10,
@@ -221,7 +344,7 @@ const queryParams = ref<SysOssQuery>({
   isAsc: undefined,
 });
 
-const title = computed(() => {
+const uploadTitle = computed(() => {
   if (type.value === 0) {
     return '上传文件';
   }
@@ -281,6 +404,7 @@ function getList() {
   listMyOss(proxy.addDateRange(queryParams.value, daterangeCreateTime.value, 'CreateTime'))
     .then((response) => {
       ids.value = [];
+      shiftId.value = null;
       ossList.value = response.rows;
       total.value = response.total;
       loading.value = false;
@@ -289,8 +413,12 @@ function getList() {
 }
 /** 表单重置 */
 function reset() {
-  form.value = {
+  uploadForm.value = {
     file: undefined,
+  };
+  form.value = {
+    isLock: 0,
+    ossCategoryId: 0,
   };
   proxy.resetForm('ossRef');
 }
@@ -299,40 +427,108 @@ function handleQuery() {
   queryParams.value.pageNum = 1;
   getList();
 }
-/** 排序触发事件 */
-function handleSortChange(value?: TableSort) {
-  sort.value = value;
-  if (Array.isArray(value)) {
-    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
-    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
-  } else {
-    queryParams.value.orderByColumn = value?.sortBy;
-    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
-  }
-  getList();
+/** 查询OSS分类下拉树选项结构 */
+async function getCategoryOptions() {
+  const response = await listOssCategory();
+  ossCategoryOptions.value = [
+    {
+      ossCategoryId: 0,
+      categoryName: '根分类',
+      children: proxy.handleTree(response.data, 'ossCategoryId', 'parentId'),
+    },
+  ];
 }
 /** 上传按钮操作 */
 function handleUpload() {
   reset();
-  open.value = true;
+  openUpload.value = true;
 }
-/** 提交按钮 */
-function submitForm() {
-  open.value = false;
+/** 修改按钮操作 */
+async function handleUpdate(row?: SysOssVo) {
+  buttonLoading.value = true;
+  reset();
+  open.value = true;
+  title.value = '修改OSS对象存储';
+  await getCategoryOptions();
+  const ossId = row?.ossId || ids.value.at(0);
+  getOss(ossId).then((response) => {
+    buttonLoading.value = false;
+    form.value = response.data;
+  });
+}
+/** 移动到按钮操作 */
+async function handleMove() {
+  buttonLoading.value = true;
+  reset();
+  openMove.value = true;
+  title.value = '移动OSS对象存储';
+  await getCategoryOptions();
+  buttonLoading.value = false;
+}
+/** 上传提交按钮 */
+function submitUploadForm() {
+  openUpload.value = false;
   reset();
   getList();
 }
+/** 编辑表单提交按钮 */
+function onConfirmMove() {
+  ossMoveRef.value.submit();
+}
+/** 提交表单 */
+function submitMoveForm({ validateResult, firstError }: SubmitContext) {
+  if (validateResult === true) {
+    buttonLoading.value = true;
+    const msgLoading = proxy.$modal.msgLoading('移动提交中...');
+    moveOss(form.value.ossCategoryId, ids.value)
+      .then(() => {
+        proxy.$modal.msgSuccess('移动成功');
+        openMove.value = false;
+        getList();
+      })
+      .finally(() => {
+        buttonLoading.value = false;
+        proxy.$modal.msgClose(msgLoading);
+      });
+  } else {
+    proxy.$modal.msgError(firstError);
+  }
+}
+/** 编辑表单提交按钮 */
+function onConfirm() {
+  ossRef.value.submit();
+}
+/** 提交表单 */
+function submitForm({ validateResult, firstError }: SubmitContext) {
+  if (validateResult === true) {
+    buttonLoading.value = true;
+    const msgLoading = proxy.$modal.msgLoading('提交中...');
+    if (form.value.ossId) {
+      updateOss(form.value)
+        .then(() => {
+          proxy.$modal.msgSuccess('修改成功');
+          open.value = false;
+          getList();
+        })
+        .finally(() => {
+          buttonLoading.value = false;
+          proxy.$modal.msgClose(msgLoading);
+        });
+    } else {
+      proxy.$modal.msgError('不支持新增OSS对象存储');
+    }
+  } else {
+    proxy.$modal.msgError(firstError);
+  }
+}
 /** 复制成功 */
-function copyTextSuccess() {
-  proxy.$modal.msgSuccess('复制成功');
+async function copyText(text: string) {
+  await toClipboard(text);
+  await proxy.$modal.msgSuccess('复制成功');
 }
 /** 下载按钮操作 */
 function handleDownload() {
   proxy.$download.oss(ids.value.at(0));
-}
-/** 修改按钮操作 */
-function handleUpdate(row?: SysOssVo) {
-
 }
 /** 删除按钮操作 */
 function handleDelete() {
@@ -342,7 +538,7 @@ function handleDelete() {
   if (files.length === 1) {
     content = `是否确认删除文件【"${files.at(0).originalName}"】?`;
   } else {
-    content = `是否确认删除选中的${ossIds.length}项的文件?`;
+    content = `是否确认删除选中的${ossIds.length}项文件?`;
   }
   proxy.$modal.confirm(content, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
@@ -362,14 +558,16 @@ function handleRectChange(checkedIndexes: number[]) {
   ids.value = ossList.value.filter((value, index) => checkedIndexes.includes(index)).map((value) => value.ossId);
 }
 
-/** 处理单选 */
-function handleSingleChecked(oss: SysOssVo) {
+/** 处理单击事件 */
+function handleClick(oss: SysOssVo) {
   imagePreviewIndex.value = 0;
+  shiftId.value = oss.ossId;
   ids.value = [oss.ossId];
 }
 
-/** 处理多选 */
-function handleMultipleChecked(oss: SysOssVo) {
+/** 处理ctrl + 单击事件 */
+function handleCtrlClick(oss: SysOssVo) {
+  shiftId.value = oss.ossId;
   imagePreviewIndex.value = 0;
   if (props.multiple) {
     const index = ids.value.indexOf(oss.ossId);
@@ -379,7 +577,33 @@ function handleMultipleChecked(oss: SysOssVo) {
       ids.value.push(oss.ossId);
     }
   } else {
-    handleSingleChecked(oss);
+    handleClick(oss);
+  }
+}
+
+/** 处理shift + 单击 和 ctrl + shift + 单击事件 */
+function handleShiftClick(oss: SysOssVo, append = false) {
+  imagePreviewIndex.value = 0;
+  if (props.multiple) {
+    const arr = [];
+    const ossId = shiftId.value ?? ossList.value.at(0).ossId;
+    const startIndex = ossList.value.findIndex((value) => value.ossId === ossId) ?? 0;
+    const endIndex = ossList.value.findIndex((value) => value.ossId === oss.ossId);
+    let i = Math.min(startIndex, endIndex);
+    const max = Math.max(startIndex, endIndex);
+    for (; i <= max; i++) {
+      const value = ossList.value[i];
+      if (!append || (append && !ids.value.includes(value.ossId))) {
+        arr.push(value.ossId);
+      }
+    }
+    if (append) {
+      ids.value = ids.value.concat(arr);
+    } else {
+      ids.value = arr;
+    }
+  } else {
+    handleClick(oss);
   }
 }
 
@@ -394,6 +618,11 @@ function buttonChecked(oss: SysOssVo) {
   } else {
     ids.value = [oss.ossId];
   }
+}
+
+/** 选择全部 */
+function handleCheckedAll() {
+  ids.value = ossList.value.map((value) => value.ossId);
 }
 
 getList();
@@ -477,6 +706,9 @@ export default {
       color: var(--td-text-color-primary);
       box-sizing: border-box;
       min-width: v-bind(thumbnailSizePixel);
+      &:focus-visible {
+        outline: none;
+      }
       &__label {
         background-color: var(--td-bg-color-container);
         box-shadow: var(--td-shadow-1);

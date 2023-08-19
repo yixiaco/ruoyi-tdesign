@@ -21,12 +21,15 @@ import org.dromara.common.oss.enumd.AccessPolicyType;
 import org.dromara.common.oss.factory.OssFactory;
 import org.dromara.common.redis.utils.CacheUtils;
 import org.dromara.system.domain.SysOss;
+import org.dromara.system.domain.SysOssCategory;
 import org.dromara.system.domain.bo.SysOssBo;
 import org.dromara.system.domain.query.SysOssQuery;
 import org.dromara.system.domain.vo.SysOssVo;
 import org.dromara.system.mapper.SysOssMapper;
+import org.dromara.system.service.ISysOssCategoryService;
 import org.dromara.system.service.ISysOssService;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -46,6 +49,20 @@ import java.util.List;
  */
 @Service
 public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> implements ISysOssService, OssService {
+
+    @Autowired
+    private ISysOssCategoryService categoryService;
+
+    /**
+     * 查询OSS对象存储
+     *
+     * @param ossId 主键
+     * @return SysOssVo
+     */
+    @Override
+    public SysOssVo queryById(Long ossId) {
+        return baseMapper.selectVoById(ossId);
+    }
 
     /**
      * 查询OSS对象存储列表
@@ -184,7 +201,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
         oss.setOriginalName(originalfileName);
         oss.setService(configKey);
         oss.setSize(size);
-        oss.setUserType(bo.getUserType().getUserType());
+        oss.setUserType(bo.getUserTypeEnum().getUserType());
         oss.setCreateBy(bo.getCreateBy());
         oss.setIsLock(bo.getIsLock());
         oss.setIsList(bo.getIsList());
@@ -192,6 +209,40 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
         baseMapper.insert(oss);
         SysOssVo sysOssVo = MapstructUtils.convert(oss, SysOssVo.class);
         return this.matchingUrl(sysOssVo);
+    }
+
+    /**
+     * 根据编辑业务对象修改OSS对象存储
+     *
+     * @param bo OSS对象存储编辑业务对象
+     * @return Boolean
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean updateByBo(SysOssBo bo) {
+        SysOss oss = new SysOss();
+        checkCategory(bo.getOssCategoryId());
+        oss.setOssId(bo.getOssId());
+        oss.setOriginalName(bo.getOriginalName());
+        oss.setOssCategoryId(bo.getOssCategoryId());
+        oss.setIsLock(bo.getIsLock());
+        return updateById(oss);
+    }
+
+    /**
+     * 检查分类是否存在
+     *
+     * @param ossCategoryId 分类id
+     */
+    private void checkCategory(Long ossCategoryId) {
+        if (!ossCategoryId.equals(0L)) {
+            boolean exists = categoryService.lambdaQuery()
+                .eq(SysOssCategory::getOssCategoryId, ossCategoryId)
+                .exists();
+            if (!exists) {
+                throw new ServiceException("分类不存在");
+            }
+        }
     }
 
     /**
@@ -228,5 +279,25 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
             oss.setUrl(storage.getPrivateUrl(oss.getFileName(), 120));
         }
         return oss;
+    }
+
+    /**
+     * 移动到分类
+     *
+     * @param categoryId 分类id
+     * @param ossIds     主键id
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void move(Long categoryId, List<Long> ossIds) {
+        checkCategory(categoryId);
+        List<SysOss> list = ossIds.stream().map(id -> {
+            SysOss oss = new SysOss();
+            oss.setOssId(id);
+            oss.setOssCategoryId(categoryId);
+            return oss;
+        }).toList();
+        updateBatchById(list);
     }
 }
