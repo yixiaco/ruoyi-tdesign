@@ -170,6 +170,7 @@ public class SysOssController extends BaseController {
      * @param ossIds     主键id
      * @return
      */
+    @SaCheckPermission("system:oss:edit")
     @PostMapping("/{categoryId}/move")
     public R<Void> move(@NotNull(message = "分类id不能为空") @PathVariable Long categoryId,
                         @RequestBody @NotEmpty(message = "主键不能为空") List<Long> ossIds) {

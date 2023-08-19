@@ -43,7 +43,7 @@ import { useUserStore } from '@/store';
 
 const props = defineProps({
   modelValue: [String, Object, Array],
-  // 数量限制
+  // 数量限制,为0不限制
   limit: {
     type: Number,
     default: 5,

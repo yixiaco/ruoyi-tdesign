@@ -1,6 +1,7 @@
 package org.dromara.system.service.impl;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -162,8 +163,8 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
      */
     @Override
     public SysOssVo upload(MultipartFile file, SysOssBo bo) {
-        String originalfileName = file.getOriginalFilename();
-        String suffix = StringUtils.substring(originalfileName, originalfileName.lastIndexOf('.'), originalfileName.length());
+        String originalFilename = file.getOriginalFilename();
+        String suffix = StringUtils.substring(originalFilename, originalFilename.lastIndexOf('.'), originalFilename.length());
         OssClient storage = OssFactory.instance();
         UploadResult uploadResult;
         try {
@@ -172,7 +173,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
             throw new ServiceException(e.getMessage());
         }
         // 保存文件信息
-        return buildResultEntity(originalfileName, suffix, storage.getConfigKey(), uploadResult, file.getSize(), bo);
+        return buildResultEntity(originalFilename, suffix, file.getContentType(), storage.getConfigKey(), uploadResult, file.getSize(), bo);
     }
 
     /**
@@ -184,23 +185,25 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
      */
     @Override
     public SysOssVo upload(File file, SysOssBo bo) {
-        String originalfileName = file.getName();
-        String suffix = StringUtils.substring(originalfileName, originalfileName.lastIndexOf("."), originalfileName.length());
+        String originalFileName = file.getName();
+        String suffix = StringUtils.substring(originalFileName, originalFileName.lastIndexOf("."), originalFileName.length());
         OssClient storage = OssFactory.instance();
         UploadResult uploadResult = storage.uploadSuffix(file, suffix);
+        String mimeType = FileUtil.getMimeType(file.getAbsolutePath());
         // 保存文件信息
-        return buildResultEntity(originalfileName, suffix, storage.getConfigKey(), uploadResult, file.length(), bo);
+        return buildResultEntity(originalFileName, suffix, mimeType, storage.getConfigKey(), uploadResult, file.length(), bo);
     }
 
     @NotNull
-    private SysOssVo buildResultEntity(String originalfileName, String suffix, String configKey, UploadResult uploadResult, Long size, SysOssBo bo) {
+    private SysOssVo buildResultEntity(String originalFilename, String suffix, String contentType, String service, UploadResult uploadResult, Long size, SysOssBo bo) {
         SysOss oss = new SysOss();
         oss.setUrl(uploadResult.getUrl());
         oss.setFileSuffix(suffix);
         oss.setFileName(uploadResult.getFilename());
-        oss.setOriginalName(originalfileName);
-        oss.setService(configKey);
+        oss.setOriginalName(originalFilename);
+        oss.setService(service);
         oss.setSize(size);
+        oss.setContentType(contentType);
         oss.setUserType(bo.getUserTypeEnum().getUserType());
         oss.setCreateBy(bo.getCreateBy());
         oss.setIsLock(bo.getIsLock());

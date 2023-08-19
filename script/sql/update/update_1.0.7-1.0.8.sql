@@ -1,5 +1,6 @@
 ALTER TABLE sys_oss
-ADD COLUMN oss_category_id bigint NOT NULL DEFAULT 0 COMMENT '分类id' AFTER size,
+ADD COLUMN content_type varchar(255) NULL COMMENT '内容类型' AFTER size,
+ADD COLUMN oss_category_id bigint NOT NULL DEFAULT 0 COMMENT '分类id' AFTER content_type,
 ADD COLUMN user_type varchar(20) NOT NULL COMMENT '用户类型' AFTER oss_category_id,
 ADD COLUMN is_lock tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否锁定状态' AFTER user_type,
 ADD COLUMN is_list tinyint(1) NOT NULL DEFAULT 0 COMMENT '是否显示在列表' AFTER is_lock;

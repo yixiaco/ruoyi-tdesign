@@ -61,6 +61,11 @@ public class SysOss extends TenantEntity {
     private Long size;
 
     /**
+     * 内容类型
+     */
+    private String contentType;
+
+    /**
      * 分类id
      */
     private Long ossCategoryId;

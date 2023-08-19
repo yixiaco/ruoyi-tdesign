@@ -63,6 +63,12 @@ public class SysOssVo implements Serializable {
     private Long size;
 
     /**
+     * 内容类型
+     */
+    @ExcelProperty(value = "内容类型")
+    private String contentType;
+
+    /**
      * 分类id
      */
     @ExcelProperty(value = "分类id")

@@ -43,7 +43,7 @@ import { useUserStore } from '@/store';
 
 const props = defineProps({
   modelValue: [String, Object, Array],
-  // 图片数量限制
+  // 图片数量限制,为0不限制
   limit: {
     type: Number,
     default: 5,

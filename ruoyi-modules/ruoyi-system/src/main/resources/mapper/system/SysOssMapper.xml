@@ -8,7 +8,7 @@
     </resultMap>
 
     <sql id="selectSysOssVo">
-        select so.oss_id, so.tenant_id, so.file_name, so.original_name, so.file_suffix, so.url, so.size, so.user_type, so.is_lock, so.is_list, so.create_dept, so.create_time, so.create_by, so.update_time, so.update_by, so.service from sys_oss so
+        select so.oss_id, so.tenant_id, so.file_name, so.original_name, so.file_suffix, so.url, so.size, so.content_type, so.user_type, so.is_lock, so.is_list, so.create_dept, so.create_time, so.create_by, so.update_time, so.update_by, so.service from sys_oss so
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysOssQuery" resultMap="SysOssResultVo">
         select so.oss_id,
@@ -18,6 +18,7 @@
                so.file_suffix,
                so.url,
                so.size,
+               so.content_type,
                so.user_type,
                so.is_lock,
                so.is_list,

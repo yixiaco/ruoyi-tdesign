@@ -22,11 +22,11 @@
             </t-button>
           </template>
         </t-image-viewer>
-        <t-button v-hasPermi="['system:oss:update']" :disabled="ids.length !== 1" @click="handleUpdate()">
-          <template #icon> <edit-icon /> </template>
-          编辑
+        <t-button v-hasPermi="['system:oss:edit']" :disabled="ids.length !== 1" @click="handleUpdate()">
+          <template #icon> <info-circle-icon /> </template>
+          属性
         </t-button>
-        <t-button v-hasPermi="['system:oss:update']" :disabled="ids.length === 0" @click="handleMove()">
+        <t-button v-hasPermi="['system:oss:edit']" :disabled="ids.length === 0" @click="handleMove()">
           <template #icon> <swap-icon /> </template>
           移动到
         </t-button>
@@ -139,8 +139,8 @@
           </t-radio-group>
         </t-form-item>
         <t-form-item label="选择文件">
-          <file-upload v-if="type === 0" v-model="uploadForm.file" theme="file-flow" />
-          <image-upload v-if="type === 1" v-model="uploadForm.file" theme="image-flow" />
+          <file-upload v-if="type === 0" v-model="uploadForm.file" :limit="0" theme="file-flow" />
+          <image-upload v-if="type === 1" v-model="uploadForm.file" :limit="0" theme="image-flow" />
         </t-form-item>
       </t-form>
     </t-dialog>
@@ -149,7 +149,7 @@
       v-model:visible="open"
       :close-on-overlay-click="false"
       :header="title"
-      width="500px"
+      width="550px"
       attach="body"
       :confirm-btn="{
         content: '确 定',
@@ -163,7 +163,7 @@
         label-align="right"
         :data="form"
         :rules="rules"
-        label-width="calc(5em + 24px)"
+        label-width="calc(4em + 31px)"
         scroll-to-first-error="smooth"
         @submit="submitForm"
       >
@@ -185,11 +185,36 @@
           <t-switch v-model="form.isLock" :custom-value="[1, 0]" />
         </t-form-item>
         <t-form-item label="URL" name="url">
-          <t-input v-model="form.url" :readonly="true">
-            <template #suffix-icon>
-              <file-copy-icon style="cursor: pointer" @click="copyText(form.url)" />
-            </template>
-          </t-input>
+          <t-space direction="vertical" size="2px">
+            <div
+              style="
+                word-wrap: break-word;
+                border: 1px solid #dedede;
+                line-height: 1.4;
+                padding: 8px;
+                white-space: normal;
+                word-break: break-all;
+              "
+            >
+              {{ form.url }}
+            </div>
+            <t-space>
+              <t-link theme="primary" @click="handleDownload(form.ossId)">下载</t-link>
+              <t-link theme="primary" @click="copyText(form.url)">复制链接URL</t-link>
+            </t-space>
+          </t-space>
+        </t-form-item>
+        <t-form-item label="文件类型" name="contentType" style="word-break: break-all">
+          {{ form.contentType }}
+        </t-form-item>
+        <t-form-item label="大小" name="size">
+          {{ bytesToSize(form.size).replace(' ', '') }}
+        </t-form-item>
+        <t-form-item label="修改时间" name="updateTime">
+          {{ parseTime(form.updateTime) }}
+        </t-form-item>
+        <t-form-item label="创建时间" name="createTime">
+          {{ parseTime(form.createTime) }}
         </t-form-item>
       </t-form>
     </t-dialog>
@@ -239,8 +264,7 @@ import {
   CloudUploadIcon,
   DeleteIcon,
   DownloadIcon,
-  EditIcon,
-  FileCopyIcon,
+  InfoCircleIcon,
   SearchIcon,
   SwapIcon,
 } from 'tdesign-icons-vue-next';
@@ -313,10 +337,10 @@ const fileType = {
   excel: ['xls', 'xlsx', 'csv'],
   pdf: ['pdf'],
   ppt: ['ppt', 'pptx'],
-  radio: ['wav', 'aif', 'au', 'mp3', 'ram', 'wma', 'mmf', 'amr', 'aac', 'flac', 'aifc', 'awr', 'cda', 'cdr', 'dig'],
+  audio: ['wav', 'aif', 'au', 'mp3', 'ram', 'wma', 'mmf', 'amr', 'aac', 'flac', 'aifc', 'awr', 'cda', 'cdr', 'dig'],
   text: 'txt,sql,ini,xml,html,htm,css,scss,less,js,ts,java,inf,py,json'.split(','),
   video: 'avi,mp4,m4v,mkv,webm,flv,mov,wmv,3gp,3g2,mpg,vob,ogg,swf,dxr,fla,rm,mpe,mpeg,ts'.split(','),
-  word: ['doc', 'docx', 'wps', 'rtf'],
+  word: ['doc', 'docx', 'wps', 'rtf', 'odt'],
 };
 
 const rules = ref<Record<string, Array<FormRule>>>({
@@ -332,7 +356,7 @@ const form = ref<SysOssVo & SysOssForm>({
 });
 const queryParams = ref<SysOssQuery>({
   pageNum: 1,
-  pageSize: 10,
+  pageSize: 20,
   fileName: undefined,
   originalName: undefined,
   fileSuffix: undefined,
@@ -350,6 +374,7 @@ const uploadTitle = computed(() => {
   }
   return '上传图片';
 });
+// 保存了选中状态的oss列表
 const effectiveOssList = computed(() => {
   const ossCollection: SysOssActiveVo[] = [];
   ossList.value.forEach((oss) => {
@@ -360,6 +385,7 @@ const effectiveOssList = computed(() => {
   });
   return ossCollection;
 });
+// 图片预览列表
 const previewList = computed(() => {
   return effectiveOssList.value
     .filter((oss) => {
@@ -383,6 +409,7 @@ const pagination = computed(() => {
   };
 });
 
+/** 获取媒体类型 */
 function getMediaType(oss: SysOssVo) {
   const suffix = oss.fileSuffix?.substring(1)?.toLowerCase();
   if (suffix) {
@@ -392,6 +419,18 @@ function getMediaType(oss: SysOssVo) {
     });
     if (type) {
       return type[0];
+    }
+  }
+  const contentType = oss.contentType?.toLowerCase();
+  if (contentType) {
+    if (contentType.startsWith('image/')) {
+      return 'image';
+    }
+    if (contentType.startsWith('video/')) {
+      return 'video';
+    }
+    if (contentType.startsWith('audio/')) {
+      return 'audio';
     }
   }
   return 'unknown';
@@ -527,8 +566,8 @@ async function copyText(text: string) {
   await proxy.$modal.msgSuccess('复制成功');
 }
 /** 下载按钮操作 */
-function handleDownload() {
-  proxy.$download.oss(ids.value.at(0));
+function handleDownload(ossId?: number) {
+  proxy.$download.oss(ossId ?? ids.value.at(0));
 }
 /** 删除按钮操作 */
 function handleDelete() {
@@ -629,10 +668,10 @@ getList();
 </script>
 <script lang="ts">
 import ArchiveSvg from '@/assets/file-type/archive.svg?component';
+import AudioSvg from '@/assets/file-type/audio.svg?component';
 import ExcelSvg from '@/assets/file-type/excel.svg?component';
 import PdfSvg from '@/assets/file-type/pdf.svg?component';
 import PptSvg from '@/assets/file-type/ppt.svg?component';
-import RadioSvg from '@/assets/file-type/radio.svg?component';
 import TextSvg from '@/assets/file-type/text.svg?component';
 import UnknownSvg from '@/assets/file-type/unknown.svg?component';
 import VideoSvg from '@/assets/file-type/video.svg?component';
@@ -640,7 +679,7 @@ import WordSvg from '@/assets/file-type/word.svg?component';
 
 export default {
   name: 'MyOss',
-  components: { ArchiveSvg, ExcelSvg, PdfSvg, PptSvg, RadioSvg, TextSvg, UnknownSvg, VideoSvg, WordSvg },
+  components: { ArchiveSvg, ExcelSvg, PdfSvg, PptSvg, AudioSvg, TextSvg, UnknownSvg, VideoSvg, WordSvg },
 };
 </script>
 <style lang="less" scoped>
@@ -819,7 +858,7 @@ export default {
 .gallery-doc-icon--video {
   background-color: #e5f5f7;
 }
-.gallery-doc-icon--radio {
+.gallery-doc-icon--audio {
   background-color: #fff6ea;
 }
 .gallery-doc-icon--pdf {

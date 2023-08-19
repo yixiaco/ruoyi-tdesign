@@ -58,6 +58,8 @@ export interface SysOssVo {
   url?: string;
   /** 字节长度 */
   size?: number;
+  /** 内容类型 */
+  contentType?: string;
   /** 分类id */
   ossCategoryId?: number;
   /** 用户类型 */
