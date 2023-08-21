@@ -40,6 +40,16 @@ public class SysOssCategory extends BaseEntity {
     private Long parentId;
 
     /**
+     * 分类路径
+     */
+    private String categoryPath;
+
+    /**
+     * 层级
+     */
+    private Integer level;
+
+    /**
      * 显示顺序
      */
     private Integer orderNum;

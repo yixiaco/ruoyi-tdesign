@@ -88,5 +88,6 @@ declare module 'vue' {
     TTreeSelect: typeof import('tdesign-vue-next')['TreeSelect']
     TUpload: typeof import('tdesign-vue-next')['Upload']
     TWatermark: typeof import('tdesign-vue-next')['Watermark']
+    UploadSelect: typeof import('./src/components/upload-select/index.vue')['default']
   }
 }

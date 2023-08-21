@@ -22,6 +22,8 @@ export interface SysOssQuery extends BaseEntity {
   createByName?: string;
   /** 服务商 */
   service?: string;
+  /** 多个文件后缀，忽略大小写 */
+  suffixes?: string[];
 }
 /**
  * OSS对象存储业务对象

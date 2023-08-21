@@ -88,7 +88,11 @@
       </t-col>
       <!-- 文件数据 -->
       <t-col :sm="10" :xs="12">
-        <my-oss :category-id="categoryActived[0]" />
+        <my-oss
+          :category-id="categoryActived[0]"
+          :suffixes="suffixes"
+          @change="(selectValues) => emit('change', selectValues)"
+        />
       </t-col>
     </t-row>
 
@@ -116,7 +120,7 @@
         @submit="submitCategoryForm"
       >
         <t-form-item label="分类名称" name="categoryName">
-          <t-input v-model="form.categoryName" placeholder="请输入分类名称" clearable :maxlength="10" />
+          <t-input v-model="form.categoryName" placeholder="请输入分类名称" clearable :maxlength="50" />
         </t-form-item>
         <t-form-item label="父级分类" name="parentId">
           <t-tree-select
@@ -168,6 +172,8 @@
   </t-card>
 </template>
 <script lang="ts" setup>
+import { PropType } from 'vue/dist/vue';
+
 defineOptions({
   name: 'OssCategory',
 });
@@ -184,6 +190,7 @@ import { FormInstanceFunctions, FormRule, SubmitContext, TreeNodeModel, TreeNode
 import { getCurrentInstance, ref } from 'vue';
 
 import { SysOssCategoryForm, SysOssCategoryVo } from '@/api/system/model/ossCategoryModel';
+import { SysOssVo } from '@/api/system/model/ossModel';
 import {
   addOssCategory,
   delOssCategory,
@@ -193,6 +200,13 @@ import {
 } from '@/api/system/ossCategory';
 
 import MyOss from './components/myOss.vue';
+
+defineProps({
+  suffixes: {
+    type: Array as PropType<string[]>,
+    default: () => [],
+  },
+});
 
 const { proxy } = getCurrentInstance();
 
@@ -216,6 +230,9 @@ const rules = ref<Record<string, Array<FormRule>>>({
 });
 // 提交表单对象
 const form = ref<SysOssCategoryVo & SysOssCategoryForm>({});
+const emit = defineEmits<{
+  (e: 'change', selectValues: SysOssVo[]): void;
+}>();
 
 /** 通过条件过滤节点  */
 function filterNode(node: TreeNodeModel) {

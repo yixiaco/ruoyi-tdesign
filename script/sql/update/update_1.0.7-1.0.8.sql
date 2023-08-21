@@ -13,6 +13,8 @@ CREATE TABLE sys_oss_category  (
   oss_category_id bigint(20) NOT NULL COMMENT 'oss分类id',
   category_name varchar(255) NOT NULL COMMENT '分类名称',
   parent_id bigint(20) NOT NULL COMMENT '父级分类id',
+  category_path varchar(2000) NOT NULL COMMENT '分类路径',
+  level int(11) NOT NULL COMMENT '层级',
   order_num int(11) NOT NULL COMMENT '显示顺序',
   user_type varchar(20) NOT NULL COMMENT '用户类型',
   create_by bigint(20) NOT NULL COMMENT '上传人',

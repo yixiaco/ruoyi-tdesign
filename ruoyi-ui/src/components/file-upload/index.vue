@@ -15,10 +15,12 @@
       :size-limit="{ size: fileSize, unit: 'MB', message: '上传文件大小不能超过 {sizeLimit} MB!' }"
       :tips="isShowTip ? `请上传大小不超过 ${fileSize}MB 格式为 ${fileType.join('/')} 的文件` : ''"
       :disabled="disabled"
+      :allow-upload-duplicate-file="allowUploadDuplicateFile"
       @one-file-success="handleOneUploadSuccess"
       @success="handleUploadSuccess"
       @remove="handleDelete"
       @validate="onValidate"
+      @click="handleOpenUpload($event)"
     >
       <!-- 上传按钮 -->
       <slot />
@@ -29,6 +31,14 @@
         选取文件
       </t-button>
     </t-upload>
+    <upload-select
+      v-model:visible="open"
+      title="选择文件"
+      :support-url="effectiveSupportUrl"
+      :support-select-file="supportSelectFile"
+      :suffixes="fileType"
+      :on-submit="handleSelectSubmit"
+    />
   </div>
 </template>
 
@@ -39,6 +49,7 @@ import { SuccessContext, UploadFile, UploadRemoveContext, UploadValidateType } f
 import { computed, getCurrentInstance, PropType, ref, watch } from 'vue';
 
 import { delOss, listByIds, listByUrls } from '@/api/system/oss';
+import { SelectFile } from '@/components/upload-select/index.vue';
 import { useUserStore } from '@/store';
 
 const props = defineProps({
@@ -80,6 +91,21 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  // 是否允许重复上传相同文件名的文件
+  allowUploadDuplicateFile: {
+    type: Boolean,
+    default: false,
+  },
+  // 支持选择文件
+  supportSelectFile: {
+    type: Boolean,
+    default: true,
+  },
+  // 支持手动输入url
+  supportUrl: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const { token } = storeToRefs(useUserStore());
@@ -92,6 +118,10 @@ const fileList = ref<UploadFile[]>([]);
 const accept = computed(() => {
   return props.fileType.map((value) => `.${value}`).join(',');
 });
+const effectiveSupportUrl = computed(() => {
+  return props.supportUrl && props.mode === 'url';
+});
+const open = ref(false);
 
 watch(
   () => props.modelValue,
@@ -164,6 +194,25 @@ watch(
   { deep: true, immediate: true },
 );
 
+// 拦截默认事件，打开选择窗口
+function handleOpenUpload(event: MouseEvent) {
+  if (props.supportSelectFile || props.supportUrl) {
+    event.preventDefault();
+    open.value = true;
+  }
+}
+
+// 处理选中的图片
+function handleSelectSubmit(values: SelectFile[]) {
+  // TODO：做一些校验，文件大小，数量，重复名称
+  // 检查文件大小
+  // 检查文件类型
+  // 检查文件数量
+  // 检查重复名称
+  uploadedSuccessfully(values);
+  return true;
+}
+
 // 上传前校检格式和大小
 function handleBeforeUpload(file: UploadFile) {
   // 校检文件类型
@@ -220,9 +269,11 @@ function handleUploadSuccess(context: SuccessContext) {
 // 删除文件
 function handleDelete({ file }: UploadRemoveContext) {
   const { ossId, name } = file;
-  delOss(ossId).then(() => {
-    proxy.$modal.msgSuccess(`文件【${name}】删除成功！`);
-  });
+  if (!effectiveSupportUrl.value && !props.supportSelectFile) {
+    delOss(ossId).then(() => {
+      proxy.$modal.msgSuccess(`文件【${name}】删除成功！`);
+    });
+  }
   const value = listToString(fileList.value);
   emit('update:modelValue', value);
   emit('change', value);

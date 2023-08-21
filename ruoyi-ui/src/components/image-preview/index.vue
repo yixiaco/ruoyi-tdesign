@@ -53,7 +53,6 @@ const props = defineProps({
   // 显示地址
   src: {
     type: String,
-    required: true,
   },
   // 预览地址，为空则使用src显示地址
   previewSrc: {

@@ -46,6 +46,9 @@
             <if test="createBy != null"> and so.create_by = #{createBy}</if>
             <if test="createByName != null"> and su.user_name like concat('%', #{createByName}, '%')</if>
             <if test="service != null and service != ''"> and so.service like concat('%', #{service}, '%')</if>
+            <foreach collection="suffixes" item="item" open="and so.file_suffix in(" separator="," close=")" nullable="true">
+                #{item}
+            </foreach>
         </where>
         order by create_time desc
     </select>

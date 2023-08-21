@@ -67,7 +67,7 @@
             <div class="list-card-gallery-item__label" :class="{ 'list-card-gallery-item__label--active': oss.active }">
               <figure class="list-card-gallery-figure" data-visible="true">
                 <figcaption class="list-card-gallery-figure__caption">
-                  {{ oss.fileSuffix.substring(1) }}
+                  {{ oss.fileSuffix?.substring(1) }}
                   <template v-if="thumbnailSize >= 100"> ({{ bytesToSize(oss.size).replace(' ', '') }}) </template>
                 </figcaption>
                 <div class="list-card-gallery-figure__content">
@@ -142,8 +142,22 @@
           </t-radio-group>
         </t-form-item>
         <t-form-item label="选择文件">
-          <file-upload v-if="type === 0" v-model="uploadForm.file" :limit="0" theme="file-flow" />
-          <image-upload v-if="type === 1" v-model="uploadForm.file" :limit="0" theme="image-flow" />
+          <file-upload
+            v-if="type === 0"
+            v-model="uploadForm.file"
+            :limit="0"
+            theme="file-flow"
+            :support-select-file="false"
+            :support-url="false"
+          />
+          <image-upload
+            v-if="type === 1"
+            v-model="uploadForm.file"
+            :limit="0"
+            theme="image-flow"
+            :support-select-file="false"
+            :support-url="false"
+          />
         </t-form-item>
       </t-form>
     </t-dialog>
@@ -273,7 +287,7 @@ import {
   SwapIcon,
 } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PageInfo, SubmitContext } from 'tdesign-vue-next';
-import { computed, getCurrentInstance, ref, watch } from 'vue';
+import { computed, getCurrentInstance, PropType, ref, watch } from 'vue';
 import useClipboard from 'vue-clipboard3';
 
 import { SysOssCategoryVo } from '@/api/system/model/ossCategoryModel';
@@ -306,24 +320,32 @@ const props = defineProps({
     type: Boolean,
     default: true,
   },
+  /** 缩略图大小，px */
   thumbnailSize: {
     type: Number,
     default: 120,
   },
+  suffixes: {
+    type: Array as PropType<string[]>,
+    default: () => [],
+  },
 });
 watch(
-  () => props.categoryId,
-  (value) => getList(),
+  () => [props.categoryId, props.suffixes],
+  () => getList(),
 );
 watch(
   () => props.multiple,
-  (value, oldValue, onCleanup) => {
+  (value, oldValue) => {
     if (oldValue) {
       // 从多选变更多单选，需要清理多余的选项
       ids.value.splice(1);
     }
   },
 );
+const emit = defineEmits<{
+  (e: 'change', selectValues: SysOssVo[]): void;
+}>();
 
 const { proxy } = getCurrentInstance();
 const { toClipboard } = useClipboard();
@@ -338,12 +360,11 @@ const open = ref(false);
 const buttonLoading = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
-const ids = ref([]);
+const ids = ref<number[]>([]);
 const total = ref(0);
 const type = ref(0);
 const title = ref('');
 const shiftId = ref<number>();
-const daterangeCreateTime = ref([]);
 // 预览图下标
 const imagePreviewIndex = ref(0);
 // 缩略图大小尺寸
@@ -375,15 +396,7 @@ const form = ref<SysOssVo & SysOssForm>({
 const queryParams = ref<SysOssQuery>({
   pageNum: 1,
   pageSize: 20,
-  fileName: undefined,
   originalName: undefined,
-  fileSuffix: undefined,
-  url: undefined,
-  createTime: undefined,
-  createByName: undefined,
-  service: undefined,
-  orderByColumn: undefined,
-  isAsc: undefined,
 });
 
 const uploadTitle = computed(() => {
@@ -458,7 +471,8 @@ function getMediaType(oss: SysOssVo) {
 function getList() {
   loading.value = true;
   queryParams.value.ossCategoryId = props.categoryId;
-  listMyOss(proxy.addDateRange(queryParams.value, daterangeCreateTime.value, 'CreateTime'))
+  queryParams.value.suffixes = props.suffixes?.map((value) => `.${value}`);
+  listMyOss(queryParams.value)
     .then((response) => {
       ids.value = [];
       shiftId.value = null;
@@ -613,6 +627,7 @@ function handleDelete() {
 function handleRectChange(checkedIndexes: number[]) {
   imagePreviewIndex.value = 0;
   ids.value = ossList.value.filter((value, index) => checkedIndexes.includes(index)).map((value) => value.ossId);
+  handleChangeEmit();
 }
 
 /** 处理单击事件 */
@@ -620,6 +635,7 @@ function handleClick(oss: SysOssVo) {
   imagePreviewIndex.value = 0;
   shiftId.value = oss.ossId;
   ids.value = [oss.ossId];
+  handleChangeEmit();
 }
 
 /** 处理ctrl + 单击事件 */
@@ -633,6 +649,7 @@ function handleCtrlClick(oss: SysOssVo) {
     } else {
       ids.value.push(oss.ossId);
     }
+    handleChangeEmit();
   } else {
     handleClick(oss);
   }
@@ -659,6 +676,7 @@ function handleShiftClick(oss: SysOssVo, append = false) {
     } else {
       ids.value = arr;
     }
+    handleChangeEmit();
   } else {
     handleClick(oss);
   }
@@ -675,11 +693,19 @@ function buttonChecked(oss: SysOssVo) {
   } else {
     ids.value = [oss.ossId];
   }
+  handleChangeEmit();
 }
 
 /** 选择全部 */
 function handleCheckedAll() {
   ids.value = ossList.value.map((value) => value.ossId);
+  handleChangeEmit();
+}
+
+/** 触发变更提交 */
+function handleChangeEmit() {
+  const values = ossList.value.filter((value) => ids.value.includes(value.ossId));
+  emit('change', values);
 }
 
 getList();

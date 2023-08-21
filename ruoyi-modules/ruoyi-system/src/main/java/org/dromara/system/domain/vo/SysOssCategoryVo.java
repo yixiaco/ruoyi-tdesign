@@ -50,6 +50,18 @@ public class SysOssCategoryVo implements Serializable {
     private String parentCategoryName;
 
     /**
+     * 分类路径
+     */
+    @ExcelProperty(value = "分类路径")
+    private String categoryPath;
+
+    /**
+     * 层级
+     */
+    @ExcelProperty(value = "层级")
+    private Integer level;
+
+    /**
      * 显示顺序
      */
     @ExcelProperty(value = "显示顺序")

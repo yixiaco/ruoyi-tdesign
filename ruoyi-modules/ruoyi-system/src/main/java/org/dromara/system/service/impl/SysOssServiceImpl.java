@@ -73,6 +73,13 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
      */
     @Override
     public TableDataInfo<SysOssVo> queryPageList(SysOssQuery query) {
+        if (query.getSuffixes() != null) {
+            String[] suffixes = query.getSuffixes();
+            for (int i = 0; i < suffixes.length; i++) {
+                String suffix = suffixes[i];
+                suffixes[i] = suffix.toLowerCase();
+            }
+        }
         return PageQuery.of(() -> {
             List<SysOssVo> vos = baseMapper.queryList(query);
             for (SysOssVo vo : vos) {
@@ -165,6 +172,9 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
     public SysOssVo upload(MultipartFile file, SysOssBo bo) {
         String originalFilename = file.getOriginalFilename();
         String suffix = StringUtils.substring(originalFilename, originalFilename.lastIndexOf('.'), originalFilename.length());
+        if (suffix != null) {
+            suffix = suffix.toLowerCase();
+        }
         OssClient storage = OssFactory.instance();
         UploadResult uploadResult;
         try {
@@ -187,6 +197,9 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
     public SysOssVo upload(File file, SysOssBo bo) {
         String originalFileName = file.getName();
         String suffix = StringUtils.substring(originalFileName, originalFileName.lastIndexOf("."), originalFileName.length());
+        if (suffix != null) {
+            suffix = suffix.toLowerCase();
+        }
         OssClient storage = OssFactory.instance();
         UploadResult uploadResult = storage.uploadSuffix(file, suffix);
         String mimeType = FileUtil.getMimeType(file.getAbsolutePath());

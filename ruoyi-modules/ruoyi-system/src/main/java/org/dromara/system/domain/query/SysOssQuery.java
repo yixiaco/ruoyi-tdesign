@@ -69,4 +69,9 @@ public class SysOssQuery extends BaseEntity {
      */
     private String service;
 
+    /**
+     * 多个文件后缀
+     */
+    private String[] suffixes;
+
 }

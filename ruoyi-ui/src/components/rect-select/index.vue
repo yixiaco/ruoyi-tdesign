@@ -96,9 +96,8 @@ function range(num: number, min: number, max: number) {
 
 /**
  * 鼠标松开事件
- * @param event
  */
-function handleMouseUp(event: MouseEvent) {
+function handleMouseUp() {
   active.value = false;
 }
 

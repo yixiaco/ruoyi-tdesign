@@ -4,6 +4,7 @@ import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.dromara.common.core.validate.AddGroup;
@@ -32,6 +33,7 @@ public class SysOssCategoryBo extends BaseEntity {
      * 分类名称
      */
     @NotBlank(message = "分类名称不能为空", groups = {AddGroup.class, EditGroup.class})
+    @Pattern(regexp = "^[^/]*$", message = "分类名称不能含有\"/\"符号")
     private String categoryName;
 
     /**
