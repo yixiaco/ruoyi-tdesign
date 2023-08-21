@@ -32,7 +32,7 @@
   </t-watermark>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import '@/style/layout.less';
 
 import { storeToRefs } from 'pinia';

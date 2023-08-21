@@ -60,12 +60,10 @@
     </t-space>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Online',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Online',
+});
 import { DeleteIcon, RefreshIcon, SearchIcon } from 'tdesign-icons-vue-next';
 import { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';

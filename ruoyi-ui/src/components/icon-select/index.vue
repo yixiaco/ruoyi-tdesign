@@ -14,12 +14,10 @@
     <template #valueDisplay><r-icon :name="modelValue" :style="{ marginRight: '8px' }" />{{ modelValue }}</template>
   </t-select>
 </template>
-<script lang="ts">
-export default {
-  name: 'IconSelect',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'IconSelect',
+});
 import { manifest } from 'tdesign-icons-vue-next';
 import { ref } from 'vue';
 

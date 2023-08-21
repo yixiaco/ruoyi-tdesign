@@ -11,13 +11,10 @@
   </div>
 </template>
 
-<script lang="ts">
-export default {
+<script lang="ts" setup>
+defineOptions({
   name: 'DashboardBase',
-};
-</script>
-
-<script setup lang="ts">
+});
 import MiddleChart from './components/MiddleChart.vue';
 import OutputOverview from './components/OutputOverview.vue';
 import RankList from './components/RankList.vue';

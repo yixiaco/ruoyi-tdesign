@@ -7,11 +7,9 @@
   </result>
 </template>
 
-<script lang="ts">
-export default {
+<script lang="ts" setup>
+defineOptions({
   name: 'ResultNetworkError',
-};
-</script>
-<script setup lang="ts">
+});
 import Result from '@/components/result/index.vue';
 </script>

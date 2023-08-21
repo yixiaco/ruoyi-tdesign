@@ -51,7 +51,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { storeToRefs } from 'pinia';
 import { SearchIcon } from 'tdesign-icons-vue-next';
 import { HighlightOption as THighlightOption } from 'tdesign-vue-next';

@@ -66,12 +66,10 @@
     </t-row>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Profile',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Profile',
+});
 import { CalendarIcon, MailIcon, MobileIcon, SecuredIcon, UsergroupIcon, UserIcon } from 'tdesign-icons-vue-next';
 import { reactive, ref } from 'vue';
 

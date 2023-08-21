@@ -280,9 +280,23 @@ import { SysOssCategoryVo } from '@/api/system/model/ossCategoryModel';
 import { SysOssActiveVo, SysOssForm, SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
 import { delOss, getOss, listMyOss, moveOss, updateOss } from '@/api/system/oss';
 import { listOssCategory } from '@/api/system/ossCategory';
+import ArchiveSvg from '@/assets/file-type/archive.svg?component';
+import AudioSvg from '@/assets/file-type/audio.svg?component';
+import ExcelSvg from '@/assets/file-type/excel.svg?component';
+import PdfSvg from '@/assets/file-type/pdf.svg?component';
+import PptSvg from '@/assets/file-type/ppt.svg?component';
+import TextSvg from '@/assets/file-type/text.svg?component';
+import UnknownSvg from '@/assets/file-type/unknown.svg?component';
+import VideoSvg from '@/assets/file-type/video.svg?component';
+import WordSvg from '@/assets/file-type/word.svg?component';
 import FileUpload from '@/components/file-upload/index.vue';
 import ImageUpload from '@/components/image-upload/index.vue';
 import RectSelect from '@/components/rect-select/index.vue';
+
+defineOptions({
+  name: 'MyOss',
+  components: { ArchiveSvg, ExcelSvg, PdfSvg, PptSvg, AudioSvg, TextSvg, UnknownSvg, VideoSvg, WordSvg },
+});
 
 const props = defineProps({
   /** 分类id */
@@ -669,22 +683,6 @@ function handleCheckedAll() {
 }
 
 getList();
-</script>
-<script lang="ts">
-import ArchiveSvg from '@/assets/file-type/archive.svg?component';
-import AudioSvg from '@/assets/file-type/audio.svg?component';
-import ExcelSvg from '@/assets/file-type/excel.svg?component';
-import PdfSvg from '@/assets/file-type/pdf.svg?component';
-import PptSvg from '@/assets/file-type/ppt.svg?component';
-import TextSvg from '@/assets/file-type/text.svg?component';
-import UnknownSvg from '@/assets/file-type/unknown.svg?component';
-import VideoSvg from '@/assets/file-type/video.svg?component';
-import WordSvg from '@/assets/file-type/word.svg?component';
-
-export default {
-  name: 'MyOss',
-  components: { ArchiveSvg, ExcelSvg, PdfSvg, PptSvg, AudioSvg, TextSvg, UnknownSvg, VideoSvg, WordSvg },
-};
 </script>
 <style lang="less" scoped>
 @neutral-h: 220;

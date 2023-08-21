@@ -265,12 +265,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Role',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Role',
+});
 import {
   AddIcon,
   CheckCircleIcon,

@@ -36,12 +36,10 @@
     </t-loading>
   </t-dialog>
 </template>
-<script lang="ts">
-export default {
+<script lang="ts" setup>
+defineOptions({
   name: 'GenPreview',
-};
-</script>
-<script setup lang="ts">
+});
 import { FileCopyIcon } from 'tdesign-icons-vue-next';
 import { computed, getCurrentInstance, PropType, ref, watch } from 'vue';
 

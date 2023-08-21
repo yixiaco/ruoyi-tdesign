@@ -406,12 +406,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'MessageTemplate',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'MessageTemplate',
+});
 import {
   AddIcon,
   BrowseIcon,

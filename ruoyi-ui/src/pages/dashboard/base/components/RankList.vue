@@ -51,7 +51,7 @@
   </t-row>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 // 导入样式
 import Trend from '@/components/trend/index.vue';
 

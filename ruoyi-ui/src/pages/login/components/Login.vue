@@ -110,7 +110,7 @@
   </t-form>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import Cookies from 'js-cookie';
 import QrcodeVue from 'qrcode.vue';
 import {

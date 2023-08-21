@@ -1,7 +1,7 @@
 <template>
   <router-view :class="[mode]" />
 </template>
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed } from 'vue';
 
 import { useSettingStore } from '@/store';

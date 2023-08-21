@@ -47,12 +47,10 @@
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  name: 'SystemConfig',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'SystemConfig',
+});
 import { FormRule, SubmitContext } from 'tdesign-vue-next';
 import { getCurrentInstance, ref, watch } from 'vue';
 

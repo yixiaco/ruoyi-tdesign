@@ -149,12 +149,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Post',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Post',
+});
 import {
   AddIcon,
   DeleteIcon,

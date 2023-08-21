@@ -169,12 +169,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Dept',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Dept',
+});
 import {
   AddIcon,
   DeleteIcon,

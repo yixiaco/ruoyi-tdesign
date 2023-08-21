@@ -55,13 +55,10 @@
   </t-card>
 </template>
 
-<script lang="ts">
-export default {
+<script lang="ts" setup>
+defineOptions({
   name: 'DashboardBase',
-};
-</script>
-
-<script setup lang="ts">
+});
 import { LineChart } from 'echarts/charts';
 import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';

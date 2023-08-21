@@ -10,7 +10,7 @@
   />
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 

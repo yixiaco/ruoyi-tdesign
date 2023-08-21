@@ -54,7 +54,7 @@
     </template>
   </t-card>
 </template>
-<script setup lang="ts">
+<script lang="ts" setup>
 import {
   AddIcon,
   CalendarIcon,

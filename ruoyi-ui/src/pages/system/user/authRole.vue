@@ -39,12 +39,10 @@
     </t-form>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'AuthRole',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'AuthRole',
+});
 import { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, nextTick, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';

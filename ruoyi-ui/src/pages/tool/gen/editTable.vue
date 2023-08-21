@@ -158,12 +158,10 @@
     <gen-preview v-model:visible="preview.open" :data="preview.data" :loading="preview.loading" />
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'GenEdit',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'GenEdit',
+});
 import { SettingIcon } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, onMounted, reactive, ref, toRefs } from 'vue';

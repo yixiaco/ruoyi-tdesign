@@ -10,7 +10,7 @@
   <frame-page />
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import isBoolean from 'lodash/isBoolean';
 import isUndefined from 'lodash/isUndefined';
 import type { ComputedRef } from 'vue';

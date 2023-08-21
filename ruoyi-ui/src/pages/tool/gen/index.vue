@@ -143,12 +143,10 @@
     <import-table ref="importRef" @ok="handleQuery" />
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Gen',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Gen',
+});
 import {
   BrowseIcon,
   DeleteIcon,

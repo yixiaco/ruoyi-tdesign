@@ -58,13 +58,10 @@
   </div>
 </template>
 
-<script lang="ts">
-export default {
+<script lang="ts" setup>
+defineOptions({
   name: 'DashboardDetail',
-};
-</script>
-
-<script setup lang="ts">
+});
 import { LineChart, ScatterChart } from 'echarts/charts';
 import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';

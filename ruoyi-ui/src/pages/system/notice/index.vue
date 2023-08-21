@@ -178,12 +178,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Notice',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Notice',
+});
 import { AddIcon, DeleteIcon, EditIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';

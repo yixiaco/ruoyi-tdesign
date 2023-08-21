@@ -229,12 +229,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'MessageLog',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'MessageLog',
+});
 import { BrowseIcon, DeleteIcon, DownloadIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import { PageInfo, PrimaryTableCol, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';

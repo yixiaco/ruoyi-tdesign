@@ -99,12 +99,10 @@
     </t-row>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Cache',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Cache',
+});
 import * as echarts from 'echarts';
 import { ECharts } from 'echarts';
 import { ChartPieIcon, DashboardIcon, DesktopIcon } from 'tdesign-icons-vue-next';

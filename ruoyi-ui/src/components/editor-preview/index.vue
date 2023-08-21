@@ -3,7 +3,7 @@
     <div ref="html" v-html="htmlText"></div>
   </div>
 </template>
-<script setup lang="ts">
+<script lang="ts" setup>
 import Prism from 'prismjs';
 import { nextTick, onMounted, onUpdated, ref } from 'vue';
 

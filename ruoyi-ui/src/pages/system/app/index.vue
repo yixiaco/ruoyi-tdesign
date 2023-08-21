@@ -176,12 +176,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'App',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'App',
+});
 import {
   AddIcon,
   BrowseIcon,

@@ -94,12 +94,10 @@
     <select-user ref="selectRef" :role-id="queryParams.roleId" @ok="handleQuery" />
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'AuthUser',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'AuthUser',
+});
 import { AddIcon, CloseCircleIcon, CloseIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, reactive, ref } from 'vue';

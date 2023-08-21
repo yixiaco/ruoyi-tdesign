@@ -14,12 +14,10 @@
     </t-tabs>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'SysConfig',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'SysConfig',
+});
 import { computed, ref, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 

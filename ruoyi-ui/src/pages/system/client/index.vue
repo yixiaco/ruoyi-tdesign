@@ -231,12 +231,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Client',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Client',
+});
 import {
   AddIcon,
   BrowseIcon,

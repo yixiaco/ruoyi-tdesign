@@ -238,12 +238,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'OssRule',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'OssRule',
+});
 import {
   AddIcon,
   BrowseIcon,

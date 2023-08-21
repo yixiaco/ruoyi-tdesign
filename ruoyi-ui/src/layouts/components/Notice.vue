@@ -46,7 +46,7 @@
   </t-popup>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { storeToRefs } from 'pinia';
 import { MailIcon } from 'tdesign-icons-vue-next';
 import { useRouter } from 'vue-router';

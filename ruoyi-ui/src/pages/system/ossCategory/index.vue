@@ -167,12 +167,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'OssCategory',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'OssCategory',
+});
 import {
   AddIcon,
   ArrowDownIcon,

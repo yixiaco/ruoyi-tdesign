@@ -92,7 +92,7 @@
   </t-form>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { BrowseIcon, BrowseOffIcon, LockOnIcon, MailIcon, SecuredIcon, UserIcon } from 'tdesign-icons-vue-next';
 import type { FormRule, SubmitContext } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';

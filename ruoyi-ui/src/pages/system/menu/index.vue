@@ -286,12 +286,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Menus',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Menus',
+});
 import {
   AddIcon,
   DeleteIcon,

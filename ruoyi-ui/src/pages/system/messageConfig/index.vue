@@ -303,12 +303,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'MessageConfig',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'MessageConfig',
+});
 import {
   AddIcon,
   BrowseIcon,

@@ -16,12 +16,10 @@
     </Teleport>
   </div>
 </template>
-<script lang="ts">
-export default {
-  name: 'RectSelect',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'RectSelect',
+});
 import { computed, onMounted, onUnmounted, ref } from 'vue';
 
 const props = defineProps({

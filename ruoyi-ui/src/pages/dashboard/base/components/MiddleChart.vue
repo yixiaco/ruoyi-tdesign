@@ -32,7 +32,7 @@
   </t-row>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { LineChart, PieChart } from 'echarts/charts';
 import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';

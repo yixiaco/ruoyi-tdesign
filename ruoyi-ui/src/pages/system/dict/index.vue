@@ -168,12 +168,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Dict',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Dict',
+});
 import {
   AddIcon,
   DeleteIcon,

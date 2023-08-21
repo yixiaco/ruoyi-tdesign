@@ -440,12 +440,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'User',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'User',
+});
 import { storeToRefs } from 'pinia';
 import {
   AddIcon,

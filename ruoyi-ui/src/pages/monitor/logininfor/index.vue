@@ -122,12 +122,10 @@
     </t-space>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Logininfor',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Logininfor',
+});
 import { DeleteIcon, DownloadIcon, LockOffIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import { PageInfo, PrimaryTableCol, SelectOptions, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';

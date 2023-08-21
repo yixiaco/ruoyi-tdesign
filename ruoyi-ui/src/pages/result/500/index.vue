@@ -3,11 +3,9 @@
     <t-button @click="() => $router.push('/')">返回首页</t-button>
   </result>
 </template>
-<script lang="ts">
-export default {
+<script lang="ts" setup>
+defineOptions({
   name: 'Result500',
-};
-</script>
-<script setup lang="ts">
+});
 import Result from '@/components/result/index.vue';
 </script>

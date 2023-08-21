@@ -379,12 +379,10 @@
 #end
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: '${BusinessName}',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: '${BusinessName}',
+});
 #if($isUseQueryMethod)
 import {
 #if($isUseAddMethod)

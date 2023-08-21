@@ -275,12 +275,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Tenant',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Tenant',
+});
 import {
   AddIcon,
   BrowseIcon,
