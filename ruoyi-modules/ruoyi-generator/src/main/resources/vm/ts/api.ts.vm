@@ -1,4 +1,3 @@
-import { request } from '@/utils/request';
 #set($addOrUpdate = ($isUseAddMethod || $isUseEditMethod))
 #if($isUseVO)
 #set($vo="${ClassName}Vo")
@@ -17,10 +16,10 @@ import { request } from '@/utils/request';
 #end
 #if($table.isCrud())
 #set($Result="TableDataInfo<$vo>")
-import { R, TableDataInfo } from '@/api/model/resultModel';
+import type { R, TableDataInfo } from '@/api/model/resultModel';
 #elseif($table.isTree())
 #set($Result="R<Array<$vo>>")
-import { R } from '@/api/model/resultModel';
+import type { R } from '@/api/model/resultModel';
 #end
 #set($idType=${GenUtil.javaTypeToTypescript(${pkColumn.javaType})})
 #set($importApiModel = [])
@@ -29,8 +28,9 @@ import { R } from '@/api/model/resultModel';
 #if($isUseQuery && $isUseQueryMethod && $importApiModel.add(${query}))#end
 #if($isUseVO && ($isUseQueryMethod || $isUseDetailMethod || $isUseEditMethod) && $importApiModel.add(${vo}))#end
 #if(!$importApiModel.isEmpty())
-import { $StringUtils.join($importApiModel, ", ") } from '@/api/${moduleName}/model/${businessName}Model';
+import type { $StringUtils.join($importApiModel, ", ") } from '@/api/${moduleName}/model/${businessName}Model';
 #end
+import { request } from '@/utils/request';
 #if($isUseQueryMethod)
 
 // 查询${functionName}列表

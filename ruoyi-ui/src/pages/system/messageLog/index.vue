@@ -234,11 +234,11 @@ defineOptions({
   name: 'MessageLog',
 });
 import { BrowseIcon, DeleteIcon, DownloadIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { PageInfo, PrimaryTableCol, TableSort } from 'tdesign-vue-next';
+import type { PageInfo, PrimaryTableCol, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { clearMessageLog, delMessageLog, getMessageLog, listMessageLog } from '@/api/system/messageLog';
-import { SysMessageLogQuery, SysMessageLogVo } from '@/api/system/model/messageLogModel';
+import type { SysMessageLogQuery, SysMessageLogVo } from '@/api/system/model/messageLogModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_message_template_mode, sys_common_status, sys_message_type, sys_message_supplier_type } = proxy.useDict(

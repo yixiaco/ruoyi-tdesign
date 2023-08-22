@@ -1,4 +1,4 @@
-import { TdBaseTableProps } from 'tdesign-vue-next';
+import type { TdBaseTableProps } from 'tdesign-vue-next';
 
 interface DashboardPanel {
   title: string;

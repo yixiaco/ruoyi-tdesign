@@ -317,20 +317,32 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext, TableSort } from 'tdesign-vue-next';
+import type {
+  FormInstanceFunctions,
+  FormRule,
+  PageInfo,
+  PrimaryTableCol,
+  SubmitContext,
+  TableSort,
+} from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import {
   addMessageConfig,
   delMessageConfig,
   getMessageConfig,
-  listMessageConfig, refreshCache,
+  listMessageConfig,
+  refreshCache,
   updateMessageConfig,
 } from '@/api/system/messageConfig';
-import { SysMessageConfigForm, SysMessageConfigQuery, SysMessageConfigVo } from '@/api/system/model/messageConfigModel';
+import type {
+  SysMessageConfigForm,
+  SysMessageConfigQuery,
+  SysMessageConfigVo,
+} from '@/api/system/model/messageConfigModel';
 
 import { SUPPLIER_TYPE_MAP } from './data';
-import { MessageConfig } from './model';
+import type { MessageConfig } from './Model';
 
 const { proxy } = getCurrentInstance();
 const { sys_message_type, sys_normal_disable, sys_message_supplier_type } = proxy.useDict(

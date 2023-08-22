@@ -190,11 +190,11 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
+import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { addApp, delApp, getApp, listApp, updateApp } from '@/api/system/app';
-import { SysAppForm, SysAppQuery, SysAppVo } from '@/api/system/model/appModel';
+import type { SysAppForm, SysAppQuery, SysAppVo } from '@/api/system/model/appModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_app_type } = proxy.useDict('sys_app_type');

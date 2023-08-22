@@ -1,5 +1,5 @@
-import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysUserOnline, SysUserOnlineQuery } from '@/api/monitor/model/userOnlineModel';
+import type { R, TableDataInfo } from '@/api/model/resultModel';
+import type { SysUserOnline, SysUserOnlineQuery } from '@/api/monitor/model/userOnlineModel';
 import { request } from '@/utils/request';
 
 // 查询在线用户列表

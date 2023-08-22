@@ -3,7 +3,7 @@
  * Copyright (c) 2019 ruoyi
  */
 import modal from '@/plugins/modal';
-import { DictModel } from '@/utils/dict';
+import type { DictModel } from '@/utils/dict';
 
 // 日期格式化
 export function parseTime(time: any, pattern?: string) {

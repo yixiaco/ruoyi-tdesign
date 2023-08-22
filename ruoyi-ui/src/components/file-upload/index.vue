@@ -45,67 +45,48 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia';
 import { CloudUploadIcon } from 'tdesign-icons-vue-next';
-import { SuccessContext, UploadFile, UploadRemoveContext, UploadValidateType } from 'tdesign-vue-next';
-import { computed, getCurrentInstance, PropType, ref, watch } from 'vue';
+import type { SuccessContext, UploadFile, UploadRemoveContext, UploadValidateType } from 'tdesign-vue-next';
+import { computed, getCurrentInstance, ref, watch } from 'vue';
 
 import { delOss, listByIds, listByUrls } from '@/api/system/oss';
-import { SelectFile } from '@/components/upload-select/index.vue';
+import type { SelectFile } from '@/components/upload-select/index.vue';
 import { useUserStore } from '@/store';
 
-const props = defineProps({
-  modelValue: [String, Object, Array],
-  // 数量限制,为0不限制
-  limit: {
-    type: Number,
-    default: 5,
-  },
-  draggable: {
-    type: Boolean,
-    default: undefined,
-  },
+export interface FileUploadProps {
+  modelValue?: string | string[];
+  // 图片数量限制,为0不限制
+  limit: number;
+  // 是否支持拖拽上传
+  draggable?: boolean;
   // 大小限制(MB)
-  fileSize: {
-    type: Number,
-    default: 5,
-  },
+  fileSize: number;
   // 文件类型, 例如['png', 'jpg', 'jpeg']
-  fileType: {
-    type: Array as PropType<Array<string>>,
-    default: () => ['doc', 'docx', 'xlsx', 'xls', 'csv', 'ppt', 'pptx', 'txt', 'pdf'],
-  },
+  fileType?: string[];
   // 是否显示提示
-  isShowTip: {
-    type: Boolean,
-    default: true,
-  },
-  theme: {
-    type: String as PropType<'custom' | 'file' | 'file-input' | 'file-flow'>,
-    default: 'file',
-  },
+  isShowTip: boolean;
+  theme: 'custom' | 'file' | 'file-input' | 'file-flow';
   // 模式，id模式返回ossId，url模式返回url链接
-  mode: {
-    type: String as PropType<'id' | 'url'>,
-    default: 'url',
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
+  mode: 'id' | 'url';
+  disabled: boolean;
   // 是否允许重复上传相同文件名的文件
-  allowUploadDuplicateFile: {
-    type: Boolean,
-    default: false,
-  },
+  allowUploadDuplicateFile: boolean;
   // 支持选择文件
-  supportSelectFile: {
-    type: Boolean,
-    default: true,
-  },
-  // 支持手动输入url
-  supportUrl: {
-    type: Boolean,
-    default: true,
-  },
+  supportSelectFile: boolean;
+  // 支持手动输入url，需要mode="url"才有效
+  supportUrl: boolean;
+}
+
+const props = withDefaults(defineProps<FileUploadProps>(), {
+  limit: 5,
+  fileSize: 5,
+  fileType: () => ['doc', 'docx', 'xlsx', 'xls', 'csv', 'ppt', 'pptx', 'txt', 'pdf'],
+  isShowTip: true,
+  theme: 'file',
+  mode: 'url',
+  disabled: false,
+  allowUploadDuplicateFile: false,
+  supportSelectFile: true,
+  supportUrl: true,
 });
 
 const { token } = storeToRefs(useUserStore());
@@ -129,7 +110,7 @@ watch(
     if (val) {
       let temp = 1;
       // 首先将值转为数组
-      let list;
+      let list: any[];
       if (Array.isArray(val)) {
         list = val;
       } else if (props.mode === 'url') {
@@ -195,8 +176,8 @@ watch(
 );
 
 // 拦截默认事件，打开选择窗口
-function handleOpenUpload(event: MouseEvent) {
-  if (props.supportSelectFile || props.supportUrl) {
+function handleOpenUpload(event: PointerEvent) {
+  if (!event.pointerType && (effectiveSupportUrl.value || props.supportSelectFile)) {
     event.preventDefault();
     open.value = true;
   }

@@ -101,7 +101,7 @@ import {
   ZoomInIcon,
   ZoomOutIcon,
 } from 'tdesign-icons-vue-next';
-import { UploadFile } from 'tdesign-vue-next';
+import type { UploadFile } from 'tdesign-vue-next';
 import { getCurrentInstance, reactive, ref } from 'vue';
 import { VueCropper } from 'vue-cropper';
 

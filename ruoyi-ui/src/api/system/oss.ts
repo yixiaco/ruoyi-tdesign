@@ -1,5 +1,5 @@
-import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysOssForm, SysOssQuery, SysOssUploadVo, SysOssVo } from '@/api/system/model/ossModel';
+import type { R, TableDataInfo } from '@/api/model/resultModel';
+import type { SysOssForm, SysOssQuery, SysOssUploadVo, SysOssVo } from '@/api/system/model/ossModel';
 import { ContentTypeEnum } from '@/constants';
 import { request } from '@/utils/request';
 

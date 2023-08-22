@@ -178,7 +178,7 @@
   </t-card>
 </template>
 <script lang="ts" setup>
-import { PropType } from 'vue/dist/vue';
+import type { PropType } from 'vue';
 
 defineOptions({
   name: 'OssCategory',
@@ -192,11 +192,11 @@ import {
   EditIcon,
   SearchIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, SubmitContext, TreeNodeModel, TreeNodeValue } from 'tdesign-vue-next';
+import type { FormInstanceFunctions, FormRule, SubmitContext, TreeNodeModel, TreeNodeValue } from 'tdesign-vue-next';
 import { getCurrentInstance, ref } from 'vue';
 
-import { SysOssCategoryForm, SysOssCategoryVo } from '@/api/system/model/ossCategoryModel';
-import { SysOssVo } from '@/api/system/model/ossModel';
+import type { SysOssCategoryForm, SysOssCategoryVo } from '@/api/system/model/ossCategoryModel';
+import type { SysOssVo } from '@/api/system/model/ossModel';
 import {
   addOssCategory,
   delOssCategory,
@@ -204,6 +204,8 @@ import {
   listOssCategory,
   updateOssCategory,
 } from '@/api/system/ossCategory';
+import type { FileUploadProps } from '@/components/file-upload/index.vue';
+import type { ImageUploadProps } from '@/components/image-upload/index.vue';
 
 import MyOss from './components/myOss.vue';
 
@@ -211,6 +213,12 @@ defineProps({
   suffixes: {
     type: Array as PropType<string[]>,
     default: () => [],
+  },
+  imageUploadProps: {
+    type: Object as PropType<ImageUploadProps>,
+  },
+  fileUploadProps: {
+    type: Object as PropType<FileUploadProps>,
   },
 });
 

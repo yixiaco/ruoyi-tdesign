@@ -1,4 +1,4 @@
-import { FormRule } from 'tdesign-vue-next';
+import type { FormRule } from 'tdesign-vue-next';
 
 /** 字段基本配置对象 */
 export interface FieldConfig<T extends string | number | boolean | Array<string | number> = string> {

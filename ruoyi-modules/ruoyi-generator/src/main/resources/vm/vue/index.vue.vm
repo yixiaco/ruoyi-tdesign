@@ -405,9 +405,18 @@ import {
   SettingIcon,
 } from 'tdesign-icons-vue-next';
 #end
-import { FormInstanceFunctions, FormRule#if($isUseQueryMethod), PageInfo, PrimaryTableCol#end, SubmitContext#if($hasSorting && $isUseQueryMethod), TableSort#end } from 'tdesign-vue-next';
+import type { FormInstanceFunctions, FormRule#if($isUseQueryMethod), PageInfo, PrimaryTableCol#end, SubmitContext#if($hasSorting && $isUseQueryMethod), TableSort#end } from 'tdesign-vue-next';
 import { #if($isUseQueryMethod)computed, #{end}getCurrentInstance, ref } from 'vue';
 
+## 导入对象类型
+#set($importApiModel = [])
+#if((!$isUseBO && $addOrUpdate || (!$isUseQuery && !$isUseBO) || !$isUseVO) && $importApiModel.add(${ClassName}))#end
+#if($isUseBO && ($addOrUpdate  || !$isUseQuery) && $importApiModel.add($bo))#end
+#if($isUseQuery && $isUseQueryMethod && $importApiModel.add(${query}))#end
+#if($isUseVO && ($isUseQueryMethod || $isUseDetailMethod || $isUseEditMethod) && $importApiModel.add(${vo}))#end
+#if(!$importApiModel.isEmpty())
+import type { $StringUtils.join($importApiModel, ", ") } from '@/api/${moduleName}/model/${businessName}Model';
+#end
 ## 导入api
 #set($importApi = [])
 #if($isUseQueryMethod && $importApi.add('list'+${BusinessName}))#end
@@ -417,15 +426,6 @@ import { #if($isUseQueryMethod)computed, #{end}getCurrentInstance, ref } from 'v
 #if($isUseEditMethod && $importApi.add('update'+${BusinessName}))#end
 #if(!$importApi.isEmpty())
 import { $StringUtils.join($importApi, ", ") } from '@/api/${moduleName}/${businessName}';
-#end
-## 导入对象类型
-#set($importApiModel = [])
-#if((!$isUseBO && $addOrUpdate || (!$isUseQuery && !$isUseBO) || !$isUseVO) && $importApiModel.add(${ClassName}))#end
-#if($isUseBO && ($addOrUpdate  || !$isUseQuery) && $importApiModel.add($bo))#end
-#if($isUseQuery && $isUseQueryMethod && $importApiModel.add(${query}))#end
-#if($isUseVO && ($isUseQueryMethod || $isUseDetailMethod || $isUseEditMethod) && $importApiModel.add(${vo}))#end
-#if(!$importApiModel.isEmpty())
-import { $StringUtils.join($importApiModel, ", ") } from '@/api/${moduleName}/model/${businessName}Model';
 #end
 #foreach($column in $columns)
 #if($column.htmlType == "editor")

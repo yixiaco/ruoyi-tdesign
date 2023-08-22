@@ -170,11 +170,11 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormRule, PageInfo, PrimaryTableCol, TableSort } from 'tdesign-vue-next';
+import type { FormRule, PageInfo, PrimaryTableCol, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref, toRefs } from 'vue';
 
 import { getPreviewListResourceConfig } from '@/api/system/config';
-import { SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
+import type { SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
 import { delOss, listOss } from '@/api/system/oss';
 import FileUpload from '@/components/file-upload/index.vue';
 import ImagePreview from '@/components/image-preview/index.vue';

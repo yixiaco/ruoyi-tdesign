@@ -1,6 +1,6 @@
+import type { R } from '@/api/model/resultModel';
+import type { SysOssCategoryForm, SysOssCategoryQuery, SysOssCategoryVo } from '@/api/system/model/ossCategoryModel';
 import { request } from '@/utils/request';
-import { R } from '@/api/model/resultModel';
-import { SysOssCategoryForm, SysOssCategoryQuery, SysOssCategoryVo } from '@/api/system/model/ossCategoryModel';
 
 // 查询OSS分类列表
 export function listOssCategory(query?: SysOssCategoryQuery) {

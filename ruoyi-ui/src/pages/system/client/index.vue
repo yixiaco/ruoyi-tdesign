@@ -245,11 +245,18 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext, TableSort } from 'tdesign-vue-next';
+import type {
+  FormInstanceFunctions,
+  FormRule,
+  PageInfo,
+  PrimaryTableCol,
+  SubmitContext,
+  TableSort,
+} from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { addClient, changeStatus, delClient, getClient, listClient, updateClient } from '@/api/system/client';
-import { SysClientForm, SysClientQuery, SysClientVo } from '@/api/system/model/clientModel';
+import type { SysClientForm, SysClientQuery, SysClientVo } from '@/api/system/model/clientModel';
 import { handleChangeStatus } from '@/utils/ruoyi';
 
 const { proxy } = getCurrentInstance();

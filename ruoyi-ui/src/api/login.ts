@@ -1,5 +1,5 @@
-import { CaptchaImage, LoginData, LoginTenantVo, LoginVo, RegisterBody, UserInfo } from '@/api/model/loginModel';
-import { R } from '@/api/model/resultModel';
+import type { CaptchaImage, LoginData, LoginTenantVo, LoginVo, RegisterBody, UserInfo } from '@/api/model/loginModel';
+import type { R } from '@/api/model/resultModel';
 import { request } from '@/utils/request';
 
 // pc端固定客户端授权id

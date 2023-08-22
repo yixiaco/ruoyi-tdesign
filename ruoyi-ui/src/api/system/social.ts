@@ -1,5 +1,5 @@
-import { R } from '@/api/model/resultModel';
-import { SysSocialVo } from '@/api/system/model/socialModel';
+import type { R } from '@/api/model/resultModel';
+import type { SysSocialVo } from '@/api/system/model/socialModel';
 import { request } from '@/utils/request';
 
 // 绑定账号

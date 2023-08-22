@@ -457,7 +457,7 @@ import {
   SettingIcon,
   UploadIcon,
 } from 'tdesign-icons-vue-next';
-import {
+import type {
   FormInstanceFunctions,
   FormRule,
   PageInfo,
@@ -471,9 +471,9 @@ import {
 import { computed, createVNode, getCurrentInstance, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { SysPostVo } from '@/api/system/model/postModel';
-import { SysRoleVo } from '@/api/system/model/roleModel';
-import { SysUserForm, SysUserQuery, SysUserVo } from '@/api/system/model/userModel';
+import type { SysPostVo } from '@/api/system/model/postModel';
+import type { SysRoleVo } from '@/api/system/model/roleModel';
+import type { SysUserForm, SysUserQuery, SysUserVo } from '@/api/system/model/userModel';
 import {
   addUser,
   changeUserStatus,

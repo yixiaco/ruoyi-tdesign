@@ -1,4 +1,4 @@
-import { BaseEntity } from '@/api/model/resultModel';
+import type { BaseEntity } from '@/api/model/resultModel';
 
 /** 操作日志记录业务对象 */
 export interface SysOperLogBo extends BaseEntity {

@@ -214,7 +214,7 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import {
+import type {
   FormInstanceFunctions,
   FormRule,
   PageInfo,
@@ -225,9 +225,13 @@ import {
 } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
-import { TreeModel } from '@/api/model/resultModel';
+import type { TreeModel } from '@/api/model/resultModel';
 import { tenantPackageMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
-import { SysTenantPackageForm, SysTenantPackageQuery, SysTenantPackageVo } from '@/api/system/model/tenantPackageModel';
+import type {
+  SysTenantPackageForm,
+  SysTenantPackageQuery,
+  SysTenantPackageVo,
+} from '@/api/system/model/tenantPackageModel';
 import {
   addTenantPackage,
   changePackageStatus,

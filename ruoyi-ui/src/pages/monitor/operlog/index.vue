@@ -177,10 +177,10 @@ defineOptions({
   name: 'Operlog',
 });
 import { BrowseIcon, DeleteIcon, DownloadIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { PageInfo, PrimaryTableCol, TableSort } from 'tdesign-vue-next';
+import type { PageInfo, PrimaryTableCol, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
-import { SysOperLogBo, SysOperLogVo } from '@/api/monitor/model/operlogModel';
+import type { SysOperLogBo, SysOperLogVo } from '@/api/monitor/model/operlogModel';
 import { cleanOperlog, delOperlog, list } from '@/api/monitor/operlog';
 
 const { proxy } = getCurrentInstance();

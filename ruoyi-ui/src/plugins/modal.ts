@@ -1,18 +1,13 @@
-import {
+import type {
   DialogInstance,
   DialogOptions,
-  DialogPlugin,
-  Form,
-  FormItem,
-  Input,
   LoadingInstance,
-  LoadingPlugin,
-  MessagePlugin,
-  NotifyPlugin,
+  MessageInfoOptions,
+  MessageInstance,
   ValidateResultContext,
 } from 'tdesign-vue-next';
-import { TNode } from 'tdesign-vue-next/es/common';
-import { MessageInfoOptions, MessageInstance } from 'tdesign-vue-next/es/message/type';
+import { DialogPlugin, Form, FormItem, Input, LoadingPlugin, MessagePlugin, NotifyPlugin } from 'tdesign-vue-next';
+import type { TNode } from 'tdesign-vue-next/es/common';
 import { h, reactive, ref } from 'vue';
 
 let loadingInstance: LoadingInstance;

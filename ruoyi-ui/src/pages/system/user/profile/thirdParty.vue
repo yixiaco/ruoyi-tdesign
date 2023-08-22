@@ -42,10 +42,10 @@
 
 <script lang="ts" setup>
 import { LogoGithubFilledIcon, LogoQqIcon, LogoWechatIcon } from 'tdesign-icons-vue-next';
-import { PrimaryTableCol } from 'tdesign-vue-next';
+import type { PrimaryTableCol } from 'tdesign-vue-next';
 import { getCurrentInstance, onMounted, ref } from 'vue';
 
-import { SysSocialVo } from '@/api/system/model/socialModel';
+import type { SysSocialVo } from '@/api/system/model/socialModel';
 import { authBinding, authUnlock, getAuthList } from '@/api/system/social';
 import GiteeSvg from '@/assets/icons/svg/gitee.svg?component';
 import MaxKey from '@/assets/icons/svg/maxkey.svg?component';

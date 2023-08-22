@@ -157,12 +157,12 @@ import {
   SettingIcon,
   UploadIcon,
 } from 'tdesign-icons-vue-next';
-import { PageInfo, PrimaryTableCol, SelectOptions, TableSort } from 'tdesign-vue-next';
+import type { PageInfo, PrimaryTableCol, SelectOptions, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, onActivated, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { delTable, genCode, getDataNames, listTable, previewTable, synchDb } from '@/api/tool/gen';
-import { GenTableQuery, GenTableVo } from '@/api/tool/model/genModel';
+import type { GenTableQuery, GenTableVo } from '@/api/tool/model/genModel';
 import GenPreview from '@/pages/tool/gen/components/preview.vue';
 import router from '@/router';
 

@@ -1,5 +1,5 @@
-import { R, TableDataInfo, TreeModel } from '@/api/model/resultModel';
-import {
+import type { R, TableDataInfo, TreeModel } from '@/api/model/resultModel';
+import type {
   AvatarVo,
   ProfileVo,
   SysUserForm,

@@ -1,5 +1,5 @@
-import { R } from '@/api/model/resultModel';
-import { SysDeptForm, SysDeptQuery, SysDeptVo } from '@/api/system/model/deptModel';
+import type { R } from '@/api/model/resultModel';
+import type { SysDeptForm, SysDeptQuery, SysDeptVo } from '@/api/system/model/deptModel';
 import { request } from '@/utils/request';
 
 // 查询部门列表

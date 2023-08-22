@@ -17,7 +17,7 @@
 </template>
 
 <script lang="ts" setup>
-import { FormRule, SubmitContext } from 'tdesign-vue-next';
+import type { FormRule, SubmitContext } from 'tdesign-vue-next';
 import { getCurrentInstance, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 

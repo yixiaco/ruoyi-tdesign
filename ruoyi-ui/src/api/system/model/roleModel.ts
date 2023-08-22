@@ -1,4 +1,4 @@
-import { BaseEntity, TreeModel } from '@/api/model/resultModel';
+import type { BaseEntity, TreeModel } from '@/api/model/resultModel';
 
 /**
  * 角色信息查询对象

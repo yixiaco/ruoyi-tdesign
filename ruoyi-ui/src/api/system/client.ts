@@ -1,5 +1,5 @@
-import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysClientForm, SysClientQuery, SysClientVo } from '@/api/system/model/clientModel';
+import type { R, TableDataInfo } from '@/api/model/resultModel';
+import type { SysClientForm, SysClientQuery, SysClientVo } from '@/api/system/model/clientModel';
 import { request } from '@/utils/request';
 
 // 查询系统授权列表

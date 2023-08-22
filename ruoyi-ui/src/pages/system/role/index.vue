@@ -281,7 +281,7 @@ import {
   SettingIcon,
   UserIcon,
 } from 'tdesign-icons-vue-next';
-import {
+import type {
   FormInstanceFunctions,
   FormRule,
   PageInfo,
@@ -294,9 +294,9 @@ import {
 import { computed, getCurrentInstance, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { TreeModel } from '@/api/model/resultModel';
+import type { TreeModel } from '@/api/model/resultModel';
 import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
-import { SysRoleForm, SysRoleQuery, SysRoleVo } from '@/api/system/model/roleModel';
+import type { SysRoleForm, SysRoleQuery, SysRoleVo } from '@/api/system/model/roleModel';
 import {
   addRole,
   changeRoleStatus,

@@ -43,12 +43,12 @@
 defineOptions({
   name: 'AuthRole',
 });
-import { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
+import type { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, nextTick, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { SysRoleVo } from '@/api/system/model/roleModel';
-import { SysUserVo } from '@/api/system/model/userModel';
+import type { SysRoleVo } from '@/api/system/model/roleModel';
+import type { SysUserVo } from '@/api/system/model/userModel';
 import { getAuthRole, updateAuthRole } from '@/api/system/user';
 import { useTabsRouterStore } from '@/store';
 

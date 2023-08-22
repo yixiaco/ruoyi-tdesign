@@ -233,11 +233,12 @@
 
 <script lang="ts" setup>
 import { ChevronDownIcon, HelpCircleFilledIcon } from 'tdesign-icons-vue-next';
-import { getCurrentInstance, PropType, ref, toRefs } from 'vue';
+import type { PropType } from 'vue';
+import { getCurrentInstance, ref, toRefs } from 'vue';
 
 import { listMenu } from '@/api/system/menu';
-import { SysMenuVo } from '@/api/system/model/menuModel';
-import { GenTableVo } from '@/api/tool/model/genModel';
+import type { SysMenuVo } from '@/api/system/model/menuModel';
+import type { GenTableVo } from '@/api/tool/model/genModel';
 
 const menuOptions = ref<SysMenuVo[]>([]);
 const { proxy } = getCurrentInstance();

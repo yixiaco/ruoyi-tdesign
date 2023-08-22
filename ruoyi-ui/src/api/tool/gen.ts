@@ -1,5 +1,5 @@
-import { R, TableDataInfo } from '@/api/model/resultModel';
-import { GenTableForm, GenTableInfo, GenTableQuery, GenTableVo } from '@/api/tool/model/genModel';
+import type { R, TableDataInfo } from '@/api/model/resultModel';
+import type { GenTableForm, GenTableInfo, GenTableQuery, GenTableVo } from '@/api/tool/model/genModel';
 import { request } from '@/utils/request';
 
 // 查询生成表数据

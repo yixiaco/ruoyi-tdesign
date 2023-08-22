@@ -289,12 +289,13 @@ import {
   SearchIcon,
   SwapIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, SubmitContext } from 'tdesign-vue-next';
-import { computed, getCurrentInstance, PropType, ref, watch } from 'vue';
+import type { FormInstanceFunctions, FormRule, PageInfo, SubmitContext } from 'tdesign-vue-next';
+import type { PropType } from 'vue';
+import { computed, getCurrentInstance, ref, watch } from 'vue';
 import useClipboard from 'vue-clipboard3';
 
-import { SysOssCategoryVo } from '@/api/system/model/ossCategoryModel';
-import { SysOssActiveVo, SysOssForm, SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
+import type { SysOssCategoryVo } from '@/api/system/model/ossCategoryModel';
+import type { SysOssActiveVo, SysOssForm, SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
 import { delOss, getOss, listMyOss, moveOss, updateOss } from '@/api/system/oss';
 import { listOssCategory } from '@/api/system/ossCategory';
 import ArchiveSvg from '@/assets/file-type/archive.svg?component';

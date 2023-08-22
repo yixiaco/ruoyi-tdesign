@@ -289,11 +289,11 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
+import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
-import { SysTenantForm, SysTenantQuery, SysTenantVo } from '@/api/system/model/tenantModel';
-import { SysTenantPackageVo } from '@/api/system/model/tenantPackageModel';
+import type { SysTenantForm, SysTenantQuery, SysTenantVo } from '@/api/system/model/tenantModel';
+import type { SysTenantPackageVo } from '@/api/system/model/tenantPackageModel';
 import {
   addTenant,
   changeTenantStatus,

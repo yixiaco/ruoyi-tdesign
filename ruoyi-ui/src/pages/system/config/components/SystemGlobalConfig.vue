@@ -40,7 +40,7 @@
 defineOptions({
   name: 'SystemGlobalConfig',
 });
-import { FormRule, SubmitContext } from 'tdesign-vue-next';
+import type { FormRule, SubmitContext } from 'tdesign-vue-next';
 import { getCurrentInstance, ref, watch } from 'vue';
 
 import { getConfigByKeys, refreshCache, updateConfigMaps } from '@/api/system/config';

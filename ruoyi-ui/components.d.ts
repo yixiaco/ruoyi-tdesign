@@ -51,6 +51,7 @@ declare module 'vue' {
     TFormItem: typeof import('tdesign-vue-next')['FormItem']
     THeader: typeof import('tdesign-vue-next')['Header']
     THeadMenu: typeof import('tdesign-vue-next')['HeadMenu']
+    THighlightOption: typeof import('tdesign-vue-next')['HighlightOption']
     Thumbnail: typeof import('./src/components/thumbnail/index.vue')['default']
     TImage: typeof import('tdesign-vue-next')['Image']
     TImageViewer: typeof import('tdesign-vue-next')['ImageViewer']

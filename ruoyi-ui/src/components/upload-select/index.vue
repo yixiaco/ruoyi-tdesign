@@ -43,16 +43,18 @@
   </t-dialog>
 </template>
 <script setup lang="ts">
-import { FormInstanceFunctions, FormRule, SubmitContext } from 'tdesign-vue-next';
-import { computed, getCurrentInstance, PropType, ref, watch } from 'vue';
+import type { FormInstanceFunctions, FormRule, SubmitContext } from 'tdesign-vue-next';
+import type { PropType } from 'vue';
+import { computed, getCurrentInstance, ref, watch } from 'vue';
 
-import { SysOssVo } from '@/api/system/model/ossModel';
+import type { SysOssVo } from '@/api/system/model/ossModel';
 import OssCategory from '@/pages/system/ossCategory/index.vue';
 
 export interface SelectFile {
   url: string;
   name: string;
   ossId?: number;
+  size?: number;
 }
 
 defineOptions({
@@ -133,6 +135,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
         url: value.url,
         name: value.originalName,
         ossId: value.ossId,
+        size: value.size,
       }));
       const result = props.onSubmit.call(this, values);
       if (result) {

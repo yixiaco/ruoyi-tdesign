@@ -103,13 +103,13 @@
 defineOptions({
   name: 'Cache',
 });
+import type { ECharts } from 'echarts';
 import * as echarts from 'echarts';
-import { ECharts } from 'echarts';
 import { ChartPieIcon, DashboardIcon, DesktopIcon } from 'tdesign-icons-vue-next';
 import { getCurrentInstance, onDeactivated, onMounted, ref } from 'vue';
 
 import { getCache } from '@/api/monitor/cache';
-import { SysCacheInfo } from '@/api/monitor/model/cacheModel';
+import type { SysCacheInfo } from '@/api/monitor/model/cacheModel';
 
 const cache = ref(<SysCacheInfo>{});
 const commandstats = ref(null);

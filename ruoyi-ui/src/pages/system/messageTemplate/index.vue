@@ -421,7 +421,14 @@ import {
   SettingIcon,
   SwapIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext, TableSort } from 'tdesign-vue-next';
+import type {
+  FormInstanceFunctions,
+  FormRule,
+  PageInfo,
+  PrimaryTableCol,
+  SubmitContext,
+  TableSort,
+} from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import {
@@ -435,9 +442,9 @@ import {
   sendMessageTest,
   updateMessageTemplate,
 } from '@/api/system/messageTemplate';
-import { SysMessageConfigVo } from '@/api/system/model/messageConfigModel';
-import { SysMessageKeyVo } from '@/api/system/model/messageKeyModel';
-import {
+import type { SysMessageConfigVo } from '@/api/system/model/messageConfigModel';
+import type { SysMessageKeyVo } from '@/api/system/model/messageKeyModel';
+import type {
   SysMessageTemplateForm,
   SysMessageTemplateQuery,
   SysMessageTemplateTest,

@@ -54,7 +54,7 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia';
 import { SearchIcon } from 'tdesign-icons-vue-next';
-import { HighlightOption as THighlightOption } from 'tdesign-vue-next';
+import type { HighlightOption as THighlightOption } from 'tdesign-vue-next';
 import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 

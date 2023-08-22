@@ -1,5 +1,5 @@
-import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysDictDataForm, SysDictDataQuery, SysDictDataVo } from '@/api/system/model/dictModel';
+import type { R, TableDataInfo } from '@/api/model/resultModel';
+import type { SysDictDataForm, SysDictDataQuery, SysDictDataVo } from '@/api/system/model/dictModel';
 import { request } from '@/utils/request';
 
 // 查询字典数据列表

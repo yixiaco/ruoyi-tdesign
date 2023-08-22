@@ -1,5 +1,5 @@
-import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysConfigForm, SysConfigVo } from '@/api/system/model/configModel';
+import type { R, TableDataInfo } from '@/api/model/resultModel';
+import type { SysConfigForm, SysConfigVo } from '@/api/system/model/configModel';
 import { request } from '@/utils/request';
 
 // 查询参数列表
