@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
-import { RouteRecordRaw } from 'vue-router';
+import type { RouteRecordRaw } from 'vue-router';
 
 import { getRouters } from '@/api/menu';
 import InnerLink from '@/layouts/components/InnerLink.vue';

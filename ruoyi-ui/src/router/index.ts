@@ -1,5 +1,6 @@
 import uniq from 'lodash/uniq';
-import { createRouter, createWebHistory, RouteRecordRaw, useRoute } from 'vue-router';
+import type { RouteRecordRaw } from 'vue-router';
+import { createRouter, createWebHistory, useRoute } from 'vue-router';
 
 import Layout from '@/layouts/index.vue';
 

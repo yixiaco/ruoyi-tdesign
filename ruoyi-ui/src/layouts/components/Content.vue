@@ -15,7 +15,8 @@ import isBoolean from 'lodash/isBoolean';
 import isUndefined from 'lodash/isUndefined';
 import type { ComputedRef } from 'vue';
 import { computed } from 'vue';
-import { RouteLocationNormalizedLoaded, useRoute } from 'vue-router';
+import type { RouteLocationNormalizedLoaded } from 'vue-router';
+import { useRoute } from 'vue-router';
 
 import FramePage from '@/layouts/frame/index.vue';
 import { useTabsRouterStore } from '@/store';

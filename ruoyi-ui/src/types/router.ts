@@ -1,4 +1,4 @@
-import { RouteLocationNormalizedLoaded } from 'vue-router';
+import type { RouteLocationNormalizedLoaded } from 'vue-router';
 
 declare module 'vue-router' {
   interface RouteMeta {

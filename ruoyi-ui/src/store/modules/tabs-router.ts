@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia';
-import { RouteLocationNormalizedLoaded, Router } from 'vue-router';
+import type { RouteLocationNormalizedLoaded, Router } from 'vue-router';
 
 import { store } from '@/store';
 import type { TRouterInfo, TTabRouterType } from '@/types/interface';
