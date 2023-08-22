@@ -1,5 +1,6 @@
 package org.dromara.system.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
@@ -67,14 +68,21 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
         if (bo.getParentId().equals(0L)) {
             category.setCategoryPath(ROOT_PATH + category.getCategoryName());
             category.setLevel(0);
+            category.setParentId(0L);
         } else {
             SysOssCategory parent = getById(bo.getParentId());
             if (parent == null) {
                 throw new ServiceException("父分类不存在！");
             }
+            // 检查父类是否是当前分类或子分类下
+            if ((parent.getCategoryPath() + ROOT_PATH).startsWith(category.getCategoryPath() + ROOT_PATH)) {
+                throw new ServiceException("父分类不能为当前分类或子分类下");
+            }
+            category.setParentId(parent.getOssCategoryId());
             category.setCategoryPath(parent.getCategoryPath() + ROOT_PATH + category.getCategoryName());
             category.setLevel(parent.getLevel() + 1);
         }
+        checkRepeat(category);
         return save(category);
     }
 
@@ -88,24 +96,42 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateByBo(SysOssCategoryBo bo) {
         SysOssCategory category = getById(bo.getOssCategoryId());
-        int level = category.getLevel();
-        if (!category.getOssCategoryId().equals(bo.getOssCategoryId()) || !category.getCategoryName().equals(bo.getCategoryName())) {
-            // 获取子分类，更新子分类的路径
-            List<SysOssCategory> children = lambdaQuery().like(SysOssCategory::getCategoryPath, category.getCategoryPath()).list();
-            int levelDiff = 0;
-            // TODO: 更新路径、层级
+        if (!category.getParentId().equals(bo.getParentId()) || !category.getCategoryName().equals(bo.getCategoryName())) {
+            int level = category.getLevel();
+            String path = category.getCategoryPath();
+            int levelDiff;
             if (bo.getParentId().equals(0L)) {
                 levelDiff = category.getLevel();
                 category.setCategoryPath(ROOT_PATH + category.getCategoryName());
                 category.setLevel(0);
+                category.setParentId(0L);
             } else {
                 SysOssCategory parent = getById(bo.getParentId());
                 if (parent == null) {
                     throw new ServiceException("父分类不存在！");
                 }
-                levelDiff = parent.getLevel() - level;
+                // 检查父类是否是当前分类或子分类下
+                if ((parent.getCategoryPath() + ROOT_PATH).startsWith(category.getCategoryPath() + ROOT_PATH)) {
+                    throw new ServiceException("父分类不能为当前分类或子分类下");
+                }
+                levelDiff = level - (parent.getLevel() + 1);
+                category.setParentId(parent.getOssCategoryId());
                 category.setCategoryPath(parent.getCategoryPath() + ROOT_PATH + category.getCategoryName());
                 category.setLevel(parent.getLevel() + 1);
+            }
+            // 检查分类名称是否重复
+            checkRepeat(category);
+            // 获取子分类，更新子分类的路径
+            List<SysOssCategory> children = lambdaQuery()
+                .likeRight(SysOssCategory::getCategoryPath, path + ROOT_PATH)
+                .select(SysOssCategory::getOssCategoryId, SysOssCategory::getCategoryPath, SysOssCategory::getLevel)
+                .list();
+            for (SysOssCategory child : children) {
+                child.setLevel(child.getLevel() - levelDiff);
+                child.setCategoryPath(child.getCategoryPath().replaceFirst(path, category.getCategoryPath()));
+            }
+            if (CollUtil.isNotEmpty(children)) {
+                updateBatchById(children);
             }
         }
         // 检查不能设置父分类id为子分类id
@@ -130,5 +156,20 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
             throw new ServiceException("请先删除子分类");
         }
         return removeByIds(ids);
+    }
+
+    /**
+     * 检查是否包含相同路径的分类
+     *
+     * @param category 分类对象
+     */
+    private void checkRepeat(SysOssCategory category) {
+        boolean exists = lambdaQuery()
+            .ne(category.getOssCategoryId() != null, SysOssCategory::getOssCategoryId, category.getOssCategoryId())
+            .eq(SysOssCategory::getCategoryPath, category.getCategoryPath())
+            .exists();
+        if (exists) {
+            throw new ServiceException("此位置已包含同名分类");
+        }
     }
 }

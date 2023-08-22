@@ -156,6 +156,12 @@
             <t-col :span="6">
               <t-form-item label="父级分类">{{ form.parentCategoryName }}</t-form-item>
             </t-col>
+            <t-col :span="12">
+              <t-form-item label="分类路径">{{ form.categoryPath }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="层级">{{ form.level }}</t-form-item>
+            </t-col>
             <t-col :span="6">
               <t-form-item label="显示顺序">{{ form.orderNum }}</t-form-item>
             </t-col>
@@ -224,7 +230,10 @@ const categoryName = ref('');
 const categoryActived = ref<number[]>([]);
 
 const rules = ref<Record<string, Array<FormRule>>>({
-  categoryName: [{ required: true, message: '分类名称不能为空', trigger: 'blur' }],
+  categoryName: [
+    { required: true, message: '分类名称不能为空', trigger: 'blur' },
+    { pattern: /^[^/%_*]*$/, message: '分类名不能包含下列任何字符：/%_*' },
+  ],
   parentId: [{ required: true, message: '父级分类不能为空', trigger: 'blur' }],
   orderNum: [{ required: true, message: '显示顺序不能为空', trigger: 'blur' }],
 });
@@ -261,7 +270,7 @@ function handleCategoryAdd(row?: SysOssCategoryVo, orderNum?: number) {
     form.value.orderNum = orderNum;
   }
   open.value = true;
-  title.value = '添加OSS分类';
+  title.value = '添加文件分类';
 }
 
 /** 分类详情按钮操作 */
@@ -281,7 +290,7 @@ async function handleCategoryUpdate(row?: SysOssCategoryVo) {
   buttonLoading.value = true;
   reset();
   open.value = true;
-  title.value = '修改OSS分类';
+  title.value = '修改文件分类';
   await getCategoryOptions();
   if (row != null) {
     form.value.parentId = row.ossCategoryId;
@@ -358,6 +367,7 @@ function handleCategoryDelete(row: SysOssCategoryVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delOssCategory(row.ossCategoryId)
       .then(() => {
+        categoryActived.value = categoryActived.value.filter((value) => value !== row.ossCategoryId);
         getCategoryTree();
         proxy.$modal.msgSuccess('删除成功');
       })

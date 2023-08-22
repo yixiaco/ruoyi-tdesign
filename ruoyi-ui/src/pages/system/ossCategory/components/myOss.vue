@@ -221,6 +221,9 @@
             </t-space>
           </t-space>
         </t-form-item>
+        <t-form-item label="分类路径" name="contentType">
+          {{ form.categoryPath ?? '/' }}
+        </t-form-item>
         <t-form-item label="文件类型" name="contentType" style="word-break: break-all">
           {{ form.contentType }}
         </t-form-item>
@@ -383,7 +386,10 @@ const fileType = {
 };
 
 const rules = ref<Record<string, Array<FormRule>>>({
-  originalName: [{ required: true, message: '原名不能为空', trigger: 'blur' }],
+  originalName: [
+    { required: true, message: '原名不能为空', trigger: 'blur' },
+    { pattern: /^[^.][^\\/<>:?"|*]*$/, message: '文件名不能包含下列任何字符：\\/<>:?"|*' },
+  ],
   ossCategoryId: [{ required: true, message: '分类不能为空', trigger: 'blur' }],
   isLock: [{ required: true, message: '是否锁定状态不能为空', trigger: 'blur' }],
 });

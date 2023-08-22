@@ -8,7 +8,7 @@
     </resultMap>
 
     <sql id="selectSysOssVo">
-        select so.oss_id, so.tenant_id, so.file_name, so.original_name, so.file_suffix, so.url, so.size, so.content_type, so.user_type, so.is_lock, so.is_list, so.create_dept, so.create_time, so.create_by, so.update_time, so.update_by, so.service from sys_oss so
+        select so.oss_id, so.tenant_id, so.file_name, so.original_name, so.file_suffix, so.url, so.size, so.content_type, so.oss_category_id, so.user_type, so.is_lock, so.is_list, so.create_dept, so.create_time, so.create_by, so.update_time, so.update_by, so.service from sys_oss so
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysOssQuery" resultMap="SysOssResultVo">
         select so.oss_id,
@@ -19,6 +19,7 @@
                so.url,
                so.size,
                so.content_type,
+               so.oss_category_id,
                so.user_type,
                so.is_lock,
                so.is_list,
@@ -51,6 +52,30 @@
             </foreach>
         </where>
         order by create_time desc
+    </select>
+    <select id="queryById" resultMap="SysOssResultVo">
+        select so.oss_id,
+               so.tenant_id,
+               so.file_name,
+               so.original_name,
+               so.file_suffix,
+               so.url,
+               so.size,
+               so.content_type,
+               so.oss_category_id,
+               so.user_type,
+               so.is_lock,
+               so.is_list,
+               so.create_dept,
+               so.create_time,
+               so.create_by,
+               so.update_time,
+               so.update_by,
+               so.service,
+               (select su.user_name from sys_user su where so.create_by = su.user_id) as create_by_name,
+               (select soc.category_path from sys_oss_category soc where soc.oss_category_id = so.oss_category_id) as category_path
+        from sys_oss so
+        where oss_id = #{ossId}
     </select>
 
 

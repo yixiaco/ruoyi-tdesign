@@ -40,6 +40,10 @@ export interface SysOssCategoryVo {
   parentId?: number;
   /** 父级分类名称 */
   parentCategoryName?: string;
+  /** 分类路径 */
+  categoryPath?: string;
+  /** 层级 */
+  level?: number;
   /** 显示顺序 */
   orderNum?: number;
   /** 用户类型 */

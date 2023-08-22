@@ -10,7 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysOssCategoryVo">
-        select soc.oss_category_id, soc.category_name, soc.parent_id, soc.order_num, soc.user_type, soc.create_by, soc.update_time, soc.create_time from sys_oss_category soc
+        select soc.oss_category_id, soc.category_name, soc.parent_id, soc.category_path, soc.level, soc.order_num, soc.user_type, soc.create_by, soc.update_time, soc.create_time from sys_oss_category soc
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysOssCategoryQuery" resultMap="SysOssCategoryResultVo">
         <include refid="selectSysOssCategoryVo"/>
@@ -25,6 +25,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select soc.oss_category_id,
                soc.category_name,
                soc.parent_id,
+               soc.category_path,
+               soc.level,
                soc.order_num,
                soc.user_type,
                soc.create_by,

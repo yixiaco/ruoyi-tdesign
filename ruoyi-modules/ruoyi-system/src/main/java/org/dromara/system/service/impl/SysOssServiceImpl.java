@@ -62,7 +62,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
      */
     @Override
     public SysOssVo queryById(Long ossId) {
-        return baseMapper.selectVoById(ossId);
+        return baseMapper.queryById(ossId);
     }
 
     /**

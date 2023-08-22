@@ -33,7 +33,7 @@ public class SysOssCategoryBo extends BaseEntity {
      * 分类名称
      */
     @NotBlank(message = "分类名称不能为空", groups = {AddGroup.class, EditGroup.class})
-    @Pattern(regexp = "^[^/]*$", message = "分类名称不能含有\"/\"符号")
+    @Pattern(regexp = "^[^/%_*]*$", message = "分类名不能包含下列任何字符：/%_*")
     private String categoryName;
 
     /**

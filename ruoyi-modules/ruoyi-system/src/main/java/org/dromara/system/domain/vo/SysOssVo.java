@@ -75,6 +75,12 @@ public class SysOssVo implements Serializable {
     private Long ossCategoryId;
 
     /**
+     * 分类路径
+     */
+    @ExcelProperty(value = "分类路径")
+    private String categoryPath;
+
+    /**
      * 用户类型
      */
     @ExcelProperty(value = "用户类型")

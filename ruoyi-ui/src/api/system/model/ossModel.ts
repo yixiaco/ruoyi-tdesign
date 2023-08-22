@@ -64,6 +64,8 @@ export interface SysOssVo {
   contentType?: string;
   /** 分类id */
   ossCategoryId?: number;
+  /** 分类路径 */
+  categoryPath?: string;
   /** 用户类型 */
   userType?: string;
   /** 是否锁定状态 */
