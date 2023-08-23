@@ -136,7 +136,6 @@
       :close-on-overlay-click="false"
       :header="uploadTitle"
       width="700px"
-      attach="body"
       @confirm="submitUploadForm"
     >
       <t-form :data="uploadForm" label-align="right" label-width="80px">
@@ -177,7 +176,6 @@
       :close-on-overlay-click="false"
       :header="title"
       width="550px"
-      attach="body"
       :confirm-btn="{
         content: '确 定',
         theme: 'primary',
@@ -254,7 +252,6 @@
       :close-on-overlay-click="false"
       :header="title"
       width="500px"
-      attach="body"
       :confirm-btn="{
         content: '确 定',
         theme: 'primary',

@@ -13,7 +13,18 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         select soc.oss_category_id, soc.category_name, soc.parent_id, soc.category_path, soc.level, soc.order_num, soc.user_type, soc.create_by, soc.update_time, soc.create_time from sys_oss_category soc
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysOssCategoryQuery" resultMap="SysOssCategoryResultVo">
-        <include refid="selectSysOssCategoryVo"/>
+        select soc.oss_category_id,
+               soc.category_name,
+               soc.parent_id,
+               soc.category_path,
+               soc.level,
+               soc.order_num,
+               soc.user_type,
+               soc.create_by,
+               soc.update_time,
+               soc.create_time,
+               (select count(*) from sys_oss so where so.oss_category_id = soc.oss_category_id) as file_count
+        from sys_oss_category soc
         <where>
             <if test="categoryName != null and categoryName != ''"> and soc.category_name like concat('%', #{categoryName}, '%')</if>
             <if test="userType != null and userType != ''"> and soc.user_type = #{userType}</if>
@@ -32,7 +43,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                soc.create_by,
                soc.update_time,
                soc.create_time,
-               (select category_name from sys_oss_category soc1 where soc1.oss_category_id = soc.parent_id) as parent_category_name
+               (select category_name from sys_oss_category soc1 where soc1.oss_category_id = soc.parent_id) as parent_category_name,
+               (select count(*) from sys_oss so where so.oss_category_id = soc.oss_category_id) as file_count
         from sys_oss_category soc
         where oss_category_id = #{ossCategoryId}
     </select>

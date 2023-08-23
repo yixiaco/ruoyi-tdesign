@@ -54,6 +54,8 @@ export interface SysOssCategoryVo {
   updateTime?: any;
   /** 创建时间 */
   createTime?: any;
+  /** 文件数量 */
+  fileCount?: number;
   /** 子OSS分类 */
   children?: SysOssCategoryVo[];
 }

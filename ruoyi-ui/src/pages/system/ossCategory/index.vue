@@ -26,6 +26,7 @@
               allow-fold-node-on-filter
               transition
             >
+              <template #label="{ node }"> {{ node.data.categoryName }} ({{ node.data.fileCount ?? 0 }})</template>
               <template #empty>
                 <t-link
                   v-hasPermi="['system:ossCategory:add']"
@@ -108,7 +109,6 @@
       :close-on-overlay-click="false"
       :header="title"
       width="500px"
-      attach="body"
       :confirm-btn="{
         content: '确 定',
         theme: 'primary',
@@ -146,7 +146,7 @@
     </t-dialog>
 
     <!-- OSS分类详情 -->
-    <t-dialog v-model:visible="openView" header="OSS分类详情" width="700px" attach="body" :footer="false">
+    <t-dialog v-model:visible="openView" header="OSS分类详情" width="700px" :footer="false">
       <t-loading :loading="openViewLoading">
         <t-form label-align="right" colon label-width="calc(5em + 24px)">
           <t-row :gutter="[0, 20]">
@@ -155,6 +155,9 @@
             </t-col>
             <t-col :span="6">
               <t-form-item label="分类名称">{{ form.categoryName }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="文件数量">{{ form.fileCount }} 个文件</t-form-item>
             </t-col>
             <t-col :span="6">
               <t-form-item label="父级分类id">{{ form.parentId }}</t-form-item>

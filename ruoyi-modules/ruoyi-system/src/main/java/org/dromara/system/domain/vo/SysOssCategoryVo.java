@@ -91,4 +91,10 @@ public class SysOssCategoryVo implements Serializable {
     @ExcelProperty(value = "创建时间")
     private Date createTime;
 
+    /**
+     * 文件数量
+     */
+    @ExcelProperty(value = "文件数量")
+    private Integer fileCount;
+
 }

@@ -176,6 +176,7 @@ export default {
       confirmBtn: btn,
       cancelBtn: '取消',
       theme: 'default',
+      zIndex: 99999,
       onClose: () => {
         if (onClose != null) {
           onClose();
