@@ -1,9 +1,13 @@
 package ${packageName}.domain;
 
+#if(!$isUseQuery && !$isUseBO)
 import org.dromara.common.mybatis.core.domain.BaseEntity;
+#end
 import com.baomidou.mybatisplus.annotation.*;
 import lombok.Data;
+#if(!$isUseQuery && !$isUseBO)
 import lombok.EqualsAndHashCode;
+#end
 #if(!$isUseBO)
 #foreach ($column in $columns)
 #if($column.isRequired())
@@ -18,8 +22,10 @@ import jakarta.validation.constraints.*;
 #foreach ($import in $importList)
 import ${import};
 #end
+#if($isUseQuery || $isUseBO)
 import java.io.Serial;
 import java.io.Serializable;
+#end
 import java.util.Date;
 import java.math.BigDecimal;
 
@@ -30,12 +36,16 @@ import java.math.BigDecimal;
  * @date ${datetime}
  */
 @Data
+#if(!$isUseQuery && !$isUseBO)
 @EqualsAndHashCode(callSuper = true)
+#end
 @TableName("${tableName}")
-public class ${ClassName} implements Serializable {
+public class ${ClassName} #if(!$isUseQuery && !$isUseBO)extends BaseEntity#{else}implements Serializable#end {
+#if($isUseQuery || $isUseBO)
 
     @Serial
     private static final long serialVersionUID = 1L;
+#end
 
 #foreach ($column in $columns)
     /**
