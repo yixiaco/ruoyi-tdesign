@@ -36,7 +36,15 @@
       title="选择文件"
       :support-url="effectiveSupportUrl"
       :support-select-file="supportSelectFile"
-      :suffixes="fileType"
+      :query-param="{
+        suffixes: fileType,
+        maxSize: fileSize * 1024 * 1024,
+      }"
+      :image-upload="false"
+      :file-upload-props="{
+        fileSize: fileSize,
+        fileType: fileType,
+      }"
       :on-submit="handleSelectSubmit"
     />
   </div>
@@ -185,12 +193,77 @@ function handleOpenUpload(event: PointerEvent) {
 
 // 处理选中的图片
 function handleSelectSubmit(values: SelectFile[]) {
-  // TODO：做一些校验，文件大小，数量，重复名称
+  let validate: { type: UploadValidateType; files: UploadFile[] };
+  let rowValues = values;
+  // 做一些校验
   // 检查文件大小
+  const maxSize = props.fileSize * 1024 * 1024;
+  if (rowValues.some((value) => value.size > maxSize)) {
+    const arr1: SelectFile[] = [];
+    const arr2: SelectFile[] = [];
+    rowValues.forEach((value) => {
+      if (value.size > maxSize) {
+        arr2.push(value);
+      } else {
+        arr1.push(value);
+      }
+    });
+    rowValues = arr1;
+    validate = {
+      type: 'FILE_OVER_SIZE_LIMIT',
+      files: arr2,
+    };
+    onValidate(validate);
+  }
   // 检查文件类型
-  // 检查文件数量
+  if (props.fileType?.length) {
+    const arr1: SelectFile[] = [];
+    const arr2: SelectFile[] = [];
+    rowValues.forEach((value) => {
+      const suffix = value.name.substring(value.name.lastIndexOf('.') + 1);
+      if (props.fileType.includes(suffix)) {
+        arr1.push(value);
+      } else {
+        arr2.push(value);
+      }
+    });
+    if (arr2.length) {
+      proxy.$modal.msgWarning(`文件格式不正确, 已自动过滤非${props.fileType.join('/')}格式文件!`);
+    } else {
+      rowValues = arr1;
+    }
+  }
   // 检查重复名称
-  uploadedSuccessfully(values);
+  if (props.allowUploadDuplicateFile) {
+    const map = new Map<string, SelectFile>();
+    rowValues.forEach((value) => map.set(value.name, value));
+    let exist = false;
+    if (map.size !== rowValues.length) {
+      exist = true;
+    }
+    const keys = [...map.keys()];
+    if (fileList.value.some((value) => keys.includes(value.name))) {
+      exist = true;
+    }
+    if (exist) {
+      validate = {
+        type: 'FILE_OVER_SIZE_LIMIT',
+        files: [],
+      };
+      onValidate(validate);
+      return false;
+    }
+  }
+  // 检查文件数量
+  if (props.limit !== 0 && fileList.value.length + rowValues.length > props.limit) {
+    rowValues = rowValues.slice(0, props.limit - fileList.value.length);
+    validate = {
+      type: 'FILES_OVER_LENGTH_LIMIT',
+      files: rowValues.slice(props.limit - fileList.value.length),
+    };
+    onValidate(validate);
+  }
+  uploadedSuccessfully(rowValues);
   return true;
 }
 

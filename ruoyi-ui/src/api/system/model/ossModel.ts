@@ -12,6 +12,10 @@ export interface SysOssQuery extends BaseEntity {
   fileSuffix?: string;
   /** URL地址 */
   url?: string;
+  /** 文件最大字节长度 */
+  maxSize?: number;
+  /** 内容类型 */
+  contentTypes?: string[];
   /** 分类id */
   ossCategoryId?: number;
   /** 是否锁定状态 */

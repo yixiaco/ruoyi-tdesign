@@ -74,4 +74,13 @@ public class SysOssQuery extends BaseEntity {
      */
     private String[] suffixes;
 
+    /**
+     * 文件最大字节长度
+     */
+    private Long maxSize;
+
+    /**
+     * 内容类型
+     */
+    private String[] contentTypes;
 }

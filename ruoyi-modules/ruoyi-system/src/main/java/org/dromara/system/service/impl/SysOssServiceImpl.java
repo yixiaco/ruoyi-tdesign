@@ -7,6 +7,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import org.dromara.common.core.constant.CacheNames;
+import org.dromara.common.core.enums.YesNoEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.service.OssService;
 import org.dromara.common.core.utils.MapstructUtils;
@@ -73,6 +74,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
      */
     @Override
     public TableDataInfo<SysOssVo> queryPageList(SysOssQuery query) {
+        // 将后缀转为小写
         if (query.getSuffixes() != null) {
             String[] suffixes = query.getSuffixes();
             for (int i = 0; i < suffixes.length; i++) {
@@ -264,15 +266,15 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
     /**
      * 删除OSS对象存储
      *
-     * @param ids     OSS对象ID串
-     * @param isValid 校验
+     * @param ids OSS对象ID串
      * @return
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if (isValid) {
-            // 做一些业务上的校验,判断是否需要校验
+    public Boolean deleteWithValidByIds(Collection<Long> ids) {
+        boolean exists = lambdaQuery().in(SysOss::getOssId, ids).eq(SysOss::getIsLock, YesNoEnum.YES.getCodeNum()).exists();
+        if (exists) {
+            throw new ServiceException("加锁文件必须解锁后才能删除");
         }
         List<SysOss> list = baseMapper.selectBatchIds(ids);
         for (SysOss sysOss : list) {

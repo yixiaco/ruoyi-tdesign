@@ -83,10 +83,9 @@ public interface ISysOssService extends IService<SysOss> {
     /**
      * 删除OSS对象存储
      *
-     * @param ids     OSS对象ID串
-     * @param isValid 校验
+     * @param ids OSS对象ID串
      */
-    Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+    Boolean deleteWithValidByIds(Collection<Long> ids);
 
     /**
      * 查询OSS对象基于url串

@@ -90,7 +90,13 @@
       <t-col :sm="10" :xs="12">
         <my-oss
           :category-id="categoryActived[0]"
-          :suffixes="suffixes"
+          :query-param="queryParam"
+          :multiple="multiple"
+          :image-upload="imageUpload"
+          :file-upload="fileUpload"
+          :file-upload-props="fileUploadProps"
+          :image-upload-props="imageUploadProps"
+          :thumbnail-size="thumbnailSize"
           @change="(selectValues) => emit('change', selectValues)"
         />
       </t-col>
@@ -178,8 +184,6 @@
   </t-card>
 </template>
 <script lang="ts" setup>
-import type { PropType } from 'vue';
-
 defineOptions({
   name: 'OssCategory',
 });
@@ -204,24 +208,17 @@ import {
   listOssCategory,
   updateOssCategory,
 } from '@/api/system/ossCategory';
-import type { FileUploadProps } from '@/components/file-upload/index.vue';
-import type { ImageUploadProps } from '@/components/image-upload/index.vue';
 
+import type { MyOssProps } from './components/myOss.vue';
 import MyOss from './components/myOss.vue';
 
-defineProps({
-  suffixes: {
-    type: Array as PropType<string[]>,
-    default: () => [],
-  },
-  imageUploadProps: {
-    type: Object as PropType<ImageUploadProps>,
-  },
-  fileUploadProps: {
-    type: Object as PropType<FileUploadProps>,
-  },
+export interface OssCategoryProps extends Omit<MyOssProps, 'categoryId'> {}
+withDefaults(defineProps<OssCategoryProps>(), {
+  imageUpload: true,
+  fileUpload: true,
+  multiple: true,
+  thumbnailSize: 120,
 });
-
 const { proxy } = getCurrentInstance();
 
 const openView = ref(false);

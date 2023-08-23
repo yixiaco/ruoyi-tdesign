@@ -4,6 +4,7 @@
     :close-on-overlay-click="false"
     :header="title"
     :width="width"
+    :z-index="2600"
     attach="body"
     :confirm-btn="{
       content: '确 定',
@@ -24,10 +25,19 @@
       @submit="submitForm"
     >
       <t-tabs v-model="activeTab">
-        <t-tab-panel label="我的文件" value="myOss" :destroy-on-hide="false">
-          <oss-category :suffixes="suffixes" @change="handleSelectChange" />
+        <t-tab-panel v-if="supportSelectFile" label="我的文件" value="myOss" :destroy-on-hide="false">
+          <oss-category
+            :query-param="queryParam"
+            :multiple="multiple"
+            :image-upload="imageUpload"
+            :file-upload="fileUpload"
+            :file-upload-props="fileUploadProps"
+            :image-upload-props="imageUploadProps"
+            :thumbnail-size="thumbnailSize"
+            @change="handleSelectChange"
+          />
         </t-tab-panel>
-        <t-tab-panel label="外链地址" value="url">
+        <t-tab-panel v-if="supportUrl" label="外链地址" value="url">
           <br />
           <t-form-item
             v-show="activeTab === 'url'"
@@ -44,10 +54,10 @@
 </template>
 <script setup lang="ts">
 import type { FormInstanceFunctions, FormRule, SubmitContext } from 'tdesign-vue-next';
-import type { PropType } from 'vue';
 import { computed, getCurrentInstance, ref, watch } from 'vue';
 
 import type { SysOssVo } from '@/api/system/model/ossModel';
+import type { OssCategoryProps } from '@/pages/system/ossCategory/index.vue';
 import OssCategory from '@/pages/system/ossCategory/index.vue';
 
 export interface SelectFile {
@@ -61,26 +71,23 @@ defineOptions({
   name: 'UploadSelect',
 });
 
-const props = defineProps({
-  // 标题
-  title: String,
-  // 支持选择文件
-  supportSelectFile: {
-    type: Boolean,
-    default: true,
-  },
-  // 支持手动输入url
-  supportUrl: {
-    type: Boolean,
-    default: true,
-  },
-  onSubmit: {
-    type: Function as PropType<(values: SelectFile[]) => boolean>,
-  },
-  suffixes: {
-    type: Array as PropType<string[]>,
-    default: () => [],
-  },
+export interface UploadSelectProps extends OssCategoryProps {
+  /** 标题 */
+  title?: string;
+  /** 支持选择文件 */
+  supportSelectFile: boolean;
+  /** 支持手动输入url */
+  supportUrl: boolean;
+  /** 提交时调用，返回false可以阻止关闭窗口 */
+  onSubmit?: (values: SelectFile[]) => boolean;
+}
+const props = withDefaults(defineProps<UploadSelectProps>(), {
+  imageUpload: true,
+  fileUpload: true,
+  supportSelectFile: true,
+  supportUrl: true,
+  multiple: true,
+  thumbnailSize: 120,
 });
 
 // 显示隐藏窗口

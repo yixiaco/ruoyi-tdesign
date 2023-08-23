@@ -13,7 +13,7 @@
       :headers="headers"
       :draggable="draggable"
       :size-limit="{ size: fileSize, unit: 'MB', message: '上传图片大小不能超过 {sizeLimit} MB!' }"
-      :tips="isShowTip ? `请上传大小不超过 ${fileSize}MB 格式为 ${fileType.join('/')} 的文件` : ''"
+      :tips="isShowTip ? `请上传大小不超过 ${fileSize}MB 格式为 ${fileType.join('/')} 的图片` : ''"
       :disabled="disabled"
       :allow-upload-duplicate-file="allowUploadDuplicateFile"
       @one-file-success="handleOneUploadSuccess"
@@ -32,11 +32,18 @@
       </t-button>
     </t-upload>
     <upload-select
+      v-if="supportSelectFile || effectiveSupportUrl"
       v-model:visible="open"
       title="选择图片"
       :support-url="effectiveSupportUrl"
       :support-select-file="supportSelectFile"
-      :suffixes="fileType"
+      :query-param="queryParam"
+      :file-upload="false"
+      :image-upload-props="{
+        accept: accept,
+        fileSize: fileSize,
+        fileType: fileType,
+      }"
       :on-submit="handleSelectSubmit"
     />
   </div>
@@ -50,6 +57,7 @@ import { computed, getCurrentInstance, ref, watch } from 'vue';
 
 import { delOss, listByIds, listByUrls } from '@/api/system/oss';
 import { SelectFile } from '@/components/upload-select/index.vue';
+import { MyOssProps } from '@/pages/system/ossCategory/components/myOss.vue';
 import { useUserStore } from '@/store';
 
 export interface ImageUploadProps {
@@ -101,6 +109,20 @@ const props = withDefaults(defineProps<ImageUploadProps>(), {
   allowUploadDuplicateFile: false,
   supportSelectFile: true,
   supportUrl: true,
+});
+
+const queryParam = computed<MyOssProps['queryParam']>(() => {
+  const maxSize = props.fileSize * 1024 * 1024;
+  if (props.accept) {
+    return {
+      contentTypes: props.accept.map((value) => value.replace('*', '%')),
+      maxSize,
+    };
+  }
+  return {
+    suffixes: props.fileType,
+    maxSize,
+  };
 });
 
 const { token } = storeToRefs(useUserStore());

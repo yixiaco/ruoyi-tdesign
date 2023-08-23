@@ -2,7 +2,12 @@
   <div>
     <t-space direction="vertical" style="width: 100%">
       <t-space>
-        <t-button v-hasPermi="['system:oss:upload']" theme="primary" @click="handleUpload">
+        <t-button
+          v-if="imageUpload || fileUpload"
+          v-hasPermi="['system:oss:upload']"
+          theme="primary"
+          @click="handleUpload"
+        >
           <template #icon> <cloud-upload-icon /></template>
           上传
         </t-button>
@@ -136,27 +141,32 @@
     >
       <t-form :data="uploadForm" label-align="right" label-width="80px">
         <t-form-item label="上传类型">
-          <t-radio-group v-model="type" variant="default-filled">
-            <t-radio-button :value="0">上传文件</t-radio-button>
-            <t-radio-button :value="1">上传图片</t-radio-button>
+          <t-radio-group v-model="rowType" variant="default-filled">
+            <t-radio-button v-if="fileUpload" :value="0">上传文件</t-radio-button>
+            <t-radio-button v-if="imageUpload" :value="1">上传图片</t-radio-button>
           </t-radio-group>
         </t-form-item>
         <t-form-item label="选择文件">
           <file-upload
-            v-if="type === 0"
+            v-if="rowType === 0 && fileUpload"
             v-model="uploadForm.file"
             :limit="0"
             theme="file-flow"
             :support-select-file="false"
             :support-url="false"
+            :file-type="fileUploadProps?.fileType"
+            :file-size="fileUploadProps?.fileSize"
           />
           <image-upload
-            v-if="type === 1"
+            v-if="rowType === 1 && imageUpload"
             v-model="uploadForm.file"
             :limit="0"
             theme="image-flow"
             :support-select-file="false"
             :support-url="false"
+            :file-size="imageUploadProps?.fileSize"
+            :file-type="imageUploadProps?.fileType"
+            :accept="imageUploadProps?.accept"
           />
         </t-form-item>
       </t-form>
@@ -290,7 +300,6 @@ import {
   SwapIcon,
 } from 'tdesign-icons-vue-next';
 import type { FormInstanceFunctions, FormRule, PageInfo, SubmitContext } from 'tdesign-vue-next';
-import type { PropType } from 'vue';
 import { computed, getCurrentInstance, ref, watch } from 'vue';
 import useClipboard from 'vue-clipboard3';
 
@@ -307,7 +316,9 @@ import TextSvg from '@/assets/file-type/text.svg?component';
 import UnknownSvg from '@/assets/file-type/unknown.svg?component';
 import VideoSvg from '@/assets/file-type/video.svg?component';
 import WordSvg from '@/assets/file-type/word.svg?component';
+import type { FileUploadProps } from '@/components/file-upload/index.vue';
 import FileUpload from '@/components/file-upload/index.vue';
+import type { ImageUploadProps } from '@/components/image-upload/index.vue';
 import ImageUpload from '@/components/image-upload/index.vue';
 import RectSelect from '@/components/rect-select/index.vue';
 
@@ -316,26 +327,33 @@ defineOptions({
   components: { ArchiveSvg, ExcelSvg, PdfSvg, PptSvg, AudioSvg, TextSvg, UnknownSvg, VideoSvg, WordSvg },
 });
 
-const props = defineProps({
+export interface MyOssProps {
   /** 分类id */
-  categoryId: [Number],
+  categoryId?: number;
   /** 启用多选 */
-  multiple: {
-    type: Boolean,
-    default: true,
-  },
+  multiple: boolean;
   /** 缩略图大小，px */
-  thumbnailSize: {
-    type: Number,
-    default: 120,
-  },
-  suffixes: {
-    type: Array as PropType<string[]>,
-    default: () => [],
-  },
+  thumbnailSize: 120;
+  /** 开启图片上传 */
+  imageUpload: boolean;
+  /** 开启文件上传 */
+  fileUpload: boolean;
+  /** 查询参数 */
+  queryParam?: Pick<SysOssQuery, 'maxSize' | 'contentTypes' | 'suffixes'>;
+  /** 图片上传组件参数 */
+  imageUploadProps?: Pick<ImageUploadProps, 'fileType' | 'fileSize' | 'accept'>;
+  /** 文件上传组件参数 */
+  fileUploadProps?: Pick<FileUploadProps, 'fileType' | 'fileSize'>;
+}
+
+const props = withDefaults(defineProps<MyOssProps>(), {
+  imageUpload: true,
+  fileUpload: true,
+  multiple: true,
+  thumbnailSize: 120,
 });
 watch(
-  () => [props.categoryId, props.suffixes],
+  () => [props.categoryId, props.queryParam],
   () => getList(),
 );
 watch(
@@ -385,6 +403,18 @@ const fileType = {
   video: 'avi,mp4,m4v,mkv,webm,flv,mov,wmv,3gp,3g2,mpg,vob,ogg,swf,dxr,fla,rm,mpe,mpeg,ts'.split(','),
   word: ['doc', 'docx', 'wps', 'rtf', 'odt'],
 };
+const rowType = computed({
+  get() {
+    if (!props.imageUpload) {
+      return 0;
+    }
+    if (!props.fileUpload) {
+      return 1;
+    }
+    return type.value;
+  },
+  set: (val) => (type.value = val),
+});
 
 const rules = ref<Record<string, Array<FormRule>>>({
   originalName: [
@@ -478,7 +508,9 @@ function getMediaType(oss: SysOssVo) {
 function getList() {
   loading.value = true;
   queryParams.value.ossCategoryId = props.categoryId;
-  queryParams.value.suffixes = props.suffixes?.map((value) => `.${value}`);
+  queryParams.value.suffixes = props.queryParam?.suffixes?.map((value) => `.${value}`);
+  queryParams.value.maxSize = props.queryParam?.maxSize;
+  queryParams.value.contentTypes = props.queryParam?.contentTypes;
   listMyOss(queryParams.value)
     .then((response) => {
       ids.value = [];
