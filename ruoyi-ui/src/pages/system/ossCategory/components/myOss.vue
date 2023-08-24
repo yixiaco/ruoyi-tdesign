@@ -156,6 +156,7 @@
             :support-url="false"
             :file-type="fileUploadProps?.fileType"
             :file-size="fileUploadProps?.fileSize"
+            :accept="fileUploadProps?.accept"
           />
           <image-upload
             v-if="rowType === 1 && imageUpload"
@@ -341,7 +342,7 @@ export interface MyOssProps {
   /** 图片上传组件参数 */
   imageUploadProps?: Pick<ImageUploadProps, 'fileType' | 'fileSize' | 'accept'>;
   /** 文件上传组件参数 */
-  fileUploadProps?: Pick<FileUploadProps, 'fileType' | 'fileSize'>;
+  fileUploadProps?: Pick<FileUploadProps, 'fileType' | 'fileSize' | 'accept'>;
   /** 选区最大高度 */
   rectMaxHeight?: string;
 }

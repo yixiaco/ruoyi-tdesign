@@ -5,7 +5,7 @@
       v-model="fileList"
       multiple
       :theme="theme"
-      :accept="accept"
+      :accept="rawAccept"
       :action="uploadFileUrl"
       :before-upload="handleBeforeUpload"
       :max="limit"
@@ -13,7 +13,6 @@
       :headers="headers"
       :draggable="draggable"
       :size-limit="{ size: fileSize, unit: 'MB', message: '上传文件大小不能超过 {sizeLimit} MB!' }"
-      :tips="isShowTip ? `请上传大小不超过 ${fileSize}MB 格式为 ${fileType.join('/')} 的文件` : ''"
       :disabled="disabled"
       :allow-upload-duplicate-file="allowUploadDuplicateFile"
       @one-file-success="handleOneUploadSuccess"
@@ -22,6 +21,17 @@
       @validate="onValidate"
       @click="handleOpenUpload($event)"
     >
+      <template v-if="isShowTip" #tips>
+        请上传大小不超过 {{ fileSize }}MB 的文件
+        <t-tooltip>
+          <template #content>
+            <p v-for="item in rawAccept?.split(',')" :key="item" style="word-break: break-all">
+              {{ item }}
+            </p>
+          </template>
+          <t-link theme="primary">查看格式要求</t-link>
+        </t-tooltip>
+      </template>
       <!-- 上传按钮 -->
       <slot />
       <t-button v-if="!$slots.default" variant="outline">
@@ -36,12 +46,10 @@
       title="选择文件"
       :support-url="effectiveSupportUrl"
       :support-select-file="supportSelectFile"
-      :query-param="{
-        suffixes: fileType,
-        maxSize: fileSize * 1024 * 1024,
-      }"
+      :query-param="queryParam"
       :image-upload="false"
       :file-upload-props="{
+        accept: accept,
         fileSize: fileSize,
         fileType: fileType,
       }"
@@ -58,6 +66,7 @@ import { computed, getCurrentInstance, ref, watch } from 'vue';
 
 import { delOss, listByIds, listByUrls } from '@/api/system/oss';
 import type { SelectFile } from '@/components/upload-select/index.vue';
+import type { MyOssProps } from '@/pages/system/ossCategory/components/myOss.vue';
 import { useUserStore } from '@/store';
 
 export interface FileUploadProps {
@@ -68,6 +77,24 @@ export interface FileUploadProps {
   draggable?: boolean;
   // 大小限制(MB)
   fileSize: number;
+  // 接受上传的文件类型
+  accept?: Array<
+    | 'video/*'
+    | 'audio/*'
+    | 'text/plain'
+    | 'application/x-gzip'
+    | 'application/zip'
+    | 'application/x-rar-compressed'
+    | 'application/x-7z-compressed'
+    | 'application/msword'
+    | 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    | 'application/vnd.ms-excel'
+    | 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    | 'application/vnd.ms-powerpoint'
+    | 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+    | 'application/pdf'
+    | string
+  >;
   // 文件类型, 例如['png', 'jpg', 'jpeg']
   fileType?: string[];
   // 是否显示提示
@@ -97,6 +124,20 @@ const props = withDefaults(defineProps<FileUploadProps>(), {
   supportUrl: true,
 });
 
+const queryParam = computed<MyOssProps['queryParam']>(() => {
+  const maxSize = props.fileSize * 1024 * 1024;
+  if (props.accept) {
+    return {
+      contentTypes: props.accept,
+      maxSize,
+    };
+  }
+  return {
+    suffixes: props.fileType,
+    maxSize,
+  };
+});
+
 const { token } = storeToRefs(useUserStore());
 const { proxy } = getCurrentInstance();
 const emit = defineEmits(['update:modelValue', 'change']);
@@ -104,8 +145,8 @@ const baseUrl = import.meta.env.VITE_APP_BASE_API;
 const uploadFileUrl = ref(`${baseUrl}/resource/oss/upload`); // 上传文件服务器地址
 const headers = ref({ Authorization: `Bearer ${token.value}` });
 const fileList = ref<UploadFile[]>([]);
-const accept = computed(() => {
-  return props.fileType.map((value) => `.${value}`).join(',');
+const rawAccept = computed(() => {
+  return props.accept?.join(',') || props.fileType.map((value) => `.${value}`).join(',');
 });
 const effectiveSupportUrl = computed(() => {
   return props.supportUrl && props.mode === 'url';

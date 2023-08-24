@@ -4,7 +4,7 @@
     :close-on-overlay-click="false"
     :header="title"
     :width="width"
-    :z-index="2600"
+    :z-index="4000"
     attach="body"
     :confirm-btn="{
       content: '确 定',
@@ -27,7 +27,7 @@
       <t-tabs v-model="activeTab">
         <t-tab-panel v-if="supportSelectFile" label="我的文件" value="myOss" :destroy-on-hide="false">
           <oss-category
-            :query-param="queryParam"
+            :query-param="formatQueryParam"
             :multiple="multiple"
             :image-upload="imageUpload"
             :file-upload="fileUpload"
@@ -90,6 +90,12 @@ const props = withDefaults(defineProps<UploadSelectProps>(), {
   multiple: true,
   thumbnailSize: 120,
   rectMaxHeight: 'calc(100vh - 444px)',
+});
+
+const formatQueryParam = computed(() => {
+  const query = { ...props.queryParam };
+  query.contentTypes = props.queryParam?.contentTypes?.map((value) => value.replaceAll('*', '%'));
+  return query;
 });
 
 // 显示隐藏窗口
@@ -184,6 +190,10 @@ function onConfirm() {
 function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     if (activeTab.value === 'myOss') {
+      if (selectValues.value.length === 0) {
+        proxy.$modal.msgError('未选择文件');
+        return;
+      }
       const values = selectValues.value.map((value) => ({
         url: value.url,
         name: value.originalName,
@@ -193,6 +203,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
       const result = props.onSubmit.call(this, values);
       if (result) {
         visible.value = false;
+        selectValues.value = [];
       }
     } else {
       const values = form.value.url
@@ -205,6 +216,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
       const result = props.onSubmit.call(this, values);
       if (result) {
         visible.value = false;
+        selectValues.value = [];
       }
     }
   } else {

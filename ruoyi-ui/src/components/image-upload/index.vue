@@ -13,7 +13,6 @@
       :headers="headers"
       :draggable="draggable"
       :size-limit="{ size: fileSize, unit: 'MB', message: '上传图片大小不能超过 {sizeLimit} MB!' }"
-      :tips="isShowTip ? `请上传大小不超过 ${fileSize}MB 格式为 ${fileType.join('/')} 的图片` : ''"
       :disabled="disabled"
       :allow-upload-duplicate-file="allowUploadDuplicateFile"
       @one-file-success="handleOneUploadSuccess"
@@ -22,6 +21,17 @@
       @validate="onValidate"
       @click="handleOpenUpload($event)"
     >
+      <template v-if="isShowTip" #tips>
+        请上传大小不超过 {{ fileSize }}MB 的图片，
+        <t-tooltip>
+          <template #content>
+            <p v-for="item in rawAccept?.split(',')" :key="item" style="word-break: break-all">
+              {{ item }}
+            </p>
+          </template>
+          <t-link theme="primary">查看格式要求</t-link>
+        </t-tooltip>
+      </template>
       <!-- 上传按钮 -->
       <slot />
       <t-button v-if="!$slots.default" variant="outline">
@@ -81,6 +91,7 @@ export interface ImageUploadProps {
     | 'image/x-jng'
     | 'image/x-ms-bmp'
     | 'image/*'
+    | string
   >;
   // 文件类型, 例如['png', 'jpg', 'jpeg']
   fileType?: string[];
@@ -115,7 +126,7 @@ const queryParam = computed<MyOssProps['queryParam']>(() => {
   const maxSize = props.fileSize * 1024 * 1024;
   if (props.accept) {
     return {
-      contentTypes: props.accept.map((value) => value.replace('*', '%')),
+      contentTypes: props.accept,
       maxSize,
     };
   }
