@@ -76,9 +76,9 @@ export interface UploadSelectProps extends OssCategoryProps {
   /** 标题 */
   title?: string;
   /** 支持选择文件 */
-  supportSelectFile: boolean;
+  supportSelectFile?: boolean;
   /** 支持手动输入url */
-  supportUrl: boolean;
+  supportUrl?: boolean;
   /** 提交时调用，返回false可以阻止关闭窗口 */
   onSubmit?: (values: SelectFile[]) => boolean;
 }

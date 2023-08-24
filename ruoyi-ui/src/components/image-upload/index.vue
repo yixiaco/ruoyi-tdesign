@@ -73,11 +73,11 @@ import { useUserStore } from '@/store';
 export interface ImageUploadProps {
   modelValue?: string | string[];
   // 图片数量限制,为0不限制
-  limit: number;
+  limit?: number;
   // 是否支持拖拽上传
   draggable?: boolean;
   // 大小限制(MB)
-  fileSize: number;
+  fileSize?: number;
   // 接受上传的文件类型
   accept?: Array<
     | 'image/gif'
@@ -96,17 +96,17 @@ export interface ImageUploadProps {
   // 文件类型, 例如['png', 'jpg', 'jpeg']
   fileType?: string[];
   // 是否显示提示
-  isShowTip: boolean;
-  theme: 'custom' | 'image' | 'image-flow';
+  isShowTip?: boolean;
+  theme?: 'custom' | 'image' | 'image-flow';
   // 模式，id模式返回ossId，url模式返回url链接
-  mode: 'id' | 'url';
-  disabled: boolean;
+  mode?: 'id' | 'url';
+  disabled?: boolean;
   // 是否允许重复上传相同文件名的文件
-  allowUploadDuplicateFile: boolean;
+  allowUploadDuplicateFile?: boolean;
   // 支持选择文件
-  supportSelectFile: boolean;
+  supportSelectFile?: boolean;
   // 支持手动输入url，需要mode="url"才有效
-  supportUrl: boolean;
+  supportUrl?: boolean;
 }
 
 const props = withDefaults(defineProps<ImageUploadProps>(), {

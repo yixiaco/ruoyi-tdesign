@@ -6,8 +6,8 @@
       maxHeight: boxMaxHeight,
     }"
     v-bind="$attrs"
-    @mousewheel="handleMousewheel"
     @mousedown.left="handleMousedown($event)"
+    @scroll="handleScroll"
   >
     <slot />
     <div
@@ -17,8 +17,8 @@
       :style="{
         width: `${rect.width}px`,
         height: `${rect.height}px`,
-        top: `${rect.top - boxRect[1] + boxRef.scrollTop}px`,
-        left: `${rect.left - boxRect[0]}px`,
+        top: `${rect.top}px`,
+        left: `${rect.left}px`,
       }"
     />
   </div>
@@ -43,24 +43,25 @@ const props = defineProps({
     default: '',
   },
 });
-// 绝对距离
+// 矩形选取的相对距离
 const rect = computed(() => {
   return {
-    width: Math.abs(current.value[0] - start.value[0]),
-    height: Math.abs(current.value[1] - start.value[1]),
-    top: Math.min(start.value[1], current.value[1]),
-    left: Math.min(start.value[0], current.value[0]),
+    width: Math.abs(current.value.x - start.value.x),
+    height: Math.abs(current.value.y - start.value.y),
+    top: Math.min(start.value.y, current.value.y),
+    left: Math.min(start.value.x, current.value.x),
   };
 });
 const domRects = ref([]);
 const active = ref(false);
-const start = ref([0, 0]);
-const current = ref([0, 0]);
+// xy：相对距离；pageXY:相对浏览器左上角距离
+const start = ref({ x: 0, y: 0, pageX: 0, pageY: 0 });
+const current = ref({ x: 0, y: 0, pageX: 0, pageY: 0 });
 const boxRef = ref<HTMLElement>(null);
 const distance = ref(5);
-const scrollPadding = ref(30);
-// rect: left top right bottom
-const boxRect = ref([0, 0, Number.MAX_VALUE, Number.MAX_VALUE]);
+const scrollPadding = ref(50);
+// 盒子的绝对距离
+const boxRect = ref({ left: 0, top: 0, right: 0, bottom: 0 });
 const emit = defineEmits<{
   (e: 'change', checkedIndexes: number[]): void;
 }>();
@@ -69,16 +70,6 @@ const effectiveActive = computed(() => {
 });
 
 let scrollInterval: ReturnType<typeof setInterval> = null;
-
-/**
- * 控制滚轮事件
- * 进行选取时，禁止滚轮
- * */
-function handleMousewheel(event: WheelEvent) {
-  if (active.value) {
-    event.preventDefault();
-  }
-}
 
 /**
  * 鼠标按下事件
@@ -94,14 +85,16 @@ function handleMousedown(event: MouseEvent) {
   nextTick(() => {
     renderChildrenRects();
   });
-
-  start.value[0] = event.clientX;
-  start.value[1] = event.clientY;
+  start.value.pageX = event.pageX;
+  start.value.pageY = event.pageY;
+  // 绝对距离转为相对距离
+  start.value.x = event.pageX - boxRect.value.left;
+  start.value.y = event.pageY - boxRect.value.top + boxRef.value.scrollTop;
   // 开启计时器，如果计时器不存在
   if (scrollInterval === null) {
     scrollInterval = setInterval(() => {
       triggerScroll();
-    }, 20);
+    }, 15);
   }
   handleMouseMove(event);
 }
@@ -112,33 +105,56 @@ function handleMousedown(event: MouseEvent) {
  */
 function handleMouseMove(event: MouseEvent) {
   if (effectiveActive.value) {
-    current.value[0] = range(event.clientX, boxRect.value[0], boxRect.value[2]);
-    current.value[1] = range(event.clientY, boxRect.value[1], boxRect.value[3]);
+    // 绝对距离转为相对距离
+    current.value.pageX = event.pageX;
+    current.value.pageY = event.pageY;
+    current.value.x = range(current.value.pageX - boxRect.value.left, 0, boxRect.value.right - boxRect.value.left);
+    current.value.y = range(
+      current.value.pageY - boxRect.value.top + boxRef.value.scrollTop,
+      boxRef.value.scrollTop,
+      boxRect.value.bottom - boxRect.value.top + boxRef.value.scrollTop,
+    );
     triggerChange();
   }
+}
+
+/**
+ * 处理滚动事件
+ */
+function handleScroll() {
+  // 重新计算相对距离
+  current.value.x = range(current.value.pageX - boxRect.value.left, 0, boxRect.value.right - boxRect.value.left);
+  current.value.y = range(
+    current.value.pageY - boxRect.value.top + boxRef.value.scrollTop,
+    boxRef.value.scrollTop,
+    boxRect.value.bottom - boxRect.value.top + boxRef.value.scrollTop,
+  );
+  // 滚动时，重新获取一次dom元素的区域
+  renderChildrenRects();
+  triggerChange();
 }
 
 /** 控制触碰到顶部或底部时的滚动 */
 function triggerScroll() {
   const rate = 10;
   const scrollTop = boxRef.value.scrollTop;
-  const top = Math.abs(current.value[1] - boxRect.value[1]);
+  const top = Math.abs(current.value.y - boxRef.value.scrollTop);
   if (top < scrollPadding.value && scrollTop !== 0) {
     const speed = distance.value * Math.max((scrollPadding.value - top) / rate, 1);
-    // 启用区域选择时，获取一次dom元素的区域
-    renderChildrenRects();
-    start.value[1] += Math.min(scrollTop, speed);
-    boxRef.value.scrollTo(0, Math.max(scrollTop - speed, 0));
-    triggerChange();
+    boxRef.value.scrollTo({
+      top: Math.max(scrollTop - speed, 0),
+      left: boxRef.value.scrollLeft,
+      behavior: 'instant',
+    });
   } else {
-    const bottom = Math.abs(current.value[1] - boxRect.value[3]);
+    const bottom = Math.abs(current.value.y + boxRect.value.top - boxRef.value.scrollTop - boxRect.value.bottom);
     if (bottom <= scrollPadding.value && scrollTop + boxRef.value.clientHeight < boxRef.value.scrollHeight) {
       const speed = distance.value * Math.max((scrollPadding.value - bottom) / rate, 1);
-      // 启用区域选择时，获取一次dom元素的区域
-      renderChildrenRects();
-      start.value[1] -= Math.min(boxRef.value.scrollHeight - boxRef.value.clientHeight - scrollTop, speed);
-      boxRef.value.scrollTo(0, Math.min(scrollTop + speed, boxRef.value.scrollHeight - boxRef.value.clientHeight));
-      triggerChange();
+      boxRef.value.scrollTo({
+        top: Math.min(scrollTop + speed, boxRef.value.scrollHeight - boxRef.value.clientHeight),
+        left: boxRef.value.scrollLeft,
+        behavior: 'instant',
+      });
     }
   }
 }
@@ -189,7 +205,13 @@ function renderChildrenRects() {
   for (let i = 0; i < children.length - 1; i++) {
     const element = children.item(i);
     const domRect = element.getBoundingClientRect();
-    const rec = [domRect.left, domRect.top, domRect.right, domRect.bottom];
+    // 转为相对距离矩形框
+    const rec = [
+      domRect.left - boxRect.value.left,
+      domRect.top - boxRect.value.top + boxRef.value.scrollTop,
+      domRect.right - boxRect.value.left,
+      domRect.bottom - boxRect.value.top + boxRef.value.scrollTop,
+    ];
     rects.push(rec);
   }
   domRects.value = rects;
@@ -198,10 +220,10 @@ function renderChildrenRects() {
 /** 初始化可选区的区域 */
 function initBoxRect() {
   const clientRect = boxRef.value.getBoundingClientRect();
-  boxRect.value[0] = clientRect.left;
-  boxRect.value[1] = clientRect.top;
-  boxRect.value[2] = clientRect.right;
-  boxRect.value[3] = clientRect.bottom;
+  boxRect.value.left = clientRect.left;
+  boxRect.value.top = clientRect.top;
+  boxRect.value.right = clientRect.right;
+  boxRect.value.bottom = clientRect.bottom;
 }
 
 /**

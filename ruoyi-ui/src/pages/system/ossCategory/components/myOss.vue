@@ -330,13 +330,13 @@ export interface MyOssProps {
   /** 分类id */
   categoryId?: number;
   /** 启用多选 */
-  multiple: boolean;
+  multiple?: boolean;
   /** 缩略图大小，px */
-  thumbnailSize: 120;
+  thumbnailSize?: number;
   /** 开启图片上传 */
-  imageUpload: boolean;
+  imageUpload?: boolean;
   /** 开启文件上传 */
-  fileUpload: boolean;
+  fileUpload?: boolean;
   /** 查询参数 */
   queryParam?: Pick<SysOssQuery, 'maxSize' | 'contentTypes' | 'suffixes'>;
   /** 图片上传组件参数 */
