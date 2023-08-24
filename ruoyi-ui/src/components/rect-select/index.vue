@@ -43,6 +43,7 @@ const props = defineProps({
     default: '',
   },
 });
+// 绝对距离
 const rect = computed(() => {
   return {
     width: Math.abs(current.value[0] - start.value[0]),
@@ -56,6 +57,8 @@ const active = ref(false);
 const start = ref([0, 0]);
 const current = ref([0, 0]);
 const boxRef = ref<HTMLElement>(null);
+const distance = ref(5);
+const scrollPadding = ref(30);
 // rect: left top right bottom
 const boxRect = ref([0, 0, Number.MAX_VALUE, Number.MAX_VALUE]);
 const emit = defineEmits<{
@@ -97,7 +100,7 @@ function handleMousedown(event: MouseEvent) {
   // 开启计时器，如果计时器不存在
   if (scrollInterval === null) {
     scrollInterval = setInterval(() => {
-      handleScroll();
+      triggerScroll();
     }, 20);
   }
   handleMouseMove(event);
@@ -116,24 +119,27 @@ function handleMouseMove(event: MouseEvent) {
 }
 
 /** 控制触碰到顶部或底部时的滚动 */
-function handleScroll() {
-  const distance = 20;
+function triggerScroll() {
+  const rate = 10;
   const scrollTop = boxRef.value.scrollTop;
-  if (Math.abs(current.value[1] - boxRect.value[1]) < distance && scrollTop !== 0) {
+  const top = Math.abs(current.value[1] - boxRect.value[1]);
+  if (top < scrollPadding.value && scrollTop !== 0) {
+    const speed = distance.value * Math.max((scrollPadding.value - top) / rate, 1);
     // 启用区域选择时，获取一次dom元素的区域
     renderChildrenRects();
-    start.value[1] += Math.min(scrollTop, distance);
-    boxRef.value.scrollTo(0, Math.max(scrollTop - distance, 0));
+    start.value[1] += Math.min(scrollTop, speed);
+    boxRef.value.scrollTo(0, Math.max(scrollTop - speed, 0));
     triggerChange();
-  } else if (
-    Math.abs(current.value[1] - boxRect.value[3]) <= distance &&
-    scrollTop + boxRef.value.clientHeight < boxRef.value.scrollHeight
-  ) {
-    // 启用区域选择时，获取一次dom元素的区域
-    renderChildrenRects();
-    start.value[1] -= Math.min(boxRef.value.scrollHeight - boxRef.value.clientHeight - scrollTop, distance);
-    boxRef.value.scrollTo(0, Math.min(scrollTop + distance, boxRef.value.scrollHeight - boxRef.value.clientHeight));
-    triggerChange();
+  } else {
+    const bottom = Math.abs(current.value[1] - boxRect.value[3]);
+    if (bottom <= scrollPadding.value && scrollTop + boxRef.value.clientHeight < boxRef.value.scrollHeight) {
+      const speed = distance.value * Math.max((scrollPadding.value - bottom) / rate, 1);
+      // 启用区域选择时，获取一次dom元素的区域
+      renderChildrenRects();
+      start.value[1] -= Math.min(boxRef.value.scrollHeight - boxRef.value.clientHeight - scrollTop, speed);
+      boxRef.value.scrollTo(0, Math.min(scrollTop + speed, boxRef.value.scrollHeight - boxRef.value.clientHeight));
+      triggerChange();
+    }
   }
 }
 
@@ -152,9 +158,9 @@ function range(num: number, min: number, max: number) {
  * 鼠标松开事件
  */
 function handleMouseUp() {
-  active.value = false;
   clearInterval(scrollInterval);
   scrollInterval = null;
+  active.value = false;
 }
 
 /**
@@ -192,7 +198,6 @@ function renderChildrenRects() {
 /** 初始化可选区的区域 */
 function initBoxRect() {
   const clientRect = boxRef.value.getBoundingClientRect();
-  console.log(clientRect);
   boxRect.value[0] = clientRect.left;
   boxRect.value[1] = clientRect.top;
   boxRect.value[2] = clientRect.right;
