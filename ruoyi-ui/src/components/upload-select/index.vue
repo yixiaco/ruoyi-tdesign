@@ -38,14 +38,14 @@
           />
         </t-tab-panel>
         <t-tab-panel v-if="supportUrl" label="外链地址" value="url">
-          <br />
           <t-form-item
             v-show="activeTab === 'url'"
             label="外链地址"
             name="url"
-            help="支持多张外链图片，每个图片连接占一行"
+            help="支持多个外链地址，每个链接地址占一行"
+            style="margin: var(--td-comp-margin-xl) 0; word-break: break-all"
           >
-            <t-textarea v-model="form.url" />
+            <t-textarea v-model="form.url" autosize />
           </t-form-item>
         </t-tab-panel>
       </t-tabs>
@@ -53,7 +53,7 @@
   </t-dialog>
 </template>
 <script setup lang="ts">
-import type { FormInstanceFunctions, FormRule, SubmitContext } from 'tdesign-vue-next';
+import type { CustomValidateResolveType, FormInstanceFunctions, FormRule, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref, watch } from 'vue';
 
 import type { SysOssVo } from '@/api/system/model/ossModel';
@@ -118,13 +118,57 @@ watch(
 );
 
 const rules = ref<Record<string, Array<FormRule>>>({
-  url: [{ required: true, message: '外链地址不能为空' }],
+  url: [
+    { required: true, message: '外链地址不能为空' },
+    { pattern: /^(https?:\/\/[^.\\/]+\.[^\n]+\/[^\n]+\n?)+$/, message: '地址格式错误' },
+    { validator: UrlValidator },
+  ],
 });
+
+/** 手动输入url验证器 */
+function UrlValidator(val: string): CustomValidateResolveType {
+  const arr = [false, false];
+  function valid(fileType: string[]) {
+    const urls = val.split('\n');
+    return urls.some((value) => {
+      const suffix = value.substring(value.lastIndexOf('.') + 1);
+      return fileType.includes(suffix);
+    });
+  }
+  if (props.imageUpload && props.imageUploadProps?.fileType) {
+    arr[0] = true;
+    if (valid(props.imageUploadProps?.fileType)) return true;
+  } else if (props.fileUpload && props.fileUploadProps?.fileType) {
+    arr[1] = true;
+    if (valid(props.fileUploadProps?.fileType)) return true;
+  }
+  if (arr[0] && arr[1]) {
+    const fileType = props.imageUploadProps.fileType.concat(props.fileUploadProps.fileType);
+    return {
+      result: false,
+      message: `请上传${fileType.join('/')}格式文件!`,
+    };
+  }
+  if (arr[0]) {
+    return {
+      result: false,
+      message: `请上传${props.imageUploadProps.fileType.join('/')}图片格式文件!`,
+    };
+  }
+  if (arr[1]) {
+    return {
+      result: false,
+      message: `请上传${props.fileUploadProps.fileType.join('/')}格式文件!`,
+    };
+  }
+  return true;
+}
+
 const width = computed(() => {
   if (activeTab.value === 'myOss') {
     return 'calc(min(1200px, 100vw))';
   }
-  return '500px';
+  return '600px';
 });
 
 function handleSelectChange(values: SysOssVo[]) {
@@ -149,8 +193,17 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
         visible.value = false;
       }
     } else {
-      // TODO: 处理手动输入的url
-      visible.value = false;
+      const values = form.value.url
+        .split('\n')
+        .filter((value) => value)
+        .map((url) => {
+          const name = url.substring(url.lastIndexOf('/'));
+          return { url, name };
+        });
+      const result = props.onSubmit.call(this, values);
+      if (result) {
+        visible.value = false;
+      }
     }
   } else {
     proxy.$modal.msgError(firstError);
