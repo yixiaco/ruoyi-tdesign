@@ -34,6 +34,7 @@
             :file-upload-props="fileUploadProps"
             :image-upload-props="imageUploadProps"
             :thumbnail-size="thumbnailSize"
+            :rect-max-height="rectMaxHeight"
             @change="handleSelectChange"
           />
         </t-tab-panel>
@@ -88,6 +89,7 @@ const props = withDefaults(defineProps<UploadSelectProps>(), {
   supportUrl: true,
   multiple: true,
   thumbnailSize: 120,
+  rectMaxHeight: 'calc(100vh - 444px)',
 });
 
 // 显示隐藏窗口

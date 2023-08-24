@@ -51,6 +51,7 @@
           v-else
           class="list-card-gallery"
           :disabled="!multiple"
+          :box-max-height="rectMaxHeight"
           @change="handleRectChange"
           @keydown.ctrl.a.stop.prevent="handleCheckedAll"
         >
@@ -172,7 +173,7 @@
     </t-dialog>
     <!-- 添加或修改OSS对象存储对话框 -->
     <t-dialog
-      v-model:visible="open"
+      v-model:visible="openView"
       :close-on-overlay-click="false"
       :header="title"
       width="550px"
@@ -341,6 +342,8 @@ export interface MyOssProps {
   imageUploadProps?: Pick<ImageUploadProps, 'fileType' | 'fileSize' | 'accept'>;
   /** 文件上传组件参数 */
   fileUploadProps?: Pick<FileUploadProps, 'fileType' | 'fileSize'>;
+  /** 选区最大高度 */
+  rectMaxHeight?: string;
 }
 
 const props = withDefaults(defineProps<MyOssProps>(), {
@@ -375,7 +378,7 @@ const ossList = ref<SysOssVo[]>([]);
 const ossCategoryOptions = ref<SysOssCategoryVo[]>([]);
 const openUpload = ref(false);
 const openMove = ref(false);
-const open = ref(false);
+const openView = ref(false);
 const buttonLoading = ref(false);
 const loading = ref(true);
 const showSearch = ref(true);
@@ -554,7 +557,7 @@ function handleUpload() {
 async function handleUpdate(row?: SysOssVo) {
   buttonLoading.value = true;
   reset();
-  open.value = true;
+  openView.value = true;
   title.value = '修改OSS对象存储';
   await getCategoryOptions();
   const ossId = row?.ossId || ids.value.at(0);
@@ -614,7 +617,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
       updateOss(form.value)
         .then(() => {
           proxy.$modal.msgSuccess('修改成功');
-          open.value = false;
+          openView.value = false;
           getList();
         })
         .finally(() => {

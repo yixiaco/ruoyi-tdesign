@@ -98,6 +98,7 @@
           :file-upload-props="fileUploadProps"
           :image-upload-props="imageUploadProps"
           :thumbnail-size="thumbnailSize"
+          :rect-max-height="rectMaxHeight"
           @change="(selectValues) => emit('change', selectValues)"
         />
       </t-col>
