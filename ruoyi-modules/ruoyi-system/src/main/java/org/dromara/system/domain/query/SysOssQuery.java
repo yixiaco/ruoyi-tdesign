@@ -50,11 +50,6 @@ public class SysOssQuery extends BaseEntity {
     private Integer isLock;
 
     /**
-     * 是否显示在列表
-     */
-    private Integer isList;
-
-    /**
      * 上传人
      */
     private Long createBy;

@@ -222,7 +222,6 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
         oss.setUserType(bo.getUserTypeEnum().getUserType());
         oss.setCreateBy(bo.getCreateBy());
         oss.setIsLock(bo.getIsLock());
-        oss.setIsList(bo.getIsList());
         oss.setOssCategoryId(bo.getOssCategoryId());
         baseMapper.insert(oss);
         SysOssVo sysOssVo = MapstructUtils.convert(oss, SysOssVo.class);

@@ -367,6 +367,7 @@ watch(
 );
 const emit = defineEmits<{
   (e: 'change', selectValues: SysOssVo[]): void;
+  (e: 'update'): void;
 }>();
 
 const { proxy } = getCurrentInstance();
@@ -595,6 +596,7 @@ function submitMoveForm({ validateResult, firstError }: SubmitContext) {
         proxy.$modal.msgSuccess('移动成功');
         openMove.value = false;
         getList();
+        emit('update');
       })
       .finally(() => {
         buttonLoading.value = false;
@@ -619,6 +621,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
           proxy.$modal.msgSuccess('修改成功');
           openView.value = false;
           getList();
+          emit('update');
         })
         .finally(() => {
           buttonLoading.value = false;
@@ -656,6 +659,7 @@ function handleDelete() {
       .then(() => {
         ids.value = [];
         getList();
+        emit('update');
         proxy.$modal.msgSuccess('删除成功');
       })
       .finally(() => proxy.$modal.msgClose(msgLoading));

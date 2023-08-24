@@ -93,12 +93,6 @@ public class SysOssVo implements Serializable {
     private Integer isLock;
 
     /**
-     * 是否显示在列表
-     */
-    @ExcelProperty(value = "是否显示在列表")
-    private Integer isList;
-
-    /**
      * 创建部门
      */
     @ExcelProperty(value = "创建部门")

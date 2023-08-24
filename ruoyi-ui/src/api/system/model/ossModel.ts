@@ -43,8 +43,6 @@ export interface SysOssForm {
   userType?: string;
   /** 是否锁定状态 */
   isLock?: number;
-  /** 是否显示在列表 */
-  isList?: number;
   /** 上传人 */
   createBy?: number;
 }
@@ -74,8 +72,6 @@ export interface SysOssVo {
   userType?: string;
   /** 是否锁定状态 */
   isLock?: number;
-  /** 是否显示在列表 */
-  isList?: number;
   /** 创建部门 */
   createDept?: number;
   /** 创建时间 */

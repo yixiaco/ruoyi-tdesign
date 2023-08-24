@@ -10,6 +10,12 @@ export interface SysOssCategoryQuery extends BaseEntity {
   userType?: string;
   /** 上传人 */
   createBy?: number;
+  /** 文件最大字节长度 */
+  maxSize?: number;
+  /** 内容类型 */
+  contentTypes?: string[];
+  /** 多个文件后缀，忽略大小写 */
+  suffixes?: string[];
 }
 /**
  * OSS分类业务对象

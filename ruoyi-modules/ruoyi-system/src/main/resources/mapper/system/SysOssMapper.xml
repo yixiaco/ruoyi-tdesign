@@ -8,7 +8,7 @@
     </resultMap>
 
     <sql id="selectSysOssVo">
-        select so.oss_id, so.tenant_id, so.file_name, so.original_name, so.file_suffix, so.url, so.size, so.content_type, so.oss_category_id, so.user_type, so.is_lock, so.is_list, so.create_dept, so.create_time, so.create_by, so.update_time, so.update_by, so.service from sys_oss so
+        select so.oss_id, so.tenant_id, so.file_name, so.original_name, so.file_suffix, so.url, so.size, so.content_type, so.oss_category_id, so.user_type, so.is_lock, so.create_dept, so.create_time, so.create_by, so.update_time, so.update_by, so.service from sys_oss so
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysOssQuery" resultMap="SysOssResultVo">
         select so.oss_id,
@@ -22,7 +22,6 @@
                so.oss_category_id,
                so.user_type,
                so.is_lock,
-               so.is_list,
                so.create_dept,
                so.create_time,
                so.create_by,
@@ -44,7 +43,6 @@
             <if test="ossCategoryId != null"> and so.oss_category_id = #{ossCategoryId}</if>
             <if test="userType != null and userType != ''"> and so.user_type = #{userType}</if>
             <if test="isLock != null"> and so.is_lock = #{isLock}</if>
-            <if test="isList != null"> and so.is_list = #{isList}</if>
             <if test="params.beginCreateTime != null and params.endCreateTime != null">
               and so.create_time between #{params.beginCreateTime} and #{params.endCreateTime}
             </if>
@@ -69,7 +67,6 @@
                so.oss_category_id,
                so.user_type,
                so.is_lock,
-               so.is_list,
                so.create_dept,
                so.create_time,
                so.create_by,

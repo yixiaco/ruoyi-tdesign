@@ -54,11 +54,6 @@ public class SysOssBo extends BaseEntity {
     private Integer isLock = 0;
 
     /**
-     * 是否显示在列表
-     */
-    private Integer isList = 1;
-
-    /**
      * 上传人
      */
     private Long createBy;

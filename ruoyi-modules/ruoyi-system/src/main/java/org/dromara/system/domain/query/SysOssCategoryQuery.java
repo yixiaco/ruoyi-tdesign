@@ -32,4 +32,19 @@ public class SysOssCategoryQuery extends BaseEntity {
      */
     private Long createBy;
 
+    /**
+     * 多个文件后缀
+     */
+    private String[] suffixes;
+
+    /**
+     * 文件最大字节长度
+     */
+    private Long maxSize;
+
+    /**
+     * 内容类型
+     */
+    private String[] contentTypes;
+
 }

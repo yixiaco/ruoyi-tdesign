@@ -100,6 +100,7 @@
           :thumbnail-size="thumbnailSize"
           :rect-max-height="rectMaxHeight"
           @change="(selectValues) => emit('change', selectValues)"
+          @update="getCategoryTree"
         />
       </t-col>
     </t-row>
@@ -201,9 +202,9 @@ import {
   SearchIcon,
 } from 'tdesign-icons-vue-next';
 import type { FormInstanceFunctions, FormRule, SubmitContext, TreeNodeModel, TreeNodeValue } from 'tdesign-vue-next';
-import { getCurrentInstance, ref } from 'vue';
+import { getCurrentInstance, ref, watch } from 'vue';
 
-import type { SysOssCategoryForm, SysOssCategoryVo } from '@/api/system/model/ossCategoryModel';
+import type { SysOssCategoryForm, SysOssCategoryQuery, SysOssCategoryVo } from '@/api/system/model/ossCategoryModel';
 import type { SysOssVo } from '@/api/system/model/ossModel';
 import {
   addOssCategory,
@@ -217,12 +218,17 @@ import type { MyOssProps } from './components/myOss.vue';
 import MyOss from './components/myOss.vue';
 
 export interface OssCategoryProps extends Omit<MyOssProps, 'categoryId'> {}
-withDefaults(defineProps<OssCategoryProps>(), {
+const props = withDefaults(defineProps<OssCategoryProps>(), {
   imageUpload: true,
   fileUpload: true,
   multiple: true,
   thumbnailSize: 120,
 });
+watch(
+  () => props.queryParam,
+  () => getCategoryTree(),
+);
+
 const { proxy } = getCurrentInstance();
 
 const openView = ref(false);
@@ -251,6 +257,7 @@ const form = ref<SysOssCategoryVo & SysOssCategoryForm>({});
 const emit = defineEmits<{
   (e: 'change', selectValues: SysOssVo[]): void;
 }>();
+const queryParams = ref<SysOssCategoryQuery>({});
 
 /** 通过条件过滤节点  */
 function filterNode(node: TreeNodeModel) {
@@ -325,7 +332,10 @@ async function getCategoryOptions() {
 /** 查询OSS分类树结构 */
 function getCategoryTree() {
   loadingOptions.value = true;
-  listOssCategory()
+  queryParams.value.suffixes = props.queryParam?.suffixes?.map((value) => `.${value}`);
+  queryParams.value.maxSize = props.queryParam?.maxSize;
+  queryParams.value.contentTypes = props.queryParam?.contentTypes;
+  listOssCategory(queryParams.value)
     .then((response) => {
       ossCategoryTree.value = proxy.handleTree(response.data, 'ossCategoryId', 'parentId');
     })

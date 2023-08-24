@@ -122,8 +122,7 @@ public class SysProfileController extends BaseController {
             SysOssBo bo = new SysOssBo();
             bo.setCreateBy(LoginHelper.getUserId());
             bo.setUserTypeEnum(UserType.SYS_USER);
-            bo.setIsLock(0);
-            bo.setIsList(0);
+            bo.setIsLock(1);
             bo.setOssCategoryId(0L);
             SysOssVo oss = ossService.upload(avatarfile, bo);
             String avatar = oss.getUrl();

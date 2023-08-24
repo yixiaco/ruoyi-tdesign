@@ -81,11 +81,6 @@ public class SysOss extends TenantEntity {
     private Integer isLock;
 
     /**
-     * 是否显示在列表
-     */
-    private Integer isList;
-
-    /**
      * 创建部门
      */
     @TableField(fill = FieldFill.INSERT)

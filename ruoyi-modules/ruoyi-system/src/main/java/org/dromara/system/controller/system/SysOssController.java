@@ -118,7 +118,6 @@ public class SysOssController extends BaseController {
         bo.setCreateBy(LoginHelper.getUserId());
         bo.setUserTypeEnum(UserType.SYS_USER);
         bo.setIsLock(0);
-        bo.setIsList(0);
         bo.setOssCategoryId(0L);
         SysOssVo oss = ossService.upload(file, bo);
         SysOssUploadVo uploadVo = new SysOssUploadVo();
