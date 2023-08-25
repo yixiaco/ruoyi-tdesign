@@ -4,28 +4,36 @@
       <!--部门数据-->
       <t-col :sm="2" :xs="12">
         <div class="head-container">
-          <t-input v-model="deptName" placeholder="请输入部门名称" clearable style="margin-bottom: 20px">
-            <template #prefixIcon>
-              <search-icon />
-            </template>
-          </t-input>
+          <t-space>
+            <t-input v-model="deptName" placeholder="请输入部门名称" clearable style="margin-bottom: 20px">
+              <template #prefixIcon>
+                <search-icon />
+              </template>
+            </t-input>
+            <t-button shape="square" variant="outline" @click="getDeptTree">
+              <template #icon><refresh-icon /></template>
+            </t-button>
+          </t-space>
         </div>
         <div class="head-container">
-          <t-tree
-            ref="deptTreeRef"
-            v-model:actived="deptActived"
-            class="t-tree--block-node"
-            :data="deptOptions"
-            :keys="{ value: 'id', label: 'label', children: 'children' }"
-            :filter="filterNode"
-            activable
-            expand-all
-            hover
-            line
-            check-strictly
-            allow-fold-node-on-filter
-            @active="handleQuery"
-          />
+          <t-loading :loading="loadingDept" size="small">
+            <t-tree
+              ref="deptTreeRef"
+              v-model:actived="deptActived"
+              v-model:expanded="expandedDept"
+              class="t-tree--block-node"
+              :data="deptOptions"
+              :keys="{ value: 'id', label: 'label', children: 'children' }"
+              :filter="filterNode"
+              activable
+              hover
+              line
+              check-strictly
+              allow-fold-node-on-filter
+              transition
+              @active="handleQuery"
+            />
+          </t-loading>
         </div>
       </t-col>
       <!--用户数据-->
@@ -468,9 +476,10 @@ import type {
   TreeNodeModel,
   UploadInstanceFunctions,
 } from 'tdesign-vue-next';
-import { computed, createVNode, getCurrentInstance, reactive, ref } from 'vue';
+import { computed, createVNode, getCurrentInstance, onMounted, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
+import type { TreeModel } from '@/api/model/resultModel';
 import type { SysPostVo } from '@/api/system/model/postModel';
 import type { SysRoleVo } from '@/api/system/model/roleModel';
 import type { SysUserForm, SysUserQuery, SysUserVo } from '@/api/system/model/userModel';
@@ -499,6 +508,7 @@ const openView = ref(false);
 const openViewLoading = ref(false);
 const loading = ref(true);
 const dLoading = ref(false);
+const loadingDept = ref(false);
 const showSearch = ref(true);
 const columnControllerVisible = ref(false);
 const ids = ref([]);
@@ -508,7 +518,8 @@ const total = ref(0);
 const title = ref('');
 const dateRange = ref([]);
 const deptName = ref('');
-const deptOptions = ref(undefined);
+const deptOptions = ref<Array<TreeModel<number>>>([]);
+const expandedDept = ref<number[]>([]);
 const initPassword = ref(undefined);
 const postOptions = ref<SysPostVo[]>([]);
 const roleOptions = ref<SysRoleVo[]>([]);
@@ -597,9 +608,17 @@ function filterNode(node: TreeNodeModel) {
 }
 /** 查询部门下拉树结构 */
 function getDeptTree() {
-  deptTreeSelect().then((response) => {
-    deptOptions.value = response.data;
-  });
+  loadingDept.value = true;
+  return deptTreeSelect()
+    .then((response) => {
+      deptOptions.value = response.data;
+    })
+    .finally(() => (loadingDept.value = false));
+}
+function triggerExpandedDept() {
+  expandedDept.value = deptOptions.value
+    .flatMap((value) => value.children?.concat([value]) ?? [value])
+    .map((value) => value.id);
 }
 /** 查询用户列表 */
 function getList() {
@@ -681,7 +700,7 @@ function handleResetPwd(row: SysUserVo) {
     onConfirm: (value) => {
       const msgLoading = proxy.$modal.msgLoading('提交中...');
       return resetUserPwd(row.userId, value)
-        .then((response) => {
+        .then(() => {
           proxy.$modal.msgSuccess(`修改成功，新密码是：${value}`);
         })
         .finally(() => proxy.$modal.msgClose(msgLoading));
@@ -806,7 +825,7 @@ const onSubmit = ({ validateResult, firstError }: SubmitContext) => {
     const msgLoading = proxy.$modal.msgLoading('提交中...');
     if (form.value.userId) {
       updateUser(form.value)
-        .then((response) => {
+        .then(() => {
           proxy.$modal.msgSuccess('修改成功');
           open.value = false;
           getList();
@@ -817,7 +836,7 @@ const onSubmit = ({ validateResult, firstError }: SubmitContext) => {
         });
     } else {
       addUser(form.value)
-        .then((response) => {
+        .then(() => {
           proxy.$modal.msgSuccess('新增成功');
           open.value = false;
           getList();
@@ -832,6 +851,8 @@ const onSubmit = ({ validateResult, firstError }: SubmitContext) => {
   }
 };
 
-getDeptTree();
-getList();
+onMounted(() => {
+  getDeptTree().then(() => triggerExpandedDept());
+  getList();
+});
 </script>
