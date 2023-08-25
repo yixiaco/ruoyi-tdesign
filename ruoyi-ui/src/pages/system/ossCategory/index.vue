@@ -4,11 +4,16 @@
       <!--分类数据-->
       <t-col :sm="2" :xs="12">
         <div class="head-container">
-          <t-input v-model="categoryName" placeholder="请输入分类名称" clearable style="margin-bottom: 20px">
-            <template #prefixIcon>
-              <search-icon />
-            </template>
-          </t-input>
+          <t-space>
+            <t-input v-model="categoryName" placeholder="搜索分类名称" clearable style="margin-bottom: 20px">
+              <template #prefixIcon>
+                <search-icon />
+              </template>
+            </t-input>
+            <t-button shape="square" variant="outline" @click="getCategoryTree">
+              <template #icon><refresh-icon /></template>
+            </t-button>
+          </t-space>
         </div>
         <div class="head-container">
           <t-skeleton animation="gradient" :loading="loadingOptions">
@@ -38,21 +43,37 @@
                 </t-link>
               </template>
               <template #operations="{ node }">
-                <t-dropdown placement="bottom" :max-column-width="120" :popup-props="{ showArrow: true }">
+                <t-dropdown
+                  v-hasPermi="[
+                    'system:ossCategory:query',
+                    'system:ossCategory:add',
+                    'system:ossCategory:edit',
+                    'system:ossCategory:remove',
+                  ]"
+                  placement="bottom"
+                  :max-column-width="120"
+                  :popup-props="{ showArrow: true }"
+                >
                   <t-button size="small" theme="primary" variant="text"> 操作 </t-button>
                   <t-dropdown-menu>
                     <t-dropdown-item
                       v-if="node.value !== 0"
+                      v-hasPermi="['system:ossCategory:query']"
                       content="查看详情"
                       @click="handleCategoryDetail(node.data)"
                     >
                       <template #prefix-icon><browse-icon /></template>
                     </t-dropdown-item>
-                    <t-dropdown-item content="新增子分类" @click="handleCategoryAdd(node.data)">
+                    <t-dropdown-item
+                      v-hasPermi="['system:ossCategory:add']"
+                      content="新增子分类"
+                      @click="handleCategoryAdd(node.data)"
+                    >
                       <template #prefix-icon><add-icon /></template>
                     </t-dropdown-item>
                     <t-dropdown-item
                       v-if="node.value !== 0"
+                      v-hasPermi="['system:ossCategory:add']"
                       content="前插分类"
                       @click="handleCategoryAdd(node.getParent()?.data, node.data.orderNum - 1)"
                     >
@@ -60,6 +81,7 @@
                     </t-dropdown-item>
                     <t-dropdown-item
                       v-if="node.value !== 0"
+                      v-hasPermi="['system:ossCategory:add']"
                       content="后插分类"
                       @click="handleCategoryAdd(node.getParent()?.data, node.data.orderNum + 1)"
                     >
@@ -67,6 +89,7 @@
                     </t-dropdown-item>
                     <t-dropdown-item
                       v-if="node.value !== 0"
+                      v-hasPermi="['system:ossCategory:edit']"
                       content="编辑分类"
                       @click="handleCategoryUpdate(node.data)"
                     >
@@ -74,6 +97,7 @@
                     </t-dropdown-item>
                     <t-dropdown-item
                       v-if="node.value !== 0"
+                      v-hasPermi="['system:ossCategory:remove']"
                       content="删除分类"
                       theme="error"
                       @click="handleCategoryDelete(node.data)"
@@ -199,6 +223,7 @@ import {
   BrowseIcon,
   DeleteIcon,
   EditIcon,
+  RefreshIcon,
   SearchIcon,
 } from 'tdesign-icons-vue-next';
 import type { FormInstanceFunctions, FormRule, SubmitContext, TreeNodeModel, TreeNodeValue } from 'tdesign-vue-next';

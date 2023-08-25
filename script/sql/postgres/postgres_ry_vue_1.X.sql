@@ -32,7 +32,7 @@ create table sys_social
     update_by          int8,
     update_time        timestamp,
     del_flag           char             default '0'::bpchar,
-    constraint "pk_sys_social" primary key (id)
+    constraint pk_sys_social primary key (id)
 );
 
 comment on table   sys_social                   is '社会化关系表';
@@ -463,6 +463,7 @@ insert into sys_menu values('501',  '登录日志', '108', '2', 'logininfor', 'm
 insert into sys_menu values('1500', 'OSS配置管理', '1510', '1', 'ossConfig', 'system/ossConfig/index', '', 0, 1, 'C', '1', '1', 'system:ossConfig:list', 'server', 103, 1, now(), 1, null, '');
 insert into sys_menu values('118',  '文件管理','1510','2', 'oss','system/oss/index','', 0, 1, 'C', '1', '1', 'system:oss:list', 'cloud-upload',103, 1, now(), null, null, '文件管理菜单');
 insert into sys_menu values('1521', 'OSS处理规则', '1510', '3', 'ossRule', 'system/ossRule/index', NULL, 0, 1, 'C', '1', '1', 'system:ossRule:list', 'chevron-right-double', 103, 1, now(), 1, null, 'OSS处理规则菜单');
+insert into sys_menu values('1531', '我的文件', '1510', 4, 'ossCategory', 'system/ossCategory/index', NULL, 0, 1, 'C', '1', '1', 'system:ossCategory:list', 'folder-open', 103, 1, now(), 1, now(), '我的文件菜单');
 -- 用户管理按钮
 insert into sys_menu values('1001', '用户查询', '100', '1',  '', '', '', 0, 1, 'F', '1', '1', 'system:user:query',          '#', 103, 1, now(), null, null, '');
 insert into sys_menu values('1002', '用户新增', '100', '2',  '', '', '', 0, 1, 'F', '1', '1', 'system:user:add',            '#', 103, 1, now(), null, null, '');
@@ -537,6 +538,7 @@ insert into sys_menu values('1600', '文件查询', '118', '1', '#', '', '', 0, 
 insert into sys_menu values('1601', '文件上传', '118', '2', '#', '', '', 0, 1, 'F', '1', '1', 'system:oss:upload',       '#', 103, 1, now(), null, null, '');
 insert into sys_menu values('1602', '文件下载', '118', '3', '#', '', '', 0, 1, 'F', '1', '1', 'system:oss:download',     '#', 103, 1, now(), null, null, '');
 insert into sys_menu values('1603', '文件删除', '118', '4', '#', '', '', 0, 1, 'F', '1', '1', 'system:oss:remove',       '#', 103, 1, now(), null, null, '');
+insert into sys_menu values('1604', '文件修改', '118', 5, '', NULL, NULL, 0, 1, 'F', '1', '1', 'system:oss:edit', '#', 103, 1, now(), 1, now(), '');
 insert into sys_menu values('1501', '配置添加', '1500', '1', '#', '', '', 0, 1, 'F', '1', '1', 'system:ossConfig:add',  '#', 103, 1, now(), null, null, '');
 insert into sys_menu values('1502', '配置编辑', '1500', '2', '#', '', '', 0, 1, 'F', '1', '1', 'system:ossConfig:edit', '#', 103, 1, now(), null, null, '');
 insert into sys_menu values('1503', '配置删除', '1500', '3', '#', '', '', 0, 1, 'F', '1', '1', 'system:ossConfig:remove','#', 103, 1, now(), null, null, '');
@@ -545,6 +547,10 @@ insert into sys_menu values('1523', 'OSS处理规则新增', '1521', '2', '#', '
 insert into sys_menu values('1524', 'OSS处理规则修改', '1521', '3', '#', '', null, 0, 1, 'F', '1', '1', 'system:ossRule:edit', '#', 103, 1, now(), null, null, '');
 insert into sys_menu values('1525', 'OSS处理规则删除', '1521', '4', '#', '', null, 0, 1, 'F', '1', '1', 'system:ossRule:remove', '#', 103, 1, now(), null, null, '');
 insert into sys_menu values('1526', 'OSS处理规则导出', '1521', '5', '#', '', null, 0, 1, 'F', '1', '1', 'system:ossRule:export', '#', 103, 1, now(), null, null, '');
+insert into sys_menu values('1532', 'OSS分类查询', '1531', 1, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:ossCategory:query', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1533', 'OSS分类新增', '1531', 2, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:ossCategory:add', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1534', 'OSS分类修改', '1531', 3, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:ossCategory:edit', '#', 103, 1, now(), NULL, NULL, '');
+insert into sys_menu values('1535', 'OSS分类删除', '1531', 4, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:ossCategory:remove', '#', 103, 1, now(), NULL, NULL, '');
 -- 租户管理相关按钮
 insert into sys_menu values('1606', '租户查询', '121', '1', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenant:query',   '#', 103, 1, now(), null, null, '');
 insert into sys_menu values('1607', '租户新增', '121', '2', '#', '', '', 0, 1, 'F', '1', '1', 'system:tenant:add',     '#', 103, 1, now(), null, null, '');
@@ -1209,22 +1215,29 @@ comment on column gen_table_column.update_time      is '更新时间';
 drop table if exists sys_oss;
 create table if not exists sys_oss
 (
-    oss_id        int8,
-    tenant_id     varchar(20)  default '000000'::varchar,
-    file_name     varchar(255) default ''::varchar not null,
-    original_name varchar(255) default ''::varchar not null,
-    file_suffix   varchar(10)  default ''::varchar not null,
-    url           varchar(500) default ''::varchar not null,
-    size          int8         default ''::varchar not null,
-    create_dept   int8,
-    create_by     int8,
-    create_time   timestamp,
-    update_by     int8,
-    update_time   timestamp,
-    service       varchar(20)  default 'minio'::varchar,
+    oss_id          int8,
+    tenant_id       varchar(20)  default '000000'::varchar,
+    file_name       varchar(255) default ''::varchar not null,
+    original_name   varchar(255) default ''::varchar not null,
+    file_suffix     varchar(10)  default ''::varchar not null,
+    url             varchar(500) default ''::varchar not null,
+    size            int8         default ''::varchar not null,
+    content_type    varchar(255),
+    oss_category_id int8         default 0           not null,
+    user_type       varchar(20)  default ''::varchar not null,
+    is_lock         int2         default 0           not null,
+    create_dept     int8,
+    create_by       int8,
+    create_time     timestamp,
+    update_by       int8,
+    update_time     timestamp,
+    service         varchar(20)  default 'minio'::varchar,
     constraint sys_oss_pk primary key (oss_id)
 );
-
+create index idx_oss_category_id on sys_oss using btree (oss_category_id);
+create index idx_user on sys_oss using btree (create_by,user_type,create_time);
+comment on index idx_oss_category_id is '分类索引';
+comment on index idx_user is '用户索引';
 comment on table sys_oss                    is 'OSS对象存储表';
 comment on column sys_oss.oss_id            is '对象存储主键';
 comment on column sys_oss.tenant_id         is '租户编码';
@@ -1233,12 +1246,46 @@ comment on column sys_oss.original_name     is '原名';
 comment on column sys_oss.file_suffix       is '文件后缀名';
 comment on column sys_oss.url               is 'URL地址';
 comment on column sys_oss.size              is '字节长度';
+comment on column sys_oss.content_type      is '内容类型';
+comment on column sys_oss.oss_category_id   is '分类id';
+comment on column sys_oss.user_type         is '用户类型';
+comment on column sys_oss.is_lock           is '是否锁定状态';
 comment on column sys_oss.create_by         is '上传人';
 comment on column sys_oss.create_dept       is '创建部门';
 comment on column sys_oss.create_time       is '创建时间';
 comment on column sys_oss.update_by         is '更新者';
 comment on column sys_oss.update_time       is '更新时间';
 comment on column sys_oss.service           is '服务商';
+
+-- ----------------------------
+-- OSS分类表
+-- ----------------------------
+drop table if exists sys_oss_category;
+create table sys_oss_category
+(
+    oss_category_id int8          not null primary key,
+    category_name   varchar(255)  not null,
+    parent_id       int8          not null,
+    category_path   varchar(2000) not null,
+    level           int4          not null,
+    order_num       int4          not null,
+    user_type       varchar(20)   not null,
+    create_by       int8          not null,
+    update_time     timestamp,
+    create_time     timestamp     not null
+);
+CREATE INDEX idx_user ON sys_oss_category USING btree (create_by,user_type,order_num);
+comment on table sys_oss_category is 'OSS分类表';
+comment on column sys_oss_category.oss_category_id is 'oss分类id';
+comment on column sys_oss_category.category_name is '分类名称';
+comment on column sys_oss_category.parent_id is '父级分类id';
+comment on column sys_oss_category.category_path is '分类路径';
+comment on column sys_oss_category.level is '层级';
+comment on column sys_oss_category.order_num is '显示顺序';
+comment on column sys_oss_category.user_type is '用户类型';
+comment on column sys_oss_category.create_by is '上传人';
+comment on column sys_oss_category.update_time is '更新时间';
+comment on column sys_oss_category.create_time is '创建时间';
 
 -- ----------------------------
 -- OSS对象存储动态配置表
