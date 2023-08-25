@@ -1,5 +1,5 @@
-import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysLogininforBo, SysLogininforVo } from '@/api/monitor/model/logininforModel';
+import type { R, TableDataInfo } from '@/api/model/resultModel';
+import type { SysLogininforBo, SysLogininforVo } from '@/api/monitor/model/logininforModel';
 import { request } from '@/utils/request';
 
 // 查询登录日志列表

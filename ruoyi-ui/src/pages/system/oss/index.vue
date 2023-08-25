@@ -3,35 +3,18 @@
     <t-space direction="vertical" style="width: 100%">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline">
         <t-form-item label="文件名" name="fileName">
-          <t-input
-            v-model="queryParams.fileName"
-            placeholder="请输入文件名"
-            clearable
-            style="width: 200px"
-            @enter="handleQuery"
-          />
+          <t-input v-model="queryParams.fileName" placeholder="请输入文件名" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="原名" name="originalName">
-          <t-input
-            v-model="queryParams.originalName"
-            placeholder="请输入原名"
-            clearable
-            style="width: 200px"
-            @enter="handleQuery"
-          />
+          <t-input v-model="queryParams.originalName" placeholder="请输入原名" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="文件后缀" name="fileSuffix">
-          <t-input
-            v-model="queryParams.fileSuffix"
-            placeholder="请输入文件后缀"
-            clearable
-            style="width: 200px"
-            @enter="handleQuery"
-          />
+          <t-input v-model="queryParams.fileSuffix" placeholder="请输入文件后缀" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="创建时间">
           <t-date-range-picker
             v-model="daterangeCreateTime"
+            style="width: 240px"
             allow-input
             clearable
             separator="-"
@@ -39,22 +22,10 @@
           />
         </t-form-item>
         <t-form-item label="上传人" name="createByName">
-          <t-input
-            v-model="queryParams.createByName"
-            placeholder="请输入上传人"
-            clearable
-            style="width: 200px"
-            @enter="handleQuery"
-          />
+          <t-input v-model="queryParams.createByName" placeholder="请输入上传人" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="服务商" name="service">
-          <t-input
-            v-model="queryParams.service"
-            placeholder="请输入服务商"
-            clearable
-            style="width: 200px"
-            @enter="handleQuery"
-          />
+          <t-input v-model="queryParams.service" placeholder="请输入服务商" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label-width="0px">
           <t-button theme="primary" @click="handleQuery">
@@ -90,11 +61,11 @@
           <t-row>
             <t-col flex="auto">
               <t-button v-hasPermi="['system:oss:upload']" theme="primary" @click="handleFile">
-                <template #icon> <add-icon /></template>
+                <template #icon> <cloud-upload-icon /></template>
                 上传文件
               </t-button>
               <t-button v-hasPermi="['system:oss:upload']" theme="primary" @click="handleImage">
-                <template #icon> <add-icon /></template>
+                <template #icon> <cloud-upload-icon /></template>
                 上传图片
               </t-button>
               <t-button
@@ -186,14 +157,12 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Oss',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Oss',
+});
 import {
-  AddIcon,
+  CloudUploadIcon,
   DeleteIcon,
   DownloadIcon,
   RefreshIcon,
@@ -201,11 +170,11 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormRule, PageInfo, PrimaryTableCol, TableSort } from 'tdesign-vue-next';
+import type { FormRule, PageInfo, PrimaryTableCol, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref, toRefs } from 'vue';
 
 import { getPreviewListResourceConfig } from '@/api/system/config';
-import { SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
+import type { SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
 import { delOss, listOss } from '@/api/system/oss';
 import FileUpload from '@/components/file-upload/index.vue';
 import ImagePreview from '@/components/image-preview/index.vue';
@@ -389,6 +358,7 @@ function handleDelete(row?: SysOssVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delOss(ossIds)
       .then(() => {
+        if (!row) ids.value = [];
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

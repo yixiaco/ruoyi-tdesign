@@ -1,5 +1,5 @@
-import { TabValue } from 'tdesign-vue-next';
-import { LocationQueryRaw, RouteMeta, RouteRecordName, RouteRecordRaw } from 'vue-router';
+import type { TabValue } from 'tdesign-vue-next';
+import type { LocationQueryRaw, RouteMeta, RouteRecordName, RouteRecordRaw } from 'vue-router';
 
 import STYLE_CONFIG from '@/config/style';
 

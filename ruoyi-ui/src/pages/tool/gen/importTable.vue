@@ -72,11 +72,11 @@
 
 <script lang="ts" setup>
 import { RefreshIcon, SearchIcon } from 'tdesign-icons-vue-next';
-import { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
+import type { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, reactive, ref } from 'vue';
 
 import { getDataNames, importTable, listDbTable } from '@/api/tool/gen';
-import { GenTableQuery, GenTableVo } from '@/api/tool/model/genModel';
+import type { GenTableQuery, GenTableVo } from '@/api/tool/model/genModel';
 
 const total = ref(0);
 const loading = ref(false);

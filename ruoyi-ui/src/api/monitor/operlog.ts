@@ -1,5 +1,5 @@
-import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysOperLogBo, SysOperLogVo } from '@/api/monitor/model/operlogModel';
+import type { R, TableDataInfo } from '@/api/model/resultModel';
+import type { SysOperLogBo, SysOperLogVo } from '@/api/monitor/model/operlogModel';
 import { request } from '@/utils/request';
 
 // 查询操作日志列表

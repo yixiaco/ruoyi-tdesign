@@ -1,4 +1,4 @@
-import { R } from '@/api/model/resultModel';
+import type { R } from '@/api/model/resultModel';
 import { request } from '@/utils/request';
 
 // 发送测试邮件

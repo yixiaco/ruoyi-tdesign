@@ -15,7 +15,7 @@
   </header>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { HelpCircleIcon, LogoGithubIcon, SettingIcon } from 'tdesign-icons-vue-next';
 
 import LogoFullIcon from '@/assets/icons/assets-logo-full.svg?component';

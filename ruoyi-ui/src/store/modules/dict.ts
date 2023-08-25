@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 
-import { DictModel } from '@/utils/dict';
+import type { DictModel } from '@/utils/dict';
 
 const useDictStore = defineStore('dict', {
   state: () => ({

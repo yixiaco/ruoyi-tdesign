@@ -8,6 +8,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.dromara.common.tenant.core.TenantEntity;
 
+import java.io.Serial;
 import java.util.Date;
 
 /**
@@ -20,11 +21,19 @@ import java.util.Date;
 @TableName("sys_oss")
 public class SysOss extends TenantEntity {
 
+    @Serial
+    private static final long serialVersionUID = 1L;
+
     /**
      * 对象存储主键
      */
     @TableId(value = "oss_id")
     private Long ossId;
+
+    /**
+     * 租户编号
+     */
+    private String tenantId;
 
     /**
      * 文件名
@@ -52,9 +61,24 @@ public class SysOss extends TenantEntity {
     private Long size;
 
     /**
-     * 服务商
+     * 内容类型
      */
-    private String service;
+    private String contentType;
+
+    /**
+     * 分类id
+     */
+    private Long ossCategoryId;
+
+    /**
+     * 用户类型
+     */
+    private String userType;
+
+    /**
+     * 是否锁定状态
+     */
+    private Integer isLock;
 
     /**
      * 创建部门
@@ -63,27 +87,32 @@ public class SysOss extends TenantEntity {
     private Long createDept;
 
     /**
-     * 创建者
-     */
-    @TableField(fill = FieldFill.INSERT)
-    private Long createBy;
-
-    /**
      * 创建时间
      */
     @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
     /**
-     * 更新者
+     * 上传人
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
-    private Long updateBy;
+    @TableField(fill = FieldFill.INSERT)
+    private Long createBy;
 
     /**
      * 更新时间
      */
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
+
+    /**
+     * 更新人
+     */
+    @TableField(fill = FieldFill.INSERT_UPDATE)
+    private Long updateBy;
+
+    /**
+     * 服务商
+     */
+    private String service;
 
 }

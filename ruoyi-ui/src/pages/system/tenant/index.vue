@@ -275,12 +275,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Tenant',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Tenant',
+});
 import {
   AddIcon,
   BrowseIcon,
@@ -291,11 +289,11 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
+import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
-import { SysTenantForm, SysTenantQuery, SysTenantVo } from '@/api/system/model/tenantModel';
-import { SysTenantPackageVo } from '@/api/system/model/tenantPackageModel';
+import type { SysTenantForm, SysTenantQuery, SysTenantVo } from '@/api/system/model/tenantModel';
+import type { SysTenantPackageVo } from '@/api/system/model/tenantPackageModel';
 import {
   addTenant,
   changeTenantStatus,
@@ -320,7 +318,7 @@ const buttonLoading = ref(false);
 const loading = ref(false);
 const columnControllerVisible = ref(false);
 const showSearch = ref(true);
-const ids = ref([]);
+const ids = ref<number[]>([]);
 const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
@@ -510,12 +508,13 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
 
 /** 删除按钮操作 */
 function handleDelete(row?: SysTenantVo) {
-  const $ids = row?.id || ids.value.at(0);
+  const $ids = row?.id || ids.value;
   proxy.$modal.confirm(`是否确认删除租户编号为${$ids}的数据项？`, () => {
     loading.value = true;
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delTenant($ids)
       .then(() => {
+        if (!row) ids.value = [];
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

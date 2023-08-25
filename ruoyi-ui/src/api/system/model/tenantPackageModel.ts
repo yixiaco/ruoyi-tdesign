@@ -2,7 +2,7 @@
  * 租户套餐业务对象 sys_tenant_package
  *
  */
-import { BaseEntity } from '@/api/model/resultModel';
+import type { BaseEntity } from '@/api/model/resultModel';
 
 /**
  * 租户套餐查询对象

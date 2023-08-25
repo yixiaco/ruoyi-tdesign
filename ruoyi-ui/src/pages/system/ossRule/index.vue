@@ -238,12 +238,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'OssRule',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'OssRule',
+});
 import {
   AddIcon,
   BrowseIcon,
@@ -254,10 +252,10 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
+import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
-import { SysOssRuleForm, SysOssRuleQuery, SysOssRuleVo } from '@/api/system/model/ossRuleModel';
+import type { SysOssRuleForm, SysOssRuleQuery, SysOssRuleVo } from '@/api/system/model/ossRuleModel';
 import {
   addOssRule,
   changeOssRuleOverwrite,
@@ -460,6 +458,7 @@ function handleDelete(row?: SysOssRuleVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delOssRule(ossRuleIds)
       .then(() => {
+        if (!row) ids.value = [];
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

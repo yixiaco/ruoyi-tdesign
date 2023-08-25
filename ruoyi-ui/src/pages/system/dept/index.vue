@@ -169,12 +169,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Dept',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Dept',
+});
 import {
   AddIcon,
   DeleteIcon,
@@ -185,7 +183,7 @@ import {
   SettingIcon,
   UnfoldMoreIcon,
 } from 'tdesign-icons-vue-next';
-import {
+import type {
   EnhancedTableInstanceFunctions,
   FormInstanceFunctions,
   FormRule,
@@ -196,7 +194,7 @@ import {
 import { getCurrentInstance, ref } from 'vue';
 
 import { addDept, delDept, getDept, listDept, listDeptExcludeChild, updateDept } from '@/api/system/dept';
-import { SysDeptForm, SysDeptQuery, SysDeptVo } from '@/api/system/model/deptModel';
+import type { SysDeptForm, SysDeptQuery, SysDeptVo } from '@/api/system/model/deptModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');

@@ -1,4 +1,4 @@
-import { BaseEntity } from '@/api/model/resultModel';
+import type { BaseEntity } from '@/api/model/resultModel';
 
 /**
  * 字典数据查询对象

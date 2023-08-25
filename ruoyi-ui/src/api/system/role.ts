@@ -1,6 +1,6 @@
-import { R, TableDataInfo } from '@/api/model/resultModel';
-import { DeptTreeSelect, SysRoleForm, SysRoleQuery, SysRoleVo, SysUserRole } from '@/api/system/model/roleModel';
-import { SysUserForm, SysUserVo } from '@/api/system/model/userModel';
+import type { R, TableDataInfo } from '@/api/model/resultModel';
+import type { DeptTreeSelect, SysRoleForm, SysRoleQuery, SysRoleVo, SysUserRole } from '@/api/system/model/roleModel';
+import type { SysUserForm, SysUserVo } from '@/api/system/model/userModel';
 import { request } from '@/utils/request';
 
 // 查询角色列表

@@ -18,12 +18,10 @@
     </div>
   </result>
 </template>
-<script lang="ts">
-export default {
+<script lang="ts" setup>
+defineOptions({
   name: 'ResultBrowserIncompatible',
-};
-</script>
-<script setup lang="ts">
+});
 import Chorme from '@/assets/images/chorme.png';
 import QQBrowser from '@/assets/images/qq-browser.png';
 import Result from '@/components/result/index.vue';

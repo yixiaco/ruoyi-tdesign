@@ -94,18 +94,16 @@
     <select-user ref="selectRef" :role-id="queryParams.roleId" @ok="handleQuery" />
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'AuthUser',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'AuthUser',
+});
 import { AddIcon, CloseCircleIcon, CloseIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
+import type { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { SysUserForm, SysUserVo } from '@/api/system/model/userModel';
+import type { SysUserForm, SysUserVo } from '@/api/system/model/userModel';
 import { allocatedUserList, authUserCancel, authUserCancelAll } from '@/api/system/role';
 import SelectUser from '@/pages/system/role/selectUser.vue';
 import { useTabsRouterStore } from '@/store';

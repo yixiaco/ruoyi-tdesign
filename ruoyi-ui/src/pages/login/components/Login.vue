@@ -110,7 +110,7 @@
   </t-form>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import Cookies from 'js-cookie';
 import QrcodeVue from 'qrcode.vue';
 import {
@@ -131,7 +131,7 @@ import { getCurrentInstance, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { getCodeImg } from '@/api/login';
-import { LoginParam } from '@/api/model/loginModel';
+import type { LoginParam } from '@/api/model/loginModel';
 import { authBinding } from '@/api/system/social';
 import GiteeSvg from '@/assets/icons/svg/gitee.svg?component';
 import MaxKey from '@/assets/icons/svg/maxkey.svg?component';

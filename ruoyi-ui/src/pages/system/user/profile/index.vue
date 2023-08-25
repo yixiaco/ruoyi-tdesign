@@ -66,16 +66,14 @@
     </t-row>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Profile',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Profile',
+});
 import { CalendarIcon, MailIcon, MobileIcon, SecuredIcon, UsergroupIcon, UserIcon } from 'tdesign-icons-vue-next';
 import { reactive, ref } from 'vue';
 
-import { ProfileVo } from '@/api/system/model/userModel';
+import type { ProfileVo } from '@/api/system/model/userModel';
 import { getUserProfile } from '@/api/system/user';
 import ResetPwd from '@/pages/system/user/profile/resetPwd.vue';
 import ThirdParty from '@/pages/system/user/profile/thirdParty.vue';

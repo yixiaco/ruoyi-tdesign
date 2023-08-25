@@ -36,14 +36,13 @@
     </t-loading>
   </t-dialog>
 </template>
-<script lang="ts">
-export default {
+<script lang="ts" setup>
+defineOptions({
   name: 'GenPreview',
-};
-</script>
-<script setup lang="ts">
+});
 import { FileCopyIcon } from 'tdesign-icons-vue-next';
-import { computed, getCurrentInstance, PropType, ref, watch } from 'vue';
+import type { PropType } from 'vue';
+import { computed, getCurrentInstance, ref, watch } from 'vue';
 
 const { proxy } = getCurrentInstance();
 const title = ref('代码预览');

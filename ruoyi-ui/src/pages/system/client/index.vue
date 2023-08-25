@@ -231,12 +231,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Client',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Client',
+});
 import {
   AddIcon,
   BrowseIcon,
@@ -247,11 +245,18 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext, TableSort } from 'tdesign-vue-next';
+import type {
+  FormInstanceFunctions,
+  FormRule,
+  PageInfo,
+  PrimaryTableCol,
+  SubmitContext,
+  TableSort,
+} from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { addClient, changeStatus, delClient, getClient, listClient, updateClient } from '@/api/system/client';
-import { SysClientForm, SysClientQuery, SysClientVo } from '@/api/system/model/clientModel';
+import type { SysClientForm, SysClientQuery, SysClientVo } from '@/api/system/model/clientModel';
 import { handleChangeStatus } from '@/utils/ruoyi';
 
 const { proxy } = getCurrentInstance();
@@ -472,6 +477,7 @@ function handleDelete(row?: SysClientVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delClient($ids)
       .then(() => {
+        if (!row) ids.value = [];
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

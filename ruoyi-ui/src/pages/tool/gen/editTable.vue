@@ -158,21 +158,19 @@
     <gen-preview v-model:visible="preview.open" :data="preview.data" :loading="preview.loading" />
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'GenEdit',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'GenEdit',
+});
 import { SettingIcon } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
+import type { FormInstanceFunctions, FormRule, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, onMounted, reactive, ref, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { optionselect as getDictOptionselect } from '@/api/system/dict/type';
-import { SysDictTypeVo } from '@/api/system/model/dictModel';
+import type { SysDictTypeVo } from '@/api/system/model/dictModel';
 import { getGenTable, synchDb, tempPreviewTable, updateGenTable } from '@/api/tool/gen';
-import { GenTableColumn, GenTableForm, GenTableVo } from '@/api/tool/model/genModel';
+import type { GenTableColumn, GenTableForm, GenTableVo } from '@/api/tool/model/genModel';
 import GenPreview from '@/pages/tool/gen/components/preview.vue';
 import { useTabsRouterStore } from '@/store';
 

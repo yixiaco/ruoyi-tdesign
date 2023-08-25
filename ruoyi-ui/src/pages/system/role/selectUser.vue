@@ -59,17 +59,15 @@
     </t-space>
   </t-dialog>
 </template>
-<script lang="ts">
-export default {
-  name: 'SelectUser',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'SelectUser',
+});
 import { RefreshIcon, SearchIcon } from 'tdesign-icons-vue-next';
-import { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
+import type { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, reactive, ref } from 'vue';
 
-import { SysUserVo } from '@/api/system/model/userModel';
+import type { SysUserVo } from '@/api/system/model/userModel';
 import { authUserSelectAll, unallocatedUserList } from '@/api/system/role';
 
 const props = defineProps({

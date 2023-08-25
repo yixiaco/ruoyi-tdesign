@@ -3,12 +3,10 @@
     <component :is="rowComponent" v-bind="$attrs" />
   </KeepAlive>
 </template>
-<script lang="ts">
-export default {
-  name: 'RIcon',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'RIcon',
+});
 import * as Icons from 'tdesign-icons-vue-next/lib/icons';
 import { computed } from 'vue';
 

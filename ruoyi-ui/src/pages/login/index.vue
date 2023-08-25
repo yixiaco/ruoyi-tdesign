@@ -24,12 +24,10 @@
     </footer>
   </div>
 </template>
-<script lang="ts">
-export default {
+<script lang="ts" setup>
+defineOptions({
   name: 'LoginIndex',
-};
-</script>
-<script setup lang="ts">
+});
 import { ref } from 'vue';
 
 import TdesignSetting from '@/layouts/setting.vue';

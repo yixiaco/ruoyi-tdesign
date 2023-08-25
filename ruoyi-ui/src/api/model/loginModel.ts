@@ -1,4 +1,4 @@
-import { SysUserVo } from '@/api/system/model/userModel';
+import type { SysUserVo } from '@/api/system/model/userModel';
 
 // 登录用户信息
 export interface UserInfo {

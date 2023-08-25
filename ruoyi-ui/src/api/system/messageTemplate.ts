@@ -1,7 +1,7 @@
-import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysMessageConfigVo } from '@/api/system/model/messageConfigModel';
-import { SysMessageKeyVo } from '@/api/system/model/messageKeyModel';
-import {
+import type { R, TableDataInfo } from '@/api/model/resultModel';
+import type { SysMessageConfigVo } from '@/api/system/model/messageConfigModel';
+import type { SysMessageKeyVo } from '@/api/system/model/messageKeyModel';
+import type {
   SysMessageTemplateForm,
   SysMessageTemplateQuery,
   SysMessageTemplateTest,

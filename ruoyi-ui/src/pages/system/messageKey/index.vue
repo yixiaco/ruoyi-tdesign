@@ -181,12 +181,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'MessageKey',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'MessageKey',
+});
 import {
   AddIcon,
   BrowseIcon,
@@ -197,11 +195,18 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext, TableSort } from 'tdesign-vue-next';
+import type {
+  FormInstanceFunctions,
+  FormRule,
+  PageInfo,
+  PrimaryTableCol,
+  SubmitContext,
+  TableSort,
+} from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { addMessageKey, delMessageKey, getMessageKey, listMessageKey, updateMessageKey } from '@/api/system/messageKey';
-import { SysMessageKeyForm, SysMessageKeyQuery, SysMessageKeyVo } from '@/api/system/model/messageKeyModel';
+import type { SysMessageKeyForm, SysMessageKeyQuery, SysMessageKeyVo } from '@/api/system/model/messageKeyModel';
 
 const { proxy } = getCurrentInstance();
 
@@ -388,6 +393,7 @@ function handleDelete(row?: SysMessageKeyVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delMessageKey(messageKeyIds)
       .then(() => {
+        if (!row) ids.value = [];
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

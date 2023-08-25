@@ -1,5 +1,5 @@
-import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysTenantForm, SysTenantQuery, SysTenantVo } from '@/api/system/model/tenantModel';
+import type { R, TableDataInfo } from '@/api/model/resultModel';
+import type { SysTenantForm, SysTenantQuery, SysTenantVo } from '@/api/system/model/tenantModel';
 import { request } from '@/utils/request';
 
 // 查询租户列表
@@ -47,7 +47,7 @@ export function changeTenantStatus(id: number, tenantId: string, status: string)
 }
 
 // 删除租户
-export function delTenant(id: string) {
+export function delTenant(id: number | number[]) {
   return request.delete<R<void>>({
     url: `/system/tenant/${id}`,
   });

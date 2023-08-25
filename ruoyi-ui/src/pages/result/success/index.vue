@@ -9,13 +9,13 @@
     </div>
   </div>
 </template>
-<script lang="ts">
+<script lang="ts" setup>
 import { CheckCircleIcon } from 'tdesign-icons-vue-next';
 
-export default {
+defineOptions({
   name: 'ResultSuccess',
   components: { CheckCircleIcon },
-};
+});
 </script>
 <style lang="less" scoped>
 .result-success {

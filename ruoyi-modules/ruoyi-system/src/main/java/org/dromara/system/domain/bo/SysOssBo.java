@@ -1,17 +1,20 @@
 package org.dromara.system.domain.bo;
 
 import io.github.linpeilie.annotations.AutoMapper;
+import jakarta.validation.constraints.*;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dromara.common.core.enums.UserType;
+import org.dromara.common.core.validate.AddGroup;
+import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.system.domain.SysOss;
-
-import java.util.Date;
+import org.hibernate.validator.constraints.Range;
 
 /**
- * OSS对象存储分页查询对象 sys_oss
+ * OSS对象存储业务对象 sys_oss
  *
- * @author Lion Li
+ * @author yixiacoco
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
@@ -19,52 +22,40 @@ import java.util.Date;
 public class SysOssBo extends BaseEntity {
 
     /**
-     * ossId
+     * 对象存储主键
      */
+    @NotNull(message = "对象存储主键不能为空", groups = {EditGroup.class})
     private Long ossId;
-
-    /**
-     * 文件名
-     */
-    private String fileName;
 
     /**
      * 原名
      */
+    @NotBlank(message = "原名不能为空", groups = {EditGroup.class})
+    @Pattern(regexp = "^[^.][^\\\\/<>:?\"|*]*$", message = "文件名不能包含下列任何字符：\\/<>:?\"|*")
     private String originalName;
 
     /**
-     * 文件后缀名
+     * 分类id
      */
-    private String fileSuffix;
+    @NotNull(message = "分类id不能为空", groups = {AddGroup.class, EditGroup.class})
+    @Min(value = 0, message = "分类id不能小于0")
+    private Long ossCategoryId = 0L;
 
     /**
-     * URL地址
+     * 用户类型
      */
-    private String url;
+    private UserType userTypeEnum;
 
     /**
-     * 服务商
+     * 是否锁定状态
      */
-    private String service;
+    @NotNull(message = "是否锁定状态不能为空", groups = {AddGroup.class, EditGroup.class})
+    @Range(min = 0, max = 1, message = "锁定状态错误")
+    private Integer isLock = 0;
 
     /**
-     * 创建者
+     * 上传人
      */
     private Long createBy;
 
-    /**
-     * 创建时间
-     */
-    private Date createTime;
-
-    /**
-     * 更新者
-     */
-    private Long updateBy;
-
-    /**
-     * 更新时间
-     */
-    private Date updateTime;
 }

@@ -14,7 +14,7 @@ import { nextTick, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { callback, login } from '@/api/login';
-import { LoginData } from '@/api/model/loginModel';
+import type { LoginData } from '@/api/model/loginModel';
 import Result from '@/components/result/index.vue';
 import { useUserStore } from '@/store';
 

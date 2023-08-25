@@ -2,6 +2,25 @@
   <div>
     <!--  文档:https://www.tiny.cloud/docs/tinymce/6/-->
     <editor ref="editorRef" :model-value="modelValue" :init="conf" :disabled="disabled" v-bind="$attrs" />
+    <upload-select
+      v-if="selectFile"
+      v-model:visible="open"
+      :title="title"
+      :support-url="false"
+      :query-param="query"
+      :multiple="false"
+      :image-upload="imageUpload"
+      :file-upload="fileUpload"
+      :image-upload-props="{
+        accept: ['image/*'],
+        fileSize: imageMaxSize,
+      }"
+      :file-upload-props="{
+        accept: fileAccept,
+        fileSize: fileMaxSize,
+      }"
+      :on-submit="handleSelectSubmit"
+    />
   </div>
 </template>
 
@@ -55,8 +74,10 @@ import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue';
 
 import { uploader } from '@/api/system/oss';
 import { useSettingStore } from '@/store';
+import type { MyOssProps } from '@/pages/system/ossCategory/components/myOss.vue';
+import type { SelectFile } from '@/components/upload-select/index.vue';
 
-interface Props {
+interface EditorProps {
   modelValue?: string;
   // 插件
   plugins?: string | string[];
@@ -92,9 +113,11 @@ interface Props {
   fileEnableUpload?: boolean;
   // 启用媒体上传
   mediaEnableUpload?: boolean;
+  // 启用文件选择功能
+  selectFile: boolean;
 }
 
-const props = withDefaults(defineProps<Props>(), {
+const props = withDefaults(defineProps<EditorProps>(), {
   modelValue: '',
   plugins:
     'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons template',
@@ -110,13 +133,30 @@ const props = withDefaults(defineProps<Props>(), {
   imageEnableUpload: true,
   fileEnableUpload: true,
   mediaEnableUpload: true,
+  selectFile: true,
 });
 
 const baseURL = '/tinymce';
 const settingStore = useSettingStore();
 const useDarkMode = computed(() => settingStore.displayMode === 'dark');
 const editorRef = ref<any>(null);
+const title = ref('');
+const fileAccept = ref<MyOssProps['fileUploadProps']['accept']>([]);
+const query = ref<MyOssProps['queryParam']>({
+  maxSize: 5 * 1024 * 1024,
+});
+const open = ref(false);
+const fileUpload = ref(false);
+const imageUpload = ref(false);
 const { proxy } = getCurrentInstance();
+const filePickerCallback = ref<Parameters<RawEditorOptions['file_picker_callback']>[0]>();
+
+// 选择文件后的回调处理
+function handleSelectSubmit(values: SelectFile[]) {
+  filePickerCallback.value?.call(this, values[0].url, { title: values[0].name });
+  filePickerCallback.value = null;
+  return true;
+}
 
 /** 统一上传处理 */
 function uploadHandle(file: File, fileType: 'file' | 'image' | 'media') {
@@ -258,64 +298,89 @@ const conf = computed<RawEditorOptions>(() => {
     file_picker_types: filePickerTypes.value, // 指定所需的文件选择器类型
     // images_upload_url: 'http://localhost:3000/upload/album',
     file_picker_callback: (callback, _value, meta) => {
-      const input = document.createElement('input'); // 创建一个隐藏的input
-      input.setAttribute('type', 'file');
-      switch (meta.filetype) {
-        case 'image':
-          input.setAttribute('accept', 'image/*');
-          break;
-        case 'media':
-          input.setAttribute('accept', 'video/*,audio/*');
-          break;
-        case 'file': {
-          const mimeList = [
-            'text/plain',
-            'application/x-gzip',
-            'application/zip',
-            'application/x-rar-compressed',
-            'application/x-7z-compressed',
-            'application/msword',
-            'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-            'application/vnd.ms-excel',
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/vnd.ms-powerpoint',
-            'application/vnd.openxmlformats-officedocument.presentationml.presentation',
-            'application/pdf',
-          ];
-          input.setAttribute('accept', mimeList.join(','));
-          break;
+      const mimeList = [
+        'text/plain',
+        'application/x-gzip',
+        'application/zip',
+        'application/x-rar-compressed',
+        'application/x-7z-compressed',
+        'application/msword',
+        'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+        'application/vnd.ms-excel',
+        'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+        'application/vnd.ms-powerpoint',
+        'application/vnd.openxmlformats-officedocument.presentationml.presentation',
+        'application/pdf',
+      ];
+      if (props.selectFile) {
+        filePickerCallback.value = callback;
+        imageUpload.value = false;
+        fileUpload.value = false;
+        if (meta.filetype === 'image') {
+          title.value = '选择图片';
+          imageUpload.value = true;
+          query.value.maxSize = props.imageMaxSize * 1024 * 1024;
+          query.value.contentTypes = ['image/*'];
+        } else if (meta.filetype === 'media') {
+          title.value = '选择媒体文件';
+          fileAccept.value = ['video/*', 'audio/*'];
+          fileUpload.value = true;
+          query.value.maxSize = props.mediaMaxSize * 1024 * 1024;
+          query.value.contentTypes = fileAccept.value;
+        } else if (meta.filetype === 'file') {
+          title.value = '选择文件';
+          fileAccept.value = mimeList;
+          fileUpload.value = true;
+          query.value.maxSize = props.fileMaxSize * 1024 * 1024;
+          query.value.contentTypes = mimeList;
         }
-        default:
-          return;
-      }
-      input.addEventListener('change', () => {
-        const file = input.files[0];
+        open.value = true;
+      } else {
+        const input = document.createElement('input'); // 创建一个隐藏的input
+        input.setAttribute('type', 'file');
+        switch (meta.filetype) {
+          case 'image':
+            input.setAttribute('accept', 'image/*');
+            break;
+          case 'media':
+            input.setAttribute('accept', 'video/*,audio/*');
+            break;
+          case 'file': {
+            input.setAttribute('accept', mimeList.join(','));
+            break;
+          }
+          default:
+            return;
+        }
+        input.addEventListener('change', () => {
+          const file = input.files[0];
 
-        const reader = new FileReader();
-        reader.addEventListener('load', async () => {
-          /*
+          const reader = new FileReader();
+          reader.addEventListener('load', async () => {
+            /*
           注意：现在我们需要在 TinyMCE 图像 blob 中注册 blob注册表。
           在下一个版本中，这部分希望不会必要的，因为我们希望在内部处理它。
         */
-          // const id = `blobid${new Date().getTime()}`;
-          // const blobCache = tinymce.activeEditor.editorUpload.blobCache;
-          // const base64 = (reader.result as string).split(',')[1];
-          // const blobInfo = blobCache.create(id, file, base64);
-          // blobCache.add(blobInfo);
+            // const id = `blobid${new Date().getTime()}`;
+            // const blobCache = tinymce.activeEditor.editorUpload.blobCache;
+            // const base64 = (reader.result as string).split(',')[1];
+            // const blobInfo = blobCache.create(id, file, base64);
+            // blobCache.add(blobInfo);
 
-          /* 调用回调并使用文件名填充标题字段 */
-          uploadHandle(file, meta.filetype).then((url) => {
-            callback(url, { title: file.name });
+            /* 调用回调并使用文件名填充标题字段 */
+            uploadHandle(file, meta.filetype).then((url) => {
+              callback(url, { title: file.name });
+            });
+            input.remove();
           });
-          input.remove();
+          reader.readAsDataURL(file);
         });
-        reader.readAsDataURL(file);
-      });
-      // 触发点击
-      input.click();
+        // 触发点击
+        input.click();
+      }
     },
     resize: props.resize, // 编辑器调整大小
-    branding: false, // 是否禁用 “Powered by TinyMCE”
+    branding: false, // 是否显示 “Powered by TinyMCE”
     paste_webkit_styles: 'none', // 指定在 WebKit 中粘贴时要保留的样式
     importcss_append: true,
     height: props.height,

@@ -1,5 +1,5 @@
-import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysOssQuery, SysOssUploadVo, SysOssVo } from '@/api/system/model/ossModel';
+import type { R, TableDataInfo } from '@/api/model/resultModel';
+import type { SysOssForm, SysOssQuery, SysOssUploadVo, SysOssVo } from '@/api/system/model/ossModel';
 import { ContentTypeEnum } from '@/constants';
 import { request } from '@/utils/request';
 
@@ -7,6 +7,14 @@ import { request } from '@/utils/request';
 export function listOss(query: SysOssQuery) {
   return request.get<TableDataInfo<SysOssVo>>({
     url: '/resource/oss/list',
+    params: query,
+  });
+}
+
+// 查询我的OSS对象存储列表
+export function listMyOss(query: SysOssQuery) {
+  return request.get<TableDataInfo<SysOssVo>>({
+    url: '/resource/oss/my/list',
     params: query,
   });
 }
@@ -26,6 +34,21 @@ export function listByUrls(urls: string) {
   });
 }
 
+// 查询OSS对象存储详细
+export function getOss(ossId: number) {
+  return request.get<R<SysOssVo>>({
+    url: `/resource/oss/${ossId}`,
+  });
+}
+
+// 修改OSS对象存储
+export function updateOss(data: SysOssForm) {
+  return request.put<R<void>>({
+    url: '/resource/oss',
+    data,
+  });
+}
+
 // 删除OSS对象存储
 export function delOss(ossId: number | number[]) {
   return request.delete<R<void>>({
@@ -40,5 +63,13 @@ export function uploader(formData: FormData) {
       'Content-Type': ContentTypeEnum.FormData,
     },
     data: formData,
+  });
+}
+
+// 移动到分类
+export function moveOss(categoryId: number, ossId: number[]) {
+  return request.post<R<void>>({
+    url: `/resource/oss/${categoryId}/move`,
+    data: ossId,
   });
 }

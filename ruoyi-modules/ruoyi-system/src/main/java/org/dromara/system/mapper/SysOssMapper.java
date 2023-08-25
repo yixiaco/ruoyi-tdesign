@@ -1,5 +1,6 @@
 package org.dromara.system.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysOss;
 import org.dromara.system.domain.query.SysOssQuery;
@@ -21,4 +22,12 @@ public interface SysOssMapper extends BaseMapperPlus<SysOss, SysOssVo> {
      * @return {@link SysOssVo}
      */
     List<SysOssVo> queryList(SysOssQuery query);
+
+    /**
+     * 查询OSS对象存储
+     *
+     * @param ossId 主键
+     * @return
+     */
+    SysOssVo queryById(@Param("ossId") Long ossId);
 }

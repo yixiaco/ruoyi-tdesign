@@ -88,12 +88,10 @@
     </t-col>
   </t-row>
 </template>
-<script lang="ts">
-export default {
+<script lang="ts" setup>
+defineOptions({
   name: 'UserIndex',
-};
-</script>
-<script setup lang="ts">
+});
 import { LineChart } from 'echarts/charts';
 import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';

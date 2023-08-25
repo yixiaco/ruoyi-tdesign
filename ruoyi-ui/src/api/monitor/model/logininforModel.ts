@@ -1,7 +1,7 @@
 /**
  * 系统访问记录
  */
-import { BaseEntity } from '@/api/model/resultModel';
+import type { BaseEntity } from '@/api/model/resultModel';
 
 /**
  * 系统访问记录业务对象

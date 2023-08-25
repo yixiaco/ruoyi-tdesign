@@ -176,12 +176,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'App',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'App',
+});
 import {
   AddIcon,
   BrowseIcon,
@@ -192,11 +190,11 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
+import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { addApp, delApp, getApp, listApp, updateApp } from '@/api/system/app';
-import { SysAppForm, SysAppQuery, SysAppVo } from '@/api/system/model/appModel';
+import type { SysAppForm, SysAppQuery, SysAppVo } from '@/api/system/model/appModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_app_type } = proxy.useDict('sys_app_type');
@@ -372,6 +370,7 @@ function handleDelete(row?: SysAppVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delApp(appids)
       .then(() => {
+        if (!row) ids.value = [];
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

@@ -8,7 +8,7 @@
     <slot />
   </div>
 </template>
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed } from 'vue';
 
 import Result403Icon from '@/assets/icons/assets-result-403.svg?component';

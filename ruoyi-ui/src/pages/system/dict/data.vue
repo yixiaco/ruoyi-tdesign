@@ -166,12 +166,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'DictData',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'DictData',
+});
 import {
   AddIcon,
   CloseIcon,
@@ -182,13 +180,13 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
+import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import { addData, delData, getData, listData, updateData } from '@/api/system/dict/data';
 import { getType, optionselect as getDictOptionselect } from '@/api/system/dict/type';
-import { SysDictDataForm, SysDictDataQuery, SysDictDataVo, SysDictTypeVo } from '@/api/system/model/dictModel';
+import type { SysDictDataForm, SysDictDataQuery, SysDictDataVo, SysDictTypeVo } from '@/api/system/model/dictModel';
 import { useTabsRouterStore } from '@/store';
 import useDictStore from '@/store/modules/dict';
 
@@ -383,6 +381,7 @@ function handleDelete(row?: SysDictDataVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delData(dictCodes)
       .then(() => {
+        if (!row) ids.value = [];
         getList();
         proxy.$modal.msgSuccess('删除成功');
         useDictStore().removeDict(queryParams.value.dictType);

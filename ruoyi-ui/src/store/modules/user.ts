@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
 
 import { getInfo, isLogin, login, logout } from '@/api/login';
-import { LoginParam, UserInfo } from '@/api/model/loginModel';
-import { R } from '@/api/model/resultModel';
+import type { LoginParam, UserInfo } from '@/api/model/loginModel';
+import type { R } from '@/api/model/resultModel';
 import defAva from '@/assets/images/profile.jpg';
 import { store } from '@/store';
 

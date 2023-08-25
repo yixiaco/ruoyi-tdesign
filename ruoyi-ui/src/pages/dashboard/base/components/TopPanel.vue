@@ -48,13 +48,10 @@
   </t-row>
 </template>
 
-<script lang="ts">
-export default {
+<script lang="ts" setup>
+defineOptions({
   name: 'DashboardBase',
-};
-</script>
-
-<script setup lang="ts">
+});
 import { BarChart, LineChart } from 'echarts/charts';
 import { GridComponent } from 'echarts/components';
 import * as echarts from 'echarts/core';

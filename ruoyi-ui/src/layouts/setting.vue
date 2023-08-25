@@ -91,7 +91,7 @@
     </div>
   </t-drawer>
 </template>
-<script setup lang="ts">
+<script lang="ts" setup>
 import type { PopupVisibleChangeContext } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, onMounted, ref, watchEffect } from 'vue';

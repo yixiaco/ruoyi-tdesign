@@ -1,5 +1,5 @@
-import { R, TreeModel } from '@/api/model/resultModel';
-import {
+import type { R, TreeModel } from '@/api/model/resultModel';
+import type {
   MenuTreeSelectVo,
   RoleMenuTreeselect,
   SysMenuForm,

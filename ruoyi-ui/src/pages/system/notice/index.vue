@@ -178,17 +178,22 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Notice',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Notice',
+});
 import { AddIcon, DeleteIcon, EditIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext, TableSort } from 'tdesign-vue-next';
+import type {
+  FormInstanceFunctions,
+  FormRule,
+  PageInfo,
+  PrimaryTableCol,
+  SubmitContext,
+  TableSort,
+} from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
-import { SysNoticeForm, SysNoticeQuery, SysNoticeVo } from '@/api/system/model/noticeModel';
+import type { SysNoticeForm, SysNoticeQuery, SysNoticeVo } from '@/api/system/model/noticeModel';
 import { addNotice, delNotice, getNotice, listNotice, updateNotice } from '@/api/system/notice';
 
 const { proxy } = getCurrentInstance();
@@ -362,6 +367,7 @@ function handleDelete(row?: SysNoticeVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delNotice(noticeIds)
       .then(() => {
+        if (!row) ids.value = [];
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

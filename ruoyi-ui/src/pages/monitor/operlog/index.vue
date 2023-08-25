@@ -172,17 +172,15 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Operlog',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Operlog',
+});
 import { BrowseIcon, DeleteIcon, DownloadIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { PageInfo, PrimaryTableCol, TableSort } from 'tdesign-vue-next';
+import type { PageInfo, PrimaryTableCol, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
-import { SysOperLogBo, SysOperLogVo } from '@/api/monitor/model/operlogModel';
+import type { SysOperLogBo, SysOperLogVo } from '@/api/monitor/model/operlogModel';
 import { cleanOperlog, delOperlog, list } from '@/api/monitor/operlog';
 
 const { proxy } = getCurrentInstance();
@@ -294,6 +292,7 @@ function handleDelete(row?: SysOperLogVo) {
   const operIds = row?.operId || ids.value;
   proxy.$modal.confirm(`是否确认删除日志编号为"${operIds}"的数据项?`, () => {
     return delOperlog(operIds).then(() => {
+      if (!row) ids.value = [];
       getList();
       proxy.$modal.msgSuccess('删除成功');
     });
@@ -303,6 +302,7 @@ function handleDelete(row?: SysOperLogVo) {
 function handleClean() {
   proxy.$modal.confirm('是否确认清空所有操作日志数据项?', () => {
     return cleanOperlog().then(() => {
+      ids.value = [];
       getList();
       proxy.$modal.msgSuccess('清空成功');
     });

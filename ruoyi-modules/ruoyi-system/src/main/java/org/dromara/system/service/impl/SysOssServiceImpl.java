@@ -1,11 +1,13 @@
 package org.dromara.system.service.impl;
 
 import cn.hutool.core.convert.Convert;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import org.dromara.common.core.constant.CacheNames;
+import org.dromara.common.core.enums.YesNoEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.service.OssService;
 import org.dromara.common.core.utils.MapstructUtils;
@@ -21,11 +23,15 @@ import org.dromara.common.oss.enumd.AccessPolicyType;
 import org.dromara.common.oss.factory.OssFactory;
 import org.dromara.common.redis.utils.CacheUtils;
 import org.dromara.system.domain.SysOss;
+import org.dromara.system.domain.SysOssCategory;
+import org.dromara.system.domain.bo.SysOssBo;
 import org.dromara.system.domain.query.SysOssQuery;
 import org.dromara.system.domain.vo.SysOssVo;
 import org.dromara.system.mapper.SysOssMapper;
+import org.dromara.system.service.ISysOssCategoryService;
 import org.dromara.system.service.ISysOssService;
 import org.jetbrains.annotations.NotNull;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
@@ -46,8 +52,36 @@ import java.util.List;
 @Service
 public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> implements ISysOssService, OssService {
 
+    @Autowired
+    private ISysOssCategoryService categoryService;
+
+    /**
+     * 查询OSS对象存储
+     *
+     * @param ossId 主键
+     * @return SysOssVo
+     */
+    @Override
+    public SysOssVo queryById(Long ossId) {
+        return baseMapper.queryById(ossId);
+    }
+
+    /**
+     * 查询OSS对象存储列表
+     *
+     * @param query 查询对象
+     * @return
+     */
     @Override
     public TableDataInfo<SysOssVo> queryPageList(SysOssQuery query) {
+        // 将后缀转为小写
+        if (query.getSuffixes() != null) {
+            String[] suffixes = query.getSuffixes();
+            for (int i = 0; i < suffixes.length; i++) {
+                String suffix = suffixes[i];
+                suffixes[i] = suffix.toLowerCase();
+            }
+        }
         return PageQuery.of(() -> {
             List<SysOssVo> vos = baseMapper.queryList(query);
             for (SysOssVo vo : vos) {
@@ -57,6 +91,11 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
         });
     }
 
+    /**
+     * 查询OSS对象基于id串
+     *
+     * @param ossIds OSS对象ID串
+     */
     @Override
     public List<SysOssVo> listVoByIds(Collection<Long> ossIds) {
         List<SysOssVo> list = CacheUtils.takeCache(CacheNames.SYS_OSS, ossIds, ids -> {
@@ -94,6 +133,12 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
         return StreamUtils.join(ossVos, SysOssVo::getUrl);
     }
 
+    /**
+     * 通过id获取oss对象
+     *
+     * @param ossId ossId
+     * @return
+     */
     @Cacheable(cacheNames = CacheNames.SYS_OSS, key = "#ossId")
     @Override
     public SysOssVo getById(Long ossId) {
@@ -118,10 +163,20 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
         }
     }
 
+    /**
+     * 上传OSS对象存储
+     *
+     * @param file 文件
+     * @param bo   业务对象
+     * @return
+     */
     @Override
-    public SysOssVo upload(MultipartFile file) {
-        String originalfileName = file.getOriginalFilename();
-        String suffix = StringUtils.substring(originalfileName, originalfileName.lastIndexOf('.'), originalfileName.length());
+    public SysOssVo upload(MultipartFile file, SysOssBo bo) {
+        String originalFilename = file.getOriginalFilename();
+        String suffix = StringUtils.substring(originalFilename, originalFilename.lastIndexOf('.'), originalFilename.length());
+        if (suffix != null) {
+            suffix = suffix.toLowerCase();
+        }
         OssClient storage = OssFactory.instance();
         UploadResult uploadResult;
         try {
@@ -130,38 +185,95 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
             throw new ServiceException(e.getMessage());
         }
         // 保存文件信息
-        return buildResultEntity(originalfileName, suffix, storage.getConfigKey(), uploadResult, file.getSize());
+        return buildResultEntity(originalFilename, suffix, file.getContentType(), storage.getConfigKey(), uploadResult, file.getSize(), bo);
     }
 
+    /**
+     * 上传OSS对象存储
+     *
+     * @param file 文件
+     * @param bo   业务对象
+     * @return
+     */
     @Override
-    public SysOssVo upload(File file) {
-        String originalfileName = file.getName();
-        String suffix = StringUtils.substring(originalfileName, originalfileName.lastIndexOf("."), originalfileName.length());
+    public SysOssVo upload(File file, SysOssBo bo) {
+        String originalFileName = file.getName();
+        String suffix = StringUtils.substring(originalFileName, originalFileName.lastIndexOf("."), originalFileName.length());
+        if (suffix != null) {
+            suffix = suffix.toLowerCase();
+        }
         OssClient storage = OssFactory.instance();
         UploadResult uploadResult = storage.uploadSuffix(file, suffix);
+        String mimeType = FileUtil.getMimeType(file.getAbsolutePath());
         // 保存文件信息
-        return buildResultEntity(originalfileName, suffix, storage.getConfigKey(), uploadResult, file.length());
+        return buildResultEntity(originalFileName, suffix, mimeType, storage.getConfigKey(), uploadResult, file.length(), bo);
     }
 
     @NotNull
-    private SysOssVo buildResultEntity(String originalfileName, String suffix, String configKey, UploadResult uploadResult, Long size) {
+    private SysOssVo buildResultEntity(String originalFilename, String suffix, String contentType, String service, UploadResult uploadResult, Long size, SysOssBo bo) {
         SysOss oss = new SysOss();
         oss.setUrl(uploadResult.getUrl());
         oss.setFileSuffix(suffix);
         oss.setFileName(uploadResult.getFilename());
-        oss.setOriginalName(originalfileName);
-        oss.setService(configKey);
+        oss.setOriginalName(originalFilename);
+        oss.setService(service);
         oss.setSize(size);
+        oss.setContentType(contentType);
+        oss.setUserType(bo.getUserTypeEnum().getUserType());
+        oss.setCreateBy(bo.getCreateBy());
+        oss.setIsLock(bo.getIsLock());
+        oss.setOssCategoryId(bo.getOssCategoryId());
         baseMapper.insert(oss);
         SysOssVo sysOssVo = MapstructUtils.convert(oss, SysOssVo.class);
         return this.matchingUrl(sysOssVo);
     }
 
+    /**
+     * 根据编辑业务对象修改OSS对象存储
+     *
+     * @param bo OSS对象存储编辑业务对象
+     * @return Boolean
+     */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
-        if (isValid) {
-            // 做一些业务上的校验,判断是否需要校验
+    public Boolean updateByBo(SysOssBo bo) {
+        SysOss oss = new SysOss();
+        checkCategory(bo.getOssCategoryId());
+        oss.setOssId(bo.getOssId());
+        oss.setOriginalName(bo.getOriginalName());
+        oss.setOssCategoryId(bo.getOssCategoryId());
+        oss.setIsLock(bo.getIsLock());
+        return updateById(oss);
+    }
+
+    /**
+     * 检查分类是否存在
+     *
+     * @param ossCategoryId 分类id
+     */
+    private void checkCategory(Long ossCategoryId) {
+        if (!ossCategoryId.equals(0L)) {
+            boolean exists = categoryService.lambdaQuery()
+                .eq(SysOssCategory::getOssCategoryId, ossCategoryId)
+                .exists();
+            if (!exists) {
+                throw new ServiceException("分类不存在");
+            }
+        }
+    }
+
+    /**
+     * 删除OSS对象存储
+     *
+     * @param ids OSS对象ID串
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean deleteWithValidByIds(Collection<Long> ids) {
+        boolean exists = lambdaQuery().in(SysOss::getOssId, ids).eq(SysOss::getIsLock, YesNoEnum.YES.getCodeNum()).exists();
+        if (exists) {
+            throw new ServiceException("加锁文件必须解锁后才能删除");
         }
         List<SysOss> list = baseMapper.selectBatchIds(ids);
         for (SysOss sysOss : list) {
@@ -184,5 +296,25 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
             oss.setUrl(storage.getPrivateUrl(oss.getFileName(), 120));
         }
         return oss;
+    }
+
+    /**
+     * 移动到分类
+     *
+     * @param categoryId 分类id
+     * @param ossIds     主键id
+     * @return
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void move(Long categoryId, List<Long> ossIds) {
+        checkCategory(categoryId);
+        List<SysOss> list = ossIds.stream().map(id -> {
+            SysOss oss = new SysOss();
+            oss.setOssId(id);
+            oss.setOssCategoryId(categoryId);
+            return oss;
+        }).toList();
+        updateBatchById(list);
     }
 }

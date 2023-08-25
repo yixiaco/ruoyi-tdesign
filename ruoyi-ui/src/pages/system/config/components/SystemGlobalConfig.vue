@@ -36,13 +36,11 @@
   </div>
 </template>
 
-<script lang="ts">
-export default {
-  name: 'SystemGlobalConfig',
-};
-</script>
 <script lang="ts" setup>
-import { FormRule, SubmitContext } from 'tdesign-vue-next';
+defineOptions({
+  name: 'SystemGlobalConfig',
+});
+import type { FormRule, SubmitContext } from 'tdesign-vue-next';
 import { getCurrentInstance, ref, watch } from 'vue';
 
 import { getConfigByKeys, refreshCache, updateConfigMaps } from '@/api/system/config';

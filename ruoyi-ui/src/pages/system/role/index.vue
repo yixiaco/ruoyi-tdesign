@@ -265,12 +265,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Role',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Role',
+});
 import {
   AddIcon,
   CheckCircleIcon,
@@ -283,7 +281,7 @@ import {
   SettingIcon,
   UserIcon,
 } from 'tdesign-icons-vue-next';
-import {
+import type {
   FormInstanceFunctions,
   FormRule,
   PageInfo,
@@ -296,9 +294,9 @@ import {
 import { computed, getCurrentInstance, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { TreeModel } from '@/api/model/resultModel';
+import type { TreeModel } from '@/api/model/resultModel';
 import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
-import { SysRoleForm, SysRoleQuery, SysRoleVo } from '@/api/system/model/roleModel';
+import type { SysRoleForm, SysRoleQuery, SysRoleVo } from '@/api/system/model/roleModel';
 import {
   addRole,
   changeRoleStatus,
@@ -440,6 +438,7 @@ function handleDelete(row?: SysRoleVo) {
   const roleIds = row?.roleId || ids.value;
   proxy.$modal.confirm(`是否确认删除角色编号为"${roleIds}"的数据项?`, () => {
     return delRole(roleIds).then(() => {
+      if (!row) ids.value = [];
       getList();
       proxy.$modal.msgSuccess('删除成功');
     });

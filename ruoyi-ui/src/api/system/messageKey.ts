@@ -1,5 +1,5 @@
-import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysMessageKeyForm, SysMessageKeyQuery, SysMessageKeyVo } from '@/api/system/model/messageKeyModel';
+import type { R, TableDataInfo } from '@/api/model/resultModel';
+import type { SysMessageKeyForm, SysMessageKeyQuery, SysMessageKeyVo } from '@/api/system/model/messageKeyModel';
 import { request } from '@/utils/request';
 
 // 查询消息常量列表

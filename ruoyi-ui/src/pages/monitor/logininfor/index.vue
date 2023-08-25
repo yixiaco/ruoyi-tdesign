@@ -122,18 +122,16 @@
     </t-space>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Logininfor',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Logininfor',
+});
 import { DeleteIcon, DownloadIcon, LockOffIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { PageInfo, PrimaryTableCol, SelectOptions, TableSort } from 'tdesign-vue-next';
+import type { PageInfo, PrimaryTableCol, SelectOptions, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { cleanLogininfor, delLogininfor, list, unlockLogininfor } from '@/api/monitor/logininfor';
-import { SysLogininforBo, SysLogininforVo } from '@/api/monitor/model/logininforModel';
+import type { SysLogininforBo, SysLogininforVo } from '@/api/monitor/model/logininforModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_common_status } = proxy.useDict('sys_common_status');
@@ -234,8 +232,8 @@ function handleDelete(row?: SysLogininforVo) {
   const infoIds = row?.infoId || ids.value;
   proxy.$modal.confirm(`是否确认删除访问编号为"${infoIds}"的数据项?`, () => {
     return delLogininfor(infoIds).then(() => {
+      if (!row) ids.value = [];
       getList();
-      ids.value = [];
       proxy.$modal.msgSuccess('删除成功');
     });
   });
@@ -244,8 +242,8 @@ function handleDelete(row?: SysLogininforVo) {
 function handleClean() {
   proxy.$modal.confirm('是否确认清空所有登录日志数据项?', () => {
     return cleanLogininfor().then(() => {
-      getList();
       ids.value = [];
+      getList();
       proxy.$modal.msgSuccess('清空成功');
     });
   });

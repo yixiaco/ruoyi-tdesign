@@ -1,5 +1,5 @@
-import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysAppForm, SysAppQuery, SysAppVo } from '@/api/system/model/appModel';
+import type { R, TableDataInfo } from '@/api/model/resultModel';
+import type { SysAppForm, SysAppQuery, SysAppVo } from '@/api/system/model/appModel';
 import { request } from '@/utils/request';
 
 // 查询应用管理列表

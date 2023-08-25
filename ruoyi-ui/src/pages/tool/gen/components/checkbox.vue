@@ -2,12 +2,10 @@
   <t-checkbox v-model="value" v-bind="$attrs"></t-checkbox>
 </template>
 
-<script lang="ts">
-export default {
-  name: 'TCustomCheckbox',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'TCustomCheckbox',
+});
 import { computed } from 'vue';
 
 const props = defineProps({

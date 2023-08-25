@@ -1,5 +1,5 @@
-import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysMessageLog, SysMessageLogQuery, SysMessageLogVo } from '@/api/system/model/messageLogModel';
+import type { R, TableDataInfo } from '@/api/model/resultModel';
+import type { SysMessageLog, SysMessageLogQuery, SysMessageLogVo } from '@/api/system/model/messageLogModel';
 import { request } from '@/utils/request';
 
 // 查询消息发送记录列表

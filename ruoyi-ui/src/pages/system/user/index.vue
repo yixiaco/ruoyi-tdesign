@@ -14,6 +14,7 @@
           <t-tree
             ref="deptTreeRef"
             v-model:actived="deptActived"
+            class="t-tree--block-node"
             :data="deptOptions"
             :keys="{ value: 'id', label: 'label', children: 'children' }"
             :filter="filterNode"
@@ -439,12 +440,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'User',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'User',
+});
 import { storeToRefs } from 'pinia';
 import {
   AddIcon,
@@ -458,7 +457,7 @@ import {
   SettingIcon,
   UploadIcon,
 } from 'tdesign-icons-vue-next';
-import {
+import type {
   FormInstanceFunctions,
   FormRule,
   PageInfo,
@@ -472,9 +471,9 @@ import {
 import { computed, createVNode, getCurrentInstance, reactive, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { SysPostVo } from '@/api/system/model/postModel';
-import { SysRoleVo } from '@/api/system/model/roleModel';
-import { SysUserForm, SysUserQuery, SysUserVo } from '@/api/system/model/userModel';
+import type { SysPostVo } from '@/api/system/model/postModel';
+import type { SysRoleVo } from '@/api/system/model/roleModel';
+import type { SysUserForm, SysUserQuery, SysUserVo } from '@/api/system/model/userModel';
 import {
   addUser,
   changeUserStatus,
@@ -644,6 +643,7 @@ function handleDelete(row?: SysUserVo) {
   const userIds = row?.userId || ids.value;
   proxy.$modal.confirm(`是否确认删除用户编号为"${userIds}"的数据项？`, () => {
     return delUser(userIds).then(() => {
+      if (!row) ids.value = [];
       getList();
       proxy.$modal.msgSuccess('删除成功');
     });

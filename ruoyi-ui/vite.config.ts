@@ -4,7 +4,8 @@ import path from 'path';
 import AutoImport from 'unplugin-auto-import/vite';
 import { TDesignResolver } from 'unplugin-vue-components/resolvers';
 import Components from 'unplugin-vue-components/vite';
-import { ConfigEnv, loadEnv, UserConfig } from 'vite';
+import type { ConfigEnv, UserConfig } from 'vite';
+import { loadEnv } from 'vite';
 import viteCompression from 'vite-plugin-compression';
 import { viteMockServe } from 'vite-plugin-mock';
 import prismjs from 'vite-plugin-prismjs';
@@ -90,7 +91,11 @@ export default ({ mode }: ConfigEnv): UserConfig => {
           return modules;
         },
       },
-      vue(),
+      vue({
+        script: {
+          defineModel: true,
+        },
+      }),
       vueJsx(),
       VueDevTools(),
       viteMockServe({

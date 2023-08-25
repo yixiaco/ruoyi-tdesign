@@ -4,8 +4,8 @@
       ref="fileUpload"
       v-model="fileList"
       multiple
-      :accept="accept"
       :theme="theme"
+      :accept="rawAccept"
       :action="uploadFileUrl"
       :before-upload="handleBeforeUpload"
       :max="limit"
@@ -13,13 +13,25 @@
       :headers="headers"
       :draggable="draggable"
       :size-limit="{ size: fileSize, unit: 'MB', message: '上传文件大小不能超过 {sizeLimit} MB!' }"
-      :tips="isShowTip ? `请上传大小不超过 ${fileSize}MB 格式为 ${fileType.join('/')} 的文件` : ''"
       :disabled="disabled"
+      :allow-upload-duplicate-file="allowUploadDuplicateFile"
       @one-file-success="handleOneUploadSuccess"
       @success="handleUploadSuccess"
       @remove="handleDelete"
       @validate="onValidate"
+      @click="handleOpenUpload($event)"
     >
+      <template v-if="isShowTip" #tips>
+        请上传大小不超过 {{ fileSize }}MB 的文件
+        <t-tooltip>
+          <template #content>
+            <p v-for="item in rawAccept?.split(',')" :key="item" style="word-break: break-all">
+              {{ item }}
+            </p>
+          </template>
+          <t-link theme="primary">查看格式要求</t-link>
+        </t-tooltip>
+      </template>
       <!-- 上传按钮 -->
       <slot />
       <t-button v-if="!$slots.default" variant="outline">
@@ -29,57 +41,101 @@
         选取文件
       </t-button>
     </t-upload>
+    <upload-select
+      v-model:visible="open"
+      title="选择文件"
+      :support-url="effectiveSupportUrl"
+      :support-select-file="supportSelectFile"
+      :query-param="queryParam"
+      :image-upload="false"
+      :file-upload-props="{
+        accept: accept,
+        fileSize: fileSize,
+        fileType: fileType,
+      }"
+      :on-submit="handleSelectSubmit"
+    />
   </div>
 </template>
 
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia';
 import { CloudUploadIcon } from 'tdesign-icons-vue-next';
-import { SuccessContext, UploadFile, UploadRemoveContext, UploadValidateType } from 'tdesign-vue-next';
-import { computed, getCurrentInstance, PropType, ref, watch } from 'vue';
+import type { SuccessContext, UploadFile, UploadRemoveContext, UploadValidateType } from 'tdesign-vue-next';
+import { computed, getCurrentInstance, ref, watch } from 'vue';
 
 import { delOss, listByIds, listByUrls } from '@/api/system/oss';
+import type { SelectFile } from '@/components/upload-select/index.vue';
+import type { MyOssProps } from '@/pages/system/ossCategory/components/myOss.vue';
 import { useUserStore } from '@/store';
 
-const props = defineProps({
-  modelValue: [String, Object, Array],
-  // 数量限制
-  limit: {
-    type: Number,
-    default: 5,
-  },
-  draggable: {
-    type: Boolean,
-    default: false,
-  },
+export interface FileUploadProps {
+  modelValue?: string | string[];
+  // 图片数量限制,为0不限制
+  limit?: number;
+  // 是否支持拖拽上传
+  draggable?: boolean;
   // 大小限制(MB)
-  fileSize: {
-    type: Number,
-    default: 5,
-  },
+  fileSize?: number;
+  // 接受上传的文件类型
+  accept?: Array<
+    | 'video/*'
+    | 'audio/*'
+    | 'text/plain'
+    | 'application/x-gzip'
+    | 'application/zip'
+    | 'application/x-rar-compressed'
+    | 'application/x-7z-compressed'
+    | 'application/msword'
+    | 'application/vnd.openxmlformats-officedocument.wordprocessingml.document'
+    | 'application/vnd.ms-excel'
+    | 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet'
+    | 'application/vnd.ms-powerpoint'
+    | 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+    | 'application/pdf'
+    | string
+  >;
   // 文件类型, 例如['png', 'jpg', 'jpeg']
-  fileType: {
-    type: Array as PropType<Array<string>>,
-    default: () => ['doc', 'docx', 'xlsx', 'xls', 'csv', 'ppt', 'pptx', 'txt', 'pdf'],
-  },
+  fileType?: string[];
   // 是否显示提示
-  isShowTip: {
-    type: Boolean,
-    default: true,
-  },
-  theme: {
-    type: String as PropType<'custom' | 'file' | 'file-input' | 'file-flow'>,
-    default: 'file',
-  },
+  isShowTip?: boolean;
+  theme?: 'custom' | 'file' | 'file-input' | 'file-flow';
   // 模式，id模式返回ossId，url模式返回url链接
-  mode: {
-    type: String as PropType<'id' | 'url'>,
-    default: 'url',
-  },
-  disabled: {
-    type: Boolean,
-    default: false,
-  },
+  mode?: 'id' | 'url';
+  disabled?: boolean;
+  // 是否允许重复上传相同文件名的文件
+  allowUploadDuplicateFile?: boolean;
+  // 支持选择文件
+  supportSelectFile?: boolean;
+  // 支持手动输入url，需要mode="url"才有效
+  supportUrl?: boolean;
+}
+
+const props = withDefaults(defineProps<FileUploadProps>(), {
+  limit: 5,
+  fileSize: 5,
+  fileType: () => ['doc', 'docx', 'xlsx', 'xls', 'csv', 'ppt', 'pptx', 'txt', 'pdf'],
+  isShowTip: true,
+  theme: 'file',
+  mode: 'url',
+  disabled: false,
+  allowUploadDuplicateFile: false,
+  supportSelectFile: true,
+  supportUrl: true,
+});
+
+const queryParam = computed<MyOssProps['queryParam']>(() => {
+  const maxSize = props.fileSize * 1024 * 1024;
+  if (props.accept) {
+    return {
+      contentTypes: props.accept,
+      maxSize,
+    };
+  }
+  return {
+    suffixes: props.fileType,
+    maxSize,
+  };
 });
 
 const { token } = storeToRefs(useUserStore());
@@ -89,9 +145,13 @@ const baseUrl = import.meta.env.VITE_APP_BASE_API;
 const uploadFileUrl = ref(`${baseUrl}/resource/oss/upload`); // 上传文件服务器地址
 const headers = ref({ Authorization: `Bearer ${token.value}` });
 const fileList = ref<UploadFile[]>([]);
-const accept = computed(() => {
-  return props.fileType.map((value) => `.${value}`).join(',');
+const rawAccept = computed(() => {
+  return props.accept?.join(',') || props.fileType.map((value) => `.${value}`).join(',');
 });
+const effectiveSupportUrl = computed(() => {
+  return props.supportUrl && props.mode === 'url';
+});
+const open = ref(false);
 
 watch(
   () => props.modelValue,
@@ -99,7 +159,7 @@ watch(
     if (val) {
       let temp = 1;
       // 首先将值转为数组
-      let list;
+      let list: any[];
       if (Array.isArray(val)) {
         list = val;
       } else if (props.mode === 'url') {
@@ -164,6 +224,90 @@ watch(
   { deep: true, immediate: true },
 );
 
+// 拦截默认事件，打开选择窗口
+function handleOpenUpload(event: PointerEvent) {
+  if (!event.pointerType && (effectiveSupportUrl.value || props.supportSelectFile)) {
+    event.preventDefault();
+    open.value = true;
+  }
+}
+
+// 处理选中的图片
+function handleSelectSubmit(values: SelectFile[]) {
+  let validate: { type: UploadValidateType; files: UploadFile[] };
+  let rowValues = values;
+  // 做一些校验
+  // 检查文件大小
+  const maxSize = props.fileSize * 1024 * 1024;
+  if (rowValues.some((value) => value.size > maxSize)) {
+    const arr1: SelectFile[] = [];
+    const arr2: SelectFile[] = [];
+    rowValues.forEach((value) => {
+      if (value.size > maxSize) {
+        arr2.push(value);
+      } else {
+        arr1.push(value);
+      }
+    });
+    rowValues = arr1;
+    validate = {
+      type: 'FILE_OVER_SIZE_LIMIT',
+      files: arr2,
+    };
+    onValidate(validate);
+  }
+  // 检查文件类型
+  if (props.fileType?.length) {
+    const arr1: SelectFile[] = [];
+    const arr2: SelectFile[] = [];
+    rowValues.forEach((value) => {
+      const suffix = value.name.substring(value.name.lastIndexOf('.') + 1);
+      if (props.fileType.includes(suffix)) {
+        arr1.push(value);
+      } else {
+        arr2.push(value);
+      }
+    });
+    if (arr2.length) {
+      proxy.$modal.msgWarning(`文件格式不正确, 已自动过滤非${props.fileType.join('/')}格式文件!`);
+    } else {
+      rowValues = arr1;
+    }
+  }
+  // 检查重复名称
+  if (props.allowUploadDuplicateFile) {
+    const map = new Map<string, SelectFile>();
+    rowValues.forEach((value) => map.set(value.name, value));
+    let exist = false;
+    if (map.size !== rowValues.length) {
+      exist = true;
+    }
+    const keys = [...map.keys()];
+    if (fileList.value.some((value) => keys.includes(value.name))) {
+      exist = true;
+    }
+    if (exist) {
+      validate = {
+        type: 'FILE_OVER_SIZE_LIMIT',
+        files: [],
+      };
+      onValidate(validate);
+      return false;
+    }
+  }
+  // 检查文件数量
+  if (props.limit !== 0 && fileList.value.length + rowValues.length > props.limit) {
+    rowValues = rowValues.slice(0, props.limit - fileList.value.length);
+    validate = {
+      type: 'FILES_OVER_LENGTH_LIMIT',
+      files: rowValues.slice(props.limit - fileList.value.length),
+    };
+    onValidate(validate);
+  }
+  uploadedSuccessfully(rowValues);
+  return true;
+}
+
 // 上传前校检格式和大小
 function handleBeforeUpload(file: UploadFile) {
   // 校检文件类型
@@ -220,9 +364,11 @@ function handleUploadSuccess(context: SuccessContext) {
 // 删除文件
 function handleDelete({ file }: UploadRemoveContext) {
   const { ossId, name } = file;
-  delOss(ossId).then(() => {
-    proxy.$modal.msgSuccess(`文件【${name}】删除成功！`);
-  });
+  if (!effectiveSupportUrl.value && !props.supportSelectFile) {
+    delOss(ossId).then(() => {
+      proxy.$modal.msgSuccess(`文件【${name}】删除成功！`);
+    });
+  }
   const value = listToString(fileList.value);
   emit('update:modelValue', value);
   emit('change', value);

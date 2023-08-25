@@ -1,7 +1,7 @@
 <template>
   <div :style="style" class="color-container" />
 </template>
-<script setup lang="ts">
+<script lang="ts" setup>
 import { computed } from 'vue';
 
 import { DEFAULT_COLOR_OPTIONS } from '@/config/color';

@@ -3,7 +3,7 @@
  * Copyright (c) 2019 ruoyi
  */
 import modal from '@/plugins/modal';
-import { DictModel } from '@/utils/dict';
+import type { DictModel } from '@/utils/dict';
 
 // 日期格式化
 export function parseTime(time: any, pattern?: string) {
@@ -319,8 +319,8 @@ export function treeId(data: any[]) {
 
 /** byte格式化 */
 export function bytesToSize(bytes: number) {
-  if (!bytes) return '';
   if (bytes === 0) return '0 B';
+  if (!bytes) return '';
   const k = 1024;
   const sizes = ['B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'];
   const i = Math.floor(Math.log(bytes) / Math.log(k));

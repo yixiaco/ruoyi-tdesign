@@ -1,5 +1,9 @@
-import { R, TableDataInfo } from '@/api/model/resultModel';
-import { SysMessageConfigForm, SysMessageConfigQuery, SysMessageConfigVo } from '@/api/system/model/messageConfigModel';
+import type { R, TableDataInfo } from '@/api/model/resultModel';
+import type {
+  SysMessageConfigForm,
+  SysMessageConfigQuery,
+  SysMessageConfigVo,
+} from '@/api/system/model/messageConfigModel';
 import { request } from '@/utils/request';
 
 // 查询消息配置列表

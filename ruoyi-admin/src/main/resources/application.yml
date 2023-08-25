@@ -124,6 +124,7 @@ sa-token:
         - /system/**
         - /monitor/**
         - /resource/**
+        - /demo/**
     user:
       # 允许动态设置 token 有效期
       dynamic-active-timeout: true
@@ -184,6 +185,7 @@ tenant:
     - sys_message_key
     - sys_message_log
     - sys_message_template
+    - sys_oss_category
 
 # MyBatisPlus配置
 # https://baomidou.com/config/

@@ -189,17 +189,15 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'OssConfig',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'OssConfig',
+});
 import { AddIcon, DeleteIcon, EditIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
+import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
-import { SysOssConfigForm, SysOssConfigQuery, SysOssConfigVo } from '@/api/system/model/ossConfigModel';
+import type { SysOssConfigForm, SysOssConfigQuery, SysOssConfigVo } from '@/api/system/model/ossConfigModel';
 import {
   addOssConfig,
   changeOssConfigStatus,
@@ -411,7 +409,7 @@ function handleDelete(row?: SysOssConfigVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delOssConfig(ossConfigIds)
       .then(() => {
-        loading.value = false;
+        if (!row) ids.value = [];
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

@@ -92,14 +92,14 @@
   </t-form>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import { BrowseIcon, BrowseOffIcon, LockOnIcon, MailIcon, SecuredIcon, UserIcon } from 'tdesign-icons-vue-next';
 import type { FormRule, SubmitContext } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { getCurrentInstance, ref } from 'vue';
 
 import { getCodeImg, getTenantList, register } from '@/api/login';
-import { RegisterBody, TenantListVo } from '@/api/model/loginModel';
+import type { RegisterBody, TenantListVo } from '@/api/model/loginModel';
 import Company from '@/assets/icons/svg/company.svg?component';
 import { useCounter } from '@/hooks';
 

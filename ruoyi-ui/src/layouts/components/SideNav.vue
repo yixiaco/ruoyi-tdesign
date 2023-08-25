@@ -22,7 +22,7 @@
   </div>
 </template>
 
-<script setup lang="ts">
+<script lang="ts" setup>
 import union from 'lodash/union';
 import type { PropType } from 'vue';
 import { computed, onMounted } from 'vue';

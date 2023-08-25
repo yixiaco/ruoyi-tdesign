@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import jakarta.servlet.http.HttpServletResponse;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysOss;
+import org.dromara.system.domain.bo.SysOssBo;
 import org.dromara.system.domain.query.SysOssQuery;
 import org.dromara.system.domain.vo.SysOssVo;
 import org.springframework.web.multipart.MultipartFile;
@@ -21,6 +22,14 @@ import java.util.List;
 public interface ISysOssService extends IService<SysOss> {
 
     /**
+     * 查询OSS对象存储
+     *
+     * @param ossId 主键
+     * @return SysOssVo
+     */
+    SysOssVo queryById(Long ossId);
+
+    /**
      * 查询OSS对象存储列表
      */
     TableDataInfo<SysOssVo> queryPageList(SysOssQuery query);
@@ -35,7 +44,7 @@ public interface ISysOssService extends IService<SysOss> {
     /**
      * 通过id获取oss对象
      *
-     * @param ossId
+     * @param ossId ossId
      * @return
      */
     SysOssVo getById(Long ossId);
@@ -44,15 +53,17 @@ public interface ISysOssService extends IService<SysOss> {
      * 上传OSS对象存储
      *
      * @param file 文件
+     * @param bo   业务对象
      */
-    SysOssVo upload(MultipartFile file);
+    SysOssVo upload(MultipartFile file, SysOssBo bo);
 
     /**
      * 上传OSS对象存储
      *
      * @param file 文件
+     * @param bo   业务对象
      */
-    SysOssVo upload(File file);
+    SysOssVo upload(File file, SysOssBo bo);
 
     /**
      * 下载OSS对象
@@ -62,12 +73,19 @@ public interface ISysOssService extends IService<SysOss> {
     void download(Long ossId, HttpServletResponse response) throws IOException;
 
     /**
+     * 修改OSS对象存储
+     *
+     * @param bo OSS对象存储编辑业务对象
+     * @return Boolean
+     */
+    Boolean updateByBo(SysOssBo bo);
+
+    /**
      * 删除OSS对象存储
      *
-     * @param ids     OSS对象ID串
-     * @param isValid 校验
+     * @param ids OSS对象ID串
      */
-    Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+    Boolean deleteWithValidByIds(Collection<Long> ids);
 
     /**
      * 查询OSS对象基于url串
@@ -76,4 +94,13 @@ public interface ISysOssService extends IService<SysOss> {
      * @return
      */
     List<SysOssVo> listVoByUrls(List<String> urls);
+
+    /**
+     * 移动到分类
+     *
+     * @param categoryId 分类id
+     * @param ossIds     主键id
+     * @return
+     */
+    void move(Long categoryId, List<Long> ossIds);
 }

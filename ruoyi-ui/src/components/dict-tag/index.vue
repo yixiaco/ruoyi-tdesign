@@ -27,9 +27,10 @@
 </template>
 
 <script lang="ts" setup>
-import { computed, PropType } from 'vue';
+import type { PropType } from 'vue';
+import { computed } from 'vue';
 
-import { DictModel } from '@/utils/dict';
+import type { DictModel } from '@/utils/dict';
 
 const props = defineProps({
   // 数据

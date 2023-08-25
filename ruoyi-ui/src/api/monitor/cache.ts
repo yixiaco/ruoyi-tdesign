@@ -1,5 +1,5 @@
-import { R } from '@/api/model/resultModel';
-import { SysCache, SysCacheInfo } from '@/api/monitor/model/cacheModel';
+import type { R } from '@/api/model/resultModel';
+import type { SysCache, SysCacheInfo } from '@/api/monitor/model/cacheModel';
 import { request } from '@/utils/request';
 
 // 查询缓存详细

@@ -22,7 +22,7 @@ import { onMounted, ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { getTenantList } from '@/api/login';
-import { TenantListVo } from '@/api/model/loginModel';
+import type { TenantListVo } from '@/api/model/loginModel';
 import { dynamicClear, dynamicTenant } from '@/api/system/tenant';
 import Company from '@/assets/icons/svg/company.svg?component';
 import { useTabsRouterStore, useUserStore } from '@/store';

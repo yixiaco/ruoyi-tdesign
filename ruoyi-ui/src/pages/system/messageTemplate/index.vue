@@ -406,12 +406,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'MessageTemplate',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'MessageTemplate',
+});
 import {
   AddIcon,
   BrowseIcon,
@@ -423,7 +421,14 @@ import {
   SettingIcon,
   SwapIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext, TableSort } from 'tdesign-vue-next';
+import type {
+  FormInstanceFunctions,
+  FormRule,
+  PageInfo,
+  PrimaryTableCol,
+  SubmitContext,
+  TableSort,
+} from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import {
@@ -437,9 +442,9 @@ import {
   sendMessageTest,
   updateMessageTemplate,
 } from '@/api/system/messageTemplate';
-import { SysMessageConfigVo } from '@/api/system/model/messageConfigModel';
-import { SysMessageKeyVo } from '@/api/system/model/messageKeyModel';
-import {
+import type { SysMessageConfigVo } from '@/api/system/model/messageConfigModel';
+import type { SysMessageKeyVo } from '@/api/system/model/messageKeyModel';
+import type {
   SysMessageTemplateForm,
   SysMessageTemplateQuery,
   SysMessageTemplateTest,
@@ -787,6 +792,7 @@ function handleDelete(row?: SysMessageTemplateVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delMessageTemplate(messageTemplateIds)
       .then(() => {
+        if (!row) ids.value = [];
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

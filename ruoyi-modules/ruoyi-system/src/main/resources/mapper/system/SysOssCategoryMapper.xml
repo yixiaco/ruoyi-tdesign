@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dromara.system.mapper.SysOssCategoryMapper">
+
+    <resultMap id="SysOssCategoryResult" autoMapping="true" type="org.dromara.system.domain.SysOssCategory">
+    </resultMap>
+    <resultMap id="SysOssCategoryResultVo" autoMapping="true" type="org.dromara.system.domain.vo.SysOssCategoryVo">
+    </resultMap>
+
+    <sql id="selectSysOssCategoryVo">
+        select soc.oss_category_id, soc.category_name, soc.parent_id, soc.category_path, soc.level, soc.order_num, soc.user_type, soc.create_by, soc.update_time, soc.create_time from sys_oss_category soc
+    </sql>
+    <select id="queryList" parameterType="org.dromara.system.domain.query.SysOssCategoryQuery" resultMap="SysOssCategoryResultVo">
+        select soc.oss_category_id,
+               soc.category_name,
+               soc.parent_id,
+               soc.category_path,
+               soc.level,
+               soc.order_num,
+               soc.user_type,
+               soc.create_by,
+               soc.update_time,
+               soc.create_time,
+               (select count(*) from sys_oss so
+                <where> so.oss_category_id = soc.oss_category_id
+                    <if test="maxSize != null"> and so.size &lt;= #{maxSize}</if>
+                    <foreach collection="contentTypes" item="item" open="and (" separator=" or " close=")" nullable="true">
+                        so.content_type like #{item}
+                    </foreach>
+                    <foreach collection="suffixes" item="item" open="and so.file_suffix in(" separator="," close=")" nullable="true">
+                        #{item}
+                    </foreach>
+                </where>) as file_count
+        from sys_oss_category soc
+        <where>
+            <if test="categoryName != null and categoryName != ''"> and soc.category_name like concat('%', #{categoryName}, '%')</if>
+            <if test="userType != null and userType != ''"> and soc.user_type = #{userType}</if>
+            <if test="createBy != null"> and soc.create_by = #{createBy}</if>
+        </where>
+        order by soc.order_num
+    </select>
+    <select id="queryVoById" resultMap="SysOssCategoryResultVo">
+        select soc.oss_category_id,
+               soc.category_name,
+               soc.parent_id,
+               soc.category_path,
+               soc.level,
+               soc.order_num,
+               soc.user_type,
+               soc.create_by,
+               soc.update_time,
+               soc.create_time,
+               (select category_name from sys_oss_category soc1 where soc1.oss_category_id = soc.parent_id) as parent_category_name,
+               (select count(*) from sys_oss so
+                <where> so.oss_category_id = soc.oss_category_id
+                    <if test="maxSize != null"> and so.size &lt;= #{maxSize}</if>
+                    <foreach collection="contentTypes" item="item" open="and (" separator=" or " close=")" nullable="true">
+                        so.content_type like #{item}
+                    </foreach>
+                    <foreach collection="suffixes" item="item" open="and so.file_suffix in(" separator="," close=")" nullable="true">
+                        #{item}
+                    </foreach>
+                </where>) as file_count
+        from sys_oss_category soc
+        where oss_category_id = #{ossCategoryId}
+    </select>
+
+</mapper>

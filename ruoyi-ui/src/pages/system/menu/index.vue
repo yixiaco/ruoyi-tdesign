@@ -286,12 +286,10 @@
     </t-dialog>
   </t-card>
 </template>
-<script lang="ts">
-export default {
-  name: 'Menus',
-};
-</script>
 <script lang="ts" setup>
+defineOptions({
+  name: 'Menus',
+});
 import {
   AddIcon,
   DeleteIcon,
@@ -303,7 +301,7 @@ import {
   SettingIcon,
   UnfoldMoreIcon,
 } from 'tdesign-icons-vue-next';
-import {
+import type {
   EnhancedTableInstanceFunctions,
   FormInstanceFunctions,
   FormRule,
@@ -314,7 +312,7 @@ import {
 import { getCurrentInstance, ref } from 'vue';
 
 import { addMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu';
-import { SysMenuForm, SysMenuQuery, SysMenuVo } from '@/api/system/model/menuModel';
+import type { SysMenuForm, SysMenuQuery, SysMenuVo } from '@/api/system/model/menuModel';
 import IconSelect from '@/components/icon-select/index.vue';
 
 const { proxy } = getCurrentInstance();
