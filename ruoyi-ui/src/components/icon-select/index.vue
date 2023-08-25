@@ -19,14 +19,13 @@ defineOptions({
   name: 'IconSelect',
 });
 import { manifest } from 'tdesign-icons-vue-next';
-import { ref } from 'vue';
 
 defineProps({
   modelValue: String,
 });
 const emit = defineEmits(['update:modelValue', 'change']);
 // 获取全部图标的列表
-const options = ref(manifest);
+const options = manifest;
 const onChange = (value: string) => {
   emit('update:modelValue', value);
   emit('change', value);

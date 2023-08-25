@@ -7,16 +7,20 @@
 defineOptions({
   name: 'RIcon',
 });
+import { manifest } from 'tdesign-icons-vue-next';
 import * as Icons from 'tdesign-icons-vue-next/lib/icons';
 import { computed } from 'vue';
 
-const components = new Map();
+const componentNames = new Map<string, string>();
+manifest.forEach((value) => {
+  componentNames.set(`${value.icon}Icon`, `${value.stem}-icon`);
+});
+const components = new Map<string, any>();
 Object.entries(Icons).forEach((value) => {
-  // 将驼峰命名的组件名称转为横杠分割的组件名称，例如：Add12Icon => add-12-icon
-  const componentName = value[0].replace(/([0-9]+|[A-Z])/g, (match, p1, offset) => {
-    return offset === 0 ? p1.toLowerCase() : `-${p1.toLowerCase()}`;
-  });
-  components.set(componentName, value[1]);
+  const name = componentNames.get(value[0]);
+  if (name) {
+    components.set(name, value[1]);
+  }
 });
 
 const props = defineProps({

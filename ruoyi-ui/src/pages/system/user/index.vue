@@ -607,7 +607,7 @@ function filterNode(node: TreeNodeModel) {
   return node.label.indexOf(deptName.value) >= 0;
 }
 /** 查询部门下拉树结构 */
-function getDeptTree() {
+async function getDeptTree() {
   loadingDept.value = true;
   return deptTreeSelect()
     .then((response) => {

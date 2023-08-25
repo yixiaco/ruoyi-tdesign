@@ -48,3 +48,6 @@ insert into sys_menu values('1533', 'OSS分类新增', '1531', 2, '#', '', NULL,
 insert into sys_menu values('1534', 'OSS分类修改', '1531', 3, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:ossCategory:edit', '#', 103, 1, now(), NULL, NULL, '');
 insert into sys_menu values('1535', 'OSS分类删除', '1531', 4, '#', '', NULL, 0, 1, 'F', '1', '1', 'system:ossCategory:remove', '#', 103, 1, now(), NULL, NULL, '');
 insert into sys_menu values('1604', '文件修改', '118', 5, '', NULL, NULL, 0, 1, 'F', '1', '1', 'system:oss:edit', '#', 103, 1, now(), 1, now(), '');
+update sys_menu set icon = 'tree-square-dot' where menu_id = 103;
+update sys_menu set icon = 'book' where menu_id = 105;
+update sys_menu set icon = 'backup' where menu_id = 118;
