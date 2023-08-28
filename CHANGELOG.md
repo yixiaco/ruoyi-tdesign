@@ -1,3 +1,103 @@
+## 🌈 1.0.8 `2023-08-28`
+> 本次更新需要执行`update_1.0.7-1.0.8.sql`脚本
+### 🚀 New Features
+- 新增文件分类功能
+- 新增我的文件管理功能
+- 新增鼠标选择区域组件
+- 新增图片、文件上传组件适配我的文件选择功能
+- 富文本组件上传支持我的文件选择功能
+- 文件选择器支持accpet属性
+- 使用import type导入类型，而不是直接引用
+- 使用vue3.3新特性defineOptions定义组件名称
+- 代码生成支持实时预览;新增编辑页同步表结构;新增生成方法（新增、编辑、修改、删除、导出、详情、查询）;新增生成对象（controller、Vue、Sql）；新增菜单icon选择
+- 菜单列表新增显示状态
+- RedisLockUtil新增加锁执行方法
+
+### 🔥 Performance
+- 升级适配tdesign-vue-next 1.5.2版本
+- 优化用户管理部门树显示效果
+- tdesign-vue-next恢复按需引入
+- 代码生成查询对象优先使用bo而不是domain
+- 代码生成优化、树结构类型补全
+- 优化MapstructUtils类，使IDEA能够正常提示空指针异常
+- 代码生成编辑默认上级菜单为根目录
+
+### 🐞 Bug Fixes
+- 修复测试菜单id重复问题及状态值问题
+- 修复弹出层遮盖问题
+- 修复文件大小为0不显示文件大小的问题
+- 修复隐藏菜单没有效果
+- tree结构导入文件修复
+- 修复代码生成列表翻页未生效问题
+- 修复同名组件不同路径的标签缓存问题
+- 修复系统配置中数据库如果不存在数据时的报错问题
+- 修复字典数据编辑按钮打开报错
+- 修复了表格空数据字样不居中问题
+- 修复vue文件生成多余的对象属性
+- 修复ruoyi-ui全局函数未提示问题
+- 用户管理过滤部门数据时，允许节点折叠
+
+### 🏡 Chore
+<details><summary>同步RuoYi-Vue-Plus项目</summary>
+
+* fix:角色权限支持仅本人权限查看，解决无法查看自己创建的角色问题
+* fix: 修复可能导致异常类无法反序列化问题
+* docs: 错误的方法命名
+* perf: 优化 CryptoFilter null判断工具
+* update 优化 websocket 路径与 cloud 版本保持一致
+* update 更新登录策略返回值
+* update 修改验证码路径
+* fix：修复客户端编辑时授权类型变更未保存的问题
+* update 删除一些跟swagger有关的字眼 避免误解
+* perf: 更新依赖
+* style: 样式优化
+* update 优化 过期的 Security 方法
+* perf: 优化 excel 导出字典默认转为下拉框
+* perf: 优化 excel 导出字典下拉选项下标错误问题
+* perf: 优化 excel 导出问题
+* fix 修复 三方绑定 实体类copy覆盖问题
+</details> 
+
+### 🔨 Dependency Upgrades
+#### 🔨 java pom
+- Upgrade to spring-boot-dependencies-3.1.2
+- Upgrade to mybatis-spring-boot-starter 3.0.2
+- Upgrade to springdoc-openapi 2.2.0
+- Upgrade to easyexcel 3.3.2
+- Upgrade to mybatis-plus 3.5.3.2
+- Upgrade to pagehelper 1.4.7
+- Upgrade to hutool 5.8.21
+- Upgrade to okhttp 4.11.0
+- Upgrade to spring-boot-admin 3.1.4
+- Upgrade to redisson 3.23.2
+- Upgrade to lock4j 2.2.5
+- Upgrade to dynamic-datasource 4.1.3
+- Upgrade to transmittable-thread-local 2.14.3
+- Upgrade to lombok 1.18.28
+- Upgrade to bcprov-jdk15to18 1.76
+- Upgrade to aws-java-sdk-s3 1.12.528
+- Upgrade to maven-surefire-plugin 3.1.2
+#### 🔨 node package
+- Upgrade to pinia@^2.1.6
+- Upgrade to qrcode.vue@^3.4.1
+- Upgrade to tdesign-icons-vue-next@0.2.2
+- Upgrade to tdesign-vue-next@1.5.2
+- Upgrade to tinymce@^6.6.1
+- Upgrade to @commitlint/cli@^17.7.1
+- Upgrade to @commitlint/config-conventional@^17.7.0
+- Upgrade to @types/lodash@^4.14.197
+- Upgrade to @typescript-eslint/eslint-plugin@^6.4.1
+- Upgrade to @typescript-eslint/parser@^6.4.1
+- Upgrade to @vitejs/plugin-vue@^4.3.3
+- Upgrade to @vitejs/plugin-vue-jsx@^3.0.2
+- Upgrade to eslint@^8.47.0
+- Upgrade to eslint-config-prettier@^9.0.0
+- Upgrade to eslint-plugin-import@^2.28.1
+- Upgrade to eslint-plugin-vue@^9.17.0
+- Upgrade to less@^4.2.0
+- Upgrade to vite@^4.4.9
+- Upgrade to vue-tsc@^1.8.8
+
 ## 🌈 1.0.7 `2023-07-30`
 > 本次更新需要执行`update_1.0.6-1.0.7.sql`脚本
 ### 🚀 New Features
