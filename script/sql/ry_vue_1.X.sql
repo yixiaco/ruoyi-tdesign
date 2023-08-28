@@ -894,7 +894,7 @@ create table sys_oss (
     size            bigint(20)            default null      comment '字节长度',
     content_type    varchar(255) null     default null      comment '内容类型',
     oss_category_id bigint       not null default 0         comment '分类id',
-    user_type       varchar(20)  not null                   comment '用户类型',
+    user_type       varchar(20)  not null default ''        comment '用户类型',
     is_lock         tinyint(1)   not null default 0         comment '是否锁定状态',
     create_dept     bigint(20)            default null      comment '创建部门',
     create_time     datetime              default null      comment '创建时间',
