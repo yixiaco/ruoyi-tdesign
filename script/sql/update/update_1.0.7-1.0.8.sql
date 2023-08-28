@@ -2,7 +2,7 @@
 alter table sys_oss
 add column content_type varchar(255) null comment '内容类型' after size,
 add column oss_category_id bigint not null default 0 comment '分类id' after content_type,
-add column user_type varchar(20) NOT null comment '用户类型' after oss_category_id,
+add column user_type varchar(20) not null default '' comment '用户类型' after oss_category_id,
 add column is_lock tinyint(1) not null default 0 comment '是否锁定状态' after user_type;
 alter table sys_oss
 add index idx_user(create_by, user_type, create_time) comment '用户索引',
