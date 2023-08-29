@@ -122,16 +122,18 @@ function handleMouseMove(event: MouseEvent) {
  * 处理滚动事件
  */
 function handleScroll() {
-  // 重新计算相对距离
-  current.value.x = range(current.value.pageX - boxRect.value.left, 0, boxRect.value.right - boxRect.value.left);
-  current.value.y = range(
-    current.value.pageY - boxRect.value.top + boxRef.value.scrollTop,
-    boxRef.value.scrollTop,
-    boxRect.value.bottom - boxRect.value.top + boxRef.value.scrollTop,
-  );
-  // 滚动时，重新获取一次dom元素的区域
-  renderChildrenRects();
-  triggerChange();
+  if (effectiveActive.value) {
+    // 重新计算相对距离
+    current.value.x = range(current.value.pageX - boxRect.value.left, 0, boxRect.value.right - boxRect.value.left);
+    current.value.y = range(
+      current.value.pageY - boxRect.value.top + boxRef.value.scrollTop,
+      boxRef.value.scrollTop,
+      boxRect.value.bottom - boxRect.value.top + boxRef.value.scrollTop,
+    );
+    // 滚动时，重新获取一次dom元素的区域
+    renderChildrenRects();
+    triggerChange();
+  }
 }
 
 /** 控制触碰到顶部或底部时的滚动 */
