@@ -4,6 +4,8 @@ import cn.hutool.core.util.IdUtil;
 import lombok.Data;
 import org.dromara.common.tenant.helper.TenantHelper;
 
+import java.io.Serializable;
+
 /**
  * 租户消息基础类，默认分配一个消息id、租户id
  *
@@ -11,7 +13,7 @@ import org.dromara.common.tenant.helper.TenantHelper;
  * @date 2023/07/22 12:14
  */
 @Data
-public class TenantMQMessage {
+public class TenantMQMessage implements Serializable {
 
     /**
      * 消息id
