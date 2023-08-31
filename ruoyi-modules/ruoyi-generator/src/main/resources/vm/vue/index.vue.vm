@@ -405,7 +405,7 @@ import {
   SettingIcon,
 } from 'tdesign-icons-vue-next';
 #end
-import type { FormInstanceFunctions, FormRule#if($isUseQueryMethod), PageInfo, PrimaryTableCol#end, SubmitContext#if($hasSorting && $isUseQueryMethod), TableSort#end } from 'tdesign-vue-next';
+import type { #if($addOrUpdate)FormInstanceFunctions, FormRule, #end#if($isUseQueryMethod)PageInfo, PrimaryTableCol, #{end}#if($addOrUpdate)SubmitContext, #end#if($hasSorting && $isUseQueryMethod)TableSort#end } from 'tdesign-vue-next';
 import { #if($isUseQueryMethod)computed, #{end}getCurrentInstance, ref } from 'vue';
 
 ## 导入对象类型
@@ -471,8 +471,10 @@ const columnControllerVisible = ref(false);
 const showSearch = ref(true);
 const total = ref(0);
 #end
-#if($isUseQueryMethod && $isUseEditMethod && $isUseRemoveMethod)
+#if($isUseEditMethod || $isUseRemoveMethod)
 const ids = ref([]);
+#end
+#if($isUseQueryMethod && ($isUseEditMethod || $isUseRemoveMethod))
 const single = ref(true);
 const multiple = ref(true);
 #end
