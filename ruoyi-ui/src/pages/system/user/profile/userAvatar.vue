@@ -9,7 +9,7 @@
     >
       <template #overlayContent>
         <div style="background: rgba(0, 0, 0, 0.4); color: #fff; height: 100%; border-radius: 50%; line-height: 160px">
-          <photo-icon size="2em" />
+          <camera-icon size="2em" />
         </div>
       </template>
     </t-image>
@@ -81,7 +81,10 @@
             </t-button>
           </t-tooltip>
         </t-col>
-        <t-col :sm="{ span: 3, offset: 1 }" :xs="{ span: 7, offset: 5 }">
+        <t-col
+          :sm="{ span: 3, offset: 1, order: 0, pull: 0, push: 0 }"
+          :xs="{ span: 7, offset: 5, order: 0, pull: 0, push: 0 }"
+        >
           <t-button theme="primary" @click="uploadImg()">提 交</t-button>
         </t-col>
       </t-row>
@@ -93,7 +96,7 @@
 import 'vue-cropper/dist/index.css';
 
 import {
-  PhotoIcon,
+  CameraIcon,
   RectangleIcon,
   RefreshIcon,
   RotationIcon,

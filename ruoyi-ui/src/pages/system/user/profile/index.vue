@@ -1,7 +1,7 @@
 <template>
   <t-card>
     <t-row :gutter="20">
-      <t-col :sm="3" :xs="12">
+      <t-col :xl="3" :sm="5" :xs="10">
         <t-card class="box-card" shadow>
           <template #header>
             <div class="clearfix">
@@ -43,7 +43,7 @@
           </div>
         </t-card>
       </t-col>
-      <t-col :sm="9" :xs="12">
+      <t-col :xl="9" :sm="7" :xs="12">
         <t-card shadow>
           <template #header>
             <div class="clearfix">
