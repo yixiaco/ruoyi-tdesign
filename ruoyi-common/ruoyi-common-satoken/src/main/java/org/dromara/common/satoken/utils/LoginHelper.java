@@ -12,7 +12,6 @@ import lombok.NoArgsConstructor;
 import org.dromara.common.core.constant.TenantConstants;
 import org.dromara.common.core.constant.UserConstants;
 import org.dromara.common.core.domain.model.LoginUser;
-import org.dromara.common.core.enums.DeviceType;
 import org.dromara.common.core.enums.UserType;
 import org.dromara.common.satoken.context.SaSecurityContext;
 

@@ -234,8 +234,8 @@
             </t-form-item>
           </t-col>
           <t-col v-if="form.messageType === 'MAIL'" :span="6">
-            <t-form-item label="标题" name="title">
-              <t-input v-model="form.title" placeholder="请输入标题" clearable />
+            <t-form-item label="标题" name="title" help="支持变量模式：${title}">
+              <t-input v-model="form.title" placeholder="请输入标题" clearable @change="handleVarsChange" />
             </t-form-item>
           </t-col>
           <t-col :span="6">
@@ -273,7 +273,7 @@
                 <b>变量格式</b>：${name}；例如，尊敬的 ${name}，您的快递已飞奔在路上，将今天 ${time}
                 送达您的手里，请留意查收。
               </template>
-              <t-textarea v-model="form.content" placeholder="请输入内容" @change="handleContentChange" />
+              <t-textarea v-model="form.content" placeholder="请输入内容" @change="handleVarsChange" />
             </t-form-item>
           </t-col>
           <t-col v-if="form.varsList && form.varsList.length > 0" :span="12">
@@ -553,19 +553,21 @@ const maxVarsTestLabelWidth = computed(() => {
 
 /**
  * 提取变量
- * @param content
+ * @param contents
  */
-function getVars(content: string) {
+function getVars(...contents: string[]) {
   let vars: string[] = [];
-  if (content) {
-    const rex = /\$\{([^}]+)}/g;
-    let temp;
-    do {
-      temp = rex.exec(content);
-      if (temp) {
-        vars.push(temp[1]);
-      }
-    } while (temp);
+  if (contents) {
+    contents.forEach((content) => {
+      const rex = /\$\{([^}]+)}/g;
+      let temp;
+      do {
+        temp = rex.exec(content);
+        if (temp) {
+          vars.push(temp[1]);
+        }
+      } while (temp);
+    });
   }
   // 去重
   vars = vars.filter((value, index) => {
@@ -574,9 +576,14 @@ function getVars(content: string) {
   return vars;
 }
 
-/** 处理消息内容变更 */
-function handleContentChange(content: string) {
-  const vars = getVars(content);
+/** 处理变量变更 */
+function handleVarsChange() {
+  let vars: string[];
+  if (form.value.messageType === 'SMS') {
+    vars = getVars(form.value.content);
+  } else {
+    vars = getVars(form.value.title, form.value.content);
+  }
   form.value.varsList = vars.map<SysMessageTemplateVar>((key) => {
     const value = form.value.varsList.find((item) => item.key === key);
     return { key, value: value?.value ?? `$\{${key}}` };
