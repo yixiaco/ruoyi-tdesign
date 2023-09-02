@@ -24,8 +24,8 @@ public class TenantAspect {
     /**
      * 处理忽略租户
      *
-     * @param point
-     * @param ignoreTenant
+     * @param point        织入点
+     * @param ignoreTenant 忽略租户注解
      * @return
      * @throws Throwable
      */
@@ -52,25 +52,30 @@ public class TenantAspect {
     /**
      * 处理动态租户
      *
-     * @param point
-     * @param dynamicTenant
+     * @param point         织入点
+     * @param dynamicTenant 动态租户注解
      * @return
      * @throws Throwable
      */
     @Around("@within(dynamicTenant) || @annotation(dynamicTenant)")
     public Object handleDynamic(ProceedingJoinPoint point, DynamicTenant dynamicTenant) throws Throwable {
         if (StrUtil.isBlank(dynamicTenant.value())) {
-            throw new ServiceException("动态租户不存在！");
+            throw new ServiceException("动态租户未配置值！");
         }
         String tenantId = SpringExpressionUtil.parseAspectExpression(dynamicTenant.value(), point);
-        if (StrUtil.isBlank(tenantId)) {
+        boolean blank = StrUtil.isBlank(tenantId);
+        if (blank && dynamicTenant.required()) {
             throw new ServiceException("动态租户不存在！");
         }
-        DynamicTenant.DYNAMIC_TENANT_AOP.set(tenantId);
+        if (!blank) {
+            DynamicTenant.DYNAMIC_TENANT_AOP.set(tenantId);
+        }
         try {
             return point.proceed();
         } finally {
-            DynamicTenant.DYNAMIC_TENANT_AOP.remove();
+            if (!blank) {
+                DynamicTenant.DYNAMIC_TENANT_AOP.remove();
+            }
         }
     }
 }

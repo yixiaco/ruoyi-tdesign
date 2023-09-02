@@ -3,7 +3,12 @@ package org.dromara.common.tenant.annotation;
 import com.alibaba.ttl.TransmittableThreadLocal;
 import org.intellij.lang.annotations.Language;
 
-import java.lang.annotation.*;
+import java.lang.annotation.Documented;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Inherited;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 /**
  * 动态租户注解
@@ -23,9 +28,12 @@ public @interface DynamicTenant {
 
     /**
      * 使用的租户id。注意，这是一个SpringEL表达式
-     *
-     * @return
      */
     @Language("SpEL")
     String value();
+
+    /**
+     * 当读取不到租户时将抛出异常，设置为false将阻止异常抛出
+     */
+    boolean required() default true;
 }
