@@ -24,7 +24,7 @@ import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 #end
 
-#if($isUseExportMethod || ($isUseQueryMethod && $table.isTree()))
+#if($isUseExportMethod || $isUseQueryMethod)
 import java.util.List;
 #end
 
