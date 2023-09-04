@@ -77,6 +77,8 @@ import { useSettingStore } from '@/store';
 import type { MyOssProps } from '@/pages/system/ossCategory/components/myOss.vue';
 import type { SelectFile } from '@/components/upload-select/index.vue';
 
+export type TinyEditor = Parameters<RawEditorOptions['setup']>[0];
+
 interface EditorProps {
   modelValue?: string;
   // 插件
@@ -115,6 +117,8 @@ interface EditorProps {
   mediaEnableUpload?: boolean;
   // 启用文件选择功能
   selectFile: boolean;
+  // 富文本setup
+  setup?: (editor: TinyEditor) => void;
 }
 
 const props = withDefaults(defineProps<EditorProps>(), {
@@ -243,6 +247,7 @@ const filePickerTypes = computed(() => {
 // 配置项
 const conf = computed<RawEditorOptions>(() => {
   const config: RawEditorOptions = {
+    setup: props.setup,
     promotion: false,
     language_url: `${baseURL}/langs/zh-Hans.js`,
     base_url: '/',
