@@ -4,16 +4,20 @@
       <!--部门数据-->
       <t-col :sm="2" :xs="12">
         <div class="head-container">
-          <t-space>
-            <t-input v-model="deptName" placeholder="请输入部门名称" clearable style="margin-bottom: 20px">
-              <template #prefixIcon>
-                <search-icon />
-              </template>
-            </t-input>
-            <t-button shape="square" variant="outline" @click="getDeptTree">
-              <template #icon><refresh-icon /></template>
-            </t-button>
-          </t-space>
+          <t-row style="width: 100%" :gutter="20">
+            <t-col :span="10">
+              <t-input v-model="deptName" placeholder="请输入部门名称" clearable style="margin-bottom: 20px">
+                <template #prefixIcon>
+                  <search-icon />
+                </template>
+              </t-input>
+            </t-col>
+            <t-col :span="2">
+              <t-button shape="square" variant="outline" @click="getDeptTree">
+                <template #icon><refresh-icon /></template>
+              </t-button>
+            </t-col>
+          </t-row>
         </div>
         <div class="head-container">
           <t-loading :loading="loadingDept" size="small">
@@ -602,10 +606,13 @@ const pagination = computed(() => {
 });
 
 /** 通过条件过滤节点  */
-function filterNode(node: TreeNodeModel) {
-  if (!node.value || !deptName.value) return true;
-  return node.label.indexOf(deptName.value) >= 0;
-}
+const filterNode = computed(() => {
+  const value = deptName.value;
+  return (node: TreeNodeModel) => {
+    if (!node.value || !value) return true;
+    return node.label.indexOf(value) >= 0;
+  };
+});
 /** 查询部门下拉树结构 */
 async function getDeptTree() {
   loadingDept.value = true;
