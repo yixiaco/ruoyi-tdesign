@@ -11,13 +11,14 @@
       <t-tabs v-model="activeName">
         <t-tab-panel label="基本信息" value="basic" :destroy-on-hide="false">
           <div class="panel-top">
-            <basic-info-form :info="info" />
+            <basic-info-form :info="info" :loading="loading" />
           </div>
         </t-tab-panel>
         <t-tab-panel label="字段信息" value="columnInfo" :destroy-on-hide="false">
           <div class="panel-top">
             <t-table
               v-model:column-controller-visible="columnControllerVisible"
+              :loading="loading"
               hover
               :data="columnsData"
               :columns="columns"
@@ -143,15 +144,17 @@
         </t-tab-panel>
         <t-tab-panel label="生成信息" value="genInfo" :destroy-on-hide="false">
           <div class="panel-top">
-            <gen-info-form :info="info" />
+            <gen-info-form :info="info" :loading="loading" />
           </div>
         </t-tab-panel>
       </t-tabs>
       <div style="text-align: center; margin-left: -100px; margin-top: 10px">
-        <t-button theme="default" variant="outline" @click="handlePreview()">实时预览</t-button>
-        <t-button theme="primary" type="submit">提交</t-button>
-        <t-button theme="primary" variant="outline" @click="handleSyncDb()">同步代码</t-button>
-        <t-button theme="default" variant="outline" @click="close()">返回</t-button>
+        <t-button theme="default" :loading="buttonLoading" variant="outline" @click="handlePreview()">
+          实时预览
+        </t-button>
+        <t-button theme="primary" :loading="buttonLoading" type="submit">提交</t-button>
+        <t-button theme="primary" :loading="buttonLoading" variant="outline" @click="handleSyncDb()">同步代码</t-button>
+        <t-button theme="default" :loading="buttonLoading" variant="outline" @click="close()">返回</t-button>
       </div>
     </t-form>
     <!-- 预览界面 -->
@@ -187,6 +190,8 @@ const formRef = ref<FormInstanceFunctions>(null);
 const columnControllerVisible = ref(false);
 const activeName = ref('columnInfo');
 const dictOptions = ref<SysDictTypeVo[]>([]);
+const loading = ref(false);
+const buttonLoading = ref(false);
 const preview = ref({
   open: false,
   loading: true,
@@ -313,11 +318,9 @@ function handleSyncDb() {
       .then(() => {
         // 重新获取表详细信息
         const msgLoading = proxy.$modal.msgLoading('同步成功，正在重新获取表数据中...');
-        getGenTable(tableId)
-          .then((res) => {
+        getGenTableData(tableId)
+          .then(() => {
             proxy.$modal.msgSuccess('同步完成');
-            columnsData.value = res.data.rows;
-            info.value = res.data.info;
           })
           .finally(() => {
             proxy.$modal.msgClose(msgLoading);
@@ -344,31 +347,50 @@ function onValidate({ validateResult, firstError }: SubmitContext) {
 }
 
 /** 表单提交 */
-function onSubmit({ validateResult, firstError }: SubmitContext) {
+function onSubmit({ validateResult }: SubmitContext) {
   if (validateResult === true) {
-    const genTable = { ...info.value };
-    genTable.columns = columnsData.value;
-    genTable.tableOptions = info.value.tableOptions;
-    updateGenTable(genTable).then((res) => {
-      proxy.$modal.msgSuccess(res.msg);
-      if (res.code === 200) {
-        close();
-      }
+    proxy.$modal.confirm('是否确认保存表结构信息？', () => {
+      const genTable = { ...info.value };
+      genTable.columns = columnsData.value;
+      genTable.tableOptions = info.value.tableOptions;
+      const msgLoading = proxy.$modal.msgLoading('正在提交中...');
+      buttonLoading.value = true;
+      updateGenTable(genTable)
+        .then((res) => {
+          proxy.$modal.msgSuccess(res.msg);
+        })
+        .finally(() => {
+          buttonLoading.value = false;
+          proxy.$modal.msgClose(msgLoading);
+        });
     });
   }
 }
+
+// 返回到列表
 function close() {
   tabsRouterStore.removeCurrentTab(route, '/tool/gen', router);
+}
+
+/**
+ * 加载表信息
+ * @param tableId 表id
+ */
+async function getGenTableData(tableId: string | number) {
+  loading.value = true;
+  // 获取表详细信息
+  return getGenTable(String(tableId))
+    .then((res) => {
+      columnsData.value = res.data.rows;
+      info.value = res.data.info;
+    })
+    .finally(() => (loading.value = false));
 }
 
 onMounted(() => {
   const tableId = route.params && route.params.tableId;
   if (tableId) {
-    // 获取表详细信息
-    getGenTable(String(tableId)).then((res) => {
-      columnsData.value = res.data.rows;
-      info.value = res.data.info;
-    });
+    getGenTableData(tableId as string);
     /** 查询字典下拉列表 */
     getDictOptionselect().then((response) => {
       dictOptions.value = response.data;
