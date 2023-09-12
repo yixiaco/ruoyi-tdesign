@@ -31,10 +31,8 @@ const headerMenu = computed<ComplexRoute[]>(() => {
           ...menu,
           children: [],
         };
-        // 这里设置新的path与父value，如果是多级路由，则默认打开第一项
-        if (menu.children && menu.children.length > 0 && menu.redirect?.toString().includes('noRedirect')) {
-          newMenu.path = `${menu.path}/${menu.children[0].path}`;
-          newMenu.meta.value = menu.path;
+        // 这里设置子路由的参数
+        if (menu.children && menu.children.length > 0) {
           newMenu.query = (menu.children[0] as any).query;
         }
         return newMenu;

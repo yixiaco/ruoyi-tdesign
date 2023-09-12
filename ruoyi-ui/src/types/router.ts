@@ -22,5 +22,9 @@ declare module 'vue-router' {
     permissions?: string[];
     // 组件key
     key?: string | ((route: RouteLocationNormalizedLoaded) => string);
+    // 隐藏路由面包屑路径
+    hiddenBreadcrumb?: boolean;
+    // 面包屑重定向地址
+    breadcrumbRedirect?: string;
   }
 }
