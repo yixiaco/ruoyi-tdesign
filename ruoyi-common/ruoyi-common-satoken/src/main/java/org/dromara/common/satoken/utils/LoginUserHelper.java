@@ -91,12 +91,16 @@ public class LoginUserHelper {
         if (user != null) {
             return user;
         }
-        SaSession session = MultipleStpUtil.USER.getTokenSession();
-        if (session != null) {
-            user = (T) session.get(LOGIN_USER_KEY);
-            SaHolder.getStorage().set(getLoginType() + LOGIN_USER_KEY, user);
+        try {
+            SaSession session = MultipleStpUtil.USER.getTokenSession();
+            if (session != null) {
+                user = (T) session.get(LOGIN_USER_KEY);
+                SaHolder.getStorage().set(getLoginType() + LOGIN_USER_KEY, user);
+            }
+            return user;
+        } catch (Exception e) {
+            return null;
         }
-        return user;
     }
 
     /**
@@ -104,7 +108,11 @@ public class LoginUserHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T extends BaseUser> T getUser(String token) {
-        return (T) MultipleStpUtil.USER.getTokenSessionByToken(token).get(LOGIN_USER_KEY);
+        try {
+            return (T) MultipleStpUtil.USER.getTokenSessionByToken(token).get(LOGIN_USER_KEY);
+        } catch (Exception e) {
+            return null;
+        }
     }
 
     /**
@@ -160,8 +168,11 @@ public class LoginUserHelper {
         try {
             userId = Convert.toLong(SaHolder.getStorage().get(getLoginType() + USER_KEY));
             if (ObjectUtil.isNull(userId)) {
-                userId = getUser().getUserId();
-                SaHolder.getStorage().set(getLoginType() + USER_KEY, userId);
+                BaseUser user = getUser();
+                if (user != null) {
+                    userId = user.getUserId();
+                    SaHolder.getStorage().set(getLoginType() + USER_KEY, userId);
+                }
             }
         } catch (Exception e) {
             return null;
@@ -177,8 +188,11 @@ public class LoginUserHelper {
         try {
             tenantId = (String) SaHolder.getStorage().get(getLoginType() + TENANT_KEY);
             if (ObjectUtil.isNull(tenantId)) {
-                tenantId = getUser().getTenantId();
-                SaHolder.getStorage().set(getLoginType() + TENANT_KEY, tenantId);
+                BaseUser user = getUser();
+                if (user != null) {
+                    tenantId = user.getTenantId();
+                    SaHolder.getStorage().set(getLoginType() + TENANT_KEY, tenantId);
+                }
             }
         } catch (Exception e) {
             return null;
@@ -190,7 +204,8 @@ public class LoginUserHelper {
      * 获取用户账户
      */
     public static String getUsername() {
-        return getUser().getUsername();
+        BaseUser user = getUser();
+        return Objects.requireNonNull(user).getUsername();
     }
 
 }
