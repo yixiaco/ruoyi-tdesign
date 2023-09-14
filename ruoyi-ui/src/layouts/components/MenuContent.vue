@@ -25,11 +25,13 @@
   </div>
 </template>
 <script setup lang="tsx">
-import type { PropType } from "vue";
-import { computed } from "vue";
-import type { MenuRoute } from "@/types/interface";
-import { ComplexRoute } from "@/types/interface";
-import { getActive } from "@/router";
+import type { PropType } from 'vue';
+import { computed } from 'vue';
+
+import RIcon from '@/components/r-icon/index.vue';
+import { getActive } from '@/router';
+import type { MenuRoute } from '@/types/interface';
+import { ComplexRoute } from '@/types/interface';
 
 type ListItemType = MenuRoute & { icon?: string };
 
@@ -47,7 +49,9 @@ const list = computed(() => {
 });
 
 const menuIcon = (item: ListItemType) => {
-  if (typeof item.icon === 'string') return <r-icon name={item.icon} style={{ width: '18px', height: '18px' }} />;
+  if (typeof item.icon === 'string') {
+    return <RIcon name={item.icon} style={{ width: '18px', height: '18px' }} />;
+  }
   return item.icon;
 };
 
