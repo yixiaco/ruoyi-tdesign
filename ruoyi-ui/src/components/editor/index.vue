@@ -116,7 +116,7 @@ interface EditorProps {
   // 启用媒体上传
   mediaEnableUpload?: boolean;
   // 启用文件选择功能
-  selectFile: boolean;
+  selectFile?: boolean;
   // 富文本setup
   setup?: (editor: TinyEditor) => void;
 }
@@ -249,6 +249,7 @@ const conf = computed<RawEditorOptions>(() => {
   const config: RawEditorOptions = {
     setup: props.setup,
     promotion: false,
+    // 语言包下载：https://www.tiny.cloud/get-tiny/language-packages/
     language_url: `${baseURL}/langs/zh-Hans.js`,
     base_url: '/',
     language: 'zh-Hans',
@@ -428,5 +429,9 @@ onMounted(() => {
 });
 
 // 暴露组件实例
-defineExpose(editorRef);
+const exposed = {
+  editor: () => editorRef.value,
+};
+export type EditorInstance = typeof exposed;
+defineExpose<EditorInstance>(exposed);
 </script>

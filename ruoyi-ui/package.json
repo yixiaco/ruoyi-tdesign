@@ -20,7 +20,7 @@
     "test:coverage": "echo \"no test:coverage specified,work in process\""
   },
   "dependencies": {
-    "@tinymce/tinymce-vue": "^5.1.0",
+    "@tinymce/tinymce-vue": "^5.1.1",
     "axios": "^1.5.0",
     "crypto-js": "^4.1.1",
     "dayjs": "^1.11.9",
@@ -38,7 +38,7 @@
     "qs": "^6.11.2",
     "tdesign-icons-vue-next": "0.2.2",
     "tdesign-vue-next": "1.5.6",
-    "tinymce": "^6.6.1",
+    "tinymce": "^6.7.0",
     "tvision-color": "^1.6.0",
     "vue": "^3.3.4",
     "vue-clipboard3": "^2.0.0",
