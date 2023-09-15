@@ -187,10 +187,10 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public List<RouterVo> buildMenus(List<SysMenu> menus) {
-        return buildMenus(null, menus);
+        return buildMenus("", menus);
     }
 
-    private List<RouterVo> buildMenus(RouterVo parentMenu, List<SysMenu> menus) {
+    private List<RouterVo> buildMenus(String path, List<SysMenu> menus) {
         List<RouterVo> routers = new LinkedList<>();
         for (SysMenu menu : menus) {
             RouterVo router = new RouterVo();
@@ -209,13 +209,10 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             List<SysMenu> cMenus = menu.getChildren();
             if (CollUtil.isNotEmpty(cMenus) && UserConstants.TYPE_DIR.equals(menu.getMenuType())) {
                 router.setAlwaysShow(true);
-                router.setChildren(buildMenus(router, cMenus));
+                String redirect = path + "/" + menu.getPath();
+                router.setChildren(buildMenus(redirect, cMenus));
                 RouterVo childRoute = router.getChildren().get(0);
-                if (parentMenu != null) {
-                    router.setRedirect(parentMenu.getPath() + "/" + router.getPath() + "/" + childRoute.getPath());
-                } else {
-                    router.setRedirect(router.getPath() + "/" + childRoute.getPath());
-                }
+                router.setRedirect(redirect + "/" + childRoute.getPath());
             } else if (menu.isMenuFrame()) {
                 router.setMeta(meta);
                 router.setPath(router.getPath() + menu.getPath());

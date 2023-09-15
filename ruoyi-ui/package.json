@@ -37,7 +37,7 @@
     "qrcode.vue": "^3.4.1",
     "qs": "^6.11.2",
     "tdesign-icons-vue-next": "0.2.2",
-    "tdesign-vue-next": "1.5.5",
+    "tdesign-vue-next": "1.5.6",
     "tinymce": "^6.6.1",
     "tvision-color": "^1.6.0",
     "vue": "^3.3.4",
@@ -90,7 +90,7 @@
     "vite-plugin-prismjs": "^0.0.8",
     "vite-plugin-vue-devtools": "^0.5.1",
     "vite-svg-loader": "^4.0.0",
-    "vue-tsc": "^1.8.8"
+    "vue-tsc": "^1.8.11"
   },
   "config": {
     "commitizen": {
