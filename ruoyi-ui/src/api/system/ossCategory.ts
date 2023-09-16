@@ -11,9 +11,10 @@ export function listOssCategory(query?: SysOssCategoryQuery) {
 }
 
 // 查询OSS分类详细
-export function getOssCategory(ossCategoryId: number) {
+export function getOssCategory(query: SysOssCategoryQuery & { ossCategoryId: number }) {
   return request.get<R<SysOssCategoryVo>>({
-    url: `/system/ossCategory/${ossCategoryId}`,
+    url: `/system/ossCategory/query`,
+    params: query,
   });
 }
 

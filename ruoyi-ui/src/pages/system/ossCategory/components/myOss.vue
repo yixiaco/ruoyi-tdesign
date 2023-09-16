@@ -374,8 +374,8 @@ const emit = defineEmits<{
 const { proxy } = getCurrentInstance();
 const { toClipboard } = useClipboard();
 
-const ossRef = ref<FormInstanceFunctions>(null);
-const ossMoveRef = ref<FormInstanceFunctions>(null);
+const ossRef = ref<FormInstanceFunctions>();
+const ossMoveRef = ref<FormInstanceFunctions>();
 const ossList = ref<SysOssVo[]>([]);
 const ossCategoryOptions = ref<SysOssCategoryVo[]>([]);
 const openUpload = ref(false);

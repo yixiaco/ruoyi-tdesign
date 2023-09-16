@@ -504,6 +504,7 @@ insert into sys_menu values('1036', '公告查询', '107', '1', '#', '', '', 0, 
 insert into sys_menu values('1037', '公告新增', '107', '2', '#', '', '', 0, 1, 'F', '1', '1', 'system:notice:add',          '#', 103, 1, sysdate, null, null, '');
 insert into sys_menu values('1038', '公告修改', '107', '3', '#', '', '', 0, 1, 'F', '1', '1', 'system:notice:edit',         '#', 103, 1, sysdate, null, null, '');
 insert into sys_menu values('1039', '公告删除', '107', '4', '#', '', '', 0, 1, 'F', '1', '1', 'system:notice:remove',       '#', 103, 1, sysdate, null, null, '');
+insert into sys_menu values('1140', '公告导出', '107', '5', '#', '', '', 0, 1, 'F', '1', '1', 'system:notice:export',       '#', 103, 1, sysdate, null, null, '');
 -- 操作日志按钮
 insert into sys_menu values('1040', '操作查询', '500', '1', '#', '', '', 0, 1, 'F', '1', '1', 'monitor:operlog:query',      '#', 103, 1, sysdate, null, null, '');
 insert into sys_menu values('1041', '操作删除', '500', '2', '#', '', '', 0, 1, 'F', '1', '1', 'monitor:operlog:remove',     '#', 103, 1, sysdate, null, null, '');

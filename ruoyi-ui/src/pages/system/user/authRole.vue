@@ -18,7 +18,6 @@
 
     <h4 class="form-header h4">角色信息</h4>
     <t-table
-      ref="roleRef"
       hover
       :loading="loading"
       row-key="roleId"
@@ -60,7 +59,6 @@ const pageNum = ref(1);
 const pageSize = ref(10);
 const roleIds = ref<number[]>([]);
 const roles = ref<SysRoleVo[]>([]);
-const roleRef = ref(null);
 const tabsRouterStore = useTabsRouterStore();
 const route = useRoute();
 const router = useRouter();
@@ -105,7 +103,7 @@ function submitForm() {
   const rIds = roleIds.value.join(',');
   const msgLoading = proxy.$modal.msgLoading('提交中...');
   updateAuthRole({ userId, roleIds: rIds })
-    .then((response) => {
+    .then(() => {
       proxy.$modal.msgSuccess('授权成功');
       close();
     })

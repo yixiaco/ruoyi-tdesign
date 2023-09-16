@@ -174,7 +174,7 @@
     <!-- OSS分类详情 -->
     <t-dialog v-model:visible="openView" header="OSS分类详情" width="700px" :footer="false">
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(5em + 24px)">
+        <t-form label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="oss分类id">{{ form.ossCategoryId }}</t-form-item>
@@ -227,7 +227,7 @@ import {
   SearchIcon,
 } from 'tdesign-icons-vue-next';
 import type { FormInstanceFunctions, FormRule, SubmitContext, TreeNodeModel, TreeNodeValue } from 'tdesign-vue-next';
-import { getCurrentInstance, ref, watch } from 'vue';
+import { computed, getCurrentInstance, ref, watch } from 'vue';
 
 import type { SysOssCategoryForm, SysOssCategoryQuery, SysOssCategoryVo } from '@/api/system/model/ossCategoryModel';
 import type { SysOssVo } from '@/api/system/model/ossModel';
@@ -265,7 +265,7 @@ const expandedCategoryArray = ref<TreeNodeValue[]>([]);
 const open = ref(false);
 const buttonLoading = ref(false);
 const title = ref('');
-const ossCategoryRef = ref<FormInstanceFunctions>(null);
+const ossCategoryRef = ref<FormInstanceFunctions>();
 const categoryName = ref('');
 const categoryActived = ref<number[]>([]);
 
@@ -282,7 +282,11 @@ const form = ref<SysOssCategoryVo & SysOssCategoryForm>({});
 const emit = defineEmits<{
   (e: 'change', selectValues: SysOssVo[]): void;
 }>();
-const queryParams = ref<SysOssCategoryQuery>({});
+const queryParams = computed<SysOssCategoryQuery>(() => ({
+  suffixes: props.queryParam?.suffixes?.map((value) => `.${value}`),
+  maxSize: props.queryParam?.maxSize,
+  contentTypes: props.queryParam?.contentTypes,
+}));
 
 /** 通过条件过滤节点  */
 function filterNode(node: TreeNodeModel) {
@@ -320,7 +324,7 @@ function handleCategoryDetail(row: SysOssCategoryVo) {
   openView.value = true;
   openViewLoading.value = true;
   const ossCategoryId = row.ossCategoryId;
-  getOssCategory(ossCategoryId).then((response) => {
+  getOssCategory({ ...queryParams.value, ossCategoryId }).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
   });
@@ -336,7 +340,7 @@ async function handleCategoryUpdate(row?: SysOssCategoryVo) {
   if (row != null) {
     form.value.parentId = row.ossCategoryId;
   }
-  getOssCategory(row.ossCategoryId).then((response) => {
+  getOssCategory({ ...queryParams.value, ossCategoryId: row.ossCategoryId }).then((response) => {
     buttonLoading.value = false;
     form.value = response.data;
   });
@@ -357,9 +361,6 @@ async function getCategoryOptions() {
 /** 查询OSS分类树结构 */
 function getCategoryTree() {
   loadingOptions.value = true;
-  queryParams.value.suffixes = props.queryParam?.suffixes?.map((value) => `.${value}`);
-  queryParams.value.maxSize = props.queryParam?.maxSize;
-  queryParams.value.contentTypes = props.queryParam?.contentTypes;
   listOssCategory(queryParams.value)
     .then((response) => {
       ossCategoryTree.value = proxy.handleTree(response.data, 'ossCategoryId', 'parentId');

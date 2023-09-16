@@ -64,7 +64,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     </foreach>
                 </where>) as file_count
         from sys_oss_category soc
-        where oss_category_id = #{ossCategoryId}
+        where soc.oss_category_id = #{ossCategoryId}
     </select>
 
 </mapper>

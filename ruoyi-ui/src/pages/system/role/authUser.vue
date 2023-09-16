@@ -105,7 +105,7 @@ import { useRoute, useRouter } from 'vue-router';
 
 import type { SysUserForm, SysUserVo } from '@/api/system/model/userModel';
 import { allocatedUserList, authUserCancel, authUserCancelAll } from '@/api/system/role';
-import SelectUser from '@/pages/system/role/selectUser.vue';
+import SelectUser, { type SelectUserInstance } from '@/pages/system/role/selectUser.vue';
 import { useTabsRouterStore } from '@/store';
 
 const tabsRouterStore = useTabsRouterStore();
@@ -121,7 +121,7 @@ const multiple = ref(true);
 const total = ref(0);
 const userIds = ref([]);
 const columnControllerVisible = ref(false);
-const selectRef = ref(null);
+const selectRef = ref<SelectUserInstance>();
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([

@@ -112,11 +112,11 @@ import { getCache } from '@/api/monitor/cache';
 import type { SysCacheInfo } from '@/api/monitor/model/cacheModel';
 
 const cache = ref(<SysCacheInfo>{});
-const commandstats = ref(null);
-const usedmemory = ref(null);
+const commandstats = ref<HTMLDivElement>();
+const usedmemory = ref<HTMLDivElement>();
 const { proxy } = getCurrentInstance();
-const commandstatsIntance = ref<ECharts>(null);
-const usedmemoryInstance = ref<ECharts>(null);
+const commandstatsIntance = ref<ECharts>();
+const usedmemoryInstance = ref<ECharts>();
 
 function getList() {
   proxy.$modal.loading('正在加载缓存监控数据，请稍候！');

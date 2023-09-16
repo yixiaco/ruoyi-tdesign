@@ -246,7 +246,7 @@ const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
 const tenantPackageList = ref<SysTenantPackageVo[]>([]);
-const tenantPackageRef = ref<FormInstanceFunctions>(null);
+const tenantPackageRef = ref<FormInstanceFunctions>();
 const open = ref(false);
 const openView = ref(false);
 const openViewLoading = ref(false);
@@ -259,7 +259,7 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
-const menuRef = ref<TreeInstanceFunctions>(null);
+const menuRef = ref<TreeInstanceFunctions>();
 const menuIds = ref<number[]>([]);
 const menuExpand = ref(false);
 const menuNodeAll = ref(false);

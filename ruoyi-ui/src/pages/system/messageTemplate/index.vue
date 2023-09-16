@@ -308,7 +308,7 @@
     <!-- 消息模板详情 -->
     <t-dialog v-model:visible="openView" header="消息模板详情" width="700px" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(5em + 24px)">
+        <t-form label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="消息模板id">{{ form.messageTemplateId }}</t-form-item>
@@ -460,8 +460,8 @@ const { sys_message_template_mode, sys_message_type, sys_normal_disable } = prox
 );
 
 const messageTemplateList = ref<SysMessageTemplateVo[]>([]);
-const messageTemplateRef = ref<FormInstanceFunctions>(null);
-const messageTemplateTestRef = ref<FormInstanceFunctions>(null);
+const messageTemplateRef = ref<FormInstanceFunctions>();
+const messageTemplateTestRef = ref<FormInstanceFunctions>();
 const open = ref(false);
 const openView = ref(false);
 const openViewLoading = ref(false);
@@ -475,7 +475,7 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
-const sort = ref<TableSort>(null);
+const sort = ref<TableSort>();
 const messageKeys = ref<SysMessageKeyVo[]>([]);
 const messageConfigs = ref<SysMessageConfigVo[]>([]);
 const openTest = ref(false);

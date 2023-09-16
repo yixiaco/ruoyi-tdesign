@@ -145,7 +145,7 @@
     <!-- 应用管理详情 -->
     <t-dialog v-model:visible="openView" header="应用管理详情" width="700px" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(5em + 24px)">
+        <t-form label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="应用id">{{ form.appid }}</t-form-item>
@@ -200,7 +200,7 @@ const { proxy } = getCurrentInstance();
 const { sys_app_type } = proxy.useDict('sys_app_type');
 
 const appList = ref<SysAppVo[]>([]);
-const appRef = ref<FormInstanceFunctions>(null);
+const appRef = ref<FormInstanceFunctions>();
 const open = ref(false);
 const openView = ref(false);
 const openViewLoading = ref(false);

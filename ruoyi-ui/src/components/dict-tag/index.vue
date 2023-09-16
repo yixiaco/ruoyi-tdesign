@@ -2,9 +2,9 @@
   <div>
     <template v-for="(item, index) in rowOptions">
       <span
-        v-if="!theme && !variant && (item.elTagType === 'default' || !item.elTagType)"
+        v-if="!theme && !variant && (item.tagType === 'default' || !item.tagType)"
         :key="item.value"
-        :class="item.elTagClass"
+        :class="item.tagClass"
       >
         {{ item.label }}
       </span>
@@ -12,9 +12,9 @@
         v-else
         :key="item.value + ''"
         :index="index"
-        :theme="theme || item.elTagType || 'default'"
+        :theme="theme || item.tagType || 'default'"
         :variant="variant || 'light'"
-        :class="item.elTagClass"
+        :class="item.tagClass"
       >
         {{ item.label }}
       </t-tag>
@@ -27,6 +27,7 @@
 </template>
 
 <script lang="ts" setup>
+import { isNumber } from 'lodash';
 import type { PropType } from 'vue';
 import { computed } from 'vue';
 
@@ -39,7 +40,7 @@ const props = defineProps({
     default: null,
   },
   // 当前的值
-  value: [Number, String, Array],
+  value: [Number, String, Array] as PropType<number | string | Array<string | number>>,
   // 多个值时，使用的分隔符。支持使用slot方式
   separator: [String],
   // 覆盖字典默认组件风格
@@ -52,9 +53,15 @@ const props = defineProps({
   },
 });
 
-const values = computed(() => {
+const values = computed<Array<number | string>>(() => {
   if (props.value !== null && typeof props.value !== 'undefined') {
-    return Array.isArray(props.value) ? props.value : String(props.value).split(',');
+    if (Array.isArray(props.value)) {
+      return props.value;
+    }
+    if (isNumber(props.value)) {
+      return [props.value];
+    }
+    return String(props.value).split(',');
   }
   return [];
 });

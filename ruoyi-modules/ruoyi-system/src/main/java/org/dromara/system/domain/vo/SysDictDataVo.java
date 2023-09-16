@@ -59,11 +59,13 @@ public class SysDictDataVo implements Serializable {
     /**
      * 样式属性（其他样式扩展）
      */
+    @ExcelProperty(value = "样式属性")
     private String cssClass;
 
     /**
      * 表格回显样式
      */
+    @ExcelProperty(value = "表格回显样式")
     private String listClass;
 
     /**
@@ -81,15 +83,21 @@ public class SysDictDataVo implements Serializable {
     private String status;
 
     /**
-     * 备注
-     */
-    @ExcelProperty(value = "备注")
-    private String remark;
-
-    /**
      * 创建时间
      */
     @ExcelProperty(value = "创建时间")
     private Date createTime;
+
+    /**
+     * 更新时间
+     */
+    @ExcelProperty(value = "更新时间")
+    private Date updateTime;
+
+    /**
+     * 备注
+     */
+    @ExcelProperty(value = "备注")
+    private String remark;
 
 }

@@ -1,26 +1,27 @@
 package org.dromara.system.controller.system;
 
-import java.util.List;
-
-import jakarta.validation.constraints.*;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
-import org.dromara.common.core.enums.UserType;
-import org.dromara.common.satoken.utils.LoginHelper;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.validation.annotation.Validated;
-import org.dromara.common.idempotent.annotation.RepeatSubmit;
-import org.dromara.common.log.annotation.Log;
-import org.dromara.common.web.core.BaseController;
+import jakarta.validation.constraints.NotEmpty;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.enums.UserType;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
+import org.dromara.common.core.validate.QueryOneGroup;
+import org.dromara.common.idempotent.annotation.RepeatSubmit;
+import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
+import org.dromara.common.satoken.utils.LoginHelper;
+import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.bo.SysOssCategoryBo;
 import org.dromara.system.domain.query.SysOssCategoryQuery;
 import org.dromara.system.domain.vo.SysOssCategoryVo;
 import org.dromara.system.service.ISysOssCategoryService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * OSS分类
@@ -51,12 +52,12 @@ public class SysOssCategoryController extends BaseController {
     /**
      * 获取OSS分类详细信息
      *
-     * @param ossCategoryId 主键
+     * @param query 主键
      */
     @SaCheckPermission(value = {"system:ossCategory:query", "system:ossCategory:edit"}, mode = SaMode.OR)
-    @GetMapping("/{ossCategoryId}")
-    public R<SysOssCategoryVo> getInfo(@NotNull(message = "主键不能为空") @PathVariable Long ossCategoryId) {
-        return R.ok(sysOssCategoryService.queryById(ossCategoryId));
+    @GetMapping("/query")
+    public R<SysOssCategoryVo> getInfo(@Validated(QueryOneGroup.class) SysOssCategoryQuery query) {
+        return R.ok(sysOssCategoryService.query(query));
     }
 
     /**

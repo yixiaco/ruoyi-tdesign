@@ -1,10 +1,9 @@
 package org.dromara.system.domain.query;
 
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-
-import java.util.Date;
-
+import org.dromara.common.core.validate.QueryOneGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 /**
@@ -46,5 +45,11 @@ public class SysOssCategoryQuery extends BaseEntity {
      * 内容类型
      */
     private String[] contentTypes;
+
+    /**
+     * 分类id
+     */
+    @NotNull(message = "分类id不能为空", groups = QueryOneGroup.class)
+    private Long ossCategoryId;
 
 }

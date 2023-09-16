@@ -155,7 +155,7 @@
     <!-- 消息常量详情 -->
     <t-dialog v-model:visible="openView" header="消息常量详情" width="700px" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(5em + 24px)">
+        <t-form label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="消息key主键">{{ form.messageKeyId }}</t-form-item>
@@ -211,7 +211,7 @@ import type { SysMessageKeyForm, SysMessageKeyQuery, SysMessageKeyVo } from '@/a
 const { proxy } = getCurrentInstance();
 
 const messageKeyList = ref<SysMessageKeyVo[]>([]);
-const messageKeyRef = ref<FormInstanceFunctions>(null);
+const messageKeyRef = ref<FormInstanceFunctions>();
 const open = ref(false);
 const openView = ref(false);
 const openViewLoading = ref(false);
@@ -224,7 +224,7 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
-const sort = ref<TableSort>(null);
+const sort = ref<TableSort>();
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({

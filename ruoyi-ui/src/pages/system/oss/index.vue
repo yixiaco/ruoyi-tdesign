@@ -199,7 +199,7 @@ const type = ref(0);
 const previewListResource = ref(true);
 const daterangeCreateTime = ref([]);
 // 默认排序
-const sort = ref<TableSort>(null);
+const sort = ref<TableSort>();
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([

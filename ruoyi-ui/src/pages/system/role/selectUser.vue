@@ -163,7 +163,9 @@ function handleSelectUser() {
   });
 }
 
-defineExpose({
+const exposed = {
   show,
-});
+};
+export type SelectUserInstance = typeof exposed;
+defineExpose<SelectUserInstance>(exposed);
 </script>

@@ -89,6 +89,12 @@ public class SysRoleVo implements Serializable {
     private Date createTime;
 
     /**
+     * 更新时间
+     */
+    @ExcelProperty(value = "更新时间")
+    private Date updateTime;
+
+    /**
      * 用户是否存在此角色标识 默认不存在
      */
     private boolean flag = false;

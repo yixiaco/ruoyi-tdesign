@@ -262,7 +262,7 @@
     <!-- 消息配置详情 -->
     <t-dialog v-model:visible="openView" header="消息配置详情" width="700px" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(5em + 24px)">
+        <t-form label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="消息设置id">{{ form.messageConfigId }}</t-form-item>
@@ -352,7 +352,7 @@ const { sys_message_type, sys_normal_disable, sys_message_supplier_type } = prox
 );
 
 const messageConfigList = ref<SysMessageConfigVo[]>([]);
-const messageConfigRef = ref<FormInstanceFunctions>(null);
+const messageConfigRef = ref<FormInstanceFunctions>();
 const open = ref(false);
 const openView = ref(false);
 const openViewLoading = ref(false);
@@ -365,7 +365,7 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
-const sort = ref<TableSort>(null);
+const sort = ref<TableSort>();
 
 const messageConfig = computed<MessageConfig>(() => {
   if (!form.value.supplierType) {

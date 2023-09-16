@@ -35,12 +35,12 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
     /**
      * 查询OSS分类
      *
-     * @param ossCategoryId 主键
+     * @param query 查询对象
      * @return SysOssCategoryVo
      */
     @Override
-    public SysOssCategoryVo queryById(Long ossCategoryId) {
-        return baseMapper.queryVoById(ossCategoryId);
+    public SysOssCategoryVo query(SysOssCategoryQuery query) {
+        return baseMapper.queryVoById(query);
     }
 
     /**

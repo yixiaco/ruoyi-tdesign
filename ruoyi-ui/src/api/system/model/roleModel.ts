@@ -66,6 +66,8 @@ export interface SysRoleVo {
   status?: string;
   /** 创建时间 */
   createTime?: any;
+  /** 更新时间 */
+  updateTime?: any;
   /** 备注 */
   remark?: string;
   /** 用户是否存在此角色标识 默认不存在 */

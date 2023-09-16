@@ -14,6 +14,7 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.system.domain.SysLogininfor;
 import org.dromara.system.domain.bo.SysLogininforBo;
+import org.dromara.system.domain.query.SysLogininforQuery;
 import org.dromara.system.domain.vo.SysLogininforVo;
 import org.dromara.system.mapper.SysLogininforMapper;
 import org.dromara.system.service.ISysLogininforService;
@@ -34,6 +35,17 @@ import java.util.List;
 @Slf4j
 @Service
 public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, SysLogininfor> implements ISysLogininforService {
+
+    /**
+     * 查询系统访问记录
+     *
+     * @param infoId 主键
+     * @return SysLogininforVo
+     */
+    @Override
+    public SysLogininforVo queryById(Long infoId) {
+        return baseMapper.selectVoById(infoId);
+    }
 
     /**
      * 记录登录信息
@@ -80,9 +92,26 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
         return "[" + msg + "]";
     }
 
+    /**
+     * 查询系统访问记录列表
+     *
+     * @param query 查询对象
+     * @return SysLogininforVo
+     */
     @Override
-    public TableDataInfo<SysLogininforVo> selectPageLogininforList(SysLogininforBo logininfor) {
-        return PageQuery.of(() -> baseMapper.queryList(logininfor));
+    public TableDataInfo<SysLogininforVo> queryPageList(SysLogininforQuery query) {
+        return PageQuery.of(() -> baseMapper.queryList(query));
+    }
+
+    /**
+     * 查询系统登录日志集合
+     *
+     * @param query 查询对象
+     * @return 登录记录集合
+     */
+    @Override
+    public List<SysLogininforVo> queryList(SysLogininforQuery query) {
+        return baseMapper.queryList(query);
     }
 
     /**
@@ -97,17 +126,6 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
         TenantHelper.ignore(s -> {
             baseMapper.insert(logininfor);
         });
-    }
-
-    /**
-     * 查询系统登录日志集合
-     *
-     * @param logininfor 访问日志对象
-     * @return 登录记录集合
-     */
-    @Override
-    public List<SysLogininforVo> selectLogininforList(SysLogininforBo logininfor) {
-        return baseMapper.queryList(logininfor);
     }
 
     /**

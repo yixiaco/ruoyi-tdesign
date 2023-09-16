@@ -156,7 +156,7 @@
     <!-- 消息发送记录详情 -->
     <t-dialog v-model:visible="openView" header="消息发送记录详情" top="3%" width="700px" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(7em + 24px)">
+        <t-form label-align="right" colon label-width="calc(7em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="消息发送记录id">{{ form.messageLogId }}</t-form-item>
@@ -258,7 +258,7 @@ const ids = ref([]);
 const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
-const sort = ref<TableSort>(null);
+const sort = ref<TableSort>();
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([

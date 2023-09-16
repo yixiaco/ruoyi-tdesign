@@ -20,10 +20,10 @@ public interface ISysOssCategoryService extends IService<SysOssCategory> {
     /**
      * 查询OSS分类
      *
-     * @param ossCategoryId 主键
+     * @param query 查询对象
      * @return SysOssCategoryVo
      */
-    SysOssCategoryVo queryById(Long ossCategoryId);
+    SysOssCategoryVo query(SysOssCategoryQuery query);
 
     /**
      * 查询OSS分类列表

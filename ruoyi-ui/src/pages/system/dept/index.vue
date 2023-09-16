@@ -75,7 +75,10 @@
           <dict-tag :options="sys_normal_disable" :value="row.status" />
         </template>
         <template #operation="{ row }">
-          <t-space>
+          <t-space :size="8" break-line>
+            <t-link v-hasPermi="['system:dept:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
+              <browse-icon />详情
+            </t-link>
             <t-link v-hasPermi="['system:dept:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
               <edit-icon />修改
             </t-link>
@@ -167,6 +170,51 @@
         </t-form>
       </t-loading>
     </t-dialog>
+
+    <!-- 部门详情 -->
+    <t-dialog v-model:visible="openView" header="部门详情" width="700px" attach="body" :footer="false">
+      <t-loading :loading="openViewLoading">
+        <t-form label-align="right" colon label-width="calc(5em + 28px)">
+          <t-row :gutter="[0, 20]">
+            <t-col :span="6">
+              <t-form-item label="部门id">{{ form.deptId }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="父部门id">{{ form.parentId }}</t-form-item>
+            </t-col>
+            <t-col :span="12">
+              <t-form-item label="祖级列表">{{ form.ancestors }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="部门名称">{{ form.deptName }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="显示顺序">{{ form.orderNum }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="负责人">{{ form.leader }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="联系电话">{{ form.phone }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="邮箱">{{ form.email }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="部门状态">
+                <dict-tag :options="sys_normal_disable" :value="form.status" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
+            </t-col>
+          </t-row>
+        </t-form>
+      </t-loading>
+    </t-dialog>
   </t-card>
 </template>
 <script lang="ts" setup>
@@ -175,6 +223,7 @@ defineOptions({
 });
 import {
   AddIcon,
+  BrowseIcon,
   DeleteIcon,
   DownloadIcon,
   EditIcon,
@@ -199,6 +248,8 @@ import type { SysDeptForm, SysDeptQuery, SysDeptVo } from '@/api/system/model/de
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
+const openView = ref(false);
+const openViewLoading = ref(false);
 const deptList = ref<SysDeptVo[]>([]);
 const open = ref(false);
 const loading = ref(true);
@@ -207,9 +258,9 @@ const showSearch = ref(true);
 const title = ref('');
 const deptOptions = ref<SysDeptVo[]>([]);
 const isExpandAll = ref(true);
-const sort = ref<TableSort>(null);
-const tableRef = ref<EnhancedTableInstanceFunctions>(null);
-const deptRef = ref<FormInstanceFunctions>(null);
+const sort = ref<TableSort>();
+const tableRef = ref<EnhancedTableInstanceFunctions>();
+const deptRef = ref<FormInstanceFunctions>();
 const columnControllerVisible = ref(false);
 
 // 列显隐信息
@@ -217,7 +268,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `部门名称`, colKey: 'deptName', align: 'left', width: 260, ellipsis: true },
   { title: `排序`, colKey: 'orderNum', align: 'center', width: 200, sorter: true },
   { title: `状态`, colKey: 'status', align: 'center', width: 100 },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 200, ellipsis: true, sorter: true },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', minWidth: 180, sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
 
@@ -228,11 +279,12 @@ const rules = ref<Record<string, Array<FormRule>>>({
   email: [{ email: true, message: '请输入正确的邮箱地址', trigger: 'change' }],
   phone: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
 });
-
+// 提交表单对象
 const form = ref<SysDeptForm & SysDeptVo>({
   orderNum: 0,
   status: '1',
 });
+// 查询对象
 const queryParams = ref<SysDeptQuery>({
   deptName: undefined,
   status: undefined,
@@ -241,12 +293,13 @@ const queryParams = ref<SysDeptQuery>({
 /** 查询部门列表 */
 function getList() {
   loading.value = true;
-  listDept(queryParams.value).then((response) => {
-    deptList.value = proxy.handleTree(response.data, 'deptId');
-    tableRef.value.resetData(deptList.value);
-    loading.value = false;
-    refreshExpandAll();
-  });
+  listDept(queryParams.value)
+    .then((response) => {
+      deptList.value = proxy.handleTree(response.data, 'deptId');
+      tableRef.value.resetData(deptList.value);
+      refreshExpandAll();
+    })
+    .finally(() => (loading.value = false));
 }
 /** 表单重置 */
 function reset() {
@@ -307,6 +360,18 @@ function refreshExpandAll() {
     }
   });
 }
+
+/** 详情按钮操作 */
+function handleDetail(row: SysDeptVo) {
+  reset();
+  openView.value = true;
+  openViewLoading.value = true;
+  const deptId = row.deptId;
+  getDept(deptId).then((response) => {
+    form.value = response.data;
+    openViewLoading.value = false;
+  });
+}
 /** 修改按钮操作 */
 function handleUpdate(row: SysDeptVo) {
   reset();
@@ -333,7 +398,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
     const msgLoading = proxy.$modal.msgLoading('提交中...');
     if (form.value.deptId) {
       updateDept(form.value)
-        .then((response) => {
+        .then(() => {
           proxy.$modal.msgSuccess('修改成功');
           open.value = false;
           getList();
@@ -341,7 +406,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
         .finally(() => proxy.$modal.msgClose(msgLoading));
     } else {
       addDept(form.value)
-        .then((response) => {
+        .then(() => {
           proxy.$modal.msgSuccess('新增成功');
           open.value = false;
           getList();

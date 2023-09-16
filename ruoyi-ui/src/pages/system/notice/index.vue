@@ -87,6 +87,10 @@
                 <template #icon> <delete-icon /> </template>
                 删除
               </t-button>
+              <t-button v-hasPermi="['system:notice:export']" theme="default" variant="outline" @click="handleExport">
+                <template #icon> <download-icon /> </template>
+                导出
+              </t-button>
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -106,7 +110,10 @@
           <dict-tag :options="sys_notice_status" :value="row.status" />
         </template>
         <template #operation="{ row }">
-          <t-space :size="8">
+          <t-space :size="8" break-line>
+            <t-link v-hasPermi="['system:notice:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
+              <browse-icon />详情
+            </t-link>
             <t-link v-hasPermi="['system:notice:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
               <edit-icon />修改
             </t-link>
@@ -176,13 +183,60 @@
         </t-form>
       </t-loading>
     </t-dialog>
+
+    <!-- 通知公告详情 -->
+    <t-dialog v-model:visible="openView" header="通知公告详情" width="700px" attach="body" :footer="false">
+      <t-loading :loading="openViewLoading">
+        <t-form label-align="right" colon label-width="calc(5em + 28px)">
+          <t-row :gutter="[0, 20]">
+            <t-col :span="6">
+              <t-form-item label="公告ID">{{ form.noticeId }}</t-form-item>
+            </t-col>
+            <t-col :span="12">
+              <t-form-item label="公告标题">{{ form.noticeTitle }}</t-form-item>
+            </t-col>
+            <t-col :span="12">
+              <t-form-item label="公告内容"><div v-html="form.noticeContent"></div></t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="公告类型">
+                <dict-tag :options="sys_notice_type" :value="form.noticeType" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="公告状态">
+                <dict-tag :options="sys_notice_status" :value="form.status" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="备注">{{ form.remark }}</t-form-item>
+            </t-col>
+          </t-row>
+        </t-form>
+      </t-loading>
+    </t-dialog>
   </t-card>
 </template>
 <script lang="ts" setup>
 defineOptions({
   name: 'Notice',
 });
-import { AddIcon, DeleteIcon, EditIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
+import {
+  AddIcon,
+  BrowseIcon,
+  DeleteIcon,
+  DownloadIcon,
+  EditIcon,
+  RefreshIcon,
+  SearchIcon,
+  SettingIcon,
+} from 'tdesign-icons-vue-next';
 import type {
   FormInstanceFunctions,
   FormRule,
@@ -199,6 +253,8 @@ import { addNotice, delNotice, getNotice, listNotice, updateNotice } from '@/api
 const { proxy } = getCurrentInstance();
 const { sys_notice_status, sys_notice_type } = proxy.useDict('sys_notice_status', 'sys_notice_type');
 
+const openView = ref(false);
+const openViewLoading = ref(false);
 const noticeList = ref<SysNoticeVo[]>([]);
 const open = ref(false);
 const loading = ref(false);
@@ -210,30 +266,32 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
-const sort = ref<TableSort>(null);
-const noticeRef = ref<FormInstanceFunctions>(null);
+const sort = ref<TableSort>();
+const noticeRef = ref<FormInstanceFunctions>();
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
   noticeTitle: [{ required: true, message: '公告标题不能为空', trigger: 'blur' }],
   noticeType: [{ required: true, message: '公告类型不能为空', trigger: 'blur' }],
 });
+
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
-  { title: `序号`, colKey: 'noticeId', align: 'center', width: 100, ellipsis: true },
-  { title: `公告标题`, colKey: 'noticeTitle', align: 'center', ellipsis: true },
-  { title: `公告类型`, colKey: 'noticeType', align: 'center', width: 100 },
-  { title: `状态`, colKey: 'status', align: 'center', width: 100 },
-  { title: `创建人`, colKey: 'createByName', align: 'center', width: 100 },
-  { title: `更新人`, colKey: 'updateByName', align: 'center', width: 100 },
+  { title: `序号`, colKey: 'noticeId', align: 'center', width: 80, ellipsis: true },
+  { title: `公告标题`, colKey: 'noticeTitle', align: 'center', width: '20%', ellipsis: true },
+  { title: `公告类型`, colKey: 'noticeType', align: 'center', sorter: true },
+  { title: `状态`, colKey: 'status', align: 'center' },
+  { title: `创建人`, colKey: 'createByName', align: 'center' },
+  { title: `更新人`, colKey: 'updateByName', align: 'center' },
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180, sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
-
+// 提交表单对象
 const form = ref<SysNoticeVo & SysNoticeForm>({
   status: '1',
 });
+// 查询对象
 const queryParams = ref<SysNoticeQuery>({
   pageNum: 1,
   pageSize: 10,
@@ -261,11 +319,12 @@ const pagination = computed(() => {
 /** 查询公告列表 */
 function getList() {
   loading.value = true;
-  listNotice(queryParams.value).then((response) => {
-    noticeList.value = response.rows;
-    total.value = response.total;
-    loading.value = false;
-  });
+  listNotice(queryParams.value)
+    .then((response) => {
+      noticeList.value = response.rows;
+      total.value = response.total;
+    })
+    .finally(() => (loading.value = false));
 }
 
 /** 表单重置 */
@@ -314,6 +373,18 @@ function handleAdd() {
   reset();
   open.value = true;
   title.value = '添加公告';
+}
+
+/** 详情按钮操作 */
+function handleDetail(row: SysNoticeVo) {
+  reset();
+  openView.value = true;
+  openViewLoading.value = true;
+  const noticeId = row.noticeId || ids.value.at(0);
+  getNotice(noticeId).then((response) => {
+    form.value = response.data;
+    openViewLoading.value = false;
+  });
 }
 
 /** 修改按钮操作 */
@@ -373,6 +444,17 @@ function handleDelete(row?: SysNoticeVo) {
       })
       .finally(() => proxy.$modal.msgClose(msgLoading));
   });
+}
+
+/** 导出按钮操作 */
+function handleExport() {
+  proxy.download(
+    'system/notice/export',
+    {
+      ...queryParams.value,
+    },
+    `notice_${new Date().getTime()}.xlsx`,
+  );
 }
 
 getList();
