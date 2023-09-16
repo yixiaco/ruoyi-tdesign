@@ -48,8 +48,8 @@
 
       <t-table
         v-model:column-controller-visible="columnControllerVisible"
-        hover
         :loading="loading"
+        hover
         row-key="infoId"
         :data="logininforList"
         :columns="columns"
@@ -61,8 +61,8 @@
         }"
         :sort="sort"
         show-sort-column-bg-color
-        @select-change="handleSelectionChange"
         @sort-change="handleSortChange"
+        @select-change="handleSelectionChange"
       >
         <template #topContent>
           <t-row>
@@ -96,7 +96,12 @@
                 <template #icon> <lock-off-icon /> </template>
                 解锁
               </t-button>
-              <t-button v-hasPermi="['monitor:operlog:export']" theme="default" variant="outline" @click="handleExport">
+              <t-button
+                v-hasPermi="['monitor:logininfor:export']"
+                theme="default"
+                variant="outline"
+                @click="handleExport"
+              >
                 <template #icon> <download-icon /> </template>
                 导出
               </t-button>
@@ -118,24 +123,100 @@
         <template #loginTime="{ row }">
           <span>{{ parseTime(row.loginTime) }}</span>
         </template>
+        <template #operation="{ row }">
+          <t-space :size="8" break-line>
+            <t-link
+              v-hasPermi="['monitor:logininfor:query']"
+              theme="primary"
+              hover="color"
+              @click.stop="handleDetail(row)"
+            >
+              <browse-icon />详情
+            </t-link>
+            <t-link
+              v-hasPermi="['monitor:logininfor:remove']"
+              theme="danger"
+              hover="color"
+              @click.stop="handleDelete(row)"
+            >
+              <delete-icon />删除
+            </t-link>
+          </t-space>
+        </template>
       </t-table>
     </t-space>
+
+    <!-- 系统访问记录详情 -->
+    <t-dialog v-model:visible="openView" header="系统访问记录详情" width="700px" attach="body" :footer="false">
+      <t-loading :loading="openViewLoading">
+        <t-form label-align="right" colon label-width="calc(5em + 28px)">
+          <t-row :gutter="[0, 20]">
+            <t-col :span="6">
+              <t-form-item label="访问ID">{{ form.infoId }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="用户账号">{{ form.userName }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="登录IP地址">{{ form.ipaddr }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="登录地点">{{ form.loginLocation }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="浏览器类型">{{ form.browser }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="操作系统">{{ form.os }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="登录状态">
+                <dict-tag :options="sys_common_status" :value="form.status" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="提示消息">{{ form.msg }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="访问时间">{{ parseTime(form.loginTime) }}</t-form-item>
+            </t-col>
+          </t-row>
+        </t-form>
+      </t-loading>
+    </t-dialog>
   </t-card>
 </template>
 <script lang="ts" setup>
 defineOptions({
   name: 'Logininfor',
 });
-import { DeleteIcon, DownloadIcon, LockOffIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
+
+import {
+  BrowseIcon,
+  DeleteIcon,
+  DownloadIcon,
+  LockOffIcon,
+  RefreshIcon,
+  SearchIcon,
+  SettingIcon,
+} from 'tdesign-icons-vue-next';
 import type { PageInfo, PrimaryTableCol, SelectOptions, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
-import { cleanLogininfor, delLogininfor, list, unlockLogininfor } from '@/api/monitor/logininfor';
-import type { SysLogininforBo, SysLogininforVo } from '@/api/monitor/model/logininforModel';
+import {
+  cleanLogininfor,
+  delLogininfor,
+  getLogininfor,
+  listLogininfor,
+  unlockLogininfor,
+} from '@/api/monitor/logininfor';
+import type { SysLogininforQuery, SysLogininforVo } from '@/api/monitor/model/logininforModel';
 
 const { proxy } = getCurrentInstance();
 const { sys_common_status } = proxy.useDict('sys_common_status');
 
+const openView = ref(false);
+const openViewLoading = ref(false);
 const logininforList = ref<SysLogininforVo[]>([]);
 const loading = ref(false);
 const columnControllerVisible = ref(false);
@@ -146,18 +227,8 @@ const multiple = ref(true);
 const selectName = ref('');
 const total = ref(0);
 const dateRange = ref([]);
-const sort = ref<TableSort>(null);
+const sort = ref<TableSort>();
 
-// 查询参数
-const queryParams = ref<SysLogininforBo>({
-  pageNum: 1,
-  pageSize: 10,
-  ipaddr: undefined,
-  userName: undefined,
-  status: undefined,
-  orderByColumn: undefined,
-  isAsc: undefined,
-});
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
@@ -170,7 +241,20 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `登录状态`, colKey: 'status', align: 'center' },
   { title: `描述`, colKey: 'msg', align: 'center' },
   { title: `访问时间`, colKey: 'loginTime', align: 'center', width: 180, sorter: true },
+  { title: `操作`, colKey: 'operation', align: 'center', width: 160 },
 ]);
+// 提交表单对象
+const form = ref<SysLogininforVo>({});
+// 查询参数
+const queryParams = ref<SysLogininforQuery>({
+  pageNum: 1,
+  pageSize: 10,
+  ipaddr: undefined,
+  userName: undefined,
+  status: undefined,
+  orderByColumn: undefined,
+  isAsc: undefined,
+});
 
 // 分页
 const pagination = computed(() => {
@@ -190,12 +274,19 @@ const pagination = computed(() => {
 /** 查询登录日志列表 */
 function getList() {
   loading.value = true;
-  list(proxy.addDateRange(queryParams.value, dateRange.value)).then((response) => {
-    logininforList.value = response.rows;
-    total.value = response.total;
-    loading.value = false;
-  });
+  listLogininfor(proxy.addDateRange(queryParams.value, dateRange.value))
+    .then((response) => {
+      logininforList.value = response.rows;
+      total.value = response.total;
+    })
+    .finally(() => (loading.value = false));
 }
+
+// 表单重置
+function reset() {
+  form.value = {};
+}
+
 /** 搜索按钮操作 */
 function handleQuery() {
   queryParams.value.pageNum = 1;
@@ -208,13 +299,7 @@ function resetQuery() {
   queryParams.value.pageNum = 1;
   handleSortChange(null);
 }
-/** 多选框选中数据 */
-function handleSelectionChange(selection: Array<string | number>, { selectedRowData }: SelectOptions<SysLogininforVo>) {
-  ids.value = selection;
-  multiple.value = !selection.length;
-  single.value = selection.length !== 1;
-  selectName.value = selectedRowData.map((item) => item.userName)[0];
-}
+
 /** 排序触发事件 */
 function handleSortChange(value?: TableSort) {
   sort.value = value;
@@ -227,25 +312,56 @@ function handleSortChange(value?: TableSort) {
   }
   getList();
 }
+
+/** 多选框选中数据 */
+function handleSelectionChange(selection: Array<string | number>, { selectedRowData }: SelectOptions<SysLogininforVo>) {
+  ids.value = selection;
+  single.value = selection.length !== 1;
+  multiple.value = !selection.length;
+  selectName.value = selectedRowData.map((item) => item.userName)[0];
+}
+
+/** 详情按钮操作 */
+function handleDetail(row: SysLogininforVo) {
+  reset();
+  openView.value = true;
+  openViewLoading.value = true;
+  const infoId = row.infoId || ids.value.at(0);
+  getLogininfor(infoId).then((response) => {
+    form.value = response.data;
+    openViewLoading.value = false;
+  });
+}
+
 /** 删除按钮操作 */
 function handleDelete(row?: SysLogininforVo) {
   const infoIds = row?.infoId || ids.value;
   proxy.$modal.confirm(`是否确认删除访问编号为"${infoIds}"的数据项?`, () => {
-    return delLogininfor(infoIds).then(() => {
-      if (!row) ids.value = [];
-      getList();
-      proxy.$modal.msgSuccess('删除成功');
-    });
+    const msgLoading = proxy.$modal.msgLoading('正在删除中...');
+    return delLogininfor(infoIds)
+      .then(() => {
+        if (!row) ids.value = [];
+        getList();
+        proxy.$modal.msgSuccess('删除成功');
+      })
+      .finally(() => {
+        proxy.$modal.msgClose(msgLoading);
+      });
   });
 }
 /** 清空按钮操作 */
 function handleClean() {
   proxy.$modal.confirm('是否确认清空所有登录日志数据项?', () => {
-    return cleanLogininfor().then(() => {
-      ids.value = [];
-      getList();
-      proxy.$modal.msgSuccess('清空成功');
-    });
+    const msgLoading = proxy.$modal.msgLoading('正在清空中...');
+    return cleanLogininfor()
+      .then(() => {
+        ids.value = [];
+        getList();
+        proxy.$modal.msgSuccess('清空成功');
+      })
+      .finally(() => {
+        proxy.$modal.msgClose(msgLoading);
+      });
   });
 }
 /** 解锁按钮操作 */

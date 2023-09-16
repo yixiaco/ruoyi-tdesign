@@ -186,7 +186,7 @@ const route = useRoute();
 const router = useRouter();
 const { proxy } = getCurrentInstance();
 
-const formRef = ref<FormInstanceFunctions>(null);
+const formRef = ref<FormInstanceFunctions>();
 const columnControllerVisible = ref(false);
 const activeName = ref('columnInfo');
 const dictOptions = ref<SysDictTypeVo[]>([]);

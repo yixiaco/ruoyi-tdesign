@@ -80,8 +80,14 @@
         <template #status="{ row }">
           <dict-tag :options="sys_normal_disable" :value="row.status" />
         </template>
+        <template #menuType="{ row }">
+          <dict-tag :options="menuTypeOptions" :value="row.menuType" />
+        </template>
         <template #operation="{ row }">
-          <t-space :size="8">
+          <t-space :size="4" break-line>
+            <t-link v-hasPermi="['system:menu:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
+              <browse-icon />详情
+            </t-link>
             <t-link v-hasPermi="['system:menu:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
               <edit-icon />修改
             </t-link>
@@ -96,7 +102,7 @@
       </t-enhanced-table>
     </t-space>
 
-    <!-- 添加或修改菜单对话框 -->
+    <!-- 添加或修改菜单权限对话框 -->
     <t-dialog
       v-model:visible="open"
       :close-on-overlay-click="false"
@@ -131,11 +137,7 @@
             </t-col>
             <t-col :span="12">
               <t-form-item label="菜单类型" name="menuType">
-                <t-radio-group v-model="form.menuType">
-                  <t-radio value="M">目录</t-radio>
-                  <t-radio value="C">菜单</t-radio>
-                  <t-radio value="F">按钮</t-radio>
-                </t-radio-group>
+                <t-radio-group v-model="form.menuType" :options="menuTypeOptions" />
               </t-form-item>
             </t-col>
             <t-col v-if="form.menuType !== 'F'" :span="12">
@@ -163,10 +165,7 @@
                     是否外链
                   </span>
                 </template>
-                <t-radio-group v-model="form.isFrame">
-                  <t-radio :value="1">是</t-radio>
-                  <t-radio :value="0">否</t-radio>
-                </t-radio-group>
+                <t-radio-group v-model="form.isFrame" :options="yesNoOptions" />
               </t-form-item>
             </t-col>
             <t-col v-if="form.menuType !== 'F'" :span="6">
@@ -240,10 +239,7 @@
                     是否缓存
                   </span>
                 </template>
-                <t-radio-group v-model="form.isCache">
-                  <t-radio :value="1">缓存</t-radio>
-                  <t-radio :value="0">不缓存</t-radio>
-                </t-radio-group>
+                <t-radio-group v-model="form.isCache" :options="cacheOptions" />
               </t-form-item>
             </t-col>
             <t-col v-if="form.menuType !== 'F'" :span="6">
@@ -284,14 +280,87 @@
         </t-form>
       </t-loading>
     </t-dialog>
+
+    <!-- 菜单权限详情 -->
+    <t-dialog v-model:visible="openView" header="菜单权限详情" width="700px" attach="body" :footer="false">
+      <t-loading :loading="openViewLoading">
+        <t-form label-align="right" colon label-width="calc(5em + 28px)">
+          <t-row :gutter="[0, 20]">
+            <t-col :span="6">
+              <t-form-item label="菜单ID">{{ form.menuId }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="菜单名称">{{ form.menuName }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="父菜单ID">{{ form.parentId }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="显示顺序">{{ form.orderNum }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="路由地址">{{ form.path }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="组件路径">{{ form.component }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="路由参数">{{ form.queryParam }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="是否为外链">
+                <dict-tag :options="yesNoOptions" theme="primary" :value="form.isFrame" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="是否缓存">
+                <dict-tag :options="cacheOptions" theme="primary" :value="form.isCache" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="菜单类型">
+                <dict-tag :options="menuTypeOptions" :value="form.menuType" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="显示状态">
+                <dict-tag :options="sys_show_hide" :value="form.visible" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="菜单状态">
+                <dict-tag :options="sys_normal_disable" :value="form.status" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="权限标识">{{ form.perms }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="菜单图标">{{ form.icon }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
+            </t-col>
+            <t-col :span="12">
+              <t-form-item label="备注">{{ form.remark }}</t-form-item>
+            </t-col>
+          </t-row>
+        </t-form>
+      </t-loading>
+    </t-dialog>
   </t-card>
 </template>
 <script lang="ts" setup>
 defineOptions({
   name: 'Menus',
 });
+
 import {
   AddIcon,
+  BrowseIcon,
   DeleteIcon,
   DownloadIcon,
   EditIcon,
@@ -314,10 +383,13 @@ import { getCurrentInstance, ref } from 'vue';
 import { addMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu';
 import type { SysMenuForm, SysMenuQuery, SysMenuVo } from '@/api/system/model/menuModel';
 import IconSelect from '@/components/icon-select/index.vue';
+import type { DictModel } from '@/utils/dict';
 
 const { proxy } = getCurrentInstance();
-const { sys_show_hide, sys_normal_disable } = proxy.useDict('sys_show_hide', 'sys_normal_disable');
+const { sys_normal_disable, sys_show_hide } = proxy.useDict('sys_normal_disable', 'sys_show_hide');
 
+const openView = ref(false);
+const openViewLoading = ref(false);
 const menuList = ref<SysMenuVo[]>([]);
 const open = ref(false);
 const loading = ref(true);
@@ -327,9 +399,25 @@ const columnControllerVisible = ref(false);
 const title = ref('');
 const menuOptions = ref<SysMenuVo[]>([]);
 const isExpandAll = ref(false);
-const sort = ref<TableSort>(null);
-const tableRef = ref<EnhancedTableInstanceFunctions>(null);
-const menuRef = ref<FormInstanceFunctions>(null);
+const sort = ref<TableSort>();
+const tableRef = ref<EnhancedTableInstanceFunctions>();
+const menuRef = ref<FormInstanceFunctions>();
+/** 是否 */
+const yesNoOptions = ref([
+  { value: 0, label: '否' },
+  { value: 1, label: '是' },
+]);
+// 缓存状态
+const cacheOptions = ref([
+  { value: 0, label: '不缓存' },
+  { value: 1, label: '缓存' },
+]);
+// 菜单类型
+const menuTypeOptions = ref<DictModel[]>([
+  { value: 'M', tagType: 'primary', label: '目录' },
+  { value: 'C', tagType: 'success', label: '菜单' },
+  { value: 'F', tagType: 'warning', label: '按钮' },
+]);
 
 const rules = ref<Record<string, Array<FormRule>>>({
   menuName: [{ required: true, message: '菜单名称不能为空', trigger: 'blur' }],
@@ -338,17 +426,18 @@ const rules = ref<Record<string, Array<FormRule>>>({
 });
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
-  { title: `菜单名称`, colKey: 'menuName', align: 'left', ellipsis: true },
-  { title: `图标`, colKey: 'icon', align: 'center', width: 100 },
+  { title: `菜单名称`, colKey: 'menuName', align: 'left', width: '20%', ellipsis: true },
+  { title: `图标`, colKey: 'icon', align: 'center', width: 80 },
   { title: `排序`, colKey: 'orderNum', align: 'center', width: 100, sorter: true },
   { title: `权限标识`, colKey: 'perms', align: 'center', ellipsis: true },
   { title: `组件路径`, colKey: 'component', align: 'center', ellipsis: true },
-  { title: `显示状态`, colKey: 'visible', align: 'center' },
-  { title: `状态`, colKey: 'status', align: 'center', width: 80 },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', sorter: true },
-  { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
+  { title: `显示状态`, colKey: 'visible', align: 'center', width: 88 },
+  { title: `菜单类型`, colKey: 'menuType', align: 'center', width: 88 },
+  { title: `状态`, colKey: 'status', align: 'center', width: 70 },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 120, sorter: true },
+  { title: `操作`, colKey: 'operation', align: 'center', width: 225 },
 ]);
-
+// 提交表单对象
 const form = ref<SysMenuForm & SysMenuVo>({
   menuId: undefined,
   parentId: 0,
@@ -361,7 +450,7 @@ const form = ref<SysMenuForm & SysMenuVo>({
   visible: '1',
   status: '1',
 });
-
+// 查询对象
 const queryParams = ref<SysMenuQuery>({
   menuName: undefined,
   visible: undefined,
@@ -400,15 +489,18 @@ function reset() {
   };
   proxy.resetForm('menuRef');
 }
+
 /** 搜索按钮操作 */
 function handleQuery() {
   getList();
 }
+
 /** 重置按钮操作 */
 function resetQuery() {
   proxy.resetForm('queryRef');
   handleSortChange(null);
 }
+
 /** 排序触发事件 */
 function handleSortChange(value?: TableSort) {
   sort.value = value;
@@ -434,6 +526,17 @@ function handleAdd(row?: SysMenuVo) {
       form.value.parentId = 0;
     }
     eLoading.value = false;
+  });
+}
+/** 详情按钮操作 */
+function handleDetail(row: SysMenuVo) {
+  reset();
+  openView.value = true;
+  openViewLoading.value = true;
+  const menuId = row.menuId;
+  getMenu(menuId).then((response) => {
+    form.value = response.data;
+    openViewLoading.value = false;
   });
 }
 /** 展开/折叠操作 */
@@ -464,10 +567,13 @@ async function handleUpdate(row: SysMenuVo) {
     eLoading.value = false;
   });
 }
-const onConfirm = () => {
-  menuRef.value.submit();
-};
+
 /** 提交按钮 */
+function onConfirm() {
+  menuRef.value.submit();
+}
+
+/** 提交表单 */
 function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     const msgLoading = proxy.$modal.msgLoading('提交中...');

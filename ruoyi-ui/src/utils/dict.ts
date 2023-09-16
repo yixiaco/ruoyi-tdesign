@@ -6,9 +6,9 @@ import useDictStore from '@/store/modules/dict';
 
 export interface DictModel {
   label: string;
-  value: string;
-  elTagType?: 'default' | 'warning' | 'danger' | 'success' | 'primary';
-  elTagClass?: string;
+  value: string | number;
+  tagType?: 'default' | 'warning' | 'danger' | 'success' | 'primary';
+  tagClass?: string;
 }
 
 /**
@@ -27,8 +27,8 @@ export function useDict(...args: string[]) {
           res.value[dictType] = resp.data.map<DictModel>((p) => ({
             label: p.dictLabel,
             value: p.dictValue,
-            elTagType: p.listClass,
-            elTagClass: p.cssClass,
+            tagType: p.listClass,
+            tagClass: p.cssClass,
           }));
           useDictStore().setDict(dictType, res.value[dictType]);
         });

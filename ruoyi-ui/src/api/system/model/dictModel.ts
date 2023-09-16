@@ -14,7 +14,7 @@ export interface SysDictDataQuery extends BaseEntity {
 /**
  * 字典数据业务对象
  */
-export interface SysDictDataForm extends BaseEntity {
+export interface SysDictDataForm {
   /** 字典编码 */
   dictCode?: number;
   /** 字典排序 */
@@ -60,6 +60,8 @@ export interface SysDictDataVo {
   isDefault?: string;
   /** 状态（1正常 0停用） */
   status?: string;
+  /** 更新时间 */
+  updateTime?: any;
   /** 创建时间 */
   createTime?: any;
   /** 备注 */

@@ -1,7 +1,9 @@
 package org.dromara.system.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import jakarta.servlet.http.HttpServletResponse;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.excel.utils.ExcelUtil;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
@@ -13,6 +15,8 @@ import org.dromara.system.service.ISysNoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 /**
  * 公告 信息操作处理
@@ -33,7 +37,18 @@ public class SysNoticeController extends BaseController {
     @SaCheckPermission("system:notice:list")
     @GetMapping("/list")
     public TableDataInfo<SysNoticeVo> list(SysNoticeQuery notice) {
-        return noticeService.selectPageNoticeList(notice);
+        return noticeService.queryPageList(notice);
+    }
+
+    /**
+     * 导出通知公告列表
+     */
+    @SaCheckPermission("system:notice:export")
+    @Log(title = "通知公告", businessType = BusinessType.EXPORT)
+    @PostMapping("/export")
+    public void export(SysNoticeQuery query, HttpServletResponse response) {
+        List<SysNoticeVo> list = noticeService.queryList(query);
+        ExcelUtil.exportExcel(list, "通知公告", SysNoticeVo.class, response);
     }
 
     /**

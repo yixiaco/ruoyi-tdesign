@@ -393,7 +393,7 @@
     <!-- 用户信息详情 -->
     <t-dialog v-model:visible="openView" header="用户信息详情" width="700px" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(5em + 24px)">
+        <t-form label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="用户ID">{{ formView.userId }}</t-form-item>
@@ -504,8 +504,8 @@ const router = useRouter();
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable, sys_user_sex } = proxy.useDict('sys_normal_disable', 'sys_user_sex');
 
-const uploadRef = ref<UploadInstanceFunctions>(null);
-const userRef = ref<FormInstanceFunctions>(null);
+const uploadRef = ref<UploadInstanceFunctions>();
+const userRef = ref<FormInstanceFunctions>();
 const userList = ref<SysUserVo[]>([]);
 const open = ref(false);
 const openView = ref(false);
@@ -528,7 +528,7 @@ const initPassword = ref(undefined);
 const postOptions = ref<SysPostVo[]>([]);
 const roleOptions = ref<SysRoleVo[]>([]);
 const deptActived = ref<number[]>([]);
-const sort = ref<TableSort>(null);
+const sort = ref<TableSort>();
 const { token } = storeToRefs(useUserStore());
 /** * 用户导入参数 */
 const upload = reactive({

@@ -147,6 +147,7 @@
 defineOptions({
   name: 'Gen',
 });
+
 import {
   BrowseIcon,
   DeleteIcon,
@@ -157,13 +158,14 @@ import {
   SettingIcon,
   UploadIcon,
 } from 'tdesign-icons-vue-next';
-import type { PageInfo, PrimaryTableCol, SelectOptions, TableSort } from 'tdesign-vue-next';
+import type { PageInfo, PrimaryTableCol, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, onActivated, onMounted, ref } from 'vue';
 import { useRoute } from 'vue-router';
 
 import { delTable, genCode, getDataNames, listTable, previewTable, synchDb } from '@/api/tool/gen';
 import type { GenTableQuery, GenTableVo } from '@/api/tool/model/genModel';
 import GenPreview from '@/pages/tool/gen/components/preview.vue';
+import type { ImportTableInstance } from '@/pages/tool/gen/importTable.vue';
 import router from '@/router';
 
 import ImportTable from './importTable.vue';
@@ -182,8 +184,8 @@ const total = ref(0);
 const dataNameList = ref<Array<string>>([]);
 const dateRange = ref([]);
 const uniqueId = ref('');
-const importRef = ref(null);
-const sort = ref<TableSort>(null);
+const importRef = ref<ImportTableInstance>();
+const sort = ref<TableSort>();
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
@@ -267,7 +269,7 @@ function handleGenTable(row?: GenTableVo) {
     return;
   }
   if (row?.genType === '1') {
-    genCode(row.tableId).then((response) => {
+    genCode(row.tableId).then(() => {
       proxy.$modal.msgSuccess(`成功生成到自定义路径：${row.genPath}`);
     });
   } else {
@@ -328,7 +330,7 @@ function handlePreview(row: GenTableVo) {
 }
 
 /** 多选框选中数据 */
-function handleSelectionChange(selection: Array<string | number>, { selectedRowData }: SelectOptions<GenTableVo>) {
+function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;

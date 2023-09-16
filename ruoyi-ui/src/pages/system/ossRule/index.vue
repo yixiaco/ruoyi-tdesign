@@ -191,7 +191,7 @@
     <!-- OSS处理规则详情 -->
     <t-dialog v-model:visible="openView" header="OSS处理规则详情" width="700px" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(5em + 24px)">
+        <t-form label-align="right" colon label-width="calc(7em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="oss规则id">{{ form.ossRuleId }}</t-form-item>
@@ -206,10 +206,10 @@
               <t-form-item label="媒体类型">{{ form.mimeType }}</t-form-item>
             </t-col>
             <t-col :span="12">
-              <t-form-item label="规则">{{ form.rule }}</t-form-item>
+              <t-form-item label="规则" style="word-break: break-all">{{ form.rule }}</t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="是否覆盖默认字段值">
+              <t-form-item label="覆盖默认字段值">
                 <dict-tag :options="sys_yes_no" :value="form.isOverwrite" />
               </t-form-item>
             </t-col>
@@ -270,7 +270,7 @@ const { proxy } = getCurrentInstance();
 const { sys_yes_no, sys_normal_disable } = proxy.useDict('sys_yes_no', 'sys_normal_disable');
 
 const ossRuleList = ref<SysOssRuleVo[]>([]);
-const ossRuleRef = ref<FormInstanceFunctions>(null);
+const ossRuleRef = ref<FormInstanceFunctions>();
 const open = ref(false);
 const openView = ref(false);
 const openViewLoading = ref(false);

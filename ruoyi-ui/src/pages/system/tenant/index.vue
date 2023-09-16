@@ -310,7 +310,7 @@ const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
 const tenantList = ref<SysTenantVo[]>([]);
-const tenantRef = ref<FormInstanceFunctions>(null);
+const tenantRef = ref<FormInstanceFunctions>();
 const open = ref(false);
 const openView = ref(false);
 const openViewLoading = ref(false);

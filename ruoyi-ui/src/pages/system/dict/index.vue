@@ -48,8 +48,8 @@
 
       <t-table
         v-model:column-controller-visible="columnControllerVisible"
-        hover
         :loading="loading"
+        hover
         row-key="dictId"
         :data="typeList"
         :columns="columns"
@@ -59,6 +59,9 @@
         :column-controller="{
           hideTriggerButton: true,
         }"
+        :sort="sort"
+        show-sort-column-bg-color
+        @sort-change="handleSortChange"
         @select-change="handleSelectionChange"
       >
         <template #topContent>
@@ -124,7 +127,10 @@
           <dict-tag :options="sys_normal_disable" :value="row.status" />
         </template>
         <template #operation="{ row }">
-          <t-space :size="8">
+          <t-space :size="8" break-line>
+            <t-link v-hasPermi="['system:dict:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
+              <browse-icon />详情
+            </t-link>
             <t-link v-hasPermi="['system:dict:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
               <edit-icon />修改
             </t-link>
@@ -166,6 +172,39 @@
         </t-form>
       </t-loading>
     </t-dialog>
+
+    <!-- 字典类型详情 -->
+    <t-dialog v-model:visible="openView" header="字典类型详情" width="600px" attach="body" :footer="false">
+      <t-loading :loading="openViewLoading">
+        <t-form label-align="right" colon label-width="calc(4em + 28px)">
+          <t-row :gutter="[0, 20]">
+            <t-col :span="6">
+              <t-form-item label="字典主键">{{ form.dictId }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="字典名称">{{ form.dictName }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="字典类型">{{ form.dictType }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="状态">
+                <dict-tag :options="sys_normal_disable" :value="form.status" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
+            </t-col>
+            <t-col :span="12">
+              <t-form-item label="备注">{{ form.remark }}</t-form-item>
+            </t-col>
+          </t-row>
+        </t-form>
+      </t-loading>
+    </t-dialog>
   </t-card>
 </template>
 <script lang="ts" setup>
@@ -174,6 +213,7 @@ defineOptions({
 });
 import {
   AddIcon,
+  BrowseIcon,
   DeleteIcon,
   DownloadIcon,
   EditIcon,
@@ -181,7 +221,14 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
+import type {
+  FormInstanceFunctions,
+  FormRule,
+  PageInfo,
+  PrimaryTableCol,
+  SubmitContext,
+  TableSort,
+} from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import { addType, delType, getType, listType, refreshCache, updateType } from '@/api/system/dict/type';
@@ -191,6 +238,8 @@ import useDictStore from '@/store/modules/dict';
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
+const openView = ref(false);
+const openViewLoading = ref(false);
 const typeList = ref<SysDictTypeVo[]>([]);
 const open = ref(false);
 const loading = ref(false);
@@ -203,7 +252,10 @@ const total = ref(0);
 const title = ref('');
 const dateRange = ref([]);
 const columnControllerVisible = ref(false);
-const dictRef = ref<FormInstanceFunctions>(null);
+const dictRef = ref<FormInstanceFunctions>();
+const sort = ref<TableSort>();
+
+// 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
   dictName: [{ required: true, message: '字典名称不能为空', trigger: 'blur' }],
   dictType: [{ required: true, message: '字典类型不能为空', trigger: 'blur' }],
@@ -217,13 +269,14 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `字典类型`, colKey: 'dictType', align: 'center', ellipsis: true },
   { title: `状态`, colKey: 'status', align: 'center' },
   { title: `备注`, colKey: 'remark', align: 'center', ellipsis: true },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
-  { title: `操作`, colKey: 'operation', align: 'center', width: 160 },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180, sorter: true },
+  { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
-
+// 提交表单对象
 const form = ref<SysDictTypeForm & SysDictTypeVo>({
   status: '1',
 });
+// 查询对象
 const queryParams = ref<SysDictTypeQuery>({
   pageNum: 1,
   pageSize: 10,
@@ -250,11 +303,12 @@ const pagination = computed(() => {
 /** 查询字典类型列表 */
 function getList() {
   loading.value = true;
-  listType(proxy.addDateRange(queryParams.value, dateRange.value)).then((response) => {
-    typeList.value = response.rows;
-    total.value = response.total;
-    loading.value = false;
-  });
+  listType(proxy.addDateRange(queryParams.value, dateRange.value))
+    .then((response) => {
+      typeList.value = response.rows;
+      total.value = response.total;
+    })
+    .finally(() => (loading.value = false));
 }
 /** 表单重置 */
 function reset() {
@@ -276,20 +330,48 @@ function handleQuery() {
 function resetQuery() {
   dateRange.value = [];
   proxy.resetForm('queryRef');
-  handleQuery();
+  queryParams.value.pageNum = 1;
+  handleSortChange(null);
 }
-/** 新增按钮操作 */
-function handleAdd() {
-  reset();
-  open.value = true;
-  title.value = '添加字典类型';
+
+/** 排序触发事件 */
+function handleSortChange(value?: TableSort) {
+  sort.value = value;
+  if (Array.isArray(value)) {
+    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
+    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
+  } else {
+    queryParams.value.orderByColumn = value?.sortBy;
+    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
+  }
+  getList();
 }
+
 /** 多选框选中数据 */
 function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
 }
+
+/** 新增按钮操作 */
+function handleAdd() {
+  reset();
+  open.value = true;
+  title.value = '添加字典类型';
+}
+/** 详情按钮操作 */
+function handleDetail(row: SysDictTypeVo) {
+  reset();
+  openView.value = true;
+  openViewLoading.value = true;
+  const dictId = row.dictId || ids.value.at(0);
+  getType(dictId).then((response) => {
+    form.value = response.data;
+    openViewLoading.value = false;
+  });
+}
+
 /** 修改按钮操作 */
 function handleUpdate(row?: SysDictTypeVo) {
   reset();
@@ -311,7 +393,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
     const msgLoading = proxy.$modal.msgLoading('提交中...');
     if (form.value.dictId) {
       updateType(form.value)
-        .then((response) => {
+        .then(() => {
           proxy.$modal.msgSuccess('修改成功');
           open.value = false;
           getList();
@@ -319,7 +401,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
         .finally(() => proxy.$modal.msgClose(msgLoading));
     } else {
       addType(form.value)
-        .then((response) => {
+        .then(() => {
           proxy.$modal.msgSuccess('新增成功');
           open.value = false;
           getList();

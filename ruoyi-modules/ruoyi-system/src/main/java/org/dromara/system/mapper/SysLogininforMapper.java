@@ -2,7 +2,7 @@ package org.dromara.system.mapper;
 
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysLogininfor;
-import org.dromara.system.domain.bo.SysLogininforBo;
+import org.dromara.system.domain.query.SysLogininforQuery;
 import org.dromara.system.domain.vo.SysLogininforVo;
 
 import java.util.List;
@@ -17,8 +17,8 @@ public interface SysLogininforMapper extends BaseMapperPlus<SysLogininfor, SysLo
     /**
      * 查询系统访问记录列表
      *
-     * @param logininfor
+     * @param query 查询对象
      * @return {@link SysLogininfor}
      */
-    List<SysLogininforVo> queryList(SysLogininforBo logininfor);
+    List<SysLogininforVo> queryList(SysLogininforQuery query);
 }

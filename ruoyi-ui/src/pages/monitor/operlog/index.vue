@@ -125,7 +125,7 @@
     </t-space>
 
     <!-- 操作日志详细 -->
-    <t-dialog v-model:visible="open" header="操作日志详细" width="700px" attach="body">
+    <t-dialog v-model:visible="open" header="操作日志详细" width="700px" top="3vh" placement="center" attach="body">
       <t-form label-align="right" colon :data="form" label-width="calc(5em + 24px)">
         <t-row :gutter="[0, 20]">
           <t-col :span="6">
@@ -139,23 +139,47 @@
             <t-form-item label="请求方式">{{ form.requestMethod }}</t-form-item>
           </t-col>
           <t-col :span="6">
-            <t-form-item label="操作类别">{{ form.operatorType }}</t-form-item>
+            <t-form-item label="操作类别">
+              <dict-tag :options="operatorTypeOptions" :value="form.operatorType" />
+            </t-form-item>
           </t-col>
           <t-col :span="6">
-            <t-form-item label="业务类型"><dict-tag :options="sys_oper_type" :value="form.businessType" /></t-form-item>
+            <t-form-item label="业务类型">
+              <dict-tag :options="sys_oper_type" :value="form.businessType?.toString()" />
+            </t-form-item>
           </t-col>
           <t-col :span="12">
             <t-form-item label="操作方法">{{ form.method }}</t-form-item>
           </t-col>
           <t-col :span="12">
-            <t-form-item label="请求参数">{{ form.operParam }}</t-form-item>
+            <t-form-item label="请求参数">
+              <div style="max-height: 300px; width: 100%" class="content-scrollbar">
+                <template v-if="!isJson(form.operParam)">{{ form.operParam }}...</template>
+                <preview-code
+                  v-else
+                  :code="JSON.stringify(JSON.parse(form.operParam), null, 2)"
+                  language="json"
+                  style="width: 100%"
+                />
+              </div>
+            </t-form-item>
           </t-col>
           <t-col :span="12">
-            <t-form-item label="返回参数">{{ form.jsonResult }}</t-form-item>
+            <t-form-item label="返回参数">
+              <div style="max-height: 300px; width: 100%" class="content-scrollbar">
+                <template v-if="!isJson(form.jsonResult)">{{ form.jsonResult }}...</template>
+                <preview-code
+                  v-else
+                  :code="JSON.stringify(JSON.parse(form.jsonResult), null, 2)"
+                  language="json"
+                  style="width: 100%"
+                />
+              </div>
+            </t-form-item>
           </t-col>
           <t-col :span="6">
             <t-form-item label="操作状态">
-              <dict-tag :options="sys_common_status" :value="form.status" />
+              <dict-tag :options="sys_common_status" :value="form.status?.toString()" />
             </t-form-item>
           </t-col>
           <t-col :span="6">
@@ -176,12 +200,15 @@
 defineOptions({
   name: 'Operlog',
 });
+
 import { BrowseIcon, DeleteIcon, DownloadIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import type { PageInfo, PrimaryTableCol, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import type { SysOperLogBo, SysOperLogVo } from '@/api/monitor/model/operlogModel';
 import { cleanOperlog, delOperlog, list } from '@/api/monitor/operlog';
+import type { DictModel } from '@/utils/dict';
+import { isJson } from '@/utils/ruoyi';
 
 const { proxy } = getCurrentInstance();
 const { sys_oper_type, sys_common_status } = proxy.useDict('sys_oper_type', 'sys_common_status');
@@ -195,7 +222,12 @@ const ids = ref([]);
 const multiple = ref(true);
 const total = ref(0);
 const dateRangeOperTime = ref([]);
-const sort = ref<TableSort>(null);
+const sort = ref<TableSort>();
+const operatorTypeOptions = ref<DictModel[]>([
+  { value: 0, label: '其它' },
+  { value: 1, label: '后台用户' },
+  { value: 2, label: '手机端用户' },
+]);
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([

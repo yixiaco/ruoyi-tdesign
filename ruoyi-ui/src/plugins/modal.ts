@@ -1,14 +1,15 @@
 import type {
   DialogInstance,
   DialogOptions,
+  FormInstanceFunctions,
+  FormValidateResult,
   LoadingInstance,
   MessageInfoOptions,
   MessageInstance,
-  ValidateResultContext,
 } from 'tdesign-vue-next';
 import { DialogPlugin, Form, FormItem, Input, LoadingPlugin, MessagePlugin, NotifyPlugin } from 'tdesign-vue-next';
 import type { TNode } from 'tdesign-vue-next/es/common';
-import { h, reactive, ref } from 'vue';
+import { h, reactive, ref, type VNode } from 'vue';
 
 let loadingInstance: LoadingInstance;
 
@@ -156,7 +157,7 @@ export default {
     });
   },
   // 确认窗体
-  confirm(content: string, onConfirm: Function, onClose?: Function) {
+  confirm(content: string | VNode, onConfirm: Function, onClose?: Function) {
     const btn = reactive({
       content: '确定',
       loading: false,
@@ -172,7 +173,7 @@ export default {
     });
     const instance = DialogPlugin.confirm({
       header: '系统提示',
-      body: content,
+      body: content as DialogOptions['body'],
       confirmBtn: btn,
       cancelBtn: '取消',
       theme: 'default',
@@ -192,7 +193,7 @@ export default {
     title: string,
     props: {
       confirmButtonText?: string;
-      onConfirm?: (value: string) => {};
+      onConfirm?: (value: string) => Promise<void>;
       theme?: 'default' | 'info' | 'warning' | 'danger' | 'success' | 'primary';
       cancelButtonText?: string | null;
       closeOnClickModal?: boolean;
@@ -204,7 +205,7 @@ export default {
       content: props.confirmButtonText,
       loading: false,
       onClick: async () => {
-        formRef.value.validate().then(async (result: ValidateResultContext<FormData> | boolean) => {
+        formRef.value.validate().then(async (result: FormValidateResult<FormData>) => {
           if (result === true) {
             btn.loading = true;
             try {
@@ -222,7 +223,7 @@ export default {
     const form = reactive({
       input: undefined,
     });
-    const formRef = ref(null);
+    const formRef = ref<FormInstanceFunctions>();
     const instance = DialogPlugin.confirm({
       // @ts-ignore
       theme: props.theme || 'warning',

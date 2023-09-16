@@ -77,6 +77,4 @@ public class SysDictType extends TenantEntity {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
-
-
 }

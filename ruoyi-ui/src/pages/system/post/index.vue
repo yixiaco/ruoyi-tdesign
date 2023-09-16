@@ -39,8 +39,8 @@
 
       <t-table
         v-model:column-controller-visible="columnControllerVisible"
-        hover
         :loading="loading"
+        hover
         row-key="postId"
         :data="postList"
         :columns="columns"
@@ -102,7 +102,10 @@
           <dict-tag :options="sys_normal_disable" :value="row.status" />
         </template>
         <template #operation="{ row }">
-          <t-space :size="8">
+          <t-space :size="8" break-line>
+            <t-link v-hasPermi="['system:post:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
+              <browse-icon />详情
+            </t-link>
             <t-link v-hasPermi="['system:post:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
               <edit-icon />修改
             </t-link>
@@ -114,7 +117,7 @@
       </t-table>
     </t-space>
 
-    <!-- 添加或修改岗位对话框 -->
+    <!-- 添加或修改岗位信息对话框 -->
     <t-dialog
       v-model:visible="open"
       :close-on-overlay-click="false"
@@ -147,6 +150,42 @@
         </t-form>
       </t-loading>
     </t-dialog>
+
+    <!-- 岗位信息详情 -->
+    <t-dialog v-model:visible="openView" header="岗位信息详情" width="600px" attach="body" :footer="false">
+      <t-loading :loading="openViewLoading">
+        <t-form label-align="right" colon label-width="calc(4em + 28px)">
+          <t-row :gutter="[0, 20]">
+            <t-col :span="6">
+              <t-form-item label="岗位ID">{{ form.postId }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="岗位编码">{{ form.postCode }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="岗位名称">{{ form.postName }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="显示顺序">{{ form.postSort }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="状态">
+                <dict-tag :options="sys_normal_disable" :value="form.status" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
+            </t-col>
+            <t-col :span="12">
+              <t-form-item label="备注">{{ form.remark }}</t-form-item>
+            </t-col>
+          </t-row>
+        </t-form>
+      </t-loading>
+    </t-dialog>
   </t-card>
 </template>
 <script lang="ts" setup>
@@ -155,6 +194,7 @@ defineOptions({
 });
 import {
   AddIcon,
+  BrowseIcon,
   DeleteIcon,
   DownloadIcon,
   EditIcon,
@@ -178,6 +218,8 @@ import { addPost, delPost, getPost, listPost, updatePost } from '@/api/system/po
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
+const openView = ref(false);
+const openViewLoading = ref(false);
 const postList = ref<SysPostVo[]>([]);
 const open = ref(false);
 const loading = ref(false);
@@ -188,14 +230,17 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
-const postRef = ref<FormInstanceFunctions>(null);
+const postRef = ref<FormInstanceFunctions>();
 const columnControllerVisible = ref(false);
-const sort = ref<TableSort>(null);
+const sort = ref<TableSort>();
+
+// 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
   postName: [{ required: true, message: '岗位名称不能为空', trigger: 'blur' }],
   postCode: [{ required: true, message: '岗位编码不能为空', trigger: 'blur' }],
   postSort: [{ required: true, message: '岗位顺序不能为空', trigger: 'blur' }],
 });
+
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
@@ -207,7 +252,9 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180, sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
+// 提交表单对象
 const form = ref<SysPostForm & SysPostVo>({});
+// 查询对象
 const queryParams = ref<SysPostQuery>({
   pageNum: 1,
   pageSize: 10,
@@ -231,14 +278,15 @@ const pagination = computed(() => {
   };
 });
 
-/** 查询岗位列表 */
+/** 查询岗位信息列表 */
 function getList() {
   loading.value = true;
-  listPost(queryParams.value).then((response) => {
-    postList.value = response.rows;
-    total.value = response.total;
-    loading.value = false;
-  });
+  listPost(queryParams.value)
+    .then((response) => {
+      postList.value = response.rows;
+      total.value = response.total;
+    })
+    .finally(() => (loading.value = false));
 }
 /** 表单重置 */
 function reset() {
@@ -289,6 +337,18 @@ function handleAdd() {
   reset();
   open.value = true;
   title.value = '添加岗位';
+}
+
+/** 详情按钮操作 */
+function handleDetail(row: SysPostVo) {
+  reset();
+  openView.value = true;
+  openViewLoading.value = true;
+  const postId = row.postId || ids.value.at(0);
+  getPost(postId).then((response) => {
+    form.value = response.data;
+    openViewLoading.value = false;
+  });
 }
 
 /** 修改按钮操作 */
@@ -348,6 +408,7 @@ function handleDelete(row?: SysPostVo) {
       .finally(() => proxy.$modal.msgClose(msgLoading));
   });
 }
+
 /** 导出按钮操作 */
 function handleExport() {
   proxy.download(

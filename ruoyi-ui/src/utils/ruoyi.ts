@@ -369,3 +369,16 @@ export function handleChangeStatus<T>(
     },
   );
 }
+
+/**
+ * 是否是有效的json
+ * @param json
+ */
+export function isJson(json: string) {
+  try {
+    const obj = JSON.parse(json);
+    return typeof obj === 'object' && obj;
+  } catch (e) {
+    return false;
+  }
+}

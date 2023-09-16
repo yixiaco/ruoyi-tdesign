@@ -49,8 +49,8 @@
       <!-- 表格数据 -->
       <t-table
         v-model:column-controller-visible="columnControllerVisible"
-        hover
         :loading="loading"
+        hover
         row-key="roleId"
         :data="roleList"
         :columns="columns"
@@ -117,32 +117,46 @@
           ></t-switch>
         </template>
         <template #operation="{ row }">
-          <t-space :size="8">
-            <t-tooltip v-if="row.roleId !== 1" content="修改" placement="top">
-              <t-link v-hasPermi="['system:role:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
-                <edit-icon />
-              </t-link>
-            </t-tooltip>
-            <t-tooltip v-if="row.roleId !== 1" content="删除" placement="top">
-              <t-link v-hasPermi="['system:role:remove']" theme="danger" hover="color" @click.stop="handleDelete(row)">
-                <delete-icon />
-              </t-link>
-            </t-tooltip>
-            <t-tooltip v-if="row.roleId !== 1" content="数据权限" placement="top">
-              <t-link
-                v-hasPermi="['system:role:edit']"
-                theme="primary"
-                hover="color"
-                @click.stop="handleDataScope(row)"
-              >
-                <check-circle-icon />
-              </t-link>
-            </t-tooltip>
-            <t-tooltip v-if="row.roleId !== 1" content="分配用户" placement="top">
-              <t-link v-hasPermi="['system:role:edit']" theme="primary" hover="color" @click.stop="handleAuthUser(row)">
-                <user-icon />
-              </t-link>
-            </t-tooltip>
+          <t-space :size="8" break-line>
+            <t-link v-hasPermi="['system:role:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
+              <browse-icon />详情
+            </t-link>
+            <t-link
+              v-if="row.roleId !== 1"
+              v-hasPermi="['system:role:edit']"
+              theme="primary"
+              hover="color"
+              @click.stop="handleUpdate(row)"
+            >
+              <edit-icon />修改
+            </t-link>
+            <t-link
+              v-if="row.roleId !== 1"
+              v-hasPermi="['system:role:remove']"
+              theme="danger"
+              hover="color"
+              @click.stop="handleDelete(row)"
+            >
+              <delete-icon />删除
+            </t-link>
+            <t-link
+              v-if="row.roleId !== 1"
+              v-hasPermi="['system:role:edit']"
+              theme="primary"
+              hover="color"
+              @click.stop="handleDataScope(row)"
+            >
+              <check-circle-icon />数据权限
+            </t-link>
+            <t-link
+              v-if="row.roleId !== 1"
+              v-hasPermi="['system:role:edit']"
+              theme="primary"
+              hover="color"
+              @click.stop="handleAuthUser(row)"
+            >
+              <user-icon />分配用户
+            </t-link>
           </t-space>
         </template>
       </t-table>
@@ -263,6 +277,57 @@
         </t-form-item>
       </t-form>
     </t-dialog>
+
+    <!-- 角色信息详情 -->
+    <t-dialog v-model:visible="openView" header="角色信息详情" width="700px" attach="body" :footer="false">
+      <t-loading :loading="openViewLoading">
+        <t-form label-align="right" colon label-width="calc(8em + 28px)">
+          <t-row :gutter="[0, 20]">
+            <t-col :span="6">
+              <t-form-item label="角色ID">{{ form.roleId }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="角色名称">{{ form.roleName }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="角色权限字符串">{{ form.roleKey }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="显示顺序">{{ form.roleSort }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="数据范围">
+                <dict-tag :options="dataScopeOptions" theme="primary" :value="form.dataScope" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="12">
+              <t-form-item label="菜单树选择项是否关联显示" label-width="calc(12em + 24px)">
+                {{ form.menuCheckStrictly }}
+              </t-form-item>
+            </t-col>
+            <t-col :span="12">
+              <t-form-item label="部门树选择项是否关联显示" label-width="calc(12em + 24px)">
+                {{ form.deptCheckStrictly }}
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="角色状态">
+                <dict-tag :options="sys_normal_disable" :value="form.status" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
+            </t-col>
+            <t-col :span="12">
+              <t-form-item label="备注">{{ form.remark }}</t-form-item>
+            </t-col>
+          </t-row>
+        </t-form>
+      </t-loading>
+    </t-dialog>
   </t-card>
 </template>
 <script lang="ts" setup>
@@ -271,6 +336,7 @@ defineOptions({
 });
 import {
   AddIcon,
+  BrowseIcon,
   CheckCircleIcon,
   DeleteIcon,
   DownloadIcon,
@@ -313,6 +379,8 @@ const router = useRouter();
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
+const openView = ref(false);
+const openViewLoading = ref(false);
 const roleList = ref<SysRoleVo[]>([]);
 const open = ref(false);
 const loading = ref(true);
@@ -330,16 +398,16 @@ const deptExpand = ref(true);
 const deptNodeAll = ref(false);
 const deptOptions = ref<TreeModel<number>[]>([]);
 const openDataScope = ref(false);
-const menuRef = ref<TreeInstanceFunctions>(null);
-const deptRef = ref<TreeInstanceFunctions>(null);
-const roleRef = ref<FormInstanceFunctions>(null);
-const dataScopeRef = ref(null);
+const menuRef = ref<TreeInstanceFunctions>();
+const deptRef = ref<TreeInstanceFunctions>();
+const roleRef = ref<FormInstanceFunctions>();
+const dataScopeRef = ref<FormInstanceFunctions>();
 const menuIds = ref<number[]>([]);
 const deptIds = ref<number[]>([]);
 const menuExpandNode = ref<TreeNodeValue[]>([]);
 const deptExpandNode = ref<TreeNodeValue[]>([]);
 const columnControllerVisible = ref(false);
-const sort = ref<TableSort>(null);
+const sort = ref<TableSort>();
 
 /** 数据范围选项 */
 const dataScopeOptions = ref([
@@ -366,12 +434,14 @@ const rules = ref<Record<string, Array<FormRule>>>({
   roleKey: [{ required: true, message: '权限字符不能为空', trigger: 'blur' }],
   roleSort: [{ required: true, message: '角色顺序不能为空', trigger: 'blur' }],
 });
-const form = ref<SysRoleForm & SysRoleVo>({
+// 提交表单对象
+const form = ref<SysRoleVo & SysRoleForm>({
   roleSort: 0,
   status: '1',
   menuIds: [],
   deptIds: [],
 });
+// 查询对象
 const queryParams = ref<SysRoleQuery>({
   pageNum: 1,
   pageSize: 10,
@@ -507,6 +577,17 @@ function reset() {
   };
   proxy.resetForm('roleRef');
 }
+/** 详情按钮操作 */
+function handleDetail(row: SysRoleVo) {
+  reset();
+  openView.value = true;
+  openViewLoading.value = true;
+  const roleId = row.roleId || ids.value.at(0);
+  getRole(roleId).then((response) => {
+    form.value = response.data;
+    openViewLoading.value = false;
+  });
+}
 /** 添加角色 */
 function handleAdd() {
   reset();
@@ -603,7 +684,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
     if (form.value.roleId) {
       form.value.menuIds = getMenuAllCheckedKeys();
       updateRole(form.value)
-        .then((response) => {
+        .then(() => {
           proxy.$modal.msgSuccess('修改成功');
           open.value = false;
           getList();
@@ -612,7 +693,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
     } else {
       form.value.menuIds = getMenuAllCheckedKeys();
       addRole(form.value)
-        .then((response) => {
+        .then(() => {
           proxy.$modal.msgSuccess('新增成功');
           open.value = false;
           getList();
@@ -652,7 +733,7 @@ function submitDataScope() {
     form.value.deptIds = getDeptAllCheckedKeys();
     const msgLoading = proxy.$modal.msgLoading('提交中...');
     dataScope(form.value)
-      .then((response) => {
+      .then(() => {
         proxy.$modal.msgSuccess('修改成功');
         openDataScope.value = false;
         getList();

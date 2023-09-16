@@ -93,9 +93,7 @@
           </t-row>
         </template>
         <template #accessPolicy="{ row }">
-          <t-tag v-if="row.accessPolicy === '0'" type="warning">private</t-tag>
-          <t-tag v-if="row.accessPolicy === '1'" type="success">public</t-tag>
-          <t-tag v-if="row.accessPolicy === '2'" type="info">custom</t-tag>
+          <dict-tag :options="accessPolicyOptions" :value="row.accessPolicy" />
         </template>
         <template #status="{ row }">
           <t-switch
@@ -107,6 +105,14 @@
         </template>
         <template #operation="{ row }">
           <t-space :size="8" break-line>
+            <t-link
+              v-hasPermi="['system:ossConfig:query']"
+              theme="primary"
+              hover="color"
+              @click.stop="handleDetail(row)"
+            >
+              <browse-icon />详情
+            </t-link>
             <t-link
               v-hasPermi="['system:ossConfig:edit']"
               theme="primary"
@@ -135,6 +141,7 @@
       :header="title"
       width="800px"
       attach="body"
+      top="3vh"
       :confirm-btn="{
         content: '确 定',
         theme: 'primary',
@@ -173,11 +180,7 @@
           </t-radio-group>
         </t-form-item>
         <t-form-item label="桶权限类型">
-          <t-radio-group v-model="form.accessPolicy">
-            <t-radio value="0">private</t-radio>
-            <t-radio value="1">public</t-radio>
-            <t-radio value="2">custom</t-radio>
-          </t-radio-group>
+          <t-radio-group v-model="form.accessPolicy" :options="accessPolicyOptions" />
         </t-form-item>
         <t-form-item label="域" name="region">
           <t-input v-model="form.region" placeholder="请输入域" />
@@ -187,13 +190,86 @@
         </t-form-item>
       </t-form>
     </t-dialog>
+
+    <!-- 对象存储配置详情 -->
+    <t-dialog v-model:visible="openView" header="对象存储配置详情" width="700px" attach="body" :footer="false">
+      <t-loading :loading="openViewLoading">
+        <t-form label-align="right" colon label-width="calc(5em + 28px)">
+          <t-row :gutter="[0, 20]">
+            <t-col :span="6">
+              <t-form-item label="主建">{{ form.ossConfigId }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="配置key">{{ form.configKey }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="accessKey">{{ form.accessKey }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="秘钥">{{ form.secretKey }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="桶名称">{{ form.bucketName }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="前缀">{{ form.prefix }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="访问站点">{{ form.endpoint }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="自定义域名">{{ form.domain }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="是否https">
+                <dict-tag :options="sys_yes_no" :value="form.isHttps" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="域">{{ form.region }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="桶权限类型">
+                <dict-tag :options="accessPolicyOptions" :value="form.accessPolicy" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="状态">
+                <dict-tag :options="sys_normal_disable" :value="form.status" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="扩展字段">{{ form.ext1 }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
+            </t-col>
+            <t-col :span="12">
+              <t-form-item label="备注">{{ form.remark }}</t-form-item>
+            </t-col>
+          </t-row>
+        </t-form>
+      </t-loading>
+    </t-dialog>
   </t-card>
 </template>
 <script lang="ts" setup>
 defineOptions({
   name: 'OssConfig',
 });
-import { AddIcon, DeleteIcon, EditIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
+
+import {
+  AddIcon,
+  BrowseIcon,
+  DeleteIcon,
+  EditIcon,
+  RefreshIcon,
+  SearchIcon,
+  SettingIcon,
+} from 'tdesign-icons-vue-next';
 import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
@@ -206,13 +282,16 @@ import {
   listOssConfig,
   updateOssConfig,
 } from '@/api/system/ossConfig';
+import type { DictModel } from '@/utils/dict';
 import { handleChangeStatus } from '@/utils/ruoyi';
 
 const { proxy } = getCurrentInstance();
-const { sys_yes_no } = proxy.useDict('sys_yes_no');
+const { sys_yes_no, sys_normal_disable } = proxy.useDict('sys_yes_no', 'sys_normal_disable');
 
+const openView = ref(false);
+const openViewLoading = ref(false);
 const ossConfigList = ref<SysOssConfigVo[]>([]);
-const ossConfigRef = ref<FormInstanceFunctions>(null);
+const ossConfigRef = ref<FormInstanceFunctions>();
 const open = ref(false);
 const buttonLoading = ref(false);
 const loading = ref(false);
@@ -223,6 +302,11 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
+const accessPolicyOptions = ref<DictModel[]>([
+  { value: '0', tagType: 'warning', label: 'private' },
+  { value: '1', tagType: 'success', label: 'public' },
+  { value: '2', tagType: 'default', label: 'custom' },
+]);
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
@@ -236,7 +320,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `域`, colKey: 'region', align: 'center' },
   { title: `桶权限类型`, colKey: 'accessPolicy', align: 'center' },
   { title: `是否默认`, colKey: 'status', align: 'center' },
-  { title: `操作`, colKey: 'operation', align: 'center', width: 140 },
+  { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 
 const rules = ref<Record<string, Array<FormRule>>>({
@@ -279,11 +363,11 @@ const rules = ref<Record<string, Array<FormRule>>>({
   ],
   accessPolicy: [{ required: true, message: 'accessPolicy不能为空', trigger: 'blur' }],
 });
-
+// 提交表单对象
 const form = ref<SysOssConfigVo & SysOssConfigForm>({
   createBucket: 0,
 });
-// 查询参数
+// 查询对象
 const queryParams = ref<SysOssConfigQuery>({
   pageNum: 1,
   pageSize: 10,
@@ -310,11 +394,12 @@ const pagination = computed(() => {
 /** 查询对象存储配置列表 */
 function getList() {
   loading.value = true;
-  listOssConfig(queryParams.value).then((response) => {
-    ossConfigList.value = response.rows;
-    total.value = response.total;
-    loading.value = false;
-  });
+  listOssConfig(queryParams.value)
+    .then((response) => {
+      ossConfigList.value = response.rows;
+      total.value = response.total;
+    })
+    .finally(() => (loading.value = false));
 }
 /** 表单重置 */
 function reset() {
@@ -336,7 +421,8 @@ function resetQuery() {
   proxy.resetForm('queryRef');
   handleQuery();
 }
-/** 选择条数  */
+
+/** 多选框选中数据 */
 function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
@@ -348,16 +434,29 @@ function handleAdd() {
   open.value = true;
   title.value = '添加对象存储配置';
 }
+
+/** 详情按钮操作 */
+function handleDetail(row: SysOssConfigVo) {
+  reset();
+  openView.value = true;
+  openViewLoading.value = true;
+  const ossConfigId = row.ossConfigId || ids.value.at(0);
+  getOssConfig(ossConfigId).then((response) => {
+    form.value = response.data;
+    openViewLoading.value = false;
+  });
+}
+
 /** 修改按钮操作 */
 function handleUpdate(row?: SysOssConfigVo) {
-  loading.value = true;
+  buttonLoading.value = true;
   reset();
+  open.value = true;
+  title.value = '修改对象存储配置';
   const ossConfigId = row?.ossConfigId || ids.value.at(0);
   getOssConfig(ossConfigId).then((response) => {
-    loading.value = false;
+    buttonLoading.value = false;
     form.value = response.data;
-    open.value = true;
-    title.value = '修改对象存储配置';
   });
 }
 function onConfirm() {
@@ -405,7 +504,6 @@ function handleStatusChange(row: SysOssConfigVo) {
 function handleDelete(row?: SysOssConfigVo) {
   const ossConfigIds = row?.ossConfigId || ids.value;
   proxy.$modal.confirm(`是否确认删除OSS配置编号为"${ossConfigIds}"的数据项?`, () => {
-    loading.value = true;
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delOssConfig(ossConfigIds)
       .then(() => {
@@ -414,7 +512,6 @@ function handleDelete(row?: SysOssConfigVo) {
         proxy.$modal.msgSuccess('删除成功');
       })
       .finally(() => {
-        loading.value = false;
         proxy.$modal.msgClose(msgLoading);
       });
   });

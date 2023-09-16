@@ -27,7 +27,7 @@ public class GenTableOptions implements Serializable {
     /**
      * 上级菜单ID字段
      */
-    private Long parentMenuId = 0L;
+    private long parentMenuId = 0L;
     /**
      * 是否使用query对象
      */

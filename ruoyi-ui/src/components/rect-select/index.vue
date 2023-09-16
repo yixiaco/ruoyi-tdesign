@@ -57,7 +57,7 @@ const active = ref(false);
 // xy：相对距离；pageXY:相对浏览器左上角距离
 const start = ref({ x: 0, y: 0, pageX: 0, pageY: 0 });
 const current = ref({ x: 0, y: 0, pageX: 0, pageY: 0 });
-const boxRef = ref<HTMLElement>(null);
+const boxRef = ref<HTMLElement>();
 const distance = ref(5);
 const scrollPadding = ref(50);
 // 盒子的绝对距离

@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysLogininfor;
 import org.dromara.system.domain.bo.SysLogininforBo;
+import org.dromara.system.domain.query.SysLogininforQuery;
 import org.dromara.system.domain.vo.SysLogininforVo;
 
 import java.util.List;
@@ -16,12 +17,28 @@ import java.util.List;
 public interface ISysLogininforService extends IService<SysLogininfor> {
 
     /**
+     * 查询系统访问记录
+     *
+     * @param infoId 主键
+     * @return SysLogininforVo
+     */
+    SysLogininforVo queryById(Long infoId);
+
+    /**
      * 获取系统访问记录列表
      *
-     * @param logininfor 访问日志对象
+     * @param query 查询对象
      * @return
      */
-    TableDataInfo<SysLogininforVo> selectPageLogininforList(SysLogininforBo logininfor);
+    TableDataInfo<SysLogininforVo> queryPageList(SysLogininforQuery query);
+
+    /**
+     * 查询系统登录日志集合
+     *
+     * @param query 查询对象
+     * @return 登录记录集合
+     */
+    List<SysLogininforVo> queryList(SysLogininforQuery query);
 
     /**
      * 新增系统登录日志
@@ -29,14 +46,6 @@ public interface ISysLogininforService extends IService<SysLogininfor> {
      * @param bo 访问日志对象
      */
     void insertLogininfor(SysLogininforBo bo);
-
-    /**
-     * 查询系统登录日志集合
-     *
-     * @param logininfor 访问日志对象
-     * @return 登录记录集合
-     */
-    List<SysLogininforVo> selectLogininforList(SysLogininforBo logininfor);
 
     /**
      * 批量删除系统登录日志

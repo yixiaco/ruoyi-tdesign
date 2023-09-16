@@ -187,7 +187,7 @@
     <!-- 系统授权详情 -->
     <t-dialog v-model:visible="openView" header="系统授权详情" width="800px" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(9em + 24px)">
+        <t-form label-align="right" colon label-width="calc(9em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="客户端id">{{ form.clientId }}</t-form-item>
@@ -267,7 +267,7 @@ const { sys_device_type, sys_grant_type, sys_normal_disable } = proxy.useDict(
 );
 
 const clientList = ref<SysClientVo[]>([]);
-const clientRef = ref<FormInstanceFunctions>(null);
+const clientRef = ref<FormInstanceFunctions>();
 const open = ref(false);
 const openView = ref(false);
 const openViewLoading = ref(false);
@@ -280,7 +280,7 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
-const sort = ref<TableSort>(null);
+const sort = ref<TableSort>();
 const clientId = import.meta.env.VITE_CLIENT_ID;
 
 // 校验规则

@@ -143,7 +143,7 @@ const props = withDefaults(defineProps<EditorProps>(), {
 const baseURL = '/tinymce';
 const settingStore = useSettingStore();
 const useDarkMode = computed(() => settingStore.displayMode === 'dark');
-const editorRef = ref<any>(null);
+const editorRef = ref<any>();
 const title = ref('');
 const fileAccept = ref<MyOssProps['fileUploadProps']['accept']>([]);
 const query = ref<MyOssProps['queryParam']>({

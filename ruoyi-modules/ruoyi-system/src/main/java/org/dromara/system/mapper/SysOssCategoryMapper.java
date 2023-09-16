@@ -26,8 +26,9 @@ public interface SysOssCategoryMapper extends BaseMapperPlus<SysOssCategory, Sys
 
     /**
      * 查询OSS分类
-     * @param ossCategoryId
+     *
+     * @param query 查询对象
      * @return
      */
-    SysOssCategoryVo queryVoById(@Param("ossCategoryId") Long ossCategoryId);
+    SysOssCategoryVo queryVoById(SysOssCategoryQuery query);
 }

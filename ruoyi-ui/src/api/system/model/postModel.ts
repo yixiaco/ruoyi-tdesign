@@ -44,6 +44,8 @@ export interface SysPostVo {
   status?: string;
   /** 创建时间 */
   createTime?: any;
+  /** 更新时间 */
+  updateTime?: any;
   /** 备注 */
   remark?: string;
 }

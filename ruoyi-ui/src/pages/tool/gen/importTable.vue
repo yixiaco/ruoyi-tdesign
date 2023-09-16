@@ -177,7 +177,9 @@ async function getDataNameList() {
   dataNameList.value = res.data;
 }
 
-defineExpose({
+const exposed = {
   show,
-});
+};
+export type ImportTableInstance = typeof exposed;
+defineExpose<ImportTableInstance>(exposed);
 </script>

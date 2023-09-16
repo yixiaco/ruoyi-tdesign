@@ -25,9 +25,26 @@ import java.util.List;
 @Service
 public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice> implements ISysNoticeService {
 
+    /**
+     * 查询通知公告列表
+     *
+     * @param query 查询对象
+     * @return SysNoticeVo
+     */
     @Override
-    public TableDataInfo<SysNoticeVo> selectPageNoticeList(SysNoticeQuery notice) {
-        return PageQuery.of(() -> baseMapper.queryList(notice));
+    public TableDataInfo<SysNoticeVo> queryPageList(SysNoticeQuery query) {
+        return PageQuery.of(() -> baseMapper.queryList(query));
+    }
+
+    /**
+     * 查询通知公告列表
+     *
+     * @param query 查询对象
+     * @return SysNoticeVo
+     */
+    @Override
+    public List<SysNoticeVo> queryList(SysNoticeQuery query) {
+        return SortQuery.of(() -> baseMapper.queryList(query));
     }
 
     /**

@@ -326,7 +326,7 @@
     <!-- ${functionName}详情 -->
     <t-dialog v-model:visible="openView" header="${functionName}详情" width="700px" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(5em + 24px)">
+        <t-form label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">
 #foreach($column in $columns)
 #set($javaField=$column.javaField)
@@ -459,7 +459,7 @@ const openView = ref(false);
 const openViewLoading = ref(false);
 #end
 #if($addOrUpdate)
-const ${businessName}Ref = ref<FormInstanceFunctions>(null);
+const ${businessName}Ref = ref<FormInstanceFunctions>();
 const open = ref(false);
 const buttonLoading = ref(false);
 const title = ref('');
@@ -479,7 +479,7 @@ const single = ref(true);
 const multiple = ref(true);
 #end
 #if($hasSorting && $isUseQueryMethod)
-const sort = ref<TableSort>(null);
+const sort = ref<TableSort>();
 #end
 #foreach ($column in $columns)
 #if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
@@ -640,8 +640,8 @@ function handleSortChange(value?: TableSort) {
   }
   getList();
 }
-#end
 
+#end
 /** 多选框选中数据 */
 function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;

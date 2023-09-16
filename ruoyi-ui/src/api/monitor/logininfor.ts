@@ -1,12 +1,19 @@
 import type { R, TableDataInfo } from '@/api/model/resultModel';
-import type { SysLogininforBo, SysLogininforVo } from '@/api/monitor/model/logininforModel';
+import type { SysLogininforQuery, SysLogininforVo } from '@/api/monitor/model/logininforModel';
 import { request } from '@/utils/request';
 
 // 查询登录日志列表
-export function list(query: SysLogininforBo) {
+export function listLogininfor(query: SysLogininforQuery) {
   return request.get<TableDataInfo<SysLogininforVo>>({
     url: '/monitor/logininfor/list',
     params: query,
+  });
+}
+
+// 查询系统访问记录详细
+export function getLogininfor(infoId: number) {
+  return request.get<R<SysLogininforVo>>({
+    url: `/monitor/logininfor/${infoId}`,
   });
 }
 

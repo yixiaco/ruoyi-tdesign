@@ -16,6 +16,8 @@ export interface SysOssCategoryQuery extends BaseEntity {
   contentTypes?: string[];
   /** 多个文件后缀，忽略大小写 */
   suffixes?: string[];
+  /** oss分类id */
+  ossCategoryId?: number;
 }
 /**
  * OSS分类业务对象
