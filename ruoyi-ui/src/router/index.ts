@@ -3,7 +3,6 @@ import type { RouteRecordRaw } from 'vue-router';
 import { createRouter, createWebHistory, useRoute } from 'vue-router';
 
 import Layout from '@/layouts/index.vue';
-import { useSettingStore } from '@/store';
 
 // 自动导入modules文件夹下所有ts文件
 const modules = import.meta.globEager('./modules/**/*.ts');
@@ -195,14 +194,9 @@ export const getRoutesExpanded = () => {
 
 export const getActive = (maxLevel = 3): string => {
   const route = useRoute();
-  const settingStore = useSettingStore();
 
   if (!route.path) {
     return '';
-  }
-
-  if (settingStore.layout === 'top') {
-    return route.path.split('/').slice(0, 2).join('/');
   }
 
   return route.path
