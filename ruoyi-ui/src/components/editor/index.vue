@@ -25,7 +25,6 @@
 </template>
 
 <script lang="ts" setup>
-// eslint-disable-next-line
 import tinymce from 'tinymce/tinymce';
 import 'tinymce/models/dom';
 import 'tinymce/icons/default'; // 引入编辑器图标icon，不引入则不显示对应图标
