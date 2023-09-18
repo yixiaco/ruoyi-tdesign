@@ -426,7 +426,7 @@ insert into sys_menu values('3', '系统工具', '0', '4', 'tool',             n
 insert into sys_menu values('4', 'PLUS官网', '0', '5', 'https://gitee.com/yixiacoco/ruoyi-tdesign', null, '', 1, 1, 'M', '1', '1', '', 'link',    103, 1, sysdate, null, null, 'ruoyi_tdesign官网地址');
 -- 二级菜单
 insert into sys_menu values('100',  '用户管理',     '1',   '1', 'user',             'system/user/index',            '', 0, 1, 'C', '1', '1', 'system:user:list',            'user',          103, 1, sysdate, null, null, '用户管理菜单');
-insert into sys_menu values('101',  '角色管理',     '1',   '2', 'role',             'system/role/index',            '', 0, 1, 'C', '1', '1', 'system:role:list',            'usergroup',       103, 1, sysdate, null, null, '角色管理菜单');
+insert into sys_menu values('101',  '角色管理',     '1',   '2', 'role',             'system/role/index',            '', 0, 1, 'C', '1', '1', 'system:role:list',            'user-safety',       103, 1, sysdate, null, null, '角色管理菜单');
 insert into sys_menu values('102',  '菜单管理',     '1',   '3', 'menus',             'system/menu/index',            '', 0, 1, 'C', '1', '1', 'system:menu:list',            'bulletpoint',    103, 1, sysdate, null, null, '菜单管理菜单');
 insert into sys_menu values('103',  '部门管理',     '1',   '4', 'dept',             'system/dept/index',            '', 0, 1, 'C', '1', '1', 'system:dept:list',            'tree-square-dot',          103, 1, sysdate, null, null, '部门管理菜单');
 insert into sys_menu values('104',  '岗位管理',     '1',   '5', 'post',             'system/post/index',            '', 0, 1, 'C', '1', '1', 'system:post:list',            'user-avatar',          103, 1, sysdate, null, null, '岗位管理菜单');
