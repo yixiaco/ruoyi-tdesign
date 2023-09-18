@@ -2,7 +2,7 @@
   <t-breadcrumb :max-item-width="'150'" class="tdesign-breadcrumb" separator="&nbsp;/&nbsp;">
     <t-breadcrumbItem
       v-for="(item, index) in crumbs"
-      :key="item.to"
+      :key="item.to + index"
       :disabled="crumbs.length - 1 === index"
       :to="{ path: item.to, query: item.query }"
       :router="router"
