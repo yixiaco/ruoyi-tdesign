@@ -692,9 +692,6 @@ async function handleUpdate(row?: ${vo}) {
   open.value = true;
   title.value = '修改${functionName}';
   await getTreeselect();
-  if (row != null) {
-    form.value.${treeParentCode} = row.${treeCode};
-  }
   get${BusinessName}(row.${pkColumn.javaField}).then((response) => {
     buttonLoading.value = false;
     form.value = response.data;

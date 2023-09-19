@@ -64,11 +64,6 @@ public class SysDictData extends TenantEntity {
     private String isDefault;
 
     /**
-     * 状态（1正常 0停用）
-     */
-    private String status;
-
-    /**
      * 备注
      */
     private String remark;

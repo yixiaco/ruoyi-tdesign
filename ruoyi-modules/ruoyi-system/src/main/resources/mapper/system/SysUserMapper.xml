@@ -69,10 +69,27 @@
         select su.user_id, su.dept_id, su.user_name, su.nick_name, su.user_type, su.email, su.phonenumber, su.sex, su.avatar, su.password, su.`status`, su.del_flag, su.login_ip, su.login_date, su.create_by, su.create_time, su.update_by, su.update_time, su.remark from sys_user su
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysUserQuery" resultMap="SysUserResult">
-        select su.user_id, su.dept_id, su.nick_name, su.user_name, su.email, su.avatar, su.phonenumber, su.sex,
-        su.status, su.del_flag, su.login_ip, su.login_date, su.create_by, su.update_time, su.create_time, su.remark, sd.dept_name, sd.leader from
-        sys_user su
-        left join sys_dept sd on su.dept_id = sd.dept_id
+        select su.user_id,
+               su.dept_id,
+               su.nick_name,
+               su.user_name,
+               su.email,
+               su.avatar,
+               su.phonenumber,
+               su.sex,
+               su.status,
+               su.del_flag,
+               su.login_ip,
+               su.login_date,
+               su.create_by,
+               su.update_time,
+               su.create_time,
+               su.remark,
+               sd.dept_name,
+               sd.leader,
+               (select u1.user_name from sys_user u1 where u1.user_id = sd.leader) as leaderName
+        from sys_user su
+                 left join sys_dept sd on su.dept_id = sd.dept_id
         <where>
             and su.del_flag = '0'
             <if test="userId != null "> and su.user_id = #{userId}</if>

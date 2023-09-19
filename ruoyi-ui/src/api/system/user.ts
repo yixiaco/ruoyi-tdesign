@@ -56,10 +56,15 @@ export function resetUserPwd(userId: number, password: string) {
     userId,
     password,
   };
-  return request.put<R<void>>({
-    url: '/system/user/resetPwd',
-    data,
-  });
+  return request.put<R<void>>(
+    {
+      url: '/system/user/resetPwd',
+      data,
+    },
+    {
+      withEncrypt: true,
+    },
+  );
 }
 
 // 用户状态修改
@@ -95,10 +100,15 @@ export function updateUserPwd(oldPassword: string, newPassword: string) {
     oldPassword,
     newPassword,
   };
-  return request.put<R<void>>({
-    url: '/system/user/profile/updatePwd',
-    params: data,
-  });
+  return request.put<R<void>>(
+    {
+      url: '/system/user/profile/updatePwd',
+      params: data,
+    },
+    {
+      withEncrypt: true,
+    },
+  );
 }
 
 // 用户头像上传
@@ -124,6 +134,16 @@ export function updateAuthRole(data: { userId: number; roleIds: string }) {
   return request.put<R<void>>({
     url: '/system/user/authRole',
     params: data,
+  });
+}
+
+/**
+ * 查询当前部门的所有用户信息
+ * @param deptId
+ */
+export function listUserByDeptId(deptId: number) {
+  return request.get<R<SysUserVo[]>>({
+    url: `/system/user/list/dept/${deptId}`,
   });
 }
 

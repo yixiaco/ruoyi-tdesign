@@ -48,7 +48,7 @@
         <!--        </t-button>-->
       </t-form-item>
 
-      <div v-show="false" class="check-container remember-pwd">
+      <div class="check-container remember-pwd">
         <t-checkbox v-model="formData.rememberMe">记住账号</t-checkbox>
         <span class="tip">忘记账号？</span>
       </div>
@@ -111,7 +111,6 @@
 </template>
 
 <script lang="ts" setup>
-import Cookies from 'js-cookie';
 import QrcodeVue from 'qrcode.vue';
 import {
   BrowseIcon,
@@ -137,7 +136,6 @@ import GiteeSvg from '@/assets/icons/svg/gitee.svg?component';
 import MaxKey from '@/assets/icons/svg/maxkey.svg?component';
 import { useCounter } from '@/hooks';
 import { useTabsRouterStore, useUserStore } from '@/store';
-import { decrypt, encrypt } from '@/utils/jsencrypt';
 
 const userStore = useUserStore();
 
@@ -185,15 +183,15 @@ function getCode() {
   });
 }
 
-function getCookie() {
-  const account = Cookies.get('account');
-  const password = Cookies.get('password');
-  const rememberMe = Cookies.get('rememberMe');
+function getLoginData() {
+  const account = localStorage.getItem('account');
+  const password = localStorage.getItem('password');
+  const rememberMe = localStorage.getItem('rememberMe');
   formData.value = {
-    account: account === undefined ? formData.value.account : account,
+    account: account || formData.value.account,
     phone: '',
-    password: password === undefined ? formData.value.password : decrypt(password),
-    rememberMe: rememberMe === undefined ? false : Boolean(rememberMe),
+    password: password || formData.value.password,
+    rememberMe: rememberMe ? Boolean(rememberMe) : formData.value.rememberMe,
     code: '',
     uuid: '',
   };
@@ -236,16 +234,16 @@ const onSubmit = async (ctx: SubmitContext) => {
       } finally {
         proxy.$modal.msgClose(msgLoading);
       }
-      // 勾选了需要记住密码设置在 cookie 中设置记住用户名和密码
+      // 勾选了需要记住密码设置在 localStorage 中设置记住用户名和密码
       if (formData.value.rememberMe && type.value === 'password') {
-        Cookies.set('account', formData.value.account, { expires: 30 });
-        Cookies.set('password', String(formData.value.password), { expires: 30 });
-        Cookies.set('rememberMe', String(formData.value.rememberMe), { expires: 30 });
+        localStorage.setItem('account', String(formData.value.account));
+        localStorage.setItem('password', String(formData.value.password));
+        localStorage.setItem('rememberMe', String(formData.value.rememberMe));
       } else {
         // 否则移除
-        Cookies.remove('account');
-        Cookies.remove('password');
-        Cookies.remove('rememberMe');
+        localStorage.removeItem('account');
+        localStorage.removeItem('password');
+        localStorage.removeItem('rememberMe');
       }
 
       await MessagePlugin.success('登录成功');
@@ -278,7 +276,7 @@ function doSocialLogin(type: string) {
 }
 
 getCode();
-getCookie();
+getLoginData();
 </script>
 
 <style lang="less" scoped>

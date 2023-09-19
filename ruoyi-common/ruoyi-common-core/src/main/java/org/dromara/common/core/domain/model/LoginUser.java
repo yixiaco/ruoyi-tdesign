@@ -19,6 +19,11 @@ import java.util.List;
 public class LoginUser extends BaseUser {
 
     /**
+     * 用户昵称
+     */
+    private String nickname;
+
+    /**
      * 用户类型
      */
     private String userType;

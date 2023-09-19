@@ -71,11 +71,6 @@ public class SysDictDataBo extends BaseEntity {
     private String isDefault;
 
     /**
-     * 状态（1正常 0停用）
-     */
-    private String status;
-
-    /**
      * 创建部门
      */
     private Long createDept;

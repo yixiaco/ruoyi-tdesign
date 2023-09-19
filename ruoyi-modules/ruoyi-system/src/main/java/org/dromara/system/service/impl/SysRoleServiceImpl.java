@@ -9,6 +9,7 @@ import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.TenantConstants;
 import org.dromara.common.core.domain.model.LoginUser;
+import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
@@ -267,6 +268,9 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
      */
     @Override
     public int updateRoleStatus(Long roleId, String status) {
+        if (Objects.equals(NormalDisableEnum.DISABLE.getCode(), status) && this.countUserRoleByRoleId(roleId) > 0) {
+            throw new ServiceException("角色已分配，不能禁用!");
+        }
         return baseMapper.update(null,
             new LambdaUpdateWrapper<SysRole>()
                 .set(SysRole::getStatus, status)
@@ -363,7 +367,7 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
             checkRoleAllowed(BeanUtil.toBean(role, SysRoleBo.class));
             checkRoleDataScope(roleId);
             if (countUserRoleByRoleId(roleId) > 0) {
-                throw new ServiceException(String.format("%1$s已分配,不能删除", role.getRoleName()));
+                throw new ServiceException(String.format("%1$s已分配，不能删除!", role.getRoleName()));
             }
         }
         List<Long> ids = Arrays.asList(roleIds);

@@ -54,23 +54,25 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     /**
      * 查询部门管理数据
      *
-     * @param dept 部门信息
+     * @param query 部门查询对象
      * @return 部门信息集合
      */
     @Override
-    public List<SysDeptVo> selectDeptList(SysDeptQuery dept) {
-        return SortQuery.of(() -> baseMapper.queryList(dept));
+    public List<SysDeptVo> selectDeptList(SysDeptQuery query) {
+        return SortQuery.of(() -> baseMapper.queryList(query));
     }
 
     /**
      * 查询部门树结构信息
      *
-     * @param bo 部门信息
+     * @param query 部门查询对象
      * @return 部门树信息集合
      */
     @Override
-    public List<Tree<Long>> selectDeptTreeList(SysDeptQuery bo) {
-        List<SysDeptVo> depts = this.selectDeptList(bo);
+    public List<Tree<Long>> selectDeptTreeList(SysDeptQuery query) {
+        // 只查询未禁用部门
+        query.setStatus(NormalDisableEnum.NORMAL.getCode());
+        List<SysDeptVo> depts = this.selectDeptList(query);
         return buildDeptTreeSelect(depts);
     }
 
@@ -113,14 +115,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @Cacheable(cacheNames = CacheNames.SYS_DEPT, key = "#deptId")
     @Override
     public SysDeptVo selectDeptById(Long deptId) {
-        SysDeptVo dept = baseMapper.selectVoById(deptId);
-        if (ObjectUtil.isNull(dept)) {
-            return null;
-        }
-        SysDeptVo parentDept = baseMapper.selectVoOne(new LambdaQueryWrapper<SysDept>()
-            .select(SysDept::getDeptName).eq(SysDept::getDeptId, dept.getParentId()));
-        dept.setParentName(ObjectUtil.isNotNull(parentDept) ? parentDept.getDeptName() : null);
-        return dept;
+        return baseMapper.queryVoById(deptId);
     }
 
     /**

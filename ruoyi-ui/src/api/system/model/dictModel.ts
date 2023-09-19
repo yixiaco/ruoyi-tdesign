@@ -8,8 +8,6 @@ export interface SysDictDataQuery extends BaseEntity {
   dictLabel?: string;
   /** 字典类型 */
   dictType?: string;
-  /** 状态 */
-  status?: string;
 }
 /**
  * 字典数据业务对象
@@ -31,8 +29,6 @@ export interface SysDictDataForm {
   listClass?: string;
   /** 是否默认（Y是 N否） */
   isDefault?: string;
-  /** 状态（1正常 0停用） */
-  status?: string;
   /** 创建部门 */
   createDept?: number;
   /** 备注 */
@@ -58,8 +54,6 @@ export interface SysDictDataVo {
   listClass?: 'default' | 'warning' | 'danger' | 'success' | 'primary';
   /** 是否默认（Y是 N否） */
   isDefault?: string;
-  /** 状态（1正常 0停用） */
-  status?: string;
   /** 更新时间 */
   updateTime?: any;
   /** 创建时间 */
@@ -76,8 +70,6 @@ export interface SysDictTypeQuery extends BaseEntity {
   dictName?: string;
   /** 字典类型 */
   dictType?: string;
-  /** 状态 */
-  status?: string;
 }
 /**
  * 字典类型业务对象
@@ -89,8 +81,6 @@ export interface SysDictTypeForm extends BaseEntity {
   dictName?: string;
   /** 字典类型 */
   dictType?: string;
-  /** 状态（1正常 0停用） */
-  status?: string;
   /** 创建部门 */
   createDept?: number;
   /** 备注 */
@@ -106,8 +96,6 @@ export interface SysDictTypeVo {
   dictName?: string;
   /** 字典类型 */
   dictType?: string;
-  /** 状态（1正常 0停用） */
-  status?: string;
   /** 创建时间 */
   createTime?: any;
   /** 更新时间 */

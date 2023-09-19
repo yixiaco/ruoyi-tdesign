@@ -106,7 +106,7 @@
           <dict-tag :options="sys_oper_type" :value="row.businessType" />
         </template>
         <template #status="{ row }">
-          <dict-tag :options="sys_common_status" :value="row.status" />
+          <dict-tag :options="sys_common_status" :value="row.status?.toString()" />
         </template>
         <template #costTime="{ row }"> {{ row.costTime }}毫秒 </template>
         <template #operation="{ row, index }">

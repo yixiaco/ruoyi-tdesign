@@ -12,7 +12,6 @@ import org.hibernate.validator.constraints.Length;
  *
  * @author Lion Li
  */
-
 @Data
 public class LoginBody {
 

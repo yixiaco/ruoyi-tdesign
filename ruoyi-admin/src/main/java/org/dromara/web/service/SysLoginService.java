@@ -22,6 +22,7 @@ import org.dromara.common.core.exception.user.UserException;
 import org.dromara.common.core.utils.DateUtils;
 import org.dromara.common.core.utils.MessageUtils;
 import org.dromara.common.core.utils.ServletUtils;
+import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.log.event.LogininforEvent;
 import org.dromara.common.redis.utils.RedisUtils;
@@ -161,6 +162,7 @@ public class SysLoginService {
         loginUser.setUserId(user.getUserId());
         loginUser.setDeptId(user.getDeptId());
         loginUser.setUsername(user.getUserName());
+        loginUser.setNickname(user.getNickName());
         loginUser.setUserType(user.getUserType());
         loginUser.setMenuPermission(permissionService.getMenuPermission(user.getUserId()));
         loginUser.setRolePermission(permissionService.getRolePermission(user.getUserId()));
@@ -235,6 +237,9 @@ public class SysLoginService {
         }
         if (TenantConstants.DEFAULT_TENANT_ID.equals(tenantId)) {
             return;
+        }
+        if (StringUtils.isBlank(tenantId)) {
+            throw new TenantException("tenant.number.not.blank");
         }
         SysTenantVo tenant = tenantService.queryByTenantId(tenantId);
         if (ObjectUtil.isNull(tenant)) {

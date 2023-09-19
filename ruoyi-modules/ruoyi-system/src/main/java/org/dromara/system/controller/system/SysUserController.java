@@ -6,8 +6,10 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.domain.model.LoginUser;
+import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
@@ -22,10 +24,21 @@ import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.bo.SysUserBo;
 import org.dromara.system.domain.query.SysDeptQuery;
+import org.dromara.system.domain.query.SysPostQuery;
+import org.dromara.system.domain.query.SysRoleQuery;
 import org.dromara.system.domain.query.SysUserQuery;
-import org.dromara.system.domain.vo.*;
+import org.dromara.system.domain.vo.SysRoleVo;
+import org.dromara.system.domain.vo.SysUserExportVo;
+import org.dromara.system.domain.vo.SysUserImportVo;
+import org.dromara.system.domain.vo.SysUserInfoVo;
+import org.dromara.system.domain.vo.SysUserVo;
+import org.dromara.system.domain.vo.UserInfoVo;
 import org.dromara.system.listener.SysUserImportListener;
-import org.dromara.system.service.*;
+import org.dromara.system.service.ISysDeptService;
+import org.dromara.system.service.ISysPostService;
+import org.dromara.system.service.ISysRoleService;
+import org.dromara.system.service.ISysTenantService;
+import org.dromara.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
@@ -113,6 +126,9 @@ public class SysUserController extends BaseController {
             TenantHelper.clearDynamic();
         }
         SysUserVo user = userService.selectUserById(loginUser.getUserId());
+        if (ObjectUtil.isNull(user)) {
+            return R.fail("没有权限访问用户数据!");
+        }
         userInfoVo.setUser(user);
         userInfoVo.setPermissions(loginUser.getMenuPermission());
         userInfoVo.setRoles(loginUser.getRolePermission());
@@ -129,9 +145,13 @@ public class SysUserController extends BaseController {
     public R<SysUserInfoVo> getInfo(@PathVariable(value = "userId", required = false) Long userId) {
         userService.checkUserDataScope(userId);
         SysUserInfoVo userInfoVo = new SysUserInfoVo();
-        List<SysRoleVo> roles = roleService.selectRoleAll();
+        SysRoleQuery roleQuery = new SysRoleQuery();
+        roleQuery.setStatus(NormalDisableEnum.NORMAL.getCode());
+        SysPostQuery postQuery = new SysPostQuery();
+        postQuery.setStatus(NormalDisableEnum.NORMAL.getCode());
+        List<SysRoleVo> roles = roleService.selectRoleList(roleQuery);
         userInfoVo.setRoles(LoginHelper.isSuperAdmin(userId) ? roles : StreamUtils.filter(roles, r -> !r.isSuperAdmin()));
-        userInfoVo.setPosts(postService.selectPostAll());
+        userInfoVo.setPosts(postService.selectPostList(postQuery));
         if (ObjectUtil.isNotNull(userId)) {
             SysUserVo sysUser = userService.selectUserById(userId);
             userInfoVo.setUser(sysUser);
@@ -148,6 +168,7 @@ public class SysUserController extends BaseController {
     @Log(title = "用户管理", businessType = BusinessType.INSERT)
     @PostMapping
     public R<Void> add(@Validated @RequestBody SysUserBo user) {
+        deptService.checkDeptDataScope(user.getDeptId());
         TenantHelper.ignore(() -> {
             if (!userService.checkUserNameUnique(user)) {
                 throw new ServiceException("新增用户'" + user.getUserName() + "'失败，登录账号已存在");
@@ -175,6 +196,7 @@ public class SysUserController extends BaseController {
     public R<Void> edit(@Validated @RequestBody SysUserBo user) {
         userService.checkUserAllowed(user.getUserId());
         userService.checkUserDataScope(user.getUserId());
+        deptService.checkDeptDataScope(user.getDeptId());
         TenantHelper.ignore(() -> {
             if (!userService.checkUserNameUnique(user)) {
                 throw new ServiceException("修改用户'" + user.getUserName() + "'失败，登录账号已存在");
@@ -267,4 +289,12 @@ public class SysUserController extends BaseController {
         return R.ok(deptService.selectDeptTreeList(dept));
     }
 
+    /**
+     * 获取部门下的所有用户信息
+     */
+    @SaCheckPermission("system:user:list")
+    @GetMapping("/list/dept/{deptId}")
+    public R<List<SysUserVo>> listByDept(@PathVariable @NotNull Long deptId) {
+        return R.ok(userService.selectUserListByDept(deptId));
+    }
 }
