@@ -467,7 +467,7 @@ function getList() {
   });
 }
 /** 查询菜单下拉树结构 */
-function getTreeselect() {
+async function getTreeselect() {
   menuOptions.value = [];
   return listMenu().then((response) => {
     menuOptions.value = [{ menuId: 0, menuName: '主类目', children: proxy.handleTree(response.data, 'menuId') }];
