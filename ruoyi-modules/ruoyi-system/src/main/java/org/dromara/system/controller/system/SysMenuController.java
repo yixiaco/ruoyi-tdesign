@@ -94,10 +94,6 @@ public class SysMenuController extends BaseController {
     /**
      * 获取菜单下拉树列表
      */
-    @SaCheckRole(value = {
-        TenantConstants.SUPER_ADMIN_ROLE_KEY,
-        TenantConstants.TENANT_ADMIN_ROLE_KEY
-    }, mode = SaMode.OR)
     @SaCheckPermission("system:menu:query")
     @GetMapping("/treeselect")
     public R<List<Tree<Long>>> treeselect(SysMenuQuery menu) {
@@ -110,10 +106,6 @@ public class SysMenuController extends BaseController {
      *
      * @param roleId 角色ID
      */
-    @SaCheckRole(value = {
-        TenantConstants.SUPER_ADMIN_ROLE_KEY,
-        TenantConstants.TENANT_ADMIN_ROLE_KEY
-    }, mode = SaMode.OR)
     @SaCheckPermission("system:menu:query")
     @GetMapping(value = "/roleMenuTreeselect/{roleId}")
     public R<MenuTreeSelectVo> roleMenuTreeselect(@PathVariable("roleId") Long roleId) {
