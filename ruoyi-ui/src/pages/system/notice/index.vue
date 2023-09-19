@@ -185,7 +185,14 @@
     </t-dialog>
 
     <!-- 通知公告详情 -->
-    <t-dialog v-model:visible="openView" header="通知公告详情" width="700px" attach="body" :footer="false">
+    <t-dialog
+      v-model:visible="openView"
+      header="通知公告详情"
+      placement="center"
+      width="700px"
+      attach="body"
+      :footer="false"
+    >
       <t-loading :loading="openViewLoading">
         <t-form label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">
@@ -280,12 +287,12 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
   { title: `序号`, colKey: 'noticeId', align: 'center', width: 80, ellipsis: true },
   { title: `公告标题`, colKey: 'noticeTitle', align: 'center', width: '20%', ellipsis: true },
-  { title: `公告类型`, colKey: 'noticeType', align: 'center', sorter: true },
-  { title: `状态`, colKey: 'status', align: 'center' },
-  { title: `创建人`, colKey: 'createByName', align: 'center' },
-  { title: `更新人`, colKey: 'updateByName', align: 'center' },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180, sorter: true },
-  { title: `操作`, colKey: 'operation', align: 'center' },
+  { title: `公告类型`, colKey: 'noticeType', align: 'center', width: 115, sorter: true },
+  { title: `状态`, colKey: 'status', align: 'center', width: 80 },
+  { title: `创建人`, colKey: 'createByName', align: 'center', width: '10%', minWidth: 125, ellipsis: true },
+  { title: `更新人`, colKey: 'updateByName', align: 'center', width: '10%', minWidth: 125, ellipsis: true },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', width: '15%', minWidth: 125, sorter: true },
+  { title: `操作`, colKey: 'operation', align: 'center', width: '15%', minWidth: 180 },
 ]);
 // 提交表单对象
 const form = ref<SysNoticeVo & SysNoticeForm>({

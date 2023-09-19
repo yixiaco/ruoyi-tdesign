@@ -7,6 +7,11 @@
     width="1100px"
     top="5vh"
     attach="body"
+    :confirm-btn="{
+      content: '导入',
+      theme: 'primary',
+      loading: buttonLoading,
+    }"
     @opened="handleOpen"
     @confirm="handleImportTable"
   >
@@ -85,6 +90,7 @@ const tables = ref([]);
 const dbTableList = ref<GenTableVo[]>([]);
 const dataNameList = ref<Array<string>>([]);
 const { proxy } = getCurrentInstance();
+const buttonLoading = ref(false);
 
 const queryParams = reactive<GenTableQuery>({
   pageNum: 1,
@@ -163,13 +169,16 @@ function handleImportTable() {
     proxy.$modal.msgError('请选择要导入的表');
     return;
   }
-  importTable(tableNames, queryParams.dataName).then((res) => {
-    proxy.$modal.msgSuccess(res.msg);
-    if (res.code === 200) {
-      visible.value = false;
-      emit('ok');
-    }
-  });
+  buttonLoading.value = true;
+  importTable(tableNames, queryParams.dataName)
+    .then((res) => {
+      proxy.$modal.msgSuccess(res.msg);
+      if (res.code === 200) {
+        visible.value = false;
+        emit('ok');
+      }
+    })
+    .finally(() => (buttonLoading.value = false));
 }
 /** 查询多数据源名称 */
 async function getDataNameList() {

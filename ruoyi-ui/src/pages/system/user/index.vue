@@ -43,33 +43,21 @@
       <!--用户数据-->
       <t-col :sm="10" :xs="12">
         <t-space direction="vertical" style="width: 100%">
-          <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
+          <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="calc(4em + 12px)">
             <t-form-item label="用户名称" name="userName">
-              <t-input
-                v-model="queryParams.userName"
-                placeholder="请输入用户名称"
-                clearable
-                style="width: 240px"
-                @enter="handleQuery"
-              />
+              <t-input v-model="queryParams.userName" placeholder="请输入用户名称" clearable @enter="handleQuery" />
             </t-form-item>
             <t-form-item label="用户昵称" name="nickName">
               <t-input v-model="queryParams.nickName" placeholder="请输入用户昵称" clearable @enter="handleQuery" />
             </t-form-item>
             <t-form-item label="手机号码" name="phonenumber">
-              <t-input
-                v-model="queryParams.phonenumber"
-                placeholder="请输入手机号码"
-                clearable
-                style="width: 240px"
-                @enter="handleQuery"
-              />
+              <t-input v-model="queryParams.phonenumber" placeholder="请输入手机号码" clearable @enter="handleQuery" />
             </t-form-item>
             <t-form-item label="用户邮箱" name="email">
               <t-input v-model="queryParams.email" placeholder="请输入用户邮箱" clearable @enter="handleQuery" />
             </t-form-item>
             <t-form-item label="状态" name="status">
-              <t-select v-model="queryParams.status" placeholder="用户状态" clearable style="width: 240px">
+              <t-select v-model="queryParams.status" placeholder="用户状态" clearable>
                 <t-option
                   v-for="dict in sys_normal_disable"
                   :key="dict.value"
@@ -214,7 +202,7 @@
                     hover="color"
                     @click.stop="handleResetPwd(row)"
                   >
-                    <refresh-icon />
+                    <user-password-icon />
                   </t-link>
                 </t-tooltip>
                 <t-tooltip v-if="row.userId !== 1" content="分配角色" placement="top">
@@ -224,7 +212,7 @@
                     hover="color"
                     @click.stop="handleAuthRole(row)"
                   >
-                    <check-circle-icon />
+                    <user-safety-icon />
                   </t-link>
                 </t-tooltip>
               </t-space>
@@ -391,7 +379,14 @@
     </t-dialog>
 
     <!-- 用户信息详情 -->
-    <t-dialog v-model:visible="openView" header="用户信息详情" width="700px" attach="body" :footer="false">
+    <t-dialog
+      v-model:visible="openView"
+      header="用户信息详情"
+      width="700px"
+      attach="body"
+      placement="center"
+      :footer="false"
+    >
       <t-loading :loading="openViewLoading">
         <t-form label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">
@@ -460,7 +455,6 @@ import { storeToRefs } from 'pinia';
 import {
   AddIcon,
   BrowseIcon,
-  CheckCircleIcon,
   DeleteIcon,
   DownloadIcon,
   EditIcon,
@@ -468,6 +462,8 @@ import {
   SearchIcon,
   SettingIcon,
   UploadIcon,
+  UserPasswordIcon,
+  UserSafetyIcon,
 } from 'tdesign-icons-vue-next';
 import type {
   FormInstanceFunctions,
@@ -555,8 +551,8 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `部门`, colKey: 'dept.deptName', align: 'center' },
   { title: `手机号码`, colKey: 'phonenumber', align: 'center' },
   { title: `状态`, colKey: 'status', align: 'center' },
-  { title: `更新时间`, colKey: 'updateTime', align: 'center', sorter: true },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', sorter: true },
+  { title: `更新时间`, colKey: 'updateTime', align: 'center', sorter: true, width: '10%', minWidth: 112 },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', sorter: true, width: '10%', minWidth: 112 },
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
 

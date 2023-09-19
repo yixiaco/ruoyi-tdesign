@@ -4,7 +4,7 @@
   <t-card>
 #if($isUseQueryMethod)
     <t-space direction="vertical" style="width: 100%">
-      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
+      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="calc(4em + 12px)">
 #foreach($column in $columns)
 #if($column.isQuery())
 #set($dictType=$column.dictType)
@@ -319,7 +319,14 @@
 #if($isUseDetailMethod)
 
     <!-- ${functionName}详情 -->
-    <t-dialog v-model:visible="openView" header="${functionName}详情" width="700px" attach="body" :footer="false">
+    <t-dialog
+      v-model:visible="openView"
+      header="${functionName}详情"
+      placement="center"
+      width="700px"
+      attach="body"
+      :footer="false"
+    >
       <t-loading :loading="openViewLoading">
         <t-form label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">
@@ -527,7 +534,7 @@ const columns = ref<Array<PrimaryTableCol>>([
 #end
 #if($column.isPk())
 #elseif($column.isList() && $column.htmlType == "datetime")
-  { title: `${comment}`, colKey: '${javaField}', align: 'center', width: 180#if($column.isSorting()), sorter: true#end },
+  { title: `${comment}`, colKey: '${javaField}', align: 'center', minWidth: 112, width: 180#if($column.isSorting()), sorter: true#end },
 #elseif($column.isList() && $column.htmlType == "imageUpload")
   { title: `${comment}`, colKey: '${javaField}', align: 'center', width: 100#if($column.isSorting()), sorter: true#end },
 #elseif($column.isList() && $column.htmlType == "textarea")

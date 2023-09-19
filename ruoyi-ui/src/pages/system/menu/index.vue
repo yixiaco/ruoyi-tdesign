@@ -282,7 +282,14 @@
     </t-dialog>
 
     <!-- 菜单权限详情 -->
-    <t-dialog v-model:visible="openView" header="菜单权限详情" width="700px" attach="body" :footer="false">
+    <t-dialog
+      v-model:visible="openView"
+      header="菜单权限详情"
+      placement="center"
+      width="700px"
+      attach="body"
+      :footer="false"
+    >
       <t-loading :loading="openViewLoading">
         <t-form label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">
@@ -434,8 +441,8 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `显示状态`, colKey: 'visible', align: 'center', width: 88 },
   { title: `菜单类型`, colKey: 'menuType', align: 'center', width: 88 },
   { title: `状态`, colKey: 'status', align: 'center', width: 70 },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 120, sorter: true },
-  { title: `操作`, colKey: 'operation', align: 'center', width: 225 },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', width: '10%', sorter: true, minWidth: 112 },
+  { title: `操作`, colKey: 'operation', align: 'center', width: '20%', minWidth: 125 },
 ]);
 // 提交表单对象
 const form = ref<SysMenuForm & SysMenuVo>({

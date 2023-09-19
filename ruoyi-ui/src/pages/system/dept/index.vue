@@ -179,7 +179,14 @@
     </t-dialog>
 
     <!-- 部门详情 -->
-    <t-dialog v-model:visible="openView" header="部门详情" width="700px" attach="body" :footer="false">
+    <t-dialog
+      v-model:visible="openView"
+      header="部门详情"
+      placement="center"
+      width="700px"
+      attach="body"
+      :footer="false"
+    >
       <t-loading :loading="openViewLoading">
         <t-form label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">
@@ -276,11 +283,11 @@ const deptUserList = ref<SysUserVo[]>([]);
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
-  { title: `部门名称`, colKey: 'deptName', align: 'left', width: 260, ellipsis: true },
-  { title: `排序`, colKey: 'orderNum', align: 'center', width: 200, sorter: true },
-  { title: `状态`, colKey: 'status', align: 'center', width: 100 },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', minWidth: 180, sorter: true },
-  { title: `操作`, colKey: 'operation', align: 'center' },
+  { title: `部门名称`, colKey: 'deptName', align: 'left', width: '30%', ellipsis: true },
+  { title: `排序`, colKey: 'orderNum', align: 'center', width: 25, sorter: true },
+  { title: `状态`, colKey: 'status', align: 'center', width: 25 },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', width: '20%', minWidth: 112, sorter: true },
+  { title: `操作`, colKey: 'operation', align: 'center', width: '25%', minWidth: 180 },
 ]);
 
 const rules = ref<Record<string, Array<FormRule>>>({

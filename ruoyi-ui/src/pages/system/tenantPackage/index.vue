@@ -119,6 +119,7 @@
       v-model:visible="open"
       :close-on-overlay-click="false"
       :header="title"
+      placement="center"
       width="500px"
       attach="body"
       :confirm-btn="{
@@ -170,7 +171,14 @@
     </t-dialog>
 
     <!-- 租户套餐详情 -->
-    <t-dialog v-model:visible="openView" header="租户套餐详情" width="700px" attach="body" :footer="false">
+    <t-dialog
+      v-model:visible="openView"
+      header="租户套餐详情"
+      placement="center"
+      width="700px"
+      attach="body"
+      :footer="false"
+    >
       <t-loading :loading="openViewLoading">
         <t-form label-align="right" colon :data="form" label-width="calc(5em + 24px)">
           <t-row :gutter="[0, 20]">
@@ -274,11 +282,11 @@ const rules = ref<Record<string, Array<FormRule>>>({
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
   { title: `套餐名称`, colKey: 'packageName', align: 'center' },
-  { title: `备注`, colKey: 'remark', align: 'center' },
   { title: `状态`, colKey: 'status', align: 'center' },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
-  { title: `更新时间`, colKey: 'updateTime', align: 'center', width: 180 },
-  { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
+  { title: `备注`, colKey: 'remark', align: 'center', ellipsis: true },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', width: '15%', minWidth: 112 },
+  { title: `更新时间`, colKey: 'updateTime', align: 'center', width: '15%', minWidth: 112 },
+  { title: `操作`, colKey: 'operation', align: 'center', width: '15%', minWidth: 180 },
 ]);
 // 提交表单对象
 const form = ref<SysTenantPackageVo & SysTenantPackageForm>({

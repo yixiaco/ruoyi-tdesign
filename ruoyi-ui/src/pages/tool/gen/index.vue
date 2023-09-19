@@ -346,6 +346,9 @@ function handleDelete(row?: GenTableVo) {
   proxy.$modal.confirm(`是否确认删除表编号为"${tableIds}"的数据项？`, () => {
     return delTable(tableIds).then(() => {
       getList();
+      if (!row) {
+        ids.value = [];
+      }
       proxy.$modal.msgSuccess('删除成功');
     });
   });

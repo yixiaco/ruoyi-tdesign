@@ -300,15 +300,15 @@ const columns = ref<Array<PrimaryTableCol>>([
     align: 'center',
     disabled: (options: { row: SysClientVo; rowIndex: number }) => options.row.clientId === clientId,
   },
-  { title: `客户端id`, colKey: 'clientId', align: 'center' },
+  { title: `客户端id`, colKey: 'clientId', align: 'center', ellipsis: true },
   { title: `客户端key`, colKey: 'clientKey', align: 'center' },
   { title: `授权类型`, colKey: 'grantType', align: 'center' },
   { title: `设备类型`, colKey: 'deviceType', align: 'center' },
   { title: `token活跃超时时间`, colKey: 'activeTimeout', align: 'center', sorter: true },
   { title: `token固定超时`, colKey: 'timeout', align: 'center', sorter: true },
   { title: `状态`, colKey: 'status', align: 'center', sorter: true },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', sorter: true },
-  { title: `更新时间`, colKey: 'updateTime', align: 'center', sorter: true },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', sorter: true, width: '10%', minWidth: 112 },
+  { title: `更新时间`, colKey: 'updateTime', align: 'center', sorter: true, width: '10%', minWidth: 112 },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 // 提交表单对象

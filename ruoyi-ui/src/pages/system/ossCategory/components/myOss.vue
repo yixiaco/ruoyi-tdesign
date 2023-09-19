@@ -136,6 +136,7 @@
       v-model:visible="openUpload"
       :close-on-overlay-click="false"
       :header="uploadTitle"
+      placement="center"
       width="700px"
       @confirm="submitUploadForm"
     >
@@ -177,6 +178,7 @@
       v-model:visible="openView"
       :close-on-overlay-click="false"
       :header="title"
+      placement="center"
       width="550px"
       :confirm-btn="{
         content: '确 定',

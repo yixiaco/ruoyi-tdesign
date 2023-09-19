@@ -279,7 +279,14 @@
     </t-dialog>
 
     <!-- 角色信息详情 -->
-    <t-dialog v-model:visible="openView" header="角色信息详情" width="700px" attach="body" :footer="false">
+    <t-dialog
+      v-model:visible="openView"
+      header="角色信息详情"
+      placement="center"
+      width="700px"
+      attach="body"
+      :footer="false"
+    >
       <t-loading :loading="openViewLoading">
         <t-form label-align="right" colon label-width="calc(8em + 28px)">
           <t-row :gutter="[0, 20]">
@@ -425,8 +432,8 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `权限字符`, colKey: 'roleKey', ellipsis: true, align: 'center', width: 150 },
   { title: `显示顺序`, colKey: 'roleSort', align: 'center', width: 120, sorter: true },
   { title: `状态`, colKey: 'status', align: 'center', width: 100 },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', sorter: true },
-  { title: `操作`, colKey: 'operation', align: 'center' },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', sorter: true, width: '15%', minWidth: 112 },
+  { title: `操作`, colKey: 'operation', align: 'center', width: '10%', minWidth: 185 },
 ]);
 
 const rules = ref<Record<string, Array<FormRule>>>({

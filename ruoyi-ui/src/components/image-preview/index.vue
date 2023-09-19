@@ -10,7 +10,8 @@
           height: realHeight,
           'border-radius': 'var(--td-radius-default)',
         }"
-        :lazy="true"
+        :class="{ image_animation: animation }"
+        :lazy="lazy"
         :gallery="realPreviewSrcList.length > 1"
         overlay-trigger="hover"
         @mouseenter="hover = true"
@@ -65,6 +66,16 @@ const props = defineProps({
   height: {
     type: [Number, String],
     default: '',
+  },
+  // 是否懒加载
+  lazy: {
+    type: Boolean,
+    default: true,
+  },
+  // 是否运行动画
+  animation: {
+    type: Boolean,
+    default: true,
   },
 });
 
@@ -121,12 +132,13 @@ const realWidth = computed(() => (typeof props.width === 'string' ? props.width 
 
 const realHeight = computed(() => (typeof props.height === 'string' ? props.height : `${props.height}px`));
 </script>
-<!-- eslint-disable-next-line vue-scoped-css/enforce-style-type -->
-<style lang="less">
-.t-image__wrapper img,
-.overlay {
-  transition: all 0.3s;
-  cursor: pointer;
-  transform: scale(v-bind(scale));
+<style lang="less" scoped>
+.image_animation:deep {
+  img,
+  .overlay {
+    transition: all 0.3s;
+    cursor: pointer;
+    transform: scale(v-bind(scale));
+  }
 }
 </style>

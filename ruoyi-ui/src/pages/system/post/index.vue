@@ -152,7 +152,14 @@
     </t-dialog>
 
     <!-- 岗位信息详情 -->
-    <t-dialog v-model:visible="openView" header="岗位信息详情" width="600px" attach="body" :footer="false">
+    <t-dialog
+      v-model:visible="openView"
+      header="岗位信息详情"
+      placement="center"
+      width="600px"
+      attach="body"
+      :footer="false"
+    >
       <t-loading :loading="openViewLoading">
         <t-form label-align="right" colon label-width="calc(4em + 28px)">
           <t-row :gutter="[0, 20]">

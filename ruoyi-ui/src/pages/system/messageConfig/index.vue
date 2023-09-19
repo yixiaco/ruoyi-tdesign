@@ -260,7 +260,14 @@
     </t-dialog>
 
     <!-- 消息配置详情 -->
-    <t-dialog v-model:visible="openView" header="消息配置详情" width="700px" attach="body" :footer="false">
+    <t-dialog
+      v-model:visible="openView"
+      header="消息配置详情"
+      placement="center"
+      width="700px"
+      attach="body"
+      :footer="false"
+    >
       <t-loading :loading="openViewLoading">
         <t-form label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">

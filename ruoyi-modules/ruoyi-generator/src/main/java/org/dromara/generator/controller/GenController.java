@@ -5,6 +5,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.IoUtil;
 import jakarta.servlet.http.HttpServletResponse;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.idempotent.annotation.RepeatSubmit;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
@@ -47,7 +48,7 @@ public class GenController extends BaseController {
     }
 
     /**
-     * 修改代码生成业务
+     * 查询代码生成业务信息
      *
      * @param tableId 表ID
      */
@@ -93,6 +94,7 @@ public class GenController extends BaseController {
      */
     @SaCheckPermission("tool:gen:import")
     @Log(title = "代码生成", businessType = BusinessType.IMPORT)
+    @RepeatSubmit()
     @PostMapping("/importTable")
     public R<Void> importTableSave(String tables, String dataName) {
         String[] tableNames = Convert.toStrArray(tables);
@@ -107,6 +109,7 @@ public class GenController extends BaseController {
      */
     @SaCheckPermission("tool:gen:edit")
     @Log(title = "代码生成", businessType = BusinessType.UPDATE)
+    @RepeatSubmit()
     @PutMapping
     public R<Void> editSave(@Validated @RequestBody GenTableBo tableBo) {
         genTableService.validateEdit(tableBo);

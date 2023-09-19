@@ -137,6 +137,7 @@
       v-model:visible="open"
       :close-on-overlay-click="false"
       :header="title"
+      placement="center"
       width="650px"
       attach="body"
       :confirm-btn="{
@@ -189,7 +190,14 @@
     </t-dialog>
 
     <!-- OSS处理规则详情 -->
-    <t-dialog v-model:visible="openView" header="OSS处理规则详情" width="700px" attach="body" :footer="false">
+    <t-dialog
+      v-model:visible="openView"
+      header="OSS处理规则详情"
+      placement="center"
+      width="700px"
+      attach="body"
+      :footer="false"
+    >
       <t-loading :loading="openViewLoading">
         <t-form label-align="right" colon label-width="calc(7em + 28px)">
           <t-row :gutter="[0, 20]">

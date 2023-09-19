@@ -168,6 +168,7 @@
       v-model:visible="open"
       :close-on-overlay-click="false"
       :header="title"
+      placement="center"
       width="700px"
       attach="body"
       :confirm-btn="{
@@ -306,7 +307,14 @@
     </t-dialog>
 
     <!-- 消息模板详情 -->
-    <t-dialog v-model:visible="openView" header="消息模板详情" width="700px" attach="body" :footer="false">
+    <t-dialog
+      v-model:visible="openView"
+      header="消息模板详情"
+      placement="center"
+      width="700px"
+      attach="body"
+      :footer="false"
+    >
       <t-loading :loading="openViewLoading">
         <t-form label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">

@@ -116,6 +116,7 @@
       v-model:visible="open"
       :close-on-overlay-click="false"
       :header="title"
+      placement="center"
       width="800px"
       attach="body"
       :confirm-btn="{
@@ -218,7 +219,14 @@
     </t-dialog>
 
     <!-- 租户详情 -->
-    <t-dialog v-model:visible="openView" header="租户详情" width="700px" attach="body" :footer="false">
+    <t-dialog
+      v-model:visible="openView"
+      header="租户详情"
+      placement="center"
+      width="700px"
+      attach="body"
+      :footer="false"
+    >
       <t-loading :loading="openViewLoading">
         <t-form label-align="right" colon :data="form" label-width="calc(6em + 24px)">
           <t-row :gutter="[0, 20]">
@@ -351,9 +359,9 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `社会信用代码`, colKey: 'licenseNumber', align: 'center' },
   { title: `过期时间`, colKey: 'expireTime', align: 'center' },
   { title: `租户状态`, colKey: 'status', align: 'center' },
-  { title: `创建时间`, colKey: 'createTime', align: 'center' },
-  { title: `更新时间`, colKey: 'updateTime', align: 'center' },
-  { title: `操作`, colKey: 'operation', align: 'center', width: 160 },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', width: '10%', minWidth: 112 },
+  { title: `更新时间`, colKey: 'updateTime', align: 'center', width: '10%', minWidth: 112 },
+  { title: `操作`, colKey: 'operation', align: 'center', width: '10%', minWidth: 160 },
 ]);
 // 提交表单对象
 const form = ref<SysTenantVo & SysTenantForm>({});
@@ -428,7 +436,7 @@ function resetQuery() {
 }
 
 // 多选框选中数据
-function handleSelectionChange(selection: Array<string | number>) {
+function handleSelectionChange(selection: Array<number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
