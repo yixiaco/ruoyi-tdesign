@@ -3,6 +3,7 @@ package org.dromara.system.controller.system;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import jakarta.servlet.http.HttpServletResponse;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.excel.utils.ExcelUtil;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
@@ -17,6 +18,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 岗位信息操作处理
@@ -88,6 +90,9 @@ public class SysPostController extends BaseController {
             return R.fail("修改岗位'" + post.getPostName() + "'失败，岗位名称已存在");
         } else if (!postService.checkPostCodeUnique(post)) {
             return R.fail("修改岗位'" + post.getPostName() + "'失败，岗位编码已存在");
+        } else if (Objects.equals(NormalDisableEnum.DISABLE.getCode(), post.getStatus())
+            && postService.countUserPostById(post.getPostId()) > 0) {
+            return R.fail("该岗位下存在已分配用户，不能禁用!");
         }
         return toAjax(postService.updatePost(post));
     }
@@ -109,7 +114,9 @@ public class SysPostController extends BaseController {
      */
     @GetMapping("/optionselect")
     public R<List<SysPostVo>> optionselect() {
-        List<SysPostVo> posts = postService.selectPostAll();
+        SysPostQuery query = new SysPostQuery();
+        query.setStatus(NormalDisableEnum.NORMAL.getCode());
+        List<SysPostVo> posts = postService.selectPostList(query);
         return R.ok(posts);
     }
 }
