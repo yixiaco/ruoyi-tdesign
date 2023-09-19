@@ -32,7 +32,7 @@ public class PriorityQueueController {
     @GetMapping("/add")
     public R<Void> add(String queueName) {
         // 用完了一定要销毁 否则会一直存在
-        boolean b = QueueUtils.destroyQueue(queueName);
+        boolean b = QueueUtils.destroyPriorityQueue(queueName);
         log.info("通道: {} , 删除: {}", queueName, b);
 
         for (int i = 0; i < 10; i++) {
@@ -61,7 +61,7 @@ public class PriorityQueueController {
         PriorityDemo data = new PriorityDemo();
         data.setName(name);
         data.setOrderNum(orderNum);
-        if (QueueUtils.removeQueueObject(queueName, data)) {
+        if (QueueUtils.removePriorityQueueObject(queueName, data)) {
             log.info("通道: {} , 删除数据: {}", queueName, data);
         } else {
             return R.fail("操作失败");
@@ -78,7 +78,7 @@ public class PriorityQueueController {
     public R<Void> get(String queueName) {
         PriorityDemo data;
         do {
-            data = QueueUtils.getQueueObject(queueName);
+            data = QueueUtils.getPriorityQueueObject(queueName);
             log.info("通道: {} , 获取数据: {}", queueName, data);
         } while (data != null);
         return R.msg("操作成功");

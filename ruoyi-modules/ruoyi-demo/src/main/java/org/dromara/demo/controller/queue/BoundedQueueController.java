@@ -1,5 +1,6 @@
 package org.dromara.demo.controller.queue;
 
+import cn.dev33.satoken.annotation.SaIgnore;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.redis.utils.QueueUtils;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Lion Li
  * @version 3.6.0
  */
+@SaIgnore
 @Slf4j
 @RestController
 @RequestMapping("/demo/queue/bounded")
@@ -33,7 +35,7 @@ public class BoundedQueueController {
     @GetMapping("/add")
     public R<Void> add(String queueName, int capacity) {
         // 用完了一定要销毁 否则会一直存在
-        boolean b = QueueUtils.destroyQueue(queueName);
+        boolean b = QueueUtils.destroyBoundedQueue(queueName);
         log.info("通道: {} , 删除: {}", queueName, b);
         // 初始化设置一次即可
         if (QueueUtils.trySetBoundedQueueCapacity(queueName, capacity)) {
@@ -62,7 +64,7 @@ public class BoundedQueueController {
     @GetMapping("/remove")
     public R<Void> remove(String queueName) {
         String data = "data-" + 5;
-        if (QueueUtils.removeQueueObject(queueName, data)) {
+        if (QueueUtils.removeBoundedQueueObject(queueName, data)) {
             log.info("通道: {} , 删除数据: {}", queueName, data);
         } else {
             return R.fail("操作失败");
@@ -79,7 +81,7 @@ public class BoundedQueueController {
     public R<Void> get(String queueName) {
         String data;
         do {
-            data = QueueUtils.getQueueObject(queueName);
+            data = QueueUtils.getBoundedQueueObject(queueName);
             log.info("通道: {} , 获取数据: {}", queueName, data);
         } while (data != null);
         return R.msg("操作成功");
