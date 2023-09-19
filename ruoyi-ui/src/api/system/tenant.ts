@@ -19,10 +19,15 @@ export function getTenant(id: number) {
 
 // 新增租户
 export function addTenant(data: SysTenantForm) {
-  return request.post<R<void>>({
-    url: '/system/tenant',
-    data,
-  });
+  return request.post<R<void>>(
+    {
+      url: '/system/tenant',
+      data,
+    },
+    {
+      withEncrypt: true,
+    },
+  );
 }
 
 // 修改租户

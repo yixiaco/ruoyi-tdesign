@@ -189,7 +189,7 @@ const transform: AxiosTransform = {
     // 是否需要防止数据重复提交
     const isRepeatSubmit = (config as Recordable)?.requestOptions?.repeatSubmit === false;
     // 是否需要加密
-    const isEncrypt = !!(config as Recordable)?.requestOptions?.isEncrypt;
+    const withEncrypt = !!(config as Recordable)?.requestOptions?.withEncrypt;
     if (!isRepeatSubmit && (config.method.toUpperCase() === 'POST' || config.method.toUpperCase() === 'PUT')) {
       const requestObj = {
         url: config.url,
@@ -213,7 +213,7 @@ const transform: AxiosTransform = {
       }
     }
     // 当开启参数加密
-    if (isEncrypt && (config.method === 'post' || config.method === 'put')) {
+    if (withEncrypt && (config.method === 'post' || config.method === 'put')) {
       // 生成一个 AES 密钥
       const aesKey = generateAesKey();
       config.headers['encrypt-key'] = encrypt(encryptBase64(aesKey));

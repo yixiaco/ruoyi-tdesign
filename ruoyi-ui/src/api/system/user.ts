@@ -56,10 +56,15 @@ export function resetUserPwd(userId: number, password: string) {
     userId,
     password,
   };
-  return request.put<R<void>>({
-    url: '/system/user/resetPwd',
-    data,
-  });
+  return request.put<R<void>>(
+    {
+      url: '/system/user/resetPwd',
+      data,
+    },
+    {
+      withEncrypt: true,
+    },
+  );
 }
 
 // 用户状态修改
@@ -95,10 +100,15 @@ export function updateUserPwd(oldPassword: string, newPassword: string) {
     oldPassword,
     newPassword,
   };
-  return request.put<R<void>>({
-    url: '/system/user/profile/updatePwd',
-    params: data,
-  });
+  return request.put<R<void>>(
+    {
+      url: '/system/user/profile/updatePwd',
+      params: data,
+    },
+    {
+      withEncrypt: true,
+    },
+  );
 }
 
 // 用户头像上传
