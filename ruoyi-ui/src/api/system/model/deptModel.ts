@@ -27,7 +27,7 @@ export interface SysDeptForm extends BaseEntity {
   /** 显示顺序 */
   orderNum?: number;
   /** 负责人 */
-  leader?: string;
+  leader?: number;
   /** 联系电话 */
   phone?: string;
   /** 邮箱 */
@@ -50,7 +50,9 @@ export interface SysDeptVo {
   /** 显示顺序 */
   orderNum?: number;
   /** 负责人 */
-  leader?: string;
+  leader?: number;
+  /** 负责人名称 */
+  leaderName?: string;
   /** 联系电话 */
   phone?: string;
   /** 邮箱 */

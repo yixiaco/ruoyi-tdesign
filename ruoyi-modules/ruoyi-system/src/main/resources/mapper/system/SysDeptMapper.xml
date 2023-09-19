@@ -10,7 +10,7 @@
     </resultMap>
 
     <sql id="selectSysDeptVo">
-        select sd.dept_id, sd.parent_id, sd.ancestors, sd.dept_name, sd.order_num, sd.leader, sd.phone, sd.email, sd.`status`, sd.del_flag, sd.create_by, sd.create_time, sd.update_by, sd.update_time from sys_dept sd
+        select sd.dept_id, sd.parent_id, sd.ancestors, sd.dept_name, sd.order_num, sd.leader, sd.phone, sd.email, sd.status, sd.del_flag, sd.create_by, sd.create_time, sd.update_by, sd.update_time from sys_dept sd
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysDeptQuery" resultMap="SysDeptResultVo">
         <include refid="selectSysDeptVo"/>
@@ -19,7 +19,7 @@
             <if test="deptId != null "> and sd.dept_id = #{deptId}</if>
             <if test="parentId != null "> and sd.parent_id = #{parentId}</if>
             <if test="deptName != null and deptName != ''"> and sd.dept_name like concat('%', #{deptName}, '%')</if>
-            <if test="status != null and status != ''"> and sd.`status` = #{status}</if>
+            <if test="status != null and status != ''"> and sd.status = #{status}</if>
         </where>
         order by parent_id,order_num
     </select>
@@ -42,6 +42,26 @@
                 and d.dept_id not in (select d.parent_id from sys_dept d inner join sys_role_dept rd on d.dept_id = rd.dept_id and rd.role_id = #{roleId})
             </if>
         order by d.parent_id, d.order_num
+    </select>
+    <select id="queryVoById" resultMap="SysDeptResultVo">
+        select sd.dept_id,
+               sd.parent_id,
+               sd.ancestors,
+               sd.dept_name,
+               sd.order_num,
+               sd.leader,
+               sd.phone,
+               sd.email,
+               sd.status,
+               sd.del_flag,
+               sd.create_by,
+               sd.create_time,
+               sd.update_by,
+               sd.update_time,
+               (select s.dept_name from sys_dept s where s.dept_id = sd.parent_id and sd.parent_id != 0) as parent_name,
+               (select su.user_name from sys_user su where su.user_id = sd.leader and sd.leader is not null ) as leader_name
+        from sys_dept sd
+        where sd.dept_id = #{deptId}
     </select>
 
 </mapper>

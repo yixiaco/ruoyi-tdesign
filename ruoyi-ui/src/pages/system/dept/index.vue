@@ -144,7 +144,14 @@
             </t-col>
             <t-col :span="6">
               <t-form-item label="负责人" name="leader">
-                <t-input v-model="form.leader" placeholder="请输入负责人" :maxlength="20" />
+                <t-select v-model="form.leader" placeholder="请选择负责人">
+                  <t-option
+                    v-for="item in deptUserList"
+                    :key="item.userId"
+                    :label="item.userName"
+                    :value="item.userId"
+                  />
+                </t-select>
               </t-form-item>
             </t-col>
             <t-col :span="6">
@@ -192,7 +199,7 @@
               <t-form-item label="显示顺序">{{ form.orderNum }}</t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="负责人">{{ form.leader }}</t-form-item>
+              <t-form-item label="负责人">{{ form.leaderName }}</t-form-item>
             </t-col>
             <t-col :span="6">
               <t-form-item label="联系电话">{{ form.phone }}</t-form-item>
@@ -221,6 +228,7 @@
 defineOptions({
   name: 'Dept',
 });
+
 import {
   AddIcon,
   BrowseIcon,
@@ -244,6 +252,8 @@ import { getCurrentInstance, ref } from 'vue';
 
 import { addDept, delDept, getDept, listDept, listDeptExcludeChild, updateDept } from '@/api/system/dept';
 import type { SysDeptForm, SysDeptQuery, SysDeptVo } from '@/api/system/model/deptModel';
+import { SysUserVo } from '@/api/system/model/userModel';
+import { listUserByDeptId } from '@/api/system/user';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
@@ -262,6 +272,7 @@ const sort = ref<TableSort>();
 const tableRef = ref<EnhancedTableInstanceFunctions>();
 const deptRef = ref<FormInstanceFunctions>();
 const columnControllerVisible = ref(false);
+const deptUserList = ref<SysUserVo[]>([]);
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
@@ -300,6 +311,13 @@ function getList() {
       refreshExpandAll();
     })
     .finally(() => (loading.value = false));
+}
+/** 查询当前部门的所有用户 */
+async function getDeptAllUser(deptId: number) {
+  if (deptId) {
+    const res = await listUserByDeptId(deptId);
+    deptUserList.value = res.data;
+  }
 }
 /** 表单重置 */
 function reset() {
@@ -375,6 +393,8 @@ function handleDetail(row: SysDeptVo) {
 /** 修改按钮操作 */
 function handleUpdate(row: SysDeptVo) {
   reset();
+  // 查询当前部门所有用户
+  getDeptAllUser(row.deptId);
   open.value = true;
   title.value = '修改部门';
   eLoading.value = true;

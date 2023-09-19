@@ -1,5 +1,7 @@
+-- 新增菜单
 insert into sys_menu values('1140', '公告导出', '107', '5', '#', '', '', 0, 1, 'F', '1', '1', 'system:notice:export',       '#', 103, 1, now(), null, null, '');
 
+-- 更新设备类型
 update sys_client set device_type = 'android' where device_type = 'app';
 alter table sys_dict_type drop column status;
 alter table sys_dict_data drop column status;
@@ -9,3 +11,7 @@ insert into sys_dict_data values(55, '000000', 0,  '安卓', 'android',     'sys
 insert into sys_dict_data values(56, '000000', 0,  'iOS', 'ios',          'sys_device_type',     '',   'default', 'N', 103, 1, now(), null, null, 'iOS');
 insert into sys_dict_data values(57, '000000', 0,  '小程序', 'xcx',       'sys_device_type',     '',   'default', 'N', 103, 1, now(), null, null, '小程序');
 
+-- 变更设备leader字段类型
+update sys_dept set leader = null;
+alter table sys_dept alter column leader set default null;
+update sys_dept set leader = 1 where dept_id = 103;

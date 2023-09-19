@@ -127,6 +127,16 @@ export function updateAuthRole(data: { userId: number; roleIds: string }) {
   });
 }
 
+/**
+ * 查询当前部门的所有用户信息
+ * @param deptId
+ */
+export function listUserByDeptId(deptId: number) {
+  return request.get<R<SysUserVo[]>>({
+    url: `/system/user/list/dept/${deptId}`,
+  });
+}
+
 // 查询部门下拉树结构
 export function deptTreeSelect() {
   return request.get<R<Array<TreeModel<number>>>>({
