@@ -1,8 +1,9 @@
+/* eslint-disable simple-import-sort/imports */
+// import TDesign from 'tdesign-vue-next';
 import 'tdesign-vue-next/es/style/index.css';
 import '@/style/index.less';
 import './permission';
 
-// import TDesign from 'tdesign-vue-next';
 import { createApp } from 'vue';
 
 import { getConfigKey, updateConfigByKey } from '@/api/system/config';

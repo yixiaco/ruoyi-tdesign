@@ -271,11 +271,11 @@ insert into sys_menu values('4', 'PLUS官网', '0', '5', 'https://gitee.com/yixi
 
 -- 二级菜单
 insert into sys_menu values('100',  '用户管理',     '1',   '1', 'user',             'system/user/index',            '', 0, 1, 'C', '1', '1', 'system:user:list',            'user',          103, 1, sysdate(), null, null, '用户管理菜单');
-insert into sys_menu values('101',  '角色管理',     '1',   '2', 'role',             'system/role/index',            '', 0, 1, 'C', '1', '1', 'system:role:list',            'usergroup',       103, 1, sysdate(), null, null, '角色管理菜单');
+insert into sys_menu values('101',  '角色管理',     '1',   '2', 'role',             'system/role/index',            '', 0, 1, 'C', '1', '1', 'system:role:list',            'user-safety',       103, 1, sysdate(), null, null, '角色管理菜单');
 insert into sys_menu values('102',  '菜单管理',     '1',   '3', 'menus',             'system/menu/index',            '', 0, 1, 'C', '1', '1', 'system:menu:list',            'bulletpoint',    103, 1, sysdate(), null, null, '菜单管理菜单');
-insert into sys_menu values('103',  '部门管理',     '1',   '4', 'dept',             'system/dept/index',            '', 0, 1, 'C', '1', '1', 'system:dept:list',            'fork',          103, 1, sysdate(), null, null, '部门管理菜单');
+insert into sys_menu values('103',  '部门管理',     '1',   '4', 'dept',             'system/dept/index',            '', 0, 1, 'C', '1', '1', 'system:dept:list',            'tree-square-dot',          103, 1, sysdate(), null, null, '部门管理菜单');
 insert into sys_menu values('104',  '岗位管理',     '1',   '5', 'post',             'system/post/index',            '', 0, 1, 'C', '1', '1', 'system:post:list',            'user-avatar',          103, 1, sysdate(), null, null, '岗位管理菜单');
-insert into sys_menu values('105',  '字典管理',     '1',   '6', 'dict',             'system/dict/index',            '', 0, 1, 'C', '1', '1', 'system:dict:list',            'books',          103, 1, sysdate(), null, null, '字典管理菜单');
+insert into sys_menu values('105',  '字典管理',     '1',   '6', 'dict',             'system/dict/index',            '', 0, 1, 'C', '1', '1', 'system:dict:list',            'book',          103, 1, sysdate(), null, null, '字典管理菜单');
 insert into sys_menu values('106',  '参数设置',     '1',   '7', 'sysConfig',           'system/config/index',          '', 0, 1, 'C', '1', '1', 'system:config:list',          'edit',          103, 1, sysdate(), null, null, '参数设置菜单');
 insert into sys_menu values('107',  '通知公告',     '1',   '8', 'notice',           'system/notice/index',          '', 0, 1, 'C', '1', '1', 'system:notice:list',          'mail',       103, 1, sysdate(), null, null, '通知公告菜单');
 insert into sys_menu values('108',  '日志管理',     '1',   '9', 'log',              '',                             '', 0, 1, 'M', '1', '1', '',                            'root-list',    103, 1, sysdate(), null, null, '日志管理菜单');
@@ -298,7 +298,7 @@ insert into sys_menu values('120',  '任务调度中心',  '2',   '5',  'powerjo
 insert into sys_menu values('500',  '操作日志', '108', '1', 'operlog',    'monitor/operlog/index',    '', 0, 1, 'C', '1', '1', 'monitor:operlog:list',    'edit-1',          103, 1, sysdate(), null, null, '操作日志菜单');
 insert into sys_menu values('501',  '登录日志', '108', '2', 'logininfor', 'monitor/logininfor/index', '', 0, 1, 'C', '1', '1', 'monitor:logininfor:list', 'swap',    103, 1, sysdate(), null, null, '登录日志菜单');
 insert into sys_menu values('1500', 'OSS配置管理', '1510', '1', 'ossConfig', 'system/ossConfig/index', '', 0, 1, 'C', '1', '1', 'system:ossConfig:list', 'server', 103, 1, sysdate(), 1, null, '');
-insert into sys_menu values('118',  '文件管理','1510','2', 'oss','system/oss/index','', 0, 1, 'C', '1', '1', 'system:oss:list', 'cloud-upload',103, 1, sysdate(), null, null, '文件管理菜单');
+insert into sys_menu values('118',  '文件管理','1510','2', 'oss','system/oss/index','', 0, 1, 'C', '1', '1', 'system:oss:list', 'backup',103, 1, sysdate(), null, null, '文件管理菜单');
 insert into sys_menu values('1521', 'OSS处理规则', '1510', '3', 'ossRule', 'system/ossRule/index', null, 0, 1, 'C', '1', '1', 'system:ossRule:list', 'chevron-right-double', 103, 1, sysdate(), 1, null, 'OSS处理规则菜单');
 insert into sys_menu values('1531', '我的文件', '1510', 4, 'ossCategory', 'system/ossCategory/index', NULL, 0, 1, 'C', '1', '1', 'system:ossCategory:list', 'folder-open', 103, 1, sysdate(), 1, sysdate(), '我的文件菜单');
 -- 用户管理按钮

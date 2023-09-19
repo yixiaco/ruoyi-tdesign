@@ -26,7 +26,7 @@
                 <div class="pull-right">{{ state.user.email }}</div>
               </li>
               <li class="list-group-item">
-                <usergroup-icon />所属部门
+                <tree-square-dot-icon />所属部门
                 <div v-if="state.user.dept" class="pull-right">
                   {{ state.user.dept.deptName }} / {{ state.postGroup }}
                 </div>
@@ -70,7 +70,14 @@
 defineOptions({
   name: 'Profile',
 });
-import { CalendarIcon, MailIcon, MobileIcon, SecuredIcon, UsergroupIcon, UserIcon } from 'tdesign-icons-vue-next';
+import {
+  CalendarIcon,
+  MailIcon,
+  MobileIcon,
+  SecuredIcon,
+  TreeSquareDotIcon,
+  UserIcon
+} from 'tdesign-icons-vue-next';
 import { reactive, ref } from 'vue';
 
 import type { ProfileVo } from '@/api/system/model/userModel';
