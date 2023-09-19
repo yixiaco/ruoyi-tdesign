@@ -19,7 +19,6 @@ import org.springframework.web.bind.annotation.RestController;
  * @author Lion Li
  * @version 3.6.0
  */
-@SaIgnore
 @Slf4j
 @RestController
 @RequestMapping("/demo/queue/bounded")
