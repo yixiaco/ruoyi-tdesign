@@ -3,8 +3,8 @@
 -- ----------------------------
 create table sys_social
 (
-    id                 number(20)       not null,
-    user_id            number(20)       not null,
+    id                 number(20)        not null,
+    user_id            number(20)        not null,
     tenant_id          varchar2(20)      default null,
     auth_id            varchar2(255)     not null,
     source             varchar2(255)     not null,
@@ -14,7 +14,7 @@ create table sys_social
     email              varchar2(255)     default '',
     avatar             varchar2(500)     default '',
     access_token       varchar2(255)     not null,
-    expire_in          number(100)      default null,
+    expire_in          number(20)        default null,
     refresh_token      varchar2(255)     default null,
     access_code        varchar2(255)     default null,
     union_id           varchar2(255)     default null,
@@ -1321,20 +1321,20 @@ insert into sys_oss_config values (5, '000000', 'image',  'ruoyi',            'r
 -- 系统授权表
 -- ----------------------------
 create table sys_client (
-    id                  number(20)    not null,
+    id                  number(20)     not null,
     client_id           varchar2(64)   default null,
     client_key          varchar2(32)   default null,
     client_secret       varchar2(255)  default null,
     grant_type          varchar2(255)  default null,
     device_type         varchar2(32)   default null,
-    active_timeout      number(11)    default 1800,
-    timeout             number(11)    default 604800,
-    status              char(1)       default '1',
-    del_flag            char(1)       default '0',
-    create_dept         number(20)    default null,
-    create_by           number(20)    default null,
+    active_timeout      number(11)     default 1800,
+    timeout             number(11)     default 604800,
+    status              char(1)        default '1',
+    del_flag            char(1)        default '0',
+    create_dept         number(20)     default null,
+    create_by           number(20)     default null,
     create_time         date,
-    update_by           number(20)    default null,
+    update_by           number(20)     default null,
     update_time         date
 );
 
