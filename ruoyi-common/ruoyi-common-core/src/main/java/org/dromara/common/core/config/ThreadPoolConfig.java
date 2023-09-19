@@ -31,6 +31,8 @@ public class ThreadPoolConfig {
      */
     private final int core = Runtime.getRuntime().availableProcessors() + 1;
 
+    private ScheduledExecutorService scheduledExecutorService;
+
     @Bean(name = "threadPoolTaskExecutor")
     @ConditionalOnProperty(prefix = "thread-pool", name = "enabled", havingValue = "true")
     public ThreadPoolTaskExecutor threadPoolTaskExecutor(ThreadPoolProperties threadPoolProperties) {
@@ -48,7 +50,7 @@ public class ThreadPoolConfig {
      */
     @Bean(name = "scheduledExecutorService")
     protected ScheduledExecutorService scheduledExecutorService() {
-        return new ScheduledThreadPoolExecutor(core,
+        ScheduledThreadPoolExecutor scheduledThreadPoolExecutor = new ScheduledThreadPoolExecutor(core,
             new BasicThreadFactory.Builder().namingPattern("schedule-pool-%d").daemon(true).build(),
             new ThreadPoolExecutor.CallerRunsPolicy()) {
             @Override
@@ -57,6 +59,8 @@ public class ThreadPoolConfig {
                 Threads.printException(r, t);
             }
         };
+        this.scheduledExecutorService = scheduledThreadPoolExecutor;
+        return scheduledThreadPoolExecutor;
     }
 
     /**
@@ -66,7 +70,6 @@ public class ThreadPoolConfig {
     public void destroy() {
         try {
             log.info("====关闭后台任务任务线程池====");
-            ScheduledExecutorService scheduledExecutorService = SpringUtils.getBean("scheduledExecutorService");
             Threads.shutdownAndAwaitTermination(scheduledExecutorService);
         } catch (Exception e) {
             log.error(e.getMessage(), e);
