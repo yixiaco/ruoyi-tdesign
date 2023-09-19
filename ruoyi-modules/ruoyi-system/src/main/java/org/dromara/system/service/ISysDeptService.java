@@ -18,18 +18,18 @@ public interface ISysDeptService extends IService<SysDept> {
     /**
      * 查询部门管理数据
      *
-     * @param dept 部门信息
+     * @param query 部门查询对象
      * @return 部门信息集合
      */
-    List<SysDeptVo> selectDeptList(SysDeptQuery dept);
+    List<SysDeptVo> selectDeptList(SysDeptQuery query);
 
     /**
      * 查询部门树结构信息
      *
-     * @param dept 部门信息
+     * @param query 部门查询对象
      * @return 部门树信息集合
      */
-    List<Tree<Long>> selectDeptTreeList(SysDeptQuery dept);
+    List<Tree<Long>> selectDeptTreeList(SysDeptQuery query);
 
     /**
      * 构建前端所需要下拉树结构
