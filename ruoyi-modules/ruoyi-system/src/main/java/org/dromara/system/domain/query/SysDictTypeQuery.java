@@ -24,9 +24,4 @@ public class SysDictTypeQuery extends BaseEntity {
      */
     private String dictType;
 
-    /**
-     * 状态
-     */
-    private String status;
-
 }

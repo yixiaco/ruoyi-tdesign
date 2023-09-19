@@ -16,11 +16,6 @@
             @enter="handleQuery"
           />
         </t-form-item>
-        <t-form-item label="状态" name="status">
-          <t-select v-model="queryParams.status" placeholder="数据状态" clearable style="width: 200px">
-            <t-option v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.label" :value="dict.value" />
-          </t-select>
-        </t-form-item>
         <t-form-item label-width="0px">
           <t-button theme="primary" @click="handleQuery">
             <template #icon> <search-icon /></template>
@@ -102,9 +97,6 @@
           <span v-if="row.listClass === '' || row.listClass === 'default'">{{ row.dictLabel }}</span>
           <t-tag v-else :theme="row.listClass" variant="light">{{ row.dictLabel }}</t-tag>
         </template>
-        <template #status="{ row }">
-          <dict-tag :options="sys_normal_disable" :value="row.status" />
-        </template>
         <template #operation="{ row }">
           <t-space :size="8" break-line>
             <t-link v-hasPermi="['system:dict:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
@@ -157,13 +149,6 @@
               ></t-option>
             </t-select>
           </t-form-item>
-          <t-form-item label="状态" name="status">
-            <t-radio-group v-model="form.status">
-              <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{
-                dict.label
-              }}</t-radio>
-            </t-radio-group>
-          </t-form-item>
           <t-form-item label="备注" name="remark">
             <t-textarea v-model="form.remark" placeholder="请输入备注"></t-textarea>
           </t-form-item>
@@ -206,11 +191,6 @@
             <t-col :span="6">
               <t-form-item label="是否默认">
                 <dict-tag :options="sys_yes_no" :value="form.isDefault" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="状态">
-                <dict-tag :options="sys_normal_disable" :value="form.status" />
               </t-form-item>
             </t-col>
             <t-col :span="6">
@@ -263,7 +243,7 @@ import useDictStore from '@/store/modules/dict';
 import type { DictModel } from '@/utils/dict';
 
 const { proxy } = getCurrentInstance();
-const { sys_yes_no, sys_normal_disable } = proxy.useDict('sys_yes_no', 'sys_normal_disable');
+const { sys_yes_no } = proxy.useDict('sys_yes_no');
 
 const openView = ref(false);
 const openViewLoading = ref(false);
@@ -306,7 +286,6 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `字典标签`, colKey: 'dictLabel', align: 'center' },
   { title: `字典键值`, colKey: 'dictValue', align: 'center' },
   { title: `字典排序`, colKey: 'dictSort', align: 'center', sorter: true },
-  { title: `状态`, colKey: 'status', align: 'center', ellipsis: true },
   { title: `备注`, colKey: 'remark', align: 'center', ellipsis: true },
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180, sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
@@ -315,7 +294,6 @@ const columns = ref<Array<PrimaryTableCol>>([
 const form = ref<SysDictDataForm & SysDictDataVo>({
   listClass: 'default',
   dictSort: 0,
-  status: '1',
 });
 // 查询对象
 const queryParams = ref<SysDictDataQuery>({
@@ -323,7 +301,6 @@ const queryParams = ref<SysDictDataQuery>({
   pageSize: 10,
   dictLabel: undefined,
   dictType: undefined,
-  status: undefined,
 });
 
 // 分页
@@ -376,7 +353,6 @@ function reset() {
     cssClass: undefined,
     listClass: 'default',
     dictSort: 0,
-    status: '1',
     remark: undefined,
   };
   proxy.resetForm('dataRef');

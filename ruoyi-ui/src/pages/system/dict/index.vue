@@ -20,11 +20,6 @@
             @enter="handleQuery"
           />
         </t-form-item>
-        <t-form-item label="状态" name="status">
-          <t-select v-model="queryParams.status" placeholder="字典状态" clearable style="width: 240px">
-            <t-option v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.label" :value="dict.value" />
-          </t-select>
-        </t-form-item>
         <t-form-item label="创建时间" style="width: 340px">
           <t-date-range-picker
             v-model="dateRange"
@@ -123,9 +118,6 @@
             </t-link>
           </router-link>
         </template>
-        <template #status="{ row }">
-          <dict-tag :options="sys_normal_disable" :value="row.status" />
-        </template>
         <template #operation="{ row }">
           <t-space :size="8" break-line>
             <t-link v-hasPermi="['system:dict:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
@@ -159,13 +151,6 @@
           <t-form-item label="字典类型" name="dictType">
             <t-input v-model="form.dictType" placeholder="请输入字典类型" />
           </t-form-item>
-          <t-form-item label="状态" name="status">
-            <t-radio-group v-model="form.status">
-              <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{
-                dict.label
-              }}</t-radio>
-            </t-radio-group>
-          </t-form-item>
           <t-form-item label="备注" name="remark">
             <t-textarea v-model="form.remark" placeholder="请输入备注"></t-textarea>
           </t-form-item>
@@ -186,11 +171,6 @@
             </t-col>
             <t-col :span="6">
               <t-form-item label="字典类型">{{ form.dictType }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="状态">
-                <dict-tag :options="sys_normal_disable" :value="form.status" />
-              </t-form-item>
             </t-col>
             <t-col :span="6">
               <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
@@ -236,7 +216,6 @@ import type { SysDictTypeForm, SysDictTypeQuery, SysDictTypeVo } from '@/api/sys
 import useDictStore from '@/store/modules/dict';
 
 const { proxy } = getCurrentInstance();
-const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
 const openView = ref(false);
 const openViewLoading = ref(false);
@@ -267,22 +246,18 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `字典编号`, colKey: 'dictId', align: 'center' },
   { title: `字典名称`, colKey: 'dictName', align: 'center', ellipsis: true },
   { title: `字典类型`, colKey: 'dictType', align: 'center', ellipsis: true },
-  { title: `状态`, colKey: 'status', align: 'center' },
   { title: `备注`, colKey: 'remark', align: 'center', ellipsis: true },
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180, sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 // 提交表单对象
-const form = ref<SysDictTypeForm & SysDictTypeVo>({
-  status: '1',
-});
+const form = ref<SysDictTypeForm & SysDictTypeVo>({});
 // 查询对象
 const queryParams = ref<SysDictTypeQuery>({
   pageNum: 1,
   pageSize: 10,
   dictName: undefined,
   dictType: undefined,
-  status: undefined,
 });
 
 // 分页
@@ -316,7 +291,6 @@ function reset() {
     dictId: undefined,
     dictName: undefined,
     dictType: undefined,
-    status: '1',
     remark: undefined,
   };
   proxy.resetForm('dictRef');
