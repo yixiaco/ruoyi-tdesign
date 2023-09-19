@@ -973,8 +973,10 @@ insert into sys_dict_data values(50, '000000', 0,  '短信认证', 'sms',       
 insert into sys_dict_data values(51, '000000', 0,  '邮件认证', 'email',      'sys_grant_type',   '',   'default', 'N', '1', 103, 1, now(), null, null, '邮件认证');
 insert into sys_dict_data values(52, '000000', 0,  '小程序认证', 'xcx',      'sys_grant_type',   '',   'default', 'N', '1', 103, 1, now(), null, null, '小程序认证');
 insert into sys_dict_data values(53, '000000', 0,  '三方登录认证', 'social', 'sys_grant_type',   '',   'default', 'N', '1', 103, 1, now(), null, null, '三方登录认证');
-insert into sys_dict_data values(54, '000000', 0,  'PC端', 'pc',            'sys_device_type',   '',   'default', 'N', '1', 103, 1, now(), null, null, 'PC端');
-insert into sys_dict_data values(55, '000000', 0,  'APP端', 'app',          'sys_device_type',   '',   'default', 'N', '1', 103, 1, now(), null, null, 'APP端');
+insert into sys_dict_data values(54, '000000', 0,  'PC', 'pc',              'sys_device_type',   '',   'default', 'N', '0', 103, 1, now(), null, null, 'PC');
+insert into sys_dict_data values(55, '000000', 0,  '安卓', 'android',       'sys_device_type',   '',   'default', 'N', '0', 103, 1, now(), null, null, '安卓');
+insert into sys_dict_data values(56, '000000', 0,  'iOS', 'ios',            'sys_device_type',   '',   'default', 'N', '0', 103, 1, now(), null, null, 'iOS');
+insert into sys_dict_data values(57, '000000', 0,  '小程序', 'xcx',         'sys_device_type',   '',   'default', 'N', '0', 103, 1, now(), null, null, '小程序');
 
 
 
@@ -1388,7 +1390,7 @@ comment on column sys_client.update_by              is '更新者';
 comment on column sys_client.update_time            is '更新时间';
 
 insert into sys_client values (1, 'e5cd7e4891bf95d1d19206ce24a7b32e', 'pc', 'pc123', 'password,social', 'pc', 1800, 604800, 1, 0, 103, 1, now(), 1, now());
-insert into sys_client values (2, '428a8310cd442757ae699df5d894f051', 'app', 'app123', 'password,sms,social', 'app', 1800, 604800, 1, 0, 103, 1, now(), 1, now());
+insert into sys_client values (2, '428a8310cd442757ae699df5d894f051', 'app', 'app123', 'password,sms,social', 'android', 1800, 604800, 1, 0, 103, 1, now(), 1, now());
 
 -- ----------------------------
 -- OSS处理规则表
