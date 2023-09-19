@@ -48,7 +48,7 @@
         <!--        </t-button>-->
       </t-form-item>
 
-      <div v-show="false" class="check-container remember-pwd">
+      <div class="check-container remember-pwd">
         <t-checkbox v-model="formData.rememberMe">记住账号</t-checkbox>
         <span class="tip">忘记账号？</span>
       </div>
@@ -188,10 +188,10 @@ function getLoginData() {
   const password = localStorage.getItem('password');
   const rememberMe = localStorage.getItem('rememberMe');
   formData.value = {
-    account: account === undefined ? String(formData.value.account) : account,
+    account: account || formData.value.account,
     phone: '',
-    password: password === undefined ? String(formData.value.password) : String(password),
-    rememberMe: rememberMe === undefined ? false : Boolean(rememberMe),
+    password: password || formData.value.password,
+    rememberMe: rememberMe ? Boolean(rememberMe) : formData.value.rememberMe,
     code: '',
     uuid: '',
   };
