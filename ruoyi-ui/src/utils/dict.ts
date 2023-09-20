@@ -10,12 +10,15 @@ export interface DictModel {
   tagType?: 'default' | 'warning' | 'danger' | 'success' | 'primary';
   tagClass?: string;
 }
+export interface StringDictModel extends DictModel {
+  value: string;
+}
 
 /**
  * 获取字典数据
  */
 export function useDict(...args: string[]) {
-  const res = ref<Record<string, Array<DictModel>>>({});
+  const res = ref<Record<string, Array<StringDictModel>>>({});
   return (() => {
     args.forEach((dictType) => {
       res.value[dictType] = [];
@@ -24,7 +27,7 @@ export function useDict(...args: string[]) {
         res.value[dictType] = dicts;
       } else {
         getDicts(dictType).then((resp) => {
-          res.value[dictType] = resp.data.map<DictModel>((p) => ({
+          res.value[dictType] = resp.data.map<StringDictModel>((p) => ({
             label: p.dictLabel,
             value: p.dictValue,
             tagType: p.listClass,

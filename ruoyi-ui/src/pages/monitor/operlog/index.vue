@@ -109,14 +109,9 @@
           <dict-tag :options="sys_common_status" :value="row.status?.toString()" />
         </template>
         <template #costTime="{ row }"> {{ row.costTime }}毫秒 </template>
-        <template #operation="{ row, index }">
+        <template #operation="{ row }">
           <t-space :size="8">
-            <t-link
-              v-hasPermi="['monitor:operlog:query']"
-              theme="primary"
-              hover="color"
-              @click.stop="handleView(row, index)"
-            >
+            <t-link v-hasPermi="['monitor:operlog:query']" theme="primary" hover="color" @click.stop="handleView(row)">
               <browse-icon />详细
             </t-link>
           </t-space>
@@ -315,7 +310,7 @@ function handleSortChange(value?: TableSort) {
   getList();
 }
 /** 详细按钮操作 */
-function handleView(row: SysOperLogVo, index: number) {
+function handleView(row: SysOperLogVo) {
   open.value = true;
   form.value = row;
 }
