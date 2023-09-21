@@ -176,8 +176,9 @@
     <!-- 添加或修改${functionName}对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       width="500px"
       attach="body"
       :confirm-btn="{
