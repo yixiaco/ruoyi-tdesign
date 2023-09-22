@@ -66,13 +66,13 @@
             </t-button>
           </t-tooltip>
           <t-tooltip content="旋转">
-            <t-button @click="rotateRight()">
-              <template #icon><rotation-icon /></template>
+            <t-button @click="rotateLeft()">
+              <template #icon><anticlockwise-icon /></template>
             </t-button>
           </t-tooltip>
           <t-tooltip content="缩放到裁剪框大小">
             <t-button @click="cropScale()">
-              <template #icon><rectangle-icon /></template>
+              <template #icon><fullscreen1-icon /></template>
             </t-button>
           </t-tooltip>
           <t-tooltip content="还原">
@@ -96,10 +96,10 @@
 import 'vue-cropper/dist/index.css';
 
 import {
+  AnticlockwiseIcon,
   CameraIcon,
-  RectangleIcon,
+  Fullscreen1Icon,
   RefreshIcon,
-  RotationIcon,
   UploadIcon,
   ZoomInIcon,
   ZoomOutIcon,
@@ -141,8 +141,8 @@ function modalOpened() {
   visible.value = true;
 }
 /** 向右旋转 */
-function rotateRight() {
-  cropperRef.value.rotateRight();
+function rotateLeft() {
+  cropperRef.value.rotateLeft();
 }
 /** 缩放到指定大小 */
 function cropScale() {
