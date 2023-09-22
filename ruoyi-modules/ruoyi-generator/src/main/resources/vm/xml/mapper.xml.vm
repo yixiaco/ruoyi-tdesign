@@ -28,7 +28,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 #end
 
     <sql id="select${vo}">
-        select#foreach($column in $columns) ${dbName}.#if($GenUtil.isMysqlKeyword($column.columnName))`$column.columnName`#else$column.columnName#end#if($foreach.hasNext),#end#end from $tableName $dbName
+        select#foreach($column in $columns) ${dbName}.$column.columnName#if($foreach.hasNext),#end#end from $tableName $dbName
     </sql>
 #if($isUseQueryMethod || $isUseExportMethod)
     <select id="queryList" parameterType="$className" resultMap="#if($isUseVO)${ClassName}ResultVo#else$result#end">
@@ -39,12 +39,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 #set($queryType=$column.queryType)
 #set($javaField=$column.javaField)
 #set($javaType=$column.javaType)
-#if($GenUtil.isMysqlKeyword($column.columnName))
-#set($columnName='`'+$column.columnName+'`')
-#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
-#else
 #set($columnName=$column.columnName)
-#end
 #if($columnName == 'del_flag')
             and $dbName.$columnName =#if($javaType == $string) '0'#else 0#end
 #end

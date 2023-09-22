@@ -26,14 +26,14 @@
     </select>
 
     <sql id="selectSysPostVo">
-        select sp.post_id, sp.post_code, sp.post_name, sp.post_sort, sp.`status`, sp.create_by, sp.create_time, sp.update_by, sp.update_time, sp.remark from sys_post sp
+        select sp.post_id, sp.post_code, sp.post_name, sp.post_sort, sp.status, sp.create_by, sp.create_time, sp.update_by, sp.update_time, sp.remark from sys_post sp
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysPostQuery" resultMap="SysPostResultVo">
         <include refid="selectSysPostVo"/>
         <where>
             <if test="postCode != null and postCode != ''"> and sp.post_code like concat('%', #{postCode}, '%')</if>
             <if test="postName != null and postName != ''"> and sp.post_name like concat('%', #{postName}, '%')</if>
-            <if test="status != null and status != ''"> and sp.`status` = #{status}</if>
+            <if test="status != null and status != ''"> and sp.status = #{status}</if>
         </where>
         order by create_time desc
     </select>

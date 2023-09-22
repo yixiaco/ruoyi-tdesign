@@ -34,7 +34,7 @@
             <if test="roleId != null"> and r.role_id = #{roleId}</if>
             <if test="roleName != null and roleName != ''"> and r.role_name like concat('%', #{roleName}, '%')</if>
             <if test="roleKey != null and roleKey != ''"> and r.role_key like concat('%', #{roleKey}, '%')</if>
-            <if test="status != null and status != ''"> and r.`status` = #{status}</if>
+            <if test="status != null and status != ''"> and r.status = #{status}</if>
             <if test="params.beginTime != null and params.endTime != null">and r.create_time between #{params.beginTime} and #{params.endTime}</if>
         </where>
         order by r.role_sort, r.create_time desc

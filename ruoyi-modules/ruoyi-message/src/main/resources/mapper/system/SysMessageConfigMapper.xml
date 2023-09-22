@@ -10,7 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysMessageConfigVo">
-        select smc.message_config_id, smc.title, smc.message_type, smc.supplier_type, smc.config_json, smc.`status`, smc.remark, smc.create_dept, smc.update_by, smc.create_by, smc.update_time, smc.create_time from sys_message_config smc
+        select smc.message_config_id, smc.title, smc.message_type, smc.supplier_type, smc.config_json, smc.status, smc.remark, smc.create_dept, smc.update_by, smc.create_by, smc.update_time, smc.create_time from sys_message_config smc
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysMessageConfigQuery" resultMap="SysMessageConfigResultVo">
         <include refid="selectSysMessageConfigVo"/>
@@ -18,7 +18,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="title != null and title != ''"> and smc.title like concat('%', #{title}, '%')</if>
             <if test="messageType != null and messageType != ''"> and smc.message_type = #{messageType}</if>
             <if test="supplierType != null and supplierType != ''"> and smc.supplier_type = #{supplierType}</if>
-            <if test="status != null "> and smc.`status` = #{status}</if>
+            <if test="status != null "> and smc.status = #{status}</if>
         </where>
         order by smc.create_time desc
     </select>

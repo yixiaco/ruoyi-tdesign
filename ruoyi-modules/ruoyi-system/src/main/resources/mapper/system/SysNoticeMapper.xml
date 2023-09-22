@@ -10,14 +10,14 @@
     </resultMap>
 
     <sql id="selectSysNoticeVo">
-        select sn.notice_id, sn.notice_title, sn.notice_type, sn.notice_content, sn.`status`, sn.create_by, sn.create_time, sn.update_by, sn.update_time, sn.remark from sys_notice sn
+        select sn.notice_id, sn.notice_title, sn.notice_type, sn.notice_content, sn.status, sn.create_by, sn.create_time, sn.update_by, sn.update_time, sn.remark from sys_notice sn
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysNoticeQuery" resultMap="SysNoticeResultVo">
         select sn.notice_id,
                sn.notice_title,
                sn.notice_type,
                sn.notice_content,
-               sn.`status`,
+               sn.status,
                sn.create_by,
                sn.create_time,
                sn.update_by,
@@ -29,7 +29,7 @@
         <where>
             <if test="noticeTitle != null and noticeTitle != ''"> and sn.notice_title like concat('%', #{noticeTitle}, '%')</if>
             <if test="noticeType != null and noticeType != ''"> and sn.notice_type = #{noticeType}</if>
-            <if test="status != null and status != ''"> and sn.`status` = #{status}</if>
+            <if test="status != null and status != ''"> and sn.status = #{status}</if>
             <if test="createByName != null"> and su.user_name like concat('%', #{createByName}, '%')</if>
         </where>
         order by sn.create_time desc
