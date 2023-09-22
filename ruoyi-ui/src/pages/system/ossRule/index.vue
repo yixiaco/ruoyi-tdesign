@@ -135,8 +135,9 @@
     <!-- 添加或修改OSS处理规则对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       placement="center"
       width="650px"
       attach="body"
@@ -294,13 +295,13 @@ const title = ref('');
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
-  ruleName: [{ required: true, message: '规则名称不能为空', trigger: 'blur' }],
-  domain: [{ required: true, message: '匹配域名不能为空', trigger: 'blur' }],
-  mimeType: [{ required: true, message: '媒体类型不能为空', trigger: 'blur' }],
-  rule: [{ required: true, message: '规则不能为空', trigger: 'blur' }],
-  isOverwrite: [{ required: true, message: '是否覆盖默认字段值不能为空', trigger: 'blur' }],
-  isDefault: [{ required: true, message: '是否默认不能为空', trigger: 'blur' }],
-  status: [{ required: true, message: '启用状态不能为空', trigger: 'blur' }],
+  ruleName: [{ required: true, message: '规则名称不能为空' }],
+  domain: [{ required: true, message: '匹配域名不能为空' }],
+  mimeType: [{ required: true, message: '媒体类型不能为空' }],
+  rule: [{ required: true, message: '规则不能为空' }],
+  isOverwrite: [{ required: true, message: '是否覆盖默认字段值不能为空' }],
+  isDefault: [{ required: true, message: '是否默认不能为空' }],
+  status: [{ required: true, message: '启用状态不能为空' }],
 });
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([

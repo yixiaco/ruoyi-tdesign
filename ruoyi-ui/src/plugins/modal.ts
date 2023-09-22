@@ -231,6 +231,7 @@ export default {
       confirmBtn: btn,
       cancelBtn: props.cancelButtonText,
       closeOnOverlayClick: props.closeOnClickModal,
+      destroyOnClose: true,
       body: () =>
         h(
           // @ts-ignore
@@ -241,8 +242,8 @@ export default {
             labelAlign: 'top',
             rules: {
               input: [
-                { required: true, message: props.inputErrorMessage, trigger: 'blur' },
-                { pattern: props.inputPattern, message: props.inputErrorMessage, trigger: 'change' },
+                { required: true, message: props.inputErrorMessage },
+                { pattern: props.inputPattern, message: props.inputErrorMessage },
               ],
             },
           },

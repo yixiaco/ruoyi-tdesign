@@ -137,8 +137,9 @@
     <!-- 添加或修改参数配置对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       width="500px"
       attach="body"
       @confirm="onConfirm"
@@ -243,8 +244,8 @@ const sort = ref<TableSort>();
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
-  dictName: [{ required: true, message: '字典名称不能为空', trigger: 'blur' }],
-  dictType: [{ required: true, message: '字典类型不能为空', trigger: 'blur' }],
+  dictName: [{ required: true, message: '字典名称不能为空' }],
+  dictType: [{ required: true, message: '字典类型不能为空' }],
 });
 
 // 列显隐信息

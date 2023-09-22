@@ -137,8 +137,9 @@
     <!-- 添加或修改对象存储配置对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       width="800px"
       attach="body"
       top="3vh"
@@ -331,9 +332,9 @@ const columns = ref<Array<PrimaryTableCol>>([
 ]);
 
 const rules = ref<Record<string, Array<FormRule>>>({
-  configKey: [{ required: true, message: 'configKey不能为空', trigger: 'blur' }],
+  configKey: [{ required: true, message: 'configKey不能为空' }],
   accessKey: [
-    { required: true, message: 'accessKey不能为空', trigger: 'blur' },
+    { required: true, message: 'accessKey不能为空' },
     {
       min: 2,
       max: 200,
@@ -342,7 +343,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
     },
   ],
   secretKey: [
-    { required: true, message: 'secretKey不能为空', trigger: 'blur' },
+    { required: true, message: 'secretKey不能为空' },
     {
       min: 2,
       max: 100,
@@ -351,7 +352,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
     },
   ],
   bucketName: [
-    { required: true, message: 'bucketName不能为空', trigger: 'blur' },
+    { required: true, message: 'bucketName不能为空' },
     {
       min: 2,
       max: 100,
@@ -360,7 +361,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
     },
   ],
   endpoint: [
-    { required: true, message: 'endpoint不能为空', trigger: 'blur' },
+    { required: true, message: 'endpoint不能为空' },
     {
       min: 2,
       max: 100,
@@ -368,7 +369,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
       trigger: 'blur',
     },
   ],
-  accessPolicy: [{ required: true, message: 'accessPolicy不能为空', trigger: 'blur' }],
+  accessPolicy: [{ required: true, message: 'accessPolicy不能为空' }],
 });
 // 提交表单对象
 const form = ref<SysOssConfigVo & SysOssConfigForm>({

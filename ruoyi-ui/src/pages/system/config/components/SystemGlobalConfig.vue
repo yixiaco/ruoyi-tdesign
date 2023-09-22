@@ -62,7 +62,7 @@ const loading = ref(false);
 const buttonLoading = ref(false);
 
 const rules = ref<Record<string, Array<FormRule>>>({
-  'sys.user.initPassword': [{ required: true, message: '账号初始密码不能为空', trigger: 'blur' }],
+  'sys.user.initPassword': [{ required: true, message: '账号初始密码不能为空' }],
 });
 
 const form = ref<Record<string, string>>({

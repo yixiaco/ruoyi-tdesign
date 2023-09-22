@@ -102,8 +102,9 @@
     <!-- 添加或修改部门对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       width="600px"
       attach="body"
       @confirm="confirm"
@@ -291,11 +292,11 @@ const columns = ref<Array<PrimaryTableCol>>([
 ]);
 
 const rules = ref<Record<string, Array<FormRule>>>({
-  parentId: [{ required: true, message: '上级部门不能为空', trigger: 'blur' }],
-  deptName: [{ required: true, message: '部门名称不能为空', trigger: 'blur' }],
-  orderNum: [{ required: true, message: '显示排序不能为空', trigger: 'blur' }],
-  email: [{ email: true, message: '请输入正确的邮箱地址', trigger: 'change' }],
-  phone: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
+  parentId: [{ required: true, message: '上级部门不能为空' }],
+  deptName: [{ required: true, message: '部门名称不能为空' }],
+  orderNum: [{ required: true, message: '显示排序不能为空' }],
+  email: [{ email: true, message: '请输入正确的邮箱地址' }],
+  phone: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码' }],
 });
 // 提交表单对象
 const form = ref<SysDeptForm & SysDeptVo>({

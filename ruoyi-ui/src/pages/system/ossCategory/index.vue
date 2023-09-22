@@ -132,8 +132,9 @@
     <!-- 添加或修改OSS分类对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       width="500px"
       :confirm-btn="{
         content: '确 定',
@@ -271,11 +272,11 @@ const categoryActived = ref<number[]>([]);
 
 const rules = ref<Record<string, Array<FormRule>>>({
   categoryName: [
-    { required: true, message: '分类名称不能为空', trigger: 'blur' },
+    { required: true, message: '分类名称不能为空' },
     { pattern: /^[^/%_*]*$/, message: '分类名不能包含下列任何字符：/%_*' },
   ],
-  parentId: [{ required: true, message: '父级分类不能为空', trigger: 'blur' }],
-  orderNum: [{ required: true, message: '显示顺序不能为空', trigger: 'blur' }],
+  parentId: [{ required: true, message: '父级分类不能为空' }],
+  orderNum: [{ required: true, message: '显示顺序不能为空' }],
 });
 // 提交表单对象
 const form = ref<SysOssCategoryVo & SysOssCategoryForm>({});

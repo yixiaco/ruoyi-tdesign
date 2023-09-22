@@ -116,8 +116,8 @@ const FORM_RULES: Record<string, FormRule[]> = {
   ],
   password: [{ required: true, message: '密码必填', type: 'error' }],
   confirmPassword: [
-    { required: true, message: '请再次输入您的密码', trigger: 'blur' },
-    { validator: equalToPassword, trigger: 'blur', message: '两次输入的密码不一致' },
+    { required: true, message: '请再次输入您的密码' },
+    { validator: equalToPassword, message: '两次输入的密码不一致' },
   ],
   code: [{ required: true, message: '请输入验证码' }],
 };

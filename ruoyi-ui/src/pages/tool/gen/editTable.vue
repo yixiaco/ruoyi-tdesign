@@ -217,18 +217,18 @@ const columns = ref<Array<PrimaryTableCol<GenTableColumn>>>([
 ]);
 
 const rules = ref<Record<string, Array<FormRule>>>({
-  tplCategory: [{ required: true, message: '请选择生成模板', trigger: 'blur' }],
-  packageName: [{ required: true, message: '请输入生成包路径', trigger: 'blur' }],
-  moduleName: [{ required: true, message: '请输入生成模块名', trigger: 'blur' }],
-  businessName: [{ required: true, message: '请输入生成业务名', trigger: 'blur' }],
-  functionName: [{ required: true, message: '请输入生成功能名', trigger: 'blur' }],
-  tableName: [{ required: true, message: '请输入表名称', trigger: 'blur' }],
-  tableComment: [{ required: true, message: '请输入表描述', trigger: 'blur' }],
-  className: [{ required: true, message: '请输入实体类名称', trigger: 'blur' }],
-  functionAuthor: [{ required: true, message: '请输入作者', trigger: 'blur' }],
-  treeCode: [{ required: true, message: '请选择树编码字段', trigger: 'blur' }],
-  treeParentCode: [{ required: true, message: '请选择树父编码字段', trigger: 'blur' }],
-  treeName: [{ required: true, message: '请选择树名称字段', trigger: 'blur' }],
+  tplCategory: [{ required: true, message: '请选择生成模板' }],
+  packageName: [{ required: true, message: '请输入生成包路径' }],
+  moduleName: [{ required: true, message: '请输入生成模块名' }],
+  businessName: [{ required: true, message: '请输入生成业务名' }],
+  functionName: [{ required: true, message: '请输入生成功能名' }],
+  tableName: [{ required: true, message: '请输入表名称' }],
+  tableComment: [{ required: true, message: '请输入表描述' }],
+  className: [{ required: true, message: '请输入实体类名称' }],
+  functionAuthor: [{ required: true, message: '请输入作者' }],
+  treeCode: [{ required: true, message: '请选择树编码字段' }],
+  treeParentCode: [{ required: true, message: '请选择树父编码字段' }],
+  treeName: [{ required: true, message: '请选择树名称字段' }],
 });
 
 const form = reactive<{

@@ -117,8 +117,9 @@
     <!-- 添加或修改租户套餐对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       placement="center"
       width="500px"
       attach="body"
@@ -276,7 +277,7 @@ const menuExpandNode = ref<TreeNodeValue[]>([]);
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
-  packageName: [{ required: true, message: '套餐名称不能为空', trigger: 'blur' }],
+  packageName: [{ required: true, message: '套餐名称不能为空' }],
 });
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([

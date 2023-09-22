@@ -155,8 +155,9 @@
     <!-- 添加或修改消息配置对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       width="800px"
       attach="body"
       top="3%"
@@ -383,10 +384,10 @@ const messageConfig = computed<MessageConfig>(() => {
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
-  title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
-  messageType: [{ required: true, message: '消息类型不能为空', trigger: 'blur' }],
-  supplierType: [{ required: true, message: '支持平台标识不能为空', trigger: 'blur' }],
-  status: [{ required: true, message: '状态不能为空', trigger: 'blur' }],
+  title: [{ required: true, message: '标题不能为空' }],
+  messageType: [{ required: true, message: '消息类型不能为空' }],
+  supplierType: [{ required: true, message: '支持平台标识不能为空' }],
+  status: [{ required: true, message: '状态不能为空' }],
 });
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([

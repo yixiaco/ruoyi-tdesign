@@ -120,8 +120,9 @@
     <!-- 添加或修改消息常量对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       width="500px"
       attach="body"
       :confirm-btn="{
@@ -228,8 +229,8 @@ const sort = ref<TableSort>();
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
-  name: [{ required: true, message: '消息名称不能为空', trigger: 'blur' }],
-  messageKey: [{ required: true, message: '消息key不能为空', trigger: 'blur' }],
+  name: [{ required: true, message: '消息名称不能为空' }],
+  messageKey: [{ required: true, message: '消息key不能为空' }],
 });
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([

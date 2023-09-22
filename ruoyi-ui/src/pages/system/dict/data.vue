@@ -116,8 +116,9 @@
     <!-- 添加或修改参数配置对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       width="500px"
       attach="body"
       @confirm="onConfirm"
@@ -282,9 +283,9 @@ const listClassOptions = ref<DictModel[]>([
 ]);
 
 const rules = ref<Record<string, Array<FormRule>>>({
-  dictLabel: [{ required: true, message: '数据标签不能为空', trigger: 'blur' }],
-  dictValue: [{ required: true, message: '数据键值不能为空', trigger: 'blur' }],
-  dictSort: [{ required: true, message: '数据顺序不能为空', trigger: 'blur' }],
+  dictLabel: [{ required: true, message: '数据标签不能为空' }],
+  dictValue: [{ required: true, message: '数据键值不能为空' }],
+  dictSort: [{ required: true, message: '数据顺序不能为空' }],
 });
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([

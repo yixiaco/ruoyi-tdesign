@@ -128,8 +128,9 @@
     <!-- 添加或修改公告对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       width="780px"
       attach="body"
       @confirm="onConfirm"
@@ -278,8 +279,8 @@ const noticeRef = ref<FormInstanceFunctions>();
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
-  noticeTitle: [{ required: true, message: '公告标题不能为空', trigger: 'blur' }],
-  noticeType: [{ required: true, message: '公告类型不能为空', trigger: 'blur' }],
+  noticeTitle: [{ required: true, message: '公告标题不能为空' }],
+  noticeType: [{ required: true, message: '公告类型不能为空' }],
 });
 
 // 列显隐信息

@@ -166,8 +166,9 @@
     <!-- 添加或修改消息模板对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       placement="center"
       width="700px"
       attach="body"
@@ -373,6 +374,7 @@
 
     <t-dialog
       v-model:visible="openTest"
+      :destroy-on-close="true"
       header="消息模板测试"
       width="500px"
       attach="body"
@@ -491,15 +493,15 @@ const formTest = ref<SysMessageTemplateTest>({});
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
-  templateName: [{ required: true, message: '模板名称不能为空', trigger: 'blur' }],
-  messageConfigId: [{ required: true, message: '消息配置不能为空', trigger: 'blur' }],
-  messageKeyId: [{ required: true, message: '消息key不能为空', trigger: 'blur' }],
-  messageType: [{ required: true, message: '消息类型不能为空', trigger: 'blur' }],
-  title: [{ required: true, message: '标题不能为空', trigger: 'blur' }],
-  templateMode: [{ required: true, message: '模板类型不能为空', trigger: 'blur' }],
-  status: [{ required: true, message: '状态不能为空', trigger: 'blur' }],
-  templateId: [{ required: true, message: '模板ID不能为空', trigger: 'blur' }],
-  content: [{ required: true, message: '内容不能为空', trigger: 'blur' }],
+  templateName: [{ required: true, message: '模板名称不能为空' }],
+  messageConfigId: [{ required: true, message: '消息配置不能为空' }],
+  messageKeyId: [{ required: true, message: '消息key不能为空' }],
+  messageType: [{ required: true, message: '消息类型不能为空' }],
+  title: [{ required: true, message: '标题不能为空' }],
+  templateMode: [{ required: true, message: '模板类型不能为空' }],
+  status: [{ required: true, message: '状态不能为空' }],
+  templateId: [{ required: true, message: '模板ID不能为空' }],
+  content: [{ required: true, message: '内容不能为空' }],
 });
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
@@ -517,7 +519,7 @@ const columns = ref<Array<PrimaryTableCol>>([
 ]);
 // 校验测试规则
 const testRules = ref<Record<string, Array<FormRule>>>({
-  account: [{ required: true, message: '账号不能为空', trigger: 'blur' }],
+  account: [{ required: true, message: '账号不能为空' }],
 });
 // 提交表单对象
 const form = ref<SysMessageTemplateVo & SysMessageTemplateForm>({

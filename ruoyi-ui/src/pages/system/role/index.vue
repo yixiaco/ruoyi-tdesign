@@ -165,8 +165,9 @@
     <!-- 添加或修改角色配置对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       width="600px"
       attach="body"
       @close="cancel"
@@ -437,9 +438,9 @@ const columns = ref<Array<PrimaryTableCol>>([
 ]);
 
 const rules = ref<Record<string, Array<FormRule>>>({
-  roleName: [{ required: true, message: '角色名称不能为空', trigger: 'blur' }],
-  roleKey: [{ required: true, message: '权限字符不能为空', trigger: 'blur' }],
-  roleSort: [{ required: true, message: '角色顺序不能为空', trigger: 'blur' }],
+  roleName: [{ required: true, message: '角色名称不能为空' }],
+  roleKey: [{ required: true, message: '权限字符不能为空' }],
+  roleSort: [{ required: true, message: '角色顺序不能为空' }],
 });
 // 提交表单对象
 const form = ref<SysRoleVo & SysRoleForm>({

@@ -128,8 +128,9 @@
     <!-- 添加或修改系统授权对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       width="600px"
       attach="body"
       :confirm-btn="{
@@ -285,10 +286,10 @@ const clientId = import.meta.env.VITE_CLIENT_ID;
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
-  clientKey: [{ required: true, message: '客户端key不能为空', trigger: 'blur' }],
-  clientSecret: [{ required: true, message: '客户端秘钥不能为空', trigger: 'blur' }],
-  grantTypeList: [{ required: true, message: '授权类型不能为空', trigger: 'change' }],
-  deviceType: [{ required: true, message: '设备类型不能为空', trigger: 'blur' }],
+  clientKey: [{ required: true, message: '客户端key不能为空' }],
+  clientSecret: [{ required: true, message: '客户端秘钥不能为空' }],
+  grantTypeList: [{ required: true, message: '授权类型不能为空' }],
+  deviceType: [{ required: true, message: '设备类型不能为空' }],
 });
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([

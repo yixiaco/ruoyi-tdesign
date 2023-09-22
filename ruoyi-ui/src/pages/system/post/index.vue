@@ -120,8 +120,9 @@
     <!-- 添加或修改岗位信息对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       width="500px"
       attach="body"
       @confirm="onConfirm"
@@ -243,9 +244,9 @@ const sort = ref<TableSort>();
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
-  postName: [{ required: true, message: '岗位名称不能为空', trigger: 'blur' }],
-  postCode: [{ required: true, message: '岗位编码不能为空', trigger: 'blur' }],
-  postSort: [{ required: true, message: '岗位顺序不能为空', trigger: 'blur' }],
+  postName: [{ required: true, message: '岗位名称不能为空' }],
+  postCode: [{ required: true, message: '岗位编码不能为空' }],
+  postSort: [{ required: true, message: '岗位顺序不能为空' }],
 });
 
 // 列显隐信息

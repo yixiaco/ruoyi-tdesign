@@ -39,14 +39,14 @@ const equalToPassword = (value: string) => {
   return user.newPassword === value;
 };
 const rules = ref<Record<string, Array<FormRule>>>({
-  oldPassword: [{ required: true, message: '旧密码不能为空', trigger: 'blur' }],
+  oldPassword: [{ required: true, message: '旧密码不能为空' }],
   newPassword: [
-    { required: true, message: '新密码不能为空', trigger: 'blur' },
-    { min: 6, max: 20, message: '长度在 6 到 20 个字符', trigger: 'blur' },
+    { required: true, message: '新密码不能为空' },
+    { min: 6, max: 20, message: '长度在 6 到 20 个字符' },
   ],
   confirmPassword: [
-    { required: true, message: '确认密码不能为空', trigger: 'blur' },
-    { validator: equalToPassword, trigger: 'blur', message: '两次输入的密码不一致' },
+    { required: true, message: '确认密码不能为空' },
+    { validator: equalToPassword, message: '两次输入的密码不一致' },
   ],
 });
 

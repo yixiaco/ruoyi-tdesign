@@ -105,8 +105,9 @@
     <!-- 添加或修改菜单权限对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       width="680px"
       attach="body"
       @confirm="onConfirm"
@@ -427,9 +428,9 @@ const menuTypeOptions = ref<DictModel[]>([
 ]);
 
 const rules = ref<Record<string, Array<FormRule>>>({
-  menuName: [{ required: true, message: '菜单名称不能为空', trigger: 'blur' }],
-  orderNum: [{ required: true, message: '菜单顺序不能为空', trigger: 'blur' }],
-  path: [{ required: true, message: '路由地址不能为空', trigger: 'blur' }],
+  menuName: [{ required: true, message: '菜单名称不能为空' }],
+  orderNum: [{ required: true, message: '菜单顺序不能为空' }],
+  path: [{ required: true, message: '路由地址不能为空' }],
 });
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([

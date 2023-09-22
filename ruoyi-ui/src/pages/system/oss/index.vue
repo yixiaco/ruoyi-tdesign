@@ -143,8 +143,9 @@
     <!-- 添加或修改OSS对象存储对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       width="700px"
       attach="body"
       @confirm="submitForm"
@@ -217,7 +218,7 @@ const columns = ref<Array<PrimaryTableCol>>([
 ]);
 
 const rules = ref<Record<string, Array<FormRule>>>({
-  file: [{ required: true, message: '文件不能为空', trigger: 'blur' }],
+  file: [{ required: true, message: '文件不能为空' }],
 });
 
 const form = ref<{ file?: any }>({});

@@ -105,8 +105,9 @@
     <!-- 添加或修改应用管理对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       width="500px"
       attach="body"
       :confirm-btn="{
@@ -216,9 +217,9 @@ const title = ref('');
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
-  appType: [{ required: true, message: '应用类型不能为空', trigger: 'blur' }],
-  appKey: [{ required: true, message: '应用key不能为空', trigger: 'blur' }],
-  appName: [{ required: true, message: '应用名称不能为空', trigger: 'blur' }],
+  appType: [{ required: true, message: '应用类型不能为空' }],
+  appKey: [{ required: true, message: '应用key不能为空' }],
+  appName: [{ required: true, message: '应用名称不能为空' }],
 });
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([

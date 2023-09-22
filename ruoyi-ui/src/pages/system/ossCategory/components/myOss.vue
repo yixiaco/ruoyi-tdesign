@@ -134,8 +134,9 @@
     <!-- 上传OSS对象存储对话框 -->
     <t-dialog
       v-model:visible="openUpload"
-      :close-on-overlay-click="false"
       :header="uploadTitle"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       placement="center"
       width="700px"
       @confirm="submitUploadForm"
@@ -176,8 +177,9 @@
     <!-- 添加或修改OSS对象存储对话框 -->
     <t-dialog
       v-model:visible="openView"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       placement="center"
       width="550px"
       :confirm-btn="{
@@ -422,11 +424,11 @@ const rowType = computed({
 
 const rules = ref<Record<string, Array<FormRule>>>({
   originalName: [
-    { required: true, message: '原名不能为空', trigger: 'blur' },
+    { required: true, message: '原名不能为空' },
     { pattern: /^[^.][^\\/<>:?"|*]*$/, message: '文件名不能包含下列任何字符：\\/<>:?"|*' },
   ],
-  ossCategoryId: [{ required: true, message: '分类不能为空', trigger: 'blur' }],
-  isLock: [{ required: true, message: '是否锁定状态不能为空', trigger: 'blur' }],
+  ossCategoryId: [{ required: true, message: '分类不能为空' }],
+  isLock: [{ required: true, message: '是否锁定状态不能为空' }],
 });
 
 const uploadForm = ref<{ file?: any }>({});

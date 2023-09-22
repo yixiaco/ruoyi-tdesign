@@ -225,8 +225,9 @@
     <!-- 添加或修改用户配置对话框 -->
     <t-dialog
       v-model:visible="open"
-      :close-on-overlay-click="false"
       :header="title"
+      :destroy-on-close="true"
+      :close-on-overlay-click="false"
       width="650px"
       attach="body"
       @close="cancel"
@@ -558,17 +559,17 @@ const columns = ref<Array<PrimaryTableCol>>([
 
 const rules = ref<Record<string, Array<FormRule>>>({
   userName: [
-    { required: true, message: '用户名称不能为空', trigger: 'blur' },
-    { min: 2, max: 20, message: '用户名称长度必须介于 2 和 20 之间', trigger: 'blur' },
+    { required: true, message: '用户名称不能为空' },
+    { min: 2, max: 20, message: '用户名称长度必须介于 2 和 20 之间' },
   ],
-  nickName: [{ required: true, message: '用户昵称不能为空', trigger: 'blur' }],
+  nickName: [{ required: true, message: '用户昵称不能为空' }],
   password: [
-    { required: true, message: '用户密码不能为空', trigger: 'blur' },
-    { min: 5, max: 20, message: '用户密码长度必须介于 5 和 20 之间', trigger: 'blur' },
+    { required: true, message: '用户密码不能为空' },
+    { min: 5, max: 20, message: '用户密码长度必须介于 5 和 20 之间' },
   ],
-  email: [{ email: true, message: '请输入正确的邮箱地址', trigger: 'change' }],
-  phonenumber: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码', trigger: 'blur' }],
-  roleIds: [{ required: true, message: '用户角色不能为空', trigger: 'blur' }],
+  email: [{ email: true, message: '请输入正确的邮箱地址' }],
+  phonenumber: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码' }],
+  roleIds: [{ required: true, message: '用户角色不能为空' }],
 });
 const form = ref<SysUserForm & SysUserVo>({
   status: '1',
