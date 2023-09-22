@@ -10,12 +10,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysMessageKeyVo">
-        select smk.message_key_id, smk.`name`, smk.message_key, smk.remark, smk.create_dept, smk.update_by, smk.create_by, smk.update_time, smk.create_time from sys_message_key smk
+        select smk.message_key_id, smk.name, smk.message_key, smk.remark, smk.create_dept, smk.update_by, smk.create_by, smk.update_time, smk.create_time from sys_message_key smk
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysMessageKeyQuery" resultMap="SysMessageKeyResultVo">
         <include refid="selectSysMessageKeyVo"/>
         <where>
-            <if test="name != null and name != ''"> and smk.`name` like concat('%', #{name}, '%')</if>
+            <if test="name != null and name != ''"> and smk.name like concat('%', #{name}, '%')</if>
             <if test="messageKey != null and messageKey != ''"> and smk.message_key like concat('%', #{messageKey}, '%')</if>
         </where>
         order by smk.create_time desc

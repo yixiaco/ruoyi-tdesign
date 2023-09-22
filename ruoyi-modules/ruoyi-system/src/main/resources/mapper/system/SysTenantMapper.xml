@@ -10,7 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysTenantVo">
-        select st.id, st.tenant_id, st.contact_user_name, st.contact_phone, st.company_name, st.license_number, st.address, st.intro, st.domain, st.remark, st.package_id, st.expire_time, st.account_count, st.`status`, st.del_flag, st.create_dept, st.create_by, st.create_time, st.update_by, st.update_time from sys_tenant st
+        select st.id, st.tenant_id, st.contact_user_name, st.contact_phone, st.company_name, st.license_number, st.address, st.intro, st.domain, st.remark, st.package_id, st.expire_time, st.account_count, st.status, st.del_flag, st.create_dept, st.create_by, st.create_time, st.update_by, st.update_time from sys_tenant st
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysTenantQuery" resultMap="SysTenantResultVo">
         <include refid="selectSysTenantVo"/>
@@ -27,7 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="params.beginExpireTime != null and params.endExpireTime != null">
                 and st.expire_time between #{params.beginExpireTime} and #{params.endExpireTime}
             </if>
-            <if test="status != null and status != ''"> and st.`status` = #{status}</if>
+            <if test="status != null and status != ''"> and st.status = #{status}</if>
         </where>
     </select>
 </mapper>

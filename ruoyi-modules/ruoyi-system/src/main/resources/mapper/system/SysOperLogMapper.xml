@@ -10,7 +10,7 @@
     </resultMap>
 
     <sql id="selectSysOperLogVo">
-        select sol.oper_id, sol.tenant_id, sol.title, sol.business_type, sol.method, sol.request_method, sol.operator_type, sol.oper_name, sol.dept_name, sol.oper_url, sol.oper_ip, sol.oper_location, sol.oper_param, sol.json_result, sol.`status`, sol.error_msg, sol.oper_time, sol.cost_time from sys_oper_log sol
+        select sol.oper_id, sol.tenant_id, sol.title, sol.business_type, sol.method, sol.request_method, sol.operator_type, sol.oper_name, sol.dept_name, sol.oper_url, sol.oper_ip, sol.oper_location, sol.oper_param, sol.json_result, sol.status, sol.error_msg, sol.oper_time, sol.cost_time from sys_oper_log sol
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.bo.SysOperLogBo" resultMap="SysOperLogResultVo">
         <include refid="selectSysOperLogVo"/>
@@ -24,7 +24,7 @@
                 </foreach>
             </if>
             <if test="operName != null and operName != ''"> and sol.oper_name like concat('%', #{operName}, '%')</if>
-            <if test="status != null "> and sol.`status` = #{status}</if>
+            <if test="status != null "> and sol.status = #{status}</if>
             <if test="params.beginOperTime != null and params.endOperTime != null">and sol.oper_time between #{params.beginOperTime} and #{params.endOperTime}</if>
         </where>
         order by oper_id desc

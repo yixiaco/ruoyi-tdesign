@@ -66,7 +66,7 @@
     </sql>
 
     <sql id="selectSysUserVo">
-        select su.user_id, su.dept_id, su.user_name, su.nick_name, su.user_type, su.email, su.phonenumber, su.sex, su.avatar, su.password, su.`status`, su.del_flag, su.login_ip, su.login_date, su.create_by, su.create_time, su.update_by, su.update_time, su.remark from sys_user su
+        select su.user_id, su.dept_id, su.user_name, su.nick_name, su.user_type, su.email, su.phonenumber, su.sex, su.avatar, su.password, su.status, su.del_flag, su.login_ip, su.login_date, su.create_by, su.create_time, su.update_by, su.update_time, su.remark from sys_user su
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysUserQuery" resultMap="SysUserResult">
         select su.user_id,
@@ -102,7 +102,7 @@
             <if test="userName != null and userName != ''"> and su.user_name like concat('%', #{userName}, '%')</if>
             <if test="email != null and email != ''"> and su.email like concat('%', #{email}, '%')</if>
             <if test="phonenumber != null and phonenumber != ''"> and su.phonenumber like concat('%', #{phonenumber}, '%')</if>
-            <if test="status != null and status != ''"> and su.`status` = #{status}</if>
+            <if test="status != null and status != ''"> and su.status = #{status}</if>
             <if test="params.beginTime != null and params.endTime != null">and su.create_time between #{params.beginTime} and #{params.endTime}</if>
         </where>
         order by su.create_time desc
@@ -119,7 +119,7 @@
             <if test="roleId != null "> and r.role_id = #{roleId}</if>
             <if test="userName != null and userName != ''"> and u.user_name like concat('%', #{userName}, '%')</if>
             <if test="phonenumber != null and phonenumber != ''"> and u.phonenumber like concat('%', #{phonenumber}, '%')</if>
-            <if test="status != null and status != ''"> and u.`status` = #{status}</if>
+            <if test="status != null and status != ''"> and u.status = #{status}</if>
         </where>
         order by u.create_time desc
     </select>
