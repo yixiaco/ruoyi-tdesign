@@ -519,7 +519,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
-  { title: `选择列`, colKey: 'row-select', type: #if($isUseEditMethod && $isUseRemoveMethod)'multiple'#else'single'#end, width: 50, align: 'center' },
+  { title: `选择列`, colKey: 'row-select', type: #if($useSelect)'multiple'#else'single'#end, width: 50, align: 'center' },
 #foreach($column in $columns)
 #set($javaField=$column.javaField)
 #set($parentheseIndex=$column.columnComment.indexOf("（"))
