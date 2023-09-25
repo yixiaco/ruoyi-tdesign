@@ -1,5 +1,6 @@
 #set($modal = '$modal')
 #set($addOrUpdate = $isUseAddMethod || $isUseEditMethod)
+#set($useSelect = $isUseEditMethod || $isUseRemoveMethod)
 <template>
   <t-card>
 #if($isUseQueryMethod)
@@ -78,8 +79,8 @@
         row-key="${pkColumn.javaField}"
         :data="${businessName}List"
         :columns="columns"
-        :selected-row-keys="ids"
-        select-on-row-click
+        #if($useSelect):selected-row-keys="ids"#end
+        #if($useSelect)select-on-row-click#end
         :pagination="pagination"
         :column-controller="{
           hideTriggerButton: true,
@@ -89,7 +90,7 @@
         show-sort-column-bg-color
         @sort-change="handleSortChange"
         #end
-        @select-change="handleSelectionChange"
+        #if($useSelect)@select-change="handleSelectionChange"#end
       >
         <template #topContent>
           <t-row>
@@ -159,7 +160,7 @@
 #if($column.htmlType == "checkbox")
           <dict-tag :options="${column.dictType}" :value="row.${javaField} ? row.${javaField}.split(',') : []" />
 #else
-          <dict-tag :options="${column.dictType}" :value="row.${javaField}" />
+          <dict-tag :options="${column.dictType}" :value="row.${javaField}#if($column.javaType == "Integer" || $column.javaType == "Long")?.toString()#end" />
 #end
         </template>
 #end
@@ -361,7 +362,7 @@
 #if($column.htmlType == "checkbox")
                 <dict-tag :options="${column.dictType}" :value="form.${javaField} ? form.${javaField}.split(',') : []" />
 #else
-                <dict-tag :options="${column.dictType}" :value="form.${javaField}" />
+                <dict-tag :options="${column.dictType}" :value="form.${javaField}#if($column.javaType == "Integer" || $column.javaType == "Long")?.toString()#end" />
 #end
               </t-form-item>
             </t-col>
@@ -479,10 +480,10 @@ const columnControllerVisible = ref(false);
 const showSearch = ref(true);
 const total = ref(0);
 #end
-#if($isUseEditMethod || $isUseRemoveMethod)
+#if($useSelect)
 const ids = ref([]);
 #end
-#if($isUseQueryMethod && ($isUseEditMethod || $isUseRemoveMethod))
+#if($isUseQueryMethod && $useSelect)
 const single = ref(true);
 const multiple = ref(true);
 #end
@@ -650,12 +651,14 @@ function handleSortChange(value?: TableSort) {
 }
 
 #end
+#if($useSelect)
 /** 多选框选中数据 */
 function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
 }
+#end
 #end
 #if($isUseAddMethod)
 
@@ -673,7 +676,7 @@ function handleDetail(row: ${vo}) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const ${pkColumn.javaField} = row.${pkColumn.javaField}#if($isUseQueryMethod) || ids.value.at(0)#end;
+  const ${pkColumn.javaField} = row.${pkColumn.javaField};
   get${BusinessName}(${pkColumn.javaField}).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
