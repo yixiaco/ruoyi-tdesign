@@ -51,6 +51,11 @@ const props = defineProps({
   variant: {
     type: String as PropType<'outline' | 'dark' | 'light' | 'light-outline'>,
   },
+  // 是否忽略类型, 默认转为string类型处理
+  ignoreType: {
+    type: Boolean,
+    default: true,
+  },
 });
 
 const values = computed<Array<number | string>>(() => {
@@ -59,7 +64,7 @@ const values = computed<Array<number | string>>(() => {
       return props.value;
     }
     if (isNumber(props.value)) {
-      return [props.value];
+      return props.ignoreType ? [props.value.toString()] : [props.value];
     }
     return String(props.value).split(',');
   }
@@ -71,7 +76,7 @@ const rowOptions = computed<Array<DictModel>>(() => {
     return [];
   }
   return props.options.filter((option) => {
-    return values.value.includes(option.value);
+    return values.value.includes(props.ignoreType ? option.value.toString() : option.value);
   });
 });
 </script>

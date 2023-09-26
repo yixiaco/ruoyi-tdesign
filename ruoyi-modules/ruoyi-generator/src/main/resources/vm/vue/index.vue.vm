@@ -160,7 +160,7 @@
 #if($column.htmlType == "checkbox")
           <dict-tag :options="${column.dictType}" :value="row.${javaField} ? row.${javaField}.split(',') : []" />
 #else
-          <dict-tag :options="${column.dictType}" :value="row.${javaField}#if($column.javaType == "Integer" || $column.javaType == "Long")?.toString()#end" />
+          <dict-tag :options="${column.dictType}" :value="row.${javaField}" />
 #end
         </template>
 #end
@@ -362,7 +362,7 @@
 #if($column.htmlType == "checkbox")
                 <dict-tag :options="${column.dictType}" :value="form.${javaField} ? form.${javaField}.split(',') : []" />
 #else
-                <dict-tag :options="${column.dictType}" :value="form.${javaField}#if($column.javaType == "Integer" || $column.javaType == "Long")?.toString()#end" />
+                <dict-tag :options="${column.dictType}" :value="form.${javaField}" />
 #end
               </t-form-item>
             </t-col>

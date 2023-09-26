@@ -106,7 +106,7 @@
           <dict-tag :options="sys_oper_type" :value="row.businessType" />
         </template>
         <template #status="{ row }">
-          <dict-tag :options="sys_common_status" :value="row.status?.toString()" />
+          <dict-tag :options="sys_common_status" :value="row.status" />
         </template>
         <template #costTime="{ row }"> {{ row.costTime }}毫秒 </template>
         <template #operation="{ row }">
@@ -140,7 +140,7 @@
           </t-col>
           <t-col :span="6">
             <t-form-item label="业务类型">
-              <dict-tag :options="sys_oper_type" :value="form.businessType?.toString()" />
+              <dict-tag :options="sys_oper_type" :value="form.businessType" />
             </t-form-item>
           </t-col>
           <t-col :span="12">
@@ -174,7 +174,7 @@
           </t-col>
           <t-col :span="6">
             <t-form-item label="操作状态">
-              <dict-tag :options="sys_common_status" :value="form.status?.toString()" />
+              <dict-tag :options="sys_common_status" :value="form.status" />
             </t-form-item>
           </t-col>
           <t-col :span="6">
