@@ -152,8 +152,20 @@
     >
       <t-form ref="ossRef" :data="form" label-align="right" :rules="rules" label-width="80px">
         <t-form-item label="文件名">
-          <file-upload v-if="type === 0" v-model="form.file" theme="file-flow" />
-          <image-upload v-if="type === 1" v-model="form.file" theme="image-flow" />
+          <file-upload
+            v-if="type === 0"
+            v-model="form.file"
+            theme="file-flow"
+            :support-select-file="false"
+            :support-url="false"
+          />
+          <image-upload
+            v-if="type === 1"
+            v-model="form.file"
+            theme="image-flow"
+            :support-select-file="false"
+            :support-url="false"
+          />
         </t-form-item>
       </t-form>
     </t-dialog>

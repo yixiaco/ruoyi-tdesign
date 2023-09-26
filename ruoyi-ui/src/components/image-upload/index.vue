@@ -238,7 +238,6 @@ const onValidate = (params: { type: UploadValidateType; files: UploadFile[] }) =
 
 // 拦截默认事件，打开选择窗口
 function handleOpenUpload(event: PointerEvent) {
-  console.log(event);
   if (!event.pointerType && (effectiveSupportUrl.value || props.supportSelectFile)) {
     event.preventDefault();
     open.value = true;
