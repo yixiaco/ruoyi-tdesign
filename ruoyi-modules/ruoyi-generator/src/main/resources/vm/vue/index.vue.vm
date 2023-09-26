@@ -79,8 +79,10 @@
         row-key="${pkColumn.javaField}"
         :data="${businessName}List"
         :columns="columns"
-        #if($useSelect):selected-row-keys="ids"#end
-        #if($useSelect)select-on-row-click#end
+        #if($useSelect)
+        :selected-row-keys="ids"
+        select-on-row-click
+        #end
         :pagination="pagination"
         :column-controller="{
           hideTriggerButton: true,
@@ -90,7 +92,9 @@
         show-sort-column-bg-color
         @sort-change="handleSortChange"
         #end
-        #if($useSelect)@select-change="handleSelectionChange"#end
+        #if($useSelect)
+        @select-change="handleSelectionChange"
+        #end
       >
         <template #topContent>
           <t-row>
@@ -195,7 +199,7 @@
     <t-dialog
       v-model:visible="open"
       :header="title"
-      :destroy-on-close="true"
+      destroy-on-close
       :close-on-overlay-click="false"
       width="500px"
       attach="body"

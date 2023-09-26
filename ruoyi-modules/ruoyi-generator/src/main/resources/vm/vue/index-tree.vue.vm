@@ -83,11 +83,11 @@
           hideTriggerButton: true,
         }"
         :tree="{ childrenKey: 'children', expandTreeNodeOnClick: true }"
-#if($hasSorting)
+        #if($hasSorting)
         :sort="sort"
         show-sort-column-bg-color
         @sort-change="handleSortChange"
-  #end
+        #end
       >
         <template #topContent>
           <t-row>
@@ -177,7 +177,7 @@
     <t-dialog
       v-model:visible="open"
       :header="title"
-      :destroy-on-close="true"
+      destroy-on-close
       :close-on-overlay-click="false"
       width="500px"
       attach="body"
