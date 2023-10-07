@@ -1,3 +1,79 @@
+## 🌈 1.0.9 `2023-10-07`
+> 本次更新需要执行`update_1.0.8-1.0.9.sql`脚本<br>
+> 包含可能有破坏性的脚本且更新时需要删除所有缓存
+### 🚀 New Features
+- 新增角色、菜单、部门、岗位、字典类型、字典数据、通知公告、登录日志、OSS配置管理 详情
+- 富文本组件新增setup参数
+- 增加基础分页查询对象
+
+### 🔥 Performance
+- 文件上传直接上传不需要中转
+- dict-tag组件默认转为string进行匹配
+- 优化弹窗表单验证效果
+- 编辑弹窗关闭时销毁，防止校验规则复用
+- 表单不再提供触发类型
+- 优化页面显示效果；代码生成导入时防止重复点击
+- 代码生成到地址时，不过滤前端文件
+- 升级tinymce版本
+- 优化代码生成编辑页效果
+- 动态租户注解增加读取租户是否是必须的
+- 优化类型提示
+
+### 🐞 Bug Fixes
+- 查询语法应该兼容通用sql
+- 修复类型错误提示
+- 面包屑组件缓存问题
+- 修复oss分类查询报错问题
+- 修复路由重定向超过3层时地址错误
+- 解决eslint解析tsx错误问题
+- 获取用户对象返回null而不是直接抛出异常
+- 修复面包屑点击无跳转、动态路由显示路径问题
+- 修复部门树过滤失效问题
+- 修复消息模板的标题字段没有变量响应提示
+- 修复模板问题
+- 修复个人中心打开报错问题
+- 发送MQ消息时,TenantMQMessage对象未序列化报错
+- 修复区域选择滚动时选中项被取消的问题
+- 代码生成模板格式错乱问题
+
+### 🏡 Chore
+- 调整代码生成模板
+- 隐藏多余的系统参数配置
+- 删除多余的缓存查询
+- 同步ruoyi-vue-plus代码（包含可能有破坏性的脚本且更新时需要删除所有缓存）
+- 同步tdesign starter
+- 缓存前缀默认使用应用名称
+- 个人中心图片上传更换编辑icon、旋转更改为向左
+
+### 🔨 Dependency Upgrades
+#### 🔨 java pom
+- Upgrade to spring-boot-dependencies-3.1.3
+- Upgrade to spring-boot-configuration-processor-3.1.3
+- Upgrade to spring-boot-admin-starter-server-3.1.5
+- Upgrade to spring-boot-admin-starter-client-3.1.5
+- Upgrade to redisson-spring-boot-starter-3.23.4
+- Upgrade to aws-java-sdk-s3-1.12.540
+#### 🔨 node package
+- Upgrade to @tinymce/tinymce-vue@^5.1.1,
+- Upgrade to axios@^1.5.0,
+- Upgrade to tdesign-vue-next@1.5.6,
+- Upgrade to tinymce@^6.7.0,
+- Upgrade to vue-cropper@^1.1.1,
+- Upgrade to @types/crypto-js@^4.1.2,
+- Upgrade to @types/js-cookie@^3.0.4,
+- Upgrade to @types/lodash@^4.14.198,
+- Upgrade to @types/qs@^6.9.8,
+- Upgrade to @typescript-eslint/eslint-plugin@^6.7.0,
+- Upgrade to @typescript-eslint/parser@^6.7.0,
+- Upgrade to @vitejs/plugin-vue@^4.3.4,
+- Upgrade to @vue/eslint-config-typescript@^12.0.0,
+- Upgrade to eslint@^8.49.0,
+- Upgrade to lint-staged@^14.0.1,
+- Upgrade to typescript@~5.2.2,
+- Upgrade to unplugin-vue-components@^0.25.2,
+- Upgrade to vue-tsc@^1.8.11 
+
+
 ## 🌈 1.0.8 `2023-08-28`
 > 本次更新需要执行`update_1.0.7-1.0.8.sql`脚本<br>
 > sys_oss如果存在数据，则应该设置user_type为对应的用户类型
