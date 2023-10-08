@@ -19,7 +19,7 @@
           <template #icon> <download-icon /> </template>
           下载
         </t-button>
-        <t-image-viewer v-model:index="imagePreviewIndex" :images="previewList">
+        <t-image-viewer v-model:index="imagePreviewIndex" :images="previewList" :z-index="5000">
           <template #trigger="{ open }">
             <t-button v-hasPermi="['system:oss:query']" :disabled="previewList.length === 0" @click="open">
               <template #icon> <browse-icon /> </template>

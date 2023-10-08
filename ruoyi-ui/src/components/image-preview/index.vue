@@ -1,5 +1,5 @@
 <template>
-  <t-image-viewer :key="props.src" :default-index="0" :images="realPreviewSrcList">
+  <t-image-viewer :key="props.src" :default-index="0" :images="realPreviewSrcList" :z-index="zIndex">
     <template #trigger="{ open }">
       <t-image
         :key="realSrc"
@@ -76,6 +76,10 @@ const props = defineProps({
   animation: {
     type: Boolean,
     default: true,
+  },
+  zIndex: {
+    type: Number,
+    default: 4100,
   },
 });
 
