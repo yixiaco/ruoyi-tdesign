@@ -68,6 +68,7 @@ import { delOss, listByIds, listByUrls } from '@/api/system/oss';
 import type { SelectFile } from '@/components/upload-select/index.vue';
 import type { MyOssProps } from '@/pages/system/ossCategory/components/myOss.vue';
 import { useUserStore } from '@/store';
+import { getHttpFileName, getHttpFileSuffix } from '@/utils/ruoyi';
 
 export interface FileUploadProps {
   modelValue?: string | string[];
@@ -175,10 +176,10 @@ watch(
               ossId: oss.ossId,
             });
           });
-          list = val.split(',').map((url: string) => {
+          list = val.split(/,(?=http)/).map((url: string) => {
             return (
               tempMap.get(url) || {
-                name: url.slice(url.lastIndexOf('/') + 1),
+                name: getHttpFileName(url),
                 status: 'success',
                 size: 0,
                 url,
@@ -203,7 +204,7 @@ watch(
       // 然后将数组转为对象数组
       fileList.value = list.map((item) => {
         if (typeof item === 'string') {
-          item = { name: item.slice(item.lastIndexOf('/') + 1), status: 'success', url: item };
+          item = { name: getHttpFileName(item), status: 'success', url: item };
         } else {
           item = {
             name: item.name,
@@ -261,7 +262,7 @@ function handleSelectSubmit(values: SelectFile[]) {
     const arr1: SelectFile[] = [];
     const arr2: SelectFile[] = [];
     rowValues.forEach((value) => {
-      const suffix = value.name.substring(value.name.lastIndexOf('.') + 1);
+      const suffix = getHttpFileSuffix(value.name);
       if (props.fileType.includes(suffix)) {
         arr1.push(value);
       } else {
@@ -312,8 +313,7 @@ function handleSelectSubmit(values: SelectFile[]) {
 function handleBeforeUpload(file: UploadFile) {
   // 校检文件类型
   if (props.fileType.length) {
-    const fileName = file.name.split('.');
-    const fileExt = fileName[fileName.length - 1];
+    const fileExt = getHttpFileSuffix(file.name);
     const isTypeOk = props.fileType.indexOf(fileExt) >= 0;
     if (!isTypeOk) {
       proxy.$modal.msgError(`文件格式不正确, 请上传${props.fileType.join('/')}格式文件!`);

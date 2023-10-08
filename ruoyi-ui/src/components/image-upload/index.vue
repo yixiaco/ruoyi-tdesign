@@ -69,6 +69,7 @@ import { delOss, listByIds, listByUrls } from '@/api/system/oss';
 import { SelectFile } from '@/components/upload-select/index.vue';
 import { MyOssProps } from '@/pages/system/ossCategory/components/myOss.vue';
 import { useUserStore } from '@/store';
+import { getHttpFileName, getHttpFileSuffix } from '@/utils/ruoyi';
 
 export interface ImageUploadProps {
   modelValue?: string | string[];
@@ -172,10 +173,10 @@ watch(
               ossId: oss.ossId,
             });
           });
-          list = val.split(',').map((url: string) => {
+          list = val.split(/,(?=http)/).map((url: string) => {
             return (
               tempMap.get(url) || {
-                name: url.slice(url.lastIndexOf('/') + 1),
+                name: getHttpFileName(url),
                 status: 'success',
                 size: 0,
                 url,
@@ -201,7 +202,7 @@ watch(
       fileList.value = list.map((item: any) => {
         // 字符串回显处理 如果此处存的是url可直接回显 如果存的是id需要调用接口查出来
         if (typeof item === 'string') {
-          item = { name: item.slice(item.lastIndexOf('/') + 1), status: 'success', url: item };
+          item = { name: getHttpFileName(item), status: 'success', url: item };
         } else {
           // 此处name使用ossId 防止删除出现重名
           item = {
@@ -273,7 +274,7 @@ function handleSelectSubmit(values: SelectFile[]) {
     const arr1: SelectFile[] = [];
     const arr2: SelectFile[] = [];
     rowValues.forEach((value) => {
-      const suffix = value.name.substring(value.name.lastIndexOf('.') + 1);
+      const suffix = getHttpFileSuffix(value.name);
       if (props.fileType.includes(suffix)) {
         arr1.push(value);
       } else {
@@ -326,7 +327,7 @@ function handleBeforeUpload(file: UploadFile) {
   if (props.fileType.length) {
     let fileExtension = '';
     if (file.name.lastIndexOf('.') > -1) {
-      fileExtension = file.name.slice(file.name.lastIndexOf('.') + 1);
+      fileExtension = getHttpFileSuffix(file.name);
     }
     isImg = props.fileType.some((type) => {
       if (file.type.indexOf(type) > -1) return true;

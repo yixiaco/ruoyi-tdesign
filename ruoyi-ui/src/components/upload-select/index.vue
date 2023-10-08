@@ -60,6 +60,7 @@ import { computed, getCurrentInstance, ref, watch } from 'vue';
 import type { SysOssVo } from '@/api/system/model/ossModel';
 import type { OssCategoryProps } from '@/pages/system/ossCategory/index.vue';
 import OssCategory from '@/pages/system/ossCategory/index.vue';
+import { getHttpFileName, getHttpFileSuffix } from '@/utils/ruoyi';
 
 export interface SelectFile {
   url: string;
@@ -139,7 +140,7 @@ function UrlValidator(val: string): CustomValidateResolveType {
   function valid(fileType: string[]) {
     const urls = val.split('\n');
     return urls.some((value) => {
-      const suffix = value.substring(value.lastIndexOf('.') + 1);
+      const suffix = getHttpFileSuffix(value);
       return fileType.includes(suffix);
     });
   }
@@ -210,7 +211,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
         .split('\n')
         .filter((value) => value)
         .map((url) => {
-          const name = url.substring(url.lastIndexOf('/'));
+          const name = getHttpFileName(url);
           return { url, name };
         });
       const result = props.onSubmit.call(this, values);

@@ -96,9 +96,7 @@ watch(
         });
       } else {
         // http
-        realSrc.value = value
-          .split(',http')
-          .map((value1) => (!value1.startsWith('http') ? `http${value1}` : value1))[0];
+        realSrc.value = value.split(/,(?=http)/)[0];
       }
     } else {
       realPreviewSrcList.value = [];
@@ -117,9 +115,7 @@ watch(
         });
       } else {
         // http
-        realPreviewSrcList.value = value
-          .split(',http')
-          .map((value1) => (!value1.startsWith('http') ? `http${value1}` : value1));
+        realPreviewSrcList.value = value.split(/,(?=http)/);
       }
     } else {
       realPreviewSrcList.value = [];

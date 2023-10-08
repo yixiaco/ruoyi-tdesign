@@ -382,3 +382,27 @@ export function isJson(json: string) {
     return false;
   }
 }
+
+/**
+ * 提取http链接文件后缀名
+ * @param http
+ */
+export function getHttpFileSuffix(http: string) {
+  const index = http.indexOf('?');
+  if (index !== -1) {
+    http = http.substring(0, http.indexOf('?'));
+  }
+  return http.substring(http.lastIndexOf('.') + 1);
+}
+
+/**
+ * 提取http链接文件名
+ * @param http
+ */
+export function getHttpFileName(http: string) {
+  const index = http.indexOf('?');
+  if (index !== -1) {
+    http = http.substring(0, http.indexOf('?'));
+  }
+  return http.substring(http.lastIndexOf('/') + 1);
+}
