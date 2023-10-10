@@ -563,12 +563,14 @@ const rules = ref<Record<string, Array<FormRule>>>({
     { min: 2, max: 20, message: '用户名称长度必须介于 2 和 20 之间' },
   ],
   nickName: [{ required: true, message: '用户昵称不能为空' }],
+  deptId: [{ required: true, message: '部门不能为空' }],
+  status: [{ required: true, message: '账号状态不能为空' }],
   password: [
     { required: true, message: '用户密码不能为空' },
     { min: 5, max: 20, message: '用户密码长度必须介于 5 和 20 之间' },
   ],
   email: [{ email: true, message: '请输入正确的邮箱地址' }],
-  phonenumber: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码' }],
+  phonenumber: [{ pattern: /^1[3-9]\d{9}$/, message: '请输入正确的手机号码' }],
   roleIds: [{ required: true, message: '用户角色不能为空' }],
 });
 const form = ref<SysUserForm & SysUserVo>({

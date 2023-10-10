@@ -17,7 +17,7 @@ import java.util.regex.Pattern;
  */
 public class MobileValidator implements ConstraintValidator<Mobile, String> {
 
-    private static final Pattern PATTERN = Pattern.compile("^0?(13[0-9]|14[0-9]|15[0-9]|16[0-9]|17[0-9]|18[0-9]|19[0-9])[0-9]{8}$");
+    private static final Pattern PATTERN = Pattern.compile("^1[3-9]\\d{9}$");
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {

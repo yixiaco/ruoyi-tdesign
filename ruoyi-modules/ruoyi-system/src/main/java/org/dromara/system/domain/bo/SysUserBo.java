@@ -3,11 +3,13 @@ package org.dromara.system.domain.bo;
 import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.dromara.common.core.constant.UserConstants;
+import org.dromara.common.core.validation.Mobile;
 import org.dromara.common.core.xss.Xss;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.system.domain.SysUser;
@@ -32,6 +34,7 @@ public class SysUserBo extends BaseEntity {
     /**
      * 部门ID
      */
+    @NotNull(message = "部门不能为空")
     private Long deptId;
 
     /**
@@ -65,6 +68,7 @@ public class SysUserBo extends BaseEntity {
     /**
      * 手机号码
      */
+    @Mobile
     private String phonenumber;
 
     /**
@@ -80,6 +84,7 @@ public class SysUserBo extends BaseEntity {
     /**
      * 帐号状态（1正常 0停用）
      */
+    @NotBlank(message = "账号状态不能为空")
     private String status;
 
     /**
