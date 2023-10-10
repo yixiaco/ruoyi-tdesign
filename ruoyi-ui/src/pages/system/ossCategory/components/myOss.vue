@@ -827,6 +827,7 @@ getList();
       &__label {
         background-color: var(--td-bg-color-container);
         box-shadow: var(--td-shadow-1);
+        border-radius: var(--td-radius-default);
         //box-shadow: 0 0 4px 2px var(--td-border-level-1-color);
         display: block;
         overflow: hidden;

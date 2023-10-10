@@ -106,9 +106,10 @@
             :src="row.url"
             width="60px"
             height="60px"
-            :animation="false"
-          ></image-preview>
-          <span v-else v-text="row.url" />
+          />
+          <t-tooltip v-else :content="row.url" placement="top">
+            <div class="t-text-ellipsis" v-text="row.url" />
+          </t-tooltip>
         </template>
         <template #size="{ row }">
           <span>{{ bytesToSize(row.size) }}</span>
@@ -221,7 +222,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `文件名`, colKey: 'fileName', align: 'center', ellipsis: true },
   { title: `原名`, colKey: 'originalName', align: 'center', ellipsis: true },
   { title: `文件后缀`, colKey: 'fileSuffix', align: 'center' },
-  { title: `文件展示`, colKey: 'url', align: 'center', ellipsis: true },
+  { title: `文件展示`, colKey: 'url', align: 'center' },
   { title: `大小`, colKey: 'size', align: 'center', sorter: true },
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180, sorter: true },
   { title: `上传人`, colKey: 'createByName', align: 'center' },
