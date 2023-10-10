@@ -48,6 +48,7 @@
       :support-url="effectiveSupportUrl"
       :support-select-file="supportSelectFile"
       :query-param="queryParam"
+      :multiple="limit > 1"
       :file-upload="false"
       :image-upload-props="{
         accept: accept,
