@@ -1,7 +1,7 @@
 <template>
   <t-card>
     <t-space direction="vertical" style="width: 100%">
-      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
+      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="calc(4em + 12px)">
         <t-form-item label="系统模块" name="title">
           <t-input
             v-model="queryParams.title"
@@ -121,7 +121,7 @@
 
     <!-- 操作日志详细 -->
     <t-dialog v-model:visible="open" header="操作日志详细" width="700px" top="3vh" placement="center" attach="body">
-      <t-form label-align="right" colon :data="form" label-width="calc(5em + 24px)">
+      <t-form label-align="right" colon :data="form" label-width="calc(4em + 28px)">
         <t-row :gutter="[0, 20]">
           <t-col :span="6">
             <t-form-item label="操作模块">{{ form.title }} / {{ typeFormat(form) }}</t-form-item>

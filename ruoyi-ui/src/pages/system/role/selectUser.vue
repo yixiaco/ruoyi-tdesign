@@ -4,13 +4,13 @@
     v-model:visible="visible"
     :close-on-overlay-click="false"
     header="选择用户"
-    width="800px"
+    width="min(1200px, 100%)"
     top="5vh"
     attach="body"
     @confirm="handleSelectUser"
   >
     <t-space direction="vertical" style="width: 100%">
-      <t-form ref="queryRef" :data="queryParams" layout="inline">
+      <t-form ref="queryRef" :data="queryParams" layout="inline" label-width="calc(4em + 12px)">
         <t-form-item label="用户名称" name="userName">
           <t-input
             v-model="queryParams.userName"

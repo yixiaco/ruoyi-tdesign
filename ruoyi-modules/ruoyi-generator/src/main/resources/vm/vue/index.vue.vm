@@ -215,7 +215,7 @@
         label-align="right"
         :data="form"
         :rules="rules"
-        label-width="calc(5em + 24px)"
+        label-width="calc(5em + 41px)"
         scroll-to-first-error="smooth"
         @submit="submitForm"
       >

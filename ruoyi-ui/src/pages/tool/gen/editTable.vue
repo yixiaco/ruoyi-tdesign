@@ -3,7 +3,7 @@
     <t-form
       ref="formRef"
       :data="form"
-      label-width="calc(8em + 24px)"
+      label-width="calc(8em + 41px)"
       :rules="rules"
       @submit="onSubmit"
       @validate="onValidate"

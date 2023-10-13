@@ -1,7 +1,7 @@
 <template>
   <t-card>
     <t-space direction="vertical" style="width: 100%">
-      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
+      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="calc(4em + 12px)">
         <t-form-item label="角色名称" name="roleName">
           <t-input
             v-model="queryParams.roleName"
@@ -166,14 +166,21 @@
     <t-dialog
       v-model:visible="open"
       :header="title"
-      :destroy-on-close="true"
+      destroy-on-close
       :close-on-overlay-click="false"
       width="600px"
       attach="body"
       @close="cancel"
       @confirm="confirm('menu')"
     >
-      <t-form ref="roleRef" label-align="right" :data="form" :rules="rules" label-width="100px" @submit="submitForm">
+      <t-form
+        ref="roleRef"
+        label-align="right"
+        :data="form"
+        :rules="rules"
+        label-width="calc(5em + 41px)"
+        @submit="submitForm"
+      >
         <t-form-item label="角色名称" name="roleName">
           <t-input v-model="form.roleName" placeholder="请输入角色名称" />
         </t-form-item>
@@ -235,7 +242,7 @@
       @close="cancelDataScope"
       @confirm="confirm('dept')"
     >
-      <t-form ref="dataScopeRef" :data="form" label-width="80px" @submit="submitDataScope">
+      <t-form ref="dataScopeRef" :data="form" label-width="calc(4em + 12px)" @submit="submitDataScope">
         <t-form-item label="角色名称">
           <t-input v-model="form.roleName" :disabled="true" />
         </t-form-item>

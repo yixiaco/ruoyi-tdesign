@@ -1,7 +1,7 @@
 <template>
   <t-card>
     <t-space direction="vertical" style="width: 100%">
-      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
+      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="calc(5em + 12px)">
         <t-form-item label="客户端id" name="clientId">
           <t-input v-model="queryParams.clientId" placeholder="请输入客户端id" clearable @enter="handleQuery" />
         </t-form-item>
@@ -129,7 +129,7 @@
     <t-dialog
       v-model:visible="open"
       :header="title"
-      :destroy-on-close="true"
+      destroy-on-close
       :close-on-overlay-click="false"
       width="600px"
       attach="body"
@@ -145,7 +145,7 @@
         label-align="right"
         :data="form"
         :rules="rules"
-        label-width="calc(9em + 24px)"
+        label-width="calc(9em + 41px)"
         scroll-to-first-error="smooth"
         @submit="submitForm"
       >

@@ -1,7 +1,7 @@
 <template>
   <t-card>
     <t-space direction="vertical" style="width: 100%">
-      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline">
+      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="calc(4em + 12px)">
         <t-form-item label="文件名" name="fileName">
           <t-input v-model="queryParams.fileName" placeholder="请输入文件名" clearable @enter="handleQuery" />
         </t-form-item>
@@ -145,13 +145,13 @@
     <t-dialog
       v-model:visible="open"
       :header="title"
-      :destroy-on-close="true"
+      destroy-on-close
       :close-on-overlay-click="false"
       width="700px"
       attach="body"
       @confirm="submitForm"
     >
-      <t-form ref="ossRef" :data="form" label-align="right" :rules="rules" label-width="80px">
+      <t-form ref="ossRef" :data="form" label-align="right" :rules="rules" label-width="calc(3em + 41px)">
         <t-form-item label="文件名">
           <file-upload
             v-if="type === 0"

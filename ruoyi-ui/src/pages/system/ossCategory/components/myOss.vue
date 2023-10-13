@@ -135,7 +135,7 @@
     <t-dialog
       v-model:visible="openUpload"
       :header="uploadTitle"
-      :destroy-on-close="true"
+      destroy-on-close
       :close-on-overlay-click="false"
       placement="center"
       width="700px"
@@ -178,7 +178,7 @@
     <t-dialog
       v-model:visible="openView"
       :header="title"
-      :destroy-on-close="true"
+      destroy-on-close
       :close-on-overlay-click="false"
       placement="center"
       width="550px"
@@ -270,7 +270,7 @@
         label-align="right"
         :data="form"
         :rules="rules"
-        label-width="calc(5em + 24px)"
+        label-width="calc(2em + 41px)"
         scroll-to-first-error="smooth"
         @submit="submitMoveForm"
       >

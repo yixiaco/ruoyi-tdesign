@@ -1,7 +1,7 @@
 <template>
   <t-card>
     <t-space direction="vertical" style="width: 100%">
-      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline">
+      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="calc(4em + 12px)">
         <t-form-item label="菜单名称" name="menuName">
           <t-input
             v-model="queryParams.menuName"
@@ -106,7 +106,7 @@
     <t-dialog
       v-model:visible="open"
       :header="title"
-      :destroy-on-close="true"
+      destroy-on-close
       :close-on-overlay-click="false"
       width="680px"
       attach="body"
@@ -116,7 +116,7 @@
         <t-form
           ref="menuRef"
           label-align="right"
-          label-width="calc(6em + 24px)"
+          label-width="calc(5em + 41px)"
           scroll-to-first-error="smooth"
           :data="form"
           :rules="rules"

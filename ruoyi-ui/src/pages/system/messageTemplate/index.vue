@@ -167,7 +167,7 @@
     <t-dialog
       v-model:visible="open"
       :header="title"
-      :destroy-on-close="true"
+      destroy-on-close
       :close-on-overlay-click="false"
       placement="center"
       width="700px"
@@ -184,7 +184,7 @@
         label-align="right"
         :data="form"
         :rules="rules"
-        label-width="calc(5em + 24px)"
+        label-width="calc(4em + 41px)"
         scroll-to-first-error="smooth"
         @submit="submitForm"
       >
@@ -374,7 +374,7 @@
 
     <t-dialog
       v-model:visible="openTest"
-      :destroy-on-close="true"
+      destroy-on-close
       header="消息模板测试"
       width="500px"
       attach="body"
@@ -390,7 +390,7 @@
         label-align="right"
         :data="formTest"
         :rules="testRules"
-        label-width="calc(5em + 24px)"
+        label-width="calc(4em + 41px)"
         scroll-to-first-error="smooth"
         @submit="submitFormTest"
       >
@@ -405,7 +405,7 @@
               :label="key"
               :name="`vars[${key}]`"
               label-align="left"
-              :label-width="`${maxVarsTestLabelWidth * 12}px`"
+              :label-width="`calc(${maxVarsTestLabelWidth / 2}em + 41px)`"
               :rules="[{ required: true, message: '输入变量不能为空' }]"
             >
               <t-input v-model="formTest.vars[key]" />

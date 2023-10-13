@@ -1,5 +1,5 @@
 <template>
-  <t-form ref="pwdRef" :data="user" :rules="rules" label-width="80px" @submit="submit">
+  <t-form ref="pwdRef" :data="user" :rules="rules" label-width="calc(4em + 41px)" @submit="submit">
     <t-form-item label="旧密码" name="oldPassword">
       <t-input v-model="user.oldPassword" placeholder="请输入旧密码" type="password" />
     </t-form-item>

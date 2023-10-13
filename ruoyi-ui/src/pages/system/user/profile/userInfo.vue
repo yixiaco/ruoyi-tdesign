@@ -1,5 +1,5 @@
 <template>
-  <t-form ref="userRef" :data="user" :rules="rules" label-width="80px" @submit="submit">
+  <t-form ref="userRef" :data="user" :rules="rules" label-width="calc(4em + 41px)" @submit="submit">
     <t-form-item label="用户昵称" name="nickName">
       <t-input v-model="user.nickName" :maxlength="30" />
     </t-form-item>

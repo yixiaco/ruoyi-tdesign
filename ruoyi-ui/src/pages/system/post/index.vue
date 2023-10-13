@@ -1,7 +1,7 @@
 <template>
   <t-card>
     <t-space direction="vertical" style="width: 100%">
-      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline">
+      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="calc(4em + 12px)">
         <t-form-item label="岗位编码" name="postCode">
           <t-input
             v-model="queryParams.postCode"
@@ -121,14 +121,21 @@
     <t-dialog
       v-model:visible="open"
       :header="title"
-      :destroy-on-close="true"
+      destroy-on-close
       :close-on-overlay-click="false"
       width="500px"
       attach="body"
       @confirm="onConfirm"
     >
       <t-loading :loading="eLoading">
-        <t-form ref="postRef" label-align="right" :data="form" :rules="rules" label-width="80px" @submit="submitForm">
+        <t-form
+          ref="postRef"
+          label-align="right"
+          :data="form"
+          :rules="rules"
+          label-width="calc(4em + 41px)"
+          @submit="submitForm"
+        >
           <t-form-item label="岗位名称" name="postName">
             <t-input v-model="form.postName" placeholder="请输入岗位名称" />
           </t-form-item>

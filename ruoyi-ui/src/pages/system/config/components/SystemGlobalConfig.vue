@@ -7,7 +7,7 @@
         :data="form"
         :rules="rules"
         reset-type="initial"
-        label-width="calc(15em + 24px)"
+        label-width="calc(15em + 41px)"
         scroll-to-first-error="smooth"
         :disabled="disabled"
         @submit="submitForm"

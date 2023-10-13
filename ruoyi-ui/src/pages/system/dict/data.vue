@@ -1,7 +1,7 @@
 <template>
   <t-card>
     <t-space direction="vertical" style="width: 100%">
-      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline">
+      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="calc(4em + 12px)">
         <t-form-item label="字典名称" name="dictType">
           <t-select v-model="queryParams.dictType" style="width: 200px">
             <t-option v-for="item in typeOptions" :key="item.dictId" :label="item.dictName" :value="item.dictType" />
@@ -117,14 +117,21 @@
     <t-dialog
       v-model:visible="open"
       :header="title"
-      :destroy-on-close="true"
+      destroy-on-close
       :close-on-overlay-click="false"
       width="500px"
       attach="body"
       @confirm="onConfirm"
     >
       <t-loading :loading="eLoading">
-        <t-form ref="dataRef" label-align="right" :data="form" :rules="rules" label-width="80px" @submit="submitForm">
+        <t-form
+          ref="dataRef"
+          label-align="right"
+          :data="form"
+          :rules="rules"
+          label-width="calc(4em + 41px)"
+          @submit="submitForm"
+        >
           <t-form-item label="字典类型">
             <t-input v-model="form.dictType" :disabled="true" />
           </t-form-item>

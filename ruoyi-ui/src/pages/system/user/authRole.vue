@@ -1,7 +1,7 @@
 <template>
   <t-card>
     <h4 class="form-header h4">基本信息</h4>
-    <t-form :data="form" label-width="80px">
+    <t-form :data="form" label-width="calc(4em + 12px)">
       <t-row>
         <t-col :span="4" :offset="1">
           <t-form-item label="用户昵称" prop="nickName">

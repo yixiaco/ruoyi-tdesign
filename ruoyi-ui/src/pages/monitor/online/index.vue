@@ -1,7 +1,7 @@
 <template>
   <t-card>
     <t-space direction="vertical" style="width: 100%">
-      <t-form ref="queryRef" :data="queryParams" layout="inline">
+      <t-form ref="queryRef" :data="queryParams" layout="inline" label-width="calc(4em + 12px)">
         <t-form-item label="登录地址" name="ipaddr">
           <t-input
             v-model="queryParams.ipaddr"

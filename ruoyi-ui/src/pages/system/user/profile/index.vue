@@ -104,3 +104,8 @@ function getUser() {
 
 getUser();
 </script>
+<style lang="less" scoped>
+:deep .t-tabs__content {
+  margin-top: 24px;
+}
+</style>

@@ -175,7 +175,7 @@ function UrlValidator(val: string): CustomValidateResolveType {
 
 const width = computed(() => {
   if (activeTab.value === 'myOss') {
-    return 'calc(min(1200px, 100vw))';
+    return 'min(1200px, 100vw)';
   }
   return '600px';
 });

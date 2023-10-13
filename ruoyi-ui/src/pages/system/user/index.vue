@@ -226,7 +226,7 @@
     <t-dialog
       v-model:visible="open"
       :header="title"
-      :destroy-on-close="true"
+      destroy-on-close
       :close-on-overlay-click="false"
       width="650px"
       attach="body"
@@ -239,7 +239,7 @@
           label-align="right"
           :data="form"
           :rules="rules"
-          label-width="calc(5em + 24px)"
+          label-width="calc(4em + 41px)"
           scroll-to-first-error="smooth"
           @submit="onSubmit"
         >

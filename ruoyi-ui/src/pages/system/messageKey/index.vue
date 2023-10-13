@@ -1,7 +1,7 @@
 <template>
   <t-card>
     <t-space direction="vertical" style="width: 100%">
-      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
+      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="calc(4em + 12px)">
         <t-form-item label="消息名称" name="name">
           <t-input v-model="queryParams.name" placeholder="请输入消息名称" clearable @enter="handleQuery" />
         </t-form-item>
@@ -121,7 +121,7 @@
     <t-dialog
       v-model:visible="open"
       :header="title"
-      :destroy-on-close="true"
+      destroy-on-close
       :close-on-overlay-click="false"
       width="500px"
       attach="body"
@@ -137,7 +137,7 @@
         label-align="right"
         :data="form"
         :rules="rules"
-        label-width="calc(5em + 24px)"
+        label-width="calc(4em + 41px)"
         scroll-to-first-error="smooth"
         @submit="submitForm"
       >
@@ -156,7 +156,7 @@
     <!-- 消息常量详情 -->
     <t-dialog v-model:visible="openView" header="消息常量详情" width="700px" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(5em + 28px)">
+        <t-form label-align="right" colon label-width="calc(6em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="消息key主键">{{ form.messageKeyId }}</t-form-item>

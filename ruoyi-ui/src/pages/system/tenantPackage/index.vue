@@ -1,7 +1,7 @@
 <template>
   <t-card>
     <t-space direction="vertical" style="width: 100%">
-      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="68px">
+      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="calc(4em + 12px)">
         <t-form-item label="套餐名称" name="packageName">
           <t-input v-model="queryParams.packageName" placeholder="请输入套餐名称" clearable @enter="handleQuery" />
         </t-form-item>
@@ -118,7 +118,7 @@
     <t-dialog
       v-model:visible="open"
       :header="title"
-      :destroy-on-close="true"
+      destroy-on-close
       :close-on-overlay-click="false"
       placement="center"
       width="500px"
@@ -135,7 +135,7 @@
         label-align="right"
         :data="form"
         :rules="rules"
-        label-width="calc(5em + 24px)"
+        label-width="calc(4em + 41px)"
         scroll-to-first-error="smooth"
         @submit="submitForm"
       >
@@ -181,7 +181,7 @@
       :footer="false"
     >
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon :data="form" label-width="calc(5em + 24px)">
+        <t-form label-align="right" colon :data="form" label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="租户套餐id">{{ form.packageId }}</t-form-item>

@@ -4,7 +4,7 @@
     v-model:visible="visible"
     :close-on-overlay-click="false"
     header="导入表"
-    width="1100px"
+    width="min(1100px, 100%)"
     top="5vh"
     attach="body"
     :confirm-btn="{
@@ -16,7 +16,7 @@
     @confirm="handleImportTable"
   >
     <t-space direction="vertical" style="width: 100%">
-      <t-form ref="queryRef" :data="queryParams" layout="inline" label-width="70px">
+      <t-form ref="queryRef" :data="queryParams" layout="inline" label-width="calc(3em + 12px)">
         <t-form-item label="数据源" name="dataName">
           <t-select
             v-model="queryParams.dataName"

@@ -1,7 +1,7 @@
 <template>
   <t-card>
     <t-space direction="vertical" style="width: 100%">
-      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline">
+      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="calc(4em + 12px)">
         <t-form-item label="配置key" name="configKey">
           <t-input
             v-model="queryParams.configKey"
@@ -138,7 +138,7 @@
     <t-dialog
       v-model:visible="open"
       :header="title"
-      :destroy-on-close="true"
+      destroy-on-close
       :close-on-overlay-click="false"
       width="800px"
       attach="body"
@@ -150,7 +150,7 @@
       }"
       @confirm="onConfirm"
     >
-      <t-form ref="ossConfigRef" :data="form" :rules="rules" label-width="120px" @submit="submitForm">
+      <t-form ref="ossConfigRef" :data="form" :rules="rules" label-width="calc(6em + 41px)" @submit="submitForm">
         <t-form-item label="配置key" name="configKey">
           <t-input v-model="form.configKey" placeholder="请输入配置key" />
         </t-form-item>
