@@ -74,7 +74,7 @@
               keys: { value: 'menuId', label: 'menuName', children: 'children' },
               checkStrictly: true,
             }"
-            placeholder="请选择系统菜单"
+            placeholder="请选择上级菜单"
           />
         </t-form-item>
       </t-col>
