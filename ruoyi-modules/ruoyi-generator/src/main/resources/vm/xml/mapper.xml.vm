@@ -21,9 +21,19 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 
 #set($result = ${ClassName} + "Result")
     <resultMap id="$result" autoMapping="true" type="${packageName}.domain.${ClassName}">
+#foreach ($column in $columns)
+#if($column.isPk())
+        <id property="${column.javaField}" column="${column.columnName}"/>
+#end
+#end
     </resultMap>
 #if($isUseVO)
     <resultMap id="${ClassName}ResultVo" autoMapping="true" type="${packageName}.domain.vo.${ClassName}Vo">
+#foreach ($column in $columns)
+#if($column.isPk())
+        <id property="${column.javaField}" column="${column.columnName}"/>
+#end
+#end
     </resultMap>
 #end
 
