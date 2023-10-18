@@ -99,6 +99,7 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
         if (!category.getParentId().equals(bo.getParentId()) || !category.getCategoryName().equals(bo.getCategoryName())) {
             int level = category.getLevel();
             String path = category.getCategoryPath();
+            category.setCategoryName(bo.getCategoryName());
             int levelDiff;
             if (bo.getParentId().equals(0L)) {
                 levelDiff = category.getLevel();
