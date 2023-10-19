@@ -21,6 +21,7 @@ import org.dromara.system.domain.bo.SysOssBo;
 import org.dromara.system.domain.query.SysOssQuery;
 import org.dromara.system.domain.vo.SysOssUploadVo;
 import org.dromara.system.domain.vo.SysOssVo;
+import org.dromara.system.service.ISysOssCategoryService;
 import org.dromara.system.service.ISysOssService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -44,6 +45,8 @@ public class SysOssController extends BaseController {
 
     @Autowired
     private ISysOssService ossService;
+    @Autowired
+    private ISysOssCategoryService ossCategoryService;
 
     /**
      * 查询OSS对象存储列表
@@ -110,7 +113,7 @@ public class SysOssController extends BaseController {
     @SaCheckPermission("system:oss:upload")
     @Log(title = "OSS对象存储", businessType = BusinessType.INSERT)
     @PostMapping(value = "/upload", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
-    public R<SysOssUploadVo> upload(@RequestPart("file") MultipartFile file) {
+    public R<SysOssUploadVo> upload(@RequestPart("file") MultipartFile file, Long ossCategoryId) {
         if (ObjectUtil.isNull(file)) {
             return R.fail("上传文件不能为空");
         }
@@ -118,7 +121,8 @@ public class SysOssController extends BaseController {
         bo.setCreateBy(LoginHelper.getUserId());
         bo.setUserTypeEnum(UserType.SYS_USER);
         bo.setIsLock(0);
-        bo.setOssCategoryId(0L);
+        boolean exist = ossCategoryService.hasId(ossCategoryId);
+        bo.setOssCategoryId(exist ? ossCategoryId : 0L);
         SysOssVo oss = ossService.upload(file, bo);
         SysOssUploadVo uploadVo = new SysOssUploadVo();
         uploadVo.setUrl(oss.getUrl());

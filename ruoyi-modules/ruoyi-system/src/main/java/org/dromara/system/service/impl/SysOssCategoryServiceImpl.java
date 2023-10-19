@@ -173,4 +173,21 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
             throw new ServiceException("此位置已包含同名分类");
         }
     }
+
+    /**
+     * 是否存在分类id
+     *
+     * @param ossCategoryId 分类id
+     * @return
+     */
+    @Override
+    public boolean hasId(Long ossCategoryId) {
+        if (ossCategoryId == null) {
+            return false;
+        }
+        return lambdaQuery()
+            .eq(SysOssCategory::getOssCategoryId, ossCategoryId)
+            .select(SysOssCategory::getOssCategoryId)
+            .exists();
+    }
 }

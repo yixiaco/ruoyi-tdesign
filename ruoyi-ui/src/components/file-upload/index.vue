@@ -15,6 +15,7 @@
       :size-limit="{ size: fileSize, unit: 'MB', message: '上传文件大小不能超过 {sizeLimit} MB!' }"
       :disabled="disabled"
       :allow-upload-duplicate-file="allowUploadDuplicateFile"
+      :data="{ ossCategoryId: ossCategoryId }"
       @one-file-success="handleOneUploadSuccess"
       @success="handleUploadSuccess"
       @remove="handleDelete"
@@ -111,6 +112,8 @@ export interface FileUploadProps {
   supportSelectFile?: boolean;
   // 支持手动输入url，需要mode="url"才有效
   supportUrl?: boolean;
+  // oss分类id
+  ossCategoryId?: number;
 }
 
 const props = withDefaults(defineProps<FileUploadProps>(), {

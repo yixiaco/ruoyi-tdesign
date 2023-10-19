@@ -1,10 +1,10 @@
 package org.dromara.system.service;
 
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.dromara.system.domain.SysOssCategory;
 import org.dromara.system.domain.bo.SysOssCategoryBo;
 import org.dromara.system.domain.query.SysOssCategoryQuery;
 import org.dromara.system.domain.vo.SysOssCategoryVo;
-import com.baomidou.mybatisplus.extension.service.IService;
 
 import java.util.Collection;
 import java.util.List;
@@ -56,4 +56,12 @@ public interface ISysOssCategoryService extends IService<SysOssCategory> {
      * @return Boolean
      */
     Boolean deleteWithValidByIds(Collection<Long> ids);
+
+    /**
+     * 是否存在分类id
+     *
+     * @param ossCategoryId 分类id
+     * @return
+     */
+    boolean hasId(Long ossCategoryId);
 }

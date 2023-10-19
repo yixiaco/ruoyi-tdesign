@@ -159,6 +159,7 @@
             :file-type="fileUploadProps?.fileType"
             :file-size="fileUploadProps?.fileSize"
             :accept="fileUploadProps?.accept"
+            :oss-category-id="categoryId"
           />
           <image-upload
             v-if="rowType === 1 && imageUpload"
@@ -170,6 +171,7 @@
             :file-size="imageUploadProps?.fileSize"
             :file-type="imageUploadProps?.fileType"
             :accept="imageUploadProps?.accept"
+            :oss-category-id="categoryId"
           />
         </t-form-item>
       </t-form>
@@ -587,11 +589,11 @@ function submitUploadForm() {
   reset();
   getList();
 }
-/** 编辑表单提交按钮 */
+/** 编辑移动分类表单提交按钮 */
 function onConfirmMove() {
   ossMoveRef.value.submit();
 }
-/** 提交表单 */
+/** 提交移动分类表单 */
 function submitMoveForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
@@ -615,7 +617,7 @@ function submitMoveForm({ validateResult, firstError }: SubmitContext) {
 function onConfirm() {
   ossRef.value.submit();
 }
-/** 提交表单 */
+/** 提交修改文件表单 */
 function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
