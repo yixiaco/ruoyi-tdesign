@@ -1,14 +1,14 @@
 <template>
   <t-card>
     <t-tabs v-model="action" @change="handleChange">
-      <t-tab-panel :value="1" label="系统配置" :destroy-on-hide="false">
+      <t-tab-panel :value="1" label="系统配置" :destroy-on-hide="false" lazy>
         <div class="panel-content">
-          <system-config :action="action === 1" :disabled="disabled" />
+          <system-config :disabled="disabled" />
         </div>
       </t-tab-panel>
-      <t-tab-panel v-if="isSystem" :value="2" label="全局配置" :destroy-on-hide="false">
+      <t-tab-panel v-if="isSystem" :value="2" label="全局配置" :destroy-on-hide="false" lazy>
         <div class="panel-content">
-          <system-global-config :action="action === 2" :disabled="disabled" />
+          <system-global-config :disabled="disabled" />
         </div>
       </t-tab-panel>
     </t-tabs>

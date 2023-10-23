@@ -52,23 +52,17 @@ defineOptions({
   name: 'SystemConfig',
 });
 import type { FormRule, SubmitContext } from 'tdesign-vue-next';
-import { getCurrentInstance, ref, watch } from 'vue';
+import { getCurrentInstance, ref } from 'vue';
 
 import { getConfigByKeys, refreshCache, updateConfigMaps } from '@/api/system/config';
 
-const props = defineProps({
-  action: {
-    type: Boolean,
-    required: true,
-    default: false,
-  },
+defineProps({
   disabled: {
     type: Boolean,
     required: true,
   },
 });
 
-const isInit = ref(false);
 const loading = ref(false);
 const buttonLoading = ref(false);
 
@@ -129,16 +123,7 @@ function handleRefreshCache() {
   });
 }
 
-watch(
-  () => props.action,
-  (val) => {
-    if (!isInit.value && val) {
-      isInit.value = true;
-      init();
-    }
-  },
-  { immediate: true },
-);
+init();
 </script>
 
 <style scoped></style>

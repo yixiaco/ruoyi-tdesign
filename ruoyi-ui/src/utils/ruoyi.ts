@@ -6,7 +6,7 @@ import modal from '@/plugins/modal';
 import type { DictModel } from '@/utils/dict';
 
 // 日期格式化
-export function parseTime(time: any, pattern?: string) {
+export function parseTime(time: Date | string | number, pattern?: string) {
   if (arguments.length === 0 || !time) {
     return null;
   }
@@ -63,7 +63,7 @@ export function resetForm(refName: string | number) {
  * @param dateRange
  * @param propName
  */
-export function addDateRange(params: any, dateRange: Array<any>, propName?: any) {
+export function addDateRange(params: any, dateRange: Array<Date | string | number>, propName?: any) {
   const search = params;
   search.params =
     typeof search.params === 'object' && search.params !== null && !Array.isArray(search.params) ? search.params : {};
@@ -191,7 +191,12 @@ export function mergeRecursive(source: { [x: string]: any }, target: { [x: strin
  * @param {*} parentId 父节点字段 默认 'parentId'
  * @param {*} children 孩子节点字段 默认 'children'
  */
-export function handleTree<T>(data: T[], id?: string, parentId?: string, children?: string): T[] {
+export function handleTree<T, ID extends keyof T & string, PID extends keyof T & string, C extends keyof T & string>(
+  data: T[],
+  id?: ID,
+  parentId?: PID,
+  children?: C,
+): T[] {
   const config = {
     id: id || 'id',
     parentId: parentId || 'parentId',
@@ -287,7 +292,7 @@ export function blobValidate(data: { type: string }) {
 }
 
 // 过滤tree数据
-export function treeFilter(data: any[], searchValue: any) {
+export function treeFilter<S extends { children: S[]; label: string }>(data: S[], searchValue: string) {
   if (data && data.length > 0) {
     data = Object.assign([], data);
     return data
@@ -303,18 +308,17 @@ export function treeFilter(data: any[], searchValue: any) {
 }
 
 /** tree中的所有id */
-// @ts-ignore
-export function treeId(data: any[]) {
+export function treeId<T extends { children: T[]; id: string | number }>(data: T[]): Array<string | number> {
   if (data && data.length > 0) {
     return data.flatMap((item) => {
-      let ids = [];
+      let ids: Array<string | number> = [];
       if (item.children && item.children.length > 0) {
         ids = treeId(item.children);
       }
       return [...ids, item.id];
     });
   }
-  return data;
+  return [];
 }
 
 /** byte格式化 */
