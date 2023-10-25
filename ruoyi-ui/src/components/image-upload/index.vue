@@ -15,7 +15,7 @@
       :size-limit="{ size: fileSize, unit: 'MB', message: '上传图片大小不能超过 {sizeLimit} MB!' }"
       :disabled="disabled"
       :allow-upload-duplicate-file="allowUploadDuplicateFile"
-      :data="{ ossCategoryId: ossCategoryId }"
+      :data="{ ossCategoryId: ossCategoryId || '' }"
       @one-file-success="handleOneUploadSuccess"
       @success="handleUploadSuccess"
       @remove="handleDelete"
