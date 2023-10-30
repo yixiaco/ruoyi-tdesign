@@ -366,7 +366,7 @@
             </t-col>
 #elseif($column.htmlType == "editor")
             <t-col :span="12">
-              <t-form-item label="${comment}"><div v-html="form.${javaField}"></div></t-form-item>
+              <t-form-item label="${comment}"><editor-preview :html-text="form.${javaField}" /></t-form-item>
             </t-col>
 #else
             <t-col :span="6">
@@ -451,6 +451,7 @@ import { $StringUtils.join($importApi, ", ") } from '@/api/${moduleName}/${busin
 #foreach($column in $columns)
 #if($column.htmlType == "editor")
 import Editor from '@/components/editor/index.vue';
+import EditorPreview from '@/components/editor-preview/index.vue';
 #end
 #end
 #if($isUseVO)
