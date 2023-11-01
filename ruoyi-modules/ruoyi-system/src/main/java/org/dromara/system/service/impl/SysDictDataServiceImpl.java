@@ -54,9 +54,9 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     @Override
     public String selectDictLabel(String dictType, String dictValue) {
         return baseMapper.selectOne(new LambdaQueryWrapper<SysDictData>()
-                                        .select(SysDictData::getDictLabel)
-                                        .eq(SysDictData::getDictType, dictType)
-                                        .eq(SysDictData::getDictValue, dictValue))
+                .select(SysDictData::getDictLabel)
+                .eq(SysDictData::getDictType, dictType)
+                .eq(SysDictData::getDictValue, dictValue))
             .getDictLabel();
     }
 

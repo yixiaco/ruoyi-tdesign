@@ -893,6 +893,7 @@ create table if not exists sys_dict_data
     dict_type   varchar(100) default ''::varchar,
     css_class   varchar(100) default null::varchar,
     list_class  varchar(100) default null::varchar,
+    tag_style   varchar(50)  default null::varchar,
     is_default  char         default 'N'::bpchar,
     create_dept int8,
     create_by   int8,
@@ -912,6 +913,7 @@ comment on column sys_dict_data.dict_value      is '字典键值';
 comment on column sys_dict_data.dict_type       is '字典类型';
 comment on column sys_dict_data.css_class       is '样式属性（其他样式扩展）';
 comment on column sys_dict_data.list_class      is '表格回显样式';
+comment on column sys_dict_data.tag_style      is '回显风格';
 comment on column sys_dict_data.is_default      is '是否默认（Y是 N否）';
 comment on column sys_dict_data.create_dept     is '创建部门';
 comment on column sys_dict_data.create_by       is '创建者';
@@ -920,59 +922,59 @@ comment on column sys_dict_data.update_by       is '更新者';
 comment on column sys_dict_data.update_time     is '更新时间';
 comment on column sys_dict_data.remark          is '备注';
 
-insert into sys_dict_data values(1, '000000', 1,  '男',       '0',       'sys_user_sex',        '',   '',        'Y', 103, 1, now(), null, null, '性别男');
-insert into sys_dict_data values(2, '000000', 2,  '女',       '1',       'sys_user_sex',        '',   '',        'N', 103, 1, now(), null, null, '性别女');
-insert into sys_dict_data values(3, '000000', 3,  '未知',     '2',       'sys_user_sex',        '',   '',        'N', 103, 1, now(), null, null, '性别未知');
-insert into sys_dict_data values(4, '000000', 1,  '显示',     '1',       'sys_show_hide',       '',   'primary', 'Y', 103, 1, now(), null, null, '显示菜单');
-insert into sys_dict_data values(5, '000000', 2,  '隐藏',     '0',       'sys_show_hide',       '',   'danger',  'N', 103, 1, now(), null, null, '隐藏菜单');
-insert into sys_dict_data values(6, '000000', 1,  '正常',     '1',       'sys_normal_disable',  '',   'primary', 'Y', 103, 1, now(), null, null, '正常状态');
-insert into sys_dict_data values(7, '000000', 2,  '停用',     '0',       'sys_normal_disable',  '',   'danger',  'N', 103, 1, now(), null, null, '停用状态');
-insert into sys_dict_data values(12, '000000', 1,  '是',       'Y',       'sys_yes_no',          '',   'primary', 'Y', 103, 1, now(), null, null, '系统默认是');
-insert into sys_dict_data values(13, '000000', 2,  '否',       'N',       'sys_yes_no',          '',   'danger',  'N', 103, 1, now(), null, null, '系统默认否');
-insert into sys_dict_data values(14, '000000', 1,  '通知',     '1',       'sys_notice_type',     '',   'warning', 'Y', 103, 1, now(), null, null, '通知');
-insert into sys_dict_data values(15, '000000', 2,  '公告',     '2',       'sys_notice_type',     '',   'success', 'N', 103, 1, now(), null, null, '公告');
-insert into sys_dict_data values(16, '000000', 1,  '正常',     '1',       'sys_notice_status',   '',   'primary', 'Y', 103, 1, now(), null, null, '正常状态');
-insert into sys_dict_data values(17, '000000', 2,  '关闭',     '0',       'sys_notice_status',   '',   'danger',  'N', 103, 1, now(), null, null, '关闭状态');
-insert into sys_dict_data values(29, '000000', 99, '其他',     '0',       'sys_oper_type',       '',   'primary', 'N', 103, 1, now(), null, null, '其他操作');
-insert into sys_dict_data values(18, '000000', 1,  '新增',     '1',       'sys_oper_type',       '',   'primary', 'N', 103, 1, now(), null, null, '新增操作');
-insert into sys_dict_data values(19, '000000', 2,  '修改',     '2',       'sys_oper_type',       '',   'primary', 'N', 103, 1, now(), null, null, '修改操作');
-insert into sys_dict_data values(20, '000000', 3,  '删除',     '3',       'sys_oper_type',       '',   'danger',  'N', 103, 1, now(), null, null, '删除操作');
-insert into sys_dict_data values(21, '000000', 4,  '授权',     '4',       'sys_oper_type',       '',   'primary', 'N', 103, 1, now(), null, null, '授权操作');
-insert into sys_dict_data values(22, '000000', 5,  '导出',     '5',       'sys_oper_type',       '',   'warning', 'N', 103, 1, now(), null, null, '导出操作');
-insert into sys_dict_data values(23, '000000', 6,  '导入',     '6',       'sys_oper_type',       '',   'warning', 'N', 103, 1, now(), null, null, '导入操作');
-insert into sys_dict_data values(24, '000000', 7,  '强退',     '7',       'sys_oper_type',       '',   'danger',  'N', 103, 1, now(), null, null, '强退操作');
-insert into sys_dict_data values(25, '000000', 8,  '生成代码', '8',       'sys_oper_type',       '',   'warning', 'N', 103, 1, now(), null, null, '生成操作');
-insert into sys_dict_data values(26, '000000', 9,  '清空数据', '9',       'sys_oper_type',       '',   'danger',  'N', 103, 1, now(), null, null, '清空操作');
-insert into sys_dict_data values(27, '000000', 1,  '成功',     '1',       'sys_common_status',   '',   'primary', 'N', 103, 1, now(), null, null, '正常状态');
-insert into sys_dict_data values(28, '000000', 2,  '失败',     '0',       'sys_common_status',   '',   'danger',  'N', 103, 1, now(), null, null, '停用状态');
-insert into sys_dict_data values(30, '000000', 0, '域名', 'DOMAIN', 'sys_app_type', null, 'primary', 'N', 103, 1, now(), 1, now(), null);
-insert into sys_dict_data values(31, '000000', 1, '微信小程序', 'WX_XCX', 'sys_app_type', null, 'primary', 'N', 103, 1, now(), 1, now(), null);
-insert into sys_dict_data values(32, '000000', 2, '微信公众号', 'WX_GZH', 'sys_app_type', null, 'primary', 'N', 103, 1, now(), 1, now(), null);
-insert into sys_dict_data values(33, '000000', 3, 'APP', 'APP', 'sys_app_type', null, 'primary', 'N', 103, 1, now(), 1, now(), null);
-insert into sys_dict_data values(34, '000000', 0, '短信', 'SMS', 'sys_message_type', NULL, 'primary', 'N', 103, 1, now(), 1, now(), NULL);
-insert into sys_dict_data values(35, '000000', 1, '邮箱', 'MAIL', 'sys_message_type', NULL, 'primary', 'N', 103, 1, now(), 1, now(), NULL);
-insert into sys_dict_data values(36, '000000', 1, '阿里云短信', 'ALIBABA', 'sys_message_supplier_type', NULL, 'primary', 'N', 103, 1, now(), 1, now(), NULL);
-insert into sys_dict_data values(37, '000000', 2, '华为云短信', 'HUAWEI', 'sys_message_supplier_type', NULL, 'primary', 'N', 103, 1, now(), 1, now(), NULL);
-insert into sys_dict_data values(38, '000000', 3, '腾讯云短信', 'TENCENT', 'sys_message_supplier_type', NULL, 'primary', 'N', 103, 1, now(), 1, now(), NULL);
-insert into sys_dict_data values(39, '000000', 4, '云片短信', 'YUNPIAN', 'sys_message_supplier_type', NULL, 'primary', 'N', 103, 1, now(), 1, now(), NULL);
-insert into sys_dict_data values(40, '000000', 5, '合一短信', 'UNI_SMS', 'sys_message_supplier_type', NULL, 'primary', 'N', 103, 1, now(), 1, now(), NULL);
-insert into sys_dict_data values(41, '000000', 6, '京东云短信', 'JD_CLOUD', 'sys_message_supplier_type', NULL, 'primary', 'N', 103, 1, now(), 1, now(), NULL);
-insert into sys_dict_data values(42, '000000', 7, '容联云短信', 'CLOOPEN', 'sys_message_supplier_type', NULL, 'primary', 'N', 103, 1, now(), 1, now(), NULL);
-insert into sys_dict_data values(43, '000000', 8, '亿美软通短信', 'EMAY', 'sys_message_supplier_type', NULL, 'primary', 'N', 103, 1, now(), 1, now(), NULL);
-insert into sys_dict_data values(44, '000000', 9, '天翼云短信', 'CTYUN', 'sys_message_supplier_type', NULL, 'primary', 'N', 103, 1, now(), 1, now(), NULL);
-insert into sys_dict_data values(45, '000000', 0, '邮箱', 'MAIL', 'sys_message_supplier_type', NULL, 'primary', 'N', 103, 1, now(), 1, now(), NULL);
-insert into sys_dict_data values(46, '000000', 10, '网易云短信', 'NETEASE', 'sys_message_supplier_type', NULL, 'primary', 'N', 103, 1, now(), 1, now(), NULL);
-insert into sys_dict_data values(47, '000000', 0, '模板ID', 'TEMPLATE_ID', 'sys_message_template_mode', NULL, 'primary', 'N', 103, 1, now(), 1, now(), NULL);
-insert into sys_dict_data values(48, '000000', 1, '模板内容', 'TEMPLATE_CONTENT', 'sys_message_template_mode', NULL, 'primary', 'N', 103, 1, now(), 1, now(), NULL);
-insert into sys_dict_data values(49, '000000', 0,  '密码认证', 'password',   'sys_grant_type',   '',   'default', 'N', 103, 1, now(), null, null, '密码认证');
-insert into sys_dict_data values(50, '000000', 0,  '短信认证', 'sms',        'sys_grant_type',   '',   'default', 'N', 103, 1, now(), null, null, '短信认证');
-insert into sys_dict_data values(51, '000000', 0,  '邮件认证', 'email',      'sys_grant_type',   '',   'default', 'N', 103, 1, now(), null, null, '邮件认证');
-insert into sys_dict_data values(52, '000000', 0,  '小程序认证', 'xcx',      'sys_grant_type',   '',   'default', 'N', 103, 1, now(), null, null, '小程序认证');
-insert into sys_dict_data values(53, '000000', 0,  '三方登录认证', 'social', 'sys_grant_type',   '',   'default', 'N', 103, 1, now(), null, null, '三方登录认证');
-insert into sys_dict_data values(54, '000000', 0,  'PC', 'pc',              'sys_device_type',   '',   'default', 'N', 103, 1, now(), null, null, 'PC');
-insert into sys_dict_data values(55, '000000', 0,  '安卓', 'android',       'sys_device_type',   '',   'default', 'N', 103, 1, now(), null, null, '安卓');
-insert into sys_dict_data values(56, '000000', 0,  'iOS', 'ios',            'sys_device_type',   '',   'default', 'N', 103, 1, now(), null, null, 'iOS');
-insert into sys_dict_data values(57, '000000', 0,  '小程序', 'xcx',         'sys_device_type',   '',   'default', 'N', 103, 1, now(), null, null, '小程序');
+insert into sys_dict_data values(1, '000000', 1,  '男',       '0',       'sys_user_sex',        '',   '', '',        'Y', 103, 1, now(), null, null, '性别男');
+insert into sys_dict_data values(2, '000000', 2,  '女',       '1',       'sys_user_sex',        '',   '', '',        'N', 103, 1, now(), null, null, '性别女');
+insert into sys_dict_data values(3, '000000', 3,  '未知',     '2',       'sys_user_sex',        '',   '', '',        'N', 103, 1, now(), null, null, '性别未知');
+insert into sys_dict_data values(4, '000000', 1,  '显示',     '1',       'sys_show_hide',       '',   'primary', '', 'Y', 103, 1, now(), null, null, '显示菜单');
+insert into sys_dict_data values(5, '000000', 2,  '隐藏',     '0',       'sys_show_hide',       '',   'danger', '',  'N', 103, 1, now(), null, null, '隐藏菜单');
+insert into sys_dict_data values(6, '000000', 1,  '正常',     '1',       'sys_normal_disable',  '',   'primary', '', 'Y', 103, 1, now(), null, null, '正常状态');
+insert into sys_dict_data values(7, '000000', 2,  '停用',     '0',       'sys_normal_disable',  '',   'danger', '',  'N', 103, 1, now(), null, null, '停用状态');
+insert into sys_dict_data values(12, '000000', 1,  '是',       'Y',       'sys_yes_no',          '',   'primary', '', 'Y', 103, 1, now(), null, null, '系统默认是');
+insert into sys_dict_data values(13, '000000', 2,  '否',       'N',       'sys_yes_no',          '',   'danger', '',  'N', 103, 1, now(), null, null, '系统默认否');
+insert into sys_dict_data values(14, '000000', 1,  '通知',     '1',       'sys_notice_type',     '',   'warning', '', 'Y', 103, 1, now(), null, null, '通知');
+insert into sys_dict_data values(15, '000000', 2,  '公告',     '2',       'sys_notice_type',     '',   'success', '', 'N', 103, 1, now(), null, null, '公告');
+insert into sys_dict_data values(16, '000000', 1,  '正常',     '1',       'sys_notice_status',   '',   'primary', '', 'Y', 103, 1, now(), null, null, '正常状态');
+insert into sys_dict_data values(17, '000000', 2,  '关闭',     '0',       'sys_notice_status',   '',   'danger', '',  'N', 103, 1, now(), null, null, '关闭状态');
+insert into sys_dict_data values(29, '000000', 99, '其他',     '0',       'sys_oper_type',       '',   'primary', '', 'N', 103, 1, now(), null, null, '其他操作');
+insert into sys_dict_data values(18, '000000', 1,  '新增',     '1',       'sys_oper_type',       '',   'primary', '', 'N', 103, 1, now(), null, null, '新增操作');
+insert into sys_dict_data values(19, '000000', 2,  '修改',     '2',       'sys_oper_type',       '',   'primary', '', 'N', 103, 1, now(), null, null, '修改操作');
+insert into sys_dict_data values(20, '000000', 3,  '删除',     '3',       'sys_oper_type',       '',   'danger', '',  'N', 103, 1, now(), null, null, '删除操作');
+insert into sys_dict_data values(21, '000000', 4,  '授权',     '4',       'sys_oper_type',       '',   'primary', '', 'N', 103, 1, now(), null, null, '授权操作');
+insert into sys_dict_data values(22, '000000', 5,  '导出',     '5',       'sys_oper_type',       '',   'warning', '', 'N', 103, 1, now(), null, null, '导出操作');
+insert into sys_dict_data values(23, '000000', 6,  '导入',     '6',       'sys_oper_type',       '',   'warning', '', 'N', 103, 1, now(), null, null, '导入操作');
+insert into sys_dict_data values(24, '000000', 7,  '强退',     '7',       'sys_oper_type',       '',   'danger', '',  'N', 103, 1, now(), null, null, '强退操作');
+insert into sys_dict_data values(25, '000000', 8,  '生成代码', '8',       'sys_oper_type',       '',   'warning', '', 'N', 103, 1, now(), null, null, '生成操作');
+insert into sys_dict_data values(26, '000000', 9,  '清空数据', '9',       'sys_oper_type',       '',   'danger', '',  'N', 103, 1, now(), null, null, '清空操作');
+insert into sys_dict_data values(27, '000000', 1,  '成功',     '1',       'sys_common_status',   '',   'primary', '', 'N', 103, 1, now(), null, null, '正常状态');
+insert into sys_dict_data values(28, '000000', 2,  '失败',     '0',       'sys_common_status',   '',   'danger', '',  'N', 103, 1, now(), null, null, '停用状态');
+insert into sys_dict_data values(30, '000000', 0, '域名', 'DOMAIN', 'sys_app_type', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(31, '000000', 1, '微信小程序', 'WX_XCX', 'sys_app_type', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(32, '000000', 2, '微信公众号', 'WX_GZH', 'sys_app_type', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(33, '000000', 3, 'APP', 'APP', 'sys_app_type', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(34, '000000', 0, '短信', 'SMS', 'sys_message_type', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(35, '000000', 1, '邮箱', 'MAIL', 'sys_message_type', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(36, '000000', 1, '阿里云短信', 'ALIBABA', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(37, '000000', 2, '华为云短信', 'HUAWEI', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(38, '000000', 3, '腾讯云短信', 'TENCENT', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(39, '000000', 4, '云片短信', 'YUNPIAN', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(40, '000000', 5, '合一短信', 'UNI_SMS', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(41, '000000', 6, '京东云短信', 'JD_CLOUD', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(42, '000000', 7, '容联云短信', 'CLOOPEN', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(43, '000000', 8, '亿美软通短信', 'EMAY', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(44, '000000', 9, '天翼云短信', 'CTYUN', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(45, '000000', 0, '邮箱', 'MAIL', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(46, '000000', 10, '网易云短信', 'NETEASE', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(47, '000000', 0, '模板ID', 'TEMPLATE_ID', 'sys_message_template_mode', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(48, '000000', 1, '模板内容', 'TEMPLATE_CONTENT', 'sys_message_template_mode', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(49, '000000', 0,  '密码认证', 'password',   'sys_grant_type',   '',   'primary', 'light-outline', 'N', 103, 1, now(), null, null, '密码认证');
+insert into sys_dict_data values(50, '000000', 0,  '短信认证', 'sms',        'sys_grant_type',   '',   'primary', 'light-outline', 'N', 103, 1, now(), null, null, '短信认证');
+insert into sys_dict_data values(51, '000000', 0,  '邮件认证', 'email',      'sys_grant_type',   '',   'primary', 'light-outline', 'N', 103, 1, now(), null, null, '邮件认证');
+insert into sys_dict_data values(52, '000000', 0,  '小程序认证', 'xcx',      'sys_grant_type',   '',   'primary', 'light-outline', 'N', 103, 1, now(), null, null, '小程序认证');
+insert into sys_dict_data values(53, '000000', 0,  '三方登录认证', 'social', 'sys_grant_type',   '',   'primary', 'light-outline', 'N', 103, 1, now(), null, null, '三方登录认证');
+insert into sys_dict_data values(54, '000000', 0,  'PC',    'pc',         'sys_device_type',     '',   'default', '', 'N', 103, 1, now(), null, null, 'PC');
+insert into sys_dict_data values(55, '000000', 0,  '安卓', 'android',     'sys_device_type',     '',   'default', '', 'N', 103, 1, now(), null, null, '安卓');
+insert into sys_dict_data values(56, '000000', 0,  'iOS', 'ios',          'sys_device_type',     '',   'default', '', 'N', 103, 1, now(), null, null, 'iOS');
+insert into sys_dict_data values(57, '000000', 0,  '小程序', 'xcx',       'sys_device_type',     '',   'default', '', 'N', 103, 1, now(), null, null, '小程序');
 
 
 

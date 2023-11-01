@@ -69,6 +69,12 @@ public class SysDictDataVo implements Serializable {
     private String listClass;
 
     /**
+     * 回显风格
+     */
+    @ExcelProperty(value = "回显风格")
+    private String tagStyle;
+
+    /**
      * 是否默认（Y是 N否）
      */
     @ExcelProperty(value = "是否默认", converter = ExcelDictConvert.class)

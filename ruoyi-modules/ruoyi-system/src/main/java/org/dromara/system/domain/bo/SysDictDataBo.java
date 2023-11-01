@@ -66,6 +66,11 @@ public class SysDictDataBo extends BaseEntity {
     private String listClass;
 
     /**
+     * 回显风格
+     */
+    private String tagStyle;
+
+    /**
      * 是否默认（Y是 N否）
      */
     private String isDefault;

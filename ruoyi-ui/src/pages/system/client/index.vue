@@ -87,7 +87,7 @@
           </t-row>
         </template>
         <template #grantType="{ row }">
-          <dict-tag :options="sys_grant_type" :value="row.grantType" theme="primary" variant="light-outline">
+          <dict-tag :options="sys_grant_type" :value="row.grantType">
             <template #separator><br /></template>
           </dict-tag>
         </template>

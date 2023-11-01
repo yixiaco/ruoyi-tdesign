@@ -94,8 +94,7 @@
           </t-row>
         </template>
         <template #dictLabel="{ row }">
-          <span v-if="row.listClass === '' || row.listClass === 'default'">{{ row.dictLabel }}</span>
-          <t-tag v-else :theme="row.listClass" variant="light">{{ row.dictLabel }}</t-tag>
+          <dict-tag :options="dictOptions" :value="row.dictValue" />
         </template>
         <template #operation="{ row }">
           <t-space :size="8" break-line>
@@ -148,13 +147,13 @@
             <t-input-number v-model="form.dictSort" :min="0" />
           </t-form-item>
           <t-form-item label="回显样式" name="listClass">
-            <t-select v-model="form.listClass">
-              <t-option
-                v-for="item in listClassOptions"
-                :key="item.value"
-                :label="item.label"
-                :value="item.value"
-              ></t-option>
+            <t-select v-model="form.listClass" placeholder="请选择回显样式">
+              <t-option v-for="item in listClassOptions" :key="item.value" :label="item.label" :value="item.value" />
+            </t-select>
+          </t-form-item>
+          <t-form-item label="回显风格" name="tagStyle">
+            <t-select v-model="form.tagStyle" placeholder="请选择回显风格" clearable>
+              <t-option v-for="item in tagStyleOptions" :key="item.value" :label="item.label" :value="item.value" />
             </t-select>
           </t-form-item>
           <t-form-item label="备注" name="remark">
@@ -184,9 +183,7 @@
             </t-col>
             <t-col :span="6">
               <t-form-item label="字典标签">
-                <t-tag :theme="form.listClass || 'default'" :class="form.cssClass" variant="light">
-                  {{ form.dictLabel }}
-                </t-tag>
+                <dict-tag :options="dictOptions" :value="form.dictValue" />
               </t-form-item>
             </t-col>
             <t-col :span="6">
@@ -202,6 +199,9 @@
               <t-form-item label="表格回显样式">
                 <dict-tag :options="listClassOptions" :value="form.listClass" />
               </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="回显风格">{{ form.tagStyle }}</t-form-item>
             </t-col>
             <t-col :span="6">
               <t-form-item label="是否默认">
@@ -256,6 +256,7 @@ import type { SysDictDataForm, SysDictDataQuery, SysDictDataVo, SysDictTypeVo } 
 import { useTabsRouterStore } from '@/store';
 import useDictStore from '@/store/modules/dict';
 import type { DictModel } from '@/utils/dict';
+import { dictConvert } from '@/utils/dict';
 
 const { proxy } = getCurrentInstance();
 const { sys_yes_no } = proxy.useDict('sys_yes_no');
@@ -280,6 +281,9 @@ const tabsRouterStore = useTabsRouterStore();
 const route = useRoute();
 const router = useRouter();
 const sort = ref<TableSort>();
+const dictOptions = computed(() => {
+  return dictConvert(dataList.value);
+});
 // 数据标签回显样式
 const listClassOptions = ref<DictModel[]>([
   { value: 'default', tagType: 'default', label: '默认(default)' },
@@ -287,6 +291,14 @@ const listClassOptions = ref<DictModel[]>([
   { value: 'success', tagType: 'success', label: '成功(success)' },
   { value: 'warning', tagType: 'warning', label: '警告(warning)' },
   { value: 'danger', tagType: 'danger', label: '危险(danger)' },
+  { value: 'text', tagType: 'text', label: '文本(text)' },
+]);
+
+const tagStyleOptions = ref([
+  { value: 'outline', label: 'outline' },
+  { value: 'dark', label: 'dark' },
+  { value: 'light', label: 'light' },
+  { value: 'light-outline', label: 'light-outline' },
 ]);
 
 const rules = ref<Record<string, Array<FormRule>>>({
@@ -366,7 +378,7 @@ function reset() {
     dictValue: undefined,
     dictType: undefined,
     cssClass: undefined,
-    listClass: 'default',
+    listClass: 'text',
     dictSort: 0,
     remark: undefined,
   };

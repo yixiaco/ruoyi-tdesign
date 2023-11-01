@@ -1,6 +1,7 @@
 package org.dromara.system.domain;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.FieldStrategy;
 import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
@@ -51,12 +52,19 @@ public class SysDictData extends TenantEntity {
     /**
      * 样式属性（其他样式扩展）
      */
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String cssClass;
 
     /**
      * 表格字典样式
      */
     private String listClass;
+
+    /**
+     * 回显风格
+     */
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
+    private String tagStyle;
 
     /**
      * 是否默认（Y是 N否）

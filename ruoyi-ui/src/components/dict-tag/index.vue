@@ -2,7 +2,7 @@
   <div>
     <template v-for="(item, index) in rowOptions">
       <span
-        v-if="!theme && !variant && (item.tagType === 'default' || !item.tagType)"
+        v-if="(!theme || theme === 'text') && !variant && (item.tagType === 'text' || !item.tagType)"
         :key="item.value"
         :class="item.tagClass"
       >
@@ -12,8 +12,8 @@
         v-else
         :key="item.value + ''"
         :index="index"
-        :theme="theme || item.tagType || 'default'"
-        :variant="variant || 'light'"
+        :theme="(theme || item.tagType || 'default') as any"
+        :variant="variant || item.tagStyle || 'light'"
         :class="item.tagClass"
       >
         {{ item.label }}
@@ -45,7 +45,7 @@ const props = defineProps({
   separator: [String],
   // 覆盖字典默认组件风格
   theme: {
-    type: String as PropType<'default' | 'warning' | 'danger' | 'success' | 'primary'>,
+    type: String as PropType<'default' | 'warning' | 'danger' | 'success' | 'primary' | 'text'>,
   },
   // 标签风格变体, 默认值light
   variant: {
@@ -59,7 +59,7 @@ const props = defineProps({
 });
 
 const values = computed<Array<number | string>>(() => {
-  if (props.value !== null && typeof props.value !== 'undefined') {
+  if (props.value !== null && props.value !== undefined && typeof props.value !== 'undefined') {
     if (Array.isArray(props.value)) {
       return props.value;
     }

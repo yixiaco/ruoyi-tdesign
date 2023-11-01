@@ -1,17 +1,33 @@
 import { ref, toRefs } from 'vue';
 
 import { getDicts } from '@/api/system/dict/data';
+import { SysDictDataVo } from '@/api/system/model/dictModel';
 // @ts-ignore
 import useDictStore from '@/store/modules/dict';
 
 export interface DictModel {
   label: string;
   value: string | number;
-  tagType?: 'default' | 'warning' | 'danger' | 'success' | 'primary';
+  tagType?: 'default' | 'warning' | 'danger' | 'success' | 'primary' | 'text';
   tagClass?: string;
+  tagStyle?: 'light' | 'outline' | 'dark' | 'light-outline';
 }
 export interface StringDictModel extends DictModel {
   value: string;
+}
+
+/**
+ * 系统字典对象转为字典组件数据
+ * @param data
+ */
+export function dictConvert(data: Array<SysDictDataVo>): StringDictModel[] {
+  return data.map((p) => ({
+    label: p.dictLabel,
+    value: p.dictValue,
+    tagType: p.listClass,
+    tagClass: p.cssClass,
+    tagStyle: p.tagStyle,
+  }));
 }
 
 /**
@@ -27,12 +43,7 @@ export function useDict(...args: string[]) {
         res.value[dictType] = dicts;
       } else {
         getDicts(dictType).then((resp) => {
-          res.value[dictType] = resp.data.map<StringDictModel>((p) => ({
-            label: p.dictLabel,
-            value: p.dictValue,
-            tagType: p.listClass,
-            tagClass: p.cssClass,
-          }));
+          res.value[dictType] = dictConvert(resp.data);
           useDictStore().setDict(dictType, res.value[dictType]);
         });
       }

@@ -27,6 +27,8 @@ export interface SysDictDataForm {
   cssClass?: string;
   /** 表格回显样式 */
   listClass?: string;
+  /** 回显风格 */
+  tagStyle?: string;
   /** 是否默认（Y是 N否） */
   isDefault?: string;
   /** 创建部门 */
@@ -51,7 +53,9 @@ export interface SysDictDataVo {
   /** 样式属性（其他样式扩展） */
   cssClass?: string;
   /** 表格回显样式 */
-  listClass?: 'default' | 'warning' | 'danger' | 'success' | 'primary';
+  listClass?: 'default' | 'warning' | 'danger' | 'success' | 'primary' | 'text';
+  /** 回显风格 */
+  tagStyle?: 'light' | 'outline' | 'dark' | 'light-outline';
   /** 是否默认（Y是 N否） */
   isDefault?: string;
   /** 更新时间 */
