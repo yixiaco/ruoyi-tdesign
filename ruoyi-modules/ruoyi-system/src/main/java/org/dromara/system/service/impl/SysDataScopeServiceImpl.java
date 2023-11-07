@@ -2,16 +2,14 @@ package org.dromara.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
+import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.mybatis.helper.DataBaseHelper;
 import org.dromara.system.service.ISysDataScopeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
-import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.stereotype.Service;
 
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
 /**
@@ -42,12 +40,8 @@ public class SysDataScopeServiceImpl implements ISysDataScopeService {
         List<Long> ids = jdbcTemplate.queryForList("select dept_id from sys_dept sd where " + DataBaseHelper.findInSet(deptId, "ancestors"), Long.class);
         ids.add(deptId);
 
-        Map<String, Object> params = new HashMap<>();
-        params.put("deptId", ids);
-        NamedParameterJdbcTemplate template = new NamedParameterJdbcTemplate(jdbcTemplate);
-        List<Long> deptIds = template.queryForList("select dept_id from sys_dept sd where sd.dept_id in (:deptId)", params, Long.class);
-        if (CollUtil.isNotEmpty(deptIds)) {
-            return deptIds.stream().map(Convert::toStr).collect(Collectors.joining(","));
+        if (CollUtil.isNotEmpty(ids)) {
+            return StreamUtils.join(ids, Convert::toStr);
         }
         return null;
     }
