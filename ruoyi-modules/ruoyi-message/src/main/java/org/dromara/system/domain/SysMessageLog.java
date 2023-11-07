@@ -3,10 +3,9 @@ package org.dromara.system.domain;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -16,9 +15,8 @@ import java.util.Date;
  * @date 2023-06-29
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @TableName("sys_message_log")
-public class SysMessageLog extends BaseEntity {
+public class SysMessageLog implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -65,7 +63,7 @@ public class SysMessageLog extends BaseEntity {
     private String title;
 
     /**
-     * 模板id
+     * 模板ID
      */
     private String templateId;
 
@@ -90,24 +88,9 @@ public class SysMessageLog extends BaseEntity {
     private Integer isSuccess;
 
     /**
-     * 错误码
+     * 返回主体消息
      */
-    private String errorCode;
-
-    /**
-     * 错误消息
-     */
-    private String errorMessage;
-
-    /**
-     * 回执消息id
-     */
-    private String bizId;
-
-    /**
-     * 返回消息
-     */
-    private String message;
+    private String responseBody;
 
     /**
      * 记录时间

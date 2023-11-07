@@ -7,20 +7,31 @@ import org.dromara.common.core.enums.MessageSupplierTypeEnum;
 import org.dromara.common.core.enums.MessageTemplateMode;
 import org.dromara.common.core.enums.MessageTypeEnum;
 import org.dromara.common.core.exception.ServiceException;
+import org.dromara.common.json.utils.JsonUtils;
 import org.dromara.sms4j.aliyun.config.AlibabaConfig;
+import org.dromara.sms4j.aliyun.config.AlibabaFactory;
 import org.dromara.sms4j.api.SmsBlend;
 import org.dromara.sms4j.api.entity.SmsResponse;
 import org.dromara.sms4j.cloopen.config.CloopenConfig;
-import org.dromara.sms4j.core.factory.SmsFactory;
+import org.dromara.sms4j.cloopen.config.CloopenFactory;
 import org.dromara.sms4j.ctyun.config.CtyunConfig;
+import org.dromara.sms4j.ctyun.config.CtyunFactory;
 import org.dromara.sms4j.emay.config.EmayConfig;
+import org.dromara.sms4j.emay.config.EmayFactory;
 import org.dromara.sms4j.huawei.config.HuaweiConfig;
+import org.dromara.sms4j.huawei.config.HuaweiFactory;
 import org.dromara.sms4j.jdcloud.config.JdCloudConfig;
+import org.dromara.sms4j.jdcloud.config.JdCloudFactory;
 import org.dromara.sms4j.netease.config.NeteaseConfig;
-import org.dromara.sms4j.provider.enumerate.SupplierType;
+import org.dromara.sms4j.netease.config.NeteaseFactory;
 import org.dromara.sms4j.tencent.config.TencentConfig;
+import org.dromara.sms4j.tencent.config.TencentFactory;
 import org.dromara.sms4j.unisms.config.UniConfig;
+import org.dromara.sms4j.unisms.config.UniFactory;
+import org.dromara.sms4j.yunpian.config.YunPianFactory;
 import org.dromara.sms4j.yunpian.config.YunpianConfig;
+import org.dromara.sms4j.zhutong.config.ZhutongConfig;
+import org.dromara.sms4j.zhutong.config.ZhutongFactory;
 import org.dromara.system.domain.SysMessageConfig;
 import org.dromara.system.domain.SysMessageTemplate;
 import org.dromara.system.handle.BaseMessageSendHandler;
@@ -71,67 +82,74 @@ public class SmsMessageSendHandler extends BaseMessageSendHandler {
                 if (StrUtil.isNotBlank(template.getSignature())) {
                     alibabaConfig.setSignature(template.getSignature());
                 }
-                yield SmsFactory.createSmsBlend(SupplierType.ALIBABA, alibabaConfig);
+                yield AlibabaFactory.instance().createSms(alibabaConfig);
             }
             case HUAWEI -> {
                 HuaweiConfig huaweiConfig = JSONUtil.toBean(config.getConfigJson(), HuaweiConfig.class, true);
                 if (StrUtil.isNotBlank(template.getSignature())) {
                     huaweiConfig.setSignature(template.getSignature());
                 }
-                yield SmsFactory.createSmsBlend(SupplierType.HUAWEI, huaweiConfig);
+                yield HuaweiFactory.instance().createSms(huaweiConfig);
             }
             case TENCENT -> {
                 TencentConfig tencentConfig = JSONUtil.toBean(config.getConfigJson(), TencentConfig.class, true);
                 if (StrUtil.isNotBlank(template.getSignature())) {
                     tencentConfig.setSignature(template.getSignature());
                 }
-                yield SmsFactory.createSmsBlend(SupplierType.TENCENT, tencentConfig);
+                yield TencentFactory.instance().createSms(tencentConfig);
             }
             case YUNPIAN -> {
                 YunpianConfig yunpianConfig = JSONUtil.toBean(config.getConfigJson(), YunpianConfig.class, true);
                 if (StrUtil.isNotBlank(template.getSignature())) {
                     yunpianConfig.setSignature(template.getSignature());
                 }
-                yield SmsFactory.createSmsBlend(SupplierType.YUNPIAN, yunpianConfig);
+                yield YunPianFactory.instance().createSms(yunpianConfig);
             }
             case UNI_SMS -> {
                 UniConfig uniConfig = JSONUtil.toBean(config.getConfigJson(), UniConfig.class, true);
                 if (StrUtil.isNotBlank(template.getSignature())) {
                     uniConfig.setSignature(template.getSignature());
                 }
-                yield SmsFactory.createSmsBlend(SupplierType.UNI_SMS, uniConfig);
+                yield UniFactory.instance().createSms(uniConfig);
             }
             case JD_CLOUD -> {
                 JdCloudConfig jdCloudConfig = JSONUtil.toBean(config.getConfigJson(), JdCloudConfig.class, true);
                 if (StrUtil.isNotBlank(template.getSignature())) {
                     jdCloudConfig.setSignature(template.getSignature());
                 }
-                yield SmsFactory.createSmsBlend(SupplierType.JD_CLOUD, jdCloudConfig);
+                yield JdCloudFactory.instance().createSms(jdCloudConfig);
             }
             case CLOOPEN -> {
                 CloopenConfig cloopenConfig = JSONUtil.toBean(config.getConfigJson(), CloopenConfig.class, true);
                 if (StrUtil.isNotBlank(template.getSignature())) {
                     cloopenConfig.setSignature(template.getSignature());
                 }
-                yield SmsFactory.createSmsBlend(SupplierType.CLOOPEN, cloopenConfig);
+                yield CloopenFactory.instance().createSms(cloopenConfig);
             }
             case EMAY -> {
                 EmayConfig emayConfig = JSONUtil.toBean(config.getConfigJson(), EmayConfig.class, true);
-                yield SmsFactory.createSmsBlend(SupplierType.EMAY, emayConfig);
+                yield EmayFactory.instance().createSms(emayConfig);
             }
             case CTYUN -> {
                 CtyunConfig ctyunConfig = JSONUtil.toBean(config.getConfigJson(), CtyunConfig.class, true);
                 if (StrUtil.isNotBlank(template.getSignature())) {
                     ctyunConfig.setSignature(template.getSignature());
                 }
-                yield SmsFactory.createSmsBlend(SupplierType.CTYUN, ctyunConfig);
+                yield CtyunFactory.instance().createSms(ctyunConfig);
             }
             case NETEASE -> {
                 NeteaseConfig neteaseConfig = JSONUtil.toBean(config.getConfigJson(), NeteaseConfig.class, true);
                 if (StrUtil.isNotBlank(template.getSignature())) {
                     neteaseConfig.setSignature(template.getSignature());
                 }
-                yield SmsFactory.createSmsBlend(SupplierType.NETEASE, neteaseConfig);
+                yield NeteaseFactory.instance().createSms(neteaseConfig);
+            }
+            case ZHUTONG -> {
+                ZhutongConfig zhutongConfig = JSONUtil.toBean(config.getConfigJson(), ZhutongConfig.class, true);
+                if (StrUtil.isNotBlank(template.getSignature())) {
+                    zhutongConfig.setSignature(template.getSignature());
+                }
+                yield ZhutongFactory.instance().createSms(zhutongConfig);
             }
             default -> throw new ServiceException("不支持的消息类型");
         };
@@ -158,10 +176,7 @@ public class SmsMessageSendHandler extends BaseMessageSendHandler {
         // 记录发送记录
         saveLog(account, template, config, content, log -> {
             log.setIsSuccess(response.isSuccess() ? CommonStatusEnum.SUCCESS.getCodeNum() : CommonStatusEnum.FAIL.getCodeNum());
-            log.setErrorCode(response.getErrorCode());
-            log.setErrorMessage(response.getErrMessage());
-            log.setBizId(response.getBizId());
-            log.setMessage(response.getMessage());
+            log.setResponseBody(StrUtil.maxLength(JsonUtils.toJsonString(response.getData()), 1000));
         });
     }
 }

@@ -3,3 +3,12 @@ alter table sys_dict_data add tag_style varchar(50);
 comment on column sys_dict_data.tag_style is '回显风格';
 UPDATE sys_dict_data SET list_class='text' WHERE list_class = 'default';
 UPDATE sys_dict_data SET list_class='primary', tag_style='light-outline' WHERE dict_type = 'sys_grant_type';
+
+insert into sys_dict_data values(58, '000000', 11, '助通短信', 'ZHUTONG', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, sysdate, 1, sysdate, null);
+
+alter table sys_message_log drop column error_code;
+alter table sys_message_log drop column error_message;
+alter table sys_message_log drop column biz_id;
+alter table sys_message_log drop column message;
+alter table sys_message_log add response_body varchar(1000);
+comment on column sys_message_log.response_body is '返回主体消息';

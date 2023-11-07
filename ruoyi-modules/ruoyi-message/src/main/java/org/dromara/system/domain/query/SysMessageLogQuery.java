@@ -45,7 +45,7 @@ public class SysMessageLogQuery extends BaseEntity {
     private String account;
 
     /**
-     * 模板id
+     * 模板ID
      */
     private String templateId;
 

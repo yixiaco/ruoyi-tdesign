@@ -77,9 +77,9 @@ public class SysMessageLogVo implements Serializable {
     private String title;
 
     /**
-     * 模板id
+     * 模板ID
      */
-    @ExcelProperty(value = "模板id")
+    @ExcelProperty(value = "模板ID")
     private String templateId;
 
     /**
@@ -109,28 +109,10 @@ public class SysMessageLogVo implements Serializable {
     private Integer isSuccess;
 
     /**
-     * 错误码
+     * 返回主体消息
      */
-    @ExcelProperty(value = "错误码")
-    private String errorCode;
-
-    /**
-     * 错误消息
-     */
-    @ExcelProperty(value = "错误消息")
-    private String errorMessage;
-
-    /**
-     * 回执消息id
-     */
-    @ExcelProperty(value = "回执消息id")
-    private String bizId;
-
-    /**
-     * 返回消息
-     */
-    @ExcelProperty(value = "返回消息")
-    private String message;
+    @ExcelProperty(value = "返回主体消息")
+    private String responseBody;
 
     /**
      * 记录时间

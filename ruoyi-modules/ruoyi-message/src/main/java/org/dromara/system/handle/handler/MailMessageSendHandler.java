@@ -75,7 +75,7 @@ public class MailMessageSendHandler extends BaseMessageSendHandler {
         // 记录发送记录
         saveLog(account, template, config, content, log -> {
             log.setIsSuccess(CommonStatusEnum.SUCCESS.getCodeNum());
-            log.setBizId(messageId);
+            log.setResponseBody(messageId);
             log.setTitle(title);
         });
     }

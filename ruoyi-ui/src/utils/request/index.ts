@@ -336,6 +336,7 @@ export function download(url: string, params: any, filename: string, config?: Ax
     text: '正在下载数据，请稍候',
     attach: 'body',
     fullscreen: true,
+    zIndex: 99999,
   });
   return request
     .post({

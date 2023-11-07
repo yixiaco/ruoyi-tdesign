@@ -173,7 +173,7 @@
         label-align="right"
         :data="form"
         :rules="rules"
-        label-width="calc(4em + 41px)"
+        label-width="calc(8em + 41px)"
         scroll-to-first-error="smooth"
         @submit="submitForm"
       >
@@ -350,7 +350,7 @@ import type {
 } from '@/api/system/model/messageConfigModel';
 
 import { SUPPLIER_TYPE_MAP } from './data';
-import type { MessageConfig } from './Model';
+import type { MessageConfig } from './model';
 
 const { proxy } = getCurrentInstance();
 const { sys_message_type, sys_normal_disable, sys_message_supplier_type } = proxy.useDict(

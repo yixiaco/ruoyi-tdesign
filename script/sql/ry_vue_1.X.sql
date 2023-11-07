@@ -741,6 +741,7 @@ insert into sys_dict_data values(54, '000000', 0,  'PC',    'pc',         'sys_d
 insert into sys_dict_data values(55, '000000', 0,  '安卓', 'android',     'sys_device_type',     '',   'default', '', 'N', 103, 1, sysdate(), null, null, '安卓');
 insert into sys_dict_data values(56, '000000', 0,  'iOS', 'ios',          'sys_device_type',     '',   'default', '', 'N', 103, 1, sysdate(), null, null, 'iOS');
 insert into sys_dict_data values(57, '000000', 0,  '小程序', 'xcx',       'sys_device_type',     '',   'default', '', 'N', 103, 1, sysdate(), null, null, '小程序');
+insert into sys_dict_data values(58, '000000', 11, '助通短信', 'ZHUTONG', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, sysdate(), 1, sysdate(), null);
 
 
 
@@ -1090,10 +1091,7 @@ create table sys_message_log  (
     message_config_title  varchar(255)    null        default null    comment '消息配置标题',
     supplier_type         varchar(20)     null        default null    comment '平台标识',
     is_success            tinyint(1)      null        default null    comment '是否成功',
-    error_code            varchar(255)    null        default null    comment '错误码',
-    error_message         varchar(500)    null        default null    comment '错误消息',
-    biz_id                varchar(255)    null        default null    comment '回执消息id',
-    message               varchar(255)    null        default null    comment '返回消息',
+    response_body         varchar(1000)   null        default null    comment '返回主体消息',
     log_time              datetime        not null                    comment '记录时间',
     primary key (message_log_id) using btree,
     index idx_message_template_id(message_template_id) using btree

@@ -956,6 +956,7 @@ insert into sys_dict_data values(54, '000000', 0,  'PC',    'pc',         'sys_d
 insert into sys_dict_data values(55, '000000', 0,  '安卓', 'android',     'sys_device_type',     '',   'default', '', 'N', 103, 1, sysdate, null, null, '安卓');
 insert into sys_dict_data values(56, '000000', 0,  'iOS', 'ios',          'sys_device_type',     '',   'default', '', 'N', 103, 1, sysdate, null, null, 'iOS');
 insert into sys_dict_data values(57, '000000', 0,  '小程序', 'xcx',       'sys_device_type',     '',   'default', '', 'N', 103, 1, sysdate, null, null, '小程序');
+insert into sys_dict_data values(58, '000000', 11, '助通短信', 'ZHUTONG', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, sysdate, 1, sysdate, null);
 
 
 -- ----------------------------
@@ -1514,10 +1515,7 @@ create table sys_message_log (
   message_config_title  varchar2(255),
   supplier_type         varchar2(20),
   is_success            number(4),
-  error_code            varchar2(255),
-  error_message         varchar2(500),
-  biz_id                varchar2(255),
-  message               varchar2(255),
+  response_body         varchar2(1000),
   log_time              date            not null
 );
 
@@ -1537,10 +1535,7 @@ comment on column sys_message_log.content               is '发送内容';
 comment on column sys_message_log.message_config_title  is '消息配置标题';
 comment on column sys_message_log.supplier_type         is '平台标识';
 comment on column sys_message_log.is_success            is '是否成功';
-comment on column sys_message_log.error_code            is '错误码';
-comment on column sys_message_log.error_message         is '错误消息';
-comment on column sys_message_log.biz_id                is '回执消息id';
-comment on column sys_message_log.message               is '返回消息';
+comment on column sys_message_log.response_body         is '返回主体消息';
 comment on column sys_message_log.log_time              is '记录时间';
 
 -- ----------------------------

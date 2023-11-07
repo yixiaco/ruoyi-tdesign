@@ -10,7 +10,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </resultMap>
 
     <sql id="selectSysMessageLogVo">
-        select sml.message_log_id, sml.message_template_id, sml.message_key, sml.message_template_name, sml.message_type, sml.template_mode, sml.account, sml.title, sml.template_id, sml.content, sml.message_config_title, sml.supplier_type, sml.is_success, sml.error_code, sml.error_message, sml.biz_id, sml.message, sml.log_time, sml.cost_time from sys_message_log sml
+        select sml.message_log_id, sml.message_template_id, sml.message_key, sml.message_template_name, sml.message_type, sml.template_mode, sml.account, sml.title, sml.template_id, sml.content, sml.message_config_title, sml.supplier_type, sml.is_success, sml.response_body, sml.log_time, sml.cost_time from sys_message_log sml
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysMessageLogQuery" resultMap="SysMessageLogResultVo">
         <include refid="selectSysMessageLogVo"/>
@@ -22,7 +22,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="account != null and account != ''"> and sml.account like concat('%', #{account}, '%')</if>
             <if test="templateId != null and templateId != ''"> and sml.template_id like concat('%', #{templateId}, '%')</if>
             <if test="supplierType != null and supplierType != ''"> and sml.supplier_type = #{supplierType}</if>
-            <if test="isSuccess != null "> and sml.is_success = #{isSuccess}</if>
+            <if test="isSuccess != null"> and sml.is_success = #{isSuccess}</if>
         </where>
         order by sml.log_time desc
     </select>

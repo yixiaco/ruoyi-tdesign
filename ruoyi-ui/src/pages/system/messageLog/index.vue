@@ -154,7 +154,14 @@
     </t-space>
 
     <!-- 消息发送记录详情 -->
-    <t-dialog v-model:visible="openView" header="消息发送记录详情" top="3%" width="700px" attach="body" :footer="false">
+    <t-dialog
+      v-model:visible="openView"
+      header="消息发送记录详情"
+      top="3%"
+      width="min(900px, 90%)"
+      attach="body"
+      :footer="false"
+    >
       <t-loading :loading="openViewLoading">
         <t-form label-align="right" colon label-width="calc(7em + 28px)">
           <t-row :gutter="[0, 20]">
@@ -187,7 +194,7 @@
               <t-form-item label="标题">{{ form.title }}</t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="模板id">{{ form.templateId }}</t-form-item>
+              <t-form-item label="模板ID">{{ form.templateId }}</t-form-item>
             </t-col>
             <t-col :span="12">
               <t-form-item label="发送内容"><div v-html="form.content"></div></t-form-item>
@@ -205,17 +212,8 @@
                 <dict-tag :options="sys_common_status" :value="form.isSuccess" />
               </t-form-item>
             </t-col>
-            <t-col :span="6">
-              <t-form-item label="错误码">{{ form.errorCode }}</t-form-item>
-            </t-col>
             <t-col :span="12">
-              <t-form-item label="错误消息">{{ form.errorMessage }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="回执消息id">{{ form.bizId }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="返回消息">{{ form.message }}</t-form-item>
+              <t-form-item label="返回主体消息">{{ form.responseBody }}</t-form-item>
             </t-col>
             <t-col :span="6">
               <t-form-item label="记录时间">{{ parseTime(form.logTime) }}</t-form-item>
@@ -248,16 +246,16 @@ const { sys_message_template_mode, sys_common_status, sys_message_type, sys_mess
   'sys_message_supplier_type',
 );
 
-const messageLogList = ref<SysMessageLogVo[]>([]);
 const openView = ref(false);
 const openViewLoading = ref(false);
+const messageLogList = ref<SysMessageLogVo[]>([]);
 const loading = ref(false);
 const columnControllerVisible = ref(false);
 const showSearch = ref(true);
+const total = ref(0);
 const ids = ref([]);
 const single = ref(true);
 const multiple = ref(true);
-const total = ref(0);
 const sort = ref<TableSort>();
 
 // 列显隐信息
@@ -268,6 +266,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `消息类型`, colKey: 'messageType', align: 'center' },
   { title: `模板类型`, colKey: 'templateMode', align: 'center' },
   { title: `发送账号`, colKey: 'account', align: 'center' },
+  { title: `标题`, colKey: 'title', align: 'center' },
   { title: `发送内容`, colKey: 'content', align: 'center', ellipsis: true },
   { title: `平台标识`, colKey: 'supplierType', align: 'center' },
   { title: `是否成功`, colKey: 'isSuccess', align: 'center' },
@@ -290,7 +289,6 @@ const queryParams = ref<SysMessageLogQuery>({
   supplierType: undefined,
   isSuccess: undefined,
 });
-
 // 分页
 const pagination = computed(() => {
   return {
@@ -361,7 +359,7 @@ function handleDetail(row: SysMessageLogVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const messageLogId = row.messageLogId || ids.value.at(0);
+  const messageLogId = row.messageLogId;
   getMessageLog(messageLogId).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
@@ -386,7 +384,7 @@ function handleDelete(row?: SysMessageLogVo) {
 }
 
 /** 清空记录按钮操作 */
-function handleClear(row: SysMessageLogVo) {
+function handleClear() {
   proxy.$modal.confirm(`是否确认删除所有消息发送记录？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return clearMessageLog()

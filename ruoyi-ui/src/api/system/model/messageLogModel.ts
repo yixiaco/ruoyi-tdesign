@@ -16,7 +16,7 @@ export interface SysMessageLogQuery extends BaseEntity {
   templateMode?: string;
   /** 发送账号 */
   account?: string;
-  /** 模板id */
+  /** 模板ID */
   templateId?: string;
   /** 平台标识 */
   supplierType?: string;
@@ -26,7 +26,7 @@ export interface SysMessageLogQuery extends BaseEntity {
 /**
  * 消息发送记录对象 sys_message_log
  */
-export interface SysMessageLog extends BaseEntity {
+export interface SysMessageLog {
   /** 消息发送记录id */
   messageLogId?: number;
   /** 消息模板id */
@@ -43,7 +43,7 @@ export interface SysMessageLog extends BaseEntity {
   account?: string;
   /** 标题 */
   title?: string;
-  /** 模板id */
+  /** 模板ID */
   templateId?: string;
   /** 发送内容 */
   content?: string;
@@ -53,14 +53,8 @@ export interface SysMessageLog extends BaseEntity {
   supplierType?: string;
   /** 是否成功 */
   isSuccess?: number;
-  /** 错误码 */
-  errorCode?: string;
-  /** 错误消息 */
-  errorMessage?: string;
-  /** 回执消息id */
-  bizId?: string;
-  /** 返回消息 */
-  message?: string;
+  /** 返回主体消息 */
+  responseBody?: string;
   /** 记录时间 */
   logTime?: any;
   /** 消耗时间 */
@@ -86,7 +80,7 @@ export interface SysMessageLogVo {
   account?: string;
   /** 标题 */
   title?: string;
-  /** 模板id */
+  /** 模板ID */
   templateId?: string;
   /** 发送内容 */
   content?: string;
@@ -96,14 +90,8 @@ export interface SysMessageLogVo {
   supplierType?: string;
   /** 是否成功 */
   isSuccess?: number;
-  /** 错误码 */
-  errorCode?: string;
-  /** 错误消息 */
-  errorMessage?: string;
-  /** 回执消息id */
-  bizId?: string;
-  /** 返回消息 */
-  message?: string;
+  /** 返回主体消息 */
+  responseBody?: string;
   /** 记录时间 */
   logTime?: any;
   /** 消耗时间 */

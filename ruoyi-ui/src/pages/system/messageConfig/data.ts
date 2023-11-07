@@ -11,6 +11,7 @@ import {
   TencentConfig,
   UniSmsConfig,
   YunpianSmsConfig,
+  ZhutongSmsConfig,
 } from './model';
 
 const mail: MailConfig = {
@@ -509,6 +510,41 @@ const neteaseSmsConfig: NeteaseSmsConfig = {
     help: '是否需要支持短信上行。true:需要，false:不需要 说明：如果开通了短信上行抄送功能，该参数需要设置为true，其它情况设置无效\n',
   },
 };
+/** 网易云短信配置 */
+const zhutongSmsConfig: ZhutongSmsConfig = {
+  accessKeyId: {
+    component: 'input',
+    name: 'accessKey',
+    help: '访问键标识',
+    required: true,
+  },
+  accessKeySecret: {
+    component: 'input',
+    name: 'accessKeySecret',
+    help: '访问键秘钥 ',
+    required: true,
+    type: 'password',
+  },
+  signature: {
+    component: 'input',
+    name: '短信签名',
+    help: '短信签名可以为空，为空发送【自定义短信】无需要提前创建短信模板; 不为空发送:【模板短信】',
+    required: false,
+  },
+  requestUrl: {
+    value: 'https://api.mix2.zthysms.com/',
+    component: 'input',
+    name: '默认请求地址',
+    help: '默认请求地址 不同区域，可切换请求地址，也可以不修改，请参考官方文档：https://doc.zthysms.com/web/#/1/236',
+    required: true,
+  },
+  templateName: {
+    component: 'input',
+    name: '模板变量名称',
+    help: '模板变量名称 查看地址：https://mix2.zthysms.com/index.html#/TemplateManagement 允许为空，为空，使用无模板形式，发送短信',
+    required: false,
+  },
+};
 
 export const SUPPLIER_TYPE_MAP = new Map<string, MessageConfig>();
 SUPPLIER_TYPE_MAP.set('MAIL', new MessageConfig(mail, 'MAIL'));
@@ -522,3 +558,4 @@ SUPPLIER_TYPE_MAP.set('CLOOPEN', new MessageConfig(cloopenSms, 'SMS'));
 SUPPLIER_TYPE_MAP.set('EMAY', new MessageConfig(emaySmsConfig, 'SMS'));
 SUPPLIER_TYPE_MAP.set('CTYUN', new MessageConfig(ctyunSmsConfig, 'SMS'));
 SUPPLIER_TYPE_MAP.set('NETEASE', new MessageConfig(neteaseSmsConfig, 'SMS'));
+SUPPLIER_TYPE_MAP.set('ZHUTONG', new MessageConfig(zhutongSmsConfig, 'SMS'));

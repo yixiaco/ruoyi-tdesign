@@ -29,4 +29,6 @@ public enum MessageSupplierTypeEnum {
     CTYUN,
     /** 网易云 */
     NETEASE,
+    /** 助通 */
+    ZHUTONG,
 }

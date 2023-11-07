@@ -17,6 +17,7 @@ export default {
       text: '正在下载数据，请稍候',
       attach: 'body',
       fullscreen: true,
+      zIndex: 99999,
     });
     axios({
       method: 'get',

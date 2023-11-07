@@ -184,3 +184,10 @@ export interface NeteaseSmsConfig extends SmsConfig {
   /** 是否需要支持短信上行。true:需要，false:不需要 说明：如果开通了短信上行抄送功能，该参数需要设置为true，其它情况设置无效 */
   needUp: FieldConfig<boolean>;
 }
+/** 助通短信 */
+export interface ZhutongSmsConfig extends SmsConfig {
+  /** 模板变量名称 查看地址：https://mix2.zthysms.com/index.html#/TemplateManagement 允许为空，为空，使用无模板形式，发送短信 */
+  templateName: FieldConfig;
+  /** 默认请求地址 不同区域，可切换请求地址，也可以不修改，请参考官方文档：https://doc.zthysms.com/web/#/1/236 */
+  requestUrl: FieldConfig;
+}
