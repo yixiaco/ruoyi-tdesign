@@ -12,18 +12,16 @@
     <sql id="selectSysOperLogVo">
         select sol.oper_id, sol.tenant_id, sol.title, sol.business_type, sol.method, sol.request_method, sol.operator_type, sol.oper_name, sol.dept_name, sol.oper_url, sol.oper_ip, sol.oper_location, sol.oper_param, sol.json_result, sol.status, sol.error_msg, sol.oper_time, sol.cost_time from sys_oper_log sol
     </sql>
-    <select id="queryList" parameterType="org.dromara.system.domain.bo.SysOperLogBo" resultMap="SysOperLogResultVo">
+    <select id="queryList" parameterType="org.dromara.system.domain.query.SysOperLogQuery" resultMap="SysOperLogResultVo">
         <include refid="selectSysOperLogVo"/>
         <where>
             <if test="title != null and title != ''"> and sol.title like concat('%', #{title}, '%')</if>
             <if test="businessType != null "> and sol.business_type = #{businessType}</if>
-            <if test="businessTypes != null and !businessTypes.isEmpty()">
-                and sol.business_type in
-                <foreach collection="businessTypes" index="index" item="item" open="(" separator="," close=")">
-                    #{item}
-                </foreach>
-            </if>
+            <foreach collection="businessTypes" index="index" item="item" open="and sol.business_type in (" separator="," close=")" nullable="true">
+                #{item}
+            </foreach>
             <if test="operName != null and operName != ''"> and sol.oper_name like concat('%', #{operName}, '%')</if>
+            <if test="operIp != null and operIp != ''"> and sol.oper_ip like concat('%', #{operIp}, '%')</if>
             <if test="status != null "> and sol.status = #{status}</if>
             <if test="params.beginOperTime != null and params.endOperTime != null">and sol.oper_time between #{params.beginOperTime} and #{params.endOperTime}</if>
         </where>

@@ -20,6 +20,9 @@
             @enter="handleQuery"
           />
         </t-form-item>
+        <t-form-item label="主机地址" name="operIp">
+          <t-input v-model="queryParams.operIp" placeholder="请输入主机地址" clearable @enter="handleQuery" />
+        </t-form-item>
         <t-form-item label="类型" name="businessType">
           <t-select v-model="queryParams.businessType" placeholder="操作类型" clearable style="width: 240px">
             <t-option v-for="dict in sys_oper_type" :key="dict.value" :label="dict.label" :value="dict.value" />
@@ -30,9 +33,10 @@
             <t-option v-for="dict in sys_common_status" :key="dict.value" :label="dict.label" :value="dict.value" />
           </t-select>
         </t-form-item>
-        <t-form-item label="操作时间" style="width: 308px">
+        <t-form-item label="操作时间">
           <t-date-range-picker
             v-model="dateRangeOperTime"
+            style="width: 240px"
             allow-input
             clearable
             separator="-"
@@ -53,10 +57,10 @@
 
       <t-table
         v-model:column-controller-visible="columnControllerVisible"
-        hover
         :loading="loading"
+        hover
         row-key="operId"
-        :data="operlogList"
+        :data="operLogList"
         :columns="columns"
         :selected-row-keys="ids"
         select-on-row-click
@@ -82,7 +86,7 @@
                 <template #icon> <delete-icon /> </template>
                 删除
               </t-button>
-              <t-button v-hasPermi="['system:notice:remove']" theme="danger" variant="outline" @click="handleClean">
+              <t-button v-hasPermi="['monitor:operlog:remove']" theme="danger" variant="outline" @click="handleClean">
                 <template #icon> <delete-icon /> </template>
                 清空
               </t-button>
@@ -200,7 +204,7 @@ import { BrowseIcon, DeleteIcon, DownloadIcon, RefreshIcon, SearchIcon, SettingI
 import type { PageInfo, PrimaryTableCol, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
-import type { SysOperLogBo, SysOperLogVo } from '@/api/monitor/model/operlogModel';
+import type { SysOperLogQuery, SysOperLogVo } from '@/api/monitor/model/operlogModel';
 import { cleanOperlog, delOperlog, list } from '@/api/monitor/operlog';
 import type { DictModel } from '@/utils/dict';
 import { isJson } from '@/utils/ruoyi';
@@ -208,7 +212,7 @@ import { isJson } from '@/utils/ruoyi';
 const { proxy } = getCurrentInstance();
 const { sys_oper_type, sys_common_status } = proxy.useDict('sys_oper_type', 'sys_common_status');
 
-const operlogList = ref<SysOperLogVo[]>([]);
+const operLogList = ref<SysOperLogVo[]>([]);
 const open = ref(false);
 const loading = ref(false);
 const columnControllerVisible = ref(false);
@@ -239,18 +243,18 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
 
-const form = ref<SysOperLogBo & SysOperLogVo>({});
-const queryParams = ref<SysOperLogBo>({
+const form = ref<SysOperLogVo>({});
+const queryParams = ref<SysOperLogQuery>({
   pageNum: 1,
   pageSize: 10,
   title: undefined,
-  operName: undefined,
   businessType: undefined,
+  operName: undefined,
+  operIp: undefined,
   status: undefined,
   orderByColumn: undefined,
   isAsc: undefined,
 });
-
 // 分页
 const pagination = computed(() => {
   return {
@@ -271,7 +275,7 @@ function getList() {
   loading.value = true;
   proxy.addDateRange(queryParams.value, dateRangeOperTime.value, 'OperTime');
   list(queryParams.value).then((response) => {
-    operlogList.value = response.rows;
+    operLogList.value = response.rows;
     total.value = response.total;
     loading.value = false;
   });
@@ -280,11 +284,13 @@ function getList() {
 function typeFormat(row: SysOperLogVo) {
   return proxy.selectDictLabel(sys_oper_type.value, row.businessType);
 }
+
 /** 搜索按钮操作 */
 function handleQuery() {
   queryParams.value.pageNum = 1;
   getList();
 }
+
 /** 重置按钮操作 */
 function resetQuery() {
   dateRangeOperTime.value = [];

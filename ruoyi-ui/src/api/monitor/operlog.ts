@@ -1,9 +1,9 @@
 import type { R, TableDataInfo } from '@/api/model/resultModel';
-import type { SysOperLogBo, SysOperLogVo } from '@/api/monitor/model/operlogModel';
+import type { SysOperLogQuery, SysOperLogVo } from '@/api/monitor/model/operlogModel';
 import { request } from '@/utils/request';
 
 // 查询操作日志列表
-export function list(query: SysOperLogBo) {
+export function list(query?: SysOperLogQuery) {
   return request.get<TableDataInfo<SysOperLogVo>>({
     url: '/monitor/operlog/list',
     params: query,

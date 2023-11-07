@@ -254,13 +254,13 @@
                   </span>
                 </template>
                 <t-radio-group v-model="form.visible">
-                  <t-radio v-for="dict in sys_show_hide" :key="dict.value" :value="dict.value">{{
-                    dict.label
-                  }}</t-radio>
+                  <t-radio v-for="dict in sys_show_hide" :key="dict.value" :value="dict.value">
+                    {{ dict.label }}
+                  </t-radio>
                 </t-radio-group>
               </t-form-item>
             </t-col>
-            <t-col v-if="form.menuType !== 'F'" :span="6">
+            <t-col :span="6">
               <t-form-item>
                 <template #label>
                   <span>

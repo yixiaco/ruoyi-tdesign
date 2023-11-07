@@ -9,6 +9,7 @@ import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysOperLog;
 import org.dromara.system.domain.bo.SysOperLogBo;
+import org.dromara.system.domain.query.SysOperLogQuery;
 import org.dromara.system.domain.vo.SysOperLogVo;
 import org.dromara.system.mapper.SysOperLogMapper;
 import org.dromara.system.service.ISysOperLogService;
@@ -30,6 +31,39 @@ import java.util.List;
 public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOperLog> implements ISysOperLogService {
 
     /**
+     * 查询操作日志记录
+     *
+     * @param operId 主键
+     * @return SysOperLogVo
+     */
+    @Override
+    public SysOperLogVo queryById(Long operId) {
+        return baseMapper.selectVoById(operId);
+    }
+
+    /**
+     * 查询操作日志记录列表
+     *
+     * @param query 查询对象
+     * @return SysOperLogVo
+     */
+    @Override
+    public TableDataInfo<SysOperLogVo> queryPageList(SysOperLogQuery query) {
+        return PageQuery.of(() -> baseMapper.queryList(query));
+    }
+
+    /**
+     * 查询操作日志记录列表
+     *
+     * @param query 查询对象
+     * @return SysOperLogVo
+     */
+    @Override
+    public List<SysOperLogVo> queryList(SysOperLogQuery query) {
+        return baseMapper.queryList(query);
+    }
+
+    /**
      * 操作日志记录
      *
      * @param operLogEvent 操作日志事件
@@ -41,11 +75,6 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
         // 远程查询操作地点
         operLog.setOperLocation(AddressUtils.getRealAddressByIP(operLog.getOperIp()));
         insertOperlog(operLog);
-    }
-
-    @Override
-    public TableDataInfo<SysOperLogVo> selectPageOperLogList(SysOperLogBo operLog) {
-        return PageQuery.of(() -> baseMapper.queryList(operLog));
     }
 
     /**
@@ -61,17 +90,6 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
     }
 
     /**
-     * 查询系统操作日志集合
-     *
-     * @param operLog 操作日志对象
-     * @return 操作日志集合
-     */
-    @Override
-    public List<SysOperLogVo> selectOperLogList(SysOperLogBo operLog) {
-        return baseMapper.queryList(operLog);
-    }
-
-    /**
      * 批量删除系统操作日志
      *
      * @param operIds 需要删除的操作日志ID
@@ -81,17 +99,6 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
     @Transactional(rollbackFor = Exception.class)
     public int deleteOperLogByIds(Long[] operIds) {
         return baseMapper.deleteBatchIds(Arrays.asList(operIds));
-    }
-
-    /**
-     * 查询操作日志详细
-     *
-     * @param operId 操作ID
-     * @return 操作日志对象
-     */
-    @Override
-    public SysOperLogVo selectOperLogById(Long operId) {
-        return baseMapper.selectVoById(operId);
     }
 
     /**
