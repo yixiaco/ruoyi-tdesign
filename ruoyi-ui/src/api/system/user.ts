@@ -103,7 +103,7 @@ export function updateUserPwd(oldPassword: string, newPassword: string) {
   return request.put<R<void>>(
     {
       url: '/system/user/profile/updatePwd',
-      params: data,
+      data,
     },
     {
       withEncrypt: true,
