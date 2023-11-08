@@ -12,6 +12,7 @@ import me.zhyd.oauth.utils.AuthStateUtils;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.domain.model.LoginBody;
 import org.dromara.common.core.domain.model.RegisterBody;
+import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.helper.SysConfigHelper;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.MessageUtils;
@@ -36,7 +37,13 @@ import org.dromara.web.service.SysLoginService;
 import org.dromara.web.service.SysRegisterService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URL;
 import java.util.List;
@@ -93,6 +100,8 @@ public class AuthController {
         if (ObjectUtil.isNull(client) || !StringUtils.contains(client.getGrantType(), grantType)) {
             log.info("客户端id: {} 认证类型：{} 异常!.", clientId, grantType);
             return R.fail(MessageUtils.message("auth.grant.type.error"));
+        } else if (!NormalDisableEnum.NORMAL.getCode().equals(client.getStatus())) {
+            return R.fail(MessageUtils.message("auth.grant.type.blocked"));
         }
         // 登录
         return R.ok(IAuthStrategy.login(loginBody, client));

@@ -19,6 +19,7 @@ import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.log.event.LogininforEvent;
 import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.satoken.utils.LoginHelper;
+import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.common.web.config.properties.CaptchaProperties;
 import org.dromara.system.domain.bo.SysUserBo;
 import org.dromara.system.service.ISysUserService;
@@ -59,9 +60,12 @@ public class SysRegisterService {
         sysUser.setPassword(BCrypt.hashpw(password));
         sysUser.setUserType(userType);
 
-        if (!userService.checkUserNameUnique(sysUser)) {
-            throw new UserException("user.register.save.error", username);
-        }
+        // 忽略租户，在全局中做校验是否重复
+        TenantHelper.ignore(() -> {
+            if (!userService.checkUserNameUnique(sysUser)) {
+                throw new UserException("user.register.save.error", username);
+            }
+        });
         boolean regFlag = userService.registerUser(sysUser, tenantId);
         if (!regFlag) {
             throw new UserException("user.register.error");
