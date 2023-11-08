@@ -14,7 +14,6 @@ import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.enums.YesNoEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
-import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
@@ -22,10 +21,13 @@ import org.dromara.common.tenant.annotation.IgnoreTenant;
 import org.dromara.system.domain.*;
 import org.dromara.system.domain.bo.SysTenantBo;
 import org.dromara.system.domain.query.SysTenantQuery;
+import org.dromara.system.domain.vo.SysTenantPackageVo;
 import org.dromara.system.domain.vo.SysTenantVo;
 import org.dromara.system.events.TenantNewEvent;
 import org.dromara.system.mapper.*;
+import org.dromara.system.service.ISysTenantPackageService;
 import org.dromara.system.service.ISysTenantService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
@@ -45,7 +47,6 @@ import java.util.List;
 @Service
 public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant> implements ISysTenantService {
 
-    private final SysTenantPackageMapper tenantPackageMapper;
     private final SysUserMapper userMapper;
     private final SysDeptMapper deptMapper;
     private final SysRoleMapper roleMapper;
@@ -55,6 +56,8 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     private final SysDictTypeMapper dictTypeMapper;
     private final SysDictDataMapper dictDataMapper;
     private final SysConfigMapper configMapper;
+    @Autowired
+    private ISysTenantPackageService tenantPackageService;
 
     /**
      * 查询租户
@@ -211,12 +214,12 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      */
     private Long createTenantRole(String tenantId, Long packageId) {
         // 获取租户套餐
-        SysTenantPackage tenantPackage = tenantPackageMapper.selectById(packageId);
+        SysTenantPackageVo tenantPackage = tenantPackageService.queryById(packageId);
         if (ObjectUtil.isNull(tenantPackage)) {
             throw new ServiceException("套餐不存在");
         }
         // 获取套餐菜单id
-        List<Long> menuIds = StringUtils.splitTo(tenantPackage.getMenuIds(), Convert::toLong);
+        List<Long> menuIds = tenantPackage.getMenuIds();
 
         // 创建角色
         SysRole role = new SysRole();
@@ -337,11 +340,11 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @IgnoreTenant
     @Transactional(rollbackFor = Exception.class)
     public Boolean syncTenantPackage(String tenantId, Long packageId) {
-        SysTenantPackage tenantPackage = tenantPackageMapper.selectById(packageId);
+        SysTenantPackageVo tenantPackage = tenantPackageService.queryById(packageId);
         List<SysRole> roles = roleMapper.selectList(
             new LambdaQueryWrapper<SysRole>().eq(SysRole::getTenantId, tenantId));
         List<Long> roleIds = new ArrayList<>(roles.size() - 1);
-        List<Long> menuIds = StringUtils.splitTo(tenantPackage.getMenuIds(), Convert::toLong);
+        List<Long> menuIds = tenantPackage.getMenuIds();
         roles.forEach(item -> {
             if (TenantConstants.TENANT_ADMIN_ROLE_KEY.equals(item.getRoleKey())) {
                 List<SysRoleMenu> roleMenus = new ArrayList<>(menuIds.size());

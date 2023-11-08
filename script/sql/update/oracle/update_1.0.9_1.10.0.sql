@@ -19,3 +19,23 @@ ALTER TABLE sys_logininfor ADD device_type VARCHAR(32) DEFAULT '';
 COMMENT ON COLUMN sys_logininfor.device_type IS '设备类型';
 
 UPDATE sys_dict_data SET list_class='primary' WHERE dict_type = 'sys_device_type';
+
+-- ----------------------------
+-- 租户套餐和菜单关联表
+-- ----------------------------
+DROP TABLE sys_tenant_package_menu;
+CREATE TABLE sys_tenant_package_menu (
+  package_id    NUMBER(20) NOT NULL,
+  menu_id       NUMBER(20) NOT NULL
+);
+COMMENT ON COLUMN sys_tenant_package_menu.package_id    IS '租户套餐id';
+COMMENT ON COLUMN sys_tenant_package_menu.menu_id       IS '菜单id';
+COMMENT ON TABLE sys_tenant_package_menu                IS '租户套餐和菜单关联表';
+ALTER TABLE sys_tenant_package_menu ADD PRIMARY KEY (package_id, menu_id);
+
+insert into sys_tenant_package_menu
+select t1.package_id, t2.menu_id
+from sys_menu t2
+         join sys_tenant_package t1 on instr(',' || t1.menu_ids || ',', ',' || t2.menu_id || ',') <> 0;
+
+alter table sys_tenant_package drop column menu_ids;

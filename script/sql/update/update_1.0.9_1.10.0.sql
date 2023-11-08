@@ -18,3 +18,16 @@ ALTER TABLE sys_logininfor
     ADD COLUMN device_type VARCHAR(32) NULL DEFAULT NULL COMMENT '设备类型' AFTER client_key;
 
 UPDATE sys_dict_data SET list_class='primary' WHERE dict_type = 'sys_device_type';
+
+-- ----------------------------
+-- 租户套餐和菜单关联表
+-- ----------------------------
+CREATE TABLE sys_tenant_package_menu  (
+  package_id    bigint NOT NULL COMMENT '租户套餐id',
+  menu_id       bigint NOT NULL COMMENT '菜单id',
+  PRIMARY KEY (package_id, menu_id) USING BTREE
+) ENGINE = InnoDB COMMENT = '租户套餐和菜单关联表';
+
+insert into sys_tenant_package_menu select t1.package_id, t2.menu_id from sys_menu t2 join sys_tenant_package t1 on FIND_IN_SET(t2.menu_id, REPLACE(t1.menu_ids, ', ', ','));
+
+alter table sys_tenant_package drop column menu_ids;

@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dromara.system.mapper.SysTenantPackageMenuMapper">
+
+    <resultMap id="SysTenantPackageMenuResult" autoMapping="true" type="org.dromara.system.domain.SysTenantPackageMenu">
+        <id property="packageId" column="package_id"/>
+        <id property="menuId" column="menu_id"/>
+    </resultMap>
+
+    <sql id="selectSysTenantPackageMenu">
+        select stpm.package_id, stpm.menu_id from sys_tenant_package_menu stpm
+    </sql>
+
+</mapper>

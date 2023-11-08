@@ -1,11 +1,14 @@
 package org.dromara.system.domain;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.baomidou.mybatisplus.annotation.FieldFill;
+import com.baomidou.mybatisplus.annotation.TableField;
+import com.baomidou.mybatisplus.annotation.TableId;
+import com.baomidou.mybatisplus.annotation.TableLogic;
+import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -14,9 +17,8 @@ import java.util.Date;
  * @author Michelle.Chung
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @TableName("sys_tenant_package")
-public class SysTenantPackage extends BaseEntity {
+public class SysTenantPackage implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -30,10 +32,6 @@ public class SysTenantPackage extends BaseEntity {
      * 套餐名称
      */
     private String packageName;
-    /**
-     * 关联菜单id
-     */
-    private String menuIds;
     /**
      * 备注
      */

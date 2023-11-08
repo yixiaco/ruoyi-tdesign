@@ -1,5 +1,6 @@
 package org.dromara.system.mapper;
 
+import org.apache.ibatis.annotations.Param;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysTenantPackage;
 import org.dromara.system.domain.query.SysTenantPackageQuery;
@@ -21,4 +22,12 @@ public interface SysTenantPackageMapper extends BaseMapperPlus<SysTenantPackage,
      * @return {@link SysTenantPackageVo}
      */
     List<SysTenantPackageVo> queryList(SysTenantPackageQuery query);
+
+    /**
+     * 查询租户套餐详情
+     *
+     * @param packageId 租户套餐id
+     * @return
+     */
+    SysTenantPackageVo queryById(@Param("packageId") Long packageId);
 }

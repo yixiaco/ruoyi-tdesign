@@ -156,6 +156,17 @@ comment on column  sys_tenant_package.create_time        is '创建时间';
 comment on column  sys_tenant_package.update_by          is '更新者';
 comment on column  sys_tenant_package.update_time        is '更新时间';
 
+-- ----------------------------
+-- 租户套餐和菜单关联表
+-- ----------------------------
+CREATE TABLE sys_tenant_package_menu (
+  package_id    NUMBER(20) NOT NULL,
+  menu_id       NUMBER(20) NOT NULL
+);
+COMMENT ON COLUMN sys_tenant_package_menu.package_id    IS '租户套餐id';
+COMMENT ON COLUMN sys_tenant_package_menu.menu_id       IS '菜单id';
+COMMENT ON TABLE sys_tenant_package_menu                IS '租户套餐和菜单关联表';
+ALTER TABLE sys_tenant_package_menu ADD PRIMARY KEY (package_id, menu_id);
 
 -- ----------------------------
 -- 1、部门表
@@ -1239,7 +1250,6 @@ comment on column sys_oss.update_by         is '更新者';
 -- ----------------------------
 -- OSS分类表
 -- ----------------------------
-drop table sys_oss_category;
 create table sys_oss_category (
   oss_category_id   number(20)      not null,
   category_name     varchar2(255)   not null,

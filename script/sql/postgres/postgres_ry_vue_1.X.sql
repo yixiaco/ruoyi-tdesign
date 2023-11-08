@@ -160,6 +160,19 @@ comment on column  sys_tenant_package.create_time        is '创建时间';
 comment on column  sys_tenant_package.update_by          is '更新者';
 comment on column  sys_tenant_package.update_time        is '更新时间';
 
+-- ----------------------------
+-- 租户套餐和菜单关联表
+-- ----------------------------
+DROP TABLE IF EXISTS sys_tenant_package_menu;
+CREATE TABLE sys_tenant_package_menu (
+  package_id    int8 NOT NULL,
+  menu_id       int8 NOT NULL
+);
+COMMENT ON COLUMN sys_tenant_package_menu.package_id    IS '租户套餐id';
+COMMENT ON COLUMN sys_tenant_package_menu.menu_id       IS '菜单id';
+COMMENT ON TABLE sys_tenant_package_menu                IS '租户套餐和菜单关联表';
+ALTER TABLE sys_tenant_package_menu ADD PRIMARY KEY (package_id, menu_id);
+
 
 -- ----------------------------
 -- 1、部门表

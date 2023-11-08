@@ -5,19 +5,43 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 <mapper namespace="org.dromara.system.mapper.SysTenantPackageMapper">
 
     <resultMap id="SysTenantPackageResult" autoMapping="true" type="org.dromara.system.domain.SysTenantPackage">
+        <id property="packageId" column="package_id"/>
+    </resultMap>
+    <resultMap id="SysTenantPackageResultListVo" autoMapping="true" type="org.dromara.system.domain.vo.SysTenantPackageVo">
+        <id property="packageId" column="package_id"/>
     </resultMap>
     <resultMap id="SysTenantPackageResultVo" autoMapping="true" type="org.dromara.system.domain.vo.SysTenantPackageVo">
+        <id property="packageId" column="package_id"/>
+        <collection property="menuIds" ofType="Long">
+            <result column="menu_id"/>
+        </collection>
     </resultMap>
 
     <sql id="selectSysTenantPackageVo">
-        select stp.package_id, stp.package_name, stp.menu_ids, stp.remark, stp.menu_check_strictly, stp.status, stp.del_flag, stp.create_dept, stp.create_by, stp.create_time, stp.update_by, stp.update_time from sys_tenant_package stp
+        select stp.package_id, stp.package_name, stp.remark, stp.menu_check_strictly, stp.status, stp.del_flag, stp.create_dept, stp.create_by, stp.create_time, stp.update_by, stp.update_time from sys_tenant_package stp
     </sql>
-    <select id="queryList" parameterType="org.dromara.system.domain.query.SysTenantPackageQuery" resultMap="SysTenantPackageResultVo">
+    <select id="queryList" parameterType="org.dromara.system.domain.query.SysTenantPackageQuery" resultMap="SysTenantPackageResultListVo">
         <include refid="selectSysTenantPackageVo"/>
         <where>
             and stp.del_flag = '0'
             <if test="packageName != null and packageName != ''"> and stp.package_name like concat('%', #{packageName}, '%')</if>
             <if test="status != null and status != ''"> and stp.status = #{status}</if>
         </where>
+    </select>
+    <select id="queryById" resultMap="SysTenantPackageResultVo">
+        select stp.package_id,
+               stp.package_name,
+               stp.remark,
+               stp.menu_check_strictly,
+               stp.status,
+               stp.del_flag,
+               stp.create_dept,
+               stp.create_by,
+               stp.create_time,
+               stp.update_by,
+               stp.update_time,
+               stpm.menu_id
+        from sys_tenant_package stp left join sys_tenant_package_menu stpm on stp.package_id = stpm.package_id
+        where stp.package_id = #{packageId}
     </select>
 </mapper>

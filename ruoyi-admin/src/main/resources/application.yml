@@ -173,6 +173,7 @@ tenant:
     - sys_menu
     - sys_tenant
     - sys_tenant_package
+    - sys_tenant_package_menu
     - sys_role_dept
     - sys_role_menu
     - sys_user_post

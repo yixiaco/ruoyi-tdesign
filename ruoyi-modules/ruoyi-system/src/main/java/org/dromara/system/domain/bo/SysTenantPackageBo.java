@@ -1,7 +1,6 @@
 package org.dromara.system.domain.bo;
 
 import io.github.linpeilie.annotations.AutoMapper;
-import io.github.linpeilie.annotations.AutoMapping;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
@@ -10,6 +9,8 @@ import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.system.domain.SysTenantPackage;
+
+import java.util.List;
 
 /**
  * 租户套餐业务对象 sys_tenant_package
@@ -25,20 +26,19 @@ public class SysTenantPackageBo extends BaseEntity {
     /**
      * 租户套餐id
      */
-    @NotNull(message = "租户套餐id不能为空", groups = { EditGroup.class })
+    @NotNull(message = "租户套餐id不能为空", groups = {EditGroup.class})
     private Long packageId;
 
     /**
      * 套餐名称
      */
-    @NotBlank(message = "套餐名称不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotBlank(message = "套餐名称不能为空", groups = {AddGroup.class, EditGroup.class})
     private String packageName;
 
     /**
      * 关联菜单id
      */
-    @AutoMapping(target = "menuIds", expression = "java(org.dromara.common.core.utils.StringUtils.join(source.getMenuIds(), \",\"))")
-    private Long[] menuIds;
+    private List<Long> menuIds;
 
     /**
      * 备注

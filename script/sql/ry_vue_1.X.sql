@@ -93,6 +93,16 @@ create table sys_tenant_package (
     primary key (package_id)
 ) engine=innodb comment = '租户套餐表';
 
+-- ----------------------------
+-- 租户套餐和菜单关联表
+-- ----------------------------
+DROP TABLE IF EXISTS sys_tenant_package_menu;
+CREATE TABLE sys_tenant_package_menu  (
+  package_id    bigint NOT NULL COMMENT '租户套餐id',
+  menu_id       bigint NOT NULL COMMENT '菜单id',
+  PRIMARY KEY (package_id, menu_id) USING BTREE
+) ENGINE = InnoDB COMMENT = '租户套餐和菜单关联表';
+
 
 -- ----------------------------
 -- 1、部门表

@@ -1,12 +1,10 @@
 package org.dromara.system.service.impl;
 
-import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
-import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysTenant;
@@ -16,12 +14,12 @@ import org.dromara.system.domain.query.SysTenantPackageQuery;
 import org.dromara.system.domain.vo.SysTenantPackageVo;
 import org.dromara.system.mapper.SysTenantMapper;
 import org.dromara.system.mapper.SysTenantPackageMapper;
+import org.dromara.system.service.ISysTenantPackageMenuService;
 import org.dromara.system.service.ISysTenantPackageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -35,13 +33,15 @@ public class SysTenantPackageServiceImpl extends ServiceImpl<SysTenantPackageMap
 
     @Autowired
     private SysTenantMapper tenantMapper;
+    @Autowired
+    private ISysTenantPackageMenuService tenantPackageMenuService;
 
     /**
      * 查询租户套餐
      */
     @Override
     public SysTenantPackageVo queryById(Long packageId) {
-        return baseMapper.selectVoById(packageId);
+        return baseMapper.queryById(packageId);
     }
 
     /**
@@ -73,16 +73,11 @@ public class SysTenantPackageServiceImpl extends ServiceImpl<SysTenantPackageMap
     @Transactional(rollbackFor = Exception.class)
     public Boolean insertByBo(SysTenantPackageBo bo) {
         SysTenantPackage add = MapstructUtils.convert(bo, SysTenantPackage.class);
-        // 保存菜单id
-        List<Long> menuIds = Arrays.asList(bo.getMenuIds());
-        if (CollUtil.isNotEmpty(menuIds)) {
-            add.setMenuIds(StringUtils.join(menuIds, ", "));
-        } else {
-            add.setMenuIds("");
-        }
         boolean flag = baseMapper.insert(add) > 0;
         if (flag) {
             bo.setPackageId(add.getPackageId());
+            // 保存菜单id
+            tenantPackageMenuService.add(add.getPackageId(), bo.getMenuIds());
         }
         return flag;
     }
@@ -94,14 +89,12 @@ public class SysTenantPackageServiceImpl extends ServiceImpl<SysTenantPackageMap
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateByBo(SysTenantPackageBo bo) {
         SysTenantPackage update = MapstructUtils.convert(bo, SysTenantPackage.class);
-        // 保存菜单id
-        List<Long> menuIds = Arrays.asList(bo.getMenuIds());
-        if (CollUtil.isNotEmpty(menuIds)) {
-            update.setMenuIds(StringUtils.join(menuIds, ", "));
-        } else {
-            update.setMenuIds("");
+        boolean b = updateById(update);
+        if (b) {
+            // 保存菜单id
+            tenantPackageMenuService.update(bo.getPackageId(), bo.getMenuIds());
         }
-        return baseMapper.updateById(update) > 0;
+        return b;
     }
 
     /**

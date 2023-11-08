@@ -13,6 +13,7 @@ import org.dromara.system.domain.SysTenantPackage;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
 
 
 /**
@@ -44,7 +45,7 @@ public class SysTenantPackageVo implements Serializable {
      * 关联菜单id
      */
     @ExcelProperty(value = "关联菜单id")
-    private String menuIds;
+    private List<Long> menuIds;
 
     /**
      * 备注
@@ -62,7 +63,7 @@ public class SysTenantPackageVo implements Serializable {
      * 状态（1正常 0停用）
      */
     @ExcelProperty(value = "状态", converter = ExcelDictConvert.class)
-    @ExcelDictFormat(readConverterExp = "0=正常,1=停用")
+    @ExcelDictFormat(dictType = "sys_normal_disable")
     private String status;
 
     /**

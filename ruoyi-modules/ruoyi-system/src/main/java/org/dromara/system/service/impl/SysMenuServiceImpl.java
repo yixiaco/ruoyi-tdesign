@@ -22,17 +22,17 @@ import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.system.domain.SysMenu;
 import org.dromara.system.domain.SysRole;
 import org.dromara.system.domain.SysRoleMenu;
-import org.dromara.system.domain.SysTenantPackage;
 import org.dromara.system.domain.bo.SysMenuBo;
 import org.dromara.system.domain.query.SysMenuQuery;
 import org.dromara.system.domain.vo.MetaVo;
 import org.dromara.system.domain.vo.RouterVo;
 import org.dromara.system.domain.vo.SysMenuVo;
+import org.dromara.system.domain.vo.SysTenantPackageVo;
 import org.dromara.system.mapper.SysMenuMapper;
 import org.dromara.system.mapper.SysRoleMapper;
 import org.dromara.system.mapper.SysRoleMenuMapper;
-import org.dromara.system.mapper.SysTenantPackageMapper;
 import org.dromara.system.service.ISysMenuService;
+import org.dromara.system.service.ISysTenantPackageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -57,7 +57,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     @Autowired
     private SysRoleMenuMapper roleMenuMapper;
     @Autowired
-    private SysTenantPackageMapper tenantPackageMapper;
+    private ISysTenantPackageService tenantPackageService;
 
     /**
      * 根据用户查询系统菜单列表
@@ -169,8 +169,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public List<Long> selectMenuListByPackageId(Long packageId) {
-        SysTenantPackage tenantPackage = tenantPackageMapper.selectById(packageId);
-        List<Long> menuIds = StringUtils.splitTo(tenantPackage.getMenuIds(), Convert::toLong);
+        SysTenantPackageVo tenantPackage = tenantPackageService.queryById(packageId);
+        List<Long> menuIds = tenantPackage.getMenuIds();
         if (CollUtil.isEmpty(menuIds)) {
             return List.of();
         }
