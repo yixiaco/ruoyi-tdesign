@@ -34,6 +34,8 @@ import static org.dromara.common.satoken.utils.MultipleStpUtil.*;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginHelper {
 
+    public static final String CLIENT_KEY = "clientId";
+
     /**
      * 获取登录类型
      *

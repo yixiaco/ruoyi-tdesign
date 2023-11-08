@@ -31,14 +31,14 @@ public class SysOssBo extends BaseEntity {
      * 原名
      */
     @NotBlank(message = "原名不能为空", groups = {EditGroup.class})
-    @Pattern(regexp = "^[^.][^\\\\/<>:?\"|*]*$", message = "文件名不能包含下列任何字符：\\/<>:?\"|*")
+    @Pattern(regexp = "^[^.][^\\\\/<>:?\"|*]*$", message = "文件名不能包含下列任何字符：\\/<>:?\"|*", groups = {AddGroup.class, EditGroup.class})
     private String originalName;
 
     /**
      * 分类id
      */
     @NotNull(message = "分类id不能为空", groups = {AddGroup.class, EditGroup.class})
-    @Min(value = 0, message = "分类id不能小于0")
+    @Min(value = 0, message = "分类id不能小于0", groups = {AddGroup.class, EditGroup.class})
     private Long ossCategoryId = 0L;
 
     /**
@@ -50,7 +50,7 @@ public class SysOssBo extends BaseEntity {
      * 是否锁定状态
      */
     @NotNull(message = "是否锁定状态不能为空", groups = {AddGroup.class, EditGroup.class})
-    @Range(min = 0, max = 1, message = "锁定状态错误")
+    @Range(min = 0, max = 1, message = "锁定状态错误", groups = {AddGroup.class, EditGroup.class})
     private Integer isLock = 0;
 
     /**

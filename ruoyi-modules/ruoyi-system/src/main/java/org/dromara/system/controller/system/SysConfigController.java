@@ -6,6 +6,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotNull;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.helper.SysConfigHelper;
+import org.dromara.common.core.validate.AddGroup;
+import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.excel.utils.ExcelUtil;
 import org.dromara.common.idempotent.annotation.RepeatSubmit;
 import org.dromara.common.log.annotation.Log;
@@ -83,7 +85,7 @@ public class SysConfigController extends BaseController {
     @SaCheckPermission("system:config:add")
     @Log(title = "参数管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public R<Void> add(@Validated @RequestBody SysConfigBo config) {
+    public R<Void> add(@Validated(AddGroup.class) @RequestBody SysConfigBo config) {
         if (!configService.checkConfigKeyUnique(config)) {
             return R.fail("新增参数'" + config.getConfigName() + "'失败，参数键名已存在");
         }
@@ -97,7 +99,7 @@ public class SysConfigController extends BaseController {
     @SaCheckPermission("system:config:edit")
     @Log(title = "参数管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public R<Void> edit(@Validated @RequestBody SysConfigBo config) {
+    public R<Void> edit(@Validated(EditGroup.class) @RequestBody SysConfigBo config) {
         if (!configService.checkConfigKeyUnique(config)) {
             return R.fail("修改参数'" + config.getConfigName() + "'失败，参数键名已存在");
         }
@@ -111,7 +113,7 @@ public class SysConfigController extends BaseController {
     @SaCheckPermission("system:config:edit")
     @Log(title = "参数管理", businessType = BusinessType.UPDATE)
     @PutMapping("/updateByKey")
-    public R<Void> updateByKey(@RequestBody SysConfigBo config) {
+    public R<Void> updateByKey(@Validated(EditGroup.class) @RequestBody SysConfigBo config) {
         configService.updateConfigs(config);
         return R.ok();
     }
@@ -159,7 +161,7 @@ public class SysConfigController extends BaseController {
     @Log(title = "参数管理", businessType = BusinessType.UPDATE)
     @RepeatSubmit()
     @PutMapping("/updateConfigs")
-    public R<Void> updateConfigs(@RequestBody List<SysConfigBo> configs) {
+    public R<Void> updateConfigs(@Validated(EditGroup.class) @RequestBody List<SysConfigBo> configs) {
         configService.updateConfigs(configs);
         return R.ok();
     }

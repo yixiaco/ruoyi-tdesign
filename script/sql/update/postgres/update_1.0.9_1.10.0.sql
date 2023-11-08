@@ -12,3 +12,10 @@ alter table sys_message_log drop column biz_id;
 alter table sys_message_log drop column message;
 alter table sys_message_log add response_body varchar(1000);
 comment on column sys_message_log.response_body is '返回主体消息';
+
+ALTER TABLE sys_logininfor ADD client_key varchar(32) default ''::varchar;
+COMMENT ON COLUMN sys_logininfor.client_key IS '客户端';
+ALTER TABLE sys_logininfor ADD device_type varchar(32) default ''::varchar;
+COMMENT ON COLUMN sys_logininfor.device_type IS '设备类型';
+
+UPDATE sys_dict_data SET list_class='primary' WHERE dict_type = 'sys_device_type';

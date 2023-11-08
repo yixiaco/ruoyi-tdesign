@@ -71,8 +71,7 @@ public class SysTenantController extends BaseController {
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @SaCheckPermission("system:tenant:query")
     @GetMapping("/{id}")
-    public R<SysTenantVo> getInfo(@NotNull(message = "主键不能为空")
-                                     @PathVariable Long id) {
+    public R<SysTenantVo> getInfo(@NotNull(message = "主键不能为空") @PathVariable Long id) {
         return R.ok(tenantService.queryById(id));
     }
 
@@ -129,8 +128,7 @@ public class SysTenantController extends BaseController {
     @SaCheckPermission("system:tenant:remove")
     @Log(title = "租户", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
-    public R<Void> remove(@NotEmpty(message = "主键不能为空")
-                          @PathVariable Long[] ids) {
+    public R<Void> remove(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
         return toAjax(tenantService.deleteWithValidByIds(List.of(ids), true));
     }
 

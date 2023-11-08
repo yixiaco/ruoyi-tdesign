@@ -2,7 +2,10 @@ package org.dromara.system.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotEmpty;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.validate.AddGroup;
+import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.excel.utils.ExcelUtil;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
@@ -81,7 +84,7 @@ public class SysRoleController extends BaseController {
     @SaCheckPermission("system:role:add")
     @Log(title = "角色管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public R<Void> add(@Validated @RequestBody SysRoleBo role) {
+    public R<Void> add(@Validated(AddGroup.class) @RequestBody SysRoleBo role) {
         roleService.checkRoleAllowed(role);
         if (!roleService.checkRoleNameUnique(role)) {
             return R.fail("新增角色'" + role.getRoleName() + "'失败，角色名称已存在");
@@ -97,7 +100,7 @@ public class SysRoleController extends BaseController {
     @SaCheckPermission("system:role:edit")
     @Log(title = "角色管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public R<Void> edit(@Validated @RequestBody SysRoleBo role) {
+    public R<Void> edit(@Validated(EditGroup.class) @RequestBody SysRoleBo role) {
         roleService.checkRoleAllowed(role);
         roleService.checkRoleDataScope(role.getRoleId());
         if (!roleService.checkRoleNameUnique(role)) {
@@ -145,7 +148,7 @@ public class SysRoleController extends BaseController {
     @SaCheckPermission("system:role:remove")
     @Log(title = "角色管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{roleIds}")
-    public R<Void> remove(@PathVariable Long[] roleIds) {
+    public R<Void> remove(@NotEmpty(message = "角色id不能为空") @PathVariable Long[] roleIds) {
         return toAjax(roleService.deleteRoleByIds(roleIds));
     }
 

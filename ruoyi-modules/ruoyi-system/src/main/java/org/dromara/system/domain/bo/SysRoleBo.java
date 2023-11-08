@@ -35,14 +35,14 @@ public class SysRoleBo extends BaseEntity {
      * 角色名称
      */
     @NotBlank(message = "角色名称不能为空", groups = {AddGroup.class, EditGroup.class})
-    @Size(min = 0, max = 30, message = "角色名称长度不能超过{max}个字符")
+    @Size(min = 0, max = 30, message = "角色名称长度不能超过{max}个字符", groups = {AddGroup.class, EditGroup.class})
     private String roleName;
 
     /**
      * 角色权限字符串
      */
     @NotBlank(message = "角色权限字符串不能为空", groups = {AddGroup.class, EditGroup.class})
-    @Size(min = 0, max = 100, message = "权限字符长度不能超过{max}个字符")
+    @Size(min = 0, max = 100, message = "权限字符长度不能超过{max}个字符", groups = {AddGroup.class, EditGroup.class})
     private String roleKey;
 
     /**

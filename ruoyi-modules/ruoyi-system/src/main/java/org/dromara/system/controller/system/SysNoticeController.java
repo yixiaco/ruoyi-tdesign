@@ -2,7 +2,11 @@ package org.dromara.system.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.validate.AddGroup;
+import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.excel.utils.ExcelUtil;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
@@ -58,7 +62,7 @@ public class SysNoticeController extends BaseController {
      */
     @SaCheckPermission("system:notice:query")
     @GetMapping(value = "/{noticeId}")
-    public R<SysNoticeVo> getInfo(@PathVariable Long noticeId) {
+    public R<SysNoticeVo> getInfo(@NotNull(message = "公告id不能为空") @PathVariable Long noticeId) {
         return R.ok(noticeService.selectNoticeById(noticeId));
     }
 
@@ -68,7 +72,7 @@ public class SysNoticeController extends BaseController {
     @SaCheckPermission("system:notice:add")
     @Log(title = "通知公告", businessType = BusinessType.INSERT)
     @PostMapping
-    public R<Void> add(@Validated @RequestBody SysNoticeBo notice) {
+    public R<Void> add(@Validated(AddGroup.class) @RequestBody SysNoticeBo notice) {
         return toAjax(noticeService.insertNotice(notice));
     }
 
@@ -78,7 +82,7 @@ public class SysNoticeController extends BaseController {
     @SaCheckPermission("system:notice:edit")
     @Log(title = "通知公告", businessType = BusinessType.UPDATE)
     @PutMapping
-    public R<Void> edit(@Validated @RequestBody SysNoticeBo notice) {
+    public R<Void> edit(@Validated(EditGroup.class) @RequestBody SysNoticeBo notice) {
         return toAjax(noticeService.updateNotice(notice));
     }
 
@@ -90,7 +94,7 @@ public class SysNoticeController extends BaseController {
     @SaCheckPermission("system:notice:remove")
     @Log(title = "通知公告", businessType = BusinessType.DELETE)
     @DeleteMapping("/{noticeIds}")
-    public R<Void> remove(@PathVariable Long[] noticeIds) {
+    public R<Void> remove(@NotEmpty(message = "主键不能为空") @PathVariable Long[] noticeIds) {
         return toAjax(noticeService.deleteNoticeByIds(noticeIds));
     }
 }

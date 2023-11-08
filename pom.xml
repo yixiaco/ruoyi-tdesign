@@ -23,7 +23,7 @@
         <spring-boot.mybatis>3.0.2</spring-boot.mybatis>
         <springdoc.version>2.2.0</springdoc.version>
         <therapi-javadoc.version>0.15.0</therapi-javadoc.version>
-        <poi.version>5.2.4</poi.version>
+        <poi.version>5.2.3</poi.version>
         <easyexcel.version>3.3.2</easyexcel.version>
         <velocity.version>2.3</velocity.version>
         <satoken.version>1.37.0</satoken.version>
@@ -46,13 +46,12 @@
         <!-- 离线IP地址定位库 -->
         <ip2region.version>2.7.0</ip2region.version>
 
-        <!-- 临时修复 snakeyaml 漏洞 -->
-        <snakeyaml.version>2.1</snakeyaml.version>
-
         <!-- OSS 配置 -->
         <aws-java-sdk-s3.version>1.12.581</aws-java-sdk-s3.version>
         <!-- SMS 配置 -->
         <sms4j.version>3.0.3</sms4j.version>
+        <!-- 限制框架中的fastjson版本 -->
+        <fastjson.version>1.2.83</fastjson.version>
 
         <!-- 插件版本 -->
         <maven-jar-plugin.version>3.2.2</maven-jar-plugin.version>
@@ -296,13 +295,6 @@
                 <version>${alibaba-ttl.version}</version>
             </dependency>
 
-            <!-- 临时修复 snakeyaml 漏洞 -->
-            <dependency>
-                <groupId>org.yaml</groupId>
-                <artifactId>snakeyaml</artifactId>
-                <version>${snakeyaml.version}</version>
-            </dependency>
-
             <!-- 加密包引入 -->
             <dependency>
                 <groupId>org.bouncycastle</groupId>
@@ -321,6 +313,12 @@
                 <groupId>org.lionsoul</groupId>
                 <artifactId>ip2region</artifactId>
                 <version>${ip2region.version}</version>
+            </dependency>
+
+            <dependency>
+                <groupId>com.alibaba</groupId>
+                <artifactId>fastjson</artifactId>
+                <version>${fastjson.version}</version>
             </dependency>
 
             <!-- 定时任务 -->

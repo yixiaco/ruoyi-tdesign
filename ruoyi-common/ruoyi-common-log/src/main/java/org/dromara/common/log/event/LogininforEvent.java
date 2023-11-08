@@ -1,6 +1,5 @@
 package org.dromara.common.log.event;
 
-import jakarta.servlet.http.HttpServletRequest;
 import lombok.Data;
 
 import java.io.Serial;
@@ -38,11 +37,6 @@ public class LogininforEvent implements Serializable {
     private String message;
 
     /**
-     * 请求体
-     */
-    private HttpServletRequest request;
-
-    /**
      * ip
      */
     private String ip;
@@ -56,6 +50,11 @@ public class LogininforEvent implements Serializable {
      * 客户端浏览器
      */
     private String browser;
+
+    /**
+     * 客户端id
+     */
+    private String clientId;
 
     /**
      * 其他参数

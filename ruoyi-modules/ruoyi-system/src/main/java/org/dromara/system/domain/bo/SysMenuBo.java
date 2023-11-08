@@ -33,7 +33,7 @@ public class SysMenuBo extends BaseEntity {
      * 菜单名称
      */
     @NotBlank(message = "菜单名称不能为空", groups = { AddGroup.class, EditGroup.class })
-    @Size(min = 0, max = 50, message = "菜单名称长度不能超过{max}个字符")
+    @Size(min = 0, max = 50, message = "菜单名称长度不能超过{max}个字符", groups = {AddGroup.class, EditGroup.class})
     private String menuName;
 
     /**
@@ -50,13 +50,13 @@ public class SysMenuBo extends BaseEntity {
     /**
      * 路由地址
      */
-    @Size(min = 0, max = 200, message = "路由地址不能超过{max}个字符")
+    @Size(min = 0, max = 200, message = "路由地址不能超过{max}个字符", groups = {AddGroup.class, EditGroup.class})
     private String path;
 
     /**
      * 组件路径
      */
-    @Size(min = 0, max = 200, message = "组件路径不能超过{max}个字符")
+    @Size(min = 0, max = 200, message = "组件路径不能超过{max}个字符", groups = {AddGroup.class, EditGroup.class})
     private String component;
 
     /**
@@ -94,7 +94,7 @@ public class SysMenuBo extends BaseEntity {
      * 权限标识
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Size(min = 0, max = 100, message = "权限标识长度不能超过{max}个字符")
+    @Size(min = 0, max = 100, message = "权限标识长度不能超过{max}个字符", groups = {AddGroup.class, EditGroup.class})
     private String perms;
 
     /**

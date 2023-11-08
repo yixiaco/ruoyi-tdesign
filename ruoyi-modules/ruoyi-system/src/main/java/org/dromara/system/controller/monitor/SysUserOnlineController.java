@@ -15,7 +15,11 @@ import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.SysUserOnline;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Collections;

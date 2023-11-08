@@ -281,6 +281,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
         headers: {
           'Content-Type': ContentTypeEnum.Json,
           'Content-Language': 'zh_CN',
+          clientId: import.meta.env.VITE_CLIENT_ID,
         },
         baseURL: import.meta.env.VITE_APP_BASE_API,
         // 数据处理方式

@@ -3,9 +3,13 @@ package org.dromara.system.controller.system;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.convert.Convert;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.core.validate.AddGroup;
+import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.excel.utils.ExcelUtil;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
@@ -75,7 +79,7 @@ public class SysDeptController extends BaseController {
      */
     @SaCheckPermission("system:dept:query")
     @GetMapping(value = "/{deptId}")
-    public R<SysDeptVo> getInfo(@PathVariable Long deptId) {
+    public R<SysDeptVo> getInfo(@NotEmpty(message = "部门id不能为空") @PathVariable Long deptId) {
         deptService.checkDeptDataScope(deptId);
         return R.ok(deptService.selectDeptById(deptId));
     }
@@ -86,7 +90,7 @@ public class SysDeptController extends BaseController {
     @SaCheckPermission("system:dept:add")
     @Log(title = "部门管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public R<Void> add(@Validated @RequestBody SysDeptBo dept) {
+    public R<Void> add(@Validated(AddGroup.class) @RequestBody SysDeptBo dept) {
         if (!deptService.checkDeptNameUnique(dept)) {
             return R.fail("新增部门'" + dept.getDeptName() + "'失败，部门名称已存在");
         }
@@ -99,7 +103,7 @@ public class SysDeptController extends BaseController {
     @SaCheckPermission("system:dept:edit")
     @Log(title = "部门管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public R<Void> edit(@Validated @RequestBody SysDeptBo dept) {
+    public R<Void> edit(@Validated(EditGroup.class) @RequestBody SysDeptBo dept) {
         Long deptId = dept.getDeptId();
         deptService.checkDeptDataScope(deptId);
         if (!deptService.checkDeptNameUnique(dept)) {
@@ -124,7 +128,7 @@ public class SysDeptController extends BaseController {
     @SaCheckPermission("system:dept:remove")
     @Log(title = "部门管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{deptId}")
-    public R<Void> remove(@PathVariable Long deptId) {
+    public R<Void> remove(@NotNull(message = "部门id不能为空") @PathVariable Long deptId) {
         if (deptService.hasChildByDeptId(deptId)) {
             return R.warn("存在下级部门,不允许删除");
         }

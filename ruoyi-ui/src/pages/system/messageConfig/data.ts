@@ -510,7 +510,7 @@ const neteaseSmsConfig: NeteaseSmsConfig = {
     help: '是否需要支持短信上行。true:需要，false:不需要 说明：如果开通了短信上行抄送功能，该参数需要设置为true，其它情况设置无效\n',
   },
 };
-/** 网易云短信配置 */
+/** 助通短信配置 */
 const zhutongSmsConfig: ZhutongSmsConfig = {
   accessKeyId: {
     component: 'input',

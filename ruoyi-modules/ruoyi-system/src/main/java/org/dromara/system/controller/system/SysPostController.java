@@ -2,8 +2,12 @@ package org.dromara.system.controller.system;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.enums.NormalDisableEnum;
+import org.dromara.common.core.validate.AddGroup;
+import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.excel.utils.ExcelUtil;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
@@ -60,7 +64,7 @@ public class SysPostController extends BaseController {
      */
     @SaCheckPermission("system:post:query")
     @GetMapping(value = "/{postId}")
-    public R<SysPostVo> getInfo(@PathVariable Long postId) {
+    public R<SysPostVo> getInfo(@NotNull(message = "岗位id不能为空") @PathVariable Long postId) {
         return R.ok(postService.selectPostById(postId));
     }
 
@@ -70,7 +74,7 @@ public class SysPostController extends BaseController {
     @SaCheckPermission("system:post:add")
     @Log(title = "岗位管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public R<Void> add(@Validated @RequestBody SysPostBo post) {
+    public R<Void> add(@Validated(AddGroup.class) @RequestBody SysPostBo post) {
         if (!postService.checkPostNameUnique(post)) {
             return R.fail("新增岗位'" + post.getPostName() + "'失败，岗位名称已存在");
         } else if (!postService.checkPostCodeUnique(post)) {
@@ -85,7 +89,7 @@ public class SysPostController extends BaseController {
     @SaCheckPermission("system:post:edit")
     @Log(title = "岗位管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public R<Void> edit(@Validated @RequestBody SysPostBo post) {
+    public R<Void> edit(@Validated(EditGroup.class) @RequestBody SysPostBo post) {
         if (!postService.checkPostNameUnique(post)) {
             return R.fail("修改岗位'" + post.getPostName() + "'失败，岗位名称已存在");
         } else if (!postService.checkPostCodeUnique(post)) {
@@ -105,7 +109,7 @@ public class SysPostController extends BaseController {
     @SaCheckPermission("system:post:remove")
     @Log(title = "岗位管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{postIds}")
-    public R<Void> remove(@PathVariable Long[] postIds) {
+    public R<Void> remove(@NotEmpty(message = "主键不能为空") @PathVariable Long[] postIds) {
         return toAjax(postService.deletePostByIds(postIds));
     }
 

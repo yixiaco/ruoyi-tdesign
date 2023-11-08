@@ -25,9 +25,23 @@
             <t-option v-for="dict in sys_common_status" :key="dict.value" :label="dict.label" :value="dict.value" />
           </t-select>
         </t-form-item>
-        <t-form-item label="登录时间" style="width: 308px">
+        <t-form-item label="客户端" name="clientKey">
+          <t-input v-model="queryParams.clientKey" placeholder="请输入客户端" clearable @enter="handleQuery" />
+        </t-form-item>
+        <t-form-item label="设备类型" name="deviceType">
+          <t-select v-model="queryParams.deviceType" placeholder="请选择设备类型" clearable>
+            <t-option
+              v-for="dict in sys_device_type"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </t-select>
+        </t-form-item>
+        <t-form-item label="登录时间">
           <t-date-range-picker
             v-model="dateRange"
+            style="width: 240px"
             allow-input
             clearable
             separator="-"
@@ -120,6 +134,9 @@
         <template #status="{ row }">
           <dict-tag :options="sys_common_status" :value="row.status" />
         </template>
+        <template #deviceType="{ row }">
+          <dict-tag :options="sys_device_type" :value="row.deviceType" />
+        </template>
         <template #loginTime="{ row }">
           <span>{{ parseTime(row.loginTime) }}</span>
         </template>
@@ -175,6 +192,14 @@
               </t-form-item>
             </t-col>
             <t-col :span="6">
+              <t-form-item label="客户端">{{ form.clientKey }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="设备类型">
+                <dict-tag :options="sys_device_type" :value="form.deviceType" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
               <t-form-item label="提示消息">{{ form.msg }}</t-form-item>
             </t-col>
             <t-col :span="6">
@@ -213,7 +238,7 @@ import {
 import type { SysLogininforQuery, SysLogininforVo } from '@/api/monitor/model/logininforModel';
 
 const { proxy } = getCurrentInstance();
-const { sys_common_status } = proxy.useDict('sys_common_status');
+const { sys_common_status, sys_device_type } = proxy.useDict('sys_common_status', 'sys_device_type');
 
 const openView = ref(false);
 const openViewLoading = ref(false);
@@ -239,6 +264,8 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作系统`, colKey: 'os', align: 'center', sorter: true, ellipsis: true },
   { title: `浏览器`, colKey: 'browser', align: 'center', ellipsis: true },
   { title: `登录状态`, colKey: 'status', align: 'center' },
+  { title: `客户端`, colKey: 'clientKey', align: 'center' },
+  { title: `设备类型`, colKey: 'deviceType', align: 'center' },
   { title: `描述`, colKey: 'msg', align: 'center' },
   { title: `访问时间`, colKey: 'loginTime', align: 'center', width: 180, sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center', width: 160 },
@@ -249,13 +276,14 @@ const form = ref<SysLogininforVo>({});
 const queryParams = ref<SysLogininforQuery>({
   pageNum: 1,
   pageSize: 10,
-  ipaddr: undefined,
   userName: undefined,
+  ipaddr: undefined,
   status: undefined,
+  clientKey: undefined,
+  deviceType: undefined,
   orderByColumn: undefined,
   isAsc: undefined,
 });
-
 // 分页
 const pagination = computed(() => {
   return {
@@ -326,7 +354,7 @@ function handleDetail(row: SysLogininforVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const infoId = row.infoId || ids.value.at(0);
+  const infoId = row.infoId;
   getLogininfor(infoId).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;

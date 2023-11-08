@@ -5,10 +5,13 @@ import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.lang.tree.Tree;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotNull;
 import org.dromara.common.core.constant.TenantConstants;
 import org.dromara.common.core.constant.UserConstants;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.core.validate.AddGroup;
+import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.excel.utils.ExcelUtil;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
@@ -87,7 +90,7 @@ public class SysMenuController extends BaseController {
     }, mode = SaMode.OR)
     @SaCheckPermission("system:menu:query")
     @GetMapping(value = "/{menuId}")
-    public R<SysMenuVo> getInfo(@PathVariable Long menuId) {
+    public R<SysMenuVo> getInfo(@NotNull(message = "菜单id不能为空") @PathVariable Long menuId) {
         return R.ok(menuService.selectMenuById(menuId));
     }
 
@@ -139,7 +142,7 @@ public class SysMenuController extends BaseController {
     @SaCheckPermission("system:menu:add")
     @Log(title = "菜单管理", businessType = BusinessType.INSERT)
     @PostMapping
-    public R<Void> add(@Validated @RequestBody SysMenuBo menu) {
+    public R<Void> add(@Validated(AddGroup.class) @RequestBody SysMenuBo menu) {
         if (!menuService.checkMenuNameUnique(menu)) {
             return R.fail("新增菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
         } else if (UserConstants.YES_FRAME.equals(menu.getIsFrame()) && !StringUtils.ishttp(menu.getPath())) {
@@ -155,7 +158,7 @@ public class SysMenuController extends BaseController {
     @SaCheckPermission("system:menu:edit")
     @Log(title = "菜单管理", businessType = BusinessType.UPDATE)
     @PutMapping
-    public R<Void> edit(@Validated @RequestBody SysMenuBo menu) {
+    public R<Void> edit(@Validated(EditGroup.class) @RequestBody SysMenuBo menu) {
         if (!menuService.checkMenuNameUnique(menu)) {
             return R.fail("修改菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
         } else if (UserConstants.YES_FRAME.equals(menu.getIsFrame()) && !StringUtils.ishttp(menu.getPath())) {
@@ -175,7 +178,7 @@ public class SysMenuController extends BaseController {
     @SaCheckPermission("system:menu:remove")
     @Log(title = "菜单管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{menuId}")
-    public R<Void> remove(@PathVariable("menuId") Long menuId) {
+    public R<Void> remove(@NotNull(message = "主键不能为空") @PathVariable("menuId") Long menuId) {
         if (menuService.hasChildByMenuId(menuId)) {
             return R.warn("存在子菜单,不允许删除");
         }

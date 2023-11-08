@@ -137,6 +137,7 @@ public class SysLoginService {
         HttpServletRequest request = ServletUtils.getRequest();
         final UserAgent userAgent = UserAgentUtil.parse(request.getHeader(Header.USER_AGENT.getValue()));
         final String ip = ServletUtils.getClientIP(request);
+        String clientId = request.getHeader(LoginHelper.CLIENT_KEY);
         // 获取客户端操作系统
         String os = userAgent.getOs().getName();
         // 获取客户端浏览器
@@ -150,6 +151,7 @@ public class SysLoginService {
         logininforEvent.setIp(ip);
         logininforEvent.setOs(os);
         logininforEvent.setBrowser(browser);
+        logininforEvent.setClientId(clientId);
         SpringUtils.context().publishEvent(logininforEvent);
     }
 

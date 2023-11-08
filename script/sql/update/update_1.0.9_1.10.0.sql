@@ -12,3 +12,9 @@ DROP COLUMN error_message,
 DROP COLUMN biz_id,
 DROP COLUMN message,
 ADD COLUMN response_body varchar(1000) NULL COMMENT '返回主体消息' AFTER is_success;
+
+ALTER TABLE sys_logininfor
+    ADD COLUMN client_key VARCHAR(32)  NULL DEFAULT NULL COMMENT '客户端' AFTER status,
+    ADD COLUMN device_type VARCHAR(32) NULL DEFAULT NULL COMMENT '设备类型' AFTER client_key;
+
+UPDATE sys_dict_data SET list_class='primary' WHERE dict_type = 'sys_device_type';

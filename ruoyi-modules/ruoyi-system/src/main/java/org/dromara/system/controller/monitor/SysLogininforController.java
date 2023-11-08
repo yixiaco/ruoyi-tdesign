@@ -2,6 +2,8 @@ package org.dromara.system.controller.monitor;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.domain.R;
@@ -71,12 +73,13 @@ public class SysLogininforController extends BaseController {
 
     /**
      * 批量删除登录日志
+     *
      * @param infoIds 日志ids
      */
     @SaCheckPermission("monitor:logininfor:remove")
     @Log(title = "登录日志", businessType = BusinessType.DELETE)
     @DeleteMapping("/{infoIds}")
-    public R<Void> remove(@PathVariable Long[] infoIds) {
+    public R<Void> remove(@NotEmpty(message = "日志id不能为空") @PathVariable Long[] infoIds) {
         return toAjax(logininforService.deleteLogininforByIds(infoIds));
     }
 
@@ -94,7 +97,7 @@ public class SysLogininforController extends BaseController {
     @SaCheckPermission("monitor:logininfor:unlock")
     @Log(title = "账户解锁", businessType = BusinessType.OTHER)
     @GetMapping("/unlock/{userName}")
-    public R<Void> unlock(@PathVariable("userName") String userName) {
+    public R<Void> unlock(@NotBlank(message = "用户名不能为空") @PathVariable("userName") String userName) {
         String loginName = GlobalConstants.PWD_ERR_CNT_KEY + userName;
         if (RedisUtils.hasKey(loginName)) {
             RedisUtils.deleteObject(loginName);

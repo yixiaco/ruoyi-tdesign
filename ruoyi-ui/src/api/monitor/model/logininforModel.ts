@@ -10,6 +10,10 @@ export interface SysLogininforQuery extends BaseEntity {
   ipaddr?: string;
   /** 登录状态（1成功 0失败） */
   status?: string;
+  /** 客户端 */
+  clientKey?: string;
+  /** 设备类型 */
+  deviceType?: string;
 }
 /**
  * 系统访问记录视图对象
@@ -29,6 +33,10 @@ export interface SysLogininforVo {
   os?: string;
   /** 登录状态（1成功 0失败） */
   status?: string;
+  /** 客户端 */
+  clientKey?: string;
+  /** 设备类型 */
+  deviceType?: string;
   /** 提示消息 */
   msg?: string;
   /** 访问时间 */

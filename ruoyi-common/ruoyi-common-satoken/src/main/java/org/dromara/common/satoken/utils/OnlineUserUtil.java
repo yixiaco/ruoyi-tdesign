@@ -32,6 +32,8 @@ public class OnlineUserUtil {
         dto.setTokenId(tokenValue);
         dto.setUserName(user.getUsername());
         dto.setDeptName(user.getDeptName());
+        dto.setClientKey(user.getClientKey());
+        dto.setDeviceType(user.getDeviceType());
         return dto;
     }
 }

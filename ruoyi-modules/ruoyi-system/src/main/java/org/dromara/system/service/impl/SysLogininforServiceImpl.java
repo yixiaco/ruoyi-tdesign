@@ -1,5 +1,6 @@
 package org.dromara.system.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
@@ -11,13 +12,17 @@ import org.dromara.common.core.utils.ip.AddressUtils;
 import org.dromara.common.log.event.LogininforEvent;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.tenant.helper.TenantHelper;
+import org.dromara.system.domain.SysClient;
 import org.dromara.system.domain.SysLogininfor;
 import org.dromara.system.domain.bo.SysLogininforBo;
 import org.dromara.system.domain.query.SysLogininforQuery;
 import org.dromara.system.domain.vo.SysLogininforVo;
 import org.dromara.system.mapper.SysLogininforMapper;
+import org.dromara.system.service.ISysClientService;
 import org.dromara.system.service.ISysLogininforService;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -35,6 +40,9 @@ import java.util.List;
 @Slf4j
 @Service
 public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, SysLogininfor> implements ISysLogininforService {
+
+    @Autowired
+    private ISysClientService clientService;
 
     /**
      * 查询系统访问记录
@@ -56,6 +64,12 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
     @EventListener
     public void recordLogininfor(LogininforEvent logininforEvent) {
         String ip = logininforEvent.getIp();
+        String clientId = logininforEvent.getClientId();
+        // 客户端信息
+        SysClient client = null;
+        if (StringUtils.isNotBlank(clientId)) {
+            client = clientService.queryByClientId(clientId);
+        }
 
         String address = AddressUtils.getRealAddressByIP(ip);
         StringBuilder s = new StringBuilder();
@@ -75,6 +89,10 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
         logininfor.setBrowser(logininforEvent.getBrowser());
         logininfor.setOs(logininforEvent.getOs());
         logininfor.setMsg(logininforEvent.getMessage());
+        if (ObjectUtil.isNotNull(client)) {
+            logininfor.setClientKey(client.getClientKey());
+            logininfor.setDeviceType(client.getDeviceType());
+        }
         // 日志状态
         if (StringUtils.equalsAny(logininforEvent.getStatus(), Constants.LOGIN_SUCCESS, Constants.LOGOUT, Constants.REGISTER)) {
             logininfor.setStatus(CommonStatusEnum.SUCCESS.getCode());

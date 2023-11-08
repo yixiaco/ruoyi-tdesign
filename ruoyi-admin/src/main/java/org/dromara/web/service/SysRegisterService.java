@@ -18,6 +18,7 @@ import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.log.event.LogininforEvent;
 import org.dromara.common.redis.utils.RedisUtils;
+import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.web.config.properties.CaptchaProperties;
 import org.dromara.system.domain.bo.SysUserBo;
 import org.dromara.system.service.ISysUserService;
@@ -102,11 +103,11 @@ public class SysRegisterService {
         HttpServletRequest request = ServletUtils.getRequest();
         final UserAgent userAgent = UserAgentUtil.parse(request.getHeader(Header.USER_AGENT.getValue()));
         final String ip = ServletUtils.getClientIP(request);
+        String clientId = request.getHeader(LoginHelper.CLIENT_KEY);
         // 获取客户端操作系统
         String os = userAgent.getOs().getName();
         // 获取客户端浏览器
         String browser = userAgent.getBrowser().getName();
-
         LogininforEvent logininforEvent = new LogininforEvent();
         logininforEvent.setTenantId(tenantId);
         logininforEvent.setUsername(username);
@@ -115,6 +116,7 @@ public class SysRegisterService {
         logininforEvent.setIp(ip);
         logininforEvent.setOs(os);
         logininforEvent.setBrowser(browser);
+        logininforEvent.setClientId(clientId);
         SpringUtils.context().publishEvent(logininforEvent);
     }
 }

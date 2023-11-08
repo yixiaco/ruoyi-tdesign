@@ -6,6 +6,7 @@ import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.net.URLDecoder;
 import cn.hutool.core.util.ObjectUtil;
 import jakarta.servlet.http.HttpServletResponse;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.dromara.common.core.domain.R;
@@ -86,8 +87,7 @@ public class SysOssController extends BaseController {
      */
     @SaCheckPermission("system:oss:list")
     @GetMapping("/listByIds/{ossIds}")
-    public R<List<SysOssVo>> listByIds(@NotEmpty(message = "主键不能为空")
-                                       @PathVariable Long[] ossIds) {
+    public R<List<SysOssVo>> listByIds(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ossIds) {
         List<SysOssVo> list = ossService.listVoByIds(List.of(ossIds));
         return R.ok(list);
     }
@@ -99,7 +99,7 @@ public class SysOssController extends BaseController {
      */
     @SaCheckPermission("system:oss:list")
     @GetMapping("/listByUrls")
-    public R<List<SysOssVo>> listByUrls(@NotEmpty(message = "url不能为空") String urls) {
+    public R<List<SysOssVo>> listByUrls(@NotBlank(message = "url不能为空") String urls) {
         String[] urlArray = URLDecoder.decode(String.valueOf(urls), StandardCharsets.UTF_8).split(",");
         List<SysOssVo> list = ossService.listVoByUrls(List.of(urlArray));
         return R.ok(list);
@@ -138,7 +138,7 @@ public class SysOssController extends BaseController {
      */
     @SaCheckPermission("system:oss:download")
     @GetMapping("/download/{ossId}")
-    public void download(@PathVariable Long ossId, HttpServletResponse response) throws IOException {
+    public void download(@NotNull(message = "主键不能为空") @PathVariable Long ossId, HttpServletResponse response) throws IOException {
         ossService.download(ossId, response);
     }
 
@@ -161,8 +161,7 @@ public class SysOssController extends BaseController {
     @SaCheckPermission("system:oss:remove")
     @Log(title = "OSS对象存储", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ossIds}")
-    public R<Void> remove(@NotEmpty(message = "主键不能为空")
-                          @PathVariable Long[] ossIds) {
+    public R<Void> remove(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ossIds) {
         return toAjax(ossService.deleteWithValidByIds(List.of(ossIds)));
     }
 

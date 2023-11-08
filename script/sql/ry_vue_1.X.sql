@@ -737,10 +737,10 @@ insert into sys_dict_data values(50, '000000', 0,  '短信认证', 'sms',       
 insert into sys_dict_data values(51, '000000', 0,  '邮件认证', 'email',      'sys_grant_type',   '',   'primary', 'light-outline', 'N', 103, 1, sysdate(), null, null, '邮件认证');
 insert into sys_dict_data values(52, '000000', 0,  '小程序认证', 'xcx',      'sys_grant_type',   '',   'primary', 'light-outline', 'N', 103, 1, sysdate(), null, null, '小程序认证');
 insert into sys_dict_data values(53, '000000', 0,  '三方登录认证', 'social', 'sys_grant_type',   '',   'primary', 'light-outline', 'N', 103, 1, sysdate(), null, null, '三方登录认证');
-insert into sys_dict_data values(54, '000000', 0,  'PC',    'pc',         'sys_device_type',     '',   'default', '', 'N', 103, 1, sysdate(), null, null, 'PC');
-insert into sys_dict_data values(55, '000000', 0,  '安卓', 'android',     'sys_device_type',     '',   'default', '', 'N', 103, 1, sysdate(), null, null, '安卓');
-insert into sys_dict_data values(56, '000000', 0,  'iOS', 'ios',          'sys_device_type',     '',   'default', '', 'N', 103, 1, sysdate(), null, null, 'iOS');
-insert into sys_dict_data values(57, '000000', 0,  '小程序', 'xcx',       'sys_device_type',     '',   'default', '', 'N', 103, 1, sysdate(), null, null, '小程序');
+insert into sys_dict_data values(54, '000000', 0,  'PC',    'pc',         'sys_device_type',     '',   'primary', '', 'N', 103, 1, sysdate(), null, null, 'PC');
+insert into sys_dict_data values(55, '000000', 0,  '安卓', 'android',     'sys_device_type',     '',   'primary', '', 'N', 103, 1, sysdate(), null, null, '安卓');
+insert into sys_dict_data values(56, '000000', 0,  'iOS', 'ios',          'sys_device_type',     '',   'primary', '', 'N', 103, 1, sysdate(), null, null, 'iOS');
+insert into sys_dict_data values(57, '000000', 0,  '小程序', 'xcx',       'sys_device_type',     '',   'primary', '', 'N', 103, 1, sysdate(), null, null, '小程序');
 insert into sys_dict_data values(58, '000000', 11, '助通短信', 'ZHUTONG', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, sysdate(), 1, sysdate(), null);
 
 
@@ -786,6 +786,8 @@ create table sys_logininfor (
     browser        varchar(50)    default ''                comment '浏览器类型',
     os             varchar(50)    default ''                comment '操作系统',
     status         char(1)        default '1'               comment '登录状态（1成功 0失败）',
+    client_key     varchar(32)    default ''                comment '客户端',
+    device_type    varchar(32)    default ''                comment '设备类型',
     msg            varchar(255)   default ''                comment '提示消息',
     login_time     datetime                                 comment '访问时间',
     primary key (info_id),

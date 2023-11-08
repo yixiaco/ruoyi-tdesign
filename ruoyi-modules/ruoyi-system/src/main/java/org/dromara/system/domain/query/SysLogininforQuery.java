@@ -29,4 +29,14 @@ public class SysLogininforQuery extends BaseEntity {
      */
     private String status;
 
+    /**
+     * 客户端
+     */
+    private String clientKey;
+
+    /**
+     * 设备类型
+     */
+    private String deviceType;
+
 }

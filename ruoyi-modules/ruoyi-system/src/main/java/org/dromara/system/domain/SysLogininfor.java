@@ -22,7 +22,7 @@ public class SysLogininfor implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
-     * ID
+     * 访问ID
      */
     @TableId(value = "info_id")
     private Long infoId;
@@ -36,6 +36,16 @@ public class SysLogininfor implements Serializable {
      * 用户账号
      */
     private String userName;
+
+    /**
+     * 客户端
+     */
+    private String clientKey;
+
+    /**
+     * 设备类型
+     */
+    private String deviceType;
 
     /**
      * 登录状态 1成功 0失败
