@@ -143,11 +143,6 @@ public class SysMenuController extends BaseController {
     @Log(title = "菜单管理", businessType = BusinessType.INSERT)
     @PostMapping
     public R<Void> add(@Validated(AddGroup.class) @RequestBody SysMenuBo menu) {
-        if (!menuService.checkMenuNameUnique(menu)) {
-            return R.fail("新增菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
-        } else if (UserConstants.YES_FRAME.equals(menu.getIsFrame()) && !StringUtils.ishttp(menu.getPath())) {
-            return R.fail("新增菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
-        }
         return toAjax(menuService.insertMenu(menu));
     }
 
@@ -159,13 +154,6 @@ public class SysMenuController extends BaseController {
     @Log(title = "菜单管理", businessType = BusinessType.UPDATE)
     @PutMapping
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody SysMenuBo menu) {
-        if (!menuService.checkMenuNameUnique(menu)) {
-            return R.fail("修改菜单'" + menu.getMenuName() + "'失败，菜单名称已存在");
-        } else if (UserConstants.YES_FRAME.equals(menu.getIsFrame()) && !StringUtils.ishttp(menu.getPath())) {
-            return R.fail("修改菜单'" + menu.getMenuName() + "'失败，地址必须以http(s)://开头");
-        } else if (menu.getMenuId().equals(menu.getParentId())) {
-            return R.fail("修改菜单'" + menu.getMenuName() + "'失败，上级菜单不能选择自己");
-        }
         return toAjax(menuService.updateMenu(menu));
     }
 
@@ -179,12 +167,6 @@ public class SysMenuController extends BaseController {
     @Log(title = "菜单管理", businessType = BusinessType.DELETE)
     @DeleteMapping("/{menuId}")
     public R<Void> remove(@NotNull(message = "主键不能为空") @PathVariable("menuId") Long menuId) {
-        if (menuService.hasChildByMenuId(menuId)) {
-            return R.warn("存在子菜单,不允许删除");
-        }
-        if (menuService.checkMenuExistRole(menuId)) {
-            return R.warn("菜单已分配,不允许删除");
-        }
         return toAjax(menuService.deleteMenuById(menuId));
     }
 

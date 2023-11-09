@@ -13,25 +13,40 @@ import { h, reactive, ref, type VNode } from 'vue';
 
 let loadingInstance: LoadingInstance;
 
+function messageOptionMerge(message: string | MessageInfoOptions) {
+  if (typeof message === 'string') {
+    message = {
+      content: message as string,
+      zIndex: 100001,
+    };
+  }
+  return message;
+}
+
 export default {
   // 消息提示
   msg(message: string | MessageInfoOptions, duration?: number) {
+    message = messageOptionMerge(message);
     return MessagePlugin.info(message, duration);
   },
   // 错误消息
   msgError(message: string | MessageInfoOptions, duration?: number) {
+    message = messageOptionMerge(message);
     return MessagePlugin.error(message, duration);
   },
   // 成功消息
   msgSuccess(message: string | MessageInfoOptions, duration?: number) {
+    message = messageOptionMerge(message);
     return MessagePlugin.success(message, duration);
   },
   // 警告消息
   msgWarning(message: string | MessageInfoOptions, duration?: number) {
+    message = messageOptionMerge(message);
     return MessagePlugin.warning(message, duration);
   },
   // 消息类型的加载中
   msgLoading(message: string | MessageInfoOptions, duration = 30000) {
+    message = messageOptionMerge(message);
     return MessagePlugin.loading(message, duration);
   },
   // 关闭消息
@@ -47,6 +62,7 @@ export default {
     let instance: DialogInstance;
     if (content instanceof Object) {
       instance = DialogPlugin.alert({
+        zIndex: 100001,
         onConfirm: () => {
           instance.destroy();
         },
@@ -56,6 +72,7 @@ export default {
       instance = DialogPlugin.alert({
         header: '系统提示',
         body: content,
+        zIndex: 100001,
         onConfirm: () => {
           instance.destroy();
         },
@@ -69,6 +86,7 @@ export default {
     if (content instanceof Object) {
       instance = DialogPlugin.alert({
         theme: 'danger',
+        zIndex: 100001,
         onConfirm: () => {
           instance.destroy();
         },
@@ -79,6 +97,7 @@ export default {
         header: '系统提示',
         body: content,
         theme: 'danger',
+        zIndex: 100001,
         onConfirm: () => {
           instance.destroy();
         },
@@ -92,6 +111,7 @@ export default {
     if (content instanceof Object) {
       instance = DialogPlugin.alert({
         theme: 'success',
+        zIndex: 100001,
         onConfirm: () => {
           instance.destroy();
         },
@@ -102,6 +122,7 @@ export default {
         header: '系统提示',
         body: content,
         theme: 'success',
+        zIndex: 100001,
         onConfirm: () => {
           instance.destroy();
         },
@@ -115,6 +136,7 @@ export default {
     if (content instanceof Object) {
       instance = DialogPlugin.alert({
         theme: 'warning',
+        zIndex: 100001,
         onConfirm: () => {
           instance.destroy();
         },
@@ -125,6 +147,7 @@ export default {
         header: '系统提示',
         body: content,
         theme: 'warning',
+        zIndex: 100001,
         onConfirm: () => {
           instance.destroy();
         },
@@ -136,24 +159,28 @@ export default {
   notify(content: any) {
     return NotifyPlugin.info({
       content,
+      zIndex: 100001,
     });
   },
   // 错误通知
   notifyError(content: any) {
     return NotifyPlugin.error({
       content,
+      zIndex: 100001,
     });
   },
   // 成功通知
   notifySuccess(content: any) {
     return NotifyPlugin.success({
       content,
+      zIndex: 100001,
     });
   },
   // 警告通知
   notifyWarning(content: any) {
     return NotifyPlugin.warning({
       content,
+      zIndex: 100001,
     });
   },
   // 确认窗体
@@ -232,6 +259,7 @@ export default {
       cancelBtn: props.cancelButtonText,
       closeOnOverlayClick: props.closeOnClickModal,
       destroyOnClose: true,
+      zIndex: 99999,
       body: () =>
         h(
           // @ts-ignore
@@ -270,6 +298,7 @@ export default {
       text: content,
       attach: 'body',
       fullscreen: true,
+      zIndex: 100000,
     });
   },
   // 关闭遮罩层

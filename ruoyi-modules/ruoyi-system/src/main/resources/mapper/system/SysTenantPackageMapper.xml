@@ -42,6 +42,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                stp.update_time,
                stpm.menu_id
         from sys_tenant_package stp left join sys_tenant_package_menu stpm on stp.package_id = stpm.package_id
-        where stp.package_id = #{packageId}
+        where stp.package_id = #{packageId} and stp.del_flag = '0'
+    </select>
+    <select id="queryIncludeMenuId" resultType="java.lang.Boolean">
+        select count(stp.package_id)
+        from sys_tenant_package stp join sys_tenant_package_menu stpm on stp.package_id = stpm.package_id
+        where stpm.menu_id = #{menuId} and stp.del_flag = '0'
     </select>
 </mapper>

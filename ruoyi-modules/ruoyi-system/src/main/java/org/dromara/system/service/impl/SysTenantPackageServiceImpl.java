@@ -123,4 +123,16 @@ public class SysTenantPackageServiceImpl extends ServiceImpl<SysTenantPackageMap
         }
         return baseMapper.deleteBatchIds(ids) > 0;
     }
+
+    /**
+     * 是否包含分配菜单
+     *
+     * @param menuId 菜单id
+     * @return
+     */
+    @Override
+    public boolean includeMenuId(Long menuId) {
+        // 使用插件分页兼容数据库
+        return PageQuery.of(0,1,false).get(() -> baseMapper.queryIncludeMenuId(menuId));
+    }
 }

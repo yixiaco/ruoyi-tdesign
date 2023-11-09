@@ -30,4 +30,12 @@ public interface SysTenantPackageMapper extends BaseMapperPlus<SysTenantPackage,
      * @return
      */
     SysTenantPackageVo queryById(@Param("packageId") Long packageId);
+
+    /**
+     * 是否包含分配菜单
+     *
+     * @param menuId 菜单id
+     * @return
+     */
+    boolean queryIncludeMenuId(@Param("menuId") Long menuId);
 }

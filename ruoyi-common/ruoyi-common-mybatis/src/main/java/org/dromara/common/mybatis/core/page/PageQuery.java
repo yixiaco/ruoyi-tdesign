@@ -193,7 +193,7 @@ public class PageQuery implements Serializable {
      * @param <T>
      * @return TableDataInfo
      */
-    public <T> TableDataInfo<T> execute(Supplier<List<T>> supplier) {
+    public <T> T get(Supplier<T> supplier) {
         Page<T> page = build();
         if (CollUtil.isNotEmpty(page.orders())) {
             List<OrderItem> orderItems = page.orders();
@@ -201,22 +201,33 @@ public class PageQuery implements Serializable {
             if (orderItems != null) {
                 orderBy = SortQuery.getOrderBy(orderItems);
             }
-            try (Closeable close = PageHelper.startPage(pageNum, pageSize, page.searchCount()).setOrderBy(orderBy)) {
-                return wrap(supplier);
+            try (Closeable ignored = PageHelper.startPage(pageNum, pageSize, page.searchCount()).setOrderBy(orderBy)) {
+                return supplier.get();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         } else {
-            try (Closeable close = PageHelper.startPage(pageNum, pageSize, page.searchCount())) {
-                return wrap(supplier);
+            try (Closeable ignored = PageHelper.startPage(pageNum, pageSize, page.searchCount())) {
+                return supplier.get();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         }
     }
 
-    private <T> TableDataInfo<T> wrap(Supplier<List<T>> supplier) {
-        PageInfo<T> pageInfo = new PageInfo<>(supplier.get());
+    /**
+     * 执行方法分页查询
+     *
+     * @param supplier 查询方法
+     * @param <T>
+     * @return TableDataInfo
+     */
+    public <T> TableDataInfo<T> execute(Supplier<List<T>> supplier) {
+        return wrap(get(supplier));
+    }
+
+    private <T> TableDataInfo<T> wrap(List<T> list) {
+        PageInfo<T> pageInfo = new PageInfo<>(list);
         TableDataInfo<T> rspData = new TableDataInfo<>();
         rspData.setCode(HttpStatus.HTTP_OK);
         rspData.setMsg("查询成功");
