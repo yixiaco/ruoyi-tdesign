@@ -5,6 +5,11 @@
         <t-form-item label="套餐名称" name="packageName">
           <t-input v-model="queryParams.packageName" placeholder="请输入套餐名称" clearable @enter="handleQuery" />
         </t-form-item>
+        <t-form-item label="状态" name="status">
+          <t-select v-model="queryParams.status" placeholder="请选择状态" clearable>
+            <t-option v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.label" :value="dict.value" />
+          </t-select>
+        </t-form-item>
         <t-form-item label-width="0px">
           <t-button theme="primary" @click="handleQuery">
             <template #icon> <search-icon /></template>
@@ -19,8 +24,8 @@
 
       <t-table
         v-model:column-controller-visible="columnControllerVisible"
-        hover
         :loading="loading"
+        hover
         row-key="packageId"
         :data="tenantPackageList"
         :columns="columns"
@@ -30,6 +35,9 @@
         :column-controller="{
           hideTriggerButton: true,
         }"
+        :sort="sort"
+        show-sort-column-bg-color
+        @sort-change="handleSortChange"
         @select-change="handleSelectionChange"
       >
         <template #topContent>
@@ -84,7 +92,7 @@
           <t-switch v-model="row.status" :custom-value="['1', '0']" @click.stop @change="handleStatusChange(row)" />
         </template>
         <template #operation="{ row }">
-          <t-space :size="8">
+          <t-space :size="8" break-line>
             <t-link
               v-hasPermi="['system:tenantPackage:query']"
               theme="primary"
@@ -181,7 +189,7 @@
       :footer="false"
     >
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon :data="form" label-width="calc(5em + 28px)">
+        <t-form label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="租户套餐id">{{ form.packageId }}</t-form-item>
@@ -229,6 +237,7 @@ import type {
   PageInfo,
   PrimaryTableCol,
   SubmitContext,
+  TableSort,
   TreeInstanceFunctions,
   TreeNodeValue,
 } from 'tdesign-vue-next';
@@ -263,10 +272,11 @@ const buttonLoading = ref(false);
 const loading = ref(false);
 const columnControllerVisible = ref(false);
 const showSearch = ref(true);
+const total = ref(0);
 const ids = ref([]);
 const single = ref(true);
 const multiple = ref(true);
-const total = ref(0);
+const sort = ref<TableSort>();
 const title = ref('');
 const menuRef = ref<TreeInstanceFunctions>();
 const menuIds = ref<number[]>([]);
@@ -283,10 +293,10 @@ const rules = ref<Record<string, Array<FormRule>>>({
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
   { title: `套餐名称`, colKey: 'packageName', align: 'center' },
-  { title: `状态`, colKey: 'status', align: 'center' },
+  { title: `状态`, colKey: 'status', align: 'center', sorter: true },
   { title: `备注`, colKey: 'remark', align: 'center', ellipsis: true },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: '15%', minWidth: 112 },
   { title: `更新时间`, colKey: 'updateTime', align: 'center', width: '15%', minWidth: 112 },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', width: '15%', minWidth: 112, sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center', width: '15%', minWidth: 180 },
 ]);
 // 提交表单对象
@@ -297,10 +307,9 @@ const form = ref<SysTenantPackageVo & SysTenantPackageForm>({
 const queryParams = ref<SysTenantPackageQuery>({
   pageNum: 1,
   pageSize: 10,
-  params: {},
   packageName: undefined,
+  status: undefined,
 });
-
 // 分页
 const pagination = computed(() => {
   return {
@@ -334,11 +343,12 @@ function getPackageMenuTreeselect(packageId: number) {
 /** 查询租户套餐列表 */
 function getList() {
   loading.value = true;
-  listTenantPackage(queryParams.value).then((response) => {
-    tenantPackageList.value = response.rows;
-    total.value = response.total;
-    loading.value = false;
-  });
+  listTenantPackage(queryParams.value)
+    .then((response) => {
+      tenantPackageList.value = response.rows;
+      total.value = response.total;
+    })
+    .finally(() => (loading.value = false));
 }
 
 function onExpand(type: string, value: TreeNodeValue[]) {
@@ -368,10 +378,24 @@ function handleQuery() {
 /** 重置按钮操作 */
 function resetQuery() {
   proxy.resetForm('queryRef');
-  handleQuery();
+  queryParams.value.pageNum = 1;
+  handleSortChange(null);
 }
 
-// 多选框选中数据
+/** 排序触发事件 */
+function handleSortChange(value?: TableSort) {
+  sort.value = value;
+  if (Array.isArray(value)) {
+    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
+    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
+  } else {
+    queryParams.value.orderByColumn = value?.sortBy;
+    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
+  }
+  getList();
+}
+
+/** 多选框选中数据 */
 function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
@@ -398,7 +422,7 @@ function handleDetail(row: SysTenantPackageVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const packageId = row.packageId || ids.value.at(0);
+  const packageId = row.packageId;
   getTenantPackage(packageId).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
@@ -491,7 +515,6 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
 function handleDelete(row?: SysTenantPackageVo) {
   const packageIds = row?.packageId || ids.value;
   proxy.$modal.confirm(`是否确认删除租户套餐编号为${packageIds}的数据项？`, () => {
-    loading.value = true;
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delTenantPackage(packageIds)
       .then(() => {
@@ -500,7 +523,6 @@ function handleDelete(row?: SysTenantPackageVo) {
         proxy.$modal.msgSuccess('删除成功');
       })
       .finally(() => {
-        loading.value = false;
         proxy.$modal.msgClose(msgLoading);
       });
   });

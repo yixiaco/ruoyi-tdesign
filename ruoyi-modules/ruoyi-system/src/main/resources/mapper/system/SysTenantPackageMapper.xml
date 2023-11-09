@@ -27,6 +27,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             <if test="packageName != null and packageName != ''"> and stp.package_name like concat('%', #{packageName}, '%')</if>
             <if test="status != null and status != ''"> and stp.status = #{status}</if>
         </where>
+        order by stp.create_time desc
     </select>
     <select id="queryById" resultMap="SysTenantPackageResultVo">
         select stp.package_id,

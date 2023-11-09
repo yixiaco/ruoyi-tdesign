@@ -28,8 +28,8 @@
 
       <t-table
         v-model:column-controller-visible="columnControllerVisible"
-        hover
         :loading="loading"
+        hover
         row-key="id"
         :data="tenantList"
         :columns="columns"
@@ -39,6 +39,9 @@
         :column-controller="{
           hideTriggerButton: true,
         }"
+        :sort="sort"
+        show-sort-column-bg-color
+        @sort-change="handleSortChange"
         @select-change="handleSelectionChange"
       >
         <template #topContent>
@@ -229,8 +232,11 @@
       :footer="false"
     >
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon :data="form" label-width="calc(6em + 28px)">
+        <t-form label-align="right" colon label-width="calc(6em + 28px)">
           <t-row :gutter="[0, 20]">
+            <t-col :span="6">
+              <t-form-item label="id">{{ form.id }}</t-form-item>
+            </t-col>
             <t-col :span="6">
               <t-form-item label="租户编号">{{ form.tenantId }}</t-form-item>
             </t-col>
@@ -298,7 +304,14 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
+import type {
+  FormInstanceFunctions,
+  FormRule,
+  PageInfo,
+  PrimaryTableCol,
+  SubmitContext,
+  TableSort,
+} from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import type { SysTenantForm, SysTenantQuery, SysTenantVo } from '@/api/system/model/tenantModel';
@@ -332,6 +345,7 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
+const sort = ref<TableSort>();
 // 租户套餐列表
 const packageList = ref<SysTenantPackageVo[]>([]);
 
@@ -360,8 +374,8 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `社会信用代码`, colKey: 'licenseNumber', align: 'center' },
   { title: `过期时间`, colKey: 'expireTime', align: 'center' },
   { title: `租户状态`, colKey: 'status', align: 'center' },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: '10%', minWidth: 112 },
   { title: `更新时间`, colKey: 'updateTime', align: 'center', width: '10%', minWidth: 112 },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', width: '10%', minWidth: 112, sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center', width: '10%', minWidth: 160 },
 ]);
 // 提交表单对象
@@ -370,13 +384,11 @@ const form = ref<SysTenantVo & SysTenantForm>({});
 const queryParams = ref<SysTenantQuery>({
   pageNum: 1,
   pageSize: 10,
-  params: {},
   tenantId: undefined,
   contactUserName: undefined,
   contactPhone: undefined,
   companyName: undefined,
 });
-
 // 分页
 const pagination = computed(() => {
   return {
@@ -395,11 +407,12 @@ const pagination = computed(() => {
 /** 查询租户列表 */
 function getList() {
   loading.value = true;
-  listTenant(queryParams.value).then((response) => {
-    tenantList.value = response.rows;
-    total.value = response.total;
-    loading.value = false;
-  });
+  listTenant(queryParams.value)
+    .then((response) => {
+      tenantList.value = response.rows;
+      total.value = response.total;
+    })
+    .finally(() => (loading.value = false));
 }
 
 // 表单重置
@@ -433,10 +446,24 @@ function handleQuery() {
 /** 重置按钮操作 */
 function resetQuery() {
   proxy.resetForm('queryRef');
-  handleQuery();
+  queryParams.value.pageNum = 1;
+  handleSortChange(null);
 }
 
-// 多选框选中数据
+/** 排序触发事件 */
+function handleSortChange(value?: TableSort) {
+  sort.value = value;
+  if (Array.isArray(value)) {
+    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
+    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
+  } else {
+    queryParams.value.orderByColumn = value?.sortBy;
+    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
+  }
+  getList();
+}
+
+/** 多选框选中数据 */
 function handleSelectionChange(selection: Array<number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
@@ -456,7 +483,7 @@ function handleDetail(row: SysTenantVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const id = row.id || ids.value.at(0);
+  const id = row.id;
   getTenant(id).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
@@ -519,7 +546,6 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
 function handleDelete(row?: SysTenantVo) {
   const $ids = row?.id || ids.value;
   proxy.$modal.confirm(`是否确认删除租户编号为${$ids}的数据项？`, () => {
-    loading.value = true;
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delTenant($ids)
       .then(() => {
@@ -528,7 +554,6 @@ function handleDelete(row?: SysTenantVo) {
         proxy.$modal.msgSuccess('删除成功');
       })
       .finally(() => {
-        loading.value = false;
         proxy.$modal.msgClose(msgLoading);
       });
   });
