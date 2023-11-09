@@ -6,6 +6,7 @@ import org.dromara.common.core.constant.HttpStatus;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.util.Objects;
 
 /**
  * 响应信息主体
@@ -84,7 +85,7 @@ public class R<T> implements Serializable {
     /**
      * 返回警告消息
      *
-     * @param msg 返回内容
+     * @param msg  返回内容
      * @param data 数据对象
      * @return 警告消息
      */
@@ -106,5 +107,17 @@ public class R<T> implements Serializable {
 
     public static <T> Boolean isSuccess(R<T> ret) {
         return R.SUCCESS == ret.getCode();
+    }
+
+    public static <T> R<T> result(boolean result) {
+        return result ? R.ok() : R.fail();
+    }
+
+    public static <T> R<T> equals(Object o1, Object o2) {
+        return Objects.equals(o1, o2) ? R.ok() : R.fail();
+    }
+
+    public static <T> R<T> deepEquals(Object o1, Object o2) {
+        return Objects.deepEquals(o1, o2) ? R.ok() : R.fail();
     }
 }

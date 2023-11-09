@@ -2,6 +2,7 @@ package org.dromara.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import jakarta.servlet.http.HttpServletResponse;
+import org.dromara.common.core.enums.UserType;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysOss;
 import org.dromara.system.domain.bo.SysOssBo;
@@ -100,7 +101,18 @@ public interface ISysOssService extends IService<SysOss> {
      *
      * @param categoryId 分类id
      * @param ossIds     主键id
+     * @param userType   用户类型
+     * @param userId     用户id
      * @return
      */
-    void move(Long categoryId, List<Long> ossIds);
+    void move(Long categoryId, List<Long> ossIds, UserType userType, Long userId);
+
+    /**
+     * 删除我的OSS对象存储
+     *
+     * @param ossIds   OSS对象ID串
+     * @param userType 用户类型
+     * @param userId   用户id
+     */
+    boolean deleteMyIds(List<Long> ossIds, UserType userType, Long userId);
 }

@@ -1,6 +1,7 @@
 package org.dromara.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import org.dromara.common.core.enums.UserType;
 import org.dromara.system.domain.SysOssCategory;
 import org.dromara.system.domain.bo.SysOssCategoryBo;
 import org.dromara.system.domain.query.SysOssCategoryQuery;
@@ -52,16 +53,20 @@ public interface ISysOssCategoryService extends IService<SysOssCategory> {
     /**
      * 校验并批量删除OSS分类信息
      *
-     * @param ids 主键集合
+     * @param ids      主键集合
+     * @param userType 用户类型
+     * @param userId   用户id
      * @return Boolean
      */
-    Boolean deleteWithValidByIds(Collection<Long> ids);
+    Boolean deleteWithValidByIds(Collection<Long> ids, UserType userType, Long userId);
 
     /**
      * 是否存在分类id
      *
      * @param ossCategoryId 分类id
+     * @param userType      用户类型
+     * @param userId        用户id
      * @return
      */
-    boolean hasId(Long ossCategoryId);
+    boolean hasId(Long ossCategoryId, UserType userType, Long userId);
 }

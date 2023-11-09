@@ -56,6 +56,13 @@ export function delOss(ossId: number | number[]) {
   });
 }
 
+// 删除我的OSS对象存储
+export function delMyOss(ossId: number | number[]) {
+  return request.delete<R<void>>({
+    url: `/resource/oss/my/${ossId}`,
+  });
+}
+
 export function uploader(formData: FormData) {
   return request.post<R<SysOssUploadVo>>({
     url: '/resource/oss/upload',

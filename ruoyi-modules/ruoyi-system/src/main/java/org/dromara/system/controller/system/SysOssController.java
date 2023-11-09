@@ -121,7 +121,7 @@ public class SysOssController extends BaseController {
         bo.setCreateBy(LoginHelper.getUserId());
         bo.setUserTypeEnum(UserType.SYS_USER);
         bo.setIsLock(0);
-        boolean exist = ossCategoryService.hasId(ossCategoryId);
+        boolean exist = ossCategoryService.hasId(ossCategoryId, UserType.SYS_USER, LoginHelper.getUserId());
         bo.setOssCategoryId(exist ? ossCategoryId : 0L);
         SysOssVo oss = ossService.upload(file, bo);
         SysOssUploadVo uploadVo = new SysOssUploadVo();
@@ -150,6 +150,8 @@ public class SysOssController extends BaseController {
     @RepeatSubmit()
     @PutMapping()
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody SysOssBo bo) {
+        bo.setUserTypeEnum(UserType.SYS_USER);
+        bo.setCreateBy(LoginHelper.getUserId());
         return toAjax(ossService.updateByBo(bo));
     }
 
@@ -166,6 +168,18 @@ public class SysOssController extends BaseController {
     }
 
     /**
+     * 删除我的OSS对象存储
+     *
+     * @param ossIds OSS对象ID串
+     */
+    @SaCheckPermission("system:oss:remove")
+    @Log(title = "OSS对象存储", businessType = BusinessType.DELETE)
+    @DeleteMapping("/my/{ossIds}")
+    public R<Void> removeMyIds(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ossIds) {
+        return toAjax(ossService.deleteMyIds(List.of(ossIds), UserType.SYS_USER, LoginHelper.getUserId()));
+    }
+
+    /**
      * 移动到分类
      *
      * @param categoryId 分类id
@@ -176,7 +190,7 @@ public class SysOssController extends BaseController {
     @PostMapping("/{categoryId}/move")
     public R<Void> move(@NotNull(message = "分类id不能为空") @PathVariable Long categoryId,
                         @RequestBody @NotEmpty(message = "主键不能为空") List<Long> ossIds) {
-        ossService.move(categoryId, ossIds);
+        ossService.move(categoryId, ossIds, UserType.SYS_USER, LoginHelper.getUserId());
         return R.ok();
     }
 

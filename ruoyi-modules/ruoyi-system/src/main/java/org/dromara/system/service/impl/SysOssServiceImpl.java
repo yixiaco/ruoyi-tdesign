@@ -7,6 +7,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import org.dromara.common.core.constant.CacheNames;
+import org.dromara.common.core.enums.UserType;
 import org.dromara.common.core.enums.YesNoEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.service.OssService;
@@ -238,23 +239,31 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateByBo(SysOssBo bo) {
         SysOss oss = new SysOss();
-        checkCategory(bo.getOssCategoryId());
+        checkCategory(bo.getOssCategoryId(), bo.getUserTypeEnum(), bo.getCreateBy());
         oss.setOssId(bo.getOssId());
         oss.setOriginalName(bo.getOriginalName());
         oss.setOssCategoryId(bo.getOssCategoryId());
         oss.setIsLock(bo.getIsLock());
-        return updateById(oss);
+        return update(oss, lambdaQuery()
+            .eq(SysOss::getOssId, bo.getOssId())
+            .eq(SysOss::getUserType, bo.getUserTypeEnum().getUserType())
+            .eq(SysOss::getCreateBy, bo.getCreateBy())
+            .getWrapper());
     }
 
     /**
      * 检查分类是否存在
      *
      * @param ossCategoryId 分类id
+     * @param userType      用户类型
+     * @param userId        用户id
      */
-    private void checkCategory(Long ossCategoryId) {
+    private void checkCategory(Long ossCategoryId, UserType userType, Long userId) {
         if (!ossCategoryId.equals(0L)) {
             boolean exists = categoryService.lambdaQuery()
                 .eq(SysOssCategory::getOssCategoryId, ossCategoryId)
+                .eq(SysOssCategory::getUserType, userType.getUserType())
+                .eq(SysOssCategory::getCreateBy, userId)
                 .exists();
             if (!exists) {
                 throw new ServiceException("分类不存在");
@@ -276,11 +285,11 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
             throw new ServiceException("加锁文件必须解锁后才能删除");
         }
         List<SysOss> list = baseMapper.selectBatchIds(ids);
-        for (SysOss sysOss : list) {
-            OssClient storage = OssFactory.instance(sysOss.getService());
-            storage.delete(sysOss.getUrl());
+        boolean b = removeBatchByIds(ids);
+        if (b) {
+            removeRealOss(list);
         }
-        return baseMapper.deleteBatchIds(ids) > 0;
+        return b;
     }
 
     /**
@@ -303,12 +312,22 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
      *
      * @param categoryId 分类id
      * @param ossIds     主键id
+     * @param userType   用户类型
+     * @param userId     用户id
      * @return
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public void move(Long categoryId, List<Long> ossIds) {
-        checkCategory(categoryId);
+    public void move(Long categoryId, List<Long> ossIds, UserType userType, Long userId) {
+        checkCategory(categoryId, userType, userId);
+        // 安全过滤
+        List<SysOss> ossList = lambdaQuery()
+            .in(SysOss::getOssId, ossIds)
+            .eq(SysOss::getUserType, userType.getUserType())
+            .eq(SysOss::getCreateBy, userId)
+            .select(SysOss::getOssId)
+            .list();
+        ossIds = StreamUtils.toList(ossList, SysOss::getOssId);
         List<SysOss> list = ossIds.stream().map(id -> {
             SysOss oss = new SysOss();
             oss.setOssId(id);
@@ -316,5 +335,43 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
             return oss;
         }).toList();
         updateBatchById(list);
+    }
+
+    /**
+     * 删除我的OSS对象存储
+     *
+     * @param ossIds   OSS对象ID串
+     * @param userType 用户类型
+     * @param userId   用户id
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public boolean deleteMyIds(List<Long> ossIds, UserType userType, Long userId) {
+        boolean exists = lambdaQuery().in(SysOss::getOssId, ossIds).eq(SysOss::getIsLock, YesNoEnum.YES.getCodeNum()).exists();
+        if (exists) {
+            throw new ServiceException("加锁文件必须解锁后才能删除");
+        }
+        List<SysOss> list = listByIds(ossIds);
+        boolean remove = lambdaUpdate()
+            .in(SysOss::getOssId, ossIds)
+            .eq(SysOss::getUserType, userType.getUserType())
+            .eq(SysOss::getCreateBy, userId)
+            .remove();
+        if (remove) {
+            removeRealOss(list);
+        }
+        return remove;
+    }
+
+    /**
+     * 真实删除oss文件
+     *
+     * @param list oss对象
+     */
+    private static void removeRealOss(List<SysOss> list) {
+        for (SysOss sysOss : list) {
+            OssClient storage = OssFactory.instance(sysOss.getService());
+            storage.delete(sysOss.getUrl());
+        }
     }
 }

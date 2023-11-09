@@ -310,7 +310,7 @@ import useClipboard from 'vue-clipboard3';
 
 import type { SysOssCategoryVo } from '@/api/system/model/ossCategoryModel';
 import type { SysOssActiveVo, SysOssForm, SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
-import { delOss, getOss, listMyOss, moveOss, updateOss } from '@/api/system/oss';
+import { delMyOss, getOss, listMyOss, moveOss, updateOss } from '@/api/system/oss';
 import { listOssCategory } from '@/api/system/ossCategory';
 import ArchiveSvg from '@/assets/file-type/archive.svg?component';
 import AudioSvg from '@/assets/file-type/audio.svg?component';
@@ -662,7 +662,7 @@ function handleDelete() {
   }
   proxy.$modal.confirm(content, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
-    return delOss(ossIds)
+    return delMyOss(ossIds)
       .then(() => {
         ids.value = [];
         getList();

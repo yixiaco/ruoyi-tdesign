@@ -64,7 +64,11 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     </foreach>
                 </where>) as file_count
         from sys_oss_category soc
-        where soc.oss_category_id = #{ossCategoryId}
+        <where>
+            soc.oss_category_id = #{ossCategoryId}
+            <if test="userType != null and userType != ''"> and soc.user_type = #{userType}</if>
+            <if test="createBy != null"> and soc.create_by = #{createBy}</if>
+        </where>
     </select>
 
 </mapper>

@@ -57,6 +57,8 @@ public class SysOssCategoryController extends BaseController {
     @SaCheckPermission(value = {"system:ossCategory:query", "system:ossCategory:edit"}, mode = SaMode.OR)
     @GetMapping("/query")
     public R<SysOssCategoryVo> getInfo(@Validated(QueryOneGroup.class) SysOssCategoryQuery query) {
+        query.setUserType(UserType.SYS_USER.getUserType());
+        query.setCreateBy(LoginHelper.getUserId());
         return R.ok(sysOssCategoryService.query(query));
     }
 
@@ -81,6 +83,8 @@ public class SysOssCategoryController extends BaseController {
     @RepeatSubmit()
     @PutMapping()
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody SysOssCategoryBo bo) {
+        bo.setUserType(UserType.SYS_USER.getUserType());
+        bo.setCreateBy(LoginHelper.getUserId());
         return toAjax(sysOssCategoryService.updateByBo(bo));
     }
 
@@ -93,6 +97,6 @@ public class SysOssCategoryController extends BaseController {
     @Log(title = "OSS分类", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ossCategoryIds}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ossCategoryIds) {
-        return toAjax(sysOssCategoryService.deleteWithValidByIds(List.of(ossCategoryIds)));
+        return toAjax(sysOssCategoryService.deleteWithValidByIds(List.of(ossCategoryIds), UserType.SYS_USER, LoginHelper.getUserId()));
     }
 }

@@ -2,6 +2,7 @@ package org.dromara.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.dromara.common.core.enums.UserType;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.system.domain.SysOss;
@@ -135,19 +136,24 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
                 updateBatchById(children);
             }
         }
-        // 检查不能设置父分类id为子分类id
-        return updateById(category);
+        return update(category, lambdaQuery()
+            .eq(SysOssCategory::getOssCategoryId, category.getOssCategoryId())
+            .eq(SysOssCategory::getUserType, bo.getUserType())
+            .eq(SysOssCategory::getCreateBy, bo.getCreateBy())
+            .getWrapper());
     }
 
     /**
      * 校验并批量删除OSS分类信息
      *
-     * @param ids 主键集合
+     * @param ids      主键集合
+     * @param userType 用户类型
+     * @param userId   用户id
      * @return Boolean
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
-    public Boolean deleteWithValidByIds(Collection<Long> ids) {
+    public Boolean deleteWithValidByIds(Collection<Long> ids, UserType userType, Long userId) {
         boolean exists = ossService.lambdaQuery().in(SysOss::getOssCategoryId, ids).exists();
         if (exists) {
             throw new ServiceException("无法删除非空分类");
@@ -156,7 +162,11 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
         if (exists) {
             throw new ServiceException("请先删除子分类");
         }
-        return removeByIds(ids);
+        return lambdaUpdate()
+            .in(SysOssCategory::getOssCategoryId, ids)
+            .eq(SysOssCategory::getUserType, userType.getUserType())
+            .eq(SysOssCategory::getCreateBy, userId)
+            .remove();
     }
 
     /**
@@ -168,6 +178,8 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
         boolean exists = lambdaQuery()
             .ne(category.getOssCategoryId() != null, SysOssCategory::getOssCategoryId, category.getOssCategoryId())
             .eq(SysOssCategory::getCategoryPath, category.getCategoryPath())
+            .eq(SysOssCategory::getUserType, category.getUserType())
+            .eq(SysOssCategory::getCreateBy, category.getCreateBy())
             .exists();
         if (exists) {
             throw new ServiceException("此位置已包含同名分类");
@@ -178,15 +190,19 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
      * 是否存在分类id
      *
      * @param ossCategoryId 分类id
+     * @param userType      用户类型
+     * @param userId        用户id
      * @return
      */
     @Override
-    public boolean hasId(Long ossCategoryId) {
+    public boolean hasId(Long ossCategoryId, UserType userType, Long userId) {
         if (ossCategoryId == null) {
             return false;
         }
         return lambdaQuery()
             .eq(SysOssCategory::getOssCategoryId, ossCategoryId)
+            .eq(SysOssCategory::getUserType, userType.getUserType())
+            .eq(SysOssCategory::getCreateBy, userId)
             .select(SysOssCategory::getOssCategoryId)
             .exists();
     }
