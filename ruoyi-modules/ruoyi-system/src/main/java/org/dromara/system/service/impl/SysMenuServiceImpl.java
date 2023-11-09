@@ -10,15 +10,18 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.dromara.common.core.constant.HttpStatus;
 import org.dromara.common.core.constant.UserConstants;
 import org.dromara.common.core.enums.ShowHiddenEnum;
 import org.dromara.common.core.enums.YesNoEnum;
+import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.TreeBuildUtils;
 import org.dromara.common.mybatis.core.page.SortQuery;
 import org.dromara.common.satoken.utils.LoginHelper;
+import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.system.domain.SysMenu;
 import org.dromara.system.domain.SysRole;
 import org.dromara.system.domain.SysRoleMenu;
@@ -321,6 +324,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public int insertMenu(SysMenuBo bo) {
+        if (!checkMenuNameUnique(bo)) {
+            throw new ServiceException("新增菜单'" + bo.getMenuName() + "'失败，菜单名称已存在");
+        } else if (UserConstants.YES_FRAME.equals(bo.getIsFrame()) && !StringUtils.ishttp(bo.getPath())) {
+            throw new ServiceException("新增菜单'" + bo.getMenuName() + "'失败，地址必须以http(s)://开头");
+        }
         SysMenu menu = MapstructUtils.convert(bo, SysMenu.class);
         return baseMapper.insert(menu);
     }
@@ -333,6 +341,13 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public int updateMenu(SysMenuBo bo) {
+        if (!checkMenuNameUnique(bo)) {
+            throw new ServiceException("修改菜单'" + bo.getMenuName() + "'失败，菜单名称已存在");
+        } else if (UserConstants.YES_FRAME.equals(bo.getIsFrame()) && !StringUtils.ishttp(bo.getPath())) {
+            throw new ServiceException("修改菜单'" + bo.getMenuName() + "'失败，地址必须以http(s)://开头");
+        } else if (bo.getMenuId().equals(bo.getParentId())) {
+            throw new ServiceException("修改菜单'" + bo.getMenuName() + "'失败，上级菜单不能选择自己");
+        }
         SysMenu menu = MapstructUtils.convert(bo, SysMenu.class);
         return baseMapper.updateById(menu);
     }
@@ -345,6 +360,15 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public int deleteMenuById(Long menuId) {
+        if (hasChildByMenuId(menuId)) {
+            throw new ServiceException("存在子菜单,不允许删除", HttpStatus.WARN);
+        }
+        if (checkMenuExistRole(menuId)) {
+            throw new ServiceException("菜单已分配,不允许删除", HttpStatus.WARN);
+        }
+        if (TenantHelper.isEnable() && tenantPackageService.includeMenuId(menuId)) {
+            throw new ServiceException("菜单已被租户套餐分配，不允许删除", HttpStatus.WARN);
+        }
         return baseMapper.deleteById(menuId);
     }
 

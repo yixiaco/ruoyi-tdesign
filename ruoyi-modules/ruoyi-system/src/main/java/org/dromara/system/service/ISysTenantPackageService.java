@@ -56,4 +56,12 @@ public interface ISysTenantPackageService extends IService<SysTenantPackage> {
      * 校验并批量删除租户套餐信息
      */
     Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid);
+
+    /**
+     * 是否包含分配菜单
+     *
+     * @param menuId 菜单id
+     * @return
+     */
+    boolean includeMenuId(Long menuId);
 }
