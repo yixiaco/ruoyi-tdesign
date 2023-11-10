@@ -72,5 +72,10 @@ public interface Constants {
      */
     Long TOP_PARENT_ID = 0L;
 
+    /**
+     * 管理员角色名称
+     */
+    String ADMIN_ROLE = "admin";
+
 }
 

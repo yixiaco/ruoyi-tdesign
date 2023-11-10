@@ -12,5 +12,25 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <sql id="selectSysTenantPackageMenu">
         select stpm.package_id, stpm.menu_id from sys_tenant_package_menu stpm
     </sql>
+    <delete id="deleteTenantRoleMenuId">
+        delete srm
+        from sys_role_menu srm
+                 join sys_role sr on srm.role_id = sr.role_id
+                 join sys_tenant st on sr.tenant_id = st.tenant_id
+        where st.package_id = #{packageId}
+          and srm.menu_id in
+        <foreach collection="menuIds" item="item" open="(" separator="," close=")">#{item}</foreach>
+    </delete>
+    <insert id="addTenantRoleAdminMenuId">
+        insert into sys_role_menu
+        select sr.role_id, stpm.menu_id
+        from sys_role sr
+                 join sys_tenant st on sr.tenant_id = st.tenant_id
+                 join sys_tenant_package_menu stpm on st.package_id = stpm.package_id
+        where st.package_id = #{packageId}
+          and sr.role_key = 'admin'
+          and stpm.menu_id in
+        <foreach collection="menuIds" item="item" open="(" separator="," close=")">#{item}</foreach>
+    </insert>
 
 </mapper>

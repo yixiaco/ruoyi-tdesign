@@ -100,7 +100,6 @@ public class SysTenantController extends BaseController {
     @RepeatSubmit()
     @PutMapping()
     public R<Void> edit(@Validated(EditGroup.class) @RequestBody SysTenantBo bo) {
-        tenantService.checkTenantAllowed(bo.getTenantId());
         if (!tenantService.checkCompanyNameUnique(bo)) {
             return R.fail("修改租户'" + bo.getCompanyName() + "'失败，公司名称已存在");
         }

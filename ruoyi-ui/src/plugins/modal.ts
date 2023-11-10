@@ -13,7 +13,7 @@ import { h, reactive, ref, type VNode } from 'vue';
 
 let loadingInstance: LoadingInstance;
 
-function messageOptionMerge(message: string | MessageInfoOptions) {
+export function messageOptionMerge(message: string | MessageInfoOptions) {
   if (typeof message === 'string') {
     message = {
       content: message as string,

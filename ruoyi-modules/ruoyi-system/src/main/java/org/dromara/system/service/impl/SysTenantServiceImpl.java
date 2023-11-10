@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 租户Service业务层处理
@@ -119,7 +120,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         }
         bo.setId(add.getId());
 
-        // 根据套餐创建角色
+        // 根据套餐创建角色与角色菜单
         Long roleId = createTenantRole(tenantId, bo.getPackageId());
 
         // 创建部门: 公司名是部门名称
@@ -250,10 +251,20 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @CacheEvict(cacheNames = CacheNames.SYS_TENANT, key = "#bo.tenantId")
     @Override
     public Boolean updateByBo(SysTenantBo bo) {
+        SysTenant olTenant = getById(bo.getId());
         SysTenant tenant = MapstructUtils.convert(bo, SysTenant.class);
         tenant.setTenantId(null);
-        tenant.setPackageId(null);
-        return baseMapper.updateById(tenant) > 0;
+        if (Objects.equals(bo.getTenantId(), TenantConstants.DEFAULT_TENANT_ID)) {
+            tenant.setPackageId(null);
+            tenant.setExpireTime(null);
+            tenant.setAccountCount(null);
+        }
+        boolean b = updateById(tenant);
+        if (b && !Objects.equals(olTenant.getPackageId(), bo.getPackageId()) && bo.getPackageId() != null) {
+            // 同步菜单
+            SpringUtils.getAopProxy(this).syncTenantPackage(olTenant.getTenantId(), bo.getPackageId());
+        }
+        return b;
     }
 
     /**

@@ -7,6 +7,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.dromara.common.core.constant.Constants;
 import org.dromara.common.core.constant.TenantConstants;
 import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.enums.NormalDisableEnum;
@@ -35,7 +36,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Objects;
+import java.util.Set;
 
 /**
  * 角色 业务层处理
@@ -251,6 +257,10 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int updateRole(SysRoleBo bo) {
+        SysRole sysRole = getById(bo.getRoleId());
+        if (Objects.equals(sysRole.getRoleKey(), Constants.ADMIN_ROLE) && !Objects.equals(bo.getRoleKey(), sysRole.getRoleKey())) {
+            throw new ServiceException("禁止修改管理员角色保留关键字");
+        }
         SysRole role = MapstructUtils.convert(bo, SysRole.class);
         // 修改角色信息
         baseMapper.updateById(role);
@@ -362,11 +372,14 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int deleteRoleByIds(Long[] roleIds) {
-        for (Long roleId : roleIds) {
-            SysRole role = baseMapper.selectById(roleId);
+        List<SysRole> roles = listByIds(Arrays.asList(roleIds));
+        for (SysRole role : roles) {
+            if (role.getRoleKey().equals(Constants.ADMIN_ROLE)) {
+                throw new ServiceException("禁止删除管理员角色保留关键字【" + Constants.ADMIN_ROLE + "】");
+            }
             checkRoleAllowed(BeanUtil.toBean(role, SysRoleBo.class));
-            checkRoleDataScope(roleId);
-            if (countUserRoleByRoleId(roleId) > 0) {
+            checkRoleDataScope(role.getRoleId());
+            if (countUserRoleByRoleId(role.getRoleId()) > 0) {
                 throw new ServiceException(String.format("%1$s已分配，不能删除!", role.getRoleName()));
             }
         }
