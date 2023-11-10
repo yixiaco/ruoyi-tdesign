@@ -99,6 +99,7 @@
               <edit-icon />修改
             </t-link>
             <t-link
+              v-if="row.packageId"
               v-hasPermi="['system:tenant:edit']"
               theme="primary"
               hover="color"
@@ -155,9 +156,9 @@
               <t-input v-model="form.contactPhone" placeholder="请输入联系电话" />
             </t-form-item>
           </t-col>
-          <t-col :span="6">
+          <t-col v-if="form.tenantId !== DEFAULT_TENANT_ID" :span="6">
             <t-form-item label="租户套餐" name="packageId">
-              <t-select v-model="form.packageId" :disabled="!!form.tenantId" placeholder="请选择租户套餐" clearable>
+              <t-select v-model="form.packageId" placeholder="请选择租户套餐" clearable>
                 <t-option
                   v-for="item in packageList"
                   :key="item.packageId"
@@ -177,7 +178,7 @@
               <t-input v-model="form.password" type="password" :maxlength="20" placeholder="请输入系统用户密码" />
             </t-form-item>
           </t-col>
-          <t-col :span="6">
+          <t-col v-if="form.tenantId !== DEFAULT_TENANT_ID" :span="6">
             <t-form-item label="过期时间" name="expireTime">
               <t-date-picker
                 v-model="form.expireTime"
@@ -188,7 +189,7 @@
               />
             </t-form-item>
           </t-col>
-          <t-col :span="6">
+          <t-col v-if="form.tenantId !== DEFAULT_TENANT_ID" :span="6">
             <t-form-item label="用户数量" name="accountCount" help="-1不限制">
               <t-input-number v-model="form.accountCount" placeholder="请输入用户数量" :min="-1" />
             </t-form-item>
@@ -294,6 +295,7 @@
 defineOptions({
   name: 'Tenant',
 });
+
 import {
   AddIcon,
   BrowseIcon,
@@ -326,6 +328,7 @@ import {
   updateTenant,
 } from '@/api/system/tenant';
 import { selectTenantPackage } from '@/api/system/tenantPackage';
+import { DEFAULT_TENANT_ID } from '@/constants';
 import { handleChangeStatus } from '@/utils/ruoyi';
 
 const { proxy } = getCurrentInstance();

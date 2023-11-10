@@ -129,7 +129,7 @@
       destroy-on-close
       :close-on-overlay-click="false"
       placement="center"
-      width="500px"
+      width="700px"
       attach="body"
       :confirm-btn="{
         content: '确 定',
@@ -151,27 +151,32 @@
           <t-input v-model="form.packageName" placeholder="请输入套餐名称" />
         </t-form-item>
         <t-form-item label="关联菜单" name="menuIds">
-          <t-space direction="vertical">
-            <t-space>
-              <t-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">展开/折叠</t-checkbox>
-              <t-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">
-                全选/全不选
-              </t-checkbox>
-              <t-checkbox v-model="form.menuCheckStrictly">父子联动</t-checkbox>
+          <t-loading :loading="loadingTree" size="small">
+            <t-space direction="vertical">
+              <t-space>
+                <t-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')"
+                  >展开/折叠</t-checkbox
+                >
+                <t-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">
+                  全选/全不选
+                </t-checkbox>
+                <t-checkbox v-model="form.menuCheckStrictly">父子联动</t-checkbox>
+              </t-space>
+              <t-tree
+                ref="menuRef"
+                v-model="menuIds"
+                class="tree-border"
+                style="padding: 0 10px"
+                :data="menuOptions"
+                checkable
+                :expanded="menuExpandNode"
+                :check-strictly="!form.menuCheckStrictly"
+                empty="加载中，请稍候"
+                :keys="{ value: 'id', label: 'label', children: 'children' }"
+                @expand="onExpand('menu', $event)"
+              ></t-tree>
             </t-space>
-            <t-tree
-              ref="menuRef"
-              v-model="menuIds"
-              class="tree-border"
-              :data="menuOptions"
-              checkable
-              :expanded="menuExpandNode"
-              :check-strictly="!form.menuCheckStrictly"
-              empty="加载中，请稍候"
-              :keys="{ value: 'id', label: 'label', children: 'children' }"
-              @expand="onExpand('menu', $event)"
-            ></t-tree>
-          </t-space>
+          </t-loading>
         </t-form-item>
         <t-form-item label="备注" name="remark">
           <t-textarea v-model="form.remark" placeholder="请输入备注" />
@@ -269,6 +274,7 @@ const open = ref(false);
 const openView = ref(false);
 const openViewLoading = ref(false);
 const buttonLoading = ref(false);
+const loadingTree = ref(false);
 const loading = ref(false);
 const columnControllerVisible = ref(false);
 const showSearch = ref(true);
@@ -430,19 +436,21 @@ function handleDetail(row: SysTenantPackageVo) {
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row?: SysTenantPackageVo) {
+async function handleUpdate(row?: SysTenantPackageVo) {
   buttonLoading.value = true;
+  loadingTree.value = true;
   reset();
   open.value = true;
   title.value = '修改租户套餐';
   const packageId = row?.packageId || ids.value.at(0);
-  getPackageMenuTreeselect(packageId).then((res) => {
-    menuIds.value = res.data.checkedKeys;
-  });
-  getTenantPackage(packageId).then((response) => {
-    buttonLoading.value = false;
+  await getTenantPackage(packageId).then((response) => {
     form.value = response.data;
   });
+  await getPackageMenuTreeselect(packageId).then((res) => {
+    menuIds.value = res.data.checkedKeys;
+    loadingTree.value = false;
+  });
+  buttonLoading.value = false;
 }
 
 /** 树权限（展开/折叠） */

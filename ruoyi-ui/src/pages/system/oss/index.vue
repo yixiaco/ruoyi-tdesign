@@ -176,6 +176,7 @@
 defineOptions({
   name: 'Oss',
 });
+
 import {
   CloudUploadIcon,
   DeleteIcon,
@@ -194,11 +195,12 @@ import { delOss, listOss } from '@/api/system/oss';
 import FileUpload from '@/components/file-upload/index.vue';
 import ImagePreview from '@/components/image-preview/index.vue';
 import ImageUpload from '@/components/image-upload/index.vue';
+import { DEFAULT_TENANT_ID } from '@/constants';
 import { useUserStore } from '@/store';
 
 const { proxy } = getCurrentInstance();
 const { tenantId } = toRefs(useUserStore());
-const isSystem = computed(() => tenantId.value === '000000');
+const isSystem = computed(() => tenantId.value === DEFAULT_TENANT_ID);
 
 const ossList = ref<SysOssVo[]>([]);
 const open = ref(false);

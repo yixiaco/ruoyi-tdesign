@@ -49,3 +49,5 @@ export enum ContentTypeEnum {
   FormURLEncoded = 'application/x-www-form-urlencoded;charset=UTF-8',
   FormData = 'multipart/form-data;charset=UTF-8',
 }
+
+export const DEFAULT_TENANT_ID = '000000';

@@ -18,9 +18,11 @@
 defineOptions({
   name: 'SysConfig',
 });
+
 import { computed, ref, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
+import { DEFAULT_TENANT_ID } from '@/constants';
 import { useUserStore } from '@/store';
 import { useHasPermission } from '@/utils/auth';
 
@@ -31,7 +33,7 @@ const route = useRoute();
 const router = useRouter();
 const action = ref(Number(route.query.action) || 1);
 const { tenantId } = toRefs(useUserStore());
-const isSystem = computed(() => tenantId.value === '000000');
+const isSystem = computed(() => tenantId.value === DEFAULT_TENANT_ID);
 // 表单禁用
 const disabled = !useHasPermission(['system:config:edit']);
 

@@ -8,6 +8,7 @@ import { DialogPlugin, LoadingPlugin, MessagePlugin, NotifyPlugin } from 'tdesig
 
 import { ContentTypeEnum } from '@/constants';
 import cache from '@/plugins/cache';
+import { messageOptionMerge } from '@/plugins/modal';
 import { useUserStore } from '@/store/modules/user';
 import { encryptBase64, encryptWithAes, generateAesKey } from '@/utils/crypto';
 // @ts-ignore
@@ -53,7 +54,7 @@ const transform: AxiosTransform = {
     const { data } = res;
     if (!data) {
       errorMessage = '请求接口错误';
-      MessagePlugin.error(errorMessage);
+      MessagePlugin.error(messageOptionMerge(errorMessage));
       throw new Error(errorMessage);
     }
 
@@ -93,16 +94,16 @@ const transform: AxiosTransform = {
         return res.data;
       }
       msg = '无效的会话，或者会话已过期，请重新登录。';
-      MessagePlugin.error(msg);
+      MessagePlugin.error(messageOptionMerge(msg));
       throw new Error(msg);
     } else if (code === 500) {
-      MessagePlugin.error(msg);
+      MessagePlugin.error(messageOptionMerge(msg));
       throw new Error(msg);
     } else if (code === 601) {
-      MessagePlugin.warning(msg);
+      MessagePlugin.warning(messageOptionMerge(msg));
       throw new Error(msg);
     } else if (code !== 200) {
-      NotifyPlugin.error({ title: msg });
+      NotifyPlugin.error({ title: msg, zIndex: 100001 });
       throw new Error('error');
     } else {
       return res.data;
@@ -243,14 +244,14 @@ const transform: AxiosTransform = {
       message = `系统接口${message.substring(message.length - 3)}异常`;
     }
     if (!config || !config.requestOptions.retry) {
-      MessagePlugin.error(message, 5000);
+      MessagePlugin.error(messageOptionMerge(message), 5000);
       return Promise.reject(error);
     }
 
     config.retryCount = config.retryCount || 0;
 
     if (config.retryCount >= config.requestOptions.retry.count) {
-      MessagePlugin.error(message, 5000);
+      MessagePlugin.error(messageOptionMerge(message), 5000);
       return Promise.reject(error);
     }
 
@@ -362,12 +363,12 @@ export function download(url: string, params: any, filename: string, config?: Ax
         const rspObj = JSON.parse(resText);
         // @ts-ignore
         const errMsg = errorCode[rspObj.code] || rspObj.msg || errorCode.default;
-        MessagePlugin.error(errMsg);
+        MessagePlugin.error(messageOptionMerge(errMsg));
       }
     })
     .catch((r) => {
       console.error(r);
-      MessagePlugin.error('下载文件出现错误，请联系管理员！');
+      MessagePlugin.error(messageOptionMerge('下载文件出现错误，请联系管理员！'));
     })
     .finally(() => downloadLoadingInstance.hide());
 }
