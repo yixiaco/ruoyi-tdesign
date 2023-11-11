@@ -351,14 +351,18 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
         if (exists) {
             throw new ServiceException("加锁文件必须解锁后才能删除");
         }
-        List<SysOss> list = listByIds(ossIds);
+        List<SysOss> ossList = lambdaQuery()
+            .in(SysOss::getOssId, ossIds)
+            .eq(SysOss::getUserType, userType.getUserType())
+            .eq(SysOss::getCreateBy, userId)
+            .list();
         boolean remove = lambdaUpdate()
             .in(SysOss::getOssId, ossIds)
             .eq(SysOss::getUserType, userType.getUserType())
             .eq(SysOss::getCreateBy, userId)
             .remove();
         if (remove) {
-            removeRealOss(list);
+            removeRealOss(ossList);
         }
         return remove;
     }
