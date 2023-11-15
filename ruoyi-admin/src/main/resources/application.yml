@@ -270,7 +270,7 @@ xss:
   # 过滤开关
   enabled: true
   # 排除链接（多个用逗号分隔）
-  excludes: /system/notice,/system/config/*,/system/messageTemplate,/system/messageConfig
+  excludes: /system/notice,/system/config/**,/system/messageTemplate,/system/messageConfig
   # 匹配链接
   urlPatterns: /system/*,/monitor/*,/tool/*
 
