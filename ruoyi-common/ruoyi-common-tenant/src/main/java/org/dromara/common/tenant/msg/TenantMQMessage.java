@@ -11,6 +11,8 @@ import java.io.Serializable;
  *
  * @author hexm
  * @date 2023/07/22 12:14
+ * @see org.dromara.common.tenant.annotation.DynamicTenant
+ * @since 1.0.7
  */
 @Data
 public class TenantMQMessage implements Serializable {

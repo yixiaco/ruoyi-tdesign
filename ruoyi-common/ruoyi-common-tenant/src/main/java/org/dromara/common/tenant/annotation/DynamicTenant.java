@@ -14,9 +14,21 @@ import java.lang.annotation.Target;
  * 动态租户注解
  * 需要注意的是，多个注解切面优先级不能高于租户切面(-1)，否则无法对该注解生效
  * 注解不支持嵌套使用，否则租户会被提前释放
+ * <p>在Spring管理的Bean中使用</p>
+ * <p>
+ * example:
+ * <pre>{@code
+ *      @DynamicTenant(value  = "#{#msg.tenantId}")
+ *      public <T extends TenantMQMessage> void example(T msg) {
+ *          ...
+ *      }
+ * }</pre>
  *
  * @author hexm
  * @date 2023/07/22 11:59
+ * @see org.dromara.common.tenant.msg.TenantMQMessage
+ * @see org.dromara.common.tenant.aspect.TenantAspect#handleDynamic
+ * @since 1.0.7
  */
 @Inherited
 @Target(ElementType.METHOD)
