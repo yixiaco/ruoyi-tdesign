@@ -2,6 +2,7 @@ package org.dromara.common.core.domain.model;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 短信登录对象
@@ -10,7 +11,8 @@ import lombok.Data;
  */
 
 @Data
-public class SmsLoginBody {
+@EqualsAndHashCode(callSuper = true)
+public class SmsLoginBody extends LoginBody {
 
     /**
      * 手机号

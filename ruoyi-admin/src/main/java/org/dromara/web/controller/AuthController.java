@@ -12,6 +12,7 @@ import me.zhyd.oauth.utils.AuthStateUtils;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.domain.model.LoginBody;
 import org.dromara.common.core.domain.model.RegisterBody;
+import org.dromara.common.core.domain.model.SocialLoginBody;
 import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.helper.SysConfigHelper;
 import org.dromara.common.core.utils.MapstructUtils;
@@ -132,9 +133,9 @@ public class AuthController {
      * @return 结果
      */
     @PostMapping("/social/callback")
-    public R<Void> socialCallback(@RequestBody LoginBody loginBody) {
+    public R<Void> socialCallback(@RequestBody SocialLoginBody loginBody) {
         // 获取第三方登录信息
-        AuthResponse<AuthUser> response = SocialUtils.loginAuth(loginBody, socialProperties);
+        AuthResponse<AuthUser> response = SocialUtils.loginAuth(loginBody.getSource(), loginBody.getSocialCode(), loginBody.getSocialState(), socialProperties);
         AuthUser authUserData = response.getData();
         // 判断授权响应是否成功
         if (!response.ok()) {

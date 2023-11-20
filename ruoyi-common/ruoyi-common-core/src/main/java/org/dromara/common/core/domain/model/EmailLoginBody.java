@@ -3,6 +3,7 @@ package org.dromara.common.core.domain.model;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 /**
  * 邮件登录对象
@@ -11,7 +12,8 @@ import lombok.Data;
  */
 
 @Data
-public class EmailLoginBody {
+@EqualsAndHashCode(callSuper = true)
+public class EmailLoginBody extends LoginBody {
 
     /**
      * 邮箱

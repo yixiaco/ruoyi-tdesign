@@ -109,6 +109,11 @@
             <artifactId>ip2region</artifactId>
         </dependency>
 
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
+
         <!-- idea注解提示 -->
         <dependency>
             <groupId>org.jetbrains</groupId>

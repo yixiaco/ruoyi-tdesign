@@ -9,14 +9,13 @@ import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.model.AuthResponse;
 import me.zhyd.oauth.model.AuthUser;
 import org.dromara.common.core.constant.Constants;
-import org.dromara.common.core.domain.model.LoginBody;
+import org.dromara.common.core.constant.GrantTypeConstants;
 import org.dromara.common.core.domain.model.LoginUser;
+import org.dromara.common.core.domain.model.SocialLoginBody;
 import org.dromara.common.core.enums.UserStatus;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.exception.user.UserException;
 import org.dromara.common.core.utils.MessageUtils;
-import org.dromara.common.core.utils.ValidatorUtils;
-import org.dromara.common.core.validate.auth.SocialGroup;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.dromara.common.social.config.properties.SocialProperties;
@@ -40,9 +39,9 @@ import org.springframework.stereotype.Service;
  * @author thiszhc is 三三
  */
 @Slf4j
-@Service("social" + IAuthStrategy.BASE_NAME)
+@Service(GrantTypeConstants.SOCIAL + IAuthStrategy.BASE_NAME)
 @RequiredArgsConstructor
-public class SocialAuthStrategy implements IAuthStrategy {
+public class SocialAuthStrategy implements IAuthStrategy<SocialLoginBody> {
 
     private final SocialProperties socialProperties;
     private final ISysSocialService sysSocialService;
@@ -50,22 +49,17 @@ public class SocialAuthStrategy implements IAuthStrategy {
     private final SysLoginService loginService;
 
 
-    @Override
-    public void validate(LoginBody loginBody) {
-        ValidatorUtils.validate(loginBody, SocialGroup.class);
-    }
-
     /**
      * 登录-第三方授权登录
      *
-     * @param clientId  客户端id
-     * @param loginBody 登录信息
-     * @param client    客户端信息
+     * @param clientId 客户端id
+     * @param body     登录信息
+     * @param client   客户端信息
      */
     @Override
     @IgnoreTenant
-    public LoginVo login(String clientId, LoginBody loginBody, SysClient client) {
-        AuthResponse<AuthUser> response = SocialUtils.loginAuth(loginBody, socialProperties);
+    public LoginVo login(String clientId, SocialLoginBody body, SysClient client) {
+        AuthResponse<AuthUser> response = SocialUtils.loginAuth(body.getSource(), body.getSocialCode(), body.getSocialState(), socialProperties);
         if (!response.ok()) {
             throw new ServiceException(response.getMsg());
         }

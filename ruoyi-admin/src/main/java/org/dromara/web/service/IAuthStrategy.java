@@ -12,14 +12,14 @@ import org.dromara.web.domain.vo.LoginVo;
  *
  * @author Michelle.Chung
  */
-public interface IAuthStrategy {
+public interface IAuthStrategy<L extends LoginBody> {
 
     String BASE_NAME = "AuthStrategy";
 
     /**
      * 登录
      */
-    static LoginVo login(LoginBody loginBody, SysClient client) {
+    static <L extends LoginBody> LoginVo login(L loginBody, SysClient client) {
         // 授权类型和客户端id
         String clientId = loginBody.getClientId();
         String grantType = loginBody.getGrantType();
@@ -27,19 +27,13 @@ public interface IAuthStrategy {
         if (!SpringUtils.containsBean(beanName)) {
             throw new ServiceException("授权类型不正确!");
         }
-        IAuthStrategy instance = SpringUtils.getBean(beanName);
-        instance.validate(loginBody);
+        IAuthStrategy<L> instance = SpringUtils.getBean(beanName);
         return instance.login(clientId, loginBody, client);
     }
 
     /**
-     * 参数校验
-     */
-    void validate(LoginBody loginBody);
-
-    /**
      * 登录
      */
-    LoginVo login(String clientId, LoginBody loginBody, SysClient client);
+    LoginVo login(String clientId, L loginBody, SysClient client);
 
 }

@@ -5,12 +5,12 @@ import cn.hutool.core.util.ObjectUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.Constants;
+import org.dromara.common.core.constant.GrantTypeConstants;
 import org.dromara.common.core.domain.model.LoginBody;
+import org.dromara.common.core.domain.model.XcxLoginBody;
 import org.dromara.common.core.domain.model.XcxLoginUser;
 import org.dromara.common.core.enums.UserStatus;
 import org.dromara.common.core.utils.MessageUtils;
-import org.dromara.common.core.utils.ValidatorUtils;
-import org.dromara.common.core.validate.auth.WechatGroup;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.dromara.common.tenant.annotation.IgnoreTenant;
@@ -27,22 +27,20 @@ import org.springframework.stereotype.Service;
  * @author Michelle.Chung
  */
 @Slf4j
-@Service("xcx" + IAuthStrategy.BASE_NAME)
+@Service(GrantTypeConstants.XCX + IAuthStrategy.BASE_NAME)
 @RequiredArgsConstructor
-public class XcxAuthStrategy implements IAuthStrategy {
+public class XcxAuthStrategy implements IAuthStrategy<XcxLoginBody> {
 
     private final SysLoginService loginService;
 
     @Override
-    public void validate(LoginBody loginBody) {
-        ValidatorUtils.validate(loginBody, WechatGroup.class);
-    }
-
-    @Override
     @IgnoreTenant
-    public LoginVo login(String clientId, LoginBody loginBody, SysClient client) {
+    public LoginVo login(String clientId, XcxLoginBody loginBody, SysClient client) {
         // xcxCode 为 小程序调用 wx.login 授权后获取
         String xcxCode = loginBody.getXcxCode();
+        // 多个小程序识别使用
+        String appid = loginBody.getAppid();
+
         // todo 以下自行实现
         // 校验 appid + appsrcret + xcxCode 调用登录凭证校验接口 获取 session_key 与 openid
         String openid = "";
