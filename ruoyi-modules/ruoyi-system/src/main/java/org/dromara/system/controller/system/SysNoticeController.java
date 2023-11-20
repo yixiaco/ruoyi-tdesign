@@ -5,6 +5,8 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.dromara.common.core.domain.R;
+import org.dromara.common.core.events.NoticeInsertEvent;
+import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.excel.utils.ExcelUtil;
@@ -73,7 +75,15 @@ public class SysNoticeController extends BaseController {
     @Log(title = "通知公告", businessType = BusinessType.INSERT)
     @PostMapping
     public R<Void> add(@Validated(AddGroup.class) @RequestBody SysNoticeBo notice) {
-        return toAjax(noticeService.insertNotice(notice));
+        Boolean b = noticeService.insertNotice(notice);
+        if (!b) {
+            return R.fail();
+        }
+        NoticeInsertEvent event = new NoticeInsertEvent();
+        event.setType(notice.getNoticeType());
+        event.setTitle(notice.getNoticeTitle());
+        SpringUtils.getApplicationContext().publishEvent(event);
+        return R.ok();
     }
 
     /**

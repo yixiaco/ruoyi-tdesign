@@ -14,11 +14,14 @@ import org.dromara.common.core.domain.model.LoginBody;
 import org.dromara.common.core.domain.model.RegisterBody;
 import org.dromara.common.core.domain.model.SocialLoginBody;
 import org.dromara.common.core.enums.NormalDisableEnum;
+import org.dromara.common.core.events.LoginEvent;
 import org.dromara.common.core.helper.SysConfigHelper;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.MessageUtils;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.core.utils.spring.SpringUtils;
+import org.dromara.common.satoken.utils.LoginUserHelper;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.dromara.common.social.config.properties.SocialLoginConfigProperties;
 import org.dromara.common.social.config.properties.SocialProperties;
@@ -105,7 +108,11 @@ public class AuthController {
             return R.fail(MessageUtils.message("auth.grant.type.blocked"));
         }
         // 登录
-        return R.ok(IAuthStrategy.login(loginBody, client));
+        LoginVo login = IAuthStrategy.login(loginBody, client);
+        LoginEvent event = new LoginEvent();
+        event.setUserId(LoginUserHelper.getUserId());
+        SpringUtils.getApplicationContext().publishEvent(event);
+        return R.ok(login);
     }
 
     /**

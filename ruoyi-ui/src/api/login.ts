@@ -34,10 +34,15 @@ export function login(loginData: LoginData) {
 
 // 注册方法
 export function register(data: RegisterBody) {
+  const params = {
+    ...data,
+    clientId,
+    grantType: 'password',
+  };
   return request.post<R<void>>(
     {
       url: '/auth/register',
-      data,
+      data: params,
     },
     {
       withToken: false,

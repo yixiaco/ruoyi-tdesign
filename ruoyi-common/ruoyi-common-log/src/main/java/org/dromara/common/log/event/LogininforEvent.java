@@ -6,7 +6,7 @@ import java.io.Serial;
 import java.io.Serializable;
 
 /**
- * 登录事件
+ * 登录日志事件
  *
  * @author Lion Li
  */

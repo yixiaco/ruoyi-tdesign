@@ -43,6 +43,9 @@
         }"
         style="width: 100%"
       >
+        <template #deviceType="{ row }">
+          <dict-tag :options="sys_device_type" :value="row.deviceType" />
+        </template>
         <template #loginTime="{ row }">
           <span>{{ parseTime(row.loginTime) }}</span>
         </template>
@@ -72,6 +75,7 @@ import type { SysUserOnline, SysUserOnlineQuery } from '@/api/monitor/model/user
 import { forceLogout, list as initData } from '@/api/monitor/online';
 
 const { proxy } = getCurrentInstance();
+const { sys_device_type } = proxy.useDict('sys_device_type');
 
 const onlineList = ref<SysUserOnline[]>([]);
 const loading = ref(false);
@@ -89,6 +93,8 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: '序号', colKey: 'serial-number', width: 80, align: 'center' },
   { title: `会话编号`, colKey: 'tokenId', align: 'center', ellipsis: true },
   { title: `登录名称`, colKey: 'userName', align: 'center', ellipsis: true },
+  { title: `客户端`, colKey: 'clientKey', align: 'center' },
+  { title: `设备类型`, colKey: 'deviceType', align: 'center' },
   { title: `所属部门`, colKey: 'deptName', align: 'center', ellipsis: true },
   { title: `主机`, colKey: 'ipaddr', align: 'center', ellipsis: true },
   { title: `登录地点`, colKey: 'loginLocation', align: 'center', ellipsis: true },
