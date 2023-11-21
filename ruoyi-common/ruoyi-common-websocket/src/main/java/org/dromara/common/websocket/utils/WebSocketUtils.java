@@ -15,6 +15,8 @@ import org.springframework.web.socket.WebSocketSession;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
 import static org.dromara.common.websocket.constant.WebSocketConstants.WEB_SOCKET_TOPIC;
@@ -35,8 +37,10 @@ public class WebSocketUtils {
      * @param message    消息文本
      */
     public static void sendMessage(Long sessionKey, String message) {
-        WebSocketSession session = WebSocketSessionHolder.getSessions(sessionKey);
-        sendMessage(session, message);
+        Set<WebSocketSession> sessions = WebSocketSessionHolder.getSessions(sessionKey);
+        for (WebSocketSession session : sessions) {
+            sendMessage(session, message);
+        }
     }
 
     /**
@@ -100,11 +104,14 @@ public class WebSocketUtils {
         if (session == null || !session.isOpen()) {
             log.error("[send] session会话已经关闭");
         } else {
-            try {
-                session.sendMessage(message);
-            } catch (IOException e) {
-                log.error("[send] session({}) 发送消息({}) 异常", session, message, e);
-            }
+            // 此处不能在IO线程中发送
+            CompletableFuture.runAsync(() -> {
+                try {
+                    session.sendMessage(message);
+                } catch (IOException e) {
+                    log.error("[send] session({}) 发送消息({}) 异常", session, message, e);
+                }
+            });
         }
     }
 }

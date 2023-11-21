@@ -30,7 +30,7 @@ public class SystemEventsListener {
     @EventListener
     public void login(LoginEvent loginEvent) {
         scheduledExecutorService.schedule(() -> {
-            WebSocketUtils.sendMessage(loginEvent.getUserId(), "欢迎登录RuoYi-TDesign后台管理系统");
+            WebSocketUtils.sendMessage(loginEvent.getUserId(), "[登录] 欢迎登录RuoYi-TDesign后台管理系统");
         }, 3, TimeUnit.SECONDS);
     }
 

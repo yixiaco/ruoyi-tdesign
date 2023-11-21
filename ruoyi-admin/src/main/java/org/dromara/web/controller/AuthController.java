@@ -21,7 +21,7 @@ import org.dromara.common.core.utils.MessageUtils;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.spring.SpringUtils;
-import org.dromara.common.satoken.utils.LoginUserHelper;
+import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.dromara.common.social.config.properties.SocialLoginConfigProperties;
 import org.dromara.common.social.config.properties.SocialProperties;
@@ -110,7 +110,7 @@ public class AuthController {
         // 登录
         LoginVo login = IAuthStrategy.login(loginBody, client);
         LoginEvent event = new LoginEvent();
-        event.setUserId(LoginUserHelper.getUserId());
+        event.setUserId(LoginHelper.getUserId());
         SpringUtils.getApplicationContext().publishEvent(event);
         return R.ok(login);
     }

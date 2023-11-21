@@ -89,7 +89,7 @@ public class PlusWebSocketHandler extends AbstractWebSocketHandler {
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
         LoginUser loginUser = (LoginUser) session.getAttributes().get(LOGIN_USER_KEY);
-        WebSocketSessionHolder.removeSession(loginUser.getUserId());
+        WebSocketSessionHolder.removeSession(loginUser.getUserId(), session);
         log.info("[disconnect] sessionId: {},userId:{},userType:{}", session.getId(), loginUser.getUserId(), loginUser.getUserType());
     }
 

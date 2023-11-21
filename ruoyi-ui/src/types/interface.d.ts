@@ -45,6 +45,13 @@ export interface NotificationItem {
   quality: string;
 }
 
+export interface NoticeItem {
+  title?: string;
+  read: boolean;
+  message: string;
+  time: string;
+}
+
 export interface TRouterInfo {
   path: string;
   query?: LocationQueryRaw;

@@ -11,10 +11,10 @@
         <t-list v-if="unreadMsg.length > 0" class="narrow-scrollbar" :split="false">
           <t-list-item v-for="(item, index) in unreadMsg" :key="index">
             <div>
-              <p class="msg-content">{{ item.content }}</p>
-              <p class="msg-type">{{ item.type }}</p>
+              <p class="msg-content">{{ item.message }}</p>
+              <p class="msg-type">{{ getType(item.message) }}</p>
             </div>
-            <p class="msg-time">{{ item.date }}</p>
+            <p class="msg-time">{{ item.time }}</p>
             <template #action>
               <t-button size="small" variant="outline" @click="setRead('radio', item)"> 设为已读 </t-button>
             </template>
@@ -43,34 +43,46 @@
 <script lang="ts" setup>
 import { storeToRefs } from 'pinia';
 import { MailIcon } from 'tdesign-icons-vue-next';
+import { onMounted, onUnmounted } from 'vue';
 import { useRouter } from 'vue-router';
 
 import Nothing from '@/assets/images/nothing.png';
-import { useNotificationStore } from '@/store';
-import type { NotificationItem } from '@/types/interface';
+import { useNoticeStore } from '@/store';
+import type { NoticeItem } from '@/types/interface';
+import { closeWebsocket, initWebSocket } from '@/utils/websocket';
+
+onMounted(() => {
+  const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
+  initWebSocket(`${protocol}${window.location.host}${import.meta.env.VITE_APP_BASE_API}/resource/websocket`);
+});
+
+onUnmounted(() => {
+  closeWebsocket();
+});
 
 const router = useRouter();
-const store = useNotificationStore();
-const { msgData, unreadMsg } = storeToRefs(store);
+const store = useNoticeStore();
+const { readAll } = store;
+const { unreadMsg } = storeToRefs(store);
 
-const setRead = (type: string, item?: NotificationItem) => {
-  const changeMsg = msgData.value;
+const setRead = (type: string, item?: NoticeItem) => {
   if (type === 'all') {
-    changeMsg.forEach((e) => {
-      e.status = false;
-    });
+    readAll();
   } else {
-    changeMsg.forEach((e) => {
-      if (e.id === item?.id) {
-        e.status = false;
-      }
-    });
+    item.read = true;
   }
-  store.setMsgData(changeMsg);
 };
 
+function getType(content: string) {
+  if (content) {
+    const array = content.match(/^\[(\S+)].*/);
+    return array.at(1);
+  }
+  return '';
+}
+
 const goDetail = () => {
-  router.push('/detail/secondary');
+  router.push('/system/notice');
 };
 </script>
 

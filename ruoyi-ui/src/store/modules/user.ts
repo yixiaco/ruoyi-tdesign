@@ -102,7 +102,3 @@ export const useUserStore = defineStore('user', {
     // },
   },
 });
-
-export function getUserStore() {
-  return useUserStore(store);
-}
