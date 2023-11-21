@@ -6,7 +6,6 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.Constants;
 import org.dromara.common.core.constant.GrantTypeConstants;
-import org.dromara.common.core.domain.model.LoginBody;
 import org.dromara.common.core.domain.model.XcxLoginBody;
 import org.dromara.common.core.domain.model.XcxLoginUser;
 import org.dromara.common.core.enums.UserStatus;
@@ -35,11 +34,12 @@ public class XcxAuthStrategy implements IAuthStrategy<XcxLoginBody> {
 
     @Override
     @IgnoreTenant
-    public LoginVo login(String clientId, XcxLoginBody loginBody, SysClient client) {
+    public LoginVo login(XcxLoginBody loginBody, SysClient client) {
         // xcxCode 为 小程序调用 wx.login 授权后获取
         String xcxCode = loginBody.getXcxCode();
         // 多个小程序识别使用
         String appid = loginBody.getAppid();
+        String clientId = client.getClientId();
 
         // todo 以下自行实现
         // 校验 appid + appsrcret + xcxCode 调用登录凭证校验接口 获取 session_key 与 openid

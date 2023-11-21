@@ -52,17 +52,17 @@ public class SocialAuthStrategy implements IAuthStrategy<SocialLoginBody> {
     /**
      * 登录-第三方授权登录
      *
-     * @param clientId 客户端id
-     * @param body     登录信息
-     * @param client   客户端信息
+     * @param body   登录信息
+     * @param client 客户端信息
      */
     @Override
     @IgnoreTenant
-    public LoginVo login(String clientId, SocialLoginBody body, SysClient client) {
+    public LoginVo login(SocialLoginBody body, SysClient client) {
         AuthResponse<AuthUser> response = SocialUtils.loginAuth(body.getSource(), body.getSocialCode(), body.getSocialState(), socialProperties);
         if (!response.ok()) {
             throw new ServiceException(response.getMsg());
         }
+        String clientId = client.getClientId();
         AuthUser authUserData = response.getData();
         SysSocialVo social = sysSocialService.selectByAuthId(authUserData.getSource() + authUserData.getUuid());
         if (!ObjectUtil.isNotNull(social)) {

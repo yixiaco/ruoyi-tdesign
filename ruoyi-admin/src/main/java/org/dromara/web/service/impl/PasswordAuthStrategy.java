@@ -10,7 +10,6 @@ import org.dromara.common.core.constant.Constants;
 import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.constant.GrantTypeConstants;
 import org.dromara.common.core.constant.TenantConstants;
-import org.dromara.common.core.domain.model.LoginBody;
 import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.domain.model.PasswordLoginBody;
 import org.dromara.common.core.enums.LoginType;
@@ -50,11 +49,12 @@ public class PasswordAuthStrategy implements IAuthStrategy<PasswordLoginBody> {
 
     @Override
     @IgnoreTenant
-    public LoginVo login(String clientId, PasswordLoginBody loginBody, SysClient client) {
+    public LoginVo login(PasswordLoginBody loginBody, SysClient client) {
         String username = loginBody.getUsername();
         String password = loginBody.getPassword();
         String code = loginBody.getCode();
         String uuid = loginBody.getUuid();
+        String clientId = client.getClientId();
 
         boolean captchaEnabled = captchaProperties.getEnable();
         // 验证码开关

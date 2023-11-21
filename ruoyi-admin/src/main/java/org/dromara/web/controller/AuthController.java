@@ -108,7 +108,7 @@ public class AuthController {
             return R.fail(MessageUtils.message("auth.grant.type.blocked"));
         }
         // 登录
-        LoginVo login = IAuthStrategy.login(loginBody, client);
+        LoginVo login = IAuthStrategy.login(client, loginBody);
         LoginEvent event = new LoginEvent();
         event.setUserId(LoginHelper.getUserId());
         SpringUtils.getApplicationContext().publishEvent(event);

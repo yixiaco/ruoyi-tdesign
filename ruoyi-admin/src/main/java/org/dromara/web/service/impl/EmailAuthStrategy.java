@@ -44,7 +44,7 @@ public class EmailAuthStrategy implements IAuthStrategy<EmailLoginBody> {
 
     @Override
     @IgnoreTenant
-    public LoginVo login(String clientId, EmailLoginBody loginBody, SysClient client) {
+    public LoginVo login(EmailLoginBody loginBody, SysClient client) {
         String email = loginBody.getEmail();
         String emailCode = loginBody.getEmailCode();
 
@@ -76,7 +76,7 @@ public class EmailAuthStrategy implements IAuthStrategy<EmailLoginBody> {
         LoginVo loginVo = new LoginVo();
         loginVo.setAccessToken(MultipleStpUtil.SYSTEM.getTokenValue());
         loginVo.setExpireIn(ObjectUtil.defaultIfNull(client.getTimeout(), MultipleStpUtil.SYSTEM.getTokenTimeout()));
-        loginVo.setClientId(clientId);
+        loginVo.setClientId(client.getClientId());
         return loginVo;
     }
 

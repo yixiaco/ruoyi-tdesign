@@ -8,7 +8,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.Constants;
 import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.constant.GrantTypeConstants;
-import org.dromara.common.core.domain.model.LoginBody;
 import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.domain.model.SmsLoginBody;
 import org.dromara.common.core.enums.LoginType;
@@ -45,9 +44,10 @@ public class SmsAuthStrategy implements IAuthStrategy<SmsLoginBody> {
 
     @Override
     @IgnoreTenant
-    public LoginVo login(String clientId, SmsLoginBody loginBody, SysClient client) {
+    public LoginVo login(SmsLoginBody loginBody, SysClient client) {
         String phonenumber = loginBody.getPhonenumber();
         String smsCode = loginBody.getSmsCode();
+        String clientId = client.getClientId();
 
         // 通过手机号查找用户
         SysUserVo user = loadUserByPhonenumber(phonenumber);
