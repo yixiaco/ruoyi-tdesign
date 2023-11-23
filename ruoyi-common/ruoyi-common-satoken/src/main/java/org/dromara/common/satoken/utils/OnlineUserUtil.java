@@ -25,6 +25,7 @@ public class OnlineUserUtil {
         LoginUser user = LoginHelper.getUser();
         UserOnlineDTO dto = new UserOnlineDTO();
         dto.setIpaddr(ip);
+        dto.setTenantId(user.getTenantId());
         dto.setLoginLocation(AddressUtils.getRealAddressByIP(ip));
         dto.setBrowser(userAgent.getBrowser().getName());
         dto.setOs(userAgent.getOs().getName());

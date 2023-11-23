@@ -50,24 +50,76 @@
           <span>{{ parseTime(row.loginTime) }}</span>
         </template>
         <template #operation="{ row }">
-          <t-link
-            v-hasPermi="['monitor:online:forceLogout']"
-            theme="danger"
-            hover="color"
-            @click.stop="handleForceLogout(row)"
-          >
-            <delete-icon />强退
-          </t-link>
+          <t-space :size="8" break-line>
+            <t-link theme="primary" hover="color" @click.stop="handleDetail(row)"> <browse-icon />详情 </t-link>
+            <t-link
+              v-hasPermi="['monitor:online:forceLogout']"
+              theme="danger"
+              hover="color"
+              @click.stop="handleForceLogout(row)"
+            >
+              <delete-icon />强退
+            </t-link>
+          </t-space>
         </template>
       </t-table>
     </t-space>
+
+    <!-- 在线用户详情 -->
+    <t-dialog
+      v-model:visible="openView"
+      destroy-on-close
+      header="租户详情"
+      placement="center"
+      width="700px"
+      attach="body"
+      :footer="false"
+    >
+      <t-form label-align="right" colon label-width="calc(5em + 28px)">
+        <t-row :gutter="[0, 20]">
+          <t-col :span="6">
+            <t-form-item label="会话编号">{{ form.tokenId }}</t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="租户id">{{ form.tenantId }}</t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="部门名称">{{ form.deptName }}</t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="用户名称">{{ form.userName }}</t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="客户端">{{ form.clientKey }}</t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="设备类型"><dict-tag :options="sys_device_type" :value="form.deviceType" /></t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="登录IP地址">{{ form.ipaddr }}</t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="登录地址">{{ form.loginLocation }}</t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="浏览器类型">{{ form.browser }}</t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="操作系统">{{ form.os }}</t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="登录时间">{{ parseTime(form.loginTime) }}</t-form-item>
+          </t-col>
+        </t-row>
+      </t-form>
+    </t-dialog>
   </t-card>
 </template>
 <script lang="ts" setup>
 defineOptions({
   name: 'Online',
 });
-import { DeleteIcon, RefreshIcon, SearchIcon } from 'tdesign-icons-vue-next';
+import { BrowseIcon, DeleteIcon, RefreshIcon, SearchIcon } from 'tdesign-icons-vue-next';
 import type { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
@@ -82,6 +134,9 @@ const loading = ref(false);
 const total = ref(0);
 const pageNum = ref(1);
 const pageSize = ref(10);
+const openView = ref(false);
+// 提交表单对象
+const form = ref<SysUserOnline>();
 
 const queryParams = ref<SysUserOnlineQuery>({
   ipaddr: undefined,
@@ -92,6 +147,7 @@ const queryParams = ref<SysUserOnlineQuery>({
 const columns = ref<Array<PrimaryTableCol>>([
   { title: '序号', colKey: 'serial-number', width: 80, align: 'center' },
   { title: `会话编号`, colKey: 'tokenId', align: 'center', ellipsis: true },
+  { title: `租户id`, colKey: 'tenantId', align: 'center', ellipsis: true },
   { title: `登录名称`, colKey: 'userName', align: 'center', ellipsis: true },
   { title: `客户端`, colKey: 'clientKey', align: 'center' },
   { title: `设备类型`, colKey: 'deviceType', align: 'center' },
@@ -101,7 +157,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作系统`, colKey: 'os', align: 'center', ellipsis: true },
   { title: `浏览器`, colKey: 'browser', align: 'center', ellipsis: true },
   { title: `登录时间`, colKey: 'loginTime', align: 'center', width: 180 },
-  { title: `操作`, colKey: 'operation', align: 'center' },
+  { title: `操作`, colKey: 'operation', align: 'center', width: 130, fixed: 'right' },
 ]);
 
 // 分页
@@ -136,6 +192,11 @@ function handleQuery() {
 function resetQuery() {
   proxy.resetForm('queryRef');
   handleQuery();
+}
+/** 详情按钮操作 */
+function handleDetail(row: SysUserOnline) {
+  openView.value = true;
+  form.value = row;
 }
 /** 强退按钮操作 */
 function handleForceLogout(row: SysUserOnline) {

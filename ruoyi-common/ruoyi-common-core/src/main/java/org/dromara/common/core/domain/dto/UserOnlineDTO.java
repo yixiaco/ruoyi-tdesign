@@ -25,6 +25,11 @@ public class UserOnlineDTO implements Serializable {
     private String tokenId;
 
     /**
+     * 租户id
+     */
+    private String tenantId;
+
+    /**
      * 部门名称
      */
     private String deptName;
