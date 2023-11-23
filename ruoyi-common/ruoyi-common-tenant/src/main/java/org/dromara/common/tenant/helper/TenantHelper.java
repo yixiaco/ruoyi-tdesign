@@ -35,9 +35,11 @@ import java.util.function.Supplier;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class TenantHelper {
 
+    // 动态租户的缓存key
     private static final String DYNAMIC_TENANT_KEY = GlobalConstants.GLOBAL_REDIS_KEY + "dynamicTenant";
-
+    // 临时动态租户
     private static final ThreadLocal<String> TEMP_DYNAMIC_TENANT = new TransmittableThreadLocal<>();
+    // 忽略缓存
     private static final ThreadLocal<Boolean> IGNORE_CACHE_TENANT = new TransmittableThreadLocal<>();
     // 忽略租户db重入计数,防止重入调用提前关闭租户
     private static final ThreadLocal<AtomicInteger> HEAVY_ENTRY_IGNORE_DB_TENANT = TransmittableThreadLocal.withInitial(() -> new AtomicInteger(0));
@@ -72,7 +74,18 @@ public class TenantHelper {
      * 关闭忽略租户
      */
     public static void disableIgnore() {
-        if (HEAVY_ENTRY_IGNORE_DB_TENANT.get().decrementAndGet() <= 0) {
+        disableIgnore(false);
+    }
+
+    /**
+     * 关闭忽略租户
+     * <p>
+     * 强制执行释放可能会造成逻辑错误，请谨慎使用
+     *
+     * @param force 强制执行
+     */
+    public static void disableIgnore(boolean force) {
+        if (HEAVY_ENTRY_IGNORE_DB_TENANT.get().decrementAndGet() <= 0 || force) {
             InterceptorIgnoreHelper.clearIgnoreStrategy();
             HEAVY_ENTRY_IGNORE_DB_TENANT.remove();
         }
@@ -90,7 +103,18 @@ public class TenantHelper {
      * 关闭缓存忽略租户
      */
     public static void disableIgnoreCache() {
-        if (HEAVY_ENTRY_IGNORE_CACHE_TENANT.get().decrementAndGet() <= 0) {
+        disableIgnoreCache(false);
+    }
+
+    /**
+     * 关闭缓存忽略租户
+     * <p>
+     * 强制执行释放可能会造成逻辑错误，请谨慎使用
+     *
+     * @param force 强制执行
+     */
+    public static void disableIgnoreCache(boolean force) {
+        if (HEAVY_ENTRY_IGNORE_CACHE_TENANT.get().decrementAndGet() <= 0 || force) {
             IGNORE_CACHE_TENANT.remove();
             HEAVY_ENTRY_IGNORE_CACHE_TENANT.remove();
         }
@@ -271,6 +295,15 @@ public class TenantHelper {
         }
         // 防止登录后没有清理动态租户
         TEMP_DYNAMIC_TENANT.remove();
+    }
+
+    /**
+     * 当前是否处于动态租户环境
+     *
+     * @return
+     */
+    public static boolean isDynamic() {
+        return getDynamic() != null || DynamicTenant.DYNAMIC_TENANT_AOP.get() != null;
     }
 
     /**

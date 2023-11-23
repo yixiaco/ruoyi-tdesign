@@ -4,6 +4,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.exception.NotLoginException;
 import cn.hutool.core.bean.BeanUtil;
 import org.dromara.common.core.constant.CacheConstants;
+import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.domain.dto.UserOnlineDTO;
 import org.dromara.common.core.utils.StreamUtils;
@@ -12,7 +13,9 @@ import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.redis.utils.RedisUtils;
+import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
+import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.SysUserOnline;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -52,7 +55,15 @@ public class SysUserOnlineController extends BaseController {
             if (MultipleStpUtil.SYSTEM.getTokenActiveTimeoutByToken(token) < -1) {
                 continue;
             }
-            userOnlineDTOList.add(RedisUtils.getObject(CacheConstants.ONLINE_TOKEN_KEY + token));
+            // 开启租户 & 超级管理员 & 不使用动态租户状态下，查看所有租户在线情况
+            if (TenantHelper.isEnable() && LoginHelper.isSuperAdmin() && !TenantHelper.isDynamic()) {
+                String tenantId = RedisUtils.getObject(GlobalConstants.ONLINE_TOKEN_TENANT_ID_KEY + token);
+                TenantHelper.setDynamic(tenantId);
+                userOnlineDTOList.add(RedisUtils.getObject(CacheConstants.ONLINE_TOKEN_KEY + token));
+                TenantHelper.clearDynamic();
+            } else {
+                userOnlineDTOList.add(RedisUtils.getObject(CacheConstants.ONLINE_TOKEN_KEY + token));
+            }
         }
         if (StringUtils.isNotEmpty(ipaddr) && StringUtils.isNotEmpty(userName)) {
             userOnlineDTOList = StreamUtils.filter(userOnlineDTOList, userOnline ->

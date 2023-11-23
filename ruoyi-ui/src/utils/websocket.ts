@@ -137,7 +137,7 @@ function websocketOnMessage() {
       title: '消息',
       content: e.data,
       duration: 5000,
-      offset: [0, 50],
+      placement: 'bottom-right',
     });
     // eslint-disable-next-line consistent-return
     return e.data;
