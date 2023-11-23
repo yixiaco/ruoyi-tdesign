@@ -33,6 +33,7 @@ import directive from './directive'; // directive
 import plugins from './plugins'; // plugins
 import router from './router';
 import { store } from './store';
+import i18n from './locales';
 
 const app = createApp(App);
 
@@ -55,6 +56,7 @@ app.component('FileUpload', FileUpload);
 app.component('ImageUpload', ImageUpload);
 app.component('ImagePreview', ImagePreview);
 
+app.use(i18n);
 app.use(store);
 app.use(router);
 app.use(plugins);

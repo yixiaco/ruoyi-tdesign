@@ -43,6 +43,7 @@
     "vue": "^3.3.8",
     "vue-clipboard3": "^2.0.0",
     "vue-cropper": "^1.1.1",
+    "vue-i18n": "^9.7.1",
     "vue-router": "^4.2.5"
   },
   "devDependencies": {
@@ -80,7 +81,7 @@
     "stylelint": "~15.11.0",
     "stylelint-config-standard": "^34.0.0",
     "stylelint-order": "~6.0.3",
-    "typescript": "~5.2.2",
+    "typescript": "~5.3.2",
     "unplugin-auto-import": "^0.16.7",
     "unplugin-vue-components": "^0.25.2",
     "vite": "^4.5.0",
@@ -104,5 +105,8 @@
     "*.{html,vue,css,sass,less}": [
       "npm run stylelint:fix"
     ]
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }

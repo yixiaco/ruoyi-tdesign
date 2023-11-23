@@ -1,0 +1,24 @@
+<template>
+  <t-dropdown trigger="click">
+    <t-button theme="default" shape="square" variant="text">
+      <translate-icon />
+    </t-button>
+    <t-dropdown-menu>
+      <t-dropdown-item v-for="(lang, index) in langList" :key="index" :value="lang.value" @click="changeLang">
+        {{ lang.content }}
+      </t-dropdown-item>
+    </t-dropdown-menu>
+  </t-dropdown>
+</template>
+<script setup lang="ts">
+import { TranslateIcon } from 'tdesign-icons-vue-next';
+
+import { langList } from '@/locales';
+import { useLocale } from '@/locales/useLocale';
+
+// 切换语言
+const { changeLocale } = useLocale();
+const changeLang = ({ value: lang }: { value: string }) => {
+  changeLocale(lang);
+};
+</script>

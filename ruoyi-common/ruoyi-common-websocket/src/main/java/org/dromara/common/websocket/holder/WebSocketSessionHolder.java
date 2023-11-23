@@ -20,6 +20,9 @@ public class WebSocketSessionHolder {
     private static final Map<Long, Set<WebSocketSession>> USER_SESSION_MAP = new ConcurrentHashMap<>();
 
     public static void addSession(Long sessionKey, WebSocketSession session) {
+        if (session == null) {
+            return;
+        }
         if (USER_SESSION_MAP.containsKey(sessionKey)) {
             Set<WebSocketSession> sessions = USER_SESSION_MAP.get(sessionKey);
             sessions.add(session);

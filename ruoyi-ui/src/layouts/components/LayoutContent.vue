@@ -37,22 +37,22 @@
               <t-dropdown-menu>
                 <t-dropdown-item @click="() => handleRefresh(routeItem, index)">
                   <refresh-icon />
-                  刷新
+                  {{ $t('layout.tagTabs.refresh') }}
                 </t-dropdown-item>
                 <t-dropdown-item v-if="index > 1" @click="() => handleCloseAhead(routeItem.path, index)">
                   <arrow-left-icon />
-                  关闭左侧
+                  {{ $t('layout.tagTabs.closeLeft') }}
                 </t-dropdown-item>
                 <t-dropdown-item
                   v-if="index < tabRouters.length - 1"
                   @click="() => handleCloseBehind(routeItem.path, index)"
                 >
                   <arrow-right-icon />
-                  关闭右侧
+                  {{ $t('layout.tagTabs.closeRight') }}
                 </t-dropdown-item>
                 <t-dropdown-item v-if="tabRouters.length > 2" @click="() => handleCloseOther(routeItem.path, index)">
                   <close-circle-icon />
-                  关闭其它
+                  {{ $t('layout.tagTabs.closeOther') }}
                 </t-dropdown-item>
               </t-dropdown-menu>
             </template>

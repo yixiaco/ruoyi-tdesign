@@ -9,7 +9,7 @@
   >
     <template v-if="type === 'password'">
       <t-form-item name="account">
-        <t-input v-model="formData.account" size="large" placeholder="请输入账号">
+        <t-input v-model="formData.account" size="large" :placeholder="$t('pages.login.input.account')">
           <template #prefix-icon>
             <user-icon />
           </template>
@@ -22,7 +22,7 @@
           size="large"
           :type="showPsw ? 'text' : 'password'"
           clearable
-          placeholder="请输入登录密码"
+          :placeholder="$t('pages.login.input.password')"
         >
           <template #prefix-icon>
             <lock-on-icon />
@@ -35,7 +35,7 @@
       </t-form-item>
 
       <t-form-item v-if="captchaEnabled" class="verification-code" name="code">
-        <t-input v-model="formData.code" size="large" placeholder="请输入验证码">
+        <t-input v-model="formData.code" size="large" :placeholder="$t('pages.login.input.verification')">
           <template #label>
             <secured-icon />
           </template>
@@ -44,21 +44,21 @@
           <img :src="codeUrl" class="login-code-img" @click="getCode" />
         </div>
         <!--        <t-button variant="outline" :disabled="countDown > 0" @click="sendCode">-->
-        <!--          {{ countDown === 0 ? '发送验证码' : `${countDown}秒后可重发` }}-->
+        <!--          {{ countDown === 0 ? $t('pages.login.sendVerification') : `${countDown}秒后可重发` }}-->
         <!--        </t-button>-->
       </t-form-item>
 
       <div class="check-container remember-pwd">
-        <t-checkbox v-model="formData.rememberMe">记住账号</t-checkbox>
-        <span class="tip">忘记账号？</span>
+        <t-checkbox v-model="formData.rememberMe">{{ $t('pages.login.remember') }}</t-checkbox>
+        <span class="tip">{{ $t('pages.login.forget') }}</span>
       </div>
     </template>
 
     <!-- 扫码登录 -->
     <template v-else-if="type === 'qrcode'">
       <div class="tip-container">
-        <span class="tip">请使用微信扫一扫登录</span>
-        <span class="refresh">刷新 <refresh-icon /> </span>
+        <span class="tip">{{ $t('pages.login.wechatLogin') }}</span>
+        <span class="refresh">{{ $t('pages.login.refresh') }} <refresh-icon /> </span>
       </div>
       <qrcode-vue value="" :size="160" level="H" />
     </template>
@@ -66,7 +66,7 @@
     <!-- 手机号登录 -->
     <template v-else>
       <t-form-item name="phone">
-        <t-input v-model="formData.phone" size="large" placeholder="请输入手机号码">
+        <t-input v-model="formData.phone" size="large" :placeholder="$t('pages.login.input.phone')">
           <template #prefix-icon>
             <mobile-icon />
           </template>
@@ -74,21 +74,29 @@
       </t-form-item>
 
       <t-form-item class="verification-code" name="code">
-        <t-input v-model="formData.code" size="large" placeholder="请输入验证码" />
+        <t-input v-model="formData.code" size="large" :placeholder="$t('pages.login.input.verification')" />
         <t-button size="large" variant="outline" :disabled="countDown > 0" @click="sendCode">
-          {{ countDown === 0 ? '发送验证码' : `${countDown}秒后可重发` }}
+          {{ countDown === 0 ? $t('pages.login.sendVerification') : `${countDown}秒后可重发` }}
         </t-button>
       </t-form-item>
     </template>
 
     <t-form-item v-if="type !== 'qrcode'" class="btn-container">
-      <t-button block size="large" type="submit" :loading="loading"> {{ loading ? '登录中...' : '登录' }} </t-button>
+      <t-button block size="large" type="submit" :loading="loading">
+        {{ loading ? $t('pages.login.loading') : $t('pages.login.signIn') }}
+      </t-button>
     </t-form-item>
 
     <div class="switch-container">
-      <span v-if="type !== 'password'" class="tip" @click="switchType('password')">使用账号密码登录</span>
-      <span v-show="false" v-if="type !== 'qrcode'" class="tip" @click="switchType('qrcode')">使用微信扫码登录</span>
-      <span v-show="false" v-if="type !== 'phone'" class="tip" @click="switchType('phone')">使用手机号登录</span>
+      <span v-if="type !== 'password'" class="tip" @click="switchType('password')">
+        {{ $t('pages.login.accountLogin') }}
+      </span>
+      <span v-show="false" v-if="type !== 'qrcode'" class="tip" @click="switchType('qrcode')">
+        {{ $t('pages.login.wechatLogin') }}
+      </span>
+      <span v-show="false" v-if="type !== 'phone'" class="tip" @click="switchType('phone')">
+        {{ $t('pages.login.phoneLogin') }}
+      </span>
     </div>
     <div style="display: flex; justify-content: flex-end; flex-direction: row">
       <t-button shape="circle" variant="outline" @click="doSocialLogin('wechat_open')">
@@ -135,15 +143,16 @@ import { authBinding } from '@/api/system/social';
 import GiteeSvg from '@/assets/icons/svg/gitee.svg?component';
 import MaxKey from '@/assets/icons/svg/maxkey.svg?component';
 import { useCounter } from '@/hooks';
+import { t } from '@/locales';
 import { useTabsRouterStore, useUserStore } from '@/store';
 
 const userStore = useUserStore();
 
 const FORM_RULES: Record<string, FormRule[]> = {
-  phone: [{ required: true, message: '手机号必填', type: 'error' }],
-  account: [{ required: true, message: '账号必填', type: 'error' }],
-  password: [{ required: true, message: '密码必填', type: 'error' }],
-  code: [{ required: true, message: '验证码必填', type: 'error' }],
+  phone: [{ required: true, message: t('pages.login.required.phone'), type: 'error' }],
+  account: [{ required: true, message: t('pages.login.required.account'), type: 'error' }],
+  password: [{ required: true, message: t('pages.login.required.password'), type: 'error' }],
+  code: [{ required: true, message: t('pages.login.required.verification'), type: 'error' }],
 };
 
 const type = ref('password');
@@ -280,5 +289,5 @@ getLoginData();
 </script>
 
 <style lang="less" scoped>
-@import url('../index.less');
+@import '../index.less';
 </style>

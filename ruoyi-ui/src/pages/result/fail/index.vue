@@ -1,10 +1,10 @@
 <template>
   <div class="result-success">
     <error-circle-icon class="result-success-icon" />
-    <div class="result-success-title">项目创建失败</div>
-    <div class="result-success-describe">企业微信联系检查创建者权限，或返回修改</div>
+    <div class="result-success-title">{{ $t('pages.result.fail.title') }}</div>
+    <div class="result-success-describe">{{ $t('pages.result.fail.subtitle') }}</div>
     <div>
-      <t-button theme="default" @click="() => $router.push('/')">返回首页</t-button>
+      <t-button theme="default" @click="() => $router.push('/')">{{ $t('pages.result.fail.back') }}</t-button>
     </div>
   </div>
 </template>
@@ -23,6 +23,7 @@ defineOptions({
   justify-content: center;
   align-items: center;
   height: 75vh;
+
   &-icon {
     font-size: var(--td-comp-size-xxxxl);
     color: var(--td-text-color-secondary);

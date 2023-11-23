@@ -1,11 +1,13 @@
 <template>
   <div class="result-success">
     <check-circle-icon class="result-success-icon" />
-    <div class="result-success-title">项目已创建成功</div>
-    <div class="result-success-describe">可以联系负责人分发应用</div>
+    <div class="result-success-title">{{ $t('pages.result.success.title') }}</div>
+    <div class="result-success-describe">{{ $t('pages.result.success.subtitle') }}</div>
     <div>
-      <t-button theme="default" @click="() => $router.push('/detail/advanced')"> 查看进度 </t-button>
-      <t-button @click="() => $router.push('/')"> 返回首页 </t-button>
+      <t-button theme="default" @click="() => $router.push('/detail/advanced')">
+        {{ $t('pages.result.success.progress') }}
+      </t-button>
+      <t-button @click="() => $router.push('/')"> {{ $t('pages.result.success.back') }} </t-button>
     </div>
   </div>
 </template>

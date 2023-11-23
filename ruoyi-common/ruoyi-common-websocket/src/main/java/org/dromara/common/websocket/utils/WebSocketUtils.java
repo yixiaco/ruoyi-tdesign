@@ -39,6 +39,9 @@ public class WebSocketUtils {
     public static void sendMessage(Long sessionKey, String message) {
         Set<WebSocketSession> sessions = WebSocketSessionHolder.getSessions(sessionKey);
         for (WebSocketSession session : sessions) {
+            if (session == null) {
+                continue;
+            }
             sendMessage(session, message);
         }
     }
@@ -108,7 +111,7 @@ public class WebSocketUtils {
             CompletableFuture.runAsync(() -> {
                 try {
                     session.sendMessage(message);
-                } catch (IOException e) {
+                } catch (Exception e) {
                     log.error("[send] session({}) 发送消息({}) 异常", session, message, e);
                 }
             });

@@ -3,7 +3,7 @@
     <t-auto-complete
       v-model="searchData"
       :class="['header-search', { 'hover-active': isSearchFocus }]"
-      placeholder="请输入搜索内容"
+      :placeholder="$t('layout.searchPlaceholder')"
       :options="options"
       :filterable="false"
       :popup-props="{
@@ -35,7 +35,7 @@
     <t-auto-complete
       v-model="searchData"
       :class="['header-search', { 'width-zero': !isSearchFocus }]"
-      placeholder="输入要搜索内容"
+      :placeholder="$t('layout.searchPlaceholder')"
       :autofocus="isSearchFocus"
       :options="options"
       :filterable="false"
@@ -170,6 +170,7 @@ function getLeftMenus(menus: Array<MenuRoute>, parent?: MenuRoute): MenuRoute[] 
 .header-menu-search {
   display: flex;
   margin-left: 16px;
+
   .hover-active {
     background: var(--td-bg-color-secondarycontainer);
   }
@@ -177,20 +178,22 @@ function getLeftMenus(menus: Array<MenuRoute>, parent?: MenuRoute): MenuRoute[] 
   .t-icon {
     color: var(--td-text-color-primary) !important;
   }
+
   .header-search {
     :deep(.t-input) {
       border: none;
       outline: none;
       box-shadow: none;
       transition: background @anim-duration-base linear;
+
       .t-input__inner {
         transition: background @anim-duration-base linear;
-      }
-      .t-input__inner {
         background: none;
       }
+
       &:hover {
         background: var(--td-bg-color-secondarycontainer);
+
         .t-input__inner {
           background: var(--td-bg-color-secondarycontainer);
         }
@@ -205,14 +208,17 @@ function getLeftMenus(menus: Array<MenuRoute>, parent?: MenuRoute): MenuRoute[] 
 
   .t-icon {
     font-size: 20px;
+
     &.general {
       margin-right: 16px;
     }
   }
 }
+
 .search-icon-hide {
   opacity: 0;
 }
+
 .header-menu-search-left {
   display: flex;
   align-items: center;
@@ -220,12 +226,15 @@ function getLeftMenus(menus: Array<MenuRoute>, parent?: MenuRoute): MenuRoute[] 
   .header-search {
     width: 200px;
     transition: width @anim-duration-base @anim-time-fn-easing;
+
     :deep(.t-input) {
       border: 0;
+
       &:focus {
         box-shadow: none;
       }
     }
+
     &.width-zero {
       width: 0;
       opacity: 0;
