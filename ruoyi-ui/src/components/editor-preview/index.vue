@@ -66,6 +66,26 @@ onUpdated(() => {
 
 <style scoped lang="less">
 .editor_preview {
+  :deep(ul),
+  :deep(dl),
+  :deep(li),
+  :deep(dd),
+  :deep(dt) {
+    margin: revert;
+    padding: revert;
+    list-style: revert;
+  }
+
+  :deep(figure),
+  :deep(h1),
+  :deep(h2),
+  :deep(h3),
+  :deep(h4),
+  :deep(h5),
+  :deep(h6),
+  :deep(p) {
+    margin: revert;
+  }
   color: var(--td-text-color-primary);
   > :deep(div) {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans',
