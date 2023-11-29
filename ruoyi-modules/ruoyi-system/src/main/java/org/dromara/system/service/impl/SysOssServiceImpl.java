@@ -6,6 +6,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
+import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.enums.UserType;
 import org.dromara.common.core.enums.YesNoEnum;
@@ -50,6 +51,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
+@Slf4j
 @Service
 public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> implements ISysOssService, OssService {
 
@@ -299,10 +301,14 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
      * @return oss 匹配Url的OSS对象
      */
     private SysOssVo matchingUrl(SysOssVo oss) {
-        OssClient storage = OssFactory.instance(oss.getService());
-        // 仅修改桶类型为 private 的URL，临时URL时长为120s
-        if (AccessPolicyType.PRIVATE == storage.getAccessPolicy()) {
-            oss.setUrl(storage.getPrivateUrl(oss.getFileName(), 120));
+        try {
+            OssClient storage = OssFactory.instance(oss.getService());
+            // 仅修改桶类型为 private 的URL，临时URL时长为120s
+            if (AccessPolicyType.PRIVATE == storage.getAccessPolicy()) {
+                oss.setUrl(storage.getPrivateUrl(oss.getFileName(), 120));
+            }
+        } catch (Exception e) {
+            log.error("获取oss地址失败", e);
         }
         return oss;
     }
