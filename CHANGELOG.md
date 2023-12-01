@@ -1,3 +1,134 @@
+## 🌈 1.1.0 `2023-12-01`
+> 本次更新需要执行`update_1.0.9-1.1.0.sql`脚本
+### 🚀 New Features
+- ruoyi-ui support i18n
+- 超级管理员支持查看所有在线用户(#43)
+- 前端接入websocket接收消息
+- 新增通用job定时任务
+- 字典数据新增回显风格
+- 新增租户套餐与菜单关联表，删除租户套餐菜单字段
+- 更新登录日志, 在线用户展示信息(增加 客户端, 设备类型)
+### 🔥 Performance
+- 数据权限拦截器优先判断方法是否有效 提高性能减少无用sql解析
+- 适配 maxkey 新版本
+- @Sensitive脱敏增加角色和权限校验
+- 脱敏增加角色及权限校验
+- 部门数据权限使用默认兜底方案
+- 优化提示消息显示位置
+- 优化在线用户显示列表
+- 删除冗余参数
+- online字段显示 (客户端, 设备类型)
+- nginx 配置支持 websocket
+- notice 新增通知公告发送ws推送
+- websocket 模块减少日志输出 增加登录推送
+- 重构登录策略增加扩展性降低复杂度
+- AddressUtils 兼容linux系统本地ip
+- 补全操作日志部门数据
+- 排除powerjob无用的依赖 减少打包30M体积
+- 菜单支持模糊搜索
+- 租户套餐变更后，支持同步到所有租户上(#40)
+- 租户、租户套餐列表查询优化
+- 增强oss、oss分类安全校验
+- 客户端禁用限制
+- 数据权限 减少二次校验查询
+- 操作日志列表新增IP地址查询
+- 富文本回显使用富文本回显组件
+- 使用tabs组件lazy属性替换原有懒加载逻辑
+- 优化在我的文件选中分类时，上传文件到指定分类中
+- 代码生成mapper.xml默认生成id字段映射
+- 优化图片显示效果
+- 图片选择、文件选择在数量限制小于等于1时切换为单选模式
+### 🐞 Bug Fixes
+- 修复 oss服务无法连接 导致业务异常问题 查询不应该影响业务
+- 修复菜单标签不显示不缓存的菜单 (#42)
+- 修复用户注册缺失 clientid 问题
+- 修复 外链带端口出现的异常；
+- 补全代码生成 columnList 接口参数注解缺失；
+- 修复 ws群发重复推送问题；
+- 修复 普通角色编辑使用内置管理员code越权问题
+- 参数配置的xss排除未生效修复
+- 文件删除需要过滤用户类型及用户id
+- 删除系统菜单时，需要检查是否分配菜单给租户套餐 (#39)
+- 修复AMQP安全提示问题；
+- 修复校验问题；
+- 修复 powerjob 使用 nginx 部署无法访问的问题
+- 修复依赖问题
+- 修复 新增或编辑 SysOssConfig 数据后 推送到 redis 数据不完整
+- 个人信息修改密码接口隐藏新旧密码参数明文
+- 上传时未选择分类时报错
+- 修复我的文件分类名称编辑无效果问题
+- 用户归属部门不能为空
+- 修复我的文件中预览图片层级过低问题
+- 修复图片上传、文件上传组件当url携带参数时，解析错误的问题
+### 🏡 Chore
+- vite5最低版本要求node18
+- 升级package.json依赖
+- tdesign-vue-next-starter release 0.9.0
+- 删除 无用对象
+- 更新依赖；适配Sms4j变更
+- 还原默认样式
+- 样式调整
+- 表单label宽度计算调整
+- 更新 redis 集群模式注释说明
+- 更新DynamicTenant使用示例
+### 🔨 Dependency Upgrades
+#### 🔨 java pom
+- Upgrade to spring-boot-3.1.5
+- Upgrade to sa-token-1.37.0
+- Upgrade to mybatis-plus-3.5.4.1
+- Upgrade to pagehelper-2.0.0
+- Upgrade to hutool-5.8.22
+- Upgrade to okhttp-4.12.0
+- Upgrade to spring-boot-admin-3.1.7
+- Upgrade to redisson-3.24.3
+- Upgrade to dynamic-datasource-spring-boot3-starter-4.2.0
+- Upgrade to powerjob-4.3.6
+- Upgrade to lombok-1.18.30
+- Upgrade to aws-java-sdk-s3-1.12.581
+- Upgrade to sms4j-spring-boot-starter-3.0.3
+- Add fastjson-1.2.83
+- Upgrade to maven-surefire-plugin-3.2.1
+- Upgrade to flatten-maven-plugin-1.5.0
+- Remove snakeyaml
+#### 🔨 node package
+- Upgrade to axios@^1.6.2
+- Upgrade to crypto-js@^4.2.0
+- Upgrade to dayjs@^1.11.10
+- Upgrade to fuse.js@^7.0.0
+- Upgrade to pinia@^2.1.7
+- Upgrade to tdesign-vue-next@1.7.0
+- Upgrade to tinymce@^6.8.1
+- Upgrade to vue@^3.3.9
+- Upgrade to vue-i18n@^9.8.0
+- Upgrade to vue-router@^4.2.
+- Upgrade to @commitlint/cli@^18.4.3
+- Upgrade to @commitlint/config-conventional@^18.4.3
+- Upgrade to @types/crypto-js@^4.2.1
+- Upgrade to @types/js-cookie@^3.0.6
+- Upgrade to @types/lodash@^4.14.202
+- Upgrade to @types/nprogress@^0.2.3
+- Upgrade to @types/prismjs@^1.26.3
+- Upgrade to @types/qs@^6.9.10
+- Upgrade to @typescript-eslint/eslint-plugin@^6.13.1
+- Upgrade to @typescript-eslint/parser@^6.13.1
+- Upgrade to @vitejs/plugin-vue@^4.5.0
+- Upgrade to @vitejs/plugin-vue-jsx@^3.1.0
+- Upgrade to @vue/compiler-sfc@^3.3.9
+- Upgrade to eslint@^8.54.0
+- Upgrade to eslint-plugin-import@^2.29.0
+- Upgrade to eslint-plugin-prettier@^5.0.1
+- Upgrade to eslint-plugin-vue@^9.19.2
+- Upgrade to eslint-plugin-vue-scoped-css@^2.5.1
+- Upgrade to lint-staged@^15.1.0
+- Upgrade to prettier@^3.1.0
+- Upgrade to stylelint@~15.11.0
+- Upgrade to typescript@~5.3.2
+- Upgrade to unplugin-auto-import@^0.17.1
+- Upgrade to vite@^5.0.4
+- Upgrade to vite-plugin-vue-devtools@^1.0.0-rc.5
+- Upgrade to vite-svg-loader@^5.1.0
+- Upgrade to vue-tsc@^1.8.2
+
 ## 🌈 1.0.9 `2023-10-07`
 > 本次更新需要执行`update_1.0.8-1.0.9.sql`脚本<br>
 > 包含可能有破坏性的脚本且更新时需要删除所有缓存
@@ -54,23 +185,23 @@
 - Upgrade to redisson-spring-boot-starter-3.23.4
 - Upgrade to aws-java-sdk-s3-1.12.540
 #### 🔨 node package
-- Upgrade to @tinymce/tinymce-vue@^5.1.1,
-- Upgrade to axios@^1.5.0,
-- Upgrade to tdesign-vue-next@1.5.6,
-- Upgrade to tinymce@^6.7.0,
-- Upgrade to vue-cropper@^1.1.1,
-- Upgrade to @types/crypto-js@^4.1.2,
-- Upgrade to @types/js-cookie@^3.0.4,
-- Upgrade to @types/lodash@^4.14.198,
-- Upgrade to @types/qs@^6.9.8,
-- Upgrade to @typescript-eslint/eslint-plugin@^6.7.0,
-- Upgrade to @typescript-eslint/parser@^6.7.0,
-- Upgrade to @vitejs/plugin-vue@^4.3.4,
-- Upgrade to @vue/eslint-config-typescript@^12.0.0,
-- Upgrade to eslint@^8.49.0,
-- Upgrade to lint-staged@^14.0.1,
-- Upgrade to typescript@~5.2.2,
-- Upgrade to unplugin-vue-components@^0.25.2,
+- Upgrade to @tinymce/tinymce-vue@^5.1.1
+- Upgrade to axios@^1.5.0
+- Upgrade to tdesign-vue-next@1.5.6
+- Upgrade to tinymce@^6.7.0
+- Upgrade to vue-cropper@^1.1.1
+- Upgrade to @types/crypto-js@^4.1.2
+- Upgrade to @types/js-cookie@^3.0.4
+- Upgrade to @types/lodash@^4.14.198
+- Upgrade to @types/qs@^6.9.8
+- Upgrade to @typescript-eslint/eslint-plugin@^6.7.0
+- Upgrade to @typescript-eslint/parser@^6.7.0
+- Upgrade to @vitejs/plugin-vue@^4.3.4
+- Upgrade to @vue/eslint-config-typescript@^12.0.0
+- Upgrade to eslint@^8.49.0
+- Upgrade to lint-staged@^14.0.1
+- Upgrade to typescript@~5.2.2
+- Upgrade to unplugin-vue-components@^0.25.2
 - Upgrade to vue-tsc@^1.8.11 
 
 
@@ -280,22 +411,24 @@
 - build(deps-dev): bump typescript from 4.9.5 to 5.1.6
 - feat: 更新ruoyi-ui所有依赖
 - refactor: 重构Axios工具，新增接口级防抖节流
-- feat: 增加菜单搜索功能 (#10) 一夏* 2023/7/9 0009 22:24
-- feat: 代码生成新增排序字段生成 (#8) 一夏* 2023/7/8 0008 15:29
-- feat：更新依赖、highlightjs修改为本地组件 yixiaco 2023/7/6 0006 17:17
-- feat：新增消息模板标题属性变量渲染 yixiaco 2023/7/3 0003 0:53
-- feat 新增OSS配置create_bucket字段，在使用配置时使用创建桶;fix:修复新建配置时报错 yixiaco 2023/7/5 0005 0:43
-- update 提供存在数据值时的sql更新脚本 yixiaco 2023/7/1 0001 9:28
-- style: 修改面包屑分隔符 yixiaco 2023/7/8 0008 22:59
-- perf: 优化代码生成编辑生成配置效果 yixiaco 2023/7/7 0007 11:03
-
+- feat: 增加菜单搜索功能 (#10)
+- feat: 代码生成新增排序字段生成 (#8)
+- feat：更新依赖、highlightjs修改为本地组件
+- feat：新增消息模板标题属性变量渲染
+- feat 新增OSS配置create_bucket字段，在使用配置时使用创建桶
+- update 提供存在数据值时的sql更新脚本
+- style: 修改面包屑分隔符
+### 🔥 Performance
+- 优化代码生成编辑生成配置效果
 ### 🐞 Bug Fixes
-
-- fix: 修复导入数据表列表时的偶发性错误 yixiaco 2023/7/7 0007 10:24
-- fix: 修复字段排序不生效问题 yixiaco 2023/7/7 0007 10:05
-- fix: 修复highlightjs打包后无高亮效果； yixiaco 2023/7/6 0006 17:17
-- fix: redis读写锁释放读锁时，判断是否已经释放，避免锁重入时被提前释放 yixiaco 2023/7/6 0006 15:13
-- fix: OSS文件管理列表分页问题修复 yixiaco 2023/7/5 0005 0:55
-- fix: 刷新配置缓存时，未清理全局配置；变更OSS预览时失败修复； yixiaco 2023/7/4 0004 23:38
-- fix: ckeditor列表样式问题 yixiaco 2023/7/3 0003 23:37
-- fix: 修改消息模板内容太长时报错；修改提取变量正则不确认问题；修复变量属性无序问题，改为使用数组方式； yixiaco 2023/7/3 0003 0:53
+- 修复新建配置时报错
+- 修复导入数据表列表时的偶发性错误
+- 修复字段排序不生效问题
+- 修复highlightjs打包后无高亮效果
+- redis读写锁释放读锁时，判断是否已经释放，避免锁重入时被提前释放
+- OSS文件管理列表分页问题修复
+- 刷新配置缓存时，未清理全局配置；变更OSS预览时失败修复
+- ckeditor列表样式问题
+- 修改消息模板内容太长时报错
+- 修改提取变量正则不确认问题
+- 修复变量属性无序问题，改为使用数组方式
