@@ -5,7 +5,7 @@ import { createRouter, createWebHistory, useRoute } from 'vue-router';
 import Layout from '@/layouts/index.vue';
 
 // 自动导入modules文件夹下所有ts文件
-const modules = import.meta.globEager('./modules/**/*.ts');
+const modules = import.meta.glob('./modules/**/*.ts', { eager: true });
 
 // 路由暂存
 const routeModuleList: Array<RouteRecordRaw> = [];
