@@ -27,6 +27,11 @@ public @interface AnyEnum {
     Class<? extends Enum<?>>[] value() default {};
 
     /**
+     * 比较属性名称,如果获取不到属性，则默认执行name()方法
+     */
+    String field() default "";
+
+    /**
      * 是否忽略大小写
      *
      * @return
