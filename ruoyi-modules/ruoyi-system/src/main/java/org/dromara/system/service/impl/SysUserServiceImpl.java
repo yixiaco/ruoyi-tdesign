@@ -152,7 +152,18 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     /**
-     * 通过用户ID查询用户
+     * 通过权限查询用户
+     *
+     * @param userId 用户ID
+     * @return 用户对象信息
+     */
+    @Override
+    public SysUserVo selectSafeUserById(Long userId) {
+        return baseMapper.selectSafeUserById(userId);
+    }
+
+    /**
+     * 查询用户
      *
      * @param userId 用户ID
      * @return 用户对象信息
@@ -257,7 +268,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (LoginHelper.isSuperAdmin()) {
             return;
         }
-        if (ObjectUtil.isNull(baseMapper.selectUserById(userId))) {
+        if (ObjectUtil.isNull(baseMapper.selectSafeUserById(userId))) {
             throw new ServiceException("没有权限访问用户数据！");
         }
     }

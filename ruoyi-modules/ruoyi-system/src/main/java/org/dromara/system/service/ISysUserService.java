@@ -66,7 +66,15 @@ public interface ISysUserService extends IService<SysUser> {
     SysUserVo selectUserByPhonenumber(String phonenumber);
 
     /**
-     * 通过用户ID查询用户
+     * 通过权限查询用户
+     *
+     * @param userId 用户ID
+     * @return 用户对象信息
+     */
+    SysUserVo selectSafeUserById(Long userId);
+
+    /**
+     * 查询用户
      *
      * @param userId 用户ID
      * @return 用户对象信息

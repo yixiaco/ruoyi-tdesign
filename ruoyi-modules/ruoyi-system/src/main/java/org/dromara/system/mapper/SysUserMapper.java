@@ -116,7 +116,7 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser, SysUserVo> {
     SysUserVo selectTenantUserByEmail(@Param("email") String email, @Param("tenantId") String tenantId);
 
     /**
-     * 通过用户ID查询用户
+     * 通过权限查询用户
      *
      * @param userId 用户ID
      * @return 用户对象信息
@@ -125,6 +125,14 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser, SysUserVo> {
         @DataColumn(key = "deptName", value = "d.dept_id"),
         @DataColumn(key = "userName", value = "u.user_id")
     })
+    SysUserVo selectSafeUserById(@Param("userId") Long userId);
+
+    /**
+     * 通过用户ID查询用户
+     *
+     * @param userId 用户ID
+     * @return 用户对象信息
+     */
     SysUserVo selectUserById(@Param("userId") Long userId);
 
     @Override

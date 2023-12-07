@@ -153,7 +153,7 @@ public class SysUserController extends BaseController {
         userInfoVo.setRoles(LoginHelper.isSuperAdmin(userId) ? roles : StreamUtils.filter(roles, r -> !r.isSuperAdmin()));
         userInfoVo.setPosts(postService.selectPostList(postQuery));
         if (ObjectUtil.isNotNull(userId)) {
-            SysUserVo sysUser = userService.selectUserById(userId);
+            SysUserVo sysUser = userService.selectSafeUserById(userId);
             userInfoVo.setUser(sysUser);
             userInfoVo.setRoleIds(StreamUtils.toList(sysUser.getRoles(), SysRoleVo::getRoleId));
             userInfoVo.setPostIds(postService.selectPostListByUserId(userId));
@@ -257,7 +257,7 @@ public class SysUserController extends BaseController {
     @SaCheckPermission("system:user:query")
     @GetMapping("/authRole/{userId}")
     public R<SysUserInfoVo> authRole(@PathVariable Long userId) {
-        SysUserVo user = userService.selectUserById(userId);
+        SysUserVo user = userService.selectSafeUserById(userId);
         List<SysRoleVo> roles = roleService.selectRolesByUserId(userId);
         SysUserInfoVo userInfoVo = new SysUserInfoVo();
         userInfoVo.setUser(user);
