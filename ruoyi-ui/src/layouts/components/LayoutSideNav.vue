@@ -32,7 +32,10 @@ const sideMenu = computed(() => {
     newMenuRouters.forEach((menu) => {
       if (route.path.indexOf(menu.path) === 0) {
         if (menu.children) {
-          newMenuRouters = menu.children.map((subMenu) => ({ ...subMenu, path: `${menu.path}/${subMenu.path}` }));
+          newMenuRouters = menu.children.map((subMenu) => ({
+            ...subMenu,
+            path: `${menu.path}/${subMenu.path}`.replaceAll('//', '/'),
+          }));
         } else {
           newMenuRouters = [];
         }
