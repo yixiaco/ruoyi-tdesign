@@ -59,7 +59,7 @@ const start = ref({ x: 0, y: 0, pageX: 0, pageY: 0 });
 const current = ref({ x: 0, y: 0, pageX: 0, pageY: 0 });
 const boxRef = ref<HTMLElement>();
 const distance = ref(5);
-const scrollPadding = ref(50);
+const scrollPadding = ref(40);
 // 盒子的绝对距离
 const boxRect = ref({ left: 0, top: 0, right: 0, bottom: 0 });
 const emit = defineEmits<{
@@ -85,17 +85,11 @@ function handleMousedown(event: MouseEvent) {
   nextTick(() => {
     renderChildrenRects();
   });
-  start.value.pageX = event.pageX;
-  start.value.pageY = event.pageY;
+  start.value.pageX = event.x;
+  start.value.pageY = event.y;
   // 绝对距离转为相对距离
-  start.value.x = event.pageX - boxRect.value.left;
-  start.value.y = event.pageY - boxRect.value.top + boxRef.value.scrollTop;
-  // 开启计时器，如果计时器不存在
-  if (scrollInterval === null) {
-    scrollInterval = setInterval(() => {
-      triggerScroll();
-    }, 15);
-  }
+  start.value.x = event.x - boxRect.value.left;
+  start.value.y = event.y - boxRect.value.top + boxRef.value.scrollTop;
   handleMouseMove(event);
 }
 
@@ -106,8 +100,8 @@ function handleMousedown(event: MouseEvent) {
 function handleMouseMove(event: MouseEvent) {
   if (effectiveActive.value) {
     // 绝对距离转为相对距离
-    current.value.pageX = event.pageX;
-    current.value.pageY = event.pageY;
+    current.value.pageX = event.x;
+    current.value.pageY = event.y;
     current.value.x = range(current.value.pageX - boxRect.value.left, 0, boxRect.value.right - boxRect.value.left);
     current.value.y = range(
       current.value.pageY - boxRect.value.top + boxRef.value.scrollTop,
@@ -115,6 +109,18 @@ function handleMouseMove(event: MouseEvent) {
       boxRect.value.bottom - boxRect.value.top + boxRef.value.scrollTop,
     );
     triggerChange();
+    // 触发滚动定时器
+    if (isTriggerScrollTop() || isTriggerScrollBottom()) {
+      // 开启计时器，如果计时器不存在
+      if (scrollInterval === null) {
+        scrollInterval = setInterval(() => {
+          triggerScroll();
+        }, 20);
+      }
+    } else {
+      clearInterval(scrollInterval);
+      scrollInterval = null;
+    }
   }
 }
 
@@ -131,7 +137,7 @@ function handleScroll() {
       boxRect.value.bottom - boxRect.value.top + boxRef.value.scrollTop,
     );
     // 滚动时，重新获取一次dom元素的区域
-    renderChildrenRects();
+    // renderChildrenRects();
     triggerChange();
   }
 }
@@ -141,24 +147,36 @@ function triggerScroll() {
   const rate = 10;
   const scrollTop = boxRef.value.scrollTop;
   const top = Math.abs(current.value.y - boxRef.value.scrollTop);
-  if (top < scrollPadding.value && scrollTop !== 0) {
+  if (isTriggerScrollTop()) {
     const speed = distance.value * Math.max((scrollPadding.value - top) / rate, 1);
     boxRef.value.scrollTo({
       top: Math.max(scrollTop - speed, 0),
       left: boxRef.value.scrollLeft,
       behavior: 'instant',
     });
-  } else {
+  } else if (isTriggerScrollBottom()) {
     const bottom = Math.abs(current.value.y + boxRect.value.top - boxRef.value.scrollTop - boxRect.value.bottom);
-    if (bottom <= scrollPadding.value && scrollTop + boxRef.value.clientHeight < boxRef.value.scrollHeight) {
-      const speed = distance.value * Math.max((scrollPadding.value - bottom) / rate, 1);
-      boxRef.value.scrollTo({
-        top: Math.min(scrollTop + speed, boxRef.value.scrollHeight - boxRef.value.clientHeight),
-        left: boxRef.value.scrollLeft,
-        behavior: 'instant',
-      });
-    }
+    const speed = distance.value * Math.max((scrollPadding.value - bottom) / rate, 1);
+    boxRef.value.scrollTo({
+      top: Math.min(scrollTop + speed, boxRef.value.scrollHeight - boxRef.value.clientHeight),
+      left: boxRef.value.scrollLeft,
+      behavior: 'instant',
+    });
   }
+}
+
+/** 是否触发触顶滚动 */
+function isTriggerScrollTop() {
+  const scrollTop = boxRef.value.scrollTop;
+  const top = Math.abs(current.value.y - boxRef.value.scrollTop);
+  return top < scrollPadding.value && scrollTop !== 0;
+}
+
+/** 是否触发触底滚动 */
+function isTriggerScrollBottom() {
+  const scrollTop = boxRef.value.scrollTop;
+  const bottom = Math.abs(current.value.y + boxRect.value.top - boxRef.value.scrollTop - boxRect.value.bottom);
+  return bottom <= scrollPadding.value && scrollTop + boxRef.value.clientHeight < boxRef.value.scrollHeight;
 }
 
 /** 限制一个数在范围内 */
