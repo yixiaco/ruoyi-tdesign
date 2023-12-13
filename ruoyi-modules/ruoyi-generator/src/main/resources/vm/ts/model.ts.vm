@@ -2,7 +2,7 @@
 import type { BaseEntity } from '@/api/model/resultModel';
 #end
 
-#if($isUseQuery && $isUseQueryMethod)
+#if($isUseQuery && ($isUseQueryMethod || $isUseExportMethod))
 /**
  * ${functionName}查询对象
  */

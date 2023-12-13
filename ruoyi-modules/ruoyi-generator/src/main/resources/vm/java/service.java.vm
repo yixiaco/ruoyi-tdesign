@@ -9,7 +9,7 @@ import ${packageName}.domain.bo.${ClassName}Bo;
 #set($bo=$ClassName)
 #set($boObjName="${className}")
 #end
-#if($isUseQuery && $isUseQueryMethod)
+#if($isUseQuery && ($isUseQueryMethod || $isUseExportMethod))
 #set($query="${ClassName}Query")
 import ${packageName}.domain.query.${ClassName}Query;
 #else
