@@ -293,6 +293,7 @@
 </template>
 
 <script lang="ts" setup>
+import { useClipboard } from '@vueuse/core';
 import {
   BrowseIcon,
   CheckIcon,
@@ -304,9 +305,8 @@ import {
   SearchIcon,
   SwapIcon,
 } from 'tdesign-icons-vue-next';
-import type { FormInstanceFunctions, FormRule, PageInfo, SubmitContext } from 'tdesign-vue-next';
+import { FormInstanceFunctions, FormRule, MessagePlugin, PageInfo, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref, watch } from 'vue';
-import useClipboard from 'vue-clipboard3';
 
 import type { SysOssCategoryVo } from '@/api/system/model/ossCategoryModel';
 import type { SysOssActiveVo, SysOssForm, SysOssQuery, SysOssVo } from '@/api/system/model/ossModel';
@@ -378,7 +378,6 @@ const emit = defineEmits<{
 }>();
 
 const { proxy } = getCurrentInstance();
-const { toClipboard } = useClipboard();
 
 const ossRef = ref<FormInstanceFunctions>();
 const ossMoveRef = ref<FormInstanceFunctions>();
@@ -642,9 +641,17 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
   }
 }
 /** 复制成功 */
-async function copyText(text: string) {
-  await toClipboard(text);
-  await proxy.$modal.msgSuccess('复制成功');
+function copyText(text: string) {
+  const { copy } = useClipboard({ source: text });
+  copy()
+    .then(() => {
+      MessagePlugin.closeAll();
+      proxy.$modal.msgSuccess('复制成功');
+    })
+    .catch(() => {
+      MessagePlugin.closeAll();
+      proxy.$modal.msgError('复制失败');
+    });
 }
 /** 下载按钮操作 */
 function handleDownload(ossId?: number) {

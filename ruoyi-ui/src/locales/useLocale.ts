@@ -1,3 +1,4 @@
+import { useLocalStorage } from '@vueuse/core';
 import { computed } from 'vue';
 import { useI18n } from 'vue-i18n';
 
@@ -14,7 +15,7 @@ export function useLocale() {
     }
 
     locale.value = lang;
-    localStorage.setItem(localeConfigKey, lang);
+    useLocalStorage(localeConfigKey, 'zh_CN').value = lang;
     message.msgSuccess(t('constants.switchLanguage'));
   }
 

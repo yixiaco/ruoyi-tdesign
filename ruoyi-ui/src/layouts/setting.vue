@@ -98,10 +98,10 @@
   </t-drawer>
 </template>
 <script lang="ts" setup>
+import { useClipboard } from '@vueuse/core';
 import type { PopupVisibleChangeContext } from 'tdesign-vue-next';
 import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, onMounted, ref, watchEffect } from 'vue';
-import useClipboard from 'vue-clipboard3';
 
 import SettingAutoIcon from '@/assets/icons/assets-setting-auto.svg';
 import SettingDarkIcon from '@/assets/icons/assets-setting-dark.svg';
@@ -172,9 +172,9 @@ const onPopupVisibleChange = (visible: boolean, context: PopupVisibleChangeConte
 };
 
 const handleCopy = () => {
-  const text = JSON.stringify(formData.value, null, 4);
-  const { toClipboard } = useClipboard();
-  toClipboard(text)
+  const sourceText = JSON.stringify(formData.value, null, 4);
+  const { copy } = useClipboard({ source: sourceText });
+  copy()
     .then(() => {
       MessagePlugin.closeAll();
       MessagePlugin.success('复制成功');
