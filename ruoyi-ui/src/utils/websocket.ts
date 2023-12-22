@@ -138,6 +138,7 @@ function websocketOnMessage() {
       content: e.data,
       duration: 5000,
       placement: 'bottom-right',
+      closeBtn: true,
     });
     // eslint-disable-next-line consistent-return
     return e.data;

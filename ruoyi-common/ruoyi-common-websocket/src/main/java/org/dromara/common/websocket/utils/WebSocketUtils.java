@@ -38,6 +38,9 @@ public class WebSocketUtils {
      */
     public static void sendMessage(Long sessionKey, String message) {
         Set<WebSocketSession> sessions = WebSocketSessionHolder.getSessions(sessionKey);
+        if (sessions == null) {
+            return;
+        }
         for (WebSocketSession session : sessions) {
             if (session == null) {
                 continue;
