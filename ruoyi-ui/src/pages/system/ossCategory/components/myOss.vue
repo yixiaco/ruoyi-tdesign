@@ -148,7 +148,7 @@
             <t-radio-button v-if="imageUpload" :value="1">上传图片</t-radio-button>
           </t-radio-group>
         </t-form-item>
-        <t-form-item label="选择文件">
+        <t-form-item :label="rowType === 0 ? '选择文件' : '选择图片'">
           <file-upload
             v-if="rowType === 0 && fileUpload"
             v-model="uploadForm.file"
@@ -237,7 +237,7 @@
             </t-space>
           </t-space>
         </t-form-item>
-        <t-form-item label="分类路径" name="contentType">
+        <t-form-item label="分类路径" name="categoryPath">
           {{ form.categoryPath ?? '/' }}
         </t-form-item>
         <t-form-item label="文件类型" name="contentType" style="word-break: break-all">
@@ -412,10 +412,10 @@ const fileType = {
 };
 const rowType = computed({
   get() {
-    if (!props.imageUpload) {
+    if (props.imageUpload === false) {
       return 0;
     }
-    if (!props.fileUpload) {
+    if (props.fileUpload === false) {
       return 1;
     }
     return type.value;
@@ -444,7 +444,7 @@ const queryParams = ref<SysOssQuery>({
 });
 
 const uploadTitle = computed(() => {
-  if (type.value === 0) {
+  if (rowType.value === 0) {
     return '上传文件';
   }
   return '上传图片';
