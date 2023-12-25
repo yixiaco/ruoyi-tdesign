@@ -93,6 +93,8 @@
                   <t-option label="<" value="LT" />
                   <t-option label="<=" value="LE" />
                   <t-option label="LIKE" value="LIKE" />
+                  <t-option label="LEFT LIKE" value="LEFT_LIKE" />
+                  <t-option label="RIGHT LIKE" value="RIGHT_LIKE" />
                   <t-option label="NOT LIKE" value="NOT_LIKE" />
                   <t-option label="IS NULL" value="IS_NULL" />
                   <t-option label="IS NOT NULL" value="IS_NOT_NULL" />

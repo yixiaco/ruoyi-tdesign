@@ -1,4 +1,5 @@
 #set($modal = '$modal')
+#set($event = '$event')
 #set($addOrUpdate = $isUseAddMethod || $isUseEditMethod)
 <template>
   <t-card>
@@ -19,9 +20,19 @@
         <t-form-item label="${comment}" name="${column.javaField}">
           <t-input v-model="queryParams.${column.javaField}" placeholder="请输入${comment}" clearable @enter="handleQuery" />
         </t-form-item>
-#elseif(($column.htmlType == "select" || $column.htmlType == "radio") && "" != $dictType)
+#elseif(($column.htmlType == "select" || $column.htmlType == "radio" || $column.htmlType == "checkbox") && "" != $dictType)
         <t-form-item label="${comment}" name="${column.javaField}">
+          #if($column.queryType == "IN")
+          <t-select
+            :model-value="queryParams.${column.javaField}?.split(',')"
+            placeholder="请选择${comment}"
+            multiple
+            clearable
+            @update:model-value="queryParams.${column.javaField} = ${event}.filter((item: any) => item).join(',')"
+          >
+          #else
           <t-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
+          #end
             <t-option
               v-for="dict in ${dictType}"
               :key="dict.value"
@@ -30,7 +41,7 @@
             />
           </t-select>
         </t-form-item>
-#elseif(($column.htmlType == "select" || $column.htmlType == "radio") && $dictType)
+#elseif(($column.htmlType == "select" || $column.htmlType == "radio" || $column.htmlType == "checkbox") && $dictType)
         <t-form-item label="${comment}" name="${column.javaField}">
           <t-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
             <t-option label="请选择字典生成" value="" />
@@ -134,11 +145,7 @@
         </template>
 #elseif($column.isList() && $column.dictType && "" != $column.dictType)
         <template #${javaField}="{ row }">
-#if($column.htmlType == "checkbox")
-          <dict-tag :options="${column.dictType}" :value="row.${javaField} ? row.${javaField}.split(',') : []" />
-#else
           <dict-tag :options="${column.dictType}" :value="row.${javaField}" />
-#end
         </template>
 #end
 #end
@@ -262,7 +269,7 @@
         </t-form-item>
 #elseif($column.htmlType == "checkbox" && "" != $dictType)
         <t-form-item label="${comment}" name="${field}">
-          <t-checkbox-group v-model="form.${field}">
+          <t-checkbox-group :model-value="form.${field}?.split(',') ?? []" @update:model-value="form.${field} = ${event}.filter((item: any) => item).join(',')">
             <t-checkbox
               v-for="dict in ${dictType}"
               :key="dict.value"
@@ -273,7 +280,7 @@
         </t-form-item>
 #elseif($column.htmlType == "checkbox" && $dictType)
         <t-form-item label="${comment}" name="${field}">
-          <t-checkbox-group v-model="form.${field}">
+          <t-checkbox-group :model-value="form.${field}?.split(',') ?? []" @update:model-value="form.${field} = ${event}.filter((item: any) => item).join(',')">
             <t-checkbox>请选择字典生成</t-checkbox>
           </t-checkbox-group>
         </t-form-item>
@@ -353,11 +360,7 @@
 #elseif($column.dictType && "" != $column.dictType)
             <t-col :span="6">
               <t-form-item label="${comment}">
-#if($column.htmlType == "checkbox")
-                <dict-tag :options="${column.dictType}" :value="form.${javaField} ? form.${javaField}.split(',') : []" />
-#else
                 <dict-tag :options="${column.dictType}" :value="form.${javaField}" />
-#end
               </t-form-item>
             </t-col>
 #elseif($column.htmlType == "textarea")
@@ -592,15 +595,7 @@ function getList() {
 
 // 表单重置
 function reset() {
-  form.value = {
-#foreach ($column in $columns)
-#if($column.isInsert() || $column.isEdit())
-#if($column.htmlType == "checkbox")
-    $column.javaField: []#if($foreach.count != $columns.size()),#end
-#end
-#end
-#end
-  };
+  form.value = {};
 #if($addOrUpdate)
   proxy.resetForm('${businessName}Ref');
 #end
@@ -704,11 +699,6 @@ async function handleUpdate(row?: ${vo}) {
   get${BusinessName}(row.${pkColumn.javaField}).then((response) => {
     buttonLoading.value = false;
     form.value = response.data;
-#foreach ($column in $columns)
-#if($column.htmlType == "checkbox")
-    form.value.$column.javaField = form.value.${column.javaField}.split(",");
-#end
-#end
   });
 }
 #end
@@ -734,11 +724,6 @@ function onConfirm() {
 function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
-#foreach ($column in $columns)
-#if($column.htmlType == "checkbox")
-    form.value.$column.javaField = form.value.${column.javaField}.join(",");
-#end
-#end
     const msgLoading = proxy.${modal}.msgLoading('提交中...');
     if (form.value.${pkColumn.javaField}) {
 #if($isUseEditMethod)

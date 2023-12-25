@@ -67,13 +67,23 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
 #elseif($queryType == "LE")
             <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName &lt;= #{$javaField}</if>
 #elseif($queryType.equalsIgnoreCase("LIKE"))
-            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName like concat('%', #{$javaField}, '%')</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName like concat(concat('%', #{$javaField}), '%')</if>
+#elseif($queryType.equalsIgnoreCase("LEFT_LIKE"))
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName like concat('%', #{$javaField})</if>
+#elseif($queryType.equalsIgnoreCase("RIGHT_LIKE"))
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName like concat(#{$javaField}, '%')</if>
 #elseif($queryType.equalsIgnoreCase("NOT_LIKE"))
-            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName not like concat('%', #{$javaField}, '%')</if>
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName not like concat(concat('%', #{$javaField}), '%')</if>
 #elseif($queryType.equalsIgnoreCase("IS_NULL"))
             <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName is null</if>
 #elseif($queryType.equalsIgnoreCase("IS_NOT_NULL"))
             <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end"> and $dbName.$columnName is not null</if>
+#elseif($queryType.equalsIgnoreCase("IN") && $javaType == $string)
+            <if test="$javaField != null#if($javaType == $string) and $javaField.trim() != ''#end">
+                <foreach collection="${javaField}.split(',')" index="index" item="item" open="and $dbName.$columnName in (" separator="," close=")" nullable="true">
+                    #{item}
+                </foreach>
+            </if>
 #elseif($queryType.equalsIgnoreCase("IN"))
             <foreach collection="$javaField" index="index" item="item" open="and $dbName.$columnName in (" separator="," close=")" nullable="true">
                 #{item}
