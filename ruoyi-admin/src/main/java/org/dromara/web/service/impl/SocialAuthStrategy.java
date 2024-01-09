@@ -113,9 +113,6 @@ public class SocialAuthStrategy implements IAuthStrategy<SocialLoginBody> {
             log.info("登录用户：{} 已被停用.", "");
             throw new UserException("user.blocked", "");
         }
-        if (TenantHelper.isEnable()) {
-            return userMapper.selectTenantUserByUserName(user.getUserName(), tenantId);
-        }
         return userMapper.selectUserByUserName(user.getUserName());
     }
 
