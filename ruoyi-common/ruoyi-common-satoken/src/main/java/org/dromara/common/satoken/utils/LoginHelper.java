@@ -78,16 +78,13 @@ public class LoginHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T extends LoginUser> T getUser() {
-        T loginUser = (T) SaHolder.getStorage().get(getLoginType() + LOGIN_USER_KEY);
-        if (loginUser != null) {
-            return loginUser;
-        }
-        SaSession session = MultipleStpUtil.SYSTEM.getSession();
-        if (session != null) {
-            loginUser = (T) session.get(LOGIN_USER_KEY);
-            SaHolder.getStorage().set(getLoginType() + LOGIN_USER_KEY, loginUser);
-        }
-        return loginUser;
+        return StorageUtil.getStorageIfAbsentSet(getLoginType() + LOGIN_USER_KEY, () -> {
+            SaSession session = MultipleStpUtil.SYSTEM.getSession();
+            if (session != null) {
+                return (T) session.get(LOGIN_USER_KEY);
+            }
+            return null;
+        });
     }
 
     /**
@@ -139,34 +136,14 @@ public class LoginHelper {
      * 获取用户id
      */
     public static Long getUserId() {
-        Long userId;
-        try {
-            userId = Convert.toLong(SaHolder.getStorage().get(getLoginType() + USER_KEY));
-            if (ObjectUtil.isNull(userId)) {
-                userId = getUser().getUserId();
-                SaHolder.getStorage().set(getLoginType() + USER_KEY, userId);
-            }
-        } catch (Exception e) {
-            return null;
-        }
-        return userId;
+        return StorageUtil.getStorageIfAbsentSet(getLoginType() + USER_KEY, () -> getUser().getUserId(), Convert::toLong);
     }
 
     /**
      * 获取租户ID
      */
     public static String getTenantId() {
-        String tenantId;
-        try {
-            tenantId = (String) SaHolder.getStorage().get(getLoginType() + TENANT_KEY);
-            if (ObjectUtil.isNull(tenantId)) {
-                tenantId = getUser().getTenantId();
-                SaHolder.getStorage().set(getLoginType() + TENANT_KEY, tenantId);
-            }
-        } catch (Exception e) {
-            return null;
-        }
-        return tenantId;
+        return StorageUtil.getStorageIfAbsentSet(getLoginType() + TENANT_KEY, () -> getUser().getTenantId());
     }
 
     /**
@@ -218,5 +195,4 @@ public class LoginHelper {
     public static boolean isTenantAdmin() {
         return isTenantAdmin(getUser().getRolePermission());
     }
-
 }

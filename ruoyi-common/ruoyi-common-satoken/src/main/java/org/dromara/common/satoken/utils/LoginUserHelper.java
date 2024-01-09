@@ -85,20 +85,13 @@ public class LoginUserHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T extends BaseUser> T getUser() {
-        T user = (T) SaHolder.getStorage().get(getLoginType() + LOGIN_USER_KEY);
-        if (user != null) {
-            return user;
-        }
-        try {
+        return StorageUtil.getStorageIfAbsentSet(getLoginType() + LOGIN_USER_KEY, () -> {
             SaSession session = MultipleStpUtil.USER.getSession();
             if (session != null) {
-                user = (T) session.get(LOGIN_USER_KEY);
-                SaHolder.getStorage().set(getLoginType() + LOGIN_USER_KEY, user);
+                return (T) session.get(LOGIN_USER_KEY);
             }
-            return user;
-        } catch (Exception e) {
             return null;
-        }
+        });
     }
 
     /**
@@ -151,40 +144,26 @@ public class LoginUserHelper {
      * 获取用户id
      */
     public static Long getUserId() {
-        Long userId;
-        try {
-            userId = Convert.toLong(SaHolder.getStorage().get(getLoginType() + USER_KEY));
-            if (ObjectUtil.isNull(userId)) {
-                BaseUser user = getUser();
-                if (user != null) {
-                    userId = user.getUserId();
-                    SaHolder.getStorage().set(getLoginType() + USER_KEY, userId);
-                }
+        return StorageUtil.getStorageIfAbsentSet(getLoginType() + USER_KEY, () -> {
+            BaseUser user = getUser();
+            if (user != null) {
+                return user.getUserId();
             }
-        } catch (Exception e) {
             return null;
-        }
-        return userId;
+        }, Convert::toLong);
     }
 
     /**
      * 获取租户ID
      */
     public static String getTenantId() {
-        String tenantId;
-        try {
-            tenantId = (String) SaHolder.getStorage().get(getLoginType() + TENANT_KEY);
-            if (ObjectUtil.isNull(tenantId)) {
-                BaseUser user = getUser();
-                if (user != null) {
-                    tenantId = user.getTenantId();
-                    SaHolder.getStorage().set(getLoginType() + TENANT_KEY, tenantId);
-                }
+        return StorageUtil.getStorageIfAbsentSet(getLoginType() + TENANT_KEY, () -> {
+            BaseUser user = getUser();
+            if (user != null) {
+                return user.getTenantId();
             }
-        } catch (Exception e) {
             return null;
-        }
-        return tenantId;
+        });
     }
 
     /**
