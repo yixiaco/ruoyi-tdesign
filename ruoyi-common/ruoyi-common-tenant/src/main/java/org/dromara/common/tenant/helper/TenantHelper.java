@@ -356,6 +356,9 @@ public class TenantHelper {
      * 获取当前租户id(动态租户优先)
      */
     public static String getTenantId() {
+        if (!isEnable()) {
+            return null;
+        }
         String tenantId = getDynamicTenant();
         if (StringUtils.isBlank(tenantId)) {
             tenantId = TenantHelper.getUserDynamicTenant();
