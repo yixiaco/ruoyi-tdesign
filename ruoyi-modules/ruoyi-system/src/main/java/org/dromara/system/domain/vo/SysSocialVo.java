@@ -79,7 +79,6 @@ public class SysSocialVo implements Serializable {
     /**
      * 用户的授权令牌的有效期，部分平台可能没有
      */
-    @ExcelProperty(value = "用户的授权令牌的有效期，部分平台可能没有")
     private Integer expireIn;
 
     /**
