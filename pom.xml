@@ -24,7 +24,7 @@
         <springdoc.version>2.3.0</springdoc.version>
         <therapi-javadoc.version>0.15.0</therapi-javadoc.version>
         <poi.version>5.2.3</poi.version>
-        <easyexcel.version>3.3.2</easyexcel.version>
+        <easyexcel.version>3.3.3</easyexcel.version>
         <velocity.version>2.3</velocity.version>
         <satoken.version>1.37.0</satoken.version>
         <mybatis-plus.version>3.5.4.1</mybatis-plus.version>

@@ -6,7 +6,7 @@ import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
-import org.dromara.common.tenant.core.TenantEntity;
+import org.dromara.common.mybatis.core.domain.BaseEntity;
 
 import java.util.Date;
 
@@ -18,7 +18,7 @@ import java.util.Date;
 @Data
 @EqualsAndHashCode(callSuper = true)
 @TableName("sys_oss_config")
-public class SysOssConfig extends TenantEntity {
+public class SysOssConfig extends BaseEntity {
 
     /**
      * 主建

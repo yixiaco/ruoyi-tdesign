@@ -184,6 +184,7 @@ tenant:
     - sys_message_log
     - sys_message_template
     - sys_oss_category
+    - sys_oss_config
 
 # MyBatisPlus配置
 # https://baomidou.com/config/
