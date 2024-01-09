@@ -54,7 +54,7 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
         );
         Map<String, List<SysOssConfig>> map = StreamUtils.groupByKey(list, SysOssConfig::getTenantId);
         for (String tenantId : map.keySet()) {
-            TenantHelper.setDynamic(tenantId);
+            TenantHelper.setDynamicTenant(tenantId);
             // 加载OSS初始化配置
             for (SysOssConfig config : map.get(tenantId)) {
                 String configKey = config.getConfigKey();
@@ -64,7 +64,7 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
                 CacheUtils.put(CacheNames.SYS_OSS_CONFIG, config.getConfigKey(), JsonUtils.toJsonString(config));
             }
         }
-        TenantHelper.clearDynamic();
+        TenantHelper.removeDynamicTenant(true);
     }
 
     @Override

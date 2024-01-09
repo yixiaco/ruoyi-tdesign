@@ -68,13 +68,13 @@ public class TenantAspect {
             throw new ServiceException("动态租户不存在！");
         }
         if (!blank) {
-            DynamicTenant.DYNAMIC_TENANT_AOP.set(tenantId);
+            TenantHelper.setDynamicTenant(tenantId);
         }
         try {
             return point.proceed();
         } finally {
             if (!blank) {
-                DynamicTenant.DYNAMIC_TENANT_AOP.remove();
+                TenantHelper.removeDynamicTenant(!dynamicTenant.reentrant());
             }
         }
     }

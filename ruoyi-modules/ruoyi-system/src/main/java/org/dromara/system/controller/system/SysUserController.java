@@ -123,7 +123,7 @@ public class SysUserController extends BaseController {
         LoginUser loginUser = LoginHelper.getUser();
         if (TenantHelper.isEnable() && LoginHelper.isSuperAdmin()) {
             // 超级管理员 如果重新加载用户信息需清除动态租户
-            TenantHelper.clearDynamic();
+            TenantHelper.clearUserDynamicTenant();
         }
         SysUserVo user = userService.selectUserById(loginUser.getUserId());
         if (ObjectUtil.isNull(user)) {

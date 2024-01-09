@@ -113,7 +113,7 @@ public class SysLoginService {
                 SaSecurityContext.setContext(loginUser);
                 if (TenantHelper.isEnable() && LoginHelper.isSuperAdmin()) {
                     // 超级管理员 登出清除动态租户
-                    TenantHelper.clearDynamic();
+                    TenantHelper.clearUserDynamicTenant();
                 }
                 recordLogininfor(loginUser.getTenantId(), loginUser.getUsername(), Constants.LOGOUT, MessageUtils.message("user.logout.success"));
             }
