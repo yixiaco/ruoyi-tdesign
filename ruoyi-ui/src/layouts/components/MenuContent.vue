@@ -27,6 +27,7 @@
 <script setup lang="tsx">
 import type { PropType } from 'vue';
 import { computed } from 'vue';
+import { useRoute } from 'vue-router';
 
 import RIcon from '@/components/r-icon/index.vue';
 import { getActive } from '@/router';
@@ -34,6 +35,7 @@ import type { MenuRoute } from '@/types/interface';
 import { ComplexRoute } from '@/types/interface';
 
 type ListItemType = MenuRoute & { icon?: string };
+const route = useRoute();
 
 const props = defineProps({
   navData: {
@@ -41,7 +43,7 @@ const props = defineProps({
     default: () => [],
   },
 });
-const active = computed(() => getActive());
+const active = computed(() => getActive(route));
 
 const list = computed(() => {
   const { navData } = props;

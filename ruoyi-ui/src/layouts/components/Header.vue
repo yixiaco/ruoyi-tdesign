@@ -162,7 +162,7 @@ const active = computed(() => {
       }
     }
   }
-  return getActive();
+  return getActive(route);
 });
 
 const layoutCls = computed(() => [`${prefix}-header-layout`]);
