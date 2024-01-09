@@ -8,14 +8,12 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.model.AuthResponse;
 import me.zhyd.oauth.model.AuthUser;
-import org.dromara.common.core.constant.Constants;
 import org.dromara.common.core.constant.GrantTypeConstants;
 import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.domain.model.SocialLoginBody;
 import org.dromara.common.core.enums.UserStatus;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.exception.user.UserException;
-import org.dromara.common.core.utils.MessageUtils;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.dromara.common.social.config.properties.SocialProperties;
@@ -95,9 +93,6 @@ public class SocialAuthStrategy implements IAuthStrategy<SocialLoginBody> {
         }
         // 生成token
         LoginHelper.login(loginUser, model);
-
-        loginService.recordLogininfor(loginUser.getTenantId(), user.getUserName(), Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"));
-        loginService.recordLoginInfo(user.getUserId());
 
         LoginVo loginVo = new LoginVo();
         loginVo.setAccessToken(MultipleStpUtil.SYSTEM.getTokenValue());
