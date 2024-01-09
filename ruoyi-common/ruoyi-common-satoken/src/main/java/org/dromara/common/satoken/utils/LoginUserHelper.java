@@ -4,6 +4,7 @@ import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.context.model.SaStorage;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.SaLoginModel;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.AccessLevel;
@@ -12,6 +13,7 @@ import org.dromara.common.core.domain.model.BaseUser;
 import org.dromara.common.core.enums.DeviceType;
 import org.dromara.common.satoken.context.SaSecurityContext;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -77,7 +79,7 @@ public class LoginUserHelper {
         }
         SaSecurityContext.setContext(baseUser);
         MultipleStpUtil.USER.login(baseUser.getUserId(), model);
-        MultipleStpUtil.USER.getSession().set(LOGIN_USER_KEY, baseUser);
+        MultipleStpUtil.USER.getTokenSession().set(LOGIN_USER_KEY, baseUser);
     }
 
     /**
@@ -86,7 +88,7 @@ public class LoginUserHelper {
     @SuppressWarnings("unchecked")
     public static <T extends BaseUser> T getUser() {
         return StorageUtil.getStorageIfAbsentSet(getLoginType() + LOGIN_USER_KEY, () -> {
-            SaSession session = MultipleStpUtil.USER.getSession();
+            SaSession session = MultipleStpUtil.USER.getTokenSession();
             if (session != null) {
                 return (T) session.get(LOGIN_USER_KEY);
             }
@@ -100,8 +102,7 @@ public class LoginUserHelper {
     @SuppressWarnings("unchecked")
     public static <T extends BaseUser> T getUser(String token) {
         try {
-            Object loginId = MultipleStpUtil.USER.getLoginIdByToken(token);
-            SaSession session = MultipleStpUtil.USER.getSessionByLoginId(loginId);
+            SaSession session = MultipleStpUtil.USER.getTokenSessionByToken(token);
             return (T) session.get(LOGIN_USER_KEY);
         } catch (Exception e) {
             return null;
@@ -128,14 +129,27 @@ public class LoginUserHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T extends BaseUser> void updateUser(Long userId, Consumer<T> updateBy) {
-        SaSession session = MultipleStpUtil.USER.getSessionByLoginId(userId);
-        if (session != null) {
-            T tokenUser = (T) session.get(LOGIN_USER_KEY);
-            updateBy.accept(tokenUser);
-            session.set(LOGIN_USER_KEY, tokenUser);
-            SaStorage storage = SaHolder.getStorage();
-            if (storage != null) {
-                storage.set(getLoginType() + LOGIN_USER_KEY, tokenUser);
+        List<String> tokens = MultipleStpUtil.USER.getTokenValueListByLoginId(userId);
+        String tokenValue = null;
+        try {
+            tokenValue = MultipleStpUtil.USER.getTokenValue();
+        } catch (Exception ignore) {
+            // 不做处理
+        }
+        if (CollUtil.isNotEmpty(tokens)) {
+            for (String token : tokens) {
+                SaSession session = MultipleStpUtil.USER.getTokenSessionByToken(token);
+                if (session != null) {
+                    T tokenUser = (T) session.get(LOGIN_USER_KEY);
+                    updateBy.accept(tokenUser);
+                    session.set(LOGIN_USER_KEY, tokenUser);
+                    if (Objects.equals(tokenValue, token)) {
+                        SaStorage storage = SaHolder.getStorage();
+                        if (storage != null) {
+                            storage.set(getLoginType() + LOGIN_USER_KEY, tokenUser);
+                        }
+                    }
+                }
             }
         }
     }
