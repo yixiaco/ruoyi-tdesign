@@ -45,10 +45,8 @@ public class PlusSaTokenDao implements SaTokenDao {
      */
     @Override
     public void update(String key, String value) {
-        long expire = getTimeout(key);
-        // -2 = 无此键
-        if (expire == NOT_VALUE_EXPIRE) {
-            return;
+        if (RedisUtils.hasKey(key)) {
+            RedisUtils.setObject(key, value, true);
         }
         RedisUtils.setObject(key, value, true);
     }
@@ -75,17 +73,6 @@ public class PlusSaTokenDao implements SaTokenDao {
      */
     @Override
     public void updateTimeout(String key, long timeout) {
-        // 判断是否想要设置为永久
-        if (timeout == NEVER_EXPIRE) {
-            long expire = getTimeout(key);
-            if (expire == NEVER_EXPIRE) {
-                // 如果其已经被设置为永久，则不作任何处理
-            } else {
-                // 如果尚未被设置为永久，那么再次set一次
-                this.set(key, this.get(key), timeout);
-            }
-            return;
-        }
         RedisUtils.expire(key, Duration.ofSeconds(timeout));
     }
 
@@ -119,12 +106,9 @@ public class PlusSaTokenDao implements SaTokenDao {
      */
     @Override
     public void updateObject(String key, Object object) {
-        long expire = getObjectTimeout(key);
-        // -2 = 无此键
-        if (expire == NOT_VALUE_EXPIRE) {
-            return;
+        if (RedisUtils.hasKey(key)) {
+            RedisUtils.setObject(key, object, true);
         }
-        this.setObject(key, object, expire);
     }
 
     /**
@@ -149,17 +133,6 @@ public class PlusSaTokenDao implements SaTokenDao {
      */
     @Override
     public void updateObjectTimeout(String key, long timeout) {
-        // 判断是否想要设置为永久
-        if (timeout == NEVER_EXPIRE) {
-            long expire = getObjectTimeout(key);
-            if (expire == NEVER_EXPIRE) {
-                // 如果其已经被设置为永久，则不作任何处理
-            } else {
-                // 如果尚未被设置为永久，那么再次set一次
-                this.setObject(key, this.getObject(key), timeout);
-            }
-            return;
-        }
         RedisUtils.expire(key, Duration.ofSeconds(timeout));
     }
 
