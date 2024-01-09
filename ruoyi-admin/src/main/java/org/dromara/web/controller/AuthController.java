@@ -59,7 +59,6 @@ import java.util.List;
  * @author Lion Li
  */
 @Slf4j
-@Validated
 @RestController
 @RequestMapping("/auth")
 public class AuthController {
