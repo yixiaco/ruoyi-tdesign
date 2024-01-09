@@ -21,6 +21,7 @@ import org.dromara.common.core.utils.MessageUtils;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.spring.SpringUtils;
+import org.dromara.common.encrypt.annotation.ApiEncrypt;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.dromara.common.social.config.properties.SocialLoginConfigProperties;
@@ -94,6 +95,7 @@ public class AuthController {
      * @return 结果
      */
     @SaIgnore
+    @ApiEncrypt(response = false)
     @PostMapping("/login")
     public R<LoginVo> login(@Validated @RequestBody LoginBody loginBody) {
         // 授权类型和客户端id
