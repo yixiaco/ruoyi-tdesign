@@ -187,7 +187,7 @@
         <t-form-item name="roleKey">
           <template #label>
             <span>
-              <t-tooltip content="控制器中定义的权限字符，如：@PreAuthorize(`@ss.hasRole('admin')`)" placement="top">
+              <t-tooltip content="控制器中定义的权限字符，如：@SaCheckRole('admin')" placement="top">
                 <help-circle-filled-icon />
               </t-tooltip>
               权限字符

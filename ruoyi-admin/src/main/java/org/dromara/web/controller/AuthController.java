@@ -95,7 +95,7 @@ public class AuthController {
      * @return 结果
      */
     @SaIgnore
-    @ApiEncrypt(response = false)
+    @ApiEncrypt
     @PostMapping("/login")
     public R<LoginVo> login(@Validated @RequestBody LoginBody loginBody) {
         // 授权类型和客户端id
@@ -180,6 +180,7 @@ public class AuthController {
      * 用户注册
      */
     @SaIgnore
+    @ApiEncrypt
     @PostMapping("/register")
     public R<Void> register(@Validated @RequestBody RegisterBody user) {
         if (!SysConfigHelper.getSysAccountRegisterUser()) {

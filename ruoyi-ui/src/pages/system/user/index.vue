@@ -253,7 +253,7 @@
               <t-form-item label="归属部门" name="deptId">
                 <t-tree-select
                   v-model="form.deptId"
-                  :data="deptOptions"
+                  :data="deptFormOptions"
                   :tree-props="{
                     keys: { value: 'id', label: 'label', children: 'children' },
                     checkStrictly: true,
@@ -520,6 +520,7 @@ const title = ref('');
 const dateRange = ref([]);
 const deptName = ref('');
 const deptOptions = ref<Array<TreeModel<number>>>([]);
+const deptFormOptions = ref<Array<TreeModel<number>>>([]);
 const expandedDept = ref<number[]>([]);
 const initPassword = ref(undefined);
 const postOptions = ref<SysPostVo[]>([]);
@@ -620,6 +621,12 @@ async function getDeptTree() {
       deptOptions.value = response.data;
     })
     .finally(() => (loadingDept.value = false));
+}
+/** 查询部门下拉树结构 */
+async function getDeptFormTree() {
+  return deptTreeSelect().then((response) => {
+    deptFormOptions.value = response.data;
+  });
 }
 function triggerExpandedDept() {
   expandedDept.value = deptOptions.value
@@ -787,7 +794,7 @@ function handleAdd() {
   open.value = true;
   dLoading.value = true;
   reset();
-  getDeptTree();
+  getDeptFormTree();
   getUser()
     .then((response) => {
       postOptions.value = response.data.posts;
@@ -805,7 +812,7 @@ function handleUpdate(row?: SysUserVo) {
   const userId = row?.userId || ids.value.at(0);
   open.value = true;
   dLoading.value = true;
-  getDeptTree();
+  getDeptFormTree();
   getUser(userId)
     .then((response) => {
       Object.assign(form.value, response.data.user);
@@ -859,6 +866,7 @@ const onSubmit = ({ validateResult, firstError }: SubmitContext) => {
 
 onMounted(() => {
   getDeptTree().then(() => triggerExpandedDept());
+  deptFormOptions.value = deptOptions.value;
   getList();
 });
 </script>

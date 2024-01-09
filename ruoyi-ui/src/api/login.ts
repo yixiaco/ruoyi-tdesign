@@ -28,6 +28,7 @@ export function login(loginData: LoginData) {
     },
     {
       withToken: false,
+      withEncrypt: true,
     },
   );
 }
