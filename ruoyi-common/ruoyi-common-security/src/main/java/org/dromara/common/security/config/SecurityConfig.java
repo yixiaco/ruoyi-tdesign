@@ -53,7 +53,7 @@ public class SecurityConfig implements WebMvcConfigurer {
                             .match(config.getMatch())
                             .check(logic::checkLogin)
                             .check(() -> {
-                                BaseUser user = (BaseUser) logic.getSession().get(MultipleStpUtil.LOGIN_USER_KEY);
+                                BaseUser user = (BaseUser) logic.getTokenSession().get(MultipleStpUtil.LOGIN_USER_KEY);
                                 SaSecurityContext.setContext(user);
                             });
                         if (SaSecurityContext.getContext() != null) {
