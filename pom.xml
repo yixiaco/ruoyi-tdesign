@@ -14,7 +14,7 @@
 
     <properties>
         <revision>1.1.0</revision>
-        <spring-boot.version>3.2.0</spring-boot.version>
+        <spring-boot.version>3.2.1</spring-boot.version>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
         <java.version>17</java.version>
@@ -27,7 +27,7 @@
         <easyexcel.version>3.3.3</easyexcel.version>
         <velocity.version>2.3</velocity.version>
         <satoken.version>1.37.0</satoken.version>
-        <mybatis-plus.version>3.5.4.1</mybatis-plus.version>
+        <mybatis-plus.version>3.5.5</mybatis-plus.version>
         <pagehelper.version>2.0.0</pagehelper.version>
         <p6spy.version>3.9.1</p6spy.version>
         <hutool.version>5.8.23</hutool.version>

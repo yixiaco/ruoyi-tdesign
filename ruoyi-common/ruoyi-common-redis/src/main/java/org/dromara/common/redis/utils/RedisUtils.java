@@ -260,6 +260,18 @@ public class RedisUtils {
     }
 
     /**
+     * 追加缓存List数据
+     *
+     * @param key  缓存的键值
+     * @param data 待缓存的数据
+     * @return 缓存的对象
+     */
+    public static <T> boolean addList(final String key, final T data) {
+        RList<T> rList = CLIENT.getList(key);
+        return rList.add(data);
+    }
+
+    /**
      * 设置缓存List数据
      *
      * @param key      缓存的键值
