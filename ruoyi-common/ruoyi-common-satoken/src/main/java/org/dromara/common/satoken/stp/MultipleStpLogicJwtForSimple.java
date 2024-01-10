@@ -1,12 +1,7 @@
 package org.dromara.common.satoken.stp;
 
 import cn.dev33.satoken.config.SaTokenConfig;
-import cn.dev33.satoken.error.SaErrorCode;
-import cn.dev33.satoken.exception.NotPermissionException;
-import cn.dev33.satoken.exception.NotRoleException;
 import cn.dev33.satoken.jwt.StpLogicJwtForSimple;
-
-import java.util.List;
 
 /**
  * Sa-Token 整合 jwt 多配置 -- Simple 简单模式
@@ -32,71 +27,5 @@ public class MultipleStpLogicJwtForSimple extends StpLogicJwtForSimple implement
     @Override
     public SaTokenConfig getConfig() {
         return config;
-    }
-
-
-    @Override
-    public void checkPermissionAnd(String... permissionArray) {
-        Object loginId = getLoginId();
-        if (permissionArray.length == 0) {
-            return;
-        }
-        List<String> permissionList = getPermissionList(loginId);
-        for (String permission : permissionArray) {
-            if (!hasElement(permissionList, permission)) {
-                throw new NotPermissionException(permission, this.loginType).setCode(SaErrorCode.CODE_11051);
-            }
-        }
-    }
-
-    @Override
-    public void checkPermissionOr(String... permissionArray) {
-        Object loginId = getLoginId();
-        if (permissionArray.length == 0) {
-            return;
-        }
-        List<String> permissionList = getPermissionList(loginId);
-        for (String permission : permissionArray) {
-            if (hasElement(permissionList, permission)) {
-                // 有的话提前退出
-                return;
-            }
-        }
-        throw new NotPermissionException(permissionArray[0], this.loginType).setCode(SaErrorCode.CODE_11051);
-    }
-
-    /**
-     * 校验：当前账号是否含有指定角色标识 [指定多个，必须全部验证通过]
-     *
-     * @param roleArray 角色标识数组
-     */
-    @Override
-    public void checkRoleAnd(String... roleArray) {
-        Object loginId = getLoginId();
-        if (roleArray.length == 0) {
-            return;
-        }
-        List<String> roleList = getRoleList(loginId);
-        for (String role : roleArray) {
-            if (!hasElement(roleList, role)) {
-                throw new NotRoleException(role, this.loginType).setCode(SaErrorCode.CODE_11041);
-            }
-        }
-    }
-
-    @Override
-    public void checkRoleOr(String... roleArray) {
-        Object loginId = getLoginId();
-        if (roleArray.length == 0) {
-            return;
-        }
-        List<String> roleList = getRoleList(loginId);
-        for (String role : roleArray) {
-            if (hasElement(roleList, role)) {
-                // 有的话提前退出
-                return;
-            }
-        }
-        throw new NotRoleException(roleArray[0], this.loginType).setCode(SaErrorCode.CODE_11041);
     }
 }

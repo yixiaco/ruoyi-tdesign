@@ -25,6 +25,7 @@ import org.dromara.common.core.utils.ServletUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.log.event.LogininforEvent;
+import org.dromara.common.mybatis.helper.DataPermissionHelper;
 import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.satoken.context.SaSecurityContext;
 import org.dromara.common.satoken.utils.LoginHelper;
@@ -112,7 +113,7 @@ public class SysLoginService {
                 SaSecurityContext.setContext(loginUser);
                 if (TenantHelper.isEnable() && LoginHelper.isSuperAdmin()) {
                     // 超级管理员 登出清除动态租户
-                    TenantHelper.clearDynamic();
+                    TenantHelper.clearUserDynamicTenant();
                 }
                 recordLogininfor(loginUser.getTenantId(), loginUser.getUsername(), Constants.LOGOUT, MessageUtils.message("user.logout.success"));
             }
@@ -179,13 +180,13 @@ public class SysLoginService {
      *
      * @param userId 用户ID
      */
-    public void recordLoginInfo(Long userId) {
+    public void recordLoginInfo(Long userId, String ip) {
         SysUser sysUser = new SysUser();
         sysUser.setUserId(userId);
-        sysUser.setLoginIp(ServletUtils.getClientIP());
+        sysUser.setLoginIp(ip);
         sysUser.setLoginDate(DateUtils.getNowDate());
         sysUser.setUpdateBy(userId);
-        userMapper.updateById(sysUser);
+        DataPermissionHelper.ignore(() -> userMapper.updateById(sysUser));
     }
 
     /**

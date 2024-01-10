@@ -58,9 +58,10 @@ public class SysUserOnlineController extends BaseController {
             // 开启租户 & 超级管理员 & 不使用动态租户状态下，查看所有租户在线情况
             if (TenantHelper.isEnable() && LoginHelper.isSuperAdmin() && !TenantHelper.isDynamic()) {
                 String tenantId = RedisUtils.getObject(GlobalConstants.ONLINE_TOKEN_TENANT_ID_KEY + token);
-                TenantHelper.setDynamic(tenantId);
-                userOnlineDTOList.add(RedisUtils.getObject(CacheConstants.ONLINE_TOKEN_KEY + token));
-                TenantHelper.clearDynamic();
+                final List<UserOnlineDTO> finalUserOnlineDTOList = userOnlineDTOList;
+                TenantHelper.dynamicTenant(tenantId, () -> {
+                    finalUserOnlineDTOList.add(RedisUtils.getObject(CacheConstants.ONLINE_TOKEN_KEY + token));
+                });
             } else {
                 userOnlineDTOList.add(RedisUtils.getObject(CacheConstants.ONLINE_TOKEN_KEY + token));
             }

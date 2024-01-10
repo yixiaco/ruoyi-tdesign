@@ -83,9 +83,6 @@ public class PasswordAuthStrategy implements IAuthStrategy<PasswordLoginBody> {
         // 生成token
         LoginHelper.login(loginUser, model);
 
-        loginService.recordLogininfor(loginUser.getTenantId(), username, Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"));
-        loginService.recordLoginInfo(user.getUserId());
-
         LoginVo loginVo = new LoginVo();
         loginVo.setAccessToken(MultipleStpUtil.SYSTEM.getTokenValue());
         loginVo.setExpireIn(ObjectUtil.defaultIfNull(client.getTimeout(), MultipleStpUtil.SYSTEM.getTokenTimeout()));

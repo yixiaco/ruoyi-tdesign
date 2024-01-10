@@ -66,9 +66,9 @@ public class TenantOnlineUserCacheManager implements OnlineUserCacheManager {
         String tenantId = RedisUtils.getObject(GlobalConstants.ONLINE_TOKEN_TENANT_ID_KEY + tokenValue);
         if (StrUtil.isNotBlank(tenantId)) {
             try {
-                TenantHelper.setDynamic(tenantId);
-                RedisUtils.deleteObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue);
-                TenantHelper.clearDynamic();
+                TenantHelper.dynamicTenant(tenantId,() -> {
+                    RedisUtils.deleteObject(CacheConstants.ONLINE_TOKEN_KEY + tokenValue);
+                });
             } finally {
                 RedisUtils.deleteObject(GlobalConstants.ONLINE_TOKEN_TENANT_ID_KEY + tokenValue);
             }

@@ -12,6 +12,7 @@ import org.dromara.common.core.constant.TenantConstants;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
+import org.dromara.common.encrypt.annotation.ApiEncrypt;
 import org.dromara.common.excel.utils.ExcelUtil;
 import org.dromara.common.idempotent.annotation.RepeatSubmit;
 import org.dromara.common.log.annotation.Log;
@@ -78,6 +79,7 @@ public class SysTenantController extends BaseController {
     /**
      * 新增租户
      */
+    @ApiEncrypt
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @SaCheckPermission("system:tenant:add")
     @Log(title = "租户", businessType = BusinessType.INSERT)
@@ -139,7 +141,7 @@ public class SysTenantController extends BaseController {
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @GetMapping("/dynamic/{tenantId}")
     public R<Void> dynamicTenant(@NotBlank(message = "租户ID不能为空") @PathVariable String tenantId) {
-        TenantHelper.setDynamic(tenantId);
+        TenantHelper.setUserDynamicTenant(tenantId);
         return R.ok();
     }
 
@@ -149,7 +151,7 @@ public class SysTenantController extends BaseController {
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @GetMapping("/dynamic/clear")
     public R<Void> dynamicClear() {
-        TenantHelper.clearDynamic();
+        TenantHelper.clearUserDynamicTenant();
         return R.ok();
     }
 

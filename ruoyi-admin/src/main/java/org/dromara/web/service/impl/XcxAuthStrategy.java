@@ -4,12 +4,10 @@ import cn.dev33.satoken.stp.SaLoginModel;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.common.core.constant.Constants;
 import org.dromara.common.core.constant.GrantTypeConstants;
 import org.dromara.common.core.domain.model.XcxLoginBody;
 import org.dromara.common.core.domain.model.XcxLoginUser;
 import org.dromara.common.core.enums.UserStatus;
-import org.dromara.common.core.utils.MessageUtils;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.dromara.common.tenant.annotation.IgnoreTenant;
@@ -70,9 +68,6 @@ public class XcxAuthStrategy implements IAuthStrategy<XcxLoginBody> {
         }
         // 生成token
         LoginHelper.login(loginUser, model);
-
-        loginService.recordLogininfor(loginUser.getTenantId(), user.getUserName(), Constants.LOGIN_SUCCESS, MessageUtils.message("user.login.success"));
-        loginService.recordLoginInfo(user.getUserId());
 
         LoginVo loginVo = new LoginVo();
         loginVo.setAccessToken(MultipleStpUtil.SYSTEM.getTokenValue());

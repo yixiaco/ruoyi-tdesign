@@ -11,7 +11,6 @@ import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
-import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.json.utils.JsonUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
@@ -19,7 +18,6 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.oss.constant.OssConstant;
 import org.dromara.common.redis.utils.CacheUtils;
 import org.dromara.common.redis.utils.RedisUtils;
-import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.system.domain.SysOssConfig;
 import org.dromara.system.domain.bo.SysOssConfigBo;
 import org.dromara.system.domain.query.SysOssConfigQuery;
@@ -31,7 +29,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
 
 /**
  * 对象存储配置Service业务层处理
@@ -49,22 +46,15 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
      */
     @Override
     public void init() {
-        List<SysOssConfig> list = TenantHelper.ignore(() ->
-            baseMapper.selectList(lambdaQuery().orderByAsc(SysOssConfig::getTenantId).getWrapper())
-        );
-        Map<String, List<SysOssConfig>> map = StreamUtils.groupByKey(list, SysOssConfig::getTenantId);
-        for (String tenantId : map.keySet()) {
-            TenantHelper.setDynamic(tenantId);
-            // 加载OSS初始化配置
-            for (SysOssConfig config : map.get(tenantId)) {
-                String configKey = config.getConfigKey();
-                if (NormalDisableEnum.NORMAL.getCode().equals(config.getStatus())) {
-                    RedisUtils.setObject(OssConstant.DEFAULT_CONFIG_KEY, configKey);
-                }
-                CacheUtils.put(CacheNames.SYS_OSS_CONFIG, config.getConfigKey(), JsonUtils.toJsonString(config));
+        List<SysOssConfig> list = baseMapper.selectList();
+        // 加载OSS初始化配置
+        for (SysOssConfig config : list) {
+            String configKey = config.getConfigKey();
+            if (NormalDisableEnum.NORMAL.getCode().equals(config.getStatus())) {
+                RedisUtils.setObject(OssConstant.DEFAULT_CONFIG_KEY, configKey);
             }
+            CacheUtils.put(CacheNames.SYS_OSS_CONFIG, config.getConfigKey(), JsonUtils.toJsonString(config));
         }
-        TenantHelper.clearDynamic();
     }
 
     @Override

@@ -1,7 +1,6 @@
 package org.dromara.common.tenant.helper;
 
 import cn.dev33.satoken.context.SaHolder;
-import cn.dev33.satoken.spring.SpringMVCUtil;
 import cn.hutool.core.convert.Convert;
 import com.alibaba.ttl.TransmittableThreadLocal;
 import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
@@ -45,6 +44,8 @@ public class TenantHelper {
     private static final ThreadLocal<AtomicInteger> HEAVY_ENTRY_IGNORE_DB_TENANT = TransmittableThreadLocal.withInitial(() -> new AtomicInteger(0));
     // 忽略租户缓存重入计数,防止重入调用提前关闭租户
     private static final ThreadLocal<AtomicInteger> HEAVY_ENTRY_IGNORE_CACHE_TENANT = TransmittableThreadLocal.withInitial(() -> new AtomicInteger(0));
+    // 动态租户重入计数,防止重入调用提前清理租户
+    private static final ThreadLocal<AtomicInteger> HEAVY_ENTRY_TEMP_DYNAMIC_TENANT = TransmittableThreadLocal.withInitial(() -> new AtomicInteger(0));
 
     /**
      * 是否启用了缓存忽略租户
@@ -85,7 +86,7 @@ public class TenantHelper {
      * @param force 强制执行
      */
     public static void disableIgnore(boolean force) {
-        if (HEAVY_ENTRY_IGNORE_DB_TENANT.get().decrementAndGet() <= 0 || force) {
+        if (force || HEAVY_ENTRY_IGNORE_DB_TENANT.get().decrementAndGet() <= 0) {
             InterceptorIgnoreHelper.clearIgnoreStrategy();
             HEAVY_ENTRY_IGNORE_DB_TENANT.remove();
         }
@@ -114,9 +115,47 @@ public class TenantHelper {
      * @param force 强制执行
      */
     public static void disableIgnoreCache(boolean force) {
-        if (HEAVY_ENTRY_IGNORE_CACHE_TENANT.get().decrementAndGet() <= 0 || force) {
+        if (force || HEAVY_ENTRY_IGNORE_CACHE_TENANT.get().decrementAndGet() <= 0) {
             IGNORE_CACHE_TENANT.remove();
             HEAVY_ENTRY_IGNORE_CACHE_TENANT.remove();
+        }
+    }
+
+    /**
+     * 设置动态租户（当前执行线程）
+     *
+     * @param tenantId 租户id
+     */
+    public static void setDynamicTenant(String tenantId) {
+        TEMP_DYNAMIC_TENANT.set(tenantId);
+        HEAVY_ENTRY_TEMP_DYNAMIC_TENANT.get().incrementAndGet();
+    }
+
+    /**
+     * 获取当前动态租户
+     *
+     * @return
+     */
+    public static String getDynamicTenant() {
+        return TEMP_DYNAMIC_TENANT.get();
+    }
+
+    /**
+     * 移除动态租户
+     */
+    public static void removeDynamicTenant() {
+        removeDynamicTenant(false);
+    }
+
+    /**
+     * 移除动态租户
+     *
+     * @param force 是否强制
+     */
+    public static void removeDynamicTenant(boolean force) {
+        if (force || HEAVY_ENTRY_TEMP_DYNAMIC_TENANT.get().decrementAndGet() <= 0) {
+            TEMP_DYNAMIC_TENANT.remove();
+            HEAVY_ENTRY_TEMP_DYNAMIC_TENANT.remove();
         }
     }
 
@@ -235,33 +274,18 @@ public class TenantHelper {
 
     /**
      * 设置动态租户(一直有效 需要手动清理)
-     * <p>
-     * 如果为非web环境 那么只在当前线程内生效
      */
-    public static void setDynamic(String tenantId) {
-        if (!SpringMVCUtil.isWeb()) {
-            TEMP_DYNAMIC_TENANT.set(tenantId);
-            return;
-        }
+    public static void setUserDynamicTenant(String tenantId) {
         BaseUser user = SaSecurityContext.getContext();
-        if (user != null) {
-            String cacheKey = DYNAMIC_TENANT_KEY + ":" + user.getUserId();
-            RedisUtils.setObject(cacheKey, tenantId);
-            SaHolder.getStorage().set(cacheKey, tenantId);
-        } else {
-            TEMP_DYNAMIC_TENANT.set(tenantId);
-        }
+        String cacheKey = DYNAMIC_TENANT_KEY + ":" + Objects.requireNonNull(user).getUserId();
+        RedisUtils.setObject(cacheKey, tenantId);
+        SaHolder.getStorage().set(cacheKey, tenantId);
     }
 
     /**
      * 获取动态租户(一直有效 需要手动清理)
-     * <p>
-     * 如果为非web环境 那么只在当前线程内生效
      */
-    public static String getDynamic() {
-        if (!SpringMVCUtil.isWeb()) {
-            return TEMP_DYNAMIC_TENANT.get();
-        }
+    public static String getUserDynamicTenant() {
         BaseUser user = SaSecurityContext.getContext();
         String tenantId = null;
         if (user != null) {
@@ -271,10 +295,10 @@ public class TenantHelper {
                 return tenantId;
             }
             tenantId = RedisUtils.getObject(cacheKey);
+            if (StringUtils.isBlank(tenantId)) {
+                return null;
+            }
             SaHolder.getStorage().set(cacheKey, tenantId);
-        }
-        if (tenantId == null) {
-            return TEMP_DYNAMIC_TENANT.get();
         }
         return tenantId;
     }
@@ -282,19 +306,41 @@ public class TenantHelper {
     /**
      * 清除动态租户
      */
-    public static void clearDynamic() {
-        if (!SpringMVCUtil.isWeb()) {
-            TEMP_DYNAMIC_TENANT.remove();
-            return;
-        }
+    public static void clearUserDynamicTenant() {
         BaseUser user = SaSecurityContext.getContext();
-        if (user != null) {
-            String cacheKey = DYNAMIC_TENANT_KEY + ":" + user.getUserId();
-            RedisUtils.deleteObject(cacheKey);
-            SaHolder.getStorage().delete(cacheKey);
+        String cacheKey = DYNAMIC_TENANT_KEY + ":" + Objects.requireNonNull(user).getUserId();
+        RedisUtils.deleteObject(cacheKey);
+        SaHolder.getStorage().delete(cacheKey);
+    }
+
+    /**
+     * 在动态租户环境中执行(可重入)
+     *
+     * @param tenantId 租户id
+     * @param handle   处理逻辑
+     */
+    public static void dynamicTenant(String tenantId, Apply handle) {
+        setDynamicTenant(tenantId);
+        try {
+            handle.apply();
+        } finally {
+            removeDynamicTenant(false);
         }
-        // 防止登录后没有清理动态租户
-        TEMP_DYNAMIC_TENANT.remove();
+    }
+
+    /**
+     * 在动态租户环境中执行并返回(可重入)
+     *
+     * @param tenantId 租户id
+     * @param handle   处理逻辑
+     */
+    public static <T> T dynamicTenant(String tenantId, Supplier<T> handle) {
+        setDynamicTenant(tenantId);
+        try {
+            return handle.get();
+        } finally {
+            removeDynamicTenant(false);
+        }
     }
 
     /**
@@ -303,16 +349,19 @@ public class TenantHelper {
      * @return
      */
     public static boolean isDynamic() {
-        return getDynamic() != null || DynamicTenant.DYNAMIC_TENANT_AOP.get() != null;
+        return getDynamicTenant() != null || getUserDynamicTenant() != null;
     }
 
     /**
      * 获取当前租户id(动态租户优先)
      */
     public static String getTenantId() {
-        String tenantId = DynamicTenant.DYNAMIC_TENANT_AOP.get();
+        if (!isEnable()) {
+            return null;
+        }
+        String tenantId = getDynamicTenant();
         if (StringUtils.isBlank(tenantId)) {
-            tenantId = TenantHelper.getDynamic();
+            tenantId = TenantHelper.getUserDynamicTenant();
         }
         if (StringUtils.isBlank(tenantId)) {
             BaseUser user = SaSecurityContext.getContext();

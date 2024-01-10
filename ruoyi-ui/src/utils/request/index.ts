@@ -10,16 +10,17 @@ import { ContentTypeEnum } from '@/constants';
 import cache from '@/plugins/cache';
 import { messageOptionMerge } from '@/plugins/modal';
 import { useUserStore } from '@/store/modules/user';
-import { encryptBase64, encryptWithAes, generateAesKey } from '@/utils/crypto';
+import { decryptBase64, decryptWithAes, encryptBase64, encryptWithAes, generateAesKey } from '@/utils/crypto';
 // @ts-ignore
 import errorCode from '@/utils/errorCode';
-import { encrypt } from '@/utils/jsencrypt';
+import { decrypt, encrypt } from '@/utils/jsencrypt';
 import { blobValidate, tansParams } from '@/utils/ruoyi';
 
 import { VAxios } from './Axios';
 import type { AxiosTransform, CreateAxiosOptions } from './AxiosTransform';
 import { formatRequestDate, joinTimestamp, setObjToUrlParams } from './utils';
 
+const encryptHeader = 'encrypt-key';
 // const env = import.meta.env.MODE || 'development';
 // 是否显示重新登录
 export const isRelogin = { show: false };
@@ -32,6 +33,21 @@ const transform: AxiosTransform = {
   // 处理请求数据。如果数据不是预期格式，可直接抛出错误
   transformRequestHook: (res, options): any => {
     const { isTransformResponse, isReturnNativeResponse } = options;
+
+    // 加密后的 AES 秘钥
+    const keyStr = res.headers[encryptHeader];
+    // 加密
+    if (keyStr) {
+      const data = res.data;
+      // 请求体 AES 解密
+      const base64Str = decrypt(keyStr);
+      // base64 解码 得到请求头的 AES 秘钥
+      const aesKey = decryptBase64(base64Str.toString());
+      // aesKey 解码 data
+      const decryptData = decryptWithAes(data as any, aesKey);
+      // 将结果 (得到的是 JSON 字符串) 转为 JSON
+      res.data = JSON.parse(decryptData);
+    }
 
     // 如果204无内容直接返回
     const method = res.config.method?.toLowerCase();
@@ -217,7 +233,7 @@ const transform: AxiosTransform = {
     if (withEncrypt && (config.method === 'post' || config.method === 'put')) {
       // 生成一个 AES 密钥
       const aesKey = generateAesKey();
-      config.headers['encrypt-key'] = encrypt(encryptBase64(aesKey));
+      config.headers[encryptHeader] = encrypt(encryptBase64(aesKey));
       config.data =
         typeof config.data === 'object'
           ? encryptWithAes(JSON.stringify(config.data), aesKey)

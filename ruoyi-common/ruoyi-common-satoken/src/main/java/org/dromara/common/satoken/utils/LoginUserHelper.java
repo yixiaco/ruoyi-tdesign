@@ -4,6 +4,7 @@ import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.context.model.SaStorage;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.SaLoginModel;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.AccessLevel;
@@ -12,6 +13,7 @@ import org.dromara.common.core.domain.model.BaseUser;
 import org.dromara.common.core.enums.DeviceType;
 import org.dromara.common.satoken.context.SaSecurityContext;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.function.Consumer;
 
@@ -77,7 +79,7 @@ public class LoginUserHelper {
         }
         SaSecurityContext.setContext(baseUser);
         MultipleStpUtil.USER.login(baseUser.getUserId(), model);
-        MultipleStpUtil.USER.getSession().set(LOGIN_USER_KEY, baseUser);
+        MultipleStpUtil.USER.getTokenSession().set(LOGIN_USER_KEY, baseUser);
     }
 
     /**
@@ -85,20 +87,13 @@ public class LoginUserHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T extends BaseUser> T getUser() {
-        T user = (T) SaHolder.getStorage().get(getLoginType() + LOGIN_USER_KEY);
-        if (user != null) {
-            return user;
-        }
-        try {
-            SaSession session = MultipleStpUtil.USER.getSession();
+        return StorageUtil.getStorageIfAbsentSet(getLoginType() + LOGIN_USER_KEY, () -> {
+            SaSession session = MultipleStpUtil.USER.getTokenSession();
             if (session != null) {
-                user = (T) session.get(LOGIN_USER_KEY);
-                SaHolder.getStorage().set(getLoginType() + LOGIN_USER_KEY, user);
+                return (T) session.get(LOGIN_USER_KEY);
             }
-            return user;
-        } catch (Exception e) {
             return null;
-        }
+        });
     }
 
     /**
@@ -107,8 +102,7 @@ public class LoginUserHelper {
     @SuppressWarnings("unchecked")
     public static <T extends BaseUser> T getUser(String token) {
         try {
-            Object loginId = MultipleStpUtil.USER.getLoginIdByToken(token);
-            SaSession session = MultipleStpUtil.USER.getSessionByLoginId(loginId);
+            SaSession session = MultipleStpUtil.USER.getTokenSessionByToken(token);
             return (T) session.get(LOGIN_USER_KEY);
         } catch (Exception e) {
             return null;
@@ -135,14 +129,27 @@ public class LoginUserHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T extends BaseUser> void updateUser(Long userId, Consumer<T> updateBy) {
-        SaSession session = MultipleStpUtil.USER.getSessionByLoginId(userId);
-        if (session != null) {
-            T tokenUser = (T) session.get(LOGIN_USER_KEY);
-            updateBy.accept(tokenUser);
-            session.set(LOGIN_USER_KEY, tokenUser);
-            SaStorage storage = SaHolder.getStorage();
-            if (storage != null) {
-                storage.set(getLoginType() + LOGIN_USER_KEY, tokenUser);
+        List<String> tokens = MultipleStpUtil.USER.getTokenValueListByLoginId(userId);
+        String tokenValue = null;
+        try {
+            tokenValue = MultipleStpUtil.USER.getTokenValue();
+        } catch (Exception ignore) {
+            // 不做处理
+        }
+        if (CollUtil.isNotEmpty(tokens)) {
+            for (String token : tokens) {
+                SaSession session = MultipleStpUtil.USER.getTokenSessionByToken(token);
+                if (session != null) {
+                    T tokenUser = (T) session.get(LOGIN_USER_KEY);
+                    updateBy.accept(tokenUser);
+                    session.set(LOGIN_USER_KEY, tokenUser);
+                    if (Objects.equals(tokenValue, token)) {
+                        SaStorage storage = SaHolder.getStorage();
+                        if (storage != null) {
+                            storage.set(getLoginType() + LOGIN_USER_KEY, tokenUser);
+                        }
+                    }
+                }
             }
         }
     }
@@ -151,40 +158,26 @@ public class LoginUserHelper {
      * 获取用户id
      */
     public static Long getUserId() {
-        Long userId;
-        try {
-            userId = Convert.toLong(SaHolder.getStorage().get(getLoginType() + USER_KEY));
-            if (ObjectUtil.isNull(userId)) {
-                BaseUser user = getUser();
-                if (user != null) {
-                    userId = user.getUserId();
-                    SaHolder.getStorage().set(getLoginType() + USER_KEY, userId);
-                }
+        return StorageUtil.getStorageIfAbsentSet(getLoginType() + USER_KEY, () -> {
+            BaseUser user = getUser();
+            if (user != null) {
+                return user.getUserId();
             }
-        } catch (Exception e) {
             return null;
-        }
-        return userId;
+        }, Convert::toLong);
     }
 
     /**
      * 获取租户ID
      */
     public static String getTenantId() {
-        String tenantId;
-        try {
-            tenantId = (String) SaHolder.getStorage().get(getLoginType() + TENANT_KEY);
-            if (ObjectUtil.isNull(tenantId)) {
-                BaseUser user = getUser();
-                if (user != null) {
-                    tenantId = user.getTenantId();
-                    SaHolder.getStorage().set(getLoginType() + TENANT_KEY, tenantId);
-                }
+        return StorageUtil.getStorageIfAbsentSet(getLoginType() + TENANT_KEY, () -> {
+            BaseUser user = getUser();
+            if (user != null) {
+                return user.getTenantId();
             }
-        } catch (Exception e) {
             return null;
-        }
-        return tenantId;
+        });
     }
 
     /**

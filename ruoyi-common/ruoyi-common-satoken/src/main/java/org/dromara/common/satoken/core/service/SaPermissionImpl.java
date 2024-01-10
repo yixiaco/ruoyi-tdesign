@@ -1,8 +1,8 @@
 package org.dromara.common.satoken.core.service;
 
 import cn.dev33.satoken.stp.StpInterface;
-import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.domain.model.BaseUser;
+import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.enums.UserType;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.LoginUserHelper;

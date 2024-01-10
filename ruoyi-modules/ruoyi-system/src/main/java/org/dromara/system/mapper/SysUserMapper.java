@@ -86,36 +86,6 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser, SysUserVo> {
     SysUserVo selectUserByEmail(@Param("email") String email);
 
     /**
-     * 通过用户名查询用户(不走租户插件)
-     *
-     * @param userName 用户名
-     * @param tenantId 租户id
-     * @return 用户对象信息
-     */
-    @InterceptorIgnore(tenantLine = "true")
-    SysUserVo selectTenantUserByUserName(@Param("userName") String userName, @Param("tenantId") String tenantId);
-
-    /**
-     * 通过手机号查询用户(不走租户插件)
-     *
-     * @param phonenumber 手机号
-     * @param tenantId    租户id
-     * @return 用户对象信息
-     */
-    @InterceptorIgnore(tenantLine = "true")
-    SysUserVo selectTenantUserByPhonenumber(@Param("phonenumber") String phonenumber, @Param("tenantId") String tenantId);
-
-    /**
-     * 通过邮箱查询用户(不走租户插件)
-     *
-     * @param email    邮箱
-     * @param tenantId 租户id
-     * @return 用户对象信息
-     */
-    @InterceptorIgnore(tenantLine = "true")
-    SysUserVo selectTenantUserByEmail(@Param("email") String email, @Param("tenantId") String tenantId);
-
-    /**
      * 通过权限查询用户
      *
      * @param userId 用户ID

@@ -14,6 +14,7 @@ import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.encrypt.annotation.ApiEncrypt;
 import org.dromara.common.excel.core.ExcelResult;
 import org.dromara.common.excel.utils.ExcelUtil;
 import org.dromara.common.log.annotation.Log;
@@ -123,7 +124,7 @@ public class SysUserController extends BaseController {
         LoginUser loginUser = LoginHelper.getUser();
         if (TenantHelper.isEnable() && LoginHelper.isSuperAdmin()) {
             // 超级管理员 如果重新加载用户信息需清除动态租户
-            TenantHelper.clearDynamic();
+            TenantHelper.clearUserDynamicTenant();
         }
         SysUserVo user = userService.selectUserById(loginUser.getUserId());
         if (ObjectUtil.isNull(user)) {
@@ -227,6 +228,7 @@ public class SysUserController extends BaseController {
     /**
      * 重置密码
      */
+    @ApiEncrypt
     @SaCheckPermission("system:user:resetPwd")
     @Log(title = "用户管理", businessType = BusinessType.UPDATE)
     @PutMapping("/resetPwd")

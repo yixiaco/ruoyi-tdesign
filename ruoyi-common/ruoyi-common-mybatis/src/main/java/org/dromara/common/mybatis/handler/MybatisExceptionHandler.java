@@ -34,7 +34,7 @@ public class MybatisExceptionHandler {
     public R<Void> handleCannotFindDataSourceException(MyBatisSystemException e, HttpServletRequest request) {
         String requestURI = request.getRequestURI();
         String message = e.getMessage();
-        if (message != null && message.contains("CannotFindDataSourceException")) {
+        if ("CannotFindDataSourceException".contains(message)) {
             log.error("请求地址'{}', 未找到数据源", requestURI);
             return R.fail("未找到数据源，请联系管理员确认");
         }

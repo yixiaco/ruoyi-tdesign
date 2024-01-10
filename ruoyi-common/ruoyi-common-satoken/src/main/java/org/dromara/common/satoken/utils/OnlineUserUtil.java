@@ -8,6 +8,8 @@ import org.dromara.common.core.utils.ServletUtils;
 import org.dromara.common.core.utils.ip.AddressUtils;
 
 /**
+ * 在线用户登录工具
+ *
  * @author hexm
  * @date 2023/07/14 17:30
  */

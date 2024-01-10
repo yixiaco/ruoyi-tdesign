@@ -4,6 +4,7 @@ import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.context.model.SaStorage;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.SaLoginModel;
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import lombok.AccessLevel;
@@ -14,6 +15,8 @@ import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.enums.UserType;
 import org.dromara.common.satoken.context.SaSecurityContext;
 
+import java.util.List;
+import java.util.Objects;
 import java.util.Set;
 import java.util.function.Consumer;
 
@@ -70,7 +73,7 @@ public class LoginHelper {
         model = ObjectUtil.defaultIfNull(model, new SaLoginModel());
         SaSecurityContext.setContext(loginUser);
         MultipleStpUtil.SYSTEM.login(loginUser.getLoginId(), model);
-        MultipleStpUtil.SYSTEM.getSession().set(LOGIN_USER_KEY, loginUser);
+        MultipleStpUtil.SYSTEM.getTokenSession().set(LOGIN_USER_KEY, loginUser);
     }
 
     /**
@@ -78,16 +81,13 @@ public class LoginHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T extends LoginUser> T getUser() {
-        T loginUser = (T) SaHolder.getStorage().get(getLoginType() + LOGIN_USER_KEY);
-        if (loginUser != null) {
-            return loginUser;
-        }
-        SaSession session = MultipleStpUtil.SYSTEM.getSession();
-        if (session != null) {
-            loginUser = (T) session.get(LOGIN_USER_KEY);
-            SaHolder.getStorage().set(getLoginType() + LOGIN_USER_KEY, loginUser);
-        }
-        return loginUser;
+        return StorageUtil.getStorageIfAbsentSet(getLoginType() + LOGIN_USER_KEY, () -> {
+            SaSession session = MultipleStpUtil.SYSTEM.getTokenSession();
+            if (session != null) {
+                return (T) session.get(LOGIN_USER_KEY);
+            }
+            return null;
+        });
     }
 
     /**
@@ -95,8 +95,7 @@ public class LoginHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T extends LoginUser> T getUser(String token) {
-        Object loginId = MultipleStpUtil.SYSTEM.getLoginIdByToken(token);
-        SaSession session = MultipleStpUtil.SYSTEM.getSessionByLoginId(loginId);
+        SaSession session = MultipleStpUtil.SYSTEM.getTokenSessionByToken(token);
         if (session == null) {
             return null;
         }
@@ -123,14 +122,27 @@ public class LoginHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T extends LoginUser> void updateUser(Long userId, Consumer<T> updateBy) {
-        SaSession session = MultipleStpUtil.SYSTEM.getSessionByLoginId(userId);
-        if (session != null) {
-            T tokenUser = (T) session.get(LOGIN_USER_KEY);
-            updateBy.accept(tokenUser);
-            session.set(LOGIN_USER_KEY, tokenUser);
-            SaStorage storage = SaHolder.getStorage();
-            if (storage != null) {
-                storage.set(getLoginType() + LOGIN_USER_KEY, tokenUser);
+        List<String> tokens = MultipleStpUtil.SYSTEM.getTokenValueListByLoginId(userId);
+        String tokenValue = null;
+        try {
+            tokenValue = MultipleStpUtil.SYSTEM.getTokenValue();
+        } catch (Exception ignore) {
+            // 不做处理
+        }
+        if (CollUtil.isNotEmpty(tokens)) {
+            for (String token : tokens) {
+                SaSession session = MultipleStpUtil.SYSTEM.getTokenSessionByToken(token);
+                if (session != null) {
+                    T tokenUser = (T) session.get(LOGIN_USER_KEY);
+                    updateBy.accept(tokenUser);
+                    session.set(LOGIN_USER_KEY, tokenUser);
+                    if (Objects.equals(tokenValue, token)) {
+                        SaStorage storage = SaHolder.getStorage();
+                        if (storage != null) {
+                            storage.set(getLoginType() + LOGIN_USER_KEY, tokenUser);
+                        }
+                    }
+                }
             }
         }
     }
@@ -139,34 +151,14 @@ public class LoginHelper {
      * 获取用户id
      */
     public static Long getUserId() {
-        Long userId;
-        try {
-            userId = Convert.toLong(SaHolder.getStorage().get(getLoginType() + USER_KEY));
-            if (ObjectUtil.isNull(userId)) {
-                userId = getUser().getUserId();
-                SaHolder.getStorage().set(getLoginType() + USER_KEY, userId);
-            }
-        } catch (Exception e) {
-            return null;
-        }
-        return userId;
+        return StorageUtil.getStorageIfAbsentSet(getLoginType() + USER_KEY, () -> getUser().getUserId(), Convert::toLong);
     }
 
     /**
      * 获取租户ID
      */
     public static String getTenantId() {
-        String tenantId;
-        try {
-            tenantId = (String) SaHolder.getStorage().get(getLoginType() + TENANT_KEY);
-            if (ObjectUtil.isNull(tenantId)) {
-                tenantId = getUser().getTenantId();
-                SaHolder.getStorage().set(getLoginType() + TENANT_KEY, tenantId);
-            }
-        } catch (Exception e) {
-            return null;
-        }
-        return tenantId;
+        return StorageUtil.getStorageIfAbsentSet(getLoginType() + TENANT_KEY, () -> getUser().getTenantId());
     }
 
     /**
@@ -218,5 +210,4 @@ public class LoginHelper {
     public static boolean isTenantAdmin() {
         return isTenantAdmin(getUser().getRolePermission());
     }
-
 }
