@@ -36,6 +36,10 @@ public class R<T> implements Serializable {
 
     private T data;
 
+    public boolean isOk() {
+        return this.code == SUCCESS;
+    }
+
     public static <T> R<T> ok() {
         return restResult(null, SUCCESS, "操作成功");
     }
