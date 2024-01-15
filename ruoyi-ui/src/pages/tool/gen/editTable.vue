@@ -42,6 +42,10 @@
                     </t-space>
                   </t-col>
                   <t-col flex="none">
+                    <t-button theme="default" variant="outline" @click="loadDictOption">
+                      <template #icon> <refresh-icon /> </template>
+                      更新字典
+                    </t-button>
                     <t-button theme="default" variant="outline" @click="columnControllerVisible = true">
                       <template #icon> <setting-icon /> </template>
                       列配置
@@ -167,7 +171,7 @@
 defineOptions({
   name: 'GenEdit',
 });
-import { SettingIcon } from 'tdesign-icons-vue-next';
+import { RefreshIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import type { FormInstanceFunctions, FormRule, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, onMounted, reactive, ref, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -389,14 +393,19 @@ async function getGenTableData(tableId: string | number) {
     .finally(() => (loading.value = false));
 }
 
+/** 查询字典下拉列表 */
+function loadDictOption() {
+  getDictOptionselect().then((response) => {
+    dictOptions.value = response.data;
+    proxy.$modal.msgSuccess('成功加载字典');
+  });
+}
+
 onMounted(() => {
   const tableId = route.params && route.params.tableId;
   if (tableId) {
     getGenTableData(tableId as string);
-    /** 查询字典下拉列表 */
-    getDictOptionselect().then((response) => {
-      dictOptions.value = response.data;
-    });
+    loadDictOption();
   }
 });
 </script>
