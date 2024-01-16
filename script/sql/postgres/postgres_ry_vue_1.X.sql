@@ -1562,6 +1562,7 @@ create table sys_message_log (
   is_success            int2,
   response_body         varchar(1000),
   log_time              timestamp       not null,
+  cost_time             int8,
   constraint sys_message_log_pk primary key (message_log_id)
 );
 create index idx_sys_message_template_id on sys_message_log using btree (message_template_id);
@@ -1581,6 +1582,7 @@ comment on column sys_message_log.supplier_type             is '平台标识';
 comment on column sys_message_log.is_success                is '是否成功';
 comment on column sys_message_log.response_body             is '返回主体消息';
 comment on column sys_message_log.log_time                  is '记录时间';
+comment on column sys_message_log.cost_time                 is '消耗时间';
 
 -- ----------------------------
 -- 消息模板表

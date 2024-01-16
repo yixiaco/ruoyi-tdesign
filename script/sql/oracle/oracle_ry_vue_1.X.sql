@@ -1516,11 +1516,11 @@ comment on column sys_message_key.create_time       is '创建时间';
 create table sys_message_log (
   message_log_id        number(20)      not null,
   message_template_id   number(20),
-  message_key           varchar2(50)   not null,
+  message_key           varchar2(50)    not null,
   message_template_name varchar2(255),
-  message_type          varchar2(20)   not null,
+  message_type          varchar2(20)    not null,
   template_mode         varchar2(20),
-  account               varchar2(255)  not null,
+  account               varchar2(255)   not null,
   title                 varchar2(255),
   template_id           varchar2(100),
   content               nclob,
@@ -1528,7 +1528,8 @@ create table sys_message_log (
   supplier_type         varchar2(20),
   is_success            number(4),
   response_body         varchar2(1000),
-  log_time              date            not null
+  log_time              date            not null,
+  cost_time             number(20)
 );
 
 alter table sys_message_log add constraint pk_sys_message_log primary key (message_log_id);
@@ -1549,6 +1550,7 @@ comment on column sys_message_log.supplier_type         is '平台标识';
 comment on column sys_message_log.is_success            is '是否成功';
 comment on column sys_message_log.response_body         is '返回主体消息';
 comment on column sys_message_log.log_time              is '记录时间';
+comment on column sys_message_log.cost_time             is '消耗时间';
 
 -- ----------------------------
 -- 消息模板表

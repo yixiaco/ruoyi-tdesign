@@ -1103,6 +1103,7 @@ create table sys_message_log  (
     is_success            tinyint(1)      null        default null    comment '是否成功',
     response_body         varchar(1000)   null        default null    comment '返回主体消息',
     log_time              datetime        not null                    comment '记录时间',
+    cost_time             bigint(20)      null                        comment '消耗时间',
     primary key (message_log_id) using btree,
     index idx_message_template_id(message_template_id) using btree
 ) engine = innodb comment = '消息发送记录表';
