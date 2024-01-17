@@ -42,7 +42,7 @@ public interface ISysMessageSendService {
     void send(Long messageTemplateId, List<String> accounts, Map<String, Object> message);
 
     /**
-     * 发送消息
+     * 批量发送消息
      *
      * @param messageKey  消息KEY
      * @param messageType 消息类型

@@ -2,6 +2,7 @@ package org.dromara.system.handle;
 
 import cn.hutool.json.JSONUtil;
 import org.dromara.common.core.utils.LocalTimeInterval;
+import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.funtion.BiOperator;
 import org.dromara.system.domain.SysMessageConfig;
 import org.dromara.system.domain.SysMessageLog;
@@ -10,7 +11,12 @@ import org.dromara.system.domain.vo.SysMessageTemplateVar;
 import org.dromara.system.service.ISysMessageLogService;
 import org.springframework.util.PropertyPlaceholderHelper;
 
-import java.util.*;
+import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Properties;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -77,9 +83,8 @@ public abstract class BaseMessageSendHandler implements MessageSendHandler {
      */
     protected static Properties getProperties(Map<String, Object> message) {
         Properties properties = new Properties();
-        properties.putAll(message);
-        for (Map.Entry<Object, Object> entry : properties.entrySet()) {
-            entry.setValue(entry.getValue().toString());
+        for (Map.Entry<String, Object> entry : message.entrySet()) {
+            properties.put(entry.getKey(), Objects.requireNonNullElse(entry.getValue(), StringUtils.EMPTY).toString());
         }
         return properties;
     }
