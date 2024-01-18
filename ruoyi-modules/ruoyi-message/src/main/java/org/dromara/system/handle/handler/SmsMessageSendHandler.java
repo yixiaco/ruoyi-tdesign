@@ -38,6 +38,7 @@ import org.dromara.system.handle.BaseMessageSendHandler;
 import org.dromara.system.service.ISysMessageLogService;
 import org.springframework.stereotype.Component;
 
+import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -154,29 +155,23 @@ public class SmsMessageSendHandler extends BaseMessageSendHandler {
             default -> throw new ServiceException("不支持的消息类型");
         };
         MessageTemplateMode templateMode = MessageTemplateMode.valueOf(template.getTemplateMode());
-        // 消息发送方式
-        SmsResponse response;
-        switch (templateMode) {
-            case TEMPLATE_ID -> {
-                if (account.size() == 1) {
-                    response = smsBlend.sendMessage(account.get(0), template.getTemplateId(), outputVars);
-                } else {
-                    response = smsBlend.massTexting(account, template.getTemplateId(), outputVars);
+        for (String mobile : account) {
+            // 消息发送方式
+            SmsResponse response;
+            switch (templateMode) {
+                case TEMPLATE_ID -> {
+                    response = smsBlend.sendMessage(mobile, template.getTemplateId(), outputVars);
                 }
-            }
-            case TEMPLATE_CONTENT -> {
-                if (account.size() == 1) {
-                    response = smsBlend.sendMessage(account.get(0), content);
-                } else {
-                    response = smsBlend.massTexting(account, content);
+                case TEMPLATE_CONTENT -> {
+                    response = smsBlend.sendMessage(mobile, content);
                 }
+                default -> throw new ServiceException("不支持的消息模板模式：" + templateMode);
             }
-            default -> throw new ServiceException("不支持的消息模板模式：" + templateMode);
+            // 记录发送记录
+            saveLog(Collections.singletonList(mobile), template, config, content, log -> {
+                log.setIsSuccess(response.isSuccess() ? CommonStatusEnum.SUCCESS.getCodeNum() : CommonStatusEnum.FAIL.getCodeNum());
+                log.setResponseBody(StrUtil.maxLength(JsonUtils.toJsonString(response.getData()), 1000));
+            });
         }
-        // 记录发送记录
-        saveLog(account, template, config, content, log -> {
-            log.setIsSuccess(response.isSuccess() ? CommonStatusEnum.SUCCESS.getCodeNum() : CommonStatusEnum.FAIL.getCodeNum());
-            log.setResponseBody(StrUtil.maxLength(JsonUtils.toJsonString(response.getData()), 1000));
-        });
     }
 }
