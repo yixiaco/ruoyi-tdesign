@@ -429,11 +429,11 @@ comment on column sys_menu.remark       is '备注';
 -- 初始化-菜单信息表数据
 -- ----------------------------
 -- 一级菜单
-insert into sys_menu values('1', '系统管理', '0', '1', 'system',           null, '', 0, 1, 'M', '1', '1', '', 'setting',   103, 1, sysdate, null, null, '系统管理目录');
-insert into sys_menu values('6', '租户管理', '0', '2', 'tenant',           null, '', 0, 1, 'M', '1', '1', '', 'chart-bar',    103, 1, sysdate, null, null, '租户管理目录');
-insert into sys_menu values('2', '系统监控', '0', '3', 'monitor',          null, '', 0, 1, 'M', '1', '1', '', 'chart',  103, 1, sysdate, null, null, '系统监控目录');
-insert into sys_menu values('3', '系统工具', '0', '4', 'tool',             null, '', 0, 1, 'M', '1', '1', '', 'tool',     103, 1, sysdate, null, null, '系统工具目录');
-insert into sys_menu values('4', 'PLUS官网', '0', '5', 'https://gitee.com/yixiacoco/ruoyi-tdesign', null, '', 1, 1, 'M', '1', '1', '', 'link',    103, 1, sysdate, null, null, 'ruoyi_tdesign官网地址');
+insert into sys_menu values('1', '系统管理', '0', '11', 'system',           null, '', 0, 1, 'M', '1', '1', '', 'setting',   103, 1, sysdate, null, null, '系统管理目录');
+insert into sys_menu values('6', '租户管理', '0', '12', 'tenant',           null, '', 0, 1, 'M', '1', '1', '', 'chart-bar',    103, 1, sysdate, null, null, '租户管理目录');
+insert into sys_menu values('2', '系统监控', '0', '13', 'monitor',          null, '', 0, 1, 'M', '1', '1', '', 'chart',  103, 1, sysdate, null, null, '系统监控目录');
+insert into sys_menu values('3', '系统工具', '0', '14', 'tool',             null, '', 0, 1, 'M', '1', '1', '', 'tool',     103, 1, sysdate, null, null, '系统工具目录');
+insert into sys_menu values('4', 'PLUS官网', '0', '15', 'https://gitee.com/yixiacoco/ruoyi-tdesign', null, '', 1, 1, 'M', '1', '1', '', 'link',    103, 1, sysdate, null, null, 'ruoyi_tdesign官网地址');
 -- 二级菜单
 insert into sys_menu values('100',  '用户管理',     '1',   '1', 'user',             'system/user/index',            '', 0, 1, 'C', '1', '1', 'system:user:list',            'user',          103, 1, sysdate, null, null, '用户管理菜单');
 insert into sys_menu values('101',  '角色管理',     '1',   '2', 'role',             'system/role/index',            '', 0, 1, 'C', '1', '1', 'system:role:list',            'user-safety',       103, 1, sysdate, null, null, '角色管理菜单');
@@ -976,7 +976,7 @@ create table sys_config (
   tenant_id         varchar2(20)   default '000000',
   config_name       varchar2(100)  default '',
   config_key        varchar2(100)  default '',
-  config_value      varchar2(2000) default '',
+  config_value      nclob          default null,
   config_type       char(1)        default 'N',
   is_global         number(1)      not null,
   create_dept       number(20)     default null,

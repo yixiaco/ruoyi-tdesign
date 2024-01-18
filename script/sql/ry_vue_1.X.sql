@@ -272,11 +272,11 @@ create table sys_menu (
 -- 初始化-菜单信息表数据
 -- ----------------------------
 -- 一级菜单
-insert into sys_menu values('1', '系统管理', '0', '1', 'system',           null, '', 0, 1, 'M', '1', '1', '', 'setting',    103, 1, sysdate(), null, null, '系统管理目录');
-insert into sys_menu values('6', '租户管理', '0', '2', 'tenant',           null, '', 0, 1, 'M', '1', '1', '', 'chart-bar',  103, 1, sysdate(), null, null, '租户管理目录');
-insert into sys_menu values('2', '系统监控', '0', '3', 'monitor',          null, '', 0, 1, 'M', '1', '1', '', 'chart',      103, 1, sysdate(), null, null, '系统监控目录');
-insert into sys_menu values('3', '系统工具', '0', '4', 'tool',             null, '', 0, 1, 'M', '1', '1', '', 'tools',      103, 1, sysdate(), null, null, '系统工具目录');
-insert into sys_menu values('4', 'PLUS官网', '0', '5', 'https://gitee.com/yixiacoco/ruoyi-tdesign', null, '', 1, 1, 'M', '1', '1', '', 'link',    103, 1, sysdate(), null, null, 'ruoyi-tdesign官网地址');
+insert into sys_menu values('1', '系统管理', '0', '11', 'system',           null, '', 0, 1, 'M', '1', '1', '', 'setting',    103, 1, sysdate(), null, null, '系统管理目录');
+insert into sys_menu values('6', '租户管理', '0', '12', 'tenant',           null, '', 0, 1, 'M', '1', '1', '', 'chart-bar',  103, 1, sysdate(), null, null, '租户管理目录');
+insert into sys_menu values('2', '系统监控', '0', '13', 'monitor',          null, '', 0, 1, 'M', '1', '1', '', 'chart',      103, 1, sysdate(), null, null, '系统监控目录');
+insert into sys_menu values('3', '系统工具', '0', '14', 'tool',             null, '', 0, 1, 'M', '1', '1', '', 'tools',      103, 1, sysdate(), null, null, '系统工具目录');
+insert into sys_menu values('4', 'PLUS官网', '0', '15', 'https://gitee.com/yixiacoco/ruoyi-tdesign', null, '', 1, 1, 'M', '1', '1', '', 'link',    103, 1, sysdate(), null, null, 'ruoyi-tdesign官网地址');
 
 -- 二级菜单
 insert into sys_menu values('100',  '用户管理',     '1',   '1', 'user',             'system/user/index',            '', 0, 1, 'C', '1', '1', 'system:user:list',            'user',          103, 1, sysdate(), null, null, '用户管理菜单');
@@ -762,7 +762,7 @@ create table sys_config (
     tenant_id         varchar(20)     default '000000'           comment '租户编号',
     config_name       varchar(100)    default ''                 comment '参数名称',
     config_key        varchar(100)    default ''                 comment '参数键名',
-    config_value      varchar(2000)    default ''                comment '参数键值',
+    config_value      text            default null               comment '参数键值',
     config_type       char(1)         default 'N'                comment '系统内置（Y是 N否）',
     is_global         tinyint(1)      not null                   comment '是否是全局配置 1是 0否',
     create_dept       bigint(20)      default null               comment '创建部门',

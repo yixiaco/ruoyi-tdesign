@@ -439,11 +439,11 @@ comment on column sys_menu.remark       is '备注';
 -- 初始化-菜单信息表数据
 -- ----------------------------
 -- 一级菜单
-insert into sys_menu values('1', '系统管理', '0', '1', 'system',           null, '', 0, 1, 'M', '1', '1', '', 'setting',   103, 1, now(), null, null, '系统管理目录');
-insert into sys_menu values('6', '租户管理', '0', '2', 'tenant',           null, '', 0, 1, 'M', '1', '1', '', 'chart-bar',    103, 1, now(), null, null, '租户管理目录');
-insert into sys_menu values('2', '系统监控', '0', '3', 'monitor',          null, '', 0, 1, 'M', '1', '1', '', 'chart',  103, 1, now(), null, null, '系统监控目录');
-insert into sys_menu values('3', '系统工具', '0', '4', 'tool',             null, '', 0, 1, 'M', '1', '1', '', 'tool',     103, 1, now(), null, null, '系统工具目录');
-insert into sys_menu values('4', 'PLUS官网', '0', '5', 'https://gitee.com/yixiacoco/ruoyi-tdesign', null, '', 1, 1, 'M', '1', '1', '', 'link',    103, 1, now(), null, null, 'tdesign官网地址');
+insert into sys_menu values('1', '系统管理', '0', '11', 'system',           null, '', 0, 1, 'M', '1', '1', '', 'setting',   103, 1, now(), null, null, '系统管理目录');
+insert into sys_menu values('6', '租户管理', '0', '12', 'tenant',           null, '', 0, 1, 'M', '1', '1', '', 'chart-bar',    103, 1, now(), null, null, '租户管理目录');
+insert into sys_menu values('2', '系统监控', '0', '13', 'monitor',          null, '', 0, 1, 'M', '1', '1', '', 'chart',  103, 1, now(), null, null, '系统监控目录');
+insert into sys_menu values('3', '系统工具', '0', '14', 'tool',             null, '', 0, 1, 'M', '1', '1', '', 'tool',     103, 1, now(), null, null, '系统工具目录');
+insert into sys_menu values('4', 'PLUS官网', '0', '15', 'https://gitee.com/yixiacoco/ruoyi-tdesign', null, '', 1, 1, 'M', '1', '1', '', 'link',    103, 1, now(), null, null, 'tdesign官网地址');
 -- 二级菜单
 insert into sys_menu values('100',  '用户管理',     '1',   '1', 'user',             'system/user/index',            '', 0, 1, 'C', '1', '1', 'system:user:list',            'user',          103, 1, now(), null, null, '用户管理菜单');
 insert into sys_menu values('101',  '角色管理',     '1',   '2', 'role',             'system/role/index',            '', 0, 1, 'C', '1', '1', 'system:role:list',            'user-safety',       103, 1, now(), null, null, '角色管理菜单');
@@ -1000,7 +1000,7 @@ create table if not exists sys_config
     tenant_id    varchar(20)  default '000000'::varchar,
     config_name  varchar(100) default ''::varchar,
     config_key   varchar(100) default ''::varchar,
-    config_value varchar(2000) default ''::varchar,
+    config_value text,
     config_type  char         default 'N'::bpchar,
     is_global    int2         NOT NULL ,
     create_dept  int8,
