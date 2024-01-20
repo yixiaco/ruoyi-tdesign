@@ -1,5 +1,6 @@
 package org.dromara.common.core.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.dromara.common.core.constant.HttpStatus;
@@ -36,6 +37,7 @@ public class R<T> implements Serializable {
 
     private T data;
 
+    @JsonIgnore
     public boolean isOk() {
         return this.code == SUCCESS;
     }
