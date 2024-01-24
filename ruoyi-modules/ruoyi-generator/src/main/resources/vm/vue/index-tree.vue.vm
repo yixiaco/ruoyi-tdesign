@@ -502,7 +502,7 @@ const title = ref('');
 const ${businessName}Ref = ref<FormInstanceFunctions>();
 #end
 #foreach ($column in $columns)
-#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#if($column.isQuery() && $column.htmlType == "datetime" && $column.queryType == "BETWEEN")
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
 const dateRange${AttrName} = ref([]);
 #end
@@ -577,7 +577,7 @@ const queryParams = ref<${query}>({
 function getList() {
   loading.value = true;
 #foreach ($column in $columns)
-#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#if($column.isQuery() && $column.htmlType == "datetime" && $column.queryType == "BETWEEN")
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
   proxy.addDateRange(queryParams.value, dateRange${AttrName}.value, '${AttrName}');
 #end
@@ -611,7 +611,7 @@ function handleQuery() {
 /** 重置按钮操作 */
 function resetQuery() {
 #foreach ($column in $columns)
-#if($column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#if($column.isQuery() && $column.htmlType == "datetime" && $column.queryType == "BETWEEN")
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
   dateRange${AttrName}.value = [];
 #end
