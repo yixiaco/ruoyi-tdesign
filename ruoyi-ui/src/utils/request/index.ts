@@ -349,7 +349,7 @@ function createAxios(opt?: Partial<CreateAxiosOptions>) {
 export const request = createAxios();
 
 // 通用下载方法
-export function download(url: string, params: any, filename: string, config?: AxiosRequestConfig<any>) {
+export function download(url: string, data: any, filename: string, config?: AxiosRequestConfig<any>) {
   const downloadLoadingInstance = LoadingPlugin({
     text: '正在下载数据，请稍候',
     attach: 'body',
@@ -359,7 +359,7 @@ export function download(url: string, params: any, filename: string, config?: Ax
   return request
     .post({
       url,
-      params,
+      data,
       transformRequest: [
         (params) => {
           return tansParams(params);

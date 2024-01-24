@@ -406,7 +406,7 @@ function handleExport() {
   proxy.download(
     'monitor/logininfor/export',
     {
-      ...queryParams.value,
+      ...proxy.addDateRange(queryParams.value, dateRange.value),
     },
     `logininfor_${new Date().getTime()}.xlsx`,
   );

@@ -535,7 +535,7 @@ function handleExport() {
   proxy.download(
     'system/role/export',
     {
-      ...queryParams.value,
+      ...proxy.addDateRange(queryParams.value, dateRange.value),
     },
     `role_${new Date().getTime()}.xlsx`,
   );

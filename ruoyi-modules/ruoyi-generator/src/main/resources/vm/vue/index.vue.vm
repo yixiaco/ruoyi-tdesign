@@ -781,6 +781,12 @@ function handleDelete(row?: ${vo}) {
 
 /** 导出按钮操作 */
 function handleExport() {
+#foreach ($column in $columns)
+#if($column.isQuery() && $column.htmlType == "datetime" && $column.queryType == "BETWEEN")
+#set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
+  proxy.addDateRange(queryParams.value, dateRange${AttrName}.value, '${AttrName}');
+#end
+#end
   proxy.download(
     '${moduleName}/${businessName}/export',
     {

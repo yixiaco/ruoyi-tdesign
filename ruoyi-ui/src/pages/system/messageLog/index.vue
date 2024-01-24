@@ -49,6 +49,16 @@
             <t-option v-for="dict in sys_common_status" :key="dict.value" :label="dict.label" :value="dict.value" />
           </t-select>
         </t-form-item>
+        <t-form-item label="记录时间">
+          <t-date-range-picker
+            v-model="dateRangeLogTime"
+            style="width: 240px"
+            allow-input
+            clearable
+            separator="-"
+            :placeholder="['开始日期', '结束日期']"
+          />
+        </t-form-item>
         <t-form-item label-width="0px">
           <t-button theme="primary" @click="handleQuery">
             <template #icon> <search-icon /></template>
@@ -257,6 +267,7 @@ const ids = ref([]);
 const single = ref(true);
 const multiple = ref(true);
 const sort = ref<TableSort>();
+const dateRangeLogTime = ref([]);
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
@@ -307,6 +318,7 @@ const pagination = computed(() => {
 /** 查询消息发送记录列表 */
 function getList() {
   loading.value = true;
+  proxy.addDateRange(queryParams.value, dateRangeLogTime.value, 'LogTime');
   listMessageLog(queryParams.value)
     .then((response) => {
       messageLogList.value = response.rows;
@@ -329,6 +341,7 @@ function handleQuery() {
 
 /** 重置按钮操作 */
 function resetQuery() {
+  dateRangeLogTime.value = [];
   proxy.resetForm('queryRef');
   queryParams.value.pageNum = 1;
   handleSortChange(null);
@@ -400,6 +413,7 @@ function handleClear() {
 
 /** 导出按钮操作 */
 function handleExport() {
+  proxy.addDateRange(queryParams.value, dateRangeLogTime.value, 'LogTime');
   proxy.download(
     'system/messageLog/export',
     {

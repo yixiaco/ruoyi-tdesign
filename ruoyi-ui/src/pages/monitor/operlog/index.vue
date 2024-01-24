@@ -343,6 +343,7 @@ function handleClean() {
 }
 /** 导出按钮操作 */
 function handleExport() {
+  proxy.addDateRange(queryParams.value, dateRangeOperTime.value, 'OperTime');
   proxy.download(
     'monitor/operlog/export',
     {

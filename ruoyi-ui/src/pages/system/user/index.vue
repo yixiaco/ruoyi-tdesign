@@ -683,6 +683,7 @@ function handleDelete(row?: SysUserVo) {
 }
 /** 导出按钮操作 */
 function handleExport() {
+  queryParams.value.deptId = deptActived.value.at(0);
   proxy.download(
     'system/user/export',
     {
