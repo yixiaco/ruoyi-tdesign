@@ -2,8 +2,7 @@
   <router-view v-if="!isRefreshing" v-slot="{ Component }">
     <transition name="fade" mode="out-in">
       <keep-alive :include="aliveViews">
-        <component :is="Component" v-if="$route.meta?.key" :key="getKey($route.meta?.key)" />
-        <component :is="Component" v-else :key="Component.key" />
+        <component :is="Component" :key="getComponentKey(Component)" />
       </keep-alive>
     </transition>
   </router-view>
@@ -13,7 +12,7 @@
 <script lang="ts" setup>
 import isBoolean from 'lodash/isBoolean';
 import isUndefined from 'lodash/isUndefined';
-import type { ComputedRef } from 'vue';
+import type { ComputedRef, VNode } from 'vue';
 import { computed } from 'vue';
 import type { RouteLocationNormalizedLoaded } from 'vue-router';
 import { useRoute } from 'vue-router';
@@ -34,6 +33,13 @@ function getKey(key: string | ((route: RouteLocationNormalizedLoaded) => string)
     return key(route);
   }
   return key;
+}
+
+function getComponentKey(component?: VNode) {
+  if (route.meta?.key) {
+    return getKey(route.meta?.key);
+  }
+  return component?.key;
 }
 
 const aliveViews = computed(() => {
