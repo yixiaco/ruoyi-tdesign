@@ -3,7 +3,6 @@ package org.dromara.system.controller.system;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.hutool.core.convert.Convert;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.enums.NormalDisableEnum;
@@ -79,7 +78,7 @@ public class SysDeptController extends BaseController {
      */
     @SaCheckPermission("system:dept:query")
     @GetMapping(value = "/{deptId}")
-    public R<SysDeptVo> getInfo(@NotEmpty(message = "部门id不能为空") @PathVariable Long deptId) {
+    public R<SysDeptVo> getInfo(@NotNull(message = "部门id不能为空") @PathVariable Long deptId) {
         deptService.checkDeptDataScope(deptId);
         return R.ok(deptService.selectDeptById(deptId));
     }

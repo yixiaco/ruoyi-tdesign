@@ -389,7 +389,7 @@
       :footer="false"
     >
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(5em + 28px)">
+        <t-form class="form-detail" label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="用户ID">{{ formView.userId }}</t-form-item>
@@ -434,10 +434,10 @@
               <t-form-item label="最后登录时间">{{ parseTime(formView.loginDate) }}</t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(formView.createTime) }}</t-form-item>
+              <t-form-item label="更新时间">{{ parseTime(formView.updateTime) }}</t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(formView.updateTime) }}</t-form-item>
+              <t-form-item label="创建时间">{{ parseTime(formView.createTime) }}</t-form-item>
             </t-col>
             <t-col :span="12">
               <t-form-item label="备注">{{ formView.remark }}</t-form-item>

@@ -124,8 +124,15 @@
     </t-space>
 
     <!-- 操作日志详细 -->
-    <t-dialog v-model:visible="open" header="操作日志详细" width="700px" top="3vh" placement="center" attach="body">
-      <t-form label-align="right" colon :data="form" label-width="calc(4em + 28px)">
+    <t-dialog
+      v-model:visible="open"
+      header="操作日志详细"
+      placement="center"
+      width="900px"
+      attach="body"
+      :footer="false"
+    >
+      <t-form class="form-detail" label-align="right" colon label-width="calc(4em + 28px)">
         <t-row :gutter="[0, 20]">
           <t-col :span="6">
             <t-form-item label="操作模块">{{ form.title }} / {{ typeFormat(form) }}</t-form-item>

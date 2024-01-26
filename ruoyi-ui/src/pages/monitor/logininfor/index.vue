@@ -166,7 +166,7 @@
     <!-- 系统访问记录详情 -->
     <t-dialog v-model:visible="openView" header="系统访问记录详情" width="700px" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(5em + 28px)">
+        <t-form class="form-detail" label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="访问ID">{{ form.infoId }}</t-form-item>

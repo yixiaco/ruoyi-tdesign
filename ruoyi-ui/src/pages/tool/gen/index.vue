@@ -195,9 +195,9 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `表名称`, colKey: 'tableName', align: 'center', ellipsis: true },
   { title: `表描述`, colKey: 'tableComment', align: 'center', ellipsis: true },
   { title: `实体`, colKey: 'className', align: 'center', ellipsis: true },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 160, sorter: true },
-  { title: `更新时间`, colKey: 'updateTime', align: 'center', width: 160, sorter: true },
-  { title: `操作`, colKey: 'operation', align: 'center', width: 330 },
+  { title: `更新时间`, colKey: 'updateTime', align: 'center', minWidth: 112, width: '15%', sorter: true },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', minWidth: 112, width: '15%', sorter: true },
+  { title: `操作`, colKey: 'operation', align: 'center', width: 150 },
 ]);
 
 const queryParams = ref<GenTableQuery>({

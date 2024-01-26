@@ -173,7 +173,7 @@
       :footer="false"
     >
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(7em + 28px)">
+        <t-form class="form-detail" label-align="right" colon label-width="calc(7em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="消息发送记录id">{{ form.messageLogId }}</t-form-item>

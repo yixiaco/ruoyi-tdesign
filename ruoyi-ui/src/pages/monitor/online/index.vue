@@ -75,7 +75,7 @@
       attach="body"
       :footer="false"
     >
-      <t-form label-align="right" colon label-width="calc(5em + 28px)">
+      <t-form class="form-detail" label-align="right" colon label-width="calc(5em + 28px)">
         <t-row :gutter="[0, 20]">
           <t-col :span="6">
             <t-form-item label="会话编号">{{ form.tokenId }}</t-form-item>

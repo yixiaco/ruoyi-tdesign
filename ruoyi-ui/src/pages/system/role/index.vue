@@ -237,6 +237,7 @@
       v-model:visible="openDataScope"
       :header="title"
       :close-on-overlay-click="false"
+      placement="center"
       width="500px"
       attach="body"
       @close="cancelDataScope"
@@ -291,12 +292,12 @@
       v-model:visible="openView"
       header="角色信息详情"
       placement="center"
-      width="700px"
+      width="800px"
       attach="body"
       :footer="false"
     >
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(8em + 28px)">
+        <t-form class="form-detail" label-align="right" colon label-width="calc(12em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="角色ID">{{ form.roleId }}</t-form-item>
@@ -315,13 +316,13 @@
                 <dict-tag :options="dataScopeOptions" theme="primary" :value="form.dataScope" />
               </t-form-item>
             </t-col>
-            <t-col :span="12">
-              <t-form-item label="菜单树选择项是否关联显示" label-width="calc(12em + 24px)">
+            <t-col :span="6">
+              <t-form-item label="菜单树选择项是否关联显示" label-width="calc(12em + 28px)">
                 {{ form.menuCheckStrictly }}
               </t-form-item>
             </t-col>
-            <t-col :span="12">
-              <t-form-item label="部门树选择项是否关联显示" label-width="calc(12em + 24px)">
+            <t-col :span="6">
+              <t-form-item label="部门树选择项是否关联显示" label-width="calc(12em + 28px)">
                 {{ form.deptCheckStrictly }}
               </t-form-item>
             </t-col>
@@ -331,10 +332,10 @@
               </t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
+              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
+              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
             </t-col>
             <t-col :span="12">
               <t-form-item label="备注">{{ form.remark }}</t-form-item>

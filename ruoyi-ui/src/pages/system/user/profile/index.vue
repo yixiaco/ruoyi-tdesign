@@ -70,14 +70,7 @@
 defineOptions({
   name: 'Profile',
 });
-import {
-  CalendarIcon,
-  MailIcon,
-  MobileIcon,
-  SecuredIcon,
-  TreeSquareDotIcon,
-  UserIcon
-} from 'tdesign-icons-vue-next';
+import { CalendarIcon, MailIcon, MobileIcon, SecuredIcon, TreeSquareDotIcon, UserIcon } from 'tdesign-icons-vue-next';
 import { reactive, ref } from 'vue';
 
 import type { ProfileVo } from '@/api/system/model/userModel';

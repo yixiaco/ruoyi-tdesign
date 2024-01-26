@@ -186,9 +186,9 @@
     </t-dialog>
 
     <!-- 系统授权详情 -->
-    <t-dialog v-model:visible="openView" header="系统授权详情" width="800px" attach="body" :footer="false">
+    <t-dialog v-model:visible="openView" header="系统授权详情" width="min(900px, 100%)" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(9em + 28px)">
+        <t-form class="form-detail" label-align="right" colon label-width="calc(9em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="客户端id">{{ form.clientId }}</t-form-item>
@@ -201,7 +201,7 @@
             </t-col>
             <t-col :span="6">
               <t-form-item label="授权类型">
-                <dict-tag :options="sys_grant_type" :value="form.grantType" separator=" | " />
+                <dict-tag :options="sys_grant_type" :value="form.grantType" />
               </t-form-item>
             </t-col>
             <t-col :span="6">
@@ -221,10 +221,10 @@
               </t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
+              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
+              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
             </t-col>
           </t-row>
         </t-form>

@@ -200,7 +200,7 @@
       :footer="false"
     >
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(7em + 28px)">
+        <t-form class="form-detail" label-align="right" colon label-width="calc(7em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="oss规则id">{{ form.ossRuleId }}</t-form-item>
@@ -233,10 +233,10 @@
               </t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
+              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
+              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
             </t-col>
             <t-col :span="12">
               <t-form-item label="备注">{{ form.remark }}</t-form-item>
@@ -313,8 +313,8 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `覆盖字段值`, colKey: 'isOverwrite', align: 'center' },
   { title: `是否默认`, colKey: 'isDefault', align: 'center' },
   { title: `启用状态`, colKey: 'status', align: 'center' },
-  { title: `创建时间`, colKey: 'createTime', align: 'center' },
   { title: `更新时间`, colKey: 'updateTime', align: 'center' },
+  { title: `创建时间`, colKey: 'createTime', align: 'center' },
   { title: `备注`, colKey: 'remark', align: 'center', ellipsis: true },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);

@@ -173,7 +173,7 @@
       :footer="false"
     >
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(6em + 28px)">
+        <t-form class="form-detail" label-align="right" colon label-width="calc(6em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="字典编码">{{ form.dictCode }}</t-form-item>

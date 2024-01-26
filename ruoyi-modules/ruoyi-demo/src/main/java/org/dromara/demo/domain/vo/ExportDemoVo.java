@@ -2,7 +2,7 @@ package org.dromara.demo.domain.vo;
 
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -32,7 +32,7 @@ public class ExportDemoVo {
      * 用户昵称
      */
     @ExcelProperty(value = "用户名", index = 0)
-    @NotEmpty(message = "用户名不能为空", groups = AddGroup.class)
+    @NotBlank(message = "用户名不能为空", groups = AddGroup.class)
     private String nickName;
 
     /**
@@ -42,7 +42,7 @@ public class ExportDemoVo {
      */
     @ExcelProperty(value = "用户类型", index = 1, converter = ExcelEnumConvert.class)
     @ExcelEnumFormat(enumClass = UserStatus.class, textField = "info")
-    @NotEmpty(message = "用户类型不能为空", groups = AddGroup.class)
+    @NotBlank(message = "用户类型不能为空", groups = AddGroup.class)
     private String userStatus;
 
     /**
@@ -52,21 +52,21 @@ public class ExportDemoVo {
      */
     @ExcelProperty(value = "性别", index = 2, converter = ExcelDictConvert.class)
     @ExcelDictFormat(dictType = "sys_user_sex")
-    @NotEmpty(message = "性别不能为空", groups = AddGroup.class)
+    @NotBlank(message = "性别不能为空", groups = AddGroup.class)
     private String gender;
 
     /**
      * 手机号
      */
     @ExcelProperty(value = "手机号", index = 3)
-    @NotEmpty(message = "手机号不能为空", groups = AddGroup.class)
+    @NotBlank(message = "手机号不能为空", groups = AddGroup.class)
     private String phoneNumber;
 
     /**
      * Email
      */
     @ExcelProperty(value = "Email", index = 4)
-    @NotEmpty(message = "Email不能为空", groups = AddGroup.class)
+    @NotBlank(message = "Email不能为空", groups = AddGroup.class)
     private String email;
 
     /**

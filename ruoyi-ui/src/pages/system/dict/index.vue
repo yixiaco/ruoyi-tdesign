@@ -169,7 +169,7 @@
       :footer="false"
     >
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(4em + 28px)">
+        <t-form class="form-detail" label-align="right" colon label-width="calc(4em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="字典主键">{{ form.dictId }}</t-form-item>
@@ -181,10 +181,10 @@
               <t-form-item label="字典类型">{{ form.dictType }}</t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
+              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
+              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
             </t-col>
             <t-col :span="12">
               <t-form-item label="备注">{{ form.remark }}</t-form-item>

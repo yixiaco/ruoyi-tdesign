@@ -195,7 +195,7 @@
       :footer="false"
     >
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(5em + 28px)">
+        <t-form class="form-detail" label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="公告ID">{{ form.noticeId }}</t-form-item>

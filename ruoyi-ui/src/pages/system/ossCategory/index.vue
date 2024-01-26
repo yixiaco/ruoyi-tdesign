@@ -175,7 +175,7 @@
     <!-- OSS分类详情 -->
     <t-dialog v-model:visible="openView" header="OSS分类详情" width="700px" :footer="false">
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(5em + 28px)">
+        <t-form class="form-detail" label-align="right" colon label-width="calc(5em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="oss分类id">{{ form.ossCategoryId }}</t-form-item>

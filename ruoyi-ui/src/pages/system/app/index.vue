@@ -146,7 +146,7 @@
     <!-- 应用管理详情 -->
     <t-dialog v-model:visible="openView" header="应用管理详情" width="700px" attach="body" :footer="false">
       <t-loading :loading="openViewLoading">
-        <t-form label-align="right" colon label-width="calc(4em + 28px)">
+        <t-form class="form-detail" label-align="right" colon label-width="calc(4em + 28px)">
           <t-row :gutter="[0, 20]">
             <t-col :span="6">
               <t-form-item label="应用id">{{ form.appid }}</t-form-item>
@@ -163,10 +163,10 @@
               <t-form-item label="应用名称">{{ form.appName }}</t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
+              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
             </t-col>
             <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
+              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
             </t-col>
             <t-col :span="12">
               <t-form-item label="备注">{{ form.remark }}</t-form-item>
@@ -227,8 +227,8 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `应用类型`, colKey: 'appType', align: 'center' },
   { title: `应用key`, colKey: 'appKey', align: 'center' },
   { title: `应用名称`, colKey: 'appName', align: 'center' },
-  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
   { title: `更新时间`, colKey: 'updateTime', align: 'center', width: 180 },
+  { title: `创建时间`, colKey: 'createTime', align: 'center', width: 180 },
   { title: `备注`, colKey: 'remark', align: 'center', ellipsis: true },
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
