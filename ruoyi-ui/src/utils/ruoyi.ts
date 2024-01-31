@@ -410,3 +410,15 @@ export function getHttpFileName(http: string) {
   }
   return http.substring(http.lastIndexOf('/') + 1);
 }
+
+/**
+ * 交换数组下标
+ * @param arr 数组
+ * @param index1 下标1
+ * @param index2 下标2
+ */
+export function swapIndex(arr: Array<any>, index1: number, index2: number) {
+  const temp = arr[index1];
+  arr[index1] = arr[index2];
+  arr[index2] = temp;
+}
