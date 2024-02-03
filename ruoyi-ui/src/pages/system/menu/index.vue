@@ -88,6 +88,9 @@
             <t-link v-hasPermi="['system:menu:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
               <browse-icon />详情
             </t-link>
+            <t-link v-hasPermi="['system:menu:edit']" theme="primary" hover="color" @click.stop="handleCopyAdd(row)">
+              <copy-icon />复制
+            </t-link>
             <t-link v-hasPermi="['system:menu:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
               <edit-icon />修改
             </t-link>
@@ -369,6 +372,7 @@ defineOptions({
 import {
   AddIcon,
   BrowseIcon,
+  CopyIcon,
   DeleteIcon,
   DownloadIcon,
   EditIcon,
@@ -521,21 +525,6 @@ function handleSortChange(value?: TableSort) {
   }
   getList();
 }
-/** 新增按钮操作 */
-function handleAdd(row?: SysMenuVo) {
-  reset();
-  open.value = true;
-  title.value = '添加菜单';
-  eLoading.value = true;
-  getTreeselect().then(() => {
-    if (row != null && row.menuId) {
-      form.value.parentId = row.menuId;
-    } else {
-      form.value.parentId = 0;
-    }
-    eLoading.value = false;
-  });
-}
 /** 详情按钮操作 */
 function handleDetail(row: SysMenuVo) {
   reset();
@@ -563,6 +552,21 @@ function refreshExpandAll() {
     }
   });
 }
+/** 新增按钮操作 */
+function handleAdd(row?: SysMenuVo) {
+  reset();
+  open.value = true;
+  title.value = '添加菜单';
+  eLoading.value = true;
+  getTreeselect().then(() => {
+    if (row != null && row.menuId) {
+      form.value.parentId = row.menuId;
+    } else {
+      form.value.parentId = 0;
+    }
+    eLoading.value = false;
+  });
+}
 /** 修改按钮操作 */
 async function handleUpdate(row: SysMenuVo) {
   reset();
@@ -572,6 +576,19 @@ async function handleUpdate(row: SysMenuVo) {
   eLoading.value = true;
   getMenu(row.menuId).then((response) => {
     form.value = response.data;
+    eLoading.value = false;
+  });
+}
+/** 复制新增操作 */
+async function handleCopyAdd(row: SysMenuVo) {
+  reset();
+  await getTreeselect();
+  title.value = '添加菜单';
+  open.value = true;
+  eLoading.value = true;
+  getMenu(row.menuId).then((response) => {
+    form.value = response.data;
+    form.value.menuId = undefined;
     eLoading.value = false;
   });
 }
