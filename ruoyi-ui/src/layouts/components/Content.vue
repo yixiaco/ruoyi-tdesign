@@ -19,6 +19,7 @@ import { useRoute } from 'vue-router';
 
 import FramePage from '@/layouts/frame/index.vue';
 import { useTabsRouterStore } from '@/store';
+import { MD5 } from '@/utils/crypto';
 
 // <suspense>标签属于实验性功能，请谨慎使用
 // 如果存在需解决/page/1=> /page/2 刷新数据问题 请修改代码 使用activeRouteFullPath 作为key
@@ -39,7 +40,7 @@ function getComponentKey(component?: VNode) {
   if (route.meta?.key) {
     return getKey(route.meta?.key);
   }
-  return component?.key;
+  return (component?.key?.toString().concat('-') ?? '') + MD5(route.fullPath);
 }
 
 const aliveViews = computed(() => {
