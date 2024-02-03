@@ -31,6 +31,7 @@
       <t-enhanced-table
         ref="tableRef"
         v-model:column-controller-visible="columnControllerVisible"
+        v-model:expandedTreeNodes="expandedTreeNodes"
         hover
         :loading="loading"
         :data="menuList"
@@ -52,8 +53,8 @@
                 新增
               </t-button>
               <t-button theme="default" variant="outline" @click="toggleExpandAll">
-                <template #icon> <unfold-more-icon /> </template>
-                展开/折叠
+                <template #icon> <unfold-less-icon v-if="isExpand" /> <unfold-more-icon v-else /> </template>
+                全部{{ isExpand ? '折叠' : '展开' }}
               </t-button>
               <t-button v-hasPermi="['system:menu:export']" theme="default" variant="outline" @click="handleExport">
                 <template #icon> <download-icon /> </template>
@@ -274,9 +275,9 @@
                   </span>
                 </template>
                 <t-radio-group v-model="form.status">
-                  <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{
-                    dict.label
-                  }}</t-radio>
+                  <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">
+                    {{ dict.label }}
+                  </t-radio>
                 </t-radio-group>
               </t-form-item>
             </t-col>
@@ -380,6 +381,7 @@ import {
   RefreshIcon,
   SearchIcon,
   SettingIcon,
+  UnfoldLessIcon,
   UnfoldMoreIcon,
 } from 'tdesign-icons-vue-next';
 import type {
@@ -390,7 +392,7 @@ import type {
   SubmitContext,
   TableSort,
 } from 'tdesign-vue-next';
-import { getCurrentInstance, ref } from 'vue';
+import { computed, getCurrentInstance, ref } from 'vue';
 
 import { addMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu';
 import type { SysMenuForm, SysMenuQuery, SysMenuVo } from '@/api/system/model/menuModel';
@@ -410,10 +412,10 @@ const showSearch = ref(true);
 const columnControllerVisible = ref(false);
 const title = ref('');
 const menuOptions = ref<SysMenuVo[]>([]);
-const isExpandAll = ref(false);
 const sort = ref<TableSort>();
 const tableRef = ref<EnhancedTableInstanceFunctions>();
 const menuRef = ref<FormInstanceFunctions>();
+const expandedTreeNodes = ref([]);
 /** 是否 */
 const yesNoOptions = ref([
   { value: 0, label: '否' },
@@ -467,16 +469,18 @@ const queryParams = ref<SysMenuQuery>({
   menuName: undefined,
   visible: undefined,
 });
+const isExpand = computed(() => {
+  return expandedTreeNodes.value.length !== 0;
+});
 
 /** 查询菜单列表 */
 function getList() {
   loading.value = true;
-  listMenu(queryParams.value).then((response) => {
-    menuList.value = proxy.handleTree(response.data, 'menuId');
-    tableRef.value.resetData(menuList.value);
-    loading.value = false;
-    refreshExpandAll();
-  });
+  listMenu(queryParams.value)
+    .then((response) => {
+      menuList.value = proxy.handleTree(response.data, 'menuId');
+    })
+    .finally(() => (loading.value = false));
 }
 /** 查询菜单下拉树结构 */
 async function getTreeselect() {
@@ -525,6 +529,14 @@ function handleSortChange(value?: TableSort) {
   }
   getList();
 }
+/** 展开/折叠操作 */
+function toggleExpandAll() {
+  if (isExpand.value) {
+    tableRef.value.foldAll();
+  } else {
+    tableRef.value.expandAll();
+  }
+}
 /** 详情按钮操作 */
 function handleDetail(row: SysMenuVo) {
   reset();
@@ -534,22 +546,6 @@ function handleDetail(row: SysMenuVo) {
   getMenu(menuId).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
-  });
-}
-/** 展开/折叠操作 */
-function toggleExpandAll() {
-  isExpandAll.value = !isExpandAll.value;
-  refreshExpandAll();
-}
-
-/** 刷新展开状态 */
-function refreshExpandAll() {
-  proxy.$nextTick(() => {
-    if (isExpandAll.value) {
-      tableRef.value.expandAll();
-    } else {
-      tableRef.value.foldAll();
-    }
   });
 }
 /** 新增按钮操作 */

@@ -85,6 +85,7 @@
       <t-enhanced-table
         ref="tableRef"
         v-model:column-controller-visible="columnControllerVisible"
+        v-model:expandedTreeNodes="expandedTreeNodes"
         hover
         :loading="loading"
         :data="${businessName}List"
@@ -110,8 +111,8 @@
               </t-button>
 #end
               <t-button theme="default" variant="outline" @click="toggleExpandAll">
-                <template #icon> <unfold-more-icon /> </template>
-                展开/折叠
+                <template #icon> <unfold-less-icon v-if="isExpand" /> <unfold-more-icon v-else /> </template>
+                全部{{ isExpand ? '折叠' : '展开' }}
               </t-button>
 #if($isUseExportMethod)
               <t-button v-hasPermi="['${moduleName}:${businessName}:export']" theme="default" variant="outline" @click="handleExport">
@@ -409,6 +410,7 @@ import {
   RefreshIcon,
   SearchIcon,
   SettingIcon,
+  UnfoldLessIcon,
   UnfoldMoreIcon,
 } from 'tdesign-icons-vue-next';
 #end
@@ -430,7 +432,7 @@ import type {
   TableSort,
 #end
 } from 'tdesign-vue-next';
-import { getCurrentInstance, ref } from 'vue';
+import { computed, getCurrentInstance, ref } from 'vue';
 
 ## 导入对象类型
 #set($importApiModel = [])
@@ -488,7 +490,6 @@ const ${businessName}List = ref<${vo}[]>([]);
 const loading = ref(false);
 const columnControllerVisible = ref(false);
 const showSearch = ref(true);
-const isExpandAll = ref(true);
 const tableRef = ref<EnhancedTableInstanceFunctions>();
 #end
 #if($hasSorting && $isUseQueryMethod)
@@ -500,6 +501,7 @@ const open = ref(false);
 const buttonLoading = ref(false);
 const title = ref('');
 const ${businessName}Ref = ref<FormInstanceFunctions>();
+const expandedTreeNodes = ref([]);
 #end
 #foreach ($column in $columns)
 #if($column.isQuery() && $column.htmlType == "datetime" && $column.queryType == "BETWEEN")
@@ -570,6 +572,9 @@ const queryParams = ref<${query}>({
 #end
 #end
 });
+const isExpand = computed(() => {
+  return expandedTreeNodes.value.length !== 0;
+});
 #end
 #if($isUseQueryMethod)
 
@@ -585,8 +590,6 @@ function getList() {
   list${BusinessName}(queryParams.value)
     .then((response) => {
       ${businessName}List.value = proxy.handleTree(response.data, '${treeCode}', '${treeParentCode}');
-      tableRef.value.resetData(${businessName}List.value);
-      refreshExpandAll();
     })
     .finally(() => (loading.value = false));
 }
@@ -641,18 +644,24 @@ function handleSortChange(value?: TableSort) {
 
 /** 展开/折叠操作 */
 function toggleExpandAll() {
-  isExpandAll.value = !isExpandAll.value;
-  refreshExpandAll();
+  if (isExpand.value) {
+    tableRef.value.foldAll();
+  } else {
+    tableRef.value.expandAll();
+  }
 }
+#end
+#if($isUseDetailMethod)
 
-/** 刷新展开状态 */
-function refreshExpandAll() {
-  proxy.$nextTick(() => {
-    if (isExpandAll.value) {
-      tableRef.value.expandAll();
-    } else {
-      tableRef.value.foldAll();
-    }
+/** 详情按钮操作 */
+function handleDetail(row: ${vo}) {
+  reset();
+  openView.value = true;
+  openViewLoading.value = true;
+  const ${pkColumn.javaField} = row.${pkColumn.javaField};
+  get${BusinessName}(${pkColumn.javaField}).then((response) => {
+    form.value = response.data;
+    openViewLoading.value = false;
   });
 }
 #end
@@ -671,20 +680,6 @@ function handleAdd(row?: ${vo}) {
   }
   open.value = true;
   title.value = '添加${functionName}';
-}
-#end
-#if($isUseDetailMethod)
-
-/** 详情按钮操作 */
-function handleDetail(row: ${vo}) {
-  reset();
-  openView.value = true;
-  openViewLoading.value = true;
-  const ${pkColumn.javaField} = row.${pkColumn.javaField};
-  get${BusinessName}(${pkColumn.javaField}).then((response) => {
-    form.value = response.data;
-    openViewLoading.value = false;
-  });
 }
 #end
 #if($isUseEditMethod)

@@ -31,6 +31,7 @@
       <t-enhanced-table
         ref="tableRef"
         v-model:column-controller-visible="columnControllerVisible"
+        v-model:expandedTreeNodes="expandedTreeNodes"
         hover
         :loading="loading"
         :data="deptList"
@@ -52,8 +53,8 @@
                 新增
               </t-button>
               <t-button theme="default" variant="outline" @click="toggleExpandAll">
-                <template #icon> <unfold-more-icon /> </template>
-                展开/折叠
+                <template #icon> <unfold-less-icon v-if="isExpand" /> <unfold-more-icon v-else /> </template>
+                全部{{ isExpand ? '折叠' : '展开' }}
               </t-button>
               <t-button v-hasPermi="['system:dept:export']" theme="default" variant="outline" @click="handleExport">
                 <template #icon> <download-icon /> </template>
@@ -246,6 +247,7 @@ import {
   RefreshIcon,
   SearchIcon,
   SettingIcon,
+  UnfoldLessIcon,
   UnfoldMoreIcon,
 } from 'tdesign-icons-vue-next';
 import type {
@@ -256,7 +258,7 @@ import type {
   SubmitContext,
   TableSort,
 } from 'tdesign-vue-next';
-import { getCurrentInstance, ref } from 'vue';
+import { computed, getCurrentInstance, ref } from 'vue';
 
 import { addDept, delDept, getDept, listDept, listDeptExcludeChild, updateDept } from '@/api/system/dept';
 import type { SysDeptForm, SysDeptQuery, SysDeptVo } from '@/api/system/model/deptModel';
@@ -275,12 +277,12 @@ const eLoading = ref(true);
 const showSearch = ref(true);
 const title = ref('');
 const deptOptions = ref<SysDeptVo[]>([]);
-const isExpandAll = ref(true);
 const sort = ref<TableSort>();
 const tableRef = ref<EnhancedTableInstanceFunctions>();
 const deptRef = ref<FormInstanceFunctions>();
 const columnControllerVisible = ref(false);
 const deptUserList = ref<SysUserVo[]>([]);
+const expandedTreeNodes = ref([]);
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
@@ -308,15 +310,16 @@ const queryParams = ref<SysDeptQuery>({
   deptName: undefined,
   status: undefined,
 });
+const isExpand = computed(() => {
+  return expandedTreeNodes.value.length !== 0;
+});
 
 /** 查询部门列表 */
 function getList() {
   loading.value = true;
   listDept(queryParams.value)
     .then((response) => {
-      deptList.value = proxy.handleTree(response.data, 'deptId');
-      tableRef.value.resetData(deptList.value);
-      refreshExpandAll();
+      deptList.value = proxy.handleTree(response.data, 'deptId', 'parentId');
     })
     .finally(() => (loading.value = false));
 }
@@ -356,6 +359,28 @@ function handleSortChange(value?: TableSort) {
   }
   getList();
 }
+
+/** 展开/折叠操作 */
+function toggleExpandAll() {
+  if (isExpand.value) {
+    tableRef.value.foldAll();
+  } else {
+    tableRef.value.expandAll();
+  }
+}
+
+/** 详情按钮操作 */
+function handleDetail(row: SysDeptVo) {
+  reset();
+  openView.value = true;
+  openViewLoading.value = true;
+  const deptId = row.deptId;
+  getDept(deptId).then((response) => {
+    form.value = response.data;
+    openViewLoading.value = false;
+  });
+}
+
 /** 新增按钮操作 */
 function handleAdd(row?: SysDeptVo) {
   reset();
@@ -369,34 +394,6 @@ function handleAdd(row?: SysDeptVo) {
   if (row) {
     form.value.parentId = row.deptId;
   }
-}
-/** 展开/折叠操作 */
-function toggleExpandAll() {
-  isExpandAll.value = !isExpandAll.value;
-  refreshExpandAll();
-}
-
-/** 刷新展开状态 */
-function refreshExpandAll() {
-  proxy.$nextTick(() => {
-    if (isExpandAll.value) {
-      tableRef.value.expandAll();
-    } else {
-      tableRef.value.foldAll();
-    }
-  });
-}
-
-/** 详情按钮操作 */
-function handleDetail(row: SysDeptVo) {
-  reset();
-  openView.value = true;
-  openViewLoading.value = true;
-  const deptId = row.deptId;
-  getDept(deptId).then((response) => {
-    form.value = response.data;
-    openViewLoading.value = false;
-  });
 }
 /** 修改按钮操作 */
 function handleUpdate(row: SysDeptVo) {
