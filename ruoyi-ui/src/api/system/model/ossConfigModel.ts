@@ -14,7 +14,7 @@ export interface SysOssConfigQuery extends BaseEntity {
 /**
  * 对象存储配置业务对象
  */
-export interface SysOssConfigForm extends BaseEntity {
+export interface SysOssConfigForm {
   /** 主建 */
   ossConfigId?: number;
   /** 配置key */

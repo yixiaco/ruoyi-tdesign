@@ -18,7 +18,7 @@ export interface SysOssRuleQuery extends BaseEntity {
 /**
  * OSS处理规则业务对象
  */
-export interface SysOssRuleForm extends BaseEntity {
+export interface SysOssRuleForm {
   /** oss规则id */
   ossRuleId?: number;
   /** 规则名称（例如：80x80，则字段名称将输出字段名_80x80） */

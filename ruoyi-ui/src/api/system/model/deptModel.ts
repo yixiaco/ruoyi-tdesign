@@ -17,7 +17,7 @@ export interface SysDeptQuery extends BaseEntity {
 /**
  * 部门业务对象
  */
-export interface SysDeptForm extends BaseEntity {
+export interface SysDeptForm {
   /** 部门id */
   deptId?: number;
   /** 父部门id */

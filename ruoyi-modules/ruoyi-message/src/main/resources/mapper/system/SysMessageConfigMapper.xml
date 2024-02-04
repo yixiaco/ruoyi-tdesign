@@ -15,7 +15,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysMessageConfigQuery" resultMap="SysMessageConfigResultVo">
         <include refid="selectSysMessageConfigVo"/>
         <where>
-            <if test="title != null and title != ''"> and smc.title like concat('%', #{title}, '%')</if>
+            <if test="title != null and title != ''"> and smc.title like concat(concat('%', #{title}), '%')</if>
             <if test="messageType != null and messageType != ''"> and smc.message_type = #{messageType}</if>
             <if test="supplierType != null and supplierType != ''"> and smc.supplier_type = #{supplierType}</if>
             <if test="status != null "> and smc.status = #{status}</if>

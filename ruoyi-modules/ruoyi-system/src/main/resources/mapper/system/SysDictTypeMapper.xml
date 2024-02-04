@@ -15,8 +15,8 @@
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysDictTypeQuery" resultMap="SysDictTypeResultVo">
         <include refid="selectSysDictTypeVo"/>
         <where>
-            <if test="dictName != null and dictName != ''"> and sdt.dict_name like concat('%', #{dictName}, '%')</if>
-            <if test="dictType != null and dictType != ''"> and sdt.dict_type like concat('%', #{dictType}, '%')</if>
+            <if test="dictName != null and dictName != ''"> and sdt.dict_name like concat(concat('%', #{dictName}), '%')</if>
+            <if test="dictType != null and dictType != ''"> and sdt.dict_type like concat(concat('%', #{dictType}), '%')</if>
             <if test="params.beginTime != null and params.endTime != null">and sdt.create_time between #{params.beginTime} and #{params.endTime}</if>
         </where>
         order by create_time desc

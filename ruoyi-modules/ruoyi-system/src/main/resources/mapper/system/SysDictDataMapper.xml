@@ -15,7 +15,7 @@
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysDictDataQuery" resultMap="SysDictDataResultVo">
         <include refid="selectSysDictDataVo"/>
         <where>
-            <if test="dictLabel != null and dictLabel != ''"> and sdd.dict_label like concat('%', #{dictLabel}, '%')</if>
+            <if test="dictLabel != null and dictLabel != ''"> and sdd.dict_label like concat(concat('%', #{dictLabel}), '%')</if>
             <if test="dictType != null and dictType != ''"> and sdd.dict_type = #{dictType}</if>
         </where>
         order by dict_sort

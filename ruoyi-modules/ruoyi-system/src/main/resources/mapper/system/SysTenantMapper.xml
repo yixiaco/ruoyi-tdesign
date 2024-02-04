@@ -17,12 +17,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <where>
             and st.del_flag = '0'
             <if test="tenantId != null and tenantId != ''"> and st.tenant_id = #{tenantId}</if>
-            <if test="contactUserName != null and contactUserName != ''"> and st.contact_user_name like concat('%', #{contactUserName}, '%')</if>
-            <if test="contactPhone != null and contactPhone != ''"> and st.contact_phone like concat('%', #{contactPhone}, '%')</if>
-            <if test="companyName != null and companyName != ''"> and st.company_name like concat('%', #{companyName}, '%')</if>
-            <if test="licenseNumber != null and licenseNumber != ''"> and st.license_number like concat('%', #{licenseNumber}, '%')</if>
-            <if test="address != null and address != ''"> and st.address like concat('%', #{address}, '%')</if>
-            <if test="domain != null and domain != ''"> and st.domain like concat('%', #{domain}, '%')</if>
+            <if test="contactUserName != null and contactUserName != ''"> and st.contact_user_name like concat(concat('%', #{contactUserName}), '%')</if>
+            <if test="contactPhone != null and contactPhone != ''"> and st.contact_phone like concat(concat('%', #{contactPhone}), '%')</if>
+            <if test="companyName != null and companyName != ''"> and st.company_name like concat(concat('%', #{companyName}), '%')</if>
+            <if test="licenseNumber != null and licenseNumber != ''"> and st.license_number like concat(concat('%', #{licenseNumber}), '%')</if>
+            <if test="address != null and address != ''"> and st.address like concat(concat('%', #{address}), '%')</if>
+            <if test="domain != null and domain != ''"> and st.domain like concat(concat('%', #{domain}), '%')</if>
             <if test="packageId != null "> and st.package_id = #{packageId}</if>
             <if test="params.beginExpireTime != null and params.endExpireTime != null">
                 and st.expire_time between #{params.beginExpireTime} and #{params.endExpireTime}

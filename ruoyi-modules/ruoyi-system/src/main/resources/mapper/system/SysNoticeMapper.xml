@@ -27,10 +27,10 @@
         from sys_notice sn
                  left join sys_user su on sn.create_by = su.user_id
         <where>
-            <if test="noticeTitle != null and noticeTitle != ''"> and sn.notice_title like concat('%', #{noticeTitle}, '%')</if>
+            <if test="noticeTitle != null and noticeTitle != ''"> and sn.notice_title like concat(concat('%', #{noticeTitle}), '%')</if>
             <if test="noticeType != null and noticeType != ''"> and sn.notice_type = #{noticeType}</if>
             <if test="status != null and status != ''"> and sn.status = #{status}</if>
-            <if test="createByName != null"> and su.user_name like concat('%', #{createByName}, '%')</if>
+            <if test="createByName != null"> and su.user_name like concat(concat('%', #{createByName}), '%')</if>
         </where>
         order by sn.create_time desc
     </select>

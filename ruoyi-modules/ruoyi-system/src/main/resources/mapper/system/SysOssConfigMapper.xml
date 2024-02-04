@@ -16,7 +16,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectSysOssConfigVo"/>
         <where>
             <if test="configKey != null and configKey != ''"> and soc.config_key = #{configKey}</if>
-            <if test="bucketName != null and bucketName != ''"> and soc.bucket_name like concat('%', #{bucketName}, '%')</if>
+            <if test="bucketName != null and bucketName != ''"> and soc.bucket_name like concat(concat('%', #{bucketName}), '%')</if>
             <if test="status != null and status != ''"> and soc.status = #{status}</if>
         </where>
         order by soc.create_time desc

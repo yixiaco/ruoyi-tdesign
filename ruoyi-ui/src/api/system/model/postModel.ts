@@ -14,7 +14,7 @@ export interface SysPostQuery extends BaseEntity {
 /**
  * 岗位信息业务对象
  */
-export interface SysPostForm extends BaseEntity {
+export interface SysPostForm {
   /** 岗位ID */
   postId?: number;
   /** 岗位编码 */

@@ -20,6 +20,11 @@ public class SysMenuQuery extends BaseEntity {
     private String menuName;
 
     /**
+     * 组件名称
+     */
+    private String componentName;
+
+    /**
      * 显示状态
      */
     private String visible;

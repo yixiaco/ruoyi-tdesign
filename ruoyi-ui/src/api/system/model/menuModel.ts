@@ -6,6 +6,8 @@ import type { BaseEntity, TreeModel } from '@/api/model/resultModel';
 export interface SysMenuQuery extends BaseEntity {
   /** 菜单名称 */
   menuName?: string;
+  /** 组件名称 */
+  componentName?: string;
   /** 显示状态 */
   visible?: string;
   /** 菜单状态 */
@@ -14,7 +16,7 @@ export interface SysMenuQuery extends BaseEntity {
 /**
  * 菜单权限业务对象
  */
-export interface SysMenuForm extends BaseEntity {
+export interface SysMenuForm {
   /** 菜单ID */
   menuId?: number;
   /** 菜单名称 */
@@ -27,6 +29,8 @@ export interface SysMenuForm extends BaseEntity {
   path?: string;
   /** 组件路径 */
   component?: string;
+  /** 组件名称 */
+  componentName?: string;
   /** 路由参数 */
   queryParam?: string;
   /** 是否为外链（1是 0否） */
@@ -62,6 +66,8 @@ export interface SysMenuVo {
   path?: string;
   /** 组件路径 */
   component?: string;
+  /** 组件名称 */
+  componentName?: string;
   /** 路由参数 */
   queryParam?: string;
   /** 是否为外链（1是 0否） */

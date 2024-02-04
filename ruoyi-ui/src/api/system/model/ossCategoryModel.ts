@@ -22,7 +22,7 @@ export interface SysOssCategoryQuery extends BaseEntity {
 /**
  * OSS分类业务对象
  */
-export interface SysOssCategoryForm extends BaseEntity {
+export interface SysOssCategoryForm {
   /** oss分类id */
   ossCategoryId?: number;
   /** 分类名称 */

@@ -3,16 +3,13 @@
     <t-space direction="vertical" style="width: 100%">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="calc(4em + 12px)">
         <t-form-item label="菜单名称" name="menuName">
-          <t-input
-            v-model="queryParams.menuName"
-            placeholder="请输入菜单名称"
-            clearable
-            style="width: 200px"
-            @enter="handleQuery"
-          />
+          <t-input v-model="queryParams.menuName" placeholder="请输入菜单名称" clearable @enter="handleQuery" />
+        </t-form-item>
+        <t-form-item label="组件名称" name="componentName">
+          <t-input v-model="queryParams.componentName" placeholder="请输入组件名称" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="状态" name="status">
-          <t-select v-model="queryParams.status" placeholder="菜单状态" clearable style="width: 200px">
+          <t-select v-model="queryParams.status" placeholder="菜单状态" clearable>
             <t-option v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.label" :value="dict.value" />
           </t-select>
         </t-form-item>
@@ -40,7 +37,7 @@
         :column-controller="{
           hideTriggerButton: true,
         }"
-        :tree="{ childrenKey: 'children', treeNodeColumnIndex: 0, expandTreeNodeOnClick: true }"
+        :tree="{ childrenKey: 'children', expandTreeNodeOnClick: true }"
         :sort="sort"
         show-sort-column-bg-color
         @sort-change="handleSortChange"
@@ -86,11 +83,11 @@
         </template>
         <template #operation="{ row }">
           <t-space :size="4" break-line>
-            <t-link v-hasPermi="['system:menu:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
-              <browse-icon />详情
-            </t-link>
             <t-link v-hasPermi="['system:menu:edit']" theme="primary" hover="color" @click.stop="handleCopyAdd(row)">
               <copy-icon />复制
+            </t-link>
+            <t-link v-hasPermi="['system:menu:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
+              <browse-icon />详情
             </t-link>
             <t-link v-hasPermi="['system:menu:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
               <edit-icon />修改
@@ -187,6 +184,19 @@
                   </span>
                 </template>
                 <t-input v-model="form.path" placeholder="请输入路由地址" />
+              </t-form-item>
+            </t-col>
+            <t-col v-if="form.menuType === 'C'" :span="6">
+              <t-form-item name="componentName">
+                <template #label>
+                  <span>
+                    <t-tooltip content="声明组件的名称，不填默认使用路由地址，如 /menu => Menu" placement="top">
+                      <help-circle-filled-icon />
+                    </t-tooltip>
+                    组件名称
+                  </span>
+                </template>
+                <t-input v-model="form.componentName" placeholder="请输入组件名称" clearable />
               </t-form-item>
             </t-col>
             <t-col v-if="form.menuType === 'C'" :span="6">
@@ -312,6 +322,9 @@
             </t-col>
             <t-col :span="6">
               <t-form-item label="路由地址">{{ form.path }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="组件名称">{{ form.componentName }}</t-form-item>
             </t-col>
             <t-col :span="6">
               <t-form-item label="组件路径">{{ form.component }}</t-form-item>
@@ -445,6 +458,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `排序`, colKey: 'orderNum', align: 'center', width: 100, sorter: true },
   { title: `权限标识`, colKey: 'perms', align: 'center', ellipsis: true },
   { title: `组件路径`, colKey: 'component', align: 'center', ellipsis: true },
+  { title: `组件名称`, colKey: 'componentName', align: 'center', ellipsis: true },
   { title: `显示状态`, colKey: 'visible', align: 'center', width: 88 },
   { title: `菜单类型`, colKey: 'menuType', align: 'center', width: 88 },
   { title: `状态`, colKey: 'status', align: 'center', width: 70 },

@@ -5,14 +5,14 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.dromara.common.core.constant.Constants;
 import org.dromara.common.core.constant.UserConstants;
 import org.dromara.common.core.enums.MenuTypeEnum;
 import org.dromara.common.core.enums.YesNoFrameEnum;
 import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.mybatis.core.domain.BaseEntity;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -24,9 +24,11 @@ import java.util.List;
  */
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @TableName("sys_menu")
-public class SysMenu extends BaseEntity {
+public class SysMenu implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * 菜单ID
@@ -60,6 +62,11 @@ public class SysMenu extends BaseEntity {
     private String component;
 
     /**
+     * 组件名称
+     */
+    private String componentName;
+
+    /**
      * 路由参数
      */
     private String queryParam;
@@ -75,7 +82,7 @@ public class SysMenu extends BaseEntity {
     private Integer isCache;
 
     /**
-     * 类型（M目录 C菜单 F按钮）
+     * 菜单类型（M目录 C菜单 F按钮）
      */
     private String menuType;
 

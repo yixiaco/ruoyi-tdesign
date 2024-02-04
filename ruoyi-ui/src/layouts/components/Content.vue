@@ -47,12 +47,12 @@ const aliveViews = computed(() => {
   const tabsRouterStore = useTabsRouterStore();
   const { tabRouters } = tabsRouterStore;
   return tabRouters
-    .filter((route) => {
-      const keepAliveConfig = route.meta?.keepAlive ?? !route.meta?.noCache;
+    .filter((tabRoute) => {
+      const keepAliveConfig = tabRoute.meta?.keepAlive ?? !tabRoute.meta?.noCache;
       const isRouteKeepAlive = isUndefined(keepAliveConfig) || (isBoolean(keepAliveConfig) && keepAliveConfig); // 默认开启keepalive
-      return route.isAlive && isRouteKeepAlive;
+      return tabRoute.isAlive && isRouteKeepAlive;
     })
-    .map((route) => route.name);
+    .map((tabRoute) => (tabRoute.meta?.componentName ? tabRoute.meta?.componentName : tabRoute.name));
 }) as ComputedRef<string[]>;
 
 const isRefreshing = computed(() => {

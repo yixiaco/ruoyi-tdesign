@@ -15,12 +15,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysMessageLogQuery" resultMap="SysMessageLogResultVo">
         <include refid="selectSysMessageLogVo"/>
         <where>
-            <if test="messageKey != null and messageKey != ''"> and sml.message_key like concat('%', #{messageKey}, '%')</if>
-            <if test="messageTemplateName != null and messageTemplateName != ''"> and sml.message_template_name like concat('%', #{messageTemplateName}, '%')</if>
+            <if test="messageKey != null and messageKey != ''"> and sml.message_key like concat(concat('%', #{messageKey}), '%')</if>
+            <if test="messageTemplateName != null and messageTemplateName != ''"> and sml.message_template_name like concat(concat('%', #{messageTemplateName}), '%')</if>
             <if test="messageType != null and messageType != ''"> and sml.message_type = #{messageType}</if>
             <if test="templateMode != null and templateMode != ''"> and sml.template_mode = #{templateMode}</if>
-            <if test="account != null and account != ''"> and sml.account like concat('%', #{account}, '%')</if>
-            <if test="templateId != null and templateId != ''"> and sml.template_id like concat('%', #{templateId}, '%')</if>
+            <if test="account != null and account != ''"> and sml.account like concat(concat('%', #{account}), '%')</if>
+            <if test="templateId != null and templateId != ''"> and sml.template_id like concat(concat('%', #{templateId}), '%')</if>
             <if test="supplierType != null and supplierType != ''"> and sml.supplier_type = #{supplierType}</if>
             <if test="isSuccess != null"> and sml.is_success = #{isSuccess}</if>
             <if test="params.beginLogTime != null and params.endLogTime != null">and sml.log_time between #{params.beginLogTime} and #{params.endLogTime}</if>

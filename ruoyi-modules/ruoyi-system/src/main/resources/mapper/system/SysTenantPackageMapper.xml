@@ -24,7 +24,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectSysTenantPackageVo"/>
         <where>
             and stp.del_flag = '0'
-            <if test="packageName != null and packageName != ''"> and stp.package_name like concat('%', #{packageName}, '%')</if>
+            <if test="packageName != null and packageName != ''"> and stp.package_name like concat(concat('%', #{packageName}), '%')</if>
             <if test="status != null and status != ''"> and stp.status = #{status}</if>
         </where>
         order by stp.create_time desc

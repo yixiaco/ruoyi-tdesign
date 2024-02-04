@@ -15,8 +15,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysMessageTemplateQuery" resultMap="SysMessageTemplateResultVo">
         <include refid="selectSysMessageTemplateVo"/>
         <where>
-            <if test="templateName != null and templateName != ''"> and smt.template_name like concat('%', #{templateName}, '%')</if>
-            <if test="messageKey != null and messageKey != ''"> and smt.message_key like concat('%', #{messageKey}, '%')</if>
+            <if test="templateName != null and templateName != ''"> and smt.template_name like concat(concat('%', #{templateName}), '%')</if>
+            <if test="messageKey != null and messageKey != ''"> and smt.message_key like concat(concat('%', #{messageKey}), '%')</if>
             <if test="messageType != null and messageType != ''"> and smt.message_type = #{messageType}</if>
             <if test="templateMode != null and templateMode != ''"> and smt.template_mode = #{templateMode}</if>
             <if test="status != null "> and smt.status = #{status}</if>

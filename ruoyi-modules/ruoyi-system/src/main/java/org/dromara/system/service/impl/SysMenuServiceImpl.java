@@ -219,6 +219,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             meta.setNoCache(Objects.equals(YesNoEnum.NO.getCodeNum(), menu.getIsCache()));
             meta.setLink(menu.getPath());
             meta.setHidden(ShowHiddenEnum.HIDDEN.getCode().equals(menu.getVisible()));
+            if (MenuTypeEnum.MENU.getType().equals(menu.getMenuType())) {
+                meta.setComponentName(StringUtils.blankToDefault(menu.getComponentName(), router.getName()));
+            }
 
             router.setMeta(meta);
             List<SysMenu> cMenus = menu.getChildren();
@@ -330,7 +333,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             throw new ServiceException("新增菜单'" + bo.getMenuName() + "'失败，菜单名称已存在");
         } else if (!checkMenuPathUnique(bo)) {
             throw new ServiceException("新增菜单'" + bo.getMenuName() + "'失败，菜单地址已存在");
-        }  else if (YesNoFrameEnum.YES.getCode().equals(bo.getIsFrame()) && !StringUtils.ishttp(bo.getPath())) {
+        } else if (YesNoFrameEnum.YES.getCode().equals(bo.getIsFrame()) && !StringUtils.ishttp(bo.getPath())) {
             throw new ServiceException("新增菜单'" + bo.getMenuName() + "'失败，地址必须以http(s)://开头");
         }
         SysMenu menu = MapstructUtils.convert(bo, SysMenu.class);

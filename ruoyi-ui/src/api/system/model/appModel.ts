@@ -14,7 +14,7 @@ export interface SysAppQuery extends BaseEntity {
 /**
  * 应用管理业务对象
  */
-export interface SysAppForm extends BaseEntity {
+export interface SysAppForm {
   /** 应用id */
   appid?: number;
   /** 应用类型 */

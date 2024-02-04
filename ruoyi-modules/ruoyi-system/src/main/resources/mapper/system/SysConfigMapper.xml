@@ -15,8 +15,8 @@
     <select id="queryList" parameterType="org.dromara.system.domain.bo.SysConfigBo" resultMap="SysConfigResultVo">
         <include refid="selectSysConfigVo"/>
         <where>
-            <if test="configName != null and configName != ''"> and sc.config_name like concat('%', #{configName}, '%')</if>
-            <if test="configKey != null and configKey != ''"> and sc.config_key like concat('%', #{configKey}, '%')</if>
+            <if test="configName != null and configName != ''"> and sc.config_name like concat(concat('%', #{configName}), '%')</if>
+            <if test="configKey != null and configKey != ''"> and sc.config_key like concat(concat('%', #{configKey}), '%')</if>
             <if test="configType != null and configType != ''"> and sc.config_type = #{configType}</if>
             <if test="params.beginTime != null and params.endTime != null">and sc.create_time between #{params.beginTime} and #{params.endTime}</if>
         </where>

@@ -26,5 +26,7 @@ declare module 'vue-router' {
     hiddenBreadcrumb?: boolean;
     // 面包屑重定向地址
     breadcrumbRedirect?: string;
+    // 组件名称
+    conponentName?: string;
   }
 }

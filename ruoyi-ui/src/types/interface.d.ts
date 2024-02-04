@@ -58,6 +58,7 @@ export interface TRouterInfo {
   routeIdx?: number;
   title?: string;
   name?: RouteRecordName;
+  componentName?: string;
   isAlive?: boolean;
   isHome?: boolean;
   meta?: RouteMeta;

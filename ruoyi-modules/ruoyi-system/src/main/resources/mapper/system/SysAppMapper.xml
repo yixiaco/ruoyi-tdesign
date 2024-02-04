@@ -16,8 +16,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectSysAppVo"/>
         <where>
             <if test="appType != null and appType != ''"> and sa.app_type = #{appType}</if>
-            <if test="appKey != null and appKey != ''"> and sa.app_key like concat('%', #{appKey}, '%')</if>
-            <if test="appName != null and appName != ''"> and sa.app_name like concat('%', #{appName}, '%')</if>
+            <if test="appKey != null and appKey != ''"> and sa.app_key like concat(concat('%', #{appKey}), '%')</if>
+            <if test="appName != null and appName != ''"> and sa.app_name like concat(concat('%', #{appName}), '%')</if>
         </where>
         order by sa.create_time desc
     </select>

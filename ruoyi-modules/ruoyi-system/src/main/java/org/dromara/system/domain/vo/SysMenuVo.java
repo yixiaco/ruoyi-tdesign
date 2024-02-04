@@ -65,6 +65,12 @@ public class SysMenuVo implements Serializable {
     private String component;
 
     /**
+     * 组件名称
+     */
+    @ExcelProperty(value = "组件名称")
+    private String componentName;
+
+    /**
      * 路由参数
      */
     @ExcelProperty(value = "路由参数")
