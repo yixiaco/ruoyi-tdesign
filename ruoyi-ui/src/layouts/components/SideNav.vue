@@ -10,12 +10,18 @@
     >
       <template #logo>
         <span v-if="showLogo" :class="`${prefix}-side-nav-logo-wrapper`" @click="goHome">
-          <component :is="getLogo()" :class="`${prefix}-side-nav-logo-${collapsed ? 't' : 'tdesign'}-logo`" />
+          <component
+            :is="getLogo()"
+            :class="`${prefix}-side-nav-logo-${collapsed ? 't' : 'tdesign'}-logo`"
+            :theme="theme"
+          />
         </span>
       </template>
       <menu-content :nav-data="menu" />
       <template #operations>
-        <span class="version-container"> {{ !collapsed ? 'TDesign Starter' : '' }} {{ pgk.version }} </span>
+        <span class="version-container" :theme="theme">
+          {{ !collapsed ? 'TDesign Starter' : '' }} {{ pgk.version }}
+        </span>
       </template>
     </t-menu>
     <div :class="`${prefix}-side-nav-placeholder${collapsed ? '-hidden' : ''}`"></div>
@@ -28,8 +34,8 @@ import type { PropType } from 'vue';
 import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import AssetLogoFull from '@/assets/icons/assets-logo-full.svg?component';
-import AssetLogo from '@/assets/icons/assets-t-logo.svg?component';
+import AssetLogoFull from '@/assets/icons/assets-logo-full.svg?component'; // 全
+import AssetLogo from '@/assets/icons/assets-t-logo.svg?component'; // 简
 import { prefix } from '@/config/global';
 import { getRoutesExpanded } from '@/router';
 import { useSettingStore } from '@/store';

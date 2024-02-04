@@ -33,6 +33,15 @@ export const useSettingStore = defineStore('setting', {
       }
       return state.mode as 'dark' | 'light';
     },
+    menuDisplayMode: (state): 'dark' | 'light' => {
+      if (state.menuMode === 'auto') {
+        if (useSettingStore().displayMode === 'dark') {
+          return 'light';
+        }
+        return 'dark';
+      }
+      return state.menuMode as 'dark' | 'light';
+    },
   },
   actions: {
     async changeMode(mode: 'dark' | 'light' | 'auto') {

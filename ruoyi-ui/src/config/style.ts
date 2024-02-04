@@ -3,6 +3,7 @@ export default {
   isSidebarCompact: false,
   showBreadcrumb: false,
   mode: 'light',
+  menuMode: 'auto',
   layout: 'side',
   splitMenu: false,
   isFooterAside: false,

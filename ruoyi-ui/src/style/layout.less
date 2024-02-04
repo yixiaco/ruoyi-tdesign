@@ -177,7 +177,12 @@
       height: var(--td-comp-size-s);
       width: 100%;
       //color: var(--td-text-color-primary);
-      color: #fff;
+      &[theme=light] {
+        color: var(--td-text-color-primary);
+      }
+      &[theme=dark] {
+        color: var(--td-text-color-anti);
+      }
     }
 
     &-logo-normal {
@@ -214,8 +219,13 @@
 
 .version-container {
   //color: var(--td-text-color-primary);
-  color: #fff;
   opacity: 0.4;
+  &[theme=light] {
+    color: var(--td-text-color-primary);
+  }
+  &[theme=dark] {
+    color: var(--td-text-color-anti);
+  }
 }
 
 .t-menu__popup {

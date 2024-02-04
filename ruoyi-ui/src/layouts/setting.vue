@@ -21,6 +21,17 @@
             </div>
           </div>
         </t-radio-group>
+        <div class="setting-group-title">{{ $t('layout.setting.theme.menuMode') }}</div>
+        <t-radio-group v-model="formData.menuMode">
+          <div v-for="(item, index) in MENU_MODE_OPTIONS" :key="index" class="setting-layout-drawer">
+            <div>
+              <t-radio-button :key="index" :value="item.type">
+                <component :is="getModeIcon(item.type)" />
+              </t-radio-button>
+              <p :style="{ textAlign: 'center', marginTop: '8px' }">{{ item.text }}</p>
+            </div>
+          </div>
+        </t-radio-group>
         <div class="setting-group-title">{{ $t('layout.setting.theme.color') }}</div>
         <t-radio-group v-model="formData.brandTheme">
           <div v-for="(item, index) in DEFAULT_COLOR_OPTIONS" :key="index" class="setting-layout-drawer">
@@ -124,6 +135,12 @@ const MODE_OPTIONS = [
   { type: 'light', text: t('layout.setting.theme.options.light') },
   { type: 'dark', text: t('layout.setting.theme.options.dark') },
   { type: 'auto', text: t('layout.setting.theme.options.auto') },
+];
+
+const MENU_MODE_OPTIONS = [
+  { type: 'light', text: t('layout.setting.theme.options.light') },
+  { type: 'dark', text: t('layout.setting.theme.options.dark') },
+  { type: 'auto', text: t('layout.setting.theme.options.default') },
 ];
 
 const initStyleConfig = () => {
@@ -317,7 +334,7 @@ watchEffect(() => {
     display: flex;
     flex-direction: column;
     align-items: center;
-    margin-bottom: 16px;
+    //margin-bottom: 16px;
 
     .t-radio-button {
       display: inline-flex;

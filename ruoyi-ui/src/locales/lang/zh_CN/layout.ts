@@ -25,11 +25,13 @@ export default {
     title: '页面配置',
     theme: {
       mode: '主题模式',
+      menuMode: '菜单模式',
       color: '主题色',
       options: {
         light: '明亮',
         dark: '暗黑',
         auto: '跟随系统',
+        default: '自动',
       },
     },
     navigationLayout: '导航布局',

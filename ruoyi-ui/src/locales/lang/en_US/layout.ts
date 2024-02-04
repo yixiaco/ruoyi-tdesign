@@ -25,11 +25,13 @@ export default {
     title: 'Setting',
     theme: {
       mode: 'Theme Mode',
+      menuMode: 'Menu Mode',
       color: 'Theme Color',
       options: {
         light: 'Light',
         dark: 'Dark ',
         auto: 'Follow System',
+        default: 'Auto',
       },
     },
     navigationLayout: 'Navigation Layout',
