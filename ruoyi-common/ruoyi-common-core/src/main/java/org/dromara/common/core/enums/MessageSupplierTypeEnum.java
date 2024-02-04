@@ -9,26 +9,30 @@ package org.dromara.common.core.enums;
 public enum MessageSupplierTypeEnum {
     /** 邮箱 */
     MAIL,
-    /** 阿里云 */
+    /** 阿里云短信 */
     ALIBABA,
-    /** 华为云 */
+    /** 华为云短信 */
     HUAWEI,
-    /** 腾讯云 */
+    /** 腾讯云短信 */
     TENCENT,
-    /** 云片 */
+    /** 云片短信 */
     YUNPIAN,
-    /** 合一 */
+    /** 合一短信 */
     UNI_SMS,
-    /** 京东云 */
+    /** 京东云短信 */
     JD_CLOUD,
-    /** 容联云 */
+    /** 容联云短信 */
     CLOOPEN,
-    /** 亿美软通 */
+    /** 亿美软通短信 */
     EMAY,
-    /** 天翼云 */
+    /** 天翼云短信 */
     CTYUN,
-    /** 网易云 */
+    /** 网易云短信 */
     NETEASE,
-    /** 助通 */
+    /** 助通短信 */
     ZHUTONG,
+    /** 鼎众短信 */
+    DING_ZHONG,
+    /** 联麓短信 */
+    LIAN_LU,
 }

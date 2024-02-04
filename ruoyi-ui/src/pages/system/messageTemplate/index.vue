@@ -291,7 +291,8 @@
                   :rules="[{ required: true, message: '输入变量不能为空' }]"
                 >
                   <template v-if="form.varsList.length - 1 === index" #help>
-                    <b>变量格式</b>：${name}、${name:名称}
+                    <b>变量格式</b>：${name}、${name:这里可以填写默认值}<br />
+                    变量属性是根据内容自动生成的，变量属性值需要在调用的时候注入到Map中，后台会根据值组合填入内容或模板变量中发送
                   </template>
                   <t-input v-model="form.varsList[index].value" />
                 </t-form-item>

@@ -185,9 +185,7 @@
           </t-col>
           <t-col :span="6">
             <t-form-item label="消息类型" name="messageType">
-              <t-select v-model="form.messageType" placeholder="请选择消息类型" clearable>
-                <t-option v-for="dict in sys_message_type" :key="dict.value" :label="dict.label" :value="dict.value" />
-              </t-select>
+              <dict-tag :options="sys_message_type" :value="form.messageType" />
             </t-form-item>
           </t-col>
           <t-col :span="6">
@@ -196,6 +194,7 @@
                 v-model="form.supplierType"
                 placeholder="请选择支持平台"
                 clearable
+                filterable
                 @change="handleSupplierTypeChange"
               >
                 <t-option
@@ -349,7 +348,7 @@ import type {
   SysMessageConfigVo,
 } from '@/api/system/model/messageConfigModel';
 
-import { SUPPLIER_TYPE_MAP } from './data';
+import { SUPPLIER_TYPE_MAP } from './data/index';
 import type { MessageConfig } from './model';
 
 const { proxy } = getCurrentInstance();

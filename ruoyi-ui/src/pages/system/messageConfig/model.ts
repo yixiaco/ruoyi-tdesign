@@ -38,15 +38,6 @@ export class MessageConfig {
     this.messageType = messageType;
   }
 }
-/** 短信基本配置对象 */
-export interface SmsConfig extends SupplierConfig {
-  /** Access Key */
-  accessKeyId: FieldConfig;
-  /** Access Key Secret */
-  accessKeySecret: FieldConfig;
-  /** 短信签名 */
-  signature: FieldConfig;
-}
 /** 邮箱配置对象 */
 export interface MailConfig extends SupplierConfig {
   /** SMTP服务器域名 */
@@ -86,8 +77,20 @@ export interface MailConfig extends SupplierConfig {
   /** Socket写出超时值，单位毫秒，缺省值不超时 */
   writeTimeout: FieldConfig<number>;
 }
+/** 短信基本配置对象 */
+export interface SmsConfig extends SupplierConfig {
+  /** Access Key */
+  accessKeyId: FieldConfig;
+  /** Access Key Secret */
+  accessKeySecret: FieldConfig;
+}
+/** 签名短信基本配置对象 */
+export interface SignatureSmsConfig extends SmsConfig {
+  /** 短信签名 */
+  signature: FieldConfig;
+}
 /** 阿里云短信 */
-export interface AlibabaSmsConfig extends SmsConfig {
+export interface AlibabaSmsConfig extends SignatureSmsConfig {
   /** 请求地址 */
   requestUrl: FieldConfig;
   /** 接口名称 */
@@ -98,7 +101,7 @@ export interface AlibabaSmsConfig extends SmsConfig {
   version: FieldConfig;
 }
 /** 腾讯云短信 */
-export interface TencentConfig extends SmsConfig {
+export interface TencentSmsConfig extends SignatureSmsConfig {
   /** 短信sdkAppId */
   sdkAppId: FieldConfig;
   /** 地域信息默认为 ap-guangzhou */
@@ -113,13 +116,7 @@ export interface TencentConfig extends SmsConfig {
   version: FieldConfig;
 }
 /** 华为云 */
-export interface HuaweiSmsConfig extends SupplierConfig {
-  /** appKey */
-  appKey: FieldConfig;
-  /** appSecret */
-  appSecret: FieldConfig;
-  /** 短信签名 */
-  signature: FieldConfig;
+export interface HuaweiSmsConfig extends SignatureSmsConfig {
   /** 国内短信签名通道号 */
   sender: FieldConfig;
   /** 短信状态报告接收地 */
@@ -128,7 +125,7 @@ export interface HuaweiSmsConfig extends SupplierConfig {
   url: FieldConfig;
 }
 /** 合一短信 */
-export interface UniSmsConfig extends SmsConfig {
+export interface UniSmsConfig extends SignatureSmsConfig {
   /** 是否为简易模式 */
   isSimple: FieldConfig<boolean>;
 }
@@ -142,39 +139,31 @@ export interface YunpianSmsConfig extends SupplierConfig {
   callbackUrl: FieldConfig;
 }
 /** 京东云短信 */
-export interface JdCloudSmsConfig extends SmsConfig {
+export interface JdCloudSmsConfig extends SignatureSmsConfig {
   /** 地域信息 */
   region: FieldConfig;
 }
 /** 容联云短信 */
-export interface CloopenSmsConfig extends SupplierConfig {
-  /** Access Key */
-  accessKeyId: FieldConfig;
-  /** Access Key Secret */
-  accessKeySecret: FieldConfig;
+export interface CloopenSmsConfig extends SmsConfig {
   /** 应用 ID */
-  appId: FieldConfig;
+  sdkAppId: FieldConfig;
   /** REST API Base URL */
   baseUrl: FieldConfig;
 }
-/** 亿美软通 */
-export interface EmaySmsConfig extends SupplierConfig {
-  /** appKey */
-  appId: FieldConfig;
-  /** appSecret */
-  secretKey: FieldConfig;
+/** 亿美软通短信 */
+export interface EmaySmsConfig extends SmsConfig {
   /** APP接入地址 */
   requestUrl: FieldConfig;
 }
 /** 天翼云短信 */
-export interface CtyunSmsConfig extends SmsConfig {
+export interface CtyunSmsConfig extends SignatureSmsConfig {
   /** 请求地址 */
   requestUrl: FieldConfig;
   /** 接口名称 */
   action: FieldConfig;
 }
 /** 网易云短信 */
-export interface NeteaseSmsConfig extends SmsConfig {
+export interface NeteaseSmsConfig extends SignatureSmsConfig {
   /** 模板短信请求地址 */
   templateUrl: FieldConfig;
   /** 验证码短信请求地址 */
@@ -185,9 +174,25 @@ export interface NeteaseSmsConfig extends SmsConfig {
   needUp: FieldConfig<boolean>;
 }
 /** 助通短信 */
-export interface ZhutongSmsConfig extends SmsConfig {
+export interface ZhutongSmsConfig extends SignatureSmsConfig {
   /** 模板变量名称 查看地址：https://mix2.zthysms.com/index.html#/TemplateManagement 允许为空，为空，使用无模板形式，发送短信 */
   templateName: FieldConfig;
   /** 默认请求地址 不同区域，可切换请求地址，也可以不修改，请参考官方文档：https://doc.zthysms.com/web/#/1/236 */
   requestUrl: FieldConfig;
+}
+/** 鼎众短信 */
+export interface DingZhongSmsConfig extends SmsConfig {
+  /** 接口发送地址 */
+  requestUrl: FieldConfig;
+}
+/** 联麓短信 */
+export interface LianLuSmsConfig extends SupplierConfig {
+  /** 企业ID */
+  mchId: FieldConfig;
+  /** appId */
+  appId: FieldConfig;
+  /** appKey */
+  appKey: FieldConfig;
+  /** 短信签名 */
+  signature: FieldConfig;
 }

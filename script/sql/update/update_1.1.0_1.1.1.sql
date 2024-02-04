@@ -41,3 +41,6 @@ UPDATE sys_dict_data SET dict_label = '隐藏', remark = '隐藏状态' WHERE di
 UPDATE sys_dict_data SET dict_label = '显示', remark = '显示状态' WHERE dict_code = 4;
 UPDATE sys_dict_data SET dict_label = '失败', remark = '失败状态' WHERE dict_code = 28;
 UPDATE sys_dict_data SET dict_label = '成功', remark = '成功状态' WHERE dict_code = 27;
+
+insert into sys_dict_data values(59, '000000', 12, '鼎众短信', 'DING_ZHONG', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_data values(60, '000000', 13, '联麓短信', 'LIAN_LU', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, sysdate(), 1, sysdate(), null);

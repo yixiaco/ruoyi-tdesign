@@ -1,7 +1,6 @@
 package org.dromara.system.handle.handler;
 
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.json.JSONUtil;
 import org.dromara.common.core.enums.CommonStatusEnum;
 import org.dromara.common.core.enums.MessageSupplierTypeEnum;
 import org.dromara.common.core.enums.MessageTemplateMode;
@@ -16,12 +15,16 @@ import org.dromara.sms4j.cloopen.config.CloopenConfig;
 import org.dromara.sms4j.cloopen.config.CloopenFactory;
 import org.dromara.sms4j.ctyun.config.CtyunConfig;
 import org.dromara.sms4j.ctyun.config.CtyunFactory;
+import org.dromara.sms4j.dingzhong.config.DingZhongConfig;
+import org.dromara.sms4j.dingzhong.config.DingZhongFactory;
 import org.dromara.sms4j.emay.config.EmayConfig;
 import org.dromara.sms4j.emay.config.EmayFactory;
 import org.dromara.sms4j.huawei.config.HuaweiConfig;
 import org.dromara.sms4j.huawei.config.HuaweiFactory;
 import org.dromara.sms4j.jdcloud.config.JdCloudConfig;
 import org.dromara.sms4j.jdcloud.config.JdCloudFactory;
+import org.dromara.sms4j.lianlu.config.LianLuConfig;
+import org.dromara.sms4j.lianlu.config.LianLuFactory;
 import org.dromara.sms4j.netease.config.NeteaseConfig;
 import org.dromara.sms4j.netease.config.NeteaseFactory;
 import org.dromara.sms4j.tencent.config.TencentConfig;
@@ -79,78 +82,95 @@ public class SmsMessageSendHandler extends BaseMessageSendHandler {
         MessageSupplierTypeEnum supplierType = MessageSupplierTypeEnum.valueOf(config.getSupplierType());
         SmsBlend smsBlend = switch (supplierType) {
             case ALIBABA -> {
-                AlibabaConfig alibabaConfig = JSONUtil.toBean(config.getConfigJson(), AlibabaConfig.class, true);
-                if (StrUtil.isNotBlank(template.getSignature())) {
+                AlibabaConfig alibabaConfig = JsonUtils.parseObject(config.getConfigJson(), AlibabaConfig.class);
+                if (alibabaConfig != null && StrUtil.isNotBlank(template.getSignature())) {
                     alibabaConfig.setSignature(template.getSignature());
                 }
                 yield AlibabaFactory.instance().createSms(alibabaConfig);
             }
             case HUAWEI -> {
-                HuaweiConfig huaweiConfig = JSONUtil.toBean(config.getConfigJson(), HuaweiConfig.class, true);
-                if (StrUtil.isNotBlank(template.getSignature())) {
+                HuaweiConfig huaweiConfig = JsonUtils.parseObject(config.getConfigJson(), HuaweiConfig.class);
+                if (huaweiConfig != null && StrUtil.isNotBlank(template.getSignature())) {
                     huaweiConfig.setSignature(template.getSignature());
                 }
                 yield HuaweiFactory.instance().createSms(huaweiConfig);
             }
             case TENCENT -> {
-                TencentConfig tencentConfig = JSONUtil.toBean(config.getConfigJson(), TencentConfig.class, true);
-                if (StrUtil.isNotBlank(template.getSignature())) {
+                TencentConfig tencentConfig = JsonUtils.parseObject(config.getConfigJson(), TencentConfig.class);
+                if (tencentConfig != null && StrUtil.isNotBlank(template.getSignature())) {
                     tencentConfig.setSignature(template.getSignature());
                 }
                 yield TencentFactory.instance().createSms(tencentConfig);
             }
             case YUNPIAN -> {
-                YunpianConfig yunpianConfig = JSONUtil.toBean(config.getConfigJson(), YunpianConfig.class, true);
-                if (StrUtil.isNotBlank(template.getSignature())) {
+                YunpianConfig yunpianConfig = JsonUtils.parseObject(config.getConfigJson(), YunpianConfig.class);
+                if (yunpianConfig != null && StrUtil.isNotBlank(template.getSignature())) {
                     yunpianConfig.setSignature(template.getSignature());
                 }
                 yield YunPianFactory.instance().createSms(yunpianConfig);
             }
             case UNI_SMS -> {
-                UniConfig uniConfig = JSONUtil.toBean(config.getConfigJson(), UniConfig.class, true);
-                if (StrUtil.isNotBlank(template.getSignature())) {
+                UniConfig uniConfig = JsonUtils.parseObject(config.getConfigJson(), UniConfig.class);
+                if (uniConfig != null && StrUtil.isNotBlank(template.getSignature())) {
                     uniConfig.setSignature(template.getSignature());
                 }
                 yield UniFactory.instance().createSms(uniConfig);
             }
             case JD_CLOUD -> {
-                JdCloudConfig jdCloudConfig = JSONUtil.toBean(config.getConfigJson(), JdCloudConfig.class, true);
-                if (StrUtil.isNotBlank(template.getSignature())) {
+                JdCloudConfig jdCloudConfig = JsonUtils.parseObject(config.getConfigJson(), JdCloudConfig.class);
+                if (jdCloudConfig != null && StrUtil.isNotBlank(template.getSignature())) {
                     jdCloudConfig.setSignature(template.getSignature());
                 }
                 yield JdCloudFactory.instance().createSms(jdCloudConfig);
             }
             case CLOOPEN -> {
-                CloopenConfig cloopenConfig = JSONUtil.toBean(config.getConfigJson(), CloopenConfig.class, true);
-                if (StrUtil.isNotBlank(template.getSignature())) {
+                CloopenConfig cloopenConfig = JsonUtils.parseObject(config.getConfigJson(), CloopenConfig.class);
+                if (cloopenConfig != null && StrUtil.isNotBlank(template.getSignature())) {
                     cloopenConfig.setSignature(template.getSignature());
                 }
                 yield CloopenFactory.instance().createSms(cloopenConfig);
             }
             case EMAY -> {
-                EmayConfig emayConfig = JSONUtil.toBean(config.getConfigJson(), EmayConfig.class, true);
+                EmayConfig emayConfig = JsonUtils.parseObject(config.getConfigJson(), EmayConfig.class);
+                if (emayConfig != null && StrUtil.isNotBlank(template.getSignature())) {
+                    emayConfig.setSignature(template.getSignature());
+                }
                 yield EmayFactory.instance().createSms(emayConfig);
             }
             case CTYUN -> {
-                CtyunConfig ctyunConfig = JSONUtil.toBean(config.getConfigJson(), CtyunConfig.class, true);
-                if (StrUtil.isNotBlank(template.getSignature())) {
+                CtyunConfig ctyunConfig = JsonUtils.parseObject(config.getConfigJson(), CtyunConfig.class);
+                if (ctyunConfig != null && StrUtil.isNotBlank(template.getSignature())) {
                     ctyunConfig.setSignature(template.getSignature());
                 }
                 yield CtyunFactory.instance().createSms(ctyunConfig);
             }
             case NETEASE -> {
-                NeteaseConfig neteaseConfig = JSONUtil.toBean(config.getConfigJson(), NeteaseConfig.class, true);
-                if (StrUtil.isNotBlank(template.getSignature())) {
+                NeteaseConfig neteaseConfig = JsonUtils.parseObject(config.getConfigJson(), NeteaseConfig.class);
+                if (neteaseConfig != null && StrUtil.isNotBlank(template.getSignature())) {
                     neteaseConfig.setSignature(template.getSignature());
                 }
                 yield NeteaseFactory.instance().createSms(neteaseConfig);
             }
             case ZHUTONG -> {
-                ZhutongConfig zhutongConfig = JSONUtil.toBean(config.getConfigJson(), ZhutongConfig.class, true);
-                if (StrUtil.isNotBlank(template.getSignature())) {
+                ZhutongConfig zhutongConfig = JsonUtils.parseObject(config.getConfigJson(), ZhutongConfig.class);
+                if (zhutongConfig != null && StrUtil.isNotBlank(template.getSignature())) {
                     zhutongConfig.setSignature(template.getSignature());
                 }
                 yield ZhutongFactory.instance().createSms(zhutongConfig);
+            }
+            case DING_ZHONG -> {
+                DingZhongConfig dingZhongConfig = JsonUtils.parseObject(config.getConfigJson(), DingZhongConfig.class);
+                if (dingZhongConfig != null && StrUtil.isNotBlank(template.getSignature())) {
+                    dingZhongConfig.setSignature(template.getSignature());
+                }
+                yield DingZhongFactory.instance().createSms(dingZhongConfig);
+            }
+            case LIAN_LU -> {
+                LianLuConfig lianLuConfig = JsonUtils.parseObject(config.getConfigJson(), LianLuConfig.class);
+                if (lianLuConfig != null && StrUtil.isNotBlank(template.getSignature())) {
+                    lianLuConfig.setSignature(template.getSignature());
+                }
+                yield LianLuFactory.instance().createSms(lianLuConfig);
             }
             default -> throw new ServiceException("不支持的消息类型");
         };
