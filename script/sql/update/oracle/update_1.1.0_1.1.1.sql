@@ -32,3 +32,12 @@ UPDATE sys_menu SET component_name = 'Cache' WHERE menu_id = 113;
 UPDATE sys_menu SET component_name = 'Build' WHERE menu_id = 114;
 UPDATE sys_menu SET component_name = 'App' WHERE menu_id = 1701;
 UPDATE sys_menu SET component_name = 'Admin' WHERE menu_id = 117;
+
+UPDATE sys_dict_type SET dict_name = '成功状态' WHERE dict_id = 10;
+UPDATE sys_dict_type SET dict_name = '显隐状态' WHERE dict_id = 2;
+UPDATE sys_dict_type SET dict_name = '正常状态' WHERE dict_id = 3;
+
+UPDATE sys_dict_data SET dict_label = '隐藏', remark = '隐藏状态' WHERE dict_code = 5;
+UPDATE sys_dict_data SET dict_label = '显示', remark = '显示状态' WHERE dict_code = 4;
+UPDATE sys_dict_data SET dict_label = '失败', remark = '失败状态' WHERE dict_code = 28;
+UPDATE sys_dict_data SET dict_label = '成功', remark = '成功状态' WHERE dict_code = 27;
