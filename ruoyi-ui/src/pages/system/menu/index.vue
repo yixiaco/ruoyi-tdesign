@@ -3,16 +3,13 @@
     <t-space direction="vertical" style="width: 100%">
       <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="calc(4em + 12px)">
         <t-form-item label="菜单名称" name="menuName">
-          <t-input
-            v-model="queryParams.menuName"
-            placeholder="请输入菜单名称"
-            clearable
-            style="width: 200px"
-            @enter="handleQuery"
-          />
+          <t-input v-model="queryParams.menuName" placeholder="请输入菜单名称" clearable @enter="handleQuery" />
+        </t-form-item>
+        <t-form-item label="组件名称" name="componentName">
+          <t-input v-model="queryParams.componentName" placeholder="请输入组件名称" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="状态" name="status">
-          <t-select v-model="queryParams.status" placeholder="菜单状态" clearable style="width: 200px">
+          <t-select v-model="queryParams.status" placeholder="菜单状态" clearable>
             <t-option v-for="dict in sys_normal_disable" :key="dict.value" :label="dict.label" :value="dict.value" />
           </t-select>
         </t-form-item>
@@ -31,6 +28,7 @@
       <t-enhanced-table
         ref="tableRef"
         v-model:column-controller-visible="columnControllerVisible"
+        v-model:expandedTreeNodes="expandedTreeNodes"
         hover
         :loading="loading"
         :data="menuList"
@@ -39,7 +37,7 @@
         :column-controller="{
           hideTriggerButton: true,
         }"
-        :tree="{ childrenKey: 'children', treeNodeColumnIndex: 0, expandTreeNodeOnClick: true }"
+        :tree="{ childrenKey: 'children', expandTreeNodeOnClick: true }"
         :sort="sort"
         show-sort-column-bg-color
         @sort-change="handleSortChange"
@@ -52,8 +50,8 @@
                 新增
               </t-button>
               <t-button theme="default" variant="outline" @click="toggleExpandAll">
-                <template #icon> <unfold-more-icon /> </template>
-                展开/折叠
+                <template #icon> <unfold-less-icon v-if="isExpand" /> <unfold-more-icon v-else /> </template>
+                全部{{ isExpand ? '折叠' : '展开' }}
               </t-button>
               <t-button v-hasPermi="['system:menu:export']" theme="default" variant="outline" @click="handleExport">
                 <template #icon> <download-icon /> </template>
@@ -85,6 +83,9 @@
         </template>
         <template #operation="{ row }">
           <t-space :size="4" break-line>
+            <t-link v-hasPermi="['system:menu:edit']" theme="primary" hover="color" @click.stop="handleCopyAdd(row)">
+              <copy-icon />复制
+            </t-link>
             <t-link v-hasPermi="['system:menu:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
               <browse-icon />详情
             </t-link>
@@ -186,6 +187,19 @@
               </t-form-item>
             </t-col>
             <t-col v-if="form.menuType === 'C'" :span="6">
+              <t-form-item name="componentName">
+                <template #label>
+                  <span>
+                    <t-tooltip content="声明组件的名称，不填默认使用路由地址，如 /menu => Menu" placement="top">
+                      <help-circle-filled-icon />
+                    </t-tooltip>
+                    组件名称
+                  </span>
+                </template>
+                <t-input v-model="form.componentName" placeholder="请输入组件名称" clearable />
+              </t-form-item>
+            </t-col>
+            <t-col v-if="form.menuType === 'C'" :span="6">
               <t-form-item name="component">
                 <template #label>
                   <span>
@@ -271,9 +285,9 @@
                   </span>
                 </template>
                 <t-radio-group v-model="form.status">
-                  <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{
-                    dict.label
-                  }}</t-radio>
+                  <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">
+                    {{ dict.label }}
+                  </t-radio>
                 </t-radio-group>
               </t-form-item>
             </t-col>
@@ -308,6 +322,9 @@
             </t-col>
             <t-col :span="6">
               <t-form-item label="路由地址">{{ form.path }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="组件名称">{{ form.componentName }}</t-form-item>
             </t-col>
             <t-col :span="6">
               <t-form-item label="组件路径">{{ form.component }}</t-form-item>
@@ -369,6 +386,7 @@ defineOptions({
 import {
   AddIcon,
   BrowseIcon,
+  CopyIcon,
   DeleteIcon,
   DownloadIcon,
   EditIcon,
@@ -376,6 +394,7 @@ import {
   RefreshIcon,
   SearchIcon,
   SettingIcon,
+  UnfoldLessIcon,
   UnfoldMoreIcon,
 } from 'tdesign-icons-vue-next';
 import type {
@@ -386,7 +405,7 @@ import type {
   SubmitContext,
   TableSort,
 } from 'tdesign-vue-next';
-import { getCurrentInstance, ref } from 'vue';
+import { computed, getCurrentInstance, ref } from 'vue';
 
 import { addMenu, delMenu, getMenu, listMenu, updateMenu } from '@/api/system/menu';
 import type { SysMenuForm, SysMenuQuery, SysMenuVo } from '@/api/system/model/menuModel';
@@ -406,10 +425,10 @@ const showSearch = ref(true);
 const columnControllerVisible = ref(false);
 const title = ref('');
 const menuOptions = ref<SysMenuVo[]>([]);
-const isExpandAll = ref(false);
 const sort = ref<TableSort>();
 const tableRef = ref<EnhancedTableInstanceFunctions>();
 const menuRef = ref<FormInstanceFunctions>();
+const expandedTreeNodes = ref([]);
 /** 是否 */
 const yesNoOptions = ref([
   { value: 0, label: '否' },
@@ -439,6 +458,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `排序`, colKey: 'orderNum', align: 'center', width: 100, sorter: true },
   { title: `权限标识`, colKey: 'perms', align: 'center', ellipsis: true },
   { title: `组件路径`, colKey: 'component', align: 'center', ellipsis: true },
+  { title: `组件名称`, colKey: 'componentName', align: 'center', ellipsis: true },
   { title: `显示状态`, colKey: 'visible', align: 'center', width: 88 },
   { title: `菜单类型`, colKey: 'menuType', align: 'center', width: 88 },
   { title: `状态`, colKey: 'status', align: 'center', width: 70 },
@@ -463,16 +483,18 @@ const queryParams = ref<SysMenuQuery>({
   menuName: undefined,
   visible: undefined,
 });
+const isExpand = computed(() => {
+  return expandedTreeNodes.value.length !== 0;
+});
 
 /** 查询菜单列表 */
 function getList() {
   loading.value = true;
-  listMenu(queryParams.value).then((response) => {
-    menuList.value = proxy.handleTree(response.data, 'menuId');
-    tableRef.value.resetData(menuList.value);
-    loading.value = false;
-    refreshExpandAll();
-  });
+  listMenu(queryParams.value)
+    .then((response) => {
+      menuList.value = proxy.handleTree(response.data, 'menuId');
+    })
+    .finally(() => (loading.value = false));
 }
 /** 查询菜单下拉树结构 */
 async function getTreeselect() {
@@ -521,6 +543,25 @@ function handleSortChange(value?: TableSort) {
   }
   getList();
 }
+/** 展开/折叠操作 */
+function toggleExpandAll() {
+  if (isExpand.value) {
+    tableRef.value.foldAll();
+  } else {
+    tableRef.value.expandAll();
+  }
+}
+/** 详情按钮操作 */
+function handleDetail(row: SysMenuVo) {
+  reset();
+  openView.value = true;
+  openViewLoading.value = true;
+  const menuId = row.menuId;
+  getMenu(menuId).then((response) => {
+    form.value = response.data;
+    openViewLoading.value = false;
+  });
+}
 /** 新增按钮操作 */
 function handleAdd(row?: SysMenuVo) {
   reset();
@@ -536,33 +577,6 @@ function handleAdd(row?: SysMenuVo) {
     eLoading.value = false;
   });
 }
-/** 详情按钮操作 */
-function handleDetail(row: SysMenuVo) {
-  reset();
-  openView.value = true;
-  openViewLoading.value = true;
-  const menuId = row.menuId;
-  getMenu(menuId).then((response) => {
-    form.value = response.data;
-    openViewLoading.value = false;
-  });
-}
-/** 展开/折叠操作 */
-function toggleExpandAll() {
-  isExpandAll.value = !isExpandAll.value;
-  refreshExpandAll();
-}
-
-/** 刷新展开状态 */
-function refreshExpandAll() {
-  proxy.$nextTick(() => {
-    if (isExpandAll.value) {
-      tableRef.value.expandAll();
-    } else {
-      tableRef.value.foldAll();
-    }
-  });
-}
 /** 修改按钮操作 */
 async function handleUpdate(row: SysMenuVo) {
   reset();
@@ -572,6 +586,19 @@ async function handleUpdate(row: SysMenuVo) {
   eLoading.value = true;
   getMenu(row.menuId).then((response) => {
     form.value = response.data;
+    eLoading.value = false;
+  });
+}
+/** 复制新增操作 */
+async function handleCopyAdd(row: SysMenuVo) {
+  reset();
+  await getTreeselect();
+  title.value = '添加菜单';
+  open.value = true;
+  eLoading.value = true;
+  getMenu(row.menuId).then((response) => {
+    form.value = response.data;
+    form.value.menuId = undefined;
     eLoading.value = false;
   });
 }

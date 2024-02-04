@@ -16,7 +16,7 @@ export interface SysMessageConfigQuery extends BaseEntity {
 /**
  * 消息配置业务对象
  */
-export interface SysMessageConfigForm extends BaseEntity {
+export interface SysMessageConfigForm {
   /** 消息设置id */
   messageConfigId?: number;
   /** 标题 */

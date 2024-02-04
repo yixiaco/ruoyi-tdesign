@@ -18,7 +18,7 @@ export interface SysRoleQuery extends BaseEntity {
 /**
  * 角色信息业务对象
  */
-export interface SysRoleForm extends BaseEntity {
+export interface SysRoleForm {
   /** 角色ID */
   roleId?: number;
   /** 角色名称 */

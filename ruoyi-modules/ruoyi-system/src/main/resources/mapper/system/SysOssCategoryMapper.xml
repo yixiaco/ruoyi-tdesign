@@ -35,7 +35,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 </where>) as file_count
         from sys_oss_category soc
         <where>
-            <if test="categoryName != null and categoryName != ''"> and soc.category_name like concat('%', #{categoryName}, '%')</if>
+            <if test="categoryName != null and categoryName != ''"> and soc.category_name like concat(concat('%', #{categoryName}), '%')</if>
             <if test="userType != null and userType != ''"> and soc.user_type = #{userType}</if>
             <if test="createBy != null"> and soc.create_by = #{createBy}</if>
         </where>

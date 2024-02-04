@@ -5,12 +5,14 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.dromara.common.core.constant.Constants;
 import org.dromara.common.core.constant.UserConstants;
+import org.dromara.common.core.enums.MenuTypeEnum;
+import org.dromara.common.core.enums.YesNoFrameEnum;
 import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.mybatis.core.domain.BaseEntity;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -22,9 +24,11 @@ import java.util.List;
  */
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @TableName("sys_menu")
-public class SysMenu extends BaseEntity {
+public class SysMenu implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * 菜单ID
@@ -58,6 +62,11 @@ public class SysMenu extends BaseEntity {
     private String component;
 
     /**
+     * 组件名称
+     */
+    private String componentName;
+
+    /**
      * 路由参数
      */
     private String queryParam;
@@ -73,7 +82,7 @@ public class SysMenu extends BaseEntity {
     private Integer isCache;
 
     /**
-     * 类型（M目录 C菜单 F按钮）
+     * 菜单类型（M目录 C菜单 F按钮）
      */
     private String menuType;
 
@@ -168,8 +177,8 @@ public class SysMenu extends BaseEntity {
             routerPath = innerLinkReplaceEach(routerPath);
         }
         // 非外链并且是一级目录（类型为目录）
-        if (0L == getParentId() && UserConstants.TYPE_DIR.equals(getMenuType())
-            && UserConstants.NO_FRAME.equals(getIsFrame())) {
+        if (0L == getParentId() && MenuTypeEnum.DIRECTORY.getType().equals(getMenuType())
+            && YesNoFrameEnum.NO.getCode().equals(getIsFrame())) {
             routerPath = "/" + this.path;
         }
         // 非外链并且是一级目录（类型为菜单）
@@ -198,21 +207,21 @@ public class SysMenu extends BaseEntity {
      * 是否为菜单内部跳转
      */
     public boolean isMenuFrame() {
-        return getParentId() == 0L && UserConstants.TYPE_MENU.equals(menuType) && isFrame.equals(UserConstants.NO_FRAME);
+        return getParentId() == 0L && MenuTypeEnum.MENU.getType().equals(menuType) && YesNoFrameEnum.NO.getCode().equals(isFrame);
     }
 
     /**
      * 是否为内链组件
      */
     public boolean isInnerLink() {
-        return isFrame.equals(UserConstants.NO_FRAME) && StringUtils.ishttp(path);
+        return YesNoFrameEnum.NO.getCode().equals(isFrame) && StringUtils.ishttp(path);
     }
 
     /**
      * 是否为parent_view组件
      */
     public boolean isParentView() {
-        return getParentId() != 0L && UserConstants.TYPE_DIR.equals(menuType);
+        return getParentId() != 0L && MenuTypeEnum.DIRECTORY.getType().equals(menuType);
     }
 
     /**

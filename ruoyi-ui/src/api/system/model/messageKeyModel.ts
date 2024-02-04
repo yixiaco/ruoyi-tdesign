@@ -12,7 +12,7 @@ export interface SysMessageKeyQuery extends BaseEntity {
 /**
  * 消息常量业务对象
  */
-export interface SysMessageKeyForm extends BaseEntity {
+export interface SysMessageKeyForm {
   /** 消息key主键 */
   messageKeyId?: number;
   /** 消息名称 */

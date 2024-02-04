@@ -14,7 +14,7 @@ export interface SysClientQuery extends BaseEntity {
 /**
  * 系统授权业务对象
  */
-export interface SysClientForm extends BaseEntity {
+export interface SysClientForm {
   /** id */
   id?: number;
   /** 客户端key */

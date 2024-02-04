@@ -8,6 +8,7 @@ import Layout from '@/layouts/index.vue';
 import auth from '@/plugins/auth';
 import router, { defaultRouterList, dynamicRoutes } from '@/router';
 import { store } from '@/store';
+import type { TRouterInfo } from '@/types/interface';
 
 const modules = import.meta.glob('./../../pages/**/*.vue');
 
@@ -122,6 +123,23 @@ function filterChildren(childrenMap: RouteRecordRaw[], lastRouter?: RouteRecordR
     children = children.concat(el);
   });
   return children;
+}
+
+/** 展开路由地址 */
+export function unfoldRoutesPath(routes: RouteRecordRaw[], parentPath?: string) {
+  const newRoutes: RouteRecordRaw[] = [];
+  for (const route of routes) {
+    const newRoute = { ...route };
+    const path = `${parentPath?.concat('/') ?? ''}${route.path}`.replaceAll(/\/+/g, '/');
+    newRoute.path = path;
+    newRoutes.push(newRoute);
+    if (newRoute.children && newRoute.children.length > 0) {
+      unfoldRoutesPath(newRoute.children, path).forEach((value) => {
+        newRoutes.push(value);
+      });
+    }
+  }
+  return newRoutes;
 }
 
 // 动态路由遍历，验证是否具备权限

@@ -23,8 +23,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         <include refid="selectGenTableVo"/>
         <where>
             <if test="dataName != null and dataName != ''"> and gt.data_name = #{dataName}</if>
-            <if test="tableName != null and tableName != ''"> and lower(gt.table_name) like concat('%', #{tableName}, '%')</if>
-            <if test="tableComment != null and tableComment != ''"> and lower(gt.table_comment) like concat('%', #{tableComment}, '%')</if>
+            <if test="tableName != null and tableName != ''"> and lower(gt.table_name) like concat(concat('%', #{tableName}), '%')</if>
+            <if test="tableComment != null and tableComment != ''"> and lower(gt.table_comment) like concat(concat('%', #{tableComment}), '%')</if>
             <if test="params.beginTime != null and params.endTime != null">and gt.create_time between #{params.beginTime} and #{params.endTime}</if>
         </where>
         order by gt.create_time desc
@@ -40,10 +40,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 #{item}
             </foreach>
             <if test="tableName != null and tableName != ''">
-                AND lower(table_name) like lower(concat('%', #{tableName}, '%'))
+                AND lower(table_name) like lower(concat(concat('%', #{tableName}), '%'))
             </if>
             <if test="tableComment != null and tableComment != ''">
-                AND lower(table_comment) like lower(concat('%', #{tableComment}, '%'))
+                AND lower(table_comment) like lower(concat(concat('%', #{tableComment}), '%'))
             </if>
             order by create_time desc
         </if>
@@ -84,10 +84,10 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 #{item}
             </foreach>
             <if test="tableName != null and tableName != ''">
-                AND lower(table_name) like lower(concat('%', #{tableName}, '%'))
+                AND lower(table_name) like lower(concat(concat('%', #{tableName}), '%'))
             </if>
             <if test="tableComment != null and tableComment != ''">
-                AND lower(table_comment) like lower(concat('%', #{tableComment}, '%'))
+                AND lower(table_comment) like lower(concat(concat('%', #{tableComment}), '%'))
             </if>
             order by create_time desc
         </if>

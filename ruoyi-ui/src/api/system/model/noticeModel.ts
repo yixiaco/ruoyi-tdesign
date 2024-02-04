@@ -17,7 +17,7 @@ export interface SysNoticeQuery extends BaseEntity {
 /**
  * 通知公告业务对象
  */
-export interface SysNoticeForm extends BaseEntity {
+export interface SysNoticeForm {
   /** 公告ID */
   noticeId?: number;
   /** 公告标题 */

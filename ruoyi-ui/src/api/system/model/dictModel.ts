@@ -78,7 +78,7 @@ export interface SysDictTypeQuery extends BaseEntity {
 /**
  * 字典类型业务对象
  */
-export interface SysDictTypeForm extends BaseEntity {
+export interface SysDictTypeForm {
   /** 字典主键 */
   dictId?: number;
   /** 字典名称 */

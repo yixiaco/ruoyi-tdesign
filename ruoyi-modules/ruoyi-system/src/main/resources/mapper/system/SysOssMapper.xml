@@ -32,9 +32,9 @@
         from sys_oss so
                  left join sys_user su on so.create_by = su.user_id
         <where>
-            <if test="fileName != null and fileName != ''"> and so.file_name like concat('%', #{fileName}, '%')</if>
-            <if test="originalName != null and originalName != ''"> and so.original_name like concat('%', #{originalName}, '%')</if>
-            <if test="fileSuffix != null and fileSuffix != ''"> and so.file_suffix like concat('%', #{fileSuffix}, '%')</if>
+            <if test="fileName != null and fileName != ''"> and so.file_name like concat(concat('%', #{fileName}), '%')</if>
+            <if test="originalName != null and originalName != ''"> and so.original_name like concat(concat('%', #{originalName}), '%')</if>
+            <if test="fileSuffix != null and fileSuffix != ''"> and so.file_suffix like concat(concat('%', #{fileSuffix}), '%')</if>
             <if test="url != null and url != ''"> and so.url = #{url}</if>
             <if test="maxSize != null"> and so.size &lt;= #{maxSize}</if>
             <foreach collection="contentTypes" item="item" open="and (" separator=" or " close=")" nullable="true">
@@ -47,8 +47,8 @@
               and so.create_time between #{params.beginCreateTime} and #{params.endCreateTime}
             </if>
             <if test="createBy != null"> and so.create_by = #{createBy}</if>
-            <if test="createByName != null"> and su.user_name like concat('%', #{createByName}, '%')</if>
-            <if test="service != null and service != ''"> and so.service like concat('%', #{service}, '%')</if>
+            <if test="createByName != null"> and su.user_name like concat(concat('%', #{createByName}), '%')</if>
+            <if test="service != null and service != ''"> and so.service like concat(concat('%', #{service}), '%')</if>
             <foreach collection="suffixes" item="item" open="and so.file_suffix in(" separator="," close=")" nullable="true">
                 #{item}
             </foreach>

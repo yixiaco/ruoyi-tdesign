@@ -12,8 +12,10 @@ import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.HttpStatus;
 import org.dromara.common.core.constant.UserConstants;
+import org.dromara.common.core.enums.MenuTypeEnum;
 import org.dromara.common.core.enums.ShowHiddenEnum;
 import org.dromara.common.core.enums.YesNoEnum;
+import org.dromara.common.core.enums.YesNoFrameEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
@@ -217,10 +219,13 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             meta.setNoCache(Objects.equals(YesNoEnum.NO.getCodeNum(), menu.getIsCache()));
             meta.setLink(menu.getPath());
             meta.setHidden(ShowHiddenEnum.HIDDEN.getCode().equals(menu.getVisible()));
+            if (MenuTypeEnum.MENU.getType().equals(menu.getMenuType())) {
+                meta.setComponentName(StringUtils.blankToDefault(menu.getComponentName(), router.getName()));
+            }
 
             router.setMeta(meta);
             List<SysMenu> cMenus = menu.getChildren();
-            if (CollUtil.isNotEmpty(cMenus) && UserConstants.TYPE_DIR.equals(menu.getMenuType())) {
+            if (CollUtil.isNotEmpty(cMenus) && MenuTypeEnum.DIRECTORY.getType().equals(menu.getMenuType())) {
                 router.setAlwaysShow(true);
                 String redirect = path + "/" + menu.getPath();
                 router.setChildren(buildMenus(redirect, cMenus));
@@ -326,7 +331,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     public int insertMenu(SysMenuBo bo) {
         if (!checkMenuNameUnique(bo)) {
             throw new ServiceException("新增菜单'" + bo.getMenuName() + "'失败，菜单名称已存在");
-        } else if (UserConstants.YES_FRAME.equals(bo.getIsFrame()) && !StringUtils.ishttp(bo.getPath())) {
+        } else if (!checkMenuPathUnique(bo)) {
+            throw new ServiceException("新增菜单'" + bo.getMenuName() + "'失败，菜单地址已存在");
+        } else if (YesNoFrameEnum.YES.getCode().equals(bo.getIsFrame()) && !StringUtils.ishttp(bo.getPath())) {
             throw new ServiceException("新增菜单'" + bo.getMenuName() + "'失败，地址必须以http(s)://开头");
         }
         SysMenu menu = MapstructUtils.convert(bo, SysMenu.class);
@@ -343,7 +350,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     public int updateMenu(SysMenuBo bo) {
         if (!checkMenuNameUnique(bo)) {
             throw new ServiceException("修改菜单'" + bo.getMenuName() + "'失败，菜单名称已存在");
-        } else if (UserConstants.YES_FRAME.equals(bo.getIsFrame()) && !StringUtils.ishttp(bo.getPath())) {
+        } else if (!checkMenuPathUnique(bo)) {
+            throw new ServiceException("修改菜单'" + bo.getMenuName() + "'失败，菜单地址已存在");
+        } else if (YesNoFrameEnum.YES.getCode().equals(bo.getIsFrame()) && !StringUtils.ishttp(bo.getPath())) {
             throw new ServiceException("修改菜单'" + bo.getMenuName() + "'失败，地址必须以http(s)://开头");
         } else if (bo.getMenuId().equals(bo.getParentId())) {
             throw new ServiceException("修改菜单'" + bo.getMenuName() + "'失败，上级菜单不能选择自己");
@@ -384,6 +393,22 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             .eq(SysMenu::getMenuName, menu.getMenuName())
             .eq(SysMenu::getParentId, menu.getParentId())
             .ne(ObjectUtil.isNotNull(menu.getMenuId()), SysMenu::getMenuId, menu.getMenuId()));
+        return !exist;
+    }
+
+    /**
+     * 校验菜单地址是否唯一
+     *
+     * @param menu 菜单信息
+     * @return 结果
+     */
+    private boolean checkMenuPathUnique(SysMenuBo menu) {
+        boolean exist = lambdaQuery()
+            .eq(SysMenu::getPath, menu.getPath())
+            .in(SysMenu::getMenuType, MenuTypeEnum.MENU.getType())
+            .eq(SysMenu::getParentId, menu.getParentId())
+            .ne(ObjectUtil.isNotNull(menu.getMenuId()), SysMenu::getMenuId, menu.getMenuId())
+            .exists();
         return !exist;
     }
 

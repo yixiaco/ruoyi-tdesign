@@ -6,11 +6,12 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
-import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.system.domain.SysMenu;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 菜单权限业务对象 sys_menu
@@ -19,21 +20,23 @@ import org.dromara.system.domain.SysMenu;
  */
 
 @Data
-@EqualsAndHashCode(callSuper = true)
 @AutoMapper(target = SysMenu.class, reverseConvertGenerate = false)
-public class SysMenuBo extends BaseEntity {
+public class SysMenuBo implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * 菜单ID
      */
-    @NotNull(message = "菜单ID不能为空", groups = { EditGroup.class })
+    @NotNull(message = "菜单ID不能为空", groups = {EditGroup.class})
     private Long menuId;
 
     /**
      * 菜单名称
      */
-    @NotBlank(message = "菜单名称不能为空", groups = { AddGroup.class, EditGroup.class })
-    @Size(min = 0, max = 50, message = "菜单名称长度不能超过{max}个字符", groups = {AddGroup.class, EditGroup.class})
+    @NotBlank(message = "菜单名称不能为空", groups = {AddGroup.class, EditGroup.class})
+    @Size(max = 50, message = "菜单名称长度不能超过{max}个字符", groups = {AddGroup.class, EditGroup.class})
     private String menuName;
 
     /**
@@ -44,20 +47,26 @@ public class SysMenuBo extends BaseEntity {
     /**
      * 显示顺序
      */
-    @NotNull(message = "显示顺序不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotNull(message = "显示顺序不能为空", groups = {AddGroup.class, EditGroup.class})
     private Integer orderNum;
 
     /**
      * 路由地址
      */
-    @Size(min = 0, max = 200, message = "路由地址不能超过{max}个字符", groups = {AddGroup.class, EditGroup.class})
+    @Size(max = 250, message = "路由地址不能超过{max}个字符", groups = {AddGroup.class, EditGroup.class})
     private String path;
 
     /**
      * 组件路径
      */
-    @Size(min = 0, max = 200, message = "组件路径不能超过{max}个字符", groups = {AddGroup.class, EditGroup.class})
+    @Size(max = 250, message = "组件路径不能超过{max}个字符", groups = {AddGroup.class, EditGroup.class})
     private String component;
+
+    /**
+     * 组件名称
+     */
+    @Size(max = 250, message = "组件组件名称不能超过{max}个字符", groups = {AddGroup.class, EditGroup.class})
+    private String componentName;
 
     /**
      * 路由参数
@@ -77,7 +86,7 @@ public class SysMenuBo extends BaseEntity {
     /**
      * 菜单类型（M目录 C菜单 F按钮）
      */
-    @NotBlank(message = "菜单类型不能为空", groups = { AddGroup.class, EditGroup.class })
+    @NotBlank(message = "菜单类型不能为空", groups = {AddGroup.class, EditGroup.class})
     private String menuType;
 
     /**
@@ -94,7 +103,7 @@ public class SysMenuBo extends BaseEntity {
      * 权限标识
      */
     @JsonInclude(JsonInclude.Include.NON_NULL)
-    @Size(min = 0, max = 100, message = "权限标识长度不能超过{max}个字符", groups = {AddGroup.class, EditGroup.class})
+    @Size(max = 100, message = "权限标识长度不能超过{max}个字符", groups = {AddGroup.class, EditGroup.class})
     private String perms;
 
     /**

@@ -40,6 +40,11 @@ public class MetaVo implements Serializable {
      */
     private boolean hidden;
 
+    /**
+     * 组件名称
+     */
+    private String componentName;
+
     public MetaVo() {
     }
 

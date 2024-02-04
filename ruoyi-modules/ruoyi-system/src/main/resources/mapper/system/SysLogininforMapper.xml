@@ -15,11 +15,11 @@
     <select id="queryList" parameterType="org.dromara.system.domain.bo.SysLogininforBo" resultMap="SysLogininforResultVo">
         <include refid="selectSysLogininforVo"/>
         <where>
-            <if test="userName != null and userName != ''"> and sl.user_name like concat('%', #{userName}, '%')</if>
-            <if test="ipaddr != null and ipaddr != ''"> and sl.ipaddr like concat('%', #{ipaddr}, '%')</if>
+            <if test="userName != null and userName != ''"> and sl.user_name like concat(concat('%', #{userName}), '%')</if>
+            <if test="ipaddr != null and ipaddr != ''"> and sl.ipaddr like concat(concat('%', #{ipaddr}), '%')</if>
             <if test="status != null and status != ''"> and sl.status = #{status}</if>
-            <if test="clientKey != null and clientKey != ''"> and sl.client_key like concat('%', #{clientKey}, '%')</if>
-            <if test="deviceType != null and deviceType != ''"> and sl.device_type like concat('%', #{deviceType}, '%')</if>
+            <if test="clientKey != null and clientKey != ''"> and sl.client_key like concat(concat('%', #{clientKey}), '%')</if>
+            <if test="deviceType != null and deviceType != ''"> and sl.device_type like concat(concat('%', #{deviceType}), '%')</if>
             <if test="params.beginTime != null and params.endTime != null">and sl.login_time between #{params.beginTime} and #{params.endTime}</if>
         </where>
         order by info_id desc

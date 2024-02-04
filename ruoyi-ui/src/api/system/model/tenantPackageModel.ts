@@ -13,7 +13,7 @@ export interface SysTenantPackageQuery extends BaseEntity {
   /** 状态（1正常 0停用） */
   status?: string;
 }
-export interface SysTenantPackageForm extends BaseEntity {
+export interface SysTenantPackageForm {
   /** 租户套餐id */
   packageId?: number;
   /** 套餐名称 */

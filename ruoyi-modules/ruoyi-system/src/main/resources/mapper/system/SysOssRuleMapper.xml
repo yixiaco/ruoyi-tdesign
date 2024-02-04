@@ -15,8 +15,8 @@
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysOssRuleQuery" resultMap="SysOssRuleResultVo">
         <include refid="selectSysOssRuleVo"/>
         <where>
-            <if test="ruleName != null and ruleName != ''"> and sor.rule_name like concat('%', #{ruleName}, '%')</if>
-            <if test="domain != null and domain != ''"> and sor.domain like concat('%', #{domain}, '%')</if>
+            <if test="ruleName != null and ruleName != ''"> and sor.rule_name like concat(concat('%', #{ruleName}), '%')</if>
+            <if test="domain != null and domain != ''"> and sor.domain like concat(concat('%', #{domain}), '%')</if>
             <if test="isOverwrite != null and isOverwrite != ''"> and sor.is_overwrite = #{isOverwrite}</if>
             <if test="isDefault != null and isDefault != ''"> and sor.is_default = #{isDefault}</if>
             <if test="status != null and status != ''"> and sor.status = #{status}</if>

@@ -15,13 +15,13 @@
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysOperLogQuery" resultMap="SysOperLogResultVo">
         <include refid="selectSysOperLogVo"/>
         <where>
-            <if test="title != null and title != ''"> and sol.title like concat('%', #{title}, '%')</if>
+            <if test="title != null and title != ''"> and sol.title like concat(concat('%', #{title}), '%')</if>
             <if test="businessType != null "> and sol.business_type = #{businessType}</if>
             <foreach collection="businessTypes" index="index" item="item" open="and sol.business_type in (" separator="," close=")" nullable="true">
                 #{item}
             </foreach>
-            <if test="operName != null and operName != ''"> and sol.oper_name like concat('%', #{operName}, '%')</if>
-            <if test="operIp != null and operIp != ''"> and sol.oper_ip like concat('%', #{operIp}, '%')</if>
+            <if test="operName != null and operName != ''"> and sol.oper_name like concat(concat('%', #{operName}), '%')</if>
+            <if test="operIp != null and operIp != ''"> and sol.oper_ip like concat(concat('%', #{operIp}), '%')</if>
             <if test="status != null "> and sol.status = #{status}</if>
             <if test="params.beginOperTime != null and params.endOperTime != null">and sol.oper_time between #{params.beginOperTime} and #{params.endOperTime}</if>
         </where>

@@ -14,7 +14,7 @@ export interface GenTableQuery extends BaseEntity {
 /**
  * 代码生成业务业务对象
  */
-export interface GenTableForm extends BaseEntity {
+export interface GenTableForm {
   /** 编号 */
   tableId?: number;
   /** 数据源名称 */

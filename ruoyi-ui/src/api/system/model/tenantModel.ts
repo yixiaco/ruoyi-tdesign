@@ -27,7 +27,7 @@ export interface SysTenantQuery extends BaseEntity {
  * 租户业务对象
  *
  */
-export interface SysTenantForm extends BaseEntity {
+export interface SysTenantForm {
   /** id */
   id?: number;
   /** 租户编号 */

@@ -18,7 +18,7 @@ export interface SysMessageTemplateQuery extends BaseEntity {
 /**
  * 消息模板业务对象
  */
-export interface SysMessageTemplateForm extends BaseEntity {
+export interface SysMessageTemplateForm {
   /** 消息模板id */
   messageTemplateId?: number;
   /** 模板名称 */

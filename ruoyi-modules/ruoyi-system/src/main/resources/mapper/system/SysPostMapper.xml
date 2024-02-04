@@ -31,8 +31,8 @@
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysPostQuery" resultMap="SysPostResultVo">
         <include refid="selectSysPostVo"/>
         <where>
-            <if test="postCode != null and postCode != ''"> and sp.post_code like concat('%', #{postCode}, '%')</if>
-            <if test="postName != null and postName != ''"> and sp.post_name like concat('%', #{postName}, '%')</if>
+            <if test="postCode != null and postCode != ''"> and sp.post_code like concat(concat('%', #{postCode}), '%')</if>
+            <if test="postName != null and postName != ''"> and sp.post_name like concat(concat('%', #{postName}), '%')</if>
             <if test="status != null and status != ''"> and sp.status = #{status}</if>
         </where>
         order by create_time desc

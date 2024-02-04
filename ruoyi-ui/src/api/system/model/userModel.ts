@@ -25,7 +25,7 @@ export interface SysUserQuery extends BaseEntity {
 /**
  * 用户信息业务对象
  */
-export interface SysUserForm extends BaseEntity {
+export interface SysUserForm {
   /** 用户ID */
   userId?: number;
   /** 部门ID */

@@ -15,8 +15,8 @@
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysClientQuery" resultMap="SysClientResultVo">
         <include refid="selectSysClientVo"/>
         <where>
-            <if test="clientId != null and clientId != ''"> and sc.client_id like concat('%', #{clientId}, '%')</if>
-            <if test="clientKey != null and clientKey != ''"> and sc.client_key like concat('%', #{clientKey}, '%')</if>
+            <if test="clientId != null and clientId != ''"> and sc.client_id like concat(concat('%', #{clientId}), '%')</if>
+            <if test="clientKey != null and clientKey != ''"> and sc.client_key like concat(concat('%', #{clientKey}), '%')</if>
             <if test="status != null and status != ''"> and sc.status = #{status}</if>
             and sc.del_flag = '0'
         </where>

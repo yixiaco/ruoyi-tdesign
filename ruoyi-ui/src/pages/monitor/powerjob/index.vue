@@ -5,6 +5,9 @@
 </template>
 
 <script lang="ts" setup>
+defineOptions({
+  name: 'Powerjob',
+});
 import { ref } from 'vue';
 
 import IFrame from '@/components/i-frame/index.vue';
