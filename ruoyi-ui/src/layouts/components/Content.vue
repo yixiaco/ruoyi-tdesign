@@ -40,7 +40,7 @@ function getComponentKey(component?: VNode) {
   if (route.meta?.key) {
     return getKey(route.meta?.key);
   }
-  return (component?.key?.toString().concat('-') ?? '') + MD5(route.fullPath);
+  return (component?.key?.toString().concat('-') ?? '') + MD5(route.path);
 }
 
 const aliveViews = computed(() => {

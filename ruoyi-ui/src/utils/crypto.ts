@@ -1,7 +1,7 @@
 import CryptoJS from 'crypto-js';
 
 type WordArray = CryptoJS.lib.WordArray;
-// type CipherParams = CryptoJS.lib.CipherParams;
+type CipherParams = CryptoJS.lib.CipherParams;
 // type X64Word = CryptoJS.x64.Word;
 
 /**
@@ -29,24 +29,61 @@ export function generateAesKey() {
  * 使用密钥对数据进行加密
  * @param message
  * @param aesKey
+ * @param iv
+ * @param mode
+ * @param padding
  */
-export function encryptWithAes(message: string, aesKey: WordArray) {
+export function encryptWithAes(
+  message: WordArray | string,
+  aesKey: WordArray,
+  iv?: WordArray | string,
+  mode = CryptoJS.mode.ECB,
+  padding = CryptoJS.pad.Pkcs7,
+) {
+  if (typeof iv === 'string') {
+    iv = CryptoJS.enc.Hex.parse(iv);
+  }
+  if (typeof aesKey === 'string') {
+    aesKey = CryptoJS.enc.Hex.parse(aesKey);
+  }
   const encrypted = CryptoJS.AES.encrypt(message, aesKey, {
-    mode: CryptoJS.mode.ECB,
-    padding: CryptoJS.pad.Pkcs7,
+    iv,
+    mode,
+    padding,
   });
-  return encrypted.toString();
+  return encrypted.toString(CryptoJS.format.Hex);
 }
 
 /**
  * 使用密钥对数据进行解密
- * @param message
- * @param aesKey
+ * @param message 加密文本
+ * @param aesKey key
+ * @param iv 偏移向量
+ * @param mode
+ * @param padding
  */
-export function decryptWithAes(message: string, aesKey: WordArray) {
+export function decryptWithAes(
+  message: CipherParams | string,
+  aesKey: WordArray | string,
+  iv?: WordArray | string,
+  mode = CryptoJS.mode.ECB,
+  padding = CryptoJS.pad.Pkcs7,
+) {
+  if (typeof iv === 'string') {
+    iv = CryptoJS.enc.Hex.parse(iv);
+  }
+  if (typeof aesKey === 'string') {
+    aesKey = CryptoJS.enc.Hex.parse(aesKey);
+  }
+  if (typeof message === 'string') {
+    message = CryptoJS.lib.CipherParams.create({
+      ciphertext: CryptoJS.enc.Hex.parse(message),
+    });
+  }
   const decrypted = CryptoJS.AES.decrypt(message, aesKey, {
-    mode: CryptoJS.mode.ECB,
-    padding: CryptoJS.pad.Pkcs7,
+    iv,
+    mode,
+    padding,
   });
   return decrypted.toString(CryptoJS.enc.Utf8);
 }
