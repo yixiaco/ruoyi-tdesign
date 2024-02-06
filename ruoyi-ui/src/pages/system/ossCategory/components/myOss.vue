@@ -770,6 +770,7 @@ getList();
 <style lang="less" scoped>
 @neutral-h: 220;
 @neutral-s: 10%;
+
 .list-card {
   height: 100%;
 
@@ -782,30 +783,36 @@ getList();
     -webkit-user-select: none;
     user-select: none;
     outline: none;
+
     &-responsive-image--fit {
       width: 100%;
       height: 100%;
     }
+
     &-responsive-image {
       position: absolute;
       opacity: 1;
     }
+
     &-responsive-image__img--cover {
       object-fit: cover;
     }
+
     &-responsive-image__img--fit {
       width: 100%;
       height: 100%;
     }
+
     &-figure {
       height: v-bind(thumbnailSizePixel);
       cursor: pointer;
       margin: 0;
       overflow: hidden;
       position: relative;
+
       &__caption {
-        background-color: hsl(@neutral-h, @neutral-s, @neutral-s);
-        color: hsl(@neutral-h, @neutral-s, 100%);
+        background-color: hsl(@neutral-h @neutral-s @neutral-s);
+        color: hsl(@neutral-h @neutral-s 100%);
         font-size: 12px;
         left: 0;
         padding: 4px;
@@ -815,6 +822,7 @@ getList();
         top: 0;
         z-index: 1;
       }
+
       &__content {
         margin: -1px;
         height: calc(100% + 1px);
@@ -826,13 +834,16 @@ getList();
         position: relative;
       }
     }
+
     &-item {
       color: var(--td-text-color-primary);
       box-sizing: border-box;
       min-width: v-bind(thumbnailSizePixel);
+
       &:focus-visible {
         outline: none;
       }
+
       &__label {
         background-color: var(--td-bg-color-container);
         box-shadow: var(--td-shadow-1);
@@ -841,14 +852,16 @@ getList();
         display: block;
         overflow: hidden;
         position: relative;
-        outline: 1px solid rgba(0, 0, 0, 0);
+        outline: 1px solid rgb(0 0 0 / 0%);
         transition: outline 200ms;
+
         &--active {
           outline: 1px solid var(--td-brand-color);
         }
       }
+
       &__details {
-        border-top: 1px solid hsl(@neutral-h, @neutral-s, 90%);
+        border-top: 1px solid hsl(@neutral-h @neutral-s 90%);
         cursor: pointer;
         display: flex;
         align-items: center;
@@ -856,6 +869,7 @@ getList();
         position: relative;
         gap: 4px;
       }
+
       &__name {
         font-size: 11.2px;
         overflow: hidden;
@@ -864,19 +878,22 @@ getList();
         white-space: nowrap;
         flex-grow: 1;
       }
+
       &__checkmark {
         flex-shrink: 0;
         opacity: 0;
-        color: hsl(@neutral-h, @neutral-s, 70%);
+        color: hsl(@neutral-h @neutral-s 70%);
         transition:
           color 200ms,
           opacity 200ms;
         isolation: isolate;
+
         &--active {
           color: var(--td-brand-color);
           opacity: 1;
         }
       }
+
       &:hover &__checkmark {
         opacity: 1;
       }
@@ -887,18 +904,22 @@ getList();
 .gallery-btn--plain:hover {
   --btn-background-color: hsl(@neutral-h @neutral-s 60% / 10%);
 }
+
 .gallery-btn--plain:active {
   --btn-background-color: hsl(@neutral-h @neutral-s 60% /20%);
 }
+
 .gallery-btn--neutral {
   --btn-background-color-plain-hover: hsl(@neutral-h @neutral-s 60% / 10%);
 }
+
 .gallery-btn {
   --btn-border-color: transparent;
   --btn-padding-vertical: 8px;
   --btn-padding-horizontal: 12px;
   --btn-font-size: 13.6px;
   --btn-line-height: 20px;
+
   border-radius: 7px;
   cursor: pointer;
   display: inline-flex;
@@ -911,54 +932,68 @@ getList();
     background-color 200ms,
     opacity 200ms;
   font-weight: 500;
-  padding: 2.4px 2.4px;
+  padding: 2.4px;
   background-color: var(--btn-background-color);
   border: 1px solid transparent;
   max-width: 100%;
 }
+
 .gallery-icon--base {
   height: 16px;
   min-width: 16px;
 }
+
 .gallery-icon {
   display: block;
   fill: currentColor;
   max-width: initial;
   transition: color 200ms;
 }
+
 .gallery-doc-icon--unknown {
   background-color: #f5f5f5;
 }
+
 .gallery-doc-icon--archive {
   background-color: #f4e9f5;
 }
+
 .gallery-doc-icon--empty {
   background-color: #fff;
 }
+
 .gallery-doc-icon--excel {
   background-color: #e8f5ef;
 }
+
 .gallery-doc-icon--image {
   background-color: #f5f5f5;
 }
+
 .gallery-doc-icon--video {
   background-color: #e5f5f7;
 }
+
 .gallery-doc-icon--audio {
   background-color: #fff6ea;
 }
+
 .gallery-doc-icon--pdf {
   background-color: #ffeae8;
 }
+
 .gallery-doc-icon--ppt {
   background-color: #f9ebe8;
 }
+
 .gallery-doc-icon--text {
   background-color: #f8f8fb;
 }
+
 .gallery-doc-icon--word {
   background-color: #e9eff7;
 }
+
 .gallery-doc-icon {
   height: 100%;
   width: 100%;
@@ -966,6 +1001,7 @@ getList();
   justify-content: center;
   align-items: center;
 }
+
 .gallery-doc-icon__icon {
   width: 56px;
   height: 66px;

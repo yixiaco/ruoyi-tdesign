@@ -25,7 +25,7 @@
           <div
             class="overlay"
             style="
-              background: rgba(0, 0, 0, 0.4);
+              background: rgb(0 0 0 / 40%);
               color: #fff;
               height: 100%;
               display: flex;
@@ -174,6 +174,7 @@ const realHeight = computed(() => (typeof props.height === 'string' ? props.heig
     transform: scale(v-bind(scale));
   }
 }
+
 :deep .t-image__overlay-content {
   border-radius: inherit;
 }

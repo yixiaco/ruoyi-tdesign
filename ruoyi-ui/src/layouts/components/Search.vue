@@ -167,6 +167,7 @@ function getLeftMenus(menus: Array<MenuRoute>, parent?: MenuRoute): MenuRoute[] 
 :global(.search-popup) {
   width: auto !important;
 }
+
 .header-menu-search {
   display: flex;
   margin-left: 16px;

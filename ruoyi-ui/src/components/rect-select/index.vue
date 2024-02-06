@@ -283,6 +283,7 @@ onUnmounted(() => {
   overflow-x: hidden;
   position: relative;
 }
+
 .rect-select {
   //z-index: 999999; //根据情况自己拿捏
   position: absolute;
@@ -291,7 +292,7 @@ onUnmounted(() => {
   background-color: var(--td-brand-color-hover);
   opacity: 0.3;
 
-  /*边框虚线滚动动画特效*/
+  /* 边框虚线滚动动画特效 */
   &-animate {
     border: none;
     background:
@@ -300,7 +301,6 @@ onUnmounted(() => {
       linear-gradient(90deg, var(--td-brand-color) 60%, transparent 60%) repeat-x right bottom/10px 1px,
       linear-gradient(0deg, var(--td-brand-color) 60%, transparent 60%) repeat-y left bottom/1px 10px,
       var(--td-brand-color-hover);
-
     animation: border-animate 0.382s infinite linear;
   }
 

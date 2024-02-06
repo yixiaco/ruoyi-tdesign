@@ -10,10 +10,18 @@ module.exports = {
     'selector-pseudo-class-no-unknown': [
       true,
       {
-        ignorePseudoClasses: ['deep'],
+        ignorePseudoClasses: ['deep', 'global'],
       },
     ],
     'media-query-no-invalid': null, // 官方表示此规则应当仅对于原生CSS启用，对于预处理器（Less）不应启用
+    'function-no-unknown': [
+      true,
+      {
+        ignoreFunctions: ['constant', 'v-bind'],
+      },
+    ],
+    'value-keyword-case': null,
+    'property-no-vendor-prefix': null,
   },
   overrides: [
     {

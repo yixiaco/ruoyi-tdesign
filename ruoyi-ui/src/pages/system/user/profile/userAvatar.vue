@@ -8,7 +8,7 @@
       @click="editCropper()"
     >
       <template #overlayContent>
-        <div style="background: rgba(0, 0, 0, 0.4); color: #fff; height: 100%; border-radius: 50%; line-height: 160px">
+        <div style="background: rgb(0 0 0 / 40%); color: #fff; height: 100%; border-radius: 50%; line-height: 160px">
           <camera-icon size="2em" />
         </div>
       </template>
