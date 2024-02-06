@@ -180,7 +180,7 @@
         <t-row :gutter="[0, 20]">
           <t-col :span="6">
             <t-form-item label="标题" name="title">
-              <t-input v-model="form.title" placeholder="请输入标题" clearable />
+              <t-input v-model.trim="form.title" placeholder="请输入标题" clearable />
             </t-form-item>
           </t-col>
           <t-col :span="6">
@@ -231,7 +231,7 @@
               >
                 <t-input
                   v-if="value.component === 'input'"
-                  v-model="(form.configJson as Record<string, any>)[key]"
+                  v-model.trim="(form.configJson as Record<string, any>)[key]"
                   :placeholder="`请输入${value.name}`"
                   :type="value.type"
                 />

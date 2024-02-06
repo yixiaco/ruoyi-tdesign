@@ -395,8 +395,8 @@
         scroll-to-first-error="smooth"
         @submit="submitFormTest"
       >
-        <t-form-item label="账号" name="account">
-          <t-input v-model="formTest.account" placeholder="请输入账号" clearable />
+        <t-form-item label="发送账号" name="account">
+          <t-input v-model="formTest.account" placeholder="请输入手机号/邮箱" clearable />
         </t-form-item>
         <t-form-item label="变量属性">
           <t-space direction="vertical">
@@ -792,7 +792,7 @@ function submitFormTest({ validateResult, firstError }: SubmitContext) {
     const msgLoading = proxy.$modal.msgLoading('发送测试消息中...');
     sendMessageTest(formTest.value)
       .then(() => {
-        proxy.$modal.msgSuccess('发送成功');
+        proxy.$modal.msgSuccess('已提交发送申请');
       })
       .finally(() => {
         buttonTestLoading.value = false;

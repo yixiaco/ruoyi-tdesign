@@ -314,3 +314,7 @@ websocket:
   path: /resource/websocket
   # 设置访问源地址
   allowedOrigins: '*'
+
+--- #SMS4J 短信
+sms:
+  config-type: interface
