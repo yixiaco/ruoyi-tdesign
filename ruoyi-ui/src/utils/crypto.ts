@@ -34,6 +34,52 @@ export function generateAesKey() {
  * @param padding
  */
 export function encryptWithAes(
+  message: string,
+  aesKey: WordArray,
+  iv?: WordArray,
+  mode = CryptoJS.mode.ECB,
+  padding = CryptoJS.pad.Pkcs7,
+) {
+  const encrypted = CryptoJS.AES.encrypt(message, aesKey, {
+    iv,
+    mode,
+    padding,
+  });
+  return encrypted.toString();
+}
+
+/**
+ * 使用密钥对数据进行解密
+ * @param message
+ * @param aesKey
+ * @param iv
+ * @param mode
+ * @param padding
+ */
+export function decryptWithAes(
+  message: string,
+  aesKey: WordArray,
+  iv?: WordArray,
+  mode = CryptoJS.mode.ECB,
+  padding = CryptoJS.pad.Pkcs7,
+) {
+  const decrypted = CryptoJS.AES.decrypt(message, aesKey, {
+    iv,
+    mode,
+    padding,
+  });
+  return decrypted.toString(CryptoJS.enc.Utf8);
+}
+
+/**
+ * 使用密钥对数据进行加密
+ * @param message
+ * @param aesKey
+ * @param iv
+ * @param mode
+ * @param padding
+ */
+export function encryptWithAesHex(
   message: WordArray | string,
   aesKey: WordArray,
   iv?: WordArray | string,
@@ -62,7 +108,7 @@ export function encryptWithAes(
  * @param mode
  * @param padding
  */
-export function decryptWithAes(
+export function decryptWithAesHex(
   message: CipherParams | string,
   aesKey: WordArray | string,
   iv?: WordArray | string,
