@@ -1,3 +1,151 @@
+## 🌈 1.2.0 `2024-2-08`
+> 本次更新需要执行`update_1.1.0-1.2.0.sql`脚本<br>
+> 重要更新（破坏性）：
+> - 修复 session 多账号共用覆盖问题 改为 tokenSession 独立存储（需要清理redis缓存，否则会报错）
+> - 将 OSS配置 改为全局模式 降低使用难度 保留sql便于用户自行扩展(常规项目用不上配置分多租户)
+> - Sms4J更新版本后，配置项字段发生变更，如果使用消息管理请及时更新配置
+
+### 🚀 New Features
+- 将 OSS配置 改为全局模式 降低使用难度 保留sql便于用户自行扩展(常规项目用不上配置分多租户)
+- 左侧菜单栏增加主题选择模式
+- 系统菜单新增组件名称，组件缓存时不再依赖路由地址
+- 菜单管理支持复制添加新菜单
+- 新增每分钟执行任务事件；新增每年、月、日、时、分任务sql脚本示例
+- 新增分割后匹配正则的校验器
+- 代码生成支持left like与right like查询
+- 新增 RedisUtils.setObjectIfExists 如果存在则设置方法
+- 新增 翻译组件 用户昵称翻译实现
+- 新增注解 @ApiEncrypt 用于校验接口加解密
+- 新增 EncryptResponseBodyWrapper 加密响应参数包装类
+- 添加excel多sheet导出
+- (hook): 替换窗口大小变化监听器
+### 🔥 Performance
+- 优化短信提醒
+- 适配新版Sms4j的api变化及新增的短信平台
+- 优化vue树表展开逻辑
+- 校验菜单路径是否存在；常量抽取到枚举中
+- 优化详情显示效果
+- mybatis注入登录用户时，使用当前用户而不是固定系统用户
+- R.isOk不输出到返回值Json中
+- 参数配置表的参数值类型默认修改为text
+- 新增消息发送帮助类
+- 代码生成支持重新加载字典类型
+- 请求异常提示优化
+- 优化MultipleStpLogic、MultipleStpLogicJwtForSimple方法重写使用Satoken父类
+- 优化使线程动态租户与用户动态租户的界限更加清晰，并使@DynamicTenant支持可重入功能
+- 优化代码生成模板，更好的支持checkbox组件与IN查询
+- 增加通知关闭按钮
+- 使AnyEnum可以匹配枚举属性值
+- 丰富RedisUtils对List Set类型的操作
+- 为 admin 模块 单独增加ratelimiter模块
+- 验证码接口 增加限流配置
+- SocialUtils 代码
+- 删除无用异常类
+- 补全三方登录校验国际化
+- 开启 redisson 脚本缓存 减少网络传输
+- 删除 hikaricp 官方不推荐使用的配置 jdbc4 协议自带校验方法
+- 减少 PlusSaTokenDao 不必要的查询优化性能
+- 使用登录用户判断是否登录 提高效率
+- 重构 LoginHelper 将本地存储代码操作封装
+- getTenantId 判断是否开启多租户
+- Dockerfile 使用shell模式 支持环境变量传入jvm参数
+- 改进代码逻辑 支持注解强制加密接口数据
+- WebSocketUtils 连接关闭改为警告
+- 调整加解密判断逻辑, 避免 NPE
+- jvm参数调整 全面启用zgc
+- 使用动态租户重构业务对租户的逻辑
+- 更新用户登录信息方法忽略数据权限
+- 补全三方绑定时间字段 删除无用excel注解
+- 将登录记录抽取到监听器统一处理
+### 🐞 Bug Fixes
+- 修复stylelint校验提示
+- like语句兼容oracle语法
+- 修复不同路径下，相同组件互相影响的问题
+- 修复打开部门详情报错问题
+- 修复日期过滤条件未加入导出条件中
+- 代码生成模板生成多余的日期范围变量
+- 发送消息值为null时报空指针问题修复
+- 修复消息发送记录表缺少字段问题
+- 点击菜单无法跳转问题
+- 更新依赖，修复点击菜单无法切换页面问题
+- 修改oss分类错误
+- 修复websocket未开启问题
+- 修复WebSocket session链接列表可能为空
+- echarts resize error
+- 代码生成查询对象选项问题修复
+- 修复区域选择body存在滚动条时选择区域偏移；优化选择区域卡顿问题；
+- 修复没有权限访问自身信息问题
+- 修复菜单分割下的首页点击跳转错误
+- 修复 CryptoFilter 代码逻辑问题
+- 修复 selectDictTypeByType 查询方法错误问题
+- 修复一些不正常类无法加载报错问题
+- 修复 excel合并注解会根据第一合并列的结果来决定后续的列合并
+- 修复 session 多账号共用覆盖问题 改为 tokenSession 独立存储（需要清理redis缓存，否则会报错）
+- 修复 powerjob部署方案 高版本nginx不生效问题
+- 修复 OssFactory 并发多创建实例问题
+- 修复 延迟队列在投递消息未到达时间的时候 服务死机导致重启收不到消息
+- i18n:修复用户中心词条不生效的问题
+- i18n:pages.result.fail.modify中文未定义
+### 🏡 Chore
+- chore: 修正字典名称更准确
+- chore: 暂时使用单条多次发送的方式代替群发消息
+- rollback 回滚错误提交, 保留加密组件开关
+### 🔨 Dependency Upgrades
+#### 🔨 java pom
+- Upgrade to spring-boot-3.2.1
+- Upgrade to mybatis-spring-boot-starter-3.0.3
+- Upgrade to springdoc-openapi-starter-webmvc-api-2.3.0
+- Upgrade to easyexcel-3.3.3
+- Upgrade to mybatis-plus-3.5.5
+- Upgrade to hutool-5.8.24
+- Upgrade to spring-boot-admin-3.2.1
+- Upgrade to redisson-3.25.2
+- Upgrade to dynamic-datasource-spring-boot3-starter-4.3.0
+- Upgrade to alibaba-ttl-2.14.5
+- Upgrade to mapstruct-plus-1.3.6
+- Upgrade to bouncycastle-1.77
+- Upgrade to JustAuth-1.16.6
+- Upgrade to aws-java-sdk-s3-1.12.633
+- Upgrade to sms4j-3.1.1
+#### 🔨 node package
+- Add @vueuse/core@^10.7.2
+- Upgrade to axios@^1.6.7
+- Upgrade to pinia-plugin-persistedstate@^3.2.1
+- Upgrade to tdesign-vue-next@1.8.0
+- Upgrade to tinymce@^6.8.2
+- Upgrade to vue@~3.3.13
+- Upgrade to vue-i18n@^9.9.0
+- Upgrade to @commitlint/cli@^18.6.0
+- Upgrade to @commitlint/config-conventional@^18.6.0
+- Upgrade to @types/crypto-js@^4.2.2
+- Upgrade to @types/echarts@^4.9.22
+- Upgrade to @types/qs@^6.9.11
+- Upgrade to @typescript-eslint/eslint-plugin@^6.19.1
+- Upgrade to @typescript-eslint/parser@^6.19.1
+- Upgrade to @vitejs/plugin-vue@^5.0.3
+- Upgrade to @vue/compiler-sfc@~3.3.13
+- Upgrade to eslint@^8.56.0
+- Upgrade to eslint-config-prettier@^9.1.0
+- Upgrade to eslint-plugin-import@^2.29.1
+- Upgrade to eslint-plugin-prettier@^5.1.3
+- Upgrade to eslint-plugin-vue@^9.20.1
+- Upgrade to eslint-plugin-vue-scoped-css@^2.7.2
+- Upgrade to lint-staged@^15.2.0
+- Upgrade to postcss-html@^1.6.0
+- Upgrade to prettier@^3.2.4
+- Upgrade to stylelint@~16.2.0
+- Upgrade to stylelint-config-standard@^36.0.0
+- Upgrade to stylelint-order@~6.0.4
+- Upgrade to typescript@~5.3.3
+- Upgrade to unplugin-auto-import@^0.17.5
+- Upgrade to unplugin-vue-components@^0.26.0
+- Upgrade to vite@~5.0.12
+- Upgrade to vite-plugin-mock@^3.0.1
+- Upgrade to vite-plugin-prismjs@^0.0.11
+- Upgrade to vite-plugin-vue-devtools@1.0.0-rc.8
+- Upgrade to vue-tsc@^1.8.27
+- Remove vue-clipboard3
+
 ## 🌈 1.1.0 `2023-12-01`
 > 本次更新需要执行`update_1.0.9-1.1.0.sql`脚本
 ### 🚀 New Features
