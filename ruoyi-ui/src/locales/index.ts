@@ -1,5 +1,5 @@
 import { useLocalStorage, usePreferredLanguages } from '@vueuse/core';
-import { DropdownOption } from 'tdesign-vue-next';
+import type { DropdownOption } from 'tdesign-vue-next';
 import { computed } from 'vue';
 import { createI18n } from 'vue-i18n';
 

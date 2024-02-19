@@ -305,7 +305,8 @@ import {
   SearchIcon,
   SwapIcon,
 } from 'tdesign-icons-vue-next';
-import { FormInstanceFunctions, FormRule, MessagePlugin, PageInfo, SubmitContext } from 'tdesign-vue-next';
+import type { FormInstanceFunctions, FormRule, PageInfo, SubmitContext } from 'tdesign-vue-next';
+import { MessagePlugin } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref, watch } from 'vue';
 
 import type { SysOssCategoryVo } from '@/api/system/model/ossCategoryModel';
