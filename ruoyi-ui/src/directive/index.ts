@@ -1,4 +1,4 @@
-import { App } from 'vue';
+import type { App } from 'vue';
 
 import copyText from './common/copyText';
 import hasPermi from './permission/hasPermi';

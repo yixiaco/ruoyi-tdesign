@@ -63,7 +63,7 @@ import { computed, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import { usePermissionStore } from '@/store';
-import { MenuRoute } from '@/types/interface';
+import type { MenuRoute } from '@/types/interface';
 
 defineProps({
   layout: String,

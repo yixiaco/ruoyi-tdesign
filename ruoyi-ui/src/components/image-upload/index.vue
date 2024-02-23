@@ -68,8 +68,8 @@ import type { SuccessContext, UploadFile, UploadRemoveContext, UploadValidateTyp
 import { computed, getCurrentInstance, ref, watch } from 'vue';
 
 import { delOss, listByIds, listByUrls } from '@/api/system/oss';
-import { SelectFile } from '@/components/upload-select/index.vue';
-import { MyOssProps } from '@/pages/system/ossCategory/components/myOss.vue';
+import type { SelectFile } from '@/components/upload-select/index.vue';
+import type { MyOssProps } from '@/pages/system/ossCategory/components/myOss.vue';
 import { useUserStore } from '@/store';
 import { getHttpFileName, getHttpFileSuffix } from '@/utils/ruoyi';
 

@@ -7,7 +7,8 @@
 </template>
 <script lang="ts" setup>
 import debounce from 'lodash/debounce';
-import { computed, CSSProperties, ref, unref, watch } from 'vue';
+import type { CSSProperties } from 'vue';
+import { computed, ref, unref, watch } from 'vue';
 
 import { prefix } from '@/config/global';
 import { useWindowSizeFn } from '@/hooks/event/useWindowSizeFn';
