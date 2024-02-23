@@ -1,4 +1,4 @@
-import { YunpianSmsConfig } from '@/pages/system/messageConfig/model';
+import type { YunpianSmsConfig } from '@/pages/system/messageConfig/model';
 
 /** 云片短信配置 */
 export const yunpianSms: YunpianSmsConfig = {

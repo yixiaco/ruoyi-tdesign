@@ -26,8 +26,6 @@ export function getDateArray(dateTime: string[] = [], divideNum = 10): string[] 
  *
  * @param {number} [num=100]
  * @returns
- *
- * @memberOf DashboardBase
  */
 export function getRandomArray(num = 100): number {
   let resultNum = Number((Math.random() * num).toFixed(0));

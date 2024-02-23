@@ -1,4 +1,4 @@
-import { TencentSmsConfig } from '@/pages/system/messageConfig/model';
+import type { TencentSmsConfig } from '@/pages/system/messageConfig/model';
 
 /** 腾讯云短信配置 */
 export const tencent: TencentSmsConfig = {

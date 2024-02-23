@@ -1,4 +1,4 @@
-import { CloopenSmsConfig } from '@/pages/system/messageConfig/model';
+import type { CloopenSmsConfig } from '@/pages/system/messageConfig/model';
 
 /** 容联云短信配置 */
 export const cloopenSms: CloopenSmsConfig = {

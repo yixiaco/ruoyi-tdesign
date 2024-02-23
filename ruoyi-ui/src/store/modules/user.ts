@@ -4,7 +4,6 @@ import { getInfo, isLogin, login, logout } from '@/api/login';
 import type { LoginParam, UserInfo } from '@/api/model/loginModel';
 import type { R } from '@/api/model/resultModel';
 import defAva from '@/assets/images/profile.jpg';
-import { store } from '@/store';
 
 export const useUserStore = defineStore('user', {
   state: () => ({

@@ -1,4 +1,4 @@
-import { CtyunSmsConfig } from '@/pages/system/messageConfig/model';
+import type { CtyunSmsConfig } from '@/pages/system/messageConfig/model';
 
 /** 天翼云短信配置 */
 export const ctyunSmsConfig: CtyunSmsConfig = {

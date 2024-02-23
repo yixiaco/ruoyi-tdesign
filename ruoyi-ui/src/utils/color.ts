@@ -1,25 +1,22 @@
-import * as echarts from 'echarts/core';
-import trim from 'lodash/trim';
-import { Color } from 'tvision-color';
+import * as echarts from "echarts/core";
+import trim from "lodash/trim";
+import { Color } from "tvision-color";
 
-import { TColorToken } from '@/config/color';
+import type { TColorToken } from "@/config/color";
 
 /**
  * 依据主题类型获取颜色
  *
  * @export
- * @param {string} theme
  * @returns {}
  */
 export function getColorFromTheme(): Array<string> {
   const theme = trim(getComputedStyle(document.documentElement).getPropertyValue('--td-brand-color'));
-  const themeColorList = Color.getRandomPalette({
+  return Color.getRandomPalette({
     color: theme,
     colorGamut: 'bright',
     number: 8,
   });
-
-  return themeColorList;
 }
 
 /** 图表颜色 */
@@ -34,7 +31,6 @@ export function getChartListColor(): Array<string> {
  *
  * @export
  * @param {Array<string>} chartsList
- * @param {string} theme
  */
 export function changeChartsTheme(chartsList: echarts.EChartsType[]): void {
   if (chartsList && chartsList.length) {

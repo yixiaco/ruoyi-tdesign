@@ -1,4 +1,4 @@
-import { AlibabaSmsConfig } from '@/pages/system/messageConfig/model';
+import type { AlibabaSmsConfig } from '@/pages/system/messageConfig/model';
 
 /** 阿里云短信配置 */
 export const alibaba: AlibabaSmsConfig = {

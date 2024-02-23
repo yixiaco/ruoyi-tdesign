@@ -1,4 +1,4 @@
-import { DingZhongSmsConfig } from '@/pages/system/messageConfig/model';
+import type { DingZhongSmsConfig } from '@/pages/system/messageConfig/model';
 
 /** 鼎众短信配置 */
 export const dingZhongSmsConfig: DingZhongSmsConfig = {

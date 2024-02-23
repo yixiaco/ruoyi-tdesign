@@ -1,4 +1,4 @@
-import { EmaySmsConfig } from '@/pages/system/messageConfig/model';
+import type { EmaySmsConfig } from '@/pages/system/messageConfig/model';
 
 /** 亿美软通短信配置 */
 export const emaySmsConfig: EmaySmsConfig = {

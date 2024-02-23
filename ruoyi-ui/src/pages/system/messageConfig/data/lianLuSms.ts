@@ -1,4 +1,4 @@
-import { LianLuSmsConfig } from '@/pages/system/messageConfig/model';
+import type { LianLuSmsConfig } from '@/pages/system/messageConfig/model';
 
 /** 联麓短信配置 */
 export const lianLuSmsConfig: LianLuSmsConfig = {

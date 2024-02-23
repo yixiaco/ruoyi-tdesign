@@ -1,6 +1,6 @@
 import isObject from 'lodash/isObject';
 import isString from 'lodash/isString';
-import { Recordable } from 'vite-plugin-mock';
+import type { Recordable } from 'vite-plugin-mock';
 
 const DATE_TIME_FORMAT = 'YYYY-MM-DD HH:mm:ss';
 

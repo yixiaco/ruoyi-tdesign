@@ -1,4 +1,4 @@
-import { ZhutongSmsConfig } from '@/pages/system/messageConfig/model';
+import type { ZhutongSmsConfig } from '@/pages/system/messageConfig/model';
 
 /** 助通短信配置 */
 export const zhutongSmsConfig: ZhutongSmsConfig = {

@@ -31,8 +31,7 @@ import { useRoute } from 'vue-router';
 
 import RIcon from '@/components/r-icon/index.vue';
 import { getActive } from '@/router';
-import type { MenuRoute } from '@/types/interface';
-import { ComplexRoute } from '@/types/interface';
+import type { ComplexRoute, MenuRoute } from '@/types/interface';
 
 type ListItemType = MenuRoute & { icon?: string };
 const route = useRoute();

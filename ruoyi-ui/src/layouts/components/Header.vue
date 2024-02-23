@@ -99,7 +99,7 @@ import TranslateSelect from '@/components/translate-select/index.vue';
 import { prefix } from '@/config/global';
 import { getActive } from '@/router';
 import { useSettingStore, useUserStore } from '@/store';
-import { ComplexRoute } from '@/types/interface';
+import type { ComplexRoute } from '@/types/interface';
 
 import DynamicTenant from './DynamicTenant.vue';
 import MenuContent from './MenuContent.vue';

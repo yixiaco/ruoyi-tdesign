@@ -16,7 +16,8 @@
     "paths": {
       "@/*": ["src/*"]
     },
-    "noImplicitAny": true
+    "noImplicitAny": true,
+    "verbatimModuleSyntax": true
   },
   "include": [
     "**/*.ts",

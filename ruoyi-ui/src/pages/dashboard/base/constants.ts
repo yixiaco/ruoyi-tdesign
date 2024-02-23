@@ -1,13 +1,3 @@
-import type { TdBaseTableProps } from 'tdesign-vue-next';
-
-interface DashboardPanel {
-  title: string;
-  number: string | number;
-  leftType: string;
-  upTrend?: string;
-  downTrend?: string;
-}
-
 interface TendItem {
   growUp?: number;
   productName: string;

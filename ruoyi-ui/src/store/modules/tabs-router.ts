@@ -1,8 +1,8 @@
 import { defineStore } from 'pinia';
 import { nextTick } from 'vue';
-import type { RouteLocationNormalizedLoaded, Router, RouteRecordRaw } from 'vue-router';
+import type { RouteLocationNormalizedLoaded, Router } from 'vue-router';
 
-import { store, unfoldRoutesPath, usePermissionStore, usePermissionStoreHook } from '@/store';
+import { store, unfoldRoutesPath, usePermissionStore } from '@/store';
 import type { TRouterInfo, TTabRouterType } from '@/types/interface';
 
 const homeRoute: Array<TRouterInfo> = [

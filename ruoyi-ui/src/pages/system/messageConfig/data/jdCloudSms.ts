@@ -1,4 +1,4 @@
-import { JdCloudSmsConfig } from '@/pages/system/messageConfig/model';
+import type { JdCloudSmsConfig } from '@/pages/system/messageConfig/model';
 
 /** 京东云短信配置 */
 export const jdCloudSms: JdCloudSmsConfig = {

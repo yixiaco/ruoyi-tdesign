@@ -1,4 +1,4 @@
-import { HuaweiSmsConfig } from '@/pages/system/messageConfig/model';
+import type { HuaweiSmsConfig } from '@/pages/system/messageConfig/model';
 
 /** 华为云短信配置 */
 export const huawei: HuaweiSmsConfig = {

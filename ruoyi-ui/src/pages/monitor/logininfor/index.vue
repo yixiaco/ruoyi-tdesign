@@ -30,12 +30,7 @@
         </t-form-item>
         <t-form-item label="设备类型" name="deviceType">
           <t-select v-model="queryParams.deviceType" placeholder="请选择设备类型" clearable>
-            <t-option
-              v-for="dict in sys_device_type"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
+            <t-option v-for="dict in sys_device_type" :key="dict.value" :label="dict.label" :value="dict.value" />
           </t-select>
         </t-form-item>
         <t-form-item label="登录时间">

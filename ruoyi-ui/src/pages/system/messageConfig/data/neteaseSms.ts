@@ -1,4 +1,4 @@
-import { NeteaseSmsConfig } from '@/pages/system/messageConfig/model';
+import type { NeteaseSmsConfig } from '@/pages/system/messageConfig/model';
 
 /** 网易云短信配置 */
 export const neteaseSmsConfig: NeteaseSmsConfig = {

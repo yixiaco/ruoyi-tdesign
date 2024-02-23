@@ -8,7 +8,6 @@ import Layout from '@/layouts/index.vue';
 import auth from '@/plugins/auth';
 import router, { defaultRouterList, dynamicRoutes } from '@/router';
 import { store } from '@/store';
-import type { TRouterInfo } from '@/types/interface';
 
 const modules = import.meta.glob('./../../pages/**/*.vue');
 

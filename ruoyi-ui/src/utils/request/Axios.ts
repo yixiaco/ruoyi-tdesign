@@ -1,11 +1,11 @@
-import axios, {
-  AxiosError,
+import type {
   AxiosInstance,
   AxiosRequestConfig,
   AxiosRequestHeaders,
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
+import axios, { AxiosError } from 'axios';
 import cloneDeep from 'lodash/cloneDeep';
 import debounce from 'lodash/debounce';
 import isFunction from 'lodash/isFunction';
@@ -13,10 +13,10 @@ import throttle from 'lodash/throttle';
 import { stringify } from 'qs';
 
 import { ContentTypeEnum } from '@/constants';
-import { AxiosRequestConfigRetry, RequestOptions, Result } from '@/types/axios';
+import type { AxiosRequestConfigRetry, RequestOptions, Result } from '@/types/axios';
 
 import { AxiosCanceler } from './AxiosCancel';
-import { CreateAxiosOptions } from './AxiosTransform';
+import type { CreateAxiosOptions } from './AxiosTransform';
 
 /**
  * Axios 模块

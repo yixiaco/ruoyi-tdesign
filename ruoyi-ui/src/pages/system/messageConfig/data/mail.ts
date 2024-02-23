@@ -1,4 +1,4 @@
-import { MailConfig } from '@/pages/system/messageConfig/model';
+import type { MailConfig } from '@/pages/system/messageConfig/model';
 
 export const mail: MailConfig = {
   host: {

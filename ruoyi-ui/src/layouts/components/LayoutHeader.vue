@@ -15,7 +15,7 @@ import { storeToRefs } from 'pinia';
 import { computed } from 'vue';
 
 import { usePermissionStore, useSettingStore } from '@/store';
-import { ComplexRoute } from '@/types/interface';
+import type { ComplexRoute } from '@/types/interface';
 
 import LHeader from './Header.vue';
 

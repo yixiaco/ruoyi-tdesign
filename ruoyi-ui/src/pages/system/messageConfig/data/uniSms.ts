@@ -1,4 +1,4 @@
-import { UniSmsConfig } from '@/pages/system/messageConfig/model';
+import type { UniSmsConfig } from '@/pages/system/messageConfig/model';
 
 /** 合一短信配置 */
 export const uniSms: UniSmsConfig = {
