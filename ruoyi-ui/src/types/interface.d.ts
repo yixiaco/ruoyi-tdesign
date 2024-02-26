@@ -1,7 +1,7 @@
 import type { TabValue } from 'tdesign-vue-next';
 import type { LocationQueryRaw, RouteMeta, RouteRecordName, RouteRecordRaw } from 'vue-router';
 
-import STYLE_CONFIG from '@/config/style';
+import type STYLE_CONFIG from '@/config/style';
 
 export interface MenuRoute {
   path: string;

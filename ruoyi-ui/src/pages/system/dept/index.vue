@@ -262,7 +262,7 @@ import { computed, getCurrentInstance, ref } from 'vue';
 
 import { addDept, delDept, getDept, listDept, listDeptExcludeChild, updateDept } from '@/api/system/dept';
 import type { SysDeptForm, SysDeptQuery, SysDeptVo } from '@/api/system/model/deptModel';
-import { SysUserVo } from '@/api/system/model/userModel';
+import type { SysUserVo } from '@/api/system/model/userModel';
 import { listUserByDeptId } from '@/api/system/user';
 
 const { proxy } = getCurrentInstance();

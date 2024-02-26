@@ -1,11 +1,12 @@
 import type {
+  AxiosError,
   AxiosInstance,
   AxiosRequestConfig,
   AxiosRequestHeaders,
   AxiosResponse,
   InternalAxiosRequestConfig,
 } from 'axios';
-import axios, { AxiosError } from 'axios';
+import axios from 'axios';
 import cloneDeep from 'lodash/cloneDeep';
 import debounce from 'lodash/debounce';
 import isFunction from 'lodash/isFunction';

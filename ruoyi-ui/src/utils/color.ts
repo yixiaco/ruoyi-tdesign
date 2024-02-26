@@ -1,8 +1,8 @@
-import * as echarts from "echarts/core";
-import trim from "lodash/trim";
-import { Color } from "tvision-color";
+import type * as echarts from 'echarts/core';
+import trim from 'lodash/trim';
+import { Color } from 'tvision-color';
 
-import type { TColorToken } from "@/config/color";
+import type { TColorToken } from '@/config/color';
 
 /**
  * 依据主题类型获取颜色
