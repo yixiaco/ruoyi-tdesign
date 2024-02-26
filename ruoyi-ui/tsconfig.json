@@ -17,7 +17,8 @@
       "@/*": ["src/*"]
     },
     "noImplicitAny": true,
-    "verbatimModuleSyntax": true
+    "verbatimModuleSyntax": true,
+    "importsNotUsedAsValues": "error"
   },
   "include": [
     "**/*.ts",

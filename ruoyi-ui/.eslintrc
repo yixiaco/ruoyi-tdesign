@@ -30,6 +30,7 @@
     "import/extensions": [".js", ".jsx", ".ts", ".tsx"]
   },
   "rules": {
+    "@typescript-eslint/consistent-type-imports": "error",
     "no-useless-constructor": "off",
     "no-return-assign": "off",
     "prefer-destructuring": "off",
