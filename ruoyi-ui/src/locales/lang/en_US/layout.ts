@@ -25,16 +25,16 @@ export default {
     title: 'Setting',
     theme: {
       mode: 'Theme Mode',
-      menuMode: 'Menu Mode',
       color: 'Theme Color',
       options: {
         light: 'Light',
         dark: 'Dark ',
-        auto: 'Follow System',
-        default: 'Auto',
+        system: 'Follow System',
+        auto: 'Auto',
       },
     },
     navigationLayout: 'Navigation Layout',
+    sideMode: 'Side Menu Mode',
     splitMenu: 'Split Menu（Only Mix mode）',
     fixedSidebar: 'Fixed Sidebar',
     element: {

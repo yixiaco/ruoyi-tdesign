@@ -25,16 +25,16 @@ export default {
     title: '页面配置',
     theme: {
       mode: '主题模式',
-      menuMode: '菜单模式',
       color: '主题色',
       options: {
         light: '明亮',
         dark: '暗黑',
-        auto: '跟随系统',
-        default: '自动',
+        system: '跟随系统',
+        auto: '自动',
       },
     },
     navigationLayout: '导航布局',
+    sideMode: '侧边栏模式',
     splitMenu: '分割菜单（混合模式下有效）',
     fixedSidebar: '固定侧边栏',
     element: {

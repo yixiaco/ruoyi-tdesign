@@ -264,7 +264,6 @@ const navToHelper = () => {
   display: flex;
   align-items: normal;
   line-height: 0;
-  padding-left: var(--td-comp-margin-xl);
 }
 
 .header-logo-container {
