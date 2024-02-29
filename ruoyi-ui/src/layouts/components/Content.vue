@@ -67,7 +67,7 @@ const isRefreshing = computed(() => {
   transition: opacity @anim-duration-slow @anim-time-fn-easing;
 }
 
-.fade-enter,
+.fade-enter-from,
 .fade-leave-to {
   opacity: 0;
 }
