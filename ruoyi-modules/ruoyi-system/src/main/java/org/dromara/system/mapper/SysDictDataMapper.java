@@ -1,7 +1,6 @@
 package org.dromara.system.mapper;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysDictData;
 import org.dromara.system.domain.query.SysDictDataQuery;

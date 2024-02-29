@@ -24,12 +24,12 @@ export interface SysCache {
 }
 
 export interface Cache {
-  name: string;
-  value: string;
+  name?: string;
+  value?: string;
 }
 
 export interface SysCacheInfo {
-  info: any;
-  dbSize: number;
-  commandStats: Array<Cache>;
+  info?: Record<string, any>;
+  dbSize?: number;
+  commandStats?: Array<Cache>;
 }

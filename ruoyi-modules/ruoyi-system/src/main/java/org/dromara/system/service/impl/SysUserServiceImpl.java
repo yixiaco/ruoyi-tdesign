@@ -4,14 +4,11 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.CacheNames;
-import org.dromara.common.core.constant.Constants;
 import org.dromara.common.core.constant.UserConstants;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.service.UserService;
@@ -101,32 +98,25 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     /**
      * 根据条件分页查询已分配用户角色列表
      *
-     * @param user 用户信息
+     * @param query 用户查询对象
      * @return 用户信息集合信息
      */
     @Override
-    public TableDataInfo<SysUserVo> selectAllocatedList(SysUserBo user) {
-        return PageQuery.of(() -> baseMapper.selectAllocatedList(user));
+    public TableDataInfo<SysUserVo> selectAllocatedList(SysUserQuery query) {
+        return PageQuery.of(() -> baseMapper.selectAllocatedList(query));
     }
 
     /**
      * 根据条件分页查询未分配用户角色列表
      *
-     * @param user 用户信息
+     * @param query 用户查询对象
      * @return 用户信息集合信息
      */
     @Override
-    public TableDataInfo<SysUserVo> selectUnallocatedList(SysUserBo user, PageQuery pageQuery) {
-        List<Long> userIds = userRoleMapper.selectUserIdsByRoleId(user.getRoleId());
-        QueryWrapper<SysUser> wrapper = Wrappers.query();
-        wrapper.eq("u.del_flag", Constants.DEL_FLAG)
-            .and(w -> w.ne("r.role_id", user.getRoleId()).or().isNull("r.role_id"))
-            .notIn(CollUtil.isNotEmpty(userIds), "u.user_id", userIds)
-            .like(StringUtils.isNotBlank(user.getUserName()), "u.user_name", user.getUserName())
-            .like(StringUtils.isNotBlank(user.getPhonenumber()), "u.phonenumber", user.getPhonenumber())
-            .orderByAsc("u.user_id");
-        Page<SysUserVo> page = baseMapper.selectUnallocatedList(pageQuery.build(), wrapper);
-        return TableDataInfo.build(page);
+    public TableDataInfo<SysUserVo> selectUnallocatedList(SysUserQuery query) {
+        List<Long> userIds = userRoleMapper.selectUserIdsByRoleId(query.getRoleId());
+        query.setUserIds(userIds);
+        return PageQuery.of(() -> baseMapper.selectUnallocatedList(query));
     }
 
     /**

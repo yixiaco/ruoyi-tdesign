@@ -1,7 +1,6 @@
 package org.dromara.system.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
-import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysUser;
 import org.dromara.system.domain.bo.SysUserBo;
@@ -36,18 +35,18 @@ public interface ISysUserService extends IService<SysUser> {
     /**
      * 根据条件分页查询已分配用户角色列表
      *
-     * @param user 用户信息
+     * @param query 用户查询对象
      * @return 用户信息集合信息
      */
-    TableDataInfo<SysUserVo> selectAllocatedList(SysUserBo user);
+    TableDataInfo<SysUserVo> selectAllocatedList(SysUserQuery query);
 
     /**
      * 根据条件分页查询未分配用户角色列表
      *
-     * @param user 用户信息
+     * @param query 用户查询对象
      * @return 用户信息集合信息
      */
-    TableDataInfo<SysUserVo> selectUnallocatedList(SysUserBo user, PageQuery pageQuery);
+    TableDataInfo<SysUserVo> selectUnallocatedList(SysUserQuery query);
 
     /**
      * 通过用户名查询用户

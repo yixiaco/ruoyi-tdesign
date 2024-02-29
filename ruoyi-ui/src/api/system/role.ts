@@ -1,6 +1,6 @@
 import type { R, TableDataInfo } from '@/api/model/resultModel';
 import type { DeptTreeSelect, SysRoleForm, SysRoleQuery, SysRoleVo, SysUserRole } from '@/api/system/model/roleModel';
-import type { SysUserForm, SysUserVo } from '@/api/system/model/userModel';
+import type { SysUserQuery, SysUserVo } from '@/api/system/model/userModel';
 import { request } from '@/utils/request';
 
 // 查询角色列表
@@ -62,7 +62,7 @@ export function delRole(roleId: number | number[]) {
 }
 
 // 查询角色已授权用户列表
-export function allocatedUserList(query: SysUserForm) {
+export function allocatedUserList(query: SysUserQuery) {
   return request.get<TableDataInfo<SysUserVo>>({
     url: '/system/role/authUser/allocatedList',
     params: query,
@@ -70,7 +70,7 @@ export function allocatedUserList(query: SysUserForm) {
 }
 
 // 查询角色未授权用户列表
-export function unallocatedUserList(query: SysUserForm) {
+export function unallocatedUserList(query: SysUserQuery) {
   return request.get<TableDataInfo<SysUserVo>>({
     url: '/system/role/authUser/unallocatedList',
     params: query,

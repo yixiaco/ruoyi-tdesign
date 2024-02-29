@@ -65,7 +65,7 @@ const getMenuList = (list: ComplexRoute[], basePath?: string): ListItemType[] =>
     return (a.meta?.orderNo || 0) - (b.meta?.orderNo || 0);
   });
   return list
-    .map<ListItemType>((item: MenuRoute) => {
+    .map((item) => {
       const path = basePath && !item.path?.includes(basePath) ? `${basePath}/${item.path}` : item.path;
 
       return {
@@ -76,7 +76,7 @@ const getMenuList = (list: ComplexRoute[], basePath?: string): ListItemType[] =>
         meta: item.meta,
         redirect: item.redirect,
         query: item.query,
-      };
+      } as ListItemType;
     })
     .filter((item) => item.meta && item.meta.hidden !== true);
 };

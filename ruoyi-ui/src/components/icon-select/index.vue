@@ -4,7 +4,7 @@
     placeholder="请选择"
     :style="{ width: '400px' }"
     :popup-props="{ overlayInnerStyle: { width: '400px' } }"
-    @change="onChange"
+    @change="onChange($event as string)"
   >
     <t-option v-for="item in options" :key="item.stem" :value="item.stem" class="overlay-options">
       <div>

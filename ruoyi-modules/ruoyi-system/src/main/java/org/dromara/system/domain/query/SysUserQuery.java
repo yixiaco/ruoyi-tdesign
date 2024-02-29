@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 
+import java.util.List;
+
 /**
  * 用户信息查询对象 sys_user
  *
@@ -53,5 +55,15 @@ public class SysUserQuery extends BaseEntity {
      * 部门组
      */
     private Long[] deptIds;
+
+    /**
+     * 数据权限 当前角色ID
+     */
+    private Long roleId;
+
+    /**
+     * 用户id
+     */
+    private List<Long> userIds;
 
 }

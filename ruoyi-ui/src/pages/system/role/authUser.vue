@@ -103,7 +103,7 @@ import type { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, reactive, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import type { SysUserForm, SysUserVo } from '@/api/system/model/userModel';
+import type { SysUserQuery, SysUserVo } from '@/api/system/model/userModel';
 import { allocatedUserList, authUserCancel, authUserCancelAll } from '@/api/system/role';
 import SelectUser, { type SelectUserInstance } from '@/pages/system/role/selectUser.vue';
 import { useTabsRouterStore } from '@/store';
@@ -134,10 +134,10 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: '180' },
   { title: `操作`, colKey: 'operation', align: 'center' },
 ]);
-const queryParams = reactive<SysUserForm>({
+const queryParams = reactive<SysUserQuery>({
   pageNum: 1,
   pageSize: 10,
-  roleId: route.params.roleId as string,
+  roleId: route.params.roleId as any,
   userName: undefined,
   phonenumber: undefined,
 });

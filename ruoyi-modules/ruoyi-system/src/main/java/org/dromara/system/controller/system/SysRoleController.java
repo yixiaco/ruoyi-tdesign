@@ -9,14 +9,13 @@ import org.dromara.common.core.validate.EditGroup;
 import org.dromara.common.excel.utils.ExcelUtil;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
-import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.system.domain.SysUserRole;
 import org.dromara.system.domain.bo.SysRoleBo;
-import org.dromara.system.domain.bo.SysUserBo;
 import org.dromara.system.domain.query.SysDeptQuery;
 import org.dromara.system.domain.query.SysRoleQuery;
+import org.dromara.system.domain.query.SysUserQuery;
 import org.dromara.system.domain.vo.DeptTreeSelectVo;
 import org.dromara.system.domain.vo.SysRoleVo;
 import org.dromara.system.domain.vo.SysUserVo;
@@ -166,8 +165,8 @@ public class SysRoleController extends BaseController {
      */
     @SaCheckPermission("system:role:list")
     @GetMapping("/authUser/allocatedList")
-    public TableDataInfo<SysUserVo> allocatedList(SysUserBo user) {
-        return userService.selectAllocatedList(user);
+    public TableDataInfo<SysUserVo> allocatedList(SysUserQuery query) {
+        return userService.selectAllocatedList(query);
     }
 
     /**
@@ -175,8 +174,8 @@ public class SysRoleController extends BaseController {
      */
     @SaCheckPermission("system:role:list")
     @GetMapping("/authUser/unallocatedList")
-    public TableDataInfo<SysUserVo> unallocatedList(SysUserBo user, PageQuery pageQuery) {
-        return userService.selectUnallocatedList(user, pageQuery);
+    public TableDataInfo<SysUserVo> unallocatedList(SysUserQuery query) {
+        return userService.selectUnallocatedList(query);
     }
 
     /**

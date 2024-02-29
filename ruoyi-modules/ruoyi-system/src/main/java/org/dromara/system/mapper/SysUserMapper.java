@@ -3,13 +3,11 @@ package org.dromara.system.mapper;
 import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.dromara.common.mybatis.annotation.DataColumn;
 import org.dromara.common.mybatis.annotation.DataPermission;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysUser;
-import org.dromara.system.domain.bo.SysUserBo;
 import org.dromara.system.domain.query.SysUserQuery;
 import org.dromara.system.domain.vo.SysUserVo;
 
@@ -37,26 +35,26 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser, SysUserVo> {
     /**
      * 根据条件分页查询已配用户角色列表
      *
-     * @param user 查询条件
+     * @param query 查询条件
      * @return 用户信息集合信息
      */
     @DataPermission({
         @DataColumn(key = "deptName", value = "d.dept_id"),
         @DataColumn(key = "userName", value = "u.user_id")
     })
-    List<SysUserVo> selectAllocatedList(SysUserBo user);
+    List<SysUserVo> selectAllocatedList(SysUserQuery query);
 
     /**
      * 根据条件分页查询未分配用户角色列表
      *
-     * @param queryWrapper 查询条件
+     * @param query 查询条件
      * @return 用户信息集合信息
      */
     @DataPermission({
         @DataColumn(key = "deptName", value = "d.dept_id"),
         @DataColumn(key = "userName", value = "u.user_id")
     })
-    Page<SysUserVo> selectUnallocatedList(@Param("page") Page<SysUser> page, @Param(Constants.WRAPPER) Wrapper<SysUser> queryWrapper);
+    List<SysUserVo> selectUnallocatedList(SysUserQuery query);
 
     /**
      * 通过用户名查询用户

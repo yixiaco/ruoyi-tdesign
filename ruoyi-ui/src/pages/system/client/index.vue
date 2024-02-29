@@ -252,6 +252,7 @@ import type {
   PageInfo,
   PrimaryTableCol,
   SubmitContext,
+  TableRowData,
   TableSort,
 } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
@@ -299,7 +300,7 @@ const columns = ref<Array<PrimaryTableCol>>([
     type: 'multiple',
     width: 50,
     align: 'center',
-    disabled: (options: { row: SysClientVo; rowIndex: number }) => options.row.clientId === clientId,
+    disabled: (options: { row: TableRowData; rowIndex: number }) => options.row.clientId === clientId,
   },
   { title: `客户端id`, colKey: 'clientId', align: 'center', ellipsis: true },
   { title: `客户端key`, colKey: 'clientKey', align: 'center' },

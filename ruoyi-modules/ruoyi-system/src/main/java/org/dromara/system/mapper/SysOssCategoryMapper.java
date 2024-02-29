@@ -1,10 +1,9 @@
 package org.dromara.system.mapper;
 
-import org.apache.ibatis.annotations.Param;
+import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysOssCategory;
 import org.dromara.system.domain.query.SysOssCategoryQuery;
 import org.dromara.system.domain.vo.SysOssCategoryVo;
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 
 import java.util.List;
 

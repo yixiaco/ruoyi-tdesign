@@ -203,7 +203,7 @@ const preview = ref({
   loading: true,
   data: {},
 });
-const columns = ref<Array<PrimaryTableCol<GenTableColumn>>>([
+const columns = ref<Array<PrimaryTableCol>>([
   { title: '序号', colKey: 'serial-number', width: '5%', align: 'center' },
   { title: `字段列名`, colKey: 'columnName', align: 'center', ellipsis: true, width: '10%' },
   { title: `字段描述`, colKey: 'columnComment', align: 'center', width: '10%' },

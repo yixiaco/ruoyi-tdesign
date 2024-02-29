@@ -18,7 +18,10 @@
     },
     "noImplicitAny": true,
     "verbatimModuleSyntax": true,
-    "importsNotUsedAsValues": "error"
+    "strictFunctionTypes": true,
+    "strictBindCallApply": true,
+//    "noImplicitThis": true,
+    "alwaysStrict": true
   },
   "include": [
     "**/*.ts",

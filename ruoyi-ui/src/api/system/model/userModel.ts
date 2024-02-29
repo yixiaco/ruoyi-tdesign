@@ -21,6 +21,8 @@ export interface SysUserQuery extends BaseEntity {
   phonenumber?: string;
   /** 帐号状态（1正常 0停用） */
   status?: string;
+  /** 数据权限 当前角色ID */
+  roleId?: number;
 }
 /**
  * 用户信息业务对象

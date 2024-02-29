@@ -99,7 +99,7 @@ import TranslateSelect from '@/components/translate-select/index.vue';
 import { prefix } from '@/config/global';
 import { getActive } from '@/router';
 import { useSettingStore, useUserStore } from '@/store';
-import type { ComplexRoute } from '@/types/interface';
+import type { ComplexRoute, ModeType } from '@/types/interface';
 
 import DynamicTenant from './DynamicTenant.vue';
 import MenuContent from './MenuContent.vue';
@@ -178,7 +178,7 @@ const menuCls = computed(() => {
     },
   ];
 });
-const menuTheme = computed(() => props.theme as 'light' | 'dark');
+const menuTheme = computed(() => props.theme as ModeType);
 const changeCollapsed = () => {
   settingStore.updateConfig({
     isSidebarCompact: !settingStore.isSidebarCompact,

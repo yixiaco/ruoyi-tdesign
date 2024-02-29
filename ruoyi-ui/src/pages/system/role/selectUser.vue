@@ -67,7 +67,7 @@ import { RefreshIcon, SearchIcon } from 'tdesign-icons-vue-next';
 import type { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, reactive, ref } from 'vue';
 
-import type { SysUserVo } from '@/api/system/model/userModel';
+import type { SysUserQuery, SysUserVo } from '@/api/system/model/userModel';
 import { authUserSelectAll, unallocatedUserList } from '@/api/system/role';
 
 const props = defineProps({
@@ -94,7 +94,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `状态`, colKey: 'status', align: 'center', ellipsis: true },
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: '180' },
 ]);
-const queryParams = reactive({
+const queryParams = reactive<SysUserQuery>({
   pageNum: 1,
   pageSize: 10,
   roleId: undefined,
@@ -117,7 +117,7 @@ const pagination = computed(() => {
 });
 // 显示弹框
 function show() {
-  queryParams.roleId = props.roleId;
+  queryParams.roleId = props.roleId as any;
   getList();
   visible.value = true;
 }

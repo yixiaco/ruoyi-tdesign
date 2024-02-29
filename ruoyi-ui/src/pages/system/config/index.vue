@@ -19,6 +19,7 @@ defineOptions({
   name: 'SysConfig',
 });
 
+import type { TabValue } from 'tdesign-vue-next';
 import { computed, ref, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
@@ -37,7 +38,7 @@ const isSystem = computed(() => tenantId.value === DEFAULT_TENANT_ID);
 // 表单禁用
 const disabled = !useHasPermission(['system:config:edit']);
 
-function handleChange(value: number) {
+function handleChange(value: TabValue) {
   router.push({ path: route.path, query: { action: value } });
 }
 </script>

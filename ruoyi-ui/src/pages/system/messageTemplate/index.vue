@@ -212,7 +212,7 @@
                 v-model="form.messageType"
                 placeholder="请选择消息类型"
                 clearable
-                @change="handleMessageTypeChange"
+                @change="handleMessageTypeChange($event as string)"
               >
                 <t-option v-for="dict in sys_message_type" :key="dict.value" :label="dict.label" :value="dict.value" />
               </t-select>

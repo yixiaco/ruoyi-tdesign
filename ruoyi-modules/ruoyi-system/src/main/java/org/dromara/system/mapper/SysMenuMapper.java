@@ -4,7 +4,6 @@ import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
-import org.dromara.common.core.constant.UserConstants;
 import org.dromara.common.core.enums.MenuTypeEnum;
 import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;

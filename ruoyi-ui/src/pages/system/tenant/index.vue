@@ -343,7 +343,7 @@ const buttonLoading = ref(false);
 const loading = ref(false);
 const columnControllerVisible = ref(false);
 const showSearch = ref(true);
-const ids = ref<number[]>([]);
+const ids = ref([]);
 const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
@@ -467,7 +467,7 @@ function handleSortChange(value?: TableSort) {
 }
 
 /** 多选框选中数据 */
-function handleSelectionChange(selection: Array<number>) {
+function handleSelectionChange(selection: Array<number | string>) {
   ids.value = selection;
   single.value = selection.length !== 1;
   multiple.value = !selection.length;

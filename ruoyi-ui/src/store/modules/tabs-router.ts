@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia';
 import { nextTick } from 'vue';
-import type { RouteLocationNormalizedLoaded, Router } from 'vue-router';
+import type { RouteLocationNormalizedLoaded, Router, RouteRecordRaw } from 'vue-router';
 
 import { store, unfoldRoutesPath, usePermissionStore } from '@/store';
 import type { TRouterInfo, TTabRouterType } from '@/types/interface';
@@ -98,7 +98,7 @@ export const useTabsRouterStore = defineStore('tabsRouter', {
     afterRestore: (ctx) => {
       const permissionStore = usePermissionStore();
       const routerList = ctx.store.tabRouterList as Array<TRouterInfo>;
-      const routesPath = unfoldRoutesPath(permissionStore.defaultRoutes);
+      const routesPath = unfoldRoutesPath(permissionStore.defaultRoutes as RouteRecordRaw[]);
       routerList.forEach((routerInfo) => {
         for (const route of routesPath) {
           // 地址相同，更新meta和query信息

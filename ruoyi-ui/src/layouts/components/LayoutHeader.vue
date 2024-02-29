@@ -25,7 +25,7 @@ const { topbarRouters: menuRouters } = storeToRefs(permissionStore);
 const headerMenu = computed<ComplexRoute[]>(() => {
   if (settingStore.layout === 'mix') {
     if (settingStore.splitMenu) {
-      return menuRouters.value.map((menu) => {
+      return menuRouters.value.map((menu: any) => {
         const newMenu: ComplexRoute = {
           query: undefined,
           ...menu,
@@ -40,6 +40,6 @@ const headerMenu = computed<ComplexRoute[]>(() => {
     }
     return [];
   }
-  return menuRouters.value;
+  return menuRouters.value as ComplexRoute[];
 });
 </script>

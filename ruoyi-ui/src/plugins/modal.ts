@@ -1,4 +1,5 @@
 import type {
+  Data,
   DialogInstance,
   DialogOptions,
   FormInstanceFunctions,
@@ -232,7 +233,7 @@ export default {
       content: props.confirmButtonText,
       loading: false,
       onClick: async () => {
-        formRef.value.validate().then(async (result: FormValidateResult<FormData>) => {
+        formRef.value.validate().then(async (result: FormValidateResult<Data>) => {
           if (result === true) {
             btn.loading = true;
             try {

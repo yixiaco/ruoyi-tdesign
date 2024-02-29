@@ -251,7 +251,7 @@
           <t-input v-model="form.roleKey" :disabled="true" />
         </t-form-item>
         <t-form-item label="权限范围">
-          <t-select v-model="form.dataScope" @change="dataScopeSelectChange">
+          <t-select v-model="form.dataScope" @change="dataScopeSelectChange($event as string)">
             <t-option
               v-for="item in dataScopeOptions"
               :key="item.value"

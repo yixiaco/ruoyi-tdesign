@@ -2,7 +2,7 @@ import dayjs from 'dayjs';
 import type { EChartsOption } from 'echarts';
 
 import type { TChartColor } from '@/config/color';
-import { t } from '@/locales/index';
+import { t } from '@/locales';
 import { getRandomArray } from '@/utils/charts';
 import { getChartListColor } from '@/utils/color';
 

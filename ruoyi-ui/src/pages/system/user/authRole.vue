@@ -57,7 +57,7 @@ const loading = ref(true);
 const total = ref(0);
 const pageNum = ref(1);
 const pageSize = ref(10);
-const roleIds = ref<number[]>([]);
+const roleIds = ref([]);
 const roles = ref<SysRoleVo[]>([]);
 const tabsRouterStore = useTabsRouterStore();
 const route = useRoute();
@@ -90,7 +90,7 @@ const pagination = computed(() => {
   };
 });
 /** 多选框选中数据 */
-function handleSelectionChange(selection: Array<number>) {
+function handleSelectionChange(selection: Array<string | number>) {
   roleIds.value = selection;
 }
 /** 关闭按钮 */

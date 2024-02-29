@@ -360,6 +360,8 @@ const props = withDefaults(defineProps<MyOssProps>(), {
   multiple: true,
   thumbnailSize: 120,
 });
+const fileUploadProps = computed(() => props.fileUploadProps);
+const imageUploadProps = computed(() => props.imageUploadProps);
 watch(
   () => [props.categoryId, props.queryParam],
   () => getList(),

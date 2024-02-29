@@ -33,7 +33,7 @@ import AssetLogo from '@/assets/icons/assets-t-logo.svg?component'; // 简
 import { prefix } from '@/config/global';
 import { getRoutesExpanded } from '@/router';
 import { useSettingStore } from '@/store';
-import type { MenuRoute } from '@/types/interface';
+import type { MenuRoute, ModeType } from '@/types/interface';
 
 import pgk from '../../../package.json';
 import MenuContent from './MenuContent.vue';
@@ -62,7 +62,7 @@ const props = defineProps({
     default: '64px',
   },
   theme: {
-    type: String as PropType<'light' | 'dark'>,
+    type: String as PropType<ModeType>,
     default: 'light',
   },
   isCompact: {
