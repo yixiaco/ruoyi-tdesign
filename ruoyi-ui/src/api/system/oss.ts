@@ -20,7 +20,7 @@ export function listMyOss(query: SysOssQuery) {
 }
 
 // 查询OSS对象基于id串
-export function listByIds(ossId: string) {
+export function listByIds(ossId: string | string[]) {
   return request.get<R<Array<SysOssVo>>>({
     url: `/resource/oss/listByIds/${ossId}`,
   });

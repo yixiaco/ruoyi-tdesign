@@ -200,6 +200,9 @@
         scroll-to-first-error="smooth"
         @submit="submitForm"
       >
+        <t-form-item label="ossId" name="ossId">
+          {{ form.ossId }}
+        </t-form-item>
         <t-form-item label="原名" name="originalName">
           <t-input v-model="form.originalName" placeholder="请输入原名" clearable />
         </t-form-item>

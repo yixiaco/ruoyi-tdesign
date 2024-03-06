@@ -153,15 +153,10 @@
               </t-row>
             </template>
             <template #status="{ row }">
-              <t-switch
-                v-model="row.status"
-                :custom-value="['1', '0']"
-                @click.stop
-                @change="handleStatusChange(row)"
-              ></t-switch>
+              <t-switch v-model="row.status" :custom-value="['1', '0']" @click.stop @change="handleStatusChange(row)" />
             </template>
             <template #avatar="{ row }">
-              <image-preview :src="row.avatar" width="60px" height="60px"></image-preview>
+              <image-preview :src="row.avatar" width="60px" height="60px" />
             </template>
             <template #operation="{ row }">
               <t-space :size="8" break-line>

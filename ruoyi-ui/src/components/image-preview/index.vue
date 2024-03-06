@@ -1,5 +1,13 @@
 <template>
-  <t-image-viewer :key="props.src" :default-index="0" :images="realPreviewSrcList" :z-index="zIndex">
+  <t-image-viewer
+    :key="props.src"
+    :default-index="0"
+    :mode="mode"
+    :viewer-scale="viewerScale"
+    :images="realPreviewSrcList"
+    :z-index="zIndex"
+    :title="title"
+  >
     <template #trigger="{ open }">
       <t-image
         :key="realSrc"
@@ -48,8 +56,11 @@
 
 <script lang="ts" setup>
 import { BrowseIcon, ImageErrorIcon } from 'tdesign-icons-vue-next';
-import { computed, type PropType, ref, watch } from 'vue';
+import type { ImageViewerScale } from 'tdesign-vue-next';
+import type { PropType } from 'vue';
+import { computed, ref, watchEffect } from 'vue';
 
+import type { SysOssVo } from '@/api/system/model/ossModel';
 import { listByIds } from '@/api/system/oss';
 
 const props = defineProps({
@@ -114,6 +125,19 @@ const props = defineProps({
     >,
     default: 'strict-origin-when-cross-origin',
   },
+  // 模态预览（modal）和非模态预览（modeless)。可选项：modal/modeless
+  mode: {
+    type: String as PropType<'modal' | 'modeless'>,
+    default: 'modal',
+  },
+  // 限制预览器缩放的最小宽度和最小高度，仅 mode=modeless 时有效
+  viewerScale: {
+    type: Object as PropType<ImageViewerScale>,
+  },
+  // 预览标题。
+  title: {
+    type: String,
+  },
 });
 
 const realSrc = ref('');
@@ -121,45 +145,63 @@ const realPreviewSrcList = ref([]);
 const hover = ref(false);
 const scale = computed(() => (hover.value ? 1.1 : 1));
 
-watch(
-  () => props.src,
-  (value) => {
-    if (value) {
-      if (/^([0-9],?)+$/.test(value)) {
-        const id = value.split(',')[0];
-        // 使用id
-        listByIds(id).then((res) => {
-          realSrc.value = res.data?.length > 0 ? res.data[0].url : '';
-        });
-      } else {
-        // http
-        realSrc.value = value.split(/,(?=http)/)[0];
+watchEffect(() => {
+  const src = props.src;
+  const previewSrc = props.previewSrc || props.src;
+  const srcIdMode = src && /^([0-9],?)+$/.test(src);
+  const previewSrcIdMode = previewSrc && /^([0-9],?)+$/.test(previewSrc);
+  let ids: string[] = [];
+  let srcFirst: string;
+  let previewSrcArr: string[];
+  if (srcIdMode) {
+    srcFirst = src.split(',')[0];
+    ids.push(srcFirst);
+  } else if (src) {
+    // http模式
+    realSrc.value = src.split(/,(?=http)/)[0];
+  } else {
+    realSrc.value = '';
+  }
+  if (previewSrcIdMode) {
+    previewSrcArr = previewSrc.split(',');
+    ids = ids.concat(previewSrcArr);
+  } else if (previewSrc) {
+    // http模式
+    realPreviewSrcList.value = previewSrc.split(/,(?=http)/);
+  } else {
+    realPreviewSrcList.value = [];
+  }
+  // 使用id查询集中查询
+  if (ids.length > 0) {
+    // 使用set去重，此处不要求顺序性
+    ids = Array.from(new Set(ids));
+    // 使用去重后的id查询
+    listByIds(ids).then((res) => {
+      const dataMap = new Map<string, SysOssVo>();
+      res.data.forEach((value) => {
+        dataMap.set(value.ossId.toString(), value);
+      });
+      // src是id模式，则从结果中获取url
+      if (srcIdMode) {
+        const items = dataMap.get(srcFirst);
+        if (items) {
+          realSrc.value = items.url;
+        } else {
+          realSrc.value = '';
+        }
       }
-    } else {
-      realPreviewSrcList.value = [];
-    }
-  },
-  { immediate: true },
-);
-watch(
-  () => props.previewSrc || props.src,
-  (value) => {
-    if (value) {
-      if (/^([0-9],?)+$/.test(value)) {
-        // 使用id
-        listByIds(value).then((res) => {
-          realPreviewSrcList.value = res.data.map((item) => item.url);
+      // previewSrc是id模式，则从结果中获取url
+      if (previewSrcIdMode) {
+        const arr: string[] = [];
+        previewSrcArr.forEach((id) => {
+          const items = dataMap.get(id);
+          if (items) arr.push(items.url);
         });
-      } else {
-        // http
-        realPreviewSrcList.value = value.split(/,(?=http)/);
+        realPreviewSrcList.value = arr;
       }
-    } else {
-      realPreviewSrcList.value = [];
-    }
-  },
-  { immediate: true },
-);
+    });
+  }
+});
 
 const realWidth = computed(() => (typeof props.width === 'string' ? props.width : `${props.width}px`));
 
