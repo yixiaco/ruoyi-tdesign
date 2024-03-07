@@ -17,7 +17,12 @@ import lombok.NoArgsConstructor;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.file.FileUtils;
 import org.dromara.common.excel.convert.ExcelBigNumberConvert;
-import org.dromara.common.excel.core.*;
+import org.dromara.common.excel.core.CellMergeStrategy;
+import org.dromara.common.excel.core.DefaultExcelListener;
+import org.dromara.common.excel.core.DropDownOptions;
+import org.dromara.common.excel.core.ExcelDownHandler;
+import org.dromara.common.excel.core.ExcelListener;
+import org.dromara.common.excel.core.ExcelResult;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -26,6 +31,8 @@ import java.io.UnsupportedEncodingException;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * Excel相关处理
@@ -199,6 +206,41 @@ public class ExcelUtil {
         // 添加下拉框操作
         builder.registerWriteHandler(new ExcelDownHandler(options));
         builder.doWrite(list);
+    }
+
+    /**
+     * 多表多数据模板导出excel
+     *
+     * @param data    导出数据集合{ sheetName: {字段名称: 字段值}[] }
+     * @param columns 字段信息{ sheetName: {字段名称：列名称}[] }
+     * @param os      输出流
+     */
+    public static void exportMultiList(Map<String, List<Map<String, Object>>> data, Map<String, Map<String, String>> columns, OutputStream os) {
+        ExcelWriter excelWriter = EasyExcel.write(os)
+            .autoCloseStream(false)
+            // 自动适配
+            .registerWriteHandler(new LongestMatchColumnWidthStyleStrategy())
+            // 大数值自动转换 防止失真
+            .registerConverter(new ExcelBigNumberConvert())
+            .build();
+        if (CollUtil.isEmpty(data)) {
+            throw new IllegalArgumentException("数据为空");
+        }
+        for (Map.Entry<String, List<Map<String, Object>>> map : data.entrySet()) {
+            Map<String, String> column = columns.get(map.getKey());
+
+            Set<String> keySet = column.keySet();
+            List<List<String>> head0 = column.values().stream().map(List::of).collect(Collectors.toList());
+
+            List<Map<String, Object>> value = map.getValue();
+            List<List<Object>> data0 = value.stream().map(map0 ->
+                keySet.stream().map(key -> map0.getOrDefault(key, "")).collect(Collectors.toList())
+            ).collect(Collectors.toList());
+
+            WriteSheet writeSheet = EasyExcel.writerSheet(map.getKey()).head(head0).build();
+            excelWriter.write(data0, writeSheet);
+        }
+        excelWriter.finish();
     }
 
     /**
