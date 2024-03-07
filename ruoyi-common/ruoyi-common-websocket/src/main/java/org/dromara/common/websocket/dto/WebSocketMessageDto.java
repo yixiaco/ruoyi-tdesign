@@ -18,6 +18,11 @@ public class WebSocketMessageDto implements Serializable {
     private static final long serialVersionUID = 1L;
 
     /**
+     * 登录类型
+     */
+    private String loginType;
+
+    /**
      * 需要推送到的session key 列表
      */
     private List<Long> sessionKeys;

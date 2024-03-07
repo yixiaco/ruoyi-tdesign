@@ -54,12 +54,6 @@ public class LoginUser extends BaseUser {
     private String clientKey;
 
     /**
-     * 设备类型
-     */
-    private String deviceType;
-
-
-    /**
      * 获取登录id
      */
     public String getLoginId() {

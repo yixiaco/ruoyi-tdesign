@@ -26,6 +26,11 @@ public class BaseUser implements Serializable {
     private String loginType;
 
     /**
+     * 设备类型
+     */
+    private String deviceType;
+
+    /**
      * 租户ID
      */
     private String tenantId;

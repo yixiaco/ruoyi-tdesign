@@ -1,8 +1,11 @@
 package org.dromara.common.websocket.interceptor;
 
+import cn.dev33.satoken.stp.StpLogic;
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.common.core.domain.model.LoginUser;
-import org.dromara.common.satoken.utils.LoginHelper;
+import org.dromara.common.core.domain.model.BaseUser;
+import org.dromara.common.satoken.stp.DynamicStpLogic;
+import org.dromara.common.satoken.utils.MultipleLoginBaseHelper;
+import org.dromara.common.websocket.config.properties.MultipleWebSocketProperties;
 import org.springframework.http.server.ServerHttpRequest;
 import org.springframework.http.server.ServerHttpResponse;
 import org.springframework.web.socket.WebSocketHandler;
@@ -20,6 +23,12 @@ import static org.dromara.common.websocket.constant.WebSocketConstants.LOGIN_USE
 @Slf4j
 public class PlusWebSocketInterceptor implements HandshakeInterceptor {
 
+    private final MultipleWebSocketProperties multipleWebSocketProperties;
+
+    public PlusWebSocketInterceptor(MultipleWebSocketProperties multipleWebSocketProperties) {
+        this.multipleWebSocketProperties = multipleWebSocketProperties;
+    }
+
     /**
      * 握手前
      *
@@ -31,9 +40,14 @@ public class PlusWebSocketInterceptor implements HandshakeInterceptor {
      */
     @Override
     public boolean beforeHandshake(ServerHttpRequest request, ServerHttpResponse response, WebSocketHandler wsHandler, Map<String, Object> attributes) {
-        LoginUser loginUser = LoginHelper.getUser();
-        attributes.put(LOGIN_USER_KEY, loginUser);
-        return true;
+        String loginType = multipleWebSocketProperties.getMatchLoginType(request.getURI().getPath());
+        if (loginType != null) {
+            StpLogic logic = DynamicStpLogic.getDynamicStpLogic(loginType);
+            BaseUser user = MultipleLoginBaseHelper.getUser(logic);
+            attributes.put(LOGIN_USER_KEY, user);
+            return true;
+        }
+        return false;
     }
 
     /**

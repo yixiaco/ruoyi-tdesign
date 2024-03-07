@@ -99,9 +99,16 @@ function sendSocketHeart() {
 // socket重连
 function reconnect() {
   clearInterval(heartTime);
-  initWebSocket(socketUrl);
-  socketError += 1;
-  console.debug('socket重连', socketError);
+  if (socketError <= 50) {
+    socketError++;
+    // 5秒后重连
+    setTimeout(() => {
+      initWebSocket(socketUrl);
+      console.debug('socket重连', socketError);
+    }, 5000);
+  } else {
+    console.log('重试次数已用完');
+  }
 }
 
 // socket 发送数据

@@ -1,7 +1,13 @@
 package org.dromara.common.websocket.config;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
+import lombok.extern.slf4j.Slf4j;
+import org.dromara.common.core.utils.spring.SpringUtils;
+import org.dromara.common.satoken.config.MultipleSaTokenProperties;
+import org.dromara.common.websocket.config.properties.MultipleWebSocketProperties;
 import org.dromara.common.websocket.config.properties.WebSocketProperties;
+import org.dromara.common.websocket.handler.ICustomWebSocketHandler;
 import org.dromara.common.websocket.handler.PlusWebSocketHandler;
 import org.dromara.common.websocket.interceptor.PlusWebSocketInterceptor;
 import org.dromara.common.websocket.listener.WebSocketTopicListener;
@@ -14,38 +20,75 @@ import org.springframework.web.socket.config.annotation.EnableWebSocket;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
 import org.springframework.web.socket.server.HandshakeInterceptor;
 
+import java.lang.reflect.InvocationTargetException;
+import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
+
 /**
  * WebSocket 配置
  *
  * @author zendwang
  */
+@Slf4j
 @AutoConfiguration
 @ConditionalOnProperty(value = "websocket.enabled", havingValue = "true")
-@EnableConfigurationProperties(WebSocketProperties.class)
+@EnableConfigurationProperties(MultipleWebSocketProperties.class)
 @EnableWebSocket
 public class WebSocketConfig {
 
     @Bean
-    public WebSocketConfigurer webSocketConfigurer(HandshakeInterceptor handshakeInterceptor,
-                                                   WebSocketHandler webSocketHandler,
-                                                   WebSocketProperties webSocketProperties) {
-        if (StrUtil.isBlank(webSocketProperties.getPath())) {
-            webSocketProperties.setPath("/websocket");
-        }
-
-        if (StrUtil.isBlank(webSocketProperties.getAllowedOrigins())) {
-            webSocketProperties.setAllowedOrigins("*");
-        }
-
-        return registry -> registry
-            .addHandler(webSocketHandler, webSocketProperties.getPath())
-            .addInterceptors(handshakeInterceptor)
-            .setAllowedOrigins(webSocketProperties.getAllowedOrigins());
+    public List<WebSocketConfigurer> webSocketConfigurer(HandshakeInterceptor handshakeInterceptor,
+                                                         WebSocketHandler webSocketHandler,
+                                                         MultipleWebSocketProperties multipleWebSocketProperties,
+                                                         MultipleSaTokenProperties multipleSaTokenProperties) {
+        Set<String> userTypes = multipleSaTokenProperties.getMultiple().keySet();
+        return multipleWebSocketProperties.getMultiple().entrySet().stream()
+            .filter(entry -> {
+                String key = entry.getKey();
+                if (!userTypes.contains(key)) {
+                    String msg = "websocket: 登录用户类型(%s),不存在".formatted(key);
+                    log.error(msg, new RuntimeException(msg));
+                    return false;
+                }
+                WebSocketProperties properties = entry.getValue();
+                if (CollUtil.isEmpty(properties.getPaths())) {
+                    String msg = "websocket: 登录用户类型(%s),匹配路径不存在".formatted(key);
+                    log.error(msg, new RuntimeException(msg));
+                    return false;
+                }
+                return true;
+            })
+            .<WebSocketConfigurer>map(entry -> {
+                WebSocketProperties properties = entry.getValue();
+                if (StrUtil.isBlank(properties.getAllowedOrigins())) {
+                    properties.setAllowedOrigins("*");
+                }
+                WebSocketHandler handler = webSocketHandler;
+                if (properties.getHandler() != null) {
+                    try {
+                        ICustomWebSocketHandler customWebSocketHandler;
+                        customWebSocketHandler = SpringUtils.getBeanOptional(properties.getHandler()).orElse(null);
+                        if (customWebSocketHandler == null) {
+                            customWebSocketHandler = properties.getHandler().getDeclaredConstructor().newInstance();
+                        }
+                        handler = new PlusWebSocketHandler(customWebSocketHandler);
+                    } catch (InstantiationException | IllegalAccessException | InvocationTargetException |
+                             NoSuchMethodException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+                WebSocketHandler finalHandler = handler;
+                return registry -> registry
+                    .addHandler(finalHandler, properties.getPaths().toArray(String[]::new))
+                    .addInterceptors(handshakeInterceptor)
+                    .setAllowedOrigins(properties.getAllowedOrigins());
+            }).collect(Collectors.toList());
     }
 
     @Bean
-    public HandshakeInterceptor handshakeInterceptor() {
-        return new PlusWebSocketInterceptor();
+    public HandshakeInterceptor handshakeInterceptor(MultipleWebSocketProperties multipleWebSocketProperties) {
+        return new PlusWebSocketInterceptor(multipleWebSocketProperties);
     }
 
     @Bean

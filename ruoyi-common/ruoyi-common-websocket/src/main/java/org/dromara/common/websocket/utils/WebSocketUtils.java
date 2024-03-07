@@ -12,7 +12,6 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketMessage;
 import org.springframework.web.socket.WebSocketSession;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -36,16 +35,15 @@ public class WebSocketUtils {
      * @param sessionKey session主键 一般为用户id
      * @param message    消息文本
      */
-    public static void sendMessage(Long sessionKey, String message) {
-        Set<WebSocketSession> sessions = WebSocketSessionHolder.getSessions(sessionKey);
+    public static void sendMessage(String loginType, Long sessionKey, String message) {
+        Set<WebSocketSession> sessions = WebSocketSessionHolder.getSessions(loginType, sessionKey);
         if (sessions == null) {
             return;
         }
         for (WebSocketSession session : sessions) {
-            if (session == null) {
-                continue;
+            if (session != null) {
+                sendMessage(session, message);
             }
-            sendMessage(session, message);
         }
     }
 
@@ -65,10 +63,11 @@ public class WebSocketUtils {
      */
     public static void publishMessage(WebSocketMessageDto webSocketMessage) {
         List<Long> unsentSessionKeys = new ArrayList<>();
+        String loginType = webSocketMessage.getLoginType();
         // 当前服务内session,直接发送消息
         for (Long sessionKey : webSocketMessage.getSessionKeys()) {
-            if (WebSocketSessionHolder.existSession(sessionKey)) {
-                WebSocketUtils.sendMessage(sessionKey, webSocketMessage.getMessage());
+            if (WebSocketSessionHolder.existSession(loginType, sessionKey)) {
+                WebSocketUtils.sendMessage(loginType, sessionKey, webSocketMessage.getMessage());
                 continue;
             }
             unsentSessionKeys.add(sessionKey);
@@ -76,6 +75,7 @@ public class WebSocketUtils {
         // 不在当前服务内session,发布订阅消息
         if (CollUtil.isNotEmpty(unsentSessionKeys)) {
             WebSocketMessageDto broadcastMessage = new WebSocketMessageDto();
+            broadcastMessage.setLoginType(loginType);
             broadcastMessage.setMessage(webSocketMessage.getMessage());
             broadcastMessage.setSessionKeys(unsentSessionKeys);
             RedisUtils.publish(WEB_SOCKET_TOPIC, broadcastMessage, consumer -> {
@@ -90,8 +90,9 @@ public class WebSocketUtils {
      *
      * @param message 消息内容
      */
-    public static void publishAll(String message) {
+    public static void publishAll(String loginType, String message) {
         WebSocketMessageDto broadcastMessage = new WebSocketMessageDto();
+        broadcastMessage.setLoginType(loginType);
         broadcastMessage.setMessage(message);
         RedisUtils.publish(WEB_SOCKET_TOPIC, broadcastMessage, consumer -> {
             log.info("WebSocket发送主题订阅消息topic:{} message:{}", WEB_SOCKET_TOPIC, message);

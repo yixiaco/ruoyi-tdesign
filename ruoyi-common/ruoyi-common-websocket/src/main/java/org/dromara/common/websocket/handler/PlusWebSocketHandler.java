@@ -1,7 +1,7 @@
 package org.dromara.common.websocket.handler;
 
 import lombok.extern.slf4j.Slf4j;
-import org.dromara.common.core.domain.model.LoginUser;
+import org.dromara.common.core.domain.model.BaseUser;
 import org.dromara.common.websocket.dto.WebSocketMessageDto;
 import org.dromara.common.websocket.holder.WebSocketSessionHolder;
 import org.dromara.common.websocket.utils.WebSocketUtils;
@@ -24,14 +24,29 @@ import static org.dromara.common.websocket.constant.WebSocketConstants.LOGIN_USE
 @Slf4j
 public class PlusWebSocketHandler extends AbstractWebSocketHandler {
 
+    private final ICustomWebSocketHandler customWebSocketHandler;
+
+    public PlusWebSocketHandler() {
+        this(null);
+    }
+
+    public PlusWebSocketHandler(ICustomWebSocketHandler customWebSocketHandler) {
+        this.customWebSocketHandler = customWebSocketHandler;
+    }
+
     /**
      * 连接成功后
      */
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
-        LoginUser loginUser = (LoginUser) session.getAttributes().get(LOGIN_USER_KEY);
-        WebSocketSessionHolder.addSession(loginUser.getUserId(), session);
-        log.info("[connect] sessionId: {},userId:{},userType:{}", session.getId(), loginUser.getUserId(), loginUser.getUserType());
+        BaseUser user = (BaseUser) session.getAttributes().get(LOGIN_USER_KEY);
+        if (user != null) {
+            WebSocketSessionHolder.addSession(user.getLoginType(), user.getUserId(), session);
+            log.info("[connect] sessionId: {},userId:{},loginType:{},deviceType:{}", session.getId(), user.getUserId(), user.getLoginType(), user.getDeviceType());
+            if (customWebSocketHandler != null) {
+                customWebSocketHandler.afterConnectionEstablished(session, user);
+            }
+        }
     }
 
     /**
@@ -39,21 +54,30 @@ public class PlusWebSocketHandler extends AbstractWebSocketHandler {
      *
      * @param session
      * @param message
-     * @throws Exception
      */
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message) throws Exception {
-        LoginUser loginUser = (LoginUser) session.getAttributes().get(LOGIN_USER_KEY);
-        List<Long> userIds = List.of(loginUser.getUserId());
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) {
+        BaseUser user = (BaseUser) session.getAttributes().get(LOGIN_USER_KEY);
+        List<Long> userIds = List.of(user.getUserId());
         WebSocketMessageDto webSocketMessageDto = new WebSocketMessageDto();
+        webSocketMessageDto.setLoginType(user.getLoginType());
         webSocketMessageDto.setSessionKeys(userIds);
         webSocketMessageDto.setMessage(message.getPayload());
         WebSocketUtils.publishMessage(webSocketMessageDto);
+
+        if (customWebSocketHandler != null) {
+            customWebSocketHandler.handleTextMessage(session, message, user);
+        }
     }
 
     @Override
     protected void handleBinaryMessage(WebSocketSession session, BinaryMessage message) throws Exception {
         super.handleBinaryMessage(session, message);
+
+        if (customWebSocketHandler != null) {
+            BaseUser user = (BaseUser) session.getAttributes().get(LOGIN_USER_KEY);
+            customWebSocketHandler.handleBinaryMessage(session, message, user);
+        }
     }
 
     /**
@@ -61,10 +85,9 @@ public class PlusWebSocketHandler extends AbstractWebSocketHandler {
      *
      * @param session
      * @param message
-     * @throws Exception
      */
     @Override
-    protected void handlePongMessage(WebSocketSession session, PongMessage message) throws Exception {
+    protected void handlePongMessage(WebSocketSession session, PongMessage message) {
         WebSocketUtils.sendPongMessage(session);
     }
 
@@ -73,11 +96,14 @@ public class PlusWebSocketHandler extends AbstractWebSocketHandler {
      *
      * @param session
      * @param exception
-     * @throws Exception
      */
     @Override
-    public void handleTransportError(WebSocketSession session, Throwable exception) throws Exception {
+    public void handleTransportError(WebSocketSession session, Throwable exception) {
         log.error("[transport error] sessionId: {} , exception:{}", session.getId(), exception.getMessage());
+
+        if (customWebSocketHandler != null) {
+            customWebSocketHandler.handleTransportError(session, exception);
+        }
     }
 
     /**
@@ -88,9 +114,16 @@ public class PlusWebSocketHandler extends AbstractWebSocketHandler {
      */
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-        LoginUser loginUser = (LoginUser) session.getAttributes().get(LOGIN_USER_KEY);
-        WebSocketSessionHolder.removeSession(loginUser.getUserId(), session);
-        log.info("[disconnect] sessionId: {},userId:{},userType:{}", session.getId(), loginUser.getUserId(), loginUser.getUserType());
+        BaseUser user = (BaseUser) session.getAttributes().get(LOGIN_USER_KEY);
+        if (user != null) {
+            WebSocketSessionHolder.removeSession(user.getLoginType(), user.getUserId(), session);
+            log.info("[disconnect] sessionId: {},userId:{},loginType:{},deviceType:{}",
+                session.getId(), user.getUserId(), user.getLoginType(), user.getDeviceType());
+        }
+
+        if (customWebSocketHandler != null) {
+            customWebSocketHandler.afterConnectionClosed(session, status, user);
+        }
     }
 
     /**

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.events.LoginEvent;
 import org.dromara.common.core.events.NoticeInsertEvent;
 import org.dromara.common.core.service.DictService;
+import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.websocket.utils.WebSocketUtils;
 import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
@@ -30,7 +31,7 @@ public class SystemEventsListener {
     @EventListener
     public void login(LoginEvent loginEvent) {
         scheduledExecutorService.schedule(() -> {
-            WebSocketUtils.sendMessage(loginEvent.getUserId(), "[登录] 欢迎登录RuoYi-TDesign后台管理系统");
+            WebSocketUtils.sendMessage(LoginHelper.getLoginType(), loginEvent.getUserId(), "[登录] 欢迎登录RuoYi-TDesign后台管理系统");
         }, 5, TimeUnit.SECONDS);
     }
 
@@ -40,6 +41,6 @@ public class SystemEventsListener {
     @EventListener
     public void noticeInsert(NoticeInsertEvent event) {
         String type = dictService.getDictLabel("sys_notice_type", event.getType());
-        WebSocketUtils.publishAll("[" + type + "] " + event.getTitle());
+        WebSocketUtils.publishAll(LoginHelper.getLoginType(), "[" + type + "] " + event.getTitle());
     }
 }

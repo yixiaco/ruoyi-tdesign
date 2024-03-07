@@ -17,19 +17,20 @@ import org.springframework.core.Ordered;
 public class WebSocketTopicListener implements ApplicationRunner, Ordered {
 
     @Override
-    public void run(ApplicationArguments args) throws Exception {
+    public void run(ApplicationArguments args) {
         WebSocketUtils.subscribeMessage((message) -> {
-            log.info("WebSocket主题订阅收到消息session keys={} message={}", message.getSessionKeys(), message.getMessage());
+            String loginType = message.getLoginType();
+            log.info("WebSocket主题订阅收到消息session loginType={} keys={} message={}", loginType, message.getSessionKeys(), message.getMessage());
             // 如果key不为空就按照key发消息 如果为空就群发
             if (CollUtil.isNotEmpty(message.getSessionKeys())) {
                 message.getSessionKeys().forEach(key -> {
-                    if (WebSocketSessionHolder.existSession(key)) {
-                        WebSocketUtils.sendMessage(key, message.getMessage());
+                    if (WebSocketSessionHolder.existSession(loginType, key)) {
+                        WebSocketUtils.sendMessage(loginType, key, message.getMessage());
                     }
                 });
             } else {
-                WebSocketSessionHolder.getSessionsAll().forEach(key -> {
-                    WebSocketUtils.sendMessage(key, message.getMessage());
+                WebSocketSessionHolder.getSessionsAll(loginType).forEach(key -> {
+                    WebSocketUtils.sendMessage(loginType, key, message.getMessage());
                 });
             }
         });

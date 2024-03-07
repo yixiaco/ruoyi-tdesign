@@ -1,26 +1,16 @@
 package org.dromara.common.satoken.utils;
 
-import cn.dev33.satoken.context.SaHolder;
-import cn.dev33.satoken.context.model.SaStorage;
-import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.SaLoginModel;
-import cn.hutool.core.collection.CollUtil;
-import cn.hutool.core.convert.Convert;
-import cn.hutool.core.util.ObjectUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.dromara.common.core.constant.TenantConstants;
 import org.dromara.common.core.constant.UserConstants;
 import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.enums.UserType;
-import org.dromara.common.satoken.context.SaSecurityContext;
 
-import java.util.List;
-import java.util.Objects;
+import java.util.Optional;
 import java.util.Set;
 import java.util.function.Consumer;
-
-import static org.dromara.common.satoken.utils.MultipleStpUtil.*;
 
 /**
  * 登录鉴权助手
@@ -65,41 +55,35 @@ public class LoginHelper {
      * @param model     配置参数
      */
     public static void login(LoginUser loginUser, SaLoginModel model) {
-        loginUser.setLoginType(getLoginType());
-        SaStorage storage = SaHolder.getStorage();
-        storage.set(getLoginType() + LOGIN_USER_KEY, loginUser);
-        storage.set(getLoginType() + TENANT_KEY, loginUser.getTenantId());
-        storage.set(getLoginType() + USER_KEY, loginUser.getUserId());
-        model = ObjectUtil.defaultIfNull(model, new SaLoginModel());
-        SaSecurityContext.setContext(loginUser);
-        MultipleStpUtil.SYSTEM.login(loginUser.getLoginId(), model);
-        MultipleStpUtil.SYSTEM.getTokenSession().set(LOGIN_USER_KEY, loginUser);
+        MultipleLoginBaseHelper.login(MultipleStpUtil.SYSTEM, loginUser, loginUser.getLoginId(), model);
     }
 
     /**
      * 获取用户(多级缓存)
      */
-    @SuppressWarnings("unchecked")
     public static <T extends LoginUser> T getUser() {
-        return StorageUtil.getStorageIfAbsentSet(getLoginType() + LOGIN_USER_KEY, () -> {
-            SaSession session = MultipleStpUtil.SYSTEM.getTokenSession();
-            if (session != null) {
-                return (T) session.get(LOGIN_USER_KEY);
-            }
-            return null;
-        });
+        return MultipleLoginBaseHelper.getUser(MultipleStpUtil.SYSTEM);
+    }
+
+    /**
+     * 获取用户(多级缓存)
+     */
+    public static <T extends LoginUser> Optional<T> getUserOptional() {
+        return MultipleLoginBaseHelper.getUserOptional(MultipleStpUtil.SYSTEM);
     }
 
     /**
      * 获取用户基于token
      */
-    @SuppressWarnings("unchecked")
     public static <T extends LoginUser> T getUser(String token) {
-        SaSession session = MultipleStpUtil.SYSTEM.getTokenSessionByToken(token);
-        if (session == null) {
-            return null;
-        }
-        return (T) session.get(LOGIN_USER_KEY);
+        return MultipleLoginBaseHelper.getUser(MultipleStpUtil.SYSTEM, token);
+    }
+
+    /**
+     * 获取用户基于token
+     */
+    public static <T extends LoginUser> Optional<T> getUserOptional(String token) {
+        return MultipleLoginBaseHelper.getUserOptional(MultipleStpUtil.SYSTEM, token);
     }
 
     /**
@@ -108,71 +92,45 @@ public class LoginHelper {
      * @param updateBy 更新回调
      */
     public static <T extends LoginUser> void updateUser(Consumer<T> updateBy) {
-        Long userId = getUserId();
-        if (userId != null) {
-            updateUser(userId, updateBy);
-        }
+        MultipleLoginBaseHelper.updateUser(MultipleStpUtil.SYSTEM, updateBy);
     }
 
     /**
      * 更新用户
      *
-     * @param userId   用户id
+     * @param loginId  用户id
      * @param updateBy 更新回调
      */
-    @SuppressWarnings("unchecked")
-    public static <T extends LoginUser> void updateUser(Long userId, Consumer<T> updateBy) {
-        List<String> tokens = MultipleStpUtil.SYSTEM.getTokenValueListByLoginId(userId);
-        String tokenValue = null;
-        try {
-            tokenValue = MultipleStpUtil.SYSTEM.getTokenValue();
-        } catch (Exception ignore) {
-            // 不做处理
-        }
-        if (CollUtil.isNotEmpty(tokens)) {
-            for (String token : tokens) {
-                SaSession session = MultipleStpUtil.SYSTEM.getTokenSessionByToken(token);
-                if (session != null) {
-                    T tokenUser = (T) session.get(LOGIN_USER_KEY);
-                    updateBy.accept(tokenUser);
-                    session.set(LOGIN_USER_KEY, tokenUser);
-                    if (Objects.equals(tokenValue, token)) {
-                        SaStorage storage = SaHolder.getStorage();
-                        if (storage != null) {
-                            storage.set(getLoginType() + LOGIN_USER_KEY, tokenUser);
-                        }
-                    }
-                }
-            }
-        }
+    public static <T extends LoginUser> void updateUser(Object loginId, Consumer<T> updateBy) {
+        MultipleLoginBaseHelper.updateUser(MultipleStpUtil.SYSTEM, loginId, updateBy);
     }
 
     /**
      * 获取用户id
      */
     public static Long getUserId() {
-        return StorageUtil.getStorageIfAbsentSet(getLoginType() + USER_KEY, () -> getUser().getUserId(), Convert::toLong);
+        return MultipleLoginBaseHelper.getUserId(MultipleStpUtil.SYSTEM);
     }
 
     /**
      * 获取租户ID
      */
     public static String getTenantId() {
-        return StorageUtil.getStorageIfAbsentSet(getLoginType() + TENANT_KEY, () -> getUser().getTenantId());
+        return MultipleLoginBaseHelper.getTenantId(MultipleStpUtil.SYSTEM);
     }
 
     /**
      * 获取部门ID
      */
     public static Long getDeptId() {
-        return getUser().getDeptId();
+        return getUserOptional().map(LoginUser::getDeptId).orElse(null);
     }
 
     /**
      * 获取用户账户
      */
     public static String getUsername() {
-        return getUser().getUsername();
+        return getUserOptional().map(LoginUser::getUsername).orElse(null);
     }
 
     /**
@@ -207,7 +165,12 @@ public class LoginHelper {
         return rolePermission.contains(TenantConstants.TENANT_ADMIN_ROLE_KEY);
     }
 
+    /**
+     * 当前用户是否为超级管理员
+     *
+     * @return 结果
+     */
     public static boolean isTenantAdmin() {
-        return isTenantAdmin(getUser().getRolePermission());
+        return getUserOptional().map(loginUser -> isTenantAdmin(loginUser.getRolePermission())).orElse(false);
     }
 }

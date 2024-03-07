@@ -2,9 +2,12 @@ package org.dromara.common.core.utils.spring;
 
 import cn.hutool.extra.spring.SpringUtil;
 import org.springframework.aop.framework.AopContext;
+import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
+
+import java.util.Optional;
 
 /**
  * spring工具类
@@ -13,6 +16,36 @@ import org.springframework.stereotype.Component;
  */
 @Component
 public final class SpringUtils extends SpringUtil {
+
+    /**
+     * 通过name获取 Bean
+     *
+     * @param <T>  Bean类型
+     * @param name Bean名称
+     * @return Optional Bean
+     */
+    public static <T> Optional<T> getBeanOptional(String name) {
+        try {
+            return Optional.of(getBean(name));
+        } catch (BeansException e) {
+            return Optional.empty();
+        }
+    }
+
+    /**
+     * 通过class获取Bean
+     *
+     * @param <T>   Bean类型
+     * @param clazz Bean类
+     * @return Optional Bean对象
+     */
+    public static <T> Optional<T> getBeanOptional(Class<T> clazz) {
+        try {
+            return Optional.of(getBean(clazz));
+        } catch (BeansException e) {
+            return Optional.empty();
+        }
+    }
 
     /**
      * 如果BeanFactory包含一个与所给名称匹配的bean定义，则返回true
