@@ -10,7 +10,7 @@ import java.util.regex.Pattern;
 
 /**
  * 手机号码校验注解
- * null被认为是有效的
+ * null和空字符串被认为是有效的
  *
  * @author hexm
  * @date 2023/02/10 16:54
@@ -21,7 +21,7 @@ public class MobileValidator implements ConstraintValidator<Mobile, String> {
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if (value == null) {
+        if (value == null || value.isEmpty()) {
             return true;
         } else {
             Matcher m = PATTERN.matcher(value);

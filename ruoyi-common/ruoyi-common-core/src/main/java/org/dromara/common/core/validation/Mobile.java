@@ -13,7 +13,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 /**
  * 手机号码校验注解
- * null被认为是有效的
+ * null和空字符串被认为是有效的
  *
  * @author hexm
  */
