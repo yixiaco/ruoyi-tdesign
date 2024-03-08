@@ -114,13 +114,13 @@ public class MultipleLoginBaseHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T extends BaseUser> Optional<T> getUserOptional(StpLogic logic) {
-        return StorageUtil.getStorageIfAbsentSet(getLoginType(logic) + LOGIN_USER_KEY, () -> {
+        return Optional.ofNullable(StorageUtil.getStorageIfAbsentSet(getLoginType(logic) + LOGIN_USER_KEY, () -> {
             SaSession session = logic.getTokenSession();
             if (session != null) {
-                return Optional.ofNullable((T) session.get(LOGIN_USER_KEY));
+                return (T) session.get(LOGIN_USER_KEY);
             }
-            return Optional.empty();
-        });
+            return null;
+        }));
     }
 
     /**
