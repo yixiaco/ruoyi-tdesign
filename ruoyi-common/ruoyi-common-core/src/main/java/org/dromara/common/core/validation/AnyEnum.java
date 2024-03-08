@@ -36,7 +36,7 @@ public @interface AnyEnum {
      *
      * @return
      */
-    boolean ignoreCase() default true;
+    boolean ignoreCase() default false;
 
     /**
      * 错误消息
