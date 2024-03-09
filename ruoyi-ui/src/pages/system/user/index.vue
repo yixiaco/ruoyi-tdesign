@@ -140,6 +140,7 @@
                     <template #icon> <download-icon /> </template>
                     导出
                   </t-button>
+                  <span class="selected-count">已选 {{ ids.length }} 项</span>
                 </t-col>
                 <t-col flex="none">
                   <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -490,6 +491,7 @@ import {
   updateUser,
 } from '@/api/system/user';
 import { useUserStore } from '@/store';
+import { ArrayOps } from '@/utils/array';
 import { handleChangeStatus } from '@/utils/ruoyi';
 
 const router = useRouter();
@@ -670,7 +672,7 @@ function handleDelete(row?: SysUserVo) {
   const userIds = row?.userId || ids.value;
   proxy.$modal.confirm(`是否确认删除用户编号为"${userIds}"的数据项？`, () => {
     return delUser(userIds).then(() => {
-      if (!row) ids.value = [];
+      ids.value = ArrayOps.fastDeleteElement(ids.value, userIds);
       getList();
       proxy.$modal.msgSuccess('删除成功');
     });

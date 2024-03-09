@@ -95,6 +95,7 @@
                 <template #icon> <delete-icon /> </template>
                 删除
               </t-button>
+              <span class="selected-count">已选 {{ ids.length }} 项</span>
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -167,6 +168,7 @@ import type { GenTableQuery, GenTableVo } from '@/api/tool/model/genModel';
 import GenPreview from '@/pages/tool/gen/components/preview.vue';
 import type { ImportTableInstance } from '@/pages/tool/gen/importTable.vue';
 import router from '@/router';
+import { ArrayOps } from '@/utils/array';
 
 import ImportTable from './importTable.vue';
 
@@ -345,6 +347,7 @@ function handleDelete(row?: GenTableVo) {
   const tableIds = row?.tableId || ids.value;
   proxy.$modal.confirm(`是否确认删除表编号为"${tableIds}"的数据项？`, () => {
     return delTable(tableIds).then(() => {
+      ids.value = ArrayOps.fastDeleteElement(ids.value, tableIds);
       getList();
       if (!row) {
         ids.value = [];

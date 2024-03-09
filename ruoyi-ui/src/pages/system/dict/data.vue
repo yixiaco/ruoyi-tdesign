@@ -81,6 +81,7 @@
                 <template #icon> <close-icon /> </template>
                 关闭
               </t-button>
+              <span class="selected-count">已选 {{ ids.length }} 项</span>
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -255,6 +256,7 @@ import { getType, optionselect as getDictOptionselect } from '@/api/system/dict/
 import type { SysDictDataForm, SysDictDataQuery, SysDictDataVo, SysDictTypeVo } from '@/api/system/model/dictModel';
 import { useTabsRouterStore } from '@/store';
 import useDictStore from '@/store/modules/dict';
+import { ArrayOps } from '@/utils/array';
 import type { DictModel } from '@/utils/dict';
 import { dictConvert } from '@/utils/dict';
 
@@ -490,7 +492,7 @@ function handleDelete(row?: SysDictDataVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delData(dictCodes)
       .then(() => {
-        if (!row) ids.value = [];
+        ids.value = ArrayOps.fastDeleteElement(ids.value, dictCodes);
         getList();
         proxy.$modal.msgSuccess('删除成功');
         useDictStore().removeDict(queryParams.value.dictType);

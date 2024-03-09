@@ -103,6 +103,7 @@
                 <template #icon> <refresh-icon /> </template>
                 刷新缓存
               </t-button>
+              <span class="selected-count">已选 {{ ids.length }} 项</span>
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -462,6 +463,7 @@ import type {
   SysMessageTemplateVar,
   SysMessageTemplateVo,
 } from '@/api/system/model/messageTemplateModel';
+import { ArrayOps } from '@/utils/array';
 
 const { proxy } = getCurrentInstance();
 const { sys_message_template_mode, sys_message_type, sys_normal_disable } = proxy.useDict(
@@ -810,7 +812,7 @@ function handleDelete(row?: SysMessageTemplateVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delMessageTemplate(messageTemplateIds)
       .then(() => {
-        if (!row) ids.value = [];
+        ids.value = ArrayOps.fastDeleteElement(ids.value, messageTemplateIds);
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

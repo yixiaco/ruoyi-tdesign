@@ -90,6 +90,7 @@
                 <template #icon> <download-icon /> </template>
                 导出
               </t-button>
+              <span class="selected-count">已选 {{ ids.length }} 项</span>
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -274,6 +275,7 @@ import {
   refreshOssRuleCache,
   updateOssRule,
 } from '@/api/system/ossRule';
+import { ArrayOps } from '@/utils/array';
 
 const { proxy } = getCurrentInstance();
 const { sys_yes_no, sys_normal_disable } = proxy.useDict('sys_yes_no', 'sys_normal_disable');
@@ -467,7 +469,7 @@ function handleDelete(row?: SysOssRuleVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delOssRule(ossRuleIds)
       .then(() => {
-        if (!row) ids.value = [];
+        ids.value = ArrayOps.fastDeleteElement(ids.value, ossRuleIds);
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

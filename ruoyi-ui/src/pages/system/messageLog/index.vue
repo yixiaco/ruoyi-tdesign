@@ -115,6 +115,7 @@
                 <template #icon> <download-icon /> </template>
                 导出
               </t-button>
+              <span class="selected-count">已选 {{ ids.length }} 项</span>
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -247,6 +248,7 @@ import { computed, getCurrentInstance, ref } from 'vue';
 
 import { clearMessageLog, delMessageLog, getMessageLog, listMessageLog } from '@/api/system/messageLog';
 import type { SysMessageLogQuery, SysMessageLogVo } from '@/api/system/model/messageLogModel';
+import { ArrayOps } from '@/utils/array';
 
 const { proxy } = getCurrentInstance();
 const { sys_message_template_mode, sys_common_status, sys_message_type, sys_message_supplier_type } = proxy.useDict(
@@ -386,7 +388,7 @@ function handleDelete(row?: SysMessageLogVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delMessageLog(messageLogIds)
       .then(() => {
-        if (!row) ids.value = [];
+        ids.value = ArrayOps.fastDeleteElement(ids.value, messageLogIds);
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

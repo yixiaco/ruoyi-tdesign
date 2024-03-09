@@ -99,6 +99,7 @@
                 <template #icon> <refresh-icon /> </template>
                 刷新缓存
               </t-button>
+              <span class="selected-count">已选 {{ ids.length }} 项</span>
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -222,6 +223,7 @@ import { computed, getCurrentInstance, ref } from 'vue';
 import { addType, delType, getType, listType, refreshCache, updateType } from '@/api/system/dict/type';
 import type { SysDictTypeForm, SysDictTypeQuery, SysDictTypeVo } from '@/api/system/model/dictModel';
 import useDictStore from '@/store/modules/dict';
+import { ArrayOps } from '@/utils/array';
 
 const { proxy } = getCurrentInstance();
 
@@ -399,7 +401,7 @@ function handleDelete(row?: SysDictTypeVo) {
   const dictIds = row?.dictId || ids.value;
   proxy.$modal.confirm(`是否确认删除字典编号为"${dictIds}"的数据项？`, () => {
     return delType(dictIds).then(() => {
-      if (!row) ids.value = [];
+      ids.value = ArrayOps.fastDeleteElement(ids.value, dictIds);
       getList();
       proxy.$modal.msgSuccess('删除成功');
     });

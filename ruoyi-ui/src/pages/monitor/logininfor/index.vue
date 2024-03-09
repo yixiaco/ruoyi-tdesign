@@ -114,6 +114,7 @@
                 <template #icon> <download-icon /> </template>
                 导出
               </t-button>
+              <span class="selected-count">已选 {{ ids.length }} 项</span>
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -231,6 +232,7 @@ import {
   unlockLogininfor,
 } from '@/api/monitor/logininfor';
 import type { SysLogininforQuery, SysLogininforVo } from '@/api/monitor/model/logininforModel';
+import { ArrayOps } from '@/utils/array';
 
 const { proxy } = getCurrentInstance();
 const { sys_common_status, sys_device_type } = proxy.useDict('sys_common_status', 'sys_device_type');
@@ -252,7 +254,7 @@ const sort = ref<TableSort>();
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
-  { title: `访问编号`, colKey: 'infoId', align: 'center' },
+  { title: `访问编号`, colKey: 'infoId', align: 'center', ellipsis: true },
   { title: `用户名称`, colKey: 'userName', align: 'center' },
   { title: `地址`, colKey: 'ipaddr', align: 'center', ellipsis: true },
   { title: `登录地点`, colKey: 'loginLocation', align: 'center', ellipsis: true },
@@ -363,7 +365,7 @@ function handleDelete(row?: SysLogininforVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delLogininfor(infoIds)
       .then(() => {
-        if (!row) ids.value = [];
+        ids.value = ArrayOps.fastDeleteElement(ids.value, infoIds);
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

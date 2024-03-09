@@ -94,6 +94,7 @@
                 <template #icon> <download-icon /> </template>
                 导出
               </t-button>
+              <span class="selected-count">已选 {{ ids.length }} 项</span>
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -213,6 +214,7 @@ import { computed, getCurrentInstance, ref } from 'vue';
 
 import type { SysOperLogQuery, SysOperLogVo } from '@/api/monitor/model/operlogModel';
 import { cleanOperlog, delOperlog, list } from '@/api/monitor/operlog';
+import { ArrayOps } from '@/utils/array';
 import type { DictModel } from '@/utils/dict';
 import { isJson } from '@/utils/ruoyi';
 
@@ -332,7 +334,7 @@ function handleDelete(row?: SysOperLogVo) {
   const operIds = row?.operId || ids.value;
   proxy.$modal.confirm(`是否确认删除日志编号为"${operIds}"的数据项?`, () => {
     return delOperlog(operIds).then(() => {
-      if (!row) ids.value = [];
+      ids.value = ArrayOps.fastDeleteElement(ids.value, operIds);
       getList();
       proxy.$modal.msgSuccess('删除成功');
     });

@@ -147,6 +147,9 @@
                 <template #icon> <download-icon /> </template>
                 导出
               </t-button>
+#if($useSelect)
+              <span class="selected-count">已选 {{ ids.length }} 项</span>
+#end
 #end
             </t-col>
             <t-col flex="none">
@@ -425,6 +428,9 @@ import {
 #end
 import type { #if($addOrUpdate)FormInstanceFunctions, FormRule, #end#if($isUseQueryMethod)PageInfo, PrimaryTableCol, #{end}#if($addOrUpdate)SubmitContext, #end#if($hasSorting && $isUseQueryMethod)TableSort#end } from 'tdesign-vue-next';
 import { #if($isUseQueryMethod)computed, #{end}getCurrentInstance, ref } from 'vue';
+#if($isUseRemoveMethod)
+import { ArrayOps } from '@/utils/array';
+#end
 
 ## 导入对象类型
 #set($importApiModel = [])
@@ -766,8 +772,10 @@ function handleDelete(row?: ${vo}) {
     const msgLoading = proxy.${modal}.msgLoading('正在删除中...');
     return del${BusinessName}($delIds)
       .then(() => {
+#if($useSelect)
+        ids.value = ArrayOps.fastDeleteElement(ids.value, $delIds);
+#end
 #if($isUseQueryMethod)
-        if (!row) ids.value = [];
         getList();
 #end
         proxy.${modal}.msgSuccess('删除成功');

@@ -86,6 +86,7 @@
                 <template #icon> <download-icon /> </template>
                 导出
               </t-button>
+              <span class="selected-count">已选 {{ ids.length }} 项</span>
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -229,6 +230,7 @@ import { computed, getCurrentInstance, ref } from 'vue';
 
 import type { SysPostForm, SysPostQuery, SysPostVo } from '@/api/system/model/postModel';
 import { addPost, delPost, getPost, listPost, updatePost } from '@/api/system/post';
+import { ArrayOps } from '@/utils/array';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
@@ -416,7 +418,7 @@ function handleDelete(row?: SysPostVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delPost(postIds)
       .then(() => {
-        if (!row) ids.value = [];
+        ids.value = ArrayOps.fastDeleteElement(ids.value, postIds);
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

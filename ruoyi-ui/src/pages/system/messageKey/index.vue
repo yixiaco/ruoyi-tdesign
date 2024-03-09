@@ -74,6 +74,7 @@
                 <template #icon> <download-icon /> </template>
                 导出
               </t-button>
+              <span class="selected-count">已选 {{ ids.length }} 项</span>
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -208,6 +209,7 @@ import { computed, getCurrentInstance, ref } from 'vue';
 
 import { addMessageKey, delMessageKey, getMessageKey, listMessageKey, updateMessageKey } from '@/api/system/messageKey';
 import type { SysMessageKeyForm, SysMessageKeyQuery, SysMessageKeyVo } from '@/api/system/model/messageKeyModel';
+import { ArrayOps } from '@/utils/array';
 
 const { proxy } = getCurrentInstance();
 
@@ -394,7 +396,7 @@ function handleDelete(row?: SysMessageKeyVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delMessageKey(messageKeyIds)
       .then(() => {
-        if (!row) ids.value = [];
+        ids.value = ArrayOps.fastDeleteElement(ids.value, messageKeyIds);
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

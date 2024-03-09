@@ -74,6 +74,7 @@
                 <template #icon> <download-icon /> </template>
                 导出
               </t-button>
+              <span class="selected-count">已选 {{ ids.length }} 项</span>
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -259,6 +260,7 @@ import { computed, getCurrentInstance, ref } from 'vue';
 
 import { addClient, changeStatus, delClient, getClient, listClient, updateClient } from '@/api/system/client';
 import type { SysClientForm, SysClientQuery, SysClientVo } from '@/api/system/model/clientModel';
+import { ArrayOps } from '@/utils/array';
 import { handleChangeStatus } from '@/utils/ruoyi';
 
 const { proxy } = getCurrentInstance();
@@ -479,7 +481,7 @@ function handleDelete(row?: SysClientVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delClient($ids)
       .then(() => {
-        if (!row) ids.value = [];
+        ids.value = ArrayOps.fastDeleteElement(ids.value, $ids);
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

@@ -71,6 +71,7 @@
                 <template #icon> <download-icon /> </template>
                 导出
               </t-button>
+              <span class="selected-count">已选 {{ ids.length }} 项</span>
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -196,6 +197,7 @@ import { computed, getCurrentInstance, ref } from 'vue';
 
 import { addApp, delApp, getApp, listApp, updateApp } from '@/api/system/app';
 import type { SysAppForm, SysAppQuery, SysAppVo } from '@/api/system/model/appModel';
+import { ArrayOps } from '@/utils/array';
 
 const { proxy } = getCurrentInstance();
 const { sys_app_type } = proxy.useDict('sys_app_type');
@@ -371,7 +373,7 @@ function handleDelete(row?: SysAppVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delApp(appids)
       .then(() => {
-        if (!row) ids.value = [];
+        ids.value = ArrayOps.fastDeleteElement(ids.value, appids);
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

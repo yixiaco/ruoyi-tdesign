@@ -68,6 +68,7 @@
                 <template #icon> <close-icon /> </template>
                 关闭
               </t-button>
+              <span class="selected-count">已选 {{ userIds.length }} 项</span>
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -107,6 +108,7 @@ import type { SysUserQuery, SysUserVo } from '@/api/system/model/userModel';
 import { allocatedUserList, authUserCancel, authUserCancelAll } from '@/api/system/role';
 import SelectUser, { type SelectUserInstance } from '@/pages/system/role/selectUser.vue';
 import { useTabsRouterStore } from '@/store';
+import { ArrayOps } from '@/utils/array';
 
 const tabsRouterStore = useTabsRouterStore();
 const route = useRoute();
@@ -194,6 +196,7 @@ function cancelAuthUser(row: SysUserVo) {
     const msgLoading = proxy.$modal.msgLoading('提交中...');
     return authUserCancel({ userId: row.userId, roleId: queryParams.roleId })
       .then(() => {
+        userIds.value = ArrayOps.fastDeleteElement(userIds.value, row.userId);
         getList();
         proxy.$modal.msgSuccess('取消授权成功');
       })
@@ -208,6 +211,7 @@ function cancelAuthUserAll() {
     const msgLoading = proxy.$modal.msgLoading('提交中...');
     return authUserCancelAll({ roleId, userIds: uIds })
       .then(() => {
+        userIds.value = ArrayOps.fastDeleteElement(userIds.value, userIds.value);
         getList();
         proxy.$modal.msgSuccess('取消授权成功');
       })

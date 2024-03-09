@@ -91,6 +91,7 @@
                 <template #icon> <download-icon /> </template>
                 导出
               </t-button>
+              <span class="selected-count">已选 {{ ids.length }} 项</span>
             </t-col>
             <t-col flex="none">
               <t-button theme="default" shape="square" variant="outline" @click="showSearch = !showSearch">
@@ -257,6 +258,7 @@ import { computed, getCurrentInstance, ref } from 'vue';
 
 import type { SysNoticeForm, SysNoticeQuery, SysNoticeVo } from '@/api/system/model/noticeModel';
 import { addNotice, delNotice, getNotice, listNotice, updateNotice } from '@/api/system/notice';
+import { ArrayOps } from '@/utils/array';
 
 const { proxy } = getCurrentInstance();
 const { sys_notice_status, sys_notice_type } = proxy.useDict('sys_notice_status', 'sys_notice_type');
@@ -446,7 +448,7 @@ function handleDelete(row?: SysNoticeVo) {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
     return delNotice(noticeIds)
       .then(() => {
-        if (!row) ids.value = [];
+        ids.value = ArrayOps.fastDeleteElement(ids.value, noticeIds);
         getList();
         proxy.$modal.msgSuccess('删除成功');
       })

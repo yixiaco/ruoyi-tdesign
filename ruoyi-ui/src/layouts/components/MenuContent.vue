@@ -27,14 +27,11 @@
 <script setup lang="tsx">
 import type { PropType } from 'vue';
 import { computed } from 'vue';
-import { useRoute } from 'vue-router';
 
 import RIcon from '@/components/r-icon/index.vue';
-import { getActive } from '@/router';
 import type { ComplexRoute, MenuRoute } from '@/types/interface';
 
 type ListItemType = MenuRoute & { icon?: string };
-const route = useRoute();
 
 const props = defineProps({
   navData: {
@@ -42,7 +39,6 @@ const props = defineProps({
     default: () => [],
   },
 });
-const active = computed(() => getActive(route));
 
 const list = computed(() => {
   const { navData } = props;
@@ -88,20 +84,6 @@ const getHref = (item: MenuRoute) => {
     return frameSrc.match(/(http|https):\/\/([\w.]+\/?)\S*/);
   }
   return path.match(/(http|https):\/\/([\w.]+\/?)\S*/);
-};
-
-const getPath = (item: ListItemType) => {
-  const activeLevel = active.value.split('/').length;
-  const pathLevel = item.path.split('/').length;
-  if (activeLevel > pathLevel && active.value.startsWith(item.path)) {
-    return active.value;
-  }
-
-  if (active.value === item.path) {
-    return active.value;
-  }
-
-  return item.meta?.single ? item.redirect : item.path;
 };
 
 const openHref = (url: string) => {
