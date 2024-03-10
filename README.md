@@ -1,4 +1,4 @@
-## 平台简介
+# 平台简介
 
 [![码云Gitee](https://gitee.com/yixiacoco/ruoyi-tdesign/badge/star.svg?theme=blue)](https://gitee.com/yixiacoco/ruoyi-tdesign)
 [![GitHub](https://img.shields.io/github/stars/yixiaco/ruoyi-tdesign.svg?style=social&label=Stars)](https://github.com/yixiaco/ruoyi-tdesign)
@@ -20,6 +20,10 @@
 
 > 查看项目[更新日志](./CHANGELOG.md)
 
+## 文档
+要查看项目文档，请访问[ruoyi-tdesign-doc](https://yixiaco.github.io/ruoyi-tdesign-doc/)
+
+## 介绍
 | 功能介绍       | 使用技术                    | 文档地址                                                     | 描述                                                         |
 | -------------- | --------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ |
 | 当前框架       | ruoyi-tdesign               | [ruoyi-tdesign文档](https://gitee.com/yixiacoco/ruoyi-tdesign/wikis/pages) | 重写RuoYi-Vue-Plus部分逻辑，UI框架                           |
