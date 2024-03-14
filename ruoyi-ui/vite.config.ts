@@ -10,7 +10,6 @@ import { loadEnv } from 'vite';
 import viteCompression from 'vite-plugin-compression';
 import { viteMockServe } from 'vite-plugin-mock';
 import prismjs from 'vite-plugin-prismjs';
-import VueDevTools from 'vite-plugin-vue-devtools';
 import svgLoader from 'vite-svg-loader';
 
 const CWD = process.cwd();
@@ -98,7 +97,6 @@ export default ({ mode }: ConfigEnv): UserConfig => {
         },
       }),
       vueJsx(),
-      VueDevTools(),
       viteMockServe({
         mockPath: 'mock',
         enable: false,

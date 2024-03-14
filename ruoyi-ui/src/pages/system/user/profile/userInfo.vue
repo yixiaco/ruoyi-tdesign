@@ -44,14 +44,8 @@ const { proxy } = getCurrentInstance();
 
 const rules = ref<Record<string, Array<FormRule>>>({
   nickName: [{ required: true, message: '用户昵称不能为空' }],
-  email: [
-    { required: true, message: '邮箱地址不能为空' },
-    { email: true, message: '请输入正确的邮箱地址' },
-  ],
-  phonenumber: [
-    { required: true, message: '手机号码不能为空' },
-    { pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码' },
-  ],
+  email: [{ email: true, message: '请输入正确的邮箱地址' }],
+  phonenumber: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码' }],
 });
 
 /** 提交按钮 */

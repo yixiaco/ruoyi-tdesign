@@ -174,63 +174,69 @@
       @close="cancel"
       @confirm="confirm('menu')"
     >
-      <t-form
-        ref="roleRef"
-        label-align="right"
-        :data="form"
-        :rules="rules"
-        label-width="calc(5em + 41px)"
-        @submit="submitForm"
-      >
-        <t-form-item label="角色名称" name="roleName">
-          <t-input v-model="form.roleName" placeholder="请输入角色名称" />
-        </t-form-item>
-        <t-form-item name="roleKey">
-          <template #label>
-            <span>
-              <t-tooltip content="控制器中定义的权限字符，如：@SaCheckRole('admin')" placement="top">
-                <help-circle-filled-icon />
-              </t-tooltip>
-              权限字符
-            </span>
-          </template>
-          <t-input v-model="form.roleKey" placeholder="请输入权限字符" />
-        </t-form-item>
-        <t-form-item label="角色顺序" name="roleSort">
-          <t-input-number v-model="form.roleSort" :min="0" />
-        </t-form-item>
-        <t-form-item label="状态">
-          <t-radio-group v-model="form.status">
-            <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{ dict.label }}</t-radio>
-          </t-radio-group>
-        </t-form-item>
-        <t-form-item label="菜单权限">
-          <t-space direction="vertical">
-            <t-space>
-              <t-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')">展开/折叠</t-checkbox>
-              <t-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">
-                全选/全不选
-              </t-checkbox>
-              <t-checkbox v-model="form.menuCheckStrictly">父子联动</t-checkbox>
+      <t-loading :loading="loadingEdit">
+        <t-form
+          ref="roleRef"
+          label-align="right"
+          :data="form"
+          :rules="rules"
+          label-width="calc(5em + 41px)"
+          @submit="submitForm"
+        >
+          <t-form-item label="角色名称" name="roleName">
+            <t-input v-model="form.roleName" placeholder="请输入角色名称" />
+          </t-form-item>
+          <t-form-item name="roleKey">
+            <template #label>
+              <span>
+                <t-tooltip content="控制器中定义的权限字符，如：@SaCheckRole('admin')" placement="top">
+                  <help-circle-filled-icon />
+                </t-tooltip>
+                权限字符
+              </span>
+            </template>
+            <t-input v-model="form.roleKey" placeholder="请输入权限字符" />
+          </t-form-item>
+          <t-form-item label="角色顺序" name="roleSort">
+            <t-input-number v-model="form.roleSort" :min="0" />
+          </t-form-item>
+          <t-form-item label="状态">
+            <t-radio-group v-model="form.status">
+              <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{
+                dict.label
+              }}</t-radio>
+            </t-radio-group>
+          </t-form-item>
+          <t-form-item label="菜单权限">
+            <t-space direction="vertical">
+              <t-space>
+                <t-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')"
+                  >展开/折叠</t-checkbox
+                >
+                <t-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">
+                  全选/全不选
+                </t-checkbox>
+                <t-checkbox v-model="form.menuCheckStrictly">父子联动</t-checkbox>
+              </t-space>
+              <t-tree
+                ref="menuRef"
+                v-model="menuIds"
+                class="tree-border"
+                :data="menuOptions"
+                :expanded="menuExpandNode"
+                checkable
+                :check-strictly="!form.menuCheckStrictly"
+                empty="加载中，请稍候"
+                :keys="{ value: 'id', label: 'label', children: 'children' }"
+                @expand="onExpand('menu', $event)"
+              ></t-tree>
             </t-space>
-            <t-tree
-              ref="menuRef"
-              v-model="menuIds"
-              class="tree-border"
-              :data="menuOptions"
-              :expanded="menuExpandNode"
-              checkable
-              :check-strictly="!form.menuCheckStrictly"
-              empty="加载中，请稍候"
-              :keys="{ value: 'id', label: 'label', children: 'children' }"
-              @expand="onExpand('menu', $event)"
-            ></t-tree>
-          </t-space>
-        </t-form-item>
-        <t-form-item label="备注">
-          <t-textarea v-model="form.remark" placeholder="请输入备注"></t-textarea>
-        </t-form-item>
-      </t-form>
+          </t-form-item>
+          <t-form-item label="备注">
+            <t-textarea v-model="form.remark" placeholder="请输入备注"></t-textarea>
+          </t-form-item>
+        </t-form>
+      </t-loading>
     </t-dialog>
 
     <!-- 分配角色数据权限对话框 -->
@@ -402,6 +408,7 @@ const openViewLoading = ref(false);
 const roleList = ref<SysRoleVo[]>([]);
 const open = ref(false);
 const loading = ref(true);
+const loadingEdit = ref(true);
 const showSearch = ref(true);
 const ids = ref([]);
 const single = ref(true);
@@ -618,15 +625,17 @@ function handleUpdate(row?: SysRoleVo) {
   reset();
   const roleId = row?.roleId || ids.value.at(0);
   const roleMenu = getRoleMenuTreeselect(roleId);
+  open.value = true;
+  loadingEdit.value = true;
+  title.value = '修改角色';
   getRole(roleId).then((response) => {
     form.value = response.data;
     form.value.roleSort = form.value.roleSort as number;
-    open.value = true;
     roleMenu.then((res) => {
       const { checkedKeys } = res.data;
       menuIds.value = checkedKeys;
     });
-    title.value = '修改角色';
+    loadingEdit.value = false;
   });
 }
 /** 根据角色ID查询菜单树结构 */

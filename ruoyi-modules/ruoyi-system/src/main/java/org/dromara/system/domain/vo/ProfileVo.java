@@ -1,6 +1,7 @@
 package org.dromara.system.domain.vo;
 
 import lombok.Data;
+import org.dromara.common.sensitive.annotation.SensitiveIgnore;
 
 /**
  * 用户个人信息
@@ -8,6 +9,7 @@ import lombok.Data;
  * @author Michelle.Chung
  */
 @Data
+@SensitiveIgnore
 public class ProfileVo {
 
     /**
