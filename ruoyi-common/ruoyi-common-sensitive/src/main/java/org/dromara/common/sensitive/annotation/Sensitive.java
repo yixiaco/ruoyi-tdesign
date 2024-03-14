@@ -1,5 +1,6 @@
 package org.dromara.common.sensitive.annotation;
 
+import cn.dev33.satoken.annotation.SaMode;
 import com.fasterxml.jackson.annotation.JacksonAnnotationsInside;
 import com.fasterxml.jackson.databind.annotation.JsonSerialize;
 import org.dromara.common.sensitive.core.SensitiveStrategy;
@@ -22,7 +23,18 @@ import java.lang.annotation.Target;
 public @interface Sensitive {
     SensitiveStrategy strategy();
 
-    String roleKey() default "";
+    /**
+     * 角色，用户登录类型如果拥有角色，则不进行脱敏
+     */
+    String[] roleKey() default "";
 
-    String perms() default "";
+    /**
+     * 权限，用户登录类型如果拥有权限，则不进行脱敏
+     */
+    String[] perms() default "";
+
+    /**
+     * 验证模式：AND | OR，默认AND
+     */
+    SaMode mode() default SaMode.AND;
 }

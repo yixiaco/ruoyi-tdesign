@@ -1,5 +1,7 @@
 package org.dromara.common.sensitive.core;
 
+import cn.dev33.satoken.annotation.SaMode;
+
 /**
  * 脱敏服务
  * 默认管理员不过滤
@@ -13,6 +15,6 @@ public interface SensitiveService {
     /**
      * 是否脱敏
      */
-    boolean isSensitive(String roleKey, String perms);
+    boolean isSensitive(String[] roleKey, String[] perms, SaMode mode);
 
 }

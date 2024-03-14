@@ -1,5 +1,6 @@
 package org.dromara.common.sensitive.handler;
 
+import cn.dev33.satoken.annotation.SaMode;
 import cn.hutool.core.util.ObjectUtil;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.databind.BeanProperty;
@@ -26,14 +27,15 @@ import java.util.Objects;
 public class SensitiveHandler extends JsonSerializer<String> implements ContextualSerializer {
 
     private SensitiveStrategy strategy;
-    private String roleKey;
-    private String perms;
+    private String[] roleKey;
+    private String[] perms;
+    private SaMode mode;
 
     @Override
     public void serialize(String value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
         try {
             SensitiveService sensitiveService = SpringUtils.getBean(SensitiveService.class);
-            if (ObjectUtil.isNotNull(sensitiveService) && sensitiveService.isSensitive(roleKey, perms)) {
+            if (ObjectUtil.isNotNull(sensitiveService) && sensitiveService.isSensitive(roleKey, perms, mode)) {
                 gen.writeString(strategy.desensitizer().apply(value));
             } else {
                 gen.writeString(value);
@@ -51,6 +53,7 @@ public class SensitiveHandler extends JsonSerializer<String> implements Contextu
             this.strategy = annotation.strategy();
             this.roleKey = annotation.roleKey();
             this.perms = annotation.perms();
+            this.mode = annotation.mode();
             return this;
         }
         return prov.findValueSerializer(property.getType(), property);

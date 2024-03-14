@@ -26,7 +26,9 @@ public class StorageUtil {
             T obj = (T) SaHolder.getStorage().get(key);
             if (ObjectUtil.isNull(obj)) {
                 obj = handle.get();
-                SaHolder.getStorage().set(key, obj);
+                if (ObjectUtil.isNotNull(obj)) {
+                    SaHolder.getStorage().set(key, obj);
+                }
             }
             return obj;
         } catch (Exception e) {
@@ -46,7 +48,9 @@ public class StorageUtil {
             T obj = convert.apply(SaHolder.getStorage().get(key));
             if (ObjectUtil.isNull(obj)) {
                 obj = handle.get();
-                SaHolder.getStorage().set(key, obj);
+                if (ObjectUtil.isNotNull(obj)) {
+                    SaHolder.getStorage().set(key, obj);
+                }
             }
             return obj;
         } catch (Exception e) {
