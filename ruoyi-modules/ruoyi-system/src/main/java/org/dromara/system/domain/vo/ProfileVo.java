@@ -9,12 +9,12 @@ import org.dromara.common.sensitive.annotation.SensitiveIgnore;
  * @author Michelle.Chung
  */
 @Data
-@SensitiveIgnore
 public class ProfileVo {
 
     /**
      * 用户信息
      */
+    @SensitiveIgnore
     private SysUserVo user;
 
     /**

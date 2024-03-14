@@ -10,14 +10,18 @@ import com.fasterxml.jackson.databind.JsonSerializer;
 import com.fasterxml.jackson.databind.SerializerProvider;
 import com.fasterxml.jackson.databind.ser.ContextualSerializer;
 import lombok.extern.slf4j.Slf4j;
+import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.sensitive.annotation.Sensitive;
 import org.dromara.common.sensitive.annotation.SensitiveIgnore;
 import org.dromara.common.sensitive.core.SensitiveService;
 import org.dromara.common.sensitive.core.SensitiveStrategy;
 import org.springframework.beans.BeansException;
+import org.springframework.util.ReflectionUtils;
 
 import java.io.IOException;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Objects;
 
 /**
@@ -35,18 +39,11 @@ public class SensitiveHandler extends JsonSerializer<String> implements Contextu
 
     @Override
     public void serialize(String value, JsonGenerator gen, SerializerProvider serializers) throws IOException {
+        if (value == null || isIgnore(gen)) {
+            gen.writeString(value);
+            return;
+        }
         try {
-            // 结构中存在忽略脱敏注解则写入结束
-            if (value != null) {
-                JsonStreamContext context = gen.getOutputContext();
-                for (; !context.inRoot(); context = context.getParent()) {
-                    if (context.getCurrentValue().getClass().isAnnotationPresent(SensitiveIgnore.class)) {
-                        gen.writeString(value);
-                        return;
-                    }
-                }
-            }
-
             SensitiveService sensitiveService = SpringUtils.getBean(SensitiveService.class);
             if (ObjectUtil.isNotNull(sensitiveService) && sensitiveService.isSensitive(roleKey, perms, mode)) {
                 gen.writeString(strategy.desensitizer().apply(value));
@@ -59,11 +56,41 @@ public class SensitiveHandler extends JsonSerializer<String> implements Contextu
         }
     }
 
+    /**
+     * 判断是否忽略脱敏
+     */
+    private boolean isIgnore(JsonGenerator gen) {
+        // 结构中存在忽略脱敏注解则写入结束
+        JsonStreamContext context = gen.getOutputContext();
+        for (; !context.inRoot(); context = context.getParent()) {
+            Class<?> clz = context.getCurrentValue().getClass();
+            Field field;
+            Method method;
+            if (clz.isAnnotationPresent(SensitiveIgnore.class)) {
+                return true;
+            }
+            if (!context.hasCurrentName()) {
+                return false;
+            }
+            if ((field = ReflectionUtils.findField(clz, context.getCurrentName())) != null
+                && field.isAnnotationPresent(SensitiveIgnore.class)) {
+                return true;
+            }
+            String methodName = "get" + StringUtils.capitalize(context.getCurrentName());
+            if ((method = ReflectionUtils.findMethod(clz, methodName)) != null
+                && method.isAnnotationPresent(SensitiveIgnore.class)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public JsonSerializer<?> createContextual(SerializerProvider prov, BeanProperty property) throws JsonMappingException {
-        Sensitive annotation = property.getAnnotation(Sensitive.class);
-        SensitiveIgnore ignore = property.getAnnotation(SensitiveIgnore.class);
-        if (ignore == null && Objects.nonNull(annotation) && Objects.equals(String.class, property.getType().getRawClass())) {
+        Sensitive annotation;
+        if (Objects.equals(String.class, property.getType().getRawClass())
+            && property.getAnnotation(SensitiveIgnore.class) == null
+            && Objects.nonNull(annotation = property.getAnnotation(Sensitive.class))) {
             this.strategy = annotation.strategy();
             this.roleKey = annotation.roleKey();
             this.perms = annotation.perms();
