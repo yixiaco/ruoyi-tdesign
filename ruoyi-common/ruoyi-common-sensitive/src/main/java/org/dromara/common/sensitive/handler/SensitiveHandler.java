@@ -63,6 +63,9 @@ public class SensitiveHandler extends JsonSerializer<String> implements Contextu
         // 结构中存在忽略脱敏注解则写入结束
         JsonStreamContext context = gen.getOutputContext();
         for (; !context.inRoot(); context = context.getParent()) {
+            if (context.inArray()) {
+                continue;
+            }
             Class<?> clz = context.getCurrentValue().getClass();
             Field field;
             Method method;
