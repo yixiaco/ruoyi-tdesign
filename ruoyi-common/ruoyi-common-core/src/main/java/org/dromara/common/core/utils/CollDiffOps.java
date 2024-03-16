@@ -1,7 +1,10 @@
 package org.dromara.common.core.utils;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
 import java.util.function.Function;
@@ -123,11 +126,76 @@ public class CollDiffOps<T, K, R> {
         return getSame(right, rightConvert, left, leftConvert, rightConvert);
     }
 
+    /**
+     * 集合的数量与元素是否相同
+     * <p>注意：
+     * <p>此处比较的元素将经过convert转换，且不会比较元素的重复值计数。
+     * <p>例如： [1,2,2]、[1,1,2]被认为是相等的，如果要判断元素的重复计数，则应该使用{@link CollDiffOps#isMultiEquals}方法
+     */
+    public boolean isEquals() {
+        if (left.size() != right.size()) {
+            return false;
+        }
+
+        Set<R> leftSet = left.stream().map(leftConvert).collect(Collectors.toSet());
+        Set<R> rightSet = right.stream().map(rightConvert).collect(Collectors.toSet());
+        return leftSet.containsAll(rightSet);
+    }
+
+    /**
+     * 比较集合的数量与元素是否完全相同，并且重复的元素计数也必须相同
+     * <p>注意，此处比较的元素将经过convert转换
+     */
+    public boolean isMultiEquals() {
+        if (left.size() != right.size()) {
+            return false;
+        }
+        Map<R, Integer> leftCountMap = new HashMap<>();
+        Map<R, Integer> rightCountMap = new HashMap<>();
+
+        // 遍历第一个集合，统计元素出现次数
+        for (T item : left) {
+            R key = leftConvert.apply(item);
+            leftCountMap.put(key, leftCountMap.getOrDefault(key, 0) + 1);
+        }
+
+        // 遍历第二个集合，统计元素出现次数
+        for (K item : right) {
+            R key = rightConvert.apply(item);
+            rightCountMap.put(key, rightCountMap.getOrDefault(key, 0) + 1);
+        }
+        // 比较两个Map是否相等
+        return leftCountMap.equals(rightCountMap);
+    }
+
+    /**
+     * 集合的数量、顺序、元素是否完全相同
+     * 注意，此处比较的元素将经过convert转换
+     */
+    public boolean isEqualsInOrder() {
+        if (left.size() != right.size()) {
+            return false;
+        }
+        List<T> lList = new ArrayList<>(left);
+        List<K> rList = new ArrayList<>(right);
+
+        for (int i = 0; i < lList.size(); i++) {
+            if (!leftConvert.apply(lList.get(i)).equals(rightConvert.apply(rList.get(i)))) {
+                return false;
+            }
+        }
+        return true;
+    }
+
     public <T0> CollDiffOps<T0, K, R> newLeft(Collection<T0> left, Function<T0, R> leftConvert) {
         return new CollDiffOps<>(left, leftConvert, right, rightConvert);
     }
 
     public <K0> CollDiffOps<T, K0, R> newRight(Collection<K0> right, Function<K0, R> rightConvert) {
+        return new CollDiffOps<>(left, leftConvert, right, rightConvert);
+    }
+
+    public <R0> CollDiffOps<T, K, R0> newConvert(Function<T, R0> leftConvert, Function<K, R0> rightConvert) {
         return new CollDiffOps<>(left, leftConvert, right, rightConvert);
     }
 
