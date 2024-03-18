@@ -4,6 +4,7 @@ import cn.hutool.core.util.StrUtil;
 import com.fasterxml.jackson.core.JsonGenerator;
 import lombok.AllArgsConstructor;
 import org.dromara.common.core.service.OssRuleService;
+import org.dromara.common.core.service.OssService;
 import org.dromara.common.translation.annotation.Translation;
 import org.dromara.common.translation.annotation.TranslationType;
 import org.dromara.common.translation.constant.TransConstant;
@@ -24,6 +25,7 @@ import java.util.Map;
 public class OssRuleTranslationImpl implements TranslationInterface {
 
     private final OssRuleService ossRuleService;
+    private final OssService ossService;
 
     /**
      * 翻译
@@ -35,13 +37,17 @@ public class OssRuleTranslationImpl implements TranslationInterface {
     @Override
     public void translation(Object key, Translation translation, JsonGenerator gen) throws IOException {
         // 只在web环境下使用
-        if (key instanceof String && isWeb()) {
+        if (key instanceof String path && isWeb()) {
             String fieldName = gen.getOutputContext().getCurrentName();
             String[] useRules = StrUtil.isNotBlank(translation.other()) ? translation.other().split(",") : null;
+            // 如果是id，则将id转为url
+            if (isIdMode(path)) {
+                path = ossService.selectUrlByIds(path);
+            }
 
-            Map<String, String> urls = ossRuleService.getUrls(fieldName, (String) key, useRules);
+            Map<String, String> urls = ossRuleService.getUrls(fieldName, path, useRules);
             if (urls == null) {
-                gen.writeObject(key);
+                gen.writeString(path);
                 return;
             }
             // 默认字段值
@@ -65,5 +71,13 @@ public class OssRuleTranslationImpl implements TranslationInterface {
      */
     private static boolean isWeb() {
         return RequestContextHolder.getRequestAttributes() != null;
+    }
+
+    /**
+     * 是否是id模式
+     * @return
+     */
+    private boolean isIdMode(String path) {
+        return path.matches("^([0-9],?)+$");
     }
 }

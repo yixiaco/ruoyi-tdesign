@@ -161,7 +161,7 @@
         <t-form-item label="规则名称" name="ruleName" help="例如：80x80，则字段名称将输出字段名_80x80">
           <t-input v-model.trim="form.ruleName" placeholder="请输入规则名称" clearable />
         </t-form-item>
-        <t-form-item label="匹配域名" name="domain">
+        <t-form-item label="匹配域名" name="domain" help="只有URL中包含匹配的域名，该规则才生效">
           <t-input v-model.trim="form.domain" placeholder="请输入匹配域名" clearable />
         </t-form-item>
         <t-form-item

@@ -2,11 +2,11 @@ package org.dromara.system.service.impl;
 
 import cn.dev33.satoken.context.SaHolder;
 import cn.dev33.satoken.spring.SpringMVCUtil;
+import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.net.url.UrlBuilder;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
-import cn.hutool.http.HttpUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.CacheConstants;
 import org.dromara.common.core.enums.NormalDisableEnum;
@@ -208,7 +208,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
             // 如果二级缓存为空，则从redis缓存中读取
             rules = RedisLockUtil.getOrSaveList(CacheConstants.SYS_OSS_RULE, () ->
                 // 如果redis中为空，则从database中读取
-                lambdaQuery().eq(SysOssRule::getStatus, NormalDisableEnum.NORMAL.getCode()).list()
+                lambdaQuery().eq(SysOssRule::getStatus, NormalDisableEnum.NORMAL.getCode()).orderByAsc(SysOssRule::getCreateTime).list()
             );
             SaHolder.getStorage().set(CacheConstants.SYS_OSS_RULE, rules);
         }
@@ -217,7 +217,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
         String[] urls = splitUrl(originalUrl);
         for (String url : urls) {
             String fileName = getFileName(originalUrl);
-            String mimeType = HttpUtil.getMimeType(fileName);
+            String mimeType = FileUtil.getMimeType(fileName);
             // 过滤命中的规则
             List<SysOssRule> list = rules.stream()
                 .filter(sysOssRule -> {
@@ -303,11 +303,6 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
         if (StrUtil.isBlank(url)) {
             return new String[0];
         }
-        return Arrays.stream(url.split(",http")).map(u -> {
-            if (!u.startsWith("http")) {
-                return "http" + u;
-            }
-            return u;
-        }).toArray(String[]::new);
+        return url.split(",(?=http)");
     }
 }
