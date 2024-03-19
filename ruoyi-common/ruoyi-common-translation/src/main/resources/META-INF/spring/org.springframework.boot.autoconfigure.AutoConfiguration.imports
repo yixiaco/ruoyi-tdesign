@@ -4,4 +4,3 @@ org.dromara.common.translation.core.impl.DictTypeTranslationImpl
 org.dromara.common.translation.core.impl.OssUrlTranslationImpl
 org.dromara.common.translation.core.impl.UserNameTranslationImpl
 org.dromara.common.translation.core.impl.NicknameTranslationImpl
-org.dromara.common.translation.core.impl.OssRuleTranslationImpl

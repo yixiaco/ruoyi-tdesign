@@ -30,7 +30,6 @@ import org.dromara.system.service.ISysOssRuleService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
@@ -188,13 +187,15 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
      * 返回多字段url
      *
      * @param fieldName   字段名称
-     * @param originalUrl 原始url
-     * @param useRules    限定使用规则，为空则不限制
+     * @param originalUrl url
+     * @param ruleNames       限定使用规则，为空则不限制
+     * @param join        字段与规则的连接符
+     * @param useDefault  指定规则时，是否使用默认规则。 指定的规则不存在时，即使是false也将使用默认规则
      * @return
      */
     @Override
     @SuppressWarnings("unchecked cast")
-    public Map<String, String> getUrls(String fieldName, String originalUrl, String[] useRules) {
+    public Map<String, String> getUrls(String fieldName, String originalUrl, String[] ruleNames, String join, boolean useDefault) {
         // 如果启用了租户，但获取不到租户，则直接返回null
         if (TenantHelper.isEnable() && StrUtil.isBlank(TenantHelper.getTenantId())) {
             return null;
@@ -215,6 +216,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
         Map<String, String> result = new LinkedHashMap<>();
         // 多个url拆分
         String[] urls = splitUrl(originalUrl);
+        boolean existRules = ArrayUtil.isNotEmpty(ruleNames);
         for (String url : urls) {
             String fileName = getFileName(originalUrl);
             String mimeType = FileUtil.getMimeType(fileName);
@@ -228,10 +230,10 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
                     if (!StrUtil.containsAny(mimeType, mimeTypes) && !StrUtil.endWithAny(fileName, mimeTypes)) {
                         return false;
                     }
-                    if (useRules == null) {
+                    if (!existRules || useDefault) {
                         return YesNoEnum.YES.getCodeStr().equals(sysOssRule.getIsDefault());
                     }
-                    return ArrayUtil.contains(useRules, sysOssRule.getRuleName());
+                    return ArrayUtil.contains(ruleNames, sysOssRule.getRuleName());
                 }).toList();
 
             // 设置覆盖默认字段值
@@ -249,7 +251,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
                 .filter(ossRule -> YesNoEnum.NO.getCodeStr().equals(ossRule.getIsOverwrite()))
                 .toList();
             for (SysOssRule rule : noOverwriteRule) {
-                String key = fieldName + "_" + rule.getRuleName();
+                String key = fieldName + join + rule.getRuleName();
                 realUrl = getRealUrl(rule.getRule(), url);
                 result.merge(key, realUrl, (s, s2) -> String.join(",", s, s2));
             }

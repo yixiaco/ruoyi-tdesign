@@ -75,13 +75,13 @@ public class SensitiveHandler extends JsonSerializer<String> implements Contextu
             if (!context.hasCurrentName()) {
                 return false;
             }
-            if ((field = ReflectionUtils.findField(clz, context.getCurrentName())) != null
-                && field.isAnnotationPresent(SensitiveIgnore.class)) {
-                return true;
-            }
             String methodName = "get" + StringUtils.capitalize(context.getCurrentName());
             if ((method = ReflectionUtils.findMethod(clz, methodName)) != null
                 && method.isAnnotationPresent(SensitiveIgnore.class)) {
+                return true;
+            }
+            if ((field = ReflectionUtils.findField(clz, context.getCurrentName())) != null
+                && field.isAnnotationPresent(SensitiveIgnore.class)) {
                 return true;
             }
         }

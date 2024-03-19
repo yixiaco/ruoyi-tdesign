@@ -4,8 +4,7 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
-import org.dromara.common.translation.annotation.Translation;
-import org.dromara.common.translation.constant.TransConstant;
+import org.dromara.common.translation.annotation.OssRule;
 import org.dromara.system.domain.SysOss;
 
 import java.io.Serial;
@@ -52,7 +51,7 @@ public class SysOssVo implements Serializable {
     /**
      * URL地址
      */
-    @Translation(type = TransConstant.OSS_RULE)
+    @OssRule("80x80")
     @ExcelProperty(value = "URL地址")
     private String url;
 
