@@ -1,5 +1,6 @@
 package org.dromara.common.satoken.utils;
 
+import cn.dev33.satoken.stp.StpLogic;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.dromara.common.core.domain.model.BaseUser;
@@ -22,6 +23,13 @@ import java.util.function.Consumer;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class LoginUserHelper {
+
+    /**
+     * 获取支持有的登录操作对象
+     */
+    public static StpLogic getStpLogic() {
+        return MultipleStpUtil.USER;
+    }
 
     /**
      * 获取登录类型

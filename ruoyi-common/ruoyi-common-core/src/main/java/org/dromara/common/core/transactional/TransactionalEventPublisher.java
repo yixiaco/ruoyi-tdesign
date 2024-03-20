@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
  * @date 2020/10/20 10:48
  */
 @Component
-public class PublisherEvent {
+public class TransactionalEventPublisher {
 
     @Autowired
     private ApplicationEventPublisher applicationEventPublisher;

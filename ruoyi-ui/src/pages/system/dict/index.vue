@@ -409,6 +409,7 @@ function handleDelete(row?: SysDictTypeVo) {
 }
 /** 导出按钮操作 */
 function handleExport() {
+  proxy.addDateRange(queryParams.value, dateRange.value)
   proxy.download(
     'system/dict/type/export',
     {

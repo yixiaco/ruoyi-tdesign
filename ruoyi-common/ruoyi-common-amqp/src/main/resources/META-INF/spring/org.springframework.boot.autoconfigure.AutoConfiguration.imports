@@ -1,2 +1,2 @@
 org.dromara.amqp.config.AmqpConfiguration
-org.dromara.amqp.handler.PublisherHandler
+org.dromara.amqp.handler.AmqpEventPublisher

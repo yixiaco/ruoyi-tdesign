@@ -1,6 +1,7 @@
 package org.dromara.common.satoken.utils;
 
 import cn.dev33.satoken.stp.SaLoginModel;
+import cn.dev33.satoken.stp.StpLogic;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.dromara.common.core.constant.TenantConstants;
@@ -28,6 +29,13 @@ import java.util.function.Consumer;
 public class LoginHelper {
 
     public static final String CLIENT_KEY = "clientId";
+
+    /**
+     * 获取支持有的登录操作对象
+     */
+    public static StpLogic getStpLogic() {
+        return MultipleStpUtil.SYSTEM;
+    }
 
     /**
      * 获取登录类型

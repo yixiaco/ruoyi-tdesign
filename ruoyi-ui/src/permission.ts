@@ -8,6 +8,8 @@ import { useTitle } from '@/utils/doc';
 import { isRelogin } from '@/utils/request';
 import { isHttp } from '@/utils/validate';
 
+let errorRetry = 0;
+
 NProgress.configure({ showSpinner: false });
 
 router.beforeEach(async (to, from, next) => {
@@ -23,7 +25,17 @@ router.beforeEach(async (to, from, next) => {
       useTitle(to.meta.title as string);
     }
 
-    if (to.path === '/login') {
+    // 错误重试超出限制
+    if (errorRetry >= 3) {
+      errorRetry = 0;
+      next({
+        path: '/500',
+        query: { redirect: encodeURIComponent(to.fullPath) },
+      });
+      return;
+    }
+
+    if (whiteListRouters.indexOf(to.path) !== -1) {
       next();
       return;
     }
@@ -47,7 +59,9 @@ router.beforeEach(async (to, from, next) => {
           }
         });
         next({ ...to, replace: true }); // hack方法 确保addRoutes已完成
+        errorRetry = 0;
       } catch (error) {
+        errorRetry++;
         // await userStore.logout();
         next({
           path: '/login',

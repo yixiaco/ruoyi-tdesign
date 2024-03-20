@@ -1,6 +1,6 @@
 package org.dromara.amqp.handler;
 
-import org.dromara.common.core.transactional.PublisherEvent;
+import org.dromara.common.core.transactional.TransactionalEventPublisher;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,19 +8,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import java.time.Duration;
 
 /**
- * 处理发布消息
+ * Amqp处理(事务)发布消息
  *
  * @author hexm
  * @date 2023/5/9 10:50
  */
-public class PublisherHandler {
+public class AmqpEventPublisher {
 
     /**
      * 通用的消息队列后缀
      */
     public static final String QUEUE = "_QUEUE";
     @Autowired
-    private PublisherEvent publisherEvent;
+    private TransactionalEventPublisher transactionalEventPublisher;
     @Autowired
     private AmqpTemplate amqpTemplate;
 
@@ -32,7 +32,7 @@ public class PublisherHandler {
      * @param message    消息
      */
     public void commitSend(String exchange, String routingKey, Object message) {
-        publisherEvent.commit(() -> send(exchange, routingKey, message));
+        transactionalEventPublisher.commit(() -> send(exchange, routingKey, message));
     }
 
     /**
@@ -42,7 +42,7 @@ public class PublisherHandler {
      * @param message  消息
      */
     public void commitSend(String exchange, Object message) {
-        publisherEvent.commit(() -> send(exchange, message));
+        transactionalEventPublisher.commit(() -> send(exchange, message));
     }
 
     /**
@@ -54,7 +54,7 @@ public class PublisherHandler {
      * @param messagePostProcessor 消息提交时的处理，例如设置延迟队列
      */
     public void commitSend(String exchange, String routingKey, Object message, MessagePostProcessor messagePostProcessor) {
-        publisherEvent.commit(() -> send(exchange, routingKey, message, messagePostProcessor));
+        transactionalEventPublisher.commit(() -> send(exchange, routingKey, message, messagePostProcessor));
     }
 
     /**
@@ -65,7 +65,7 @@ public class PublisherHandler {
      * @param messagePostProcessor 消息提交时的处理，例如设置延迟队列
      */
     public void commitSend(String exchange, Object message, MessagePostProcessor messagePostProcessor) {
-        publisherEvent.commit(() -> send(exchange, message, messagePostProcessor));
+        transactionalEventPublisher.commit(() -> send(exchange, message, messagePostProcessor));
     }
 
     /**
@@ -76,8 +76,8 @@ public class PublisherHandler {
      * @param time     延迟时间
      */
     public void commitSendDelay(String exchange, Object message, Duration time) {
-        publisherEvent.commit(() -> send(exchange, message, message1 -> {
-            message1.getMessageProperties().setDelay((int) time.toMillis());
+        transactionalEventPublisher.commit(() -> send(exchange, message, message1 -> {
+            message1.getMessageProperties().setDelayLong(time.toMillis());
             return message1;
         }));
     }
@@ -135,7 +135,7 @@ public class PublisherHandler {
      */
     public void sendDelay(String exchange, Object message, Duration time) {
         amqpTemplate.convertAndSend(exchange, exchange + QUEUE, message, message1 -> {
-            message1.getMessageProperties().setDelay((int) time.toMillis());
+            message1.getMessageProperties().setDelayLong(time.toMillis());
             return message1;
         });
     }

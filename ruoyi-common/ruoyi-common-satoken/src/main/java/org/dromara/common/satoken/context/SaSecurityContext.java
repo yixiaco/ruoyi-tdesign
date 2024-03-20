@@ -3,6 +3,8 @@ package org.dromara.common.satoken.context;
 import cn.dev33.satoken.context.SaHolder;
 import org.dromara.common.core.domain.model.BaseUser;
 
+import java.util.Optional;
+
 /**
  * 授权上下文对象
  *
@@ -23,7 +25,7 @@ public class SaSecurityContext {
     }
 
     /**
-     * 获取当下文对象
+     * 获取当前下文对象
      *
      * @return
      */
@@ -34,5 +36,14 @@ public class SaSecurityContext {
         } catch (Exception e) {
             return null;
         }
+    }
+
+    /**
+     * 获取当前下文对象
+     *
+     * @return
+     */
+    public static <T extends BaseUser> Optional<T> getContentOptional() {
+        return Optional.ofNullable(getContext());
     }
 }

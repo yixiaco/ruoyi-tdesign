@@ -41,6 +41,7 @@ import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Arrays;
 import java.util.List;
 
 /**
@@ -474,6 +475,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int deleteUserById(Long userId) {
+        SysUser user = getById(userId);
         // 删除用户与角色关联
         userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>().eq(SysUserRole::getUserId, userId));
         // 删除用户与岗位表
@@ -483,6 +485,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         if (flag < 1) {
             throw new ServiceException("删除用户失败!");
         }
+        // 删除用户时，退出用户的登录状态
+        LoginHelper.getStpLogic().logout(user.getUserType() + ":" + user.getUserId());
         return flag;
     }
 
@@ -499,6 +503,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
             checkUserAllowed(userId);
             checkUserDataScope(userId);
         }
+        List<SysUser> users = listByIds(Arrays.asList(userIds));
         List<Long> ids = List.of(userIds);
         // 删除用户与角色关联
         userRoleMapper.delete(new LambdaQueryWrapper<SysUserRole>().in(SysUserRole::getUserId, ids));
@@ -508,6 +513,10 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         int flag = baseMapper.deleteBatchIds(ids);
         if (flag < 1) {
             throw new ServiceException("删除用户失败!");
+        }
+        // 删除用户时，退出用户的登录状态
+        for (SysUser user : users) {
+            LoginHelper.getStpLogic().logout(user.getUserType() + ":" + user.getUserId());
         }
         return flag;
     }

@@ -1,6 +1,6 @@
 export default {
   403: {
-    tips: 'sorry, you don not have permission to access this page. Please contact the creator through WeCom',
+    tips: 'sorry, you don not have permission to access this page. Please contact the administrator',
     back: 'Back to homepage',
   },
   404: {

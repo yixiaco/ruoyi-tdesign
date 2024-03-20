@@ -51,8 +51,15 @@ export const defaultRouterList: Array<RouteRecordRaw> = [
     },
   },
   {
-    path: '/401',
+    path: '/403',
     component: () => import('@/pages/result/403/index.vue'),
+    meta: {
+      hidden: true,
+    },
+  },
+  {
+    path: '/500',
+    component: () => import('@/pages/result/500/index.vue'),
     meta: {
       hidden: true,
     },

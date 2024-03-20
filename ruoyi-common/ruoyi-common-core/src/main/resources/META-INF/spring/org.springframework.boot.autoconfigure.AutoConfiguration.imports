@@ -4,3 +4,5 @@ org.dromara.common.core.config.RuoYiConfig
 org.dromara.common.core.config.ThreadPoolConfig
 org.dromara.common.core.config.ValidatorConfig
 org.dromara.common.core.utils.spring.SpringUtils
+org.dromara.common.core.transactional.TransactionListener
+org.dromara.common.core.transactional.TransactionalEventPublisher

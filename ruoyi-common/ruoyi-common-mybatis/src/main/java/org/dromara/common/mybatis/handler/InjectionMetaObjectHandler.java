@@ -8,6 +8,7 @@ import com.baomidou.mybatisplus.core.metadata.TableFieldInfo;
 import com.baomidou.mybatisplus.core.metadata.TableInfo;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.reflection.MetaObject;
+import org.dromara.common.core.domain.model.BaseUser;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.satoken.context.SaSecurityContext;
 import org.dromara.common.satoken.utils.LoginHelper;
@@ -77,24 +78,14 @@ public class InjectionMetaObjectHandler implements MetaObjectHandler {
      * @return
      */
     private Long getDeptId() {
-        try {
-            return LoginHelper.getDeptId();
-        } catch (Exception e) {
-            log.warn("自动注入警告 => 用户未登录");
-            return null;
-        }
+        return LoginHelper.getDeptId();
     }
 
     /**
      * 获取登录用户名
      */
     private String getLoginUsername() {
-        try {
-            return SaSecurityContext.getContext().getUsername();
-        } catch (Exception e) {
-            log.warn("自动注入警告 => 用户未登录");
-            return null;
-        }
+        return SaSecurityContext.getContentOptional().map(BaseUser::getUsername).orElse(null);
     }
 
     /**
@@ -103,7 +94,7 @@ public class InjectionMetaObjectHandler implements MetaObjectHandler {
      * @return
      */
     private Long getLoginId() {
-        return SaSecurityContext.getContext().getUserId();
+        return SaSecurityContext.getContentOptional().map(BaseUser::getUserId).orElse(null);
     }
 
     /**
