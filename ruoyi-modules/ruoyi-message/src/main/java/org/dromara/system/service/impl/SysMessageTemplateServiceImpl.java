@@ -23,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Objects;
 
 /**
  * 消息模板Service业务层处理
@@ -138,11 +139,15 @@ public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplat
      * @param bo 业务对象
      */
     private void checkRepeat(SysMessageTemplateBo bo) {
+        // 如果模板的状态是关闭的，那么不需要校验是否重复
+        if (!Objects.equals(bo.getStatus(), NormalDisableEnum.NORMAL.getCodeNum())) {
+            return;
+        }
         boolean exists = lambdaQuery()
             .ne(bo.getMessageTemplateId() != null, SysMessageTemplate::getMessageTemplateId, bo.getMessageTemplateId())
             .eq(SysMessageTemplate::getMessageKeyId, bo.getMessageKeyId())
             .eq(SysMessageTemplate::getMessageType, bo.getMessageType())
-            .eq(SysMessageTemplate::getStatus, NormalDisableEnum.NORMAL.getCode())
+            .eq(SysMessageTemplate::getStatus, NormalDisableEnum.NORMAL.getCodeNum())
             .exists();
         if (exists) {
             throw new ServiceException("该消息类型下存在相同的消息Key");

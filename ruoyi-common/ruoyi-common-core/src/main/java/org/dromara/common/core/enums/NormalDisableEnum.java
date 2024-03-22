@@ -16,11 +16,13 @@ public enum NormalDisableEnum {
     /**
      * 正常
      */
-    NORMAL("1"),
+    NORMAL("1", 1),
     /**
      * 停用
      */
-    DISABLE("0");
+    DISABLE("0", 0);
 
     private final String code;
+
+    private final Integer codeNum;
 }
