@@ -41,9 +41,8 @@ import org.dromara.system.handle.BaseMessageSendHandler;
 import org.dromara.system.service.ISysMessageLogService;
 import org.springframework.stereotype.Component;
 
-import java.util.Collections;
+import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -76,7 +75,7 @@ public class SmsMessageSendHandler extends BaseMessageSendHandler {
      * @param config   消息配置
      */
     @Override
-    public void send(List<String> account, Map<String, Object> message, SysMessageTemplate template, SysMessageConfig config) {
+    public void send(Collection<String> account, Map<String, Object> message, SysMessageTemplate template, SysMessageConfig config) {
         LinkedHashMap<String, String> outputVars = getOutputVars(template, message);
         String content = getContent(template, outputVars);
         MessageSupplierTypeEnum supplierType = MessageSupplierTypeEnum.valueOf(config.getSupplierType());
@@ -179,16 +178,12 @@ public class SmsMessageSendHandler extends BaseMessageSendHandler {
             // 消息发送方式
             SmsResponse response;
             switch (templateMode) {
-                case TEMPLATE_ID -> {
-                    response = smsBlend.sendMessage(mobile, template.getTemplateId(), outputVars);
-                }
-                case TEMPLATE_CONTENT -> {
-                    response = smsBlend.sendMessage(mobile, content);
-                }
+                case TEMPLATE_ID -> response = smsBlend.sendMessage(mobile, template.getTemplateId(), outputVars);
+                case TEMPLATE_CONTENT -> response = smsBlend.sendMessage(mobile, content);
                 default -> throw new ServiceException("不支持的消息模板模式：" + templateMode);
             }
             // 记录发送记录
-            saveLog(Collections.singletonList(mobile), template, config, content, log -> {
+            saveLog(mobile, template, config, content, log -> {
                 log.setIsSuccess(response.isSuccess() ? CommonStatusEnum.SUCCESS.getCodeNum() : CommonStatusEnum.FAIL.getCodeNum());
                 log.setResponseBody(StrUtil.maxLength(JsonUtils.toJsonString(response.getData()), 1000));
             });

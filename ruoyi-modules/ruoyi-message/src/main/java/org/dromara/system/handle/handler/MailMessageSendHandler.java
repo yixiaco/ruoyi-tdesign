@@ -13,8 +13,8 @@ import org.dromara.system.handle.BaseMessageSendHandler;
 import org.dromara.system.service.ISysMessageLogService;
 import org.springframework.stereotype.Component;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.regex.Pattern;
@@ -54,7 +54,7 @@ public class MailMessageSendHandler extends BaseMessageSendHandler {
      * @param config   消息配置
      */
     @Override
-    public void send(List<String> account, Map<String, Object> message, SysMessageTemplate template, SysMessageConfig config) {
+    public void send(Collection<String> account, Map<String, Object> message, SysMessageTemplate template, SysMessageConfig config) {
         LinkedHashMap<String, String> outputVars = getOutputVars(template, message);
         String content = getContent(template, outputVars);
         MessageSupplierTypeEnum supplierType = MessageSupplierTypeEnum.valueOf(config.getSupplierType());

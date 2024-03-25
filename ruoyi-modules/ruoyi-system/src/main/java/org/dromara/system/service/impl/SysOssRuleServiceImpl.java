@@ -279,7 +279,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
         variable.put("path", String.join("/", segments.subList(0, segments.size() - 1)));
         variable.put("filename", segments.get(segments.size() - 1));
         variable.put("url", url);
-        return SpringExpressionUtil.parseExpression(rule, variable);
+        return SpringExpressionUtil.parseTemplateExpression(rule, variable);
     }
 
     /**

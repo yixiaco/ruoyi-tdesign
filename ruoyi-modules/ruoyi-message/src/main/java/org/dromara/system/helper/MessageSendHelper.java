@@ -5,7 +5,7 @@ import org.dromara.common.core.enums.MessageTypeEnum;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.system.service.ISysMessageSendService;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -80,7 +80,7 @@ public class MessageSendHelper {
      * @param accounts          多账号
      * @param message           消息变量
      */
-    public static void send(Long messageTemplateId, List<String> accounts, Map<String, Object> message) {
+    public static void send(Long messageTemplateId, Collection<String> accounts, Map<String, Object> message) {
         messageSendService.send(messageTemplateId, accounts, message);
     }
 
@@ -91,7 +91,7 @@ public class MessageSendHelper {
      * @param accounts          多账号
      * @param message           消息变量
      */
-    public static void ignoreAndSend(Long messageTemplateId, List<String> accounts, Map<String, Object> message) {
+    public static void ignoreAndSend(Long messageTemplateId, Collection<String> accounts, Map<String, Object> message) {
         try {
             messageSendService.send(messageTemplateId, accounts, message);
         } catch (Exception e) {
@@ -107,7 +107,7 @@ public class MessageSendHelper {
      * @param accounts    多账号
      * @param message     消息变量
      */
-    public static void send(String messageKey, MessageTypeEnum messageType, List<String> accounts, Map<String, Object> message) {
+    public static void send(String messageKey, MessageTypeEnum messageType, Collection<String> accounts, Map<String, Object> message) {
         messageSendService.send(messageKey, messageType, accounts, message);
     }
 
@@ -119,7 +119,7 @@ public class MessageSendHelper {
      * @param accounts    多账号
      * @param message     消息变量
      */
-    public static void ignoreAndSend(String messageKey, MessageTypeEnum messageType, List<String> accounts, Map<String, Object> message) {
+    public static void ignoreAndSend(String messageKey, MessageTypeEnum messageType, Collection<String> accounts, Map<String, Object> message) {
         try {
             messageSendService.send(messageKey, messageType, accounts, message);
         } catch (Exception e) {

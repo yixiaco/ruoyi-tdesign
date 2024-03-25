@@ -11,12 +11,7 @@ import org.dromara.system.domain.vo.SysMessageTemplateVar;
 import org.dromara.system.service.ISysMessageLogService;
 import org.springframework.util.PropertyPlaceholderHelper;
 
-import java.util.Date;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Properties;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.Collectors;
 
@@ -106,13 +101,26 @@ public abstract class BaseMessageSendHandler implements MessageSendHandler {
     /**
      * 保存发送记录
      *
+     * @param account  发送账号
+     * @param template 模板对象
+     * @param config   配置对象
+     * @param content  内容
+     * @param consumer 日志对象的回调变更
+     */
+    protected void saveLog(String account, SysMessageTemplate template, SysMessageConfig config, String content, Consumer<SysMessageLog> consumer) {
+        saveLog(Collections.singleton(account), template, config, content, consumer);
+    }
+
+    /**
+     * 保存发送记录
+     *
      * @param accounts 发送账号
      * @param template 模板对象
      * @param config   配置对象
      * @param content  内容
      * @param consumer 日志对象的回调变更
      */
-    protected void saveLog(List<String> accounts, SysMessageTemplate template, SysMessageConfig config, String content, Consumer<SysMessageLog> consumer) {
+    protected void saveLog(Collection<String> accounts, SysMessageTemplate template, SysMessageConfig config, String content, Consumer<SysMessageLog> consumer) {
         Long currentInterval = LocalTimeInterval.getCurrentIntervalAndClear();
         // 记录发送记录
         List<SysMessageLog> logs = accounts.stream().map(account -> {

@@ -62,7 +62,12 @@ public class TenantAspect {
         if (StrUtil.isBlank(dynamicTenant.value())) {
             throw new ServiceException("动态租户未配置值！");
         }
-        String tenantId = SpringExpressionUtil.parseAspectExpression(dynamicTenant.value(), point);
+        String tenantId;
+        if (dynamicTenant.value().contains(SpringExpressionUtil.PARSER_CONTEXT.getExpressionPrefix())) {
+            tenantId = SpringExpressionUtil.parseAspectTemplateExpression(dynamicTenant.value(), point);
+        } else {
+            tenantId = SpringExpressionUtil.parseAspectExpression(dynamicTenant.value(), point);
+        }
         boolean blank = StrUtil.isBlank(tenantId);
         if (blank && dynamicTenant.required()) {
             throw new ServiceException("动态租户不存在！");

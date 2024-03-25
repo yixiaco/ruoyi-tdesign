@@ -2,7 +2,7 @@ package org.dromara.system.service;
 
 import org.dromara.common.core.enums.MessageTypeEnum;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -39,7 +39,7 @@ public interface ISysMessageSendService {
      * @param accounts          多账号
      * @param message           消息变量
      */
-    void send(Long messageTemplateId, List<String> accounts, Map<String, Object> message);
+    void send(Long messageTemplateId, Collection<String> accounts, Map<String, Object> message);
 
     /**
      * 批量发送消息
@@ -49,5 +49,5 @@ public interface ISysMessageSendService {
      * @param accounts    多账号
      * @param message     消息变量
      */
-    void send(String messageKey, MessageTypeEnum messageType, List<String> accounts, Map<String, Object> message);
+    void send(String messageKey, MessageTypeEnum messageType, Collection<String> accounts, Map<String, Object> message);
 }

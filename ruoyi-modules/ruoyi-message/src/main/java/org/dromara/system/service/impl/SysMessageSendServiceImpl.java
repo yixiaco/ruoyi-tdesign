@@ -13,6 +13,7 @@ import org.dromara.system.service.ISysMessageTemplateService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -75,7 +76,7 @@ public class SysMessageSendServiceImpl implements ISysMessageSendService {
      * @param message           消息变量
      */
     @Override
-    public void send(Long messageTemplateId, List<String> accounts, Map<String, Object> message) {
+    public void send(Long messageTemplateId, Collection<String> accounts, Map<String, Object> message) {
         LocalTimeInterval.start();
         SysMessageTemplate template = messageTemplateService.getCacheById(messageTemplateId);
         if (template == null) {
@@ -93,7 +94,7 @@ public class SysMessageSendServiceImpl implements ISysMessageSendService {
      * @param message     消息变量
      */
     @Override
-    public void send(String messageKey, MessageTypeEnum messageType, List<String> accounts, Map<String, Object> message) {
+    public void send(String messageKey, MessageTypeEnum messageType, Collection<String> accounts, Map<String, Object> message) {
         LocalTimeInterval.start();
         SysMessageTemplate template = messageTemplateService.getCache(messageType.name(), messageKey);
         if (template == null) {
@@ -109,7 +110,7 @@ public class SysMessageSendServiceImpl implements ISysMessageSendService {
      * @param message  消息变量
      * @param template 模板对象
      */
-    private void send(List<String> account, Map<String, Object> message, SysMessageTemplate template) {
+    private void send(Collection<String> account, Map<String, Object> message, SysMessageTemplate template) {
         if (CollUtil.isEmpty(account)) {
             return;
         }

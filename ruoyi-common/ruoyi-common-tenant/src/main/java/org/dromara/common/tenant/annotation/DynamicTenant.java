@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
  * <p>
  * example:
  * <pre>{@code
- *      @DynamicTenant(value  = "#{#msg.tenantId}")
+ *      @DynamicTenant(value  = "#msg.tenantId")
  *      public <T extends TenantMQMessage> void example(T msg) {
  *          ...
  *      }

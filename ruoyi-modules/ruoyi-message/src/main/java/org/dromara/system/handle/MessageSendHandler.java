@@ -4,7 +4,7 @@ import org.dromara.common.core.enums.MessageTypeEnum;
 import org.dromara.system.domain.SysMessageConfig;
 import org.dromara.system.domain.SysMessageTemplate;
 
-import java.util.List;
+import java.util.Collection;
 import java.util.Map;
 
 /**
@@ -28,5 +28,5 @@ public interface MessageSendHandler {
      * @param template 模板对象
      * @param config   消息配置
      */
-    void send(List<String> account, Map<String, Object> message, SysMessageTemplate template, SysMessageConfig config);
+    void send(Collection<String> account, Map<String, Object> message, SysMessageTemplate template, SysMessageConfig config);
 }
