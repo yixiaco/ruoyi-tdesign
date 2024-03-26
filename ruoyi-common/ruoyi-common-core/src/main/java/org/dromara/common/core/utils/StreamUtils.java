@@ -9,6 +9,7 @@ import org.dromara.common.core.utils.funtion.BiOperator;
 import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.BiFunction;
+import java.util.function.BinaryOperator;
 import java.util.function.Function;
 import java.util.function.Predicate;
 import java.util.stream.Collectors;
@@ -467,5 +468,42 @@ public class StreamUtils {
      */
     public static <T> Optional<T> findFirst(Collection<T> collection, Function<T, Boolean> filter) {
         return collection.stream().filter(filter::apply).findFirst();
+    }
+
+    /**
+     * 合并集合内相同元素
+     *
+     * @param collection      集合
+     * @param compareFunction 比较是否相同
+     * @param accumulator     合并操作
+     */
+    public static <T> List<T> reduce(Collection<T> collection, BiFunction<T, T, Boolean> compareFunction, BinaryOperator<T> accumulator) {
+        if (collection == null) {
+            return null;
+        }
+        List<T> copy = new ArrayList<>(collection);
+        List<Integer> indexList = new ArrayList<>(collection.size());
+        for (int i = 0; i < copy.size(); i++) {
+            int start = i;
+            for (int j = i + 1; j < copy.size(); j++) {
+                if (compareFunction.apply(copy.get(i), copy.get(j))) {
+                    if (j - 1 > 1) {
+                        // 此处不使用下标交换是为了保持原元素的顺序
+                        copy.add(i + 1, copy.remove(j));
+                    }
+                    i++;
+                }
+            }
+            indexList.add(i + 1 - start);
+        }
+        List<T> result = new ArrayList<>();
+        for (int i = 0; i < copy.size(); i++) {
+            for (Integer integer : indexList) {
+                Optional<T> optional = copy.subList(i, i + integer).stream().reduce(accumulator);
+                optional.ifPresent(result::add);
+                i += integer;
+            }
+        }
+        return result;
     }
 }

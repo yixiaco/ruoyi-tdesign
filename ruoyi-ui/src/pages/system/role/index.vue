@@ -168,6 +168,7 @@
       v-model:visible="open"
       :header="title"
       destroy-on-close
+      placement="center"
       :close-on-overlay-click="false"
       width="600px"
       attach="body"
@@ -408,7 +409,7 @@ const openViewLoading = ref(false);
 const roleList = ref<SysRoleVo[]>([]);
 const open = ref(false);
 const loading = ref(true);
-const loadingEdit = ref(true);
+const loadingEdit = ref(false);
 const showSearch = ref(true);
 const ids = ref([]);
 const single = ref(true);
@@ -569,8 +570,8 @@ function handleAuthUser(row: SysRoleVo) {
   router.push(`/system/role-auth/user/${row.roleId}`);
 }
 /** 查询菜单树结构 */
-function getMenuTreeselect() {
-  menuTreeselect().then((response) => {
+async function getMenuTreeselect() {
+  return menuTreeselect().then((response) => {
     menuOptions.value = response.data;
   });
 }
@@ -614,10 +615,12 @@ function handleDetail(row: SysRoleVo) {
   });
 }
 /** 添加角色 */
-function handleAdd() {
+async function handleAdd() {
   reset();
-  getMenuTreeselect();
   open.value = true;
+  loadingEdit.value = true;
+  await getMenuTreeselect();
+  loadingEdit.value = false;
   title.value = '添加角色';
 }
 /** 修改角色 */
