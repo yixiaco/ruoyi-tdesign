@@ -130,7 +130,7 @@ public class CollDiffOps<T, K, R> {
      * 集合的数量与元素是否相同
      * <p>注意：
      * <p>此处比较的元素将经过convert转换，且不会比较元素的重复值计数。
-     * <p>例如： [1,2,2]、[1,1,2]被认为是相等的，如果要判断元素的重复计数，则应该使用{@link CollDiffOps#isMultiEquals}方法
+     * <p>例如： [1,2,2]、[1,1,2]被认为是相等的，如果要判断元素的重复计数，则应该使用{@link #isMultiEquals}方法
      */
     public boolean isEquals() {
         if (left.size() != right.size()) {

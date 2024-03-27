@@ -25,8 +25,12 @@ public class TenantKeyPrefixHandler extends KeyPrefixHandler {
         if (StringUtils.isBlank(name)) {
             return null;
         }
-        if (StringUtils.contains(name, GlobalConstants.GLOBAL_REDIS_KEY) || TenantHelper.isIgnoreCache()) {
+        if (StringUtils.contains(name, GlobalConstants.GLOBAL_REDIS_KEY)) {
             return super.map(name);
+        }
+        // 忽略租户缓存时，转为全局缓存 https://github.com/redisson/redisson/issues/5727
+        if (TenantHelper.isIgnoreCache()) {
+            return super.map(GlobalConstants.GLOBAL_REDIS_KEY + name);
         }
         String tenantId = TenantHelper.getTenantId();
         if (StringUtils.isBlank(tenantId)) {
@@ -48,9 +52,10 @@ public class TenantKeyPrefixHandler extends KeyPrefixHandler {
         if (StringUtils.isBlank(unmap)) {
             return null;
         }
-        if (StringUtils.contains(name, GlobalConstants.GLOBAL_REDIS_KEY)) {
+        if (StringUtils.contains(name, GlobalConstants.GLOBAL_REDIS_KEY) || TenantHelper.isIgnoreCache()) {
             return super.unmap(name);
         }
+        // 报错问题 https://github.com/redisson/redisson/issues/5727
         String tenantId = TenantHelper.getTenantId();
         if (StringUtils.isBlank(tenantId)) {
             throw new ServiceException("未能识别到有效tenantId");

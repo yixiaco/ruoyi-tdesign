@@ -13,6 +13,7 @@ import java.lang.annotation.Target;
  *
  * @author hexm
  * @date 2023/04/20 10:06
+ * @see org.dromara.common.tenant.aspect.TenantAspect#handleIgnore
  */
 @Inherited
 @Target(ElementType.METHOD)
@@ -22,16 +23,12 @@ public @interface IgnoreTenant {
 
     /**
      * 对事务生效
-     *
-     * @return
      */
     boolean db() default true;
 
     /**
-     * 对缓存生效
-     * 全局缓存使用{@link org.dromara.common.core.constant.GlobalConstants.GLOBAL_REDIS_KEY}或设置该参数为true
-     *
-     * @return
+     * 对缓存生效，效果与使用全局缓存一致
+     * 全局缓存使用{@link org.dromara.common.core.constant.GlobalConstants#GLOBAL_REDIS_KEY}或设置该参数为true
      */
     boolean cache() default false;
 }

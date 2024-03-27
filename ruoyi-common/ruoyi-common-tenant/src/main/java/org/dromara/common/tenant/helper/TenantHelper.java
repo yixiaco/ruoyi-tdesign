@@ -94,6 +94,7 @@ public class TenantHelper {
 
     /**
      * 开启缓存忽略租户(开启后需手动调用 {@link #disableIgnore()} 关闭)
+     * 效果与使用全局缓存一致
      */
     public static void enableIgnoreCache() {
         IGNORE_CACHE_TENANT.set(true);
