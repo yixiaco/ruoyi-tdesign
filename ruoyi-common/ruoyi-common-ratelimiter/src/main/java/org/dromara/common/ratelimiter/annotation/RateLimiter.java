@@ -1,6 +1,7 @@
 package org.dromara.common.ratelimiter.annotation;
 
 import org.dromara.common.ratelimiter.enums.LimitType;
+import org.intellij.lang.annotations.Language;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -22,6 +23,7 @@ public @interface RateLimiter {
      * 限流key,支持使用Spring el表达式来动态获取方法上的参数值
      * 格式类似于  #code.id #{#code}
      */
+    @Language("SpEL")
     String key() default "";
 
     /**

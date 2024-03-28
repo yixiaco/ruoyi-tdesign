@@ -5,8 +5,9 @@ import org.aspectj.lang.reflect.MethodSignature;
 import org.intellij.lang.annotations.Language;
 import org.springframework.beans.factory.ListableBeanFactory;
 import org.springframework.context.expression.BeanFactoryResolver;
-import org.springframework.core.StandardReflectionParameterNameDiscoverer;
+import org.springframework.core.DefaultParameterNameDiscoverer;
 import org.springframework.expression.BeanResolver;
+import org.springframework.expression.EvaluationContext;
 import org.springframework.expression.Expression;
 import org.springframework.expression.ExpressionParser;
 import org.springframework.expression.ParserContext;
@@ -33,6 +34,7 @@ public class SpringExpressionUtil {
      */
     private static final ExpressionParser PARSER = new SpelExpressionParser();
     public static final ParserContext PARSER_CONTEXT = new TemplateParserContext();
+    public static final DefaultParameterNameDiscoverer DISCOVERER = new DefaultParameterNameDiscoverer();
 
     /**
      * 使用字符串模板解析AOP表达式，使用默认的“#{”前缀和“}”后缀的字符表达式解析
@@ -133,8 +135,7 @@ public class SpringExpressionUtil {
      */
     public static String parseClassExpression(@Language("SpEL") String expressionString, ParserContext parserContext, Method method, Object[] args) {
         //获取方法参数名列表
-        StandardReflectionParameterNameDiscoverer discoverer = new StandardReflectionParameterNameDiscoverer();
-        String[] paramNameArr = discoverer.getParameterNames(method);
+        String[] paramNameArr = DISCOVERER.getParameterNames(method);
         Map<String, Object> variable;
         if (paramNameArr != null) {
             variable = new HashMap<>(paramNameArr.length);
@@ -319,6 +320,33 @@ public class SpringExpressionUtil {
      * @return
      */
     public static String parseExpression(@Language("SpEL") String expressionString, ParserContext parserContext, Object rootObject, Map<String, Object> variable) {
+        return parseExpression(expressionString, parserContext, rootObject, variable, String.class);
+    }
+
+    /**
+     * 使用自定义的{@link ParserContext}解析EL表达式，对象属性和方法将作为根对象，同时注入map参数
+     * <p>
+     * example:
+     * <pre>{@code
+     *      User user = new User();
+     *      user.setUsername("admin");
+     *      Map<String, Object> variable = new HashMap<>();
+     *      variable.put("var", "value");
+     *      SpringExpressionUtil.parseExpression("#{username},#{#var}", SpringExpressionUtil.PARSER_CONTEXT, user, variable, String.class); //admin,value
+     * }</pre>
+     *
+     * @param expressionString  表达式
+     * @param parserContext     提供给表达式分析器的输入，设置表达式解析的前后缀
+     * @param rootObject        根对象
+     * @param variable          变量
+     * @param desiredResultType 调用方希望结果的类
+     * @return
+     */
+    public static <T> T parseExpression(@Language("SpEL") String expressionString,
+                                        ParserContext parserContext,
+                                        Object rootObject,
+                                        Map<String, Object> variable,
+                                        Class<T> desiredResultType) {
         StandardEvaluationContext context = new StandardEvaluationContext();
         try {
             ListableBeanFactory factory = SpringUtils.getBeanFactory();
@@ -329,10 +357,37 @@ public class SpringExpressionUtil {
         if (variable != null) {
             context.setVariables(variable);
         }
+        return parseExpression(expressionString, context, parserContext, rootObject, desiredResultType);
+    }
+
+    /**
+     * 使用自定义的{@link ParserContext}解析EL表达式，对象属性和方法将作为根对象，同时注入map参数
+     * <p>
+     * example:
+     * <pre>{@code
+     *      User user = new User();
+     *      user.setUsername("admin");
+     *      SimpleEvaluationContext evaluationContext = SimpleEvaluationContext.forReadOnlyDataBinding().withInstanceMethods().build();
+     *      evaluationContext.setVariable("var", "value");
+     *      SpringExpressionUtil.parseExpression("#{username},#{#var}", evaluationContext, SpringExpressionUtil.PARSER_CONTEXT, user, String.class); //admin,value
+     * }</pre>
+     *
+     * @param expressionString  表达式
+     * @param evaluationContext 提供上下文变量
+     * @param parserContext     提供给表达式分析器的输入，设置表达式解析的前后缀
+     * @param rootObject        根对象
+     * @param desiredResultType 调用方希望结果的类
+     * @return
+     */
+    public static <T> T parseExpression(@Language("SpEL") String expressionString,
+                                        EvaluationContext evaluationContext,
+                                        ParserContext parserContext,
+                                        Object rootObject,
+                                        Class<T> desiredResultType) {
         Expression expression = PARSER.parseExpression(expressionString, parserContext);
         if (rootObject == null) {
-            return expression.getValue(context, String.class);
+            return expression.getValue(evaluationContext, desiredResultType);
         }
-        return expression.getValue(context, rootObject, String.class);
+        return expression.getValue(evaluationContext, rootObject, desiredResultType);
     }
 }
