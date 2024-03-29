@@ -1,4 +1,17 @@
-import type { LianLuSmsConfig } from '@/pages/system/messageConfig/model';
+import type { FieldConfig, SupplierConfig } from '../model';
+import { MessageConfig } from '../model';
+
+/** 联麓短信 */
+export interface LianLuSmsConfig extends SupplierConfig {
+  /** 企业ID */
+  mchId: FieldConfig;
+  /** appId */
+  appId: FieldConfig;
+  /** appKey */
+  appKey: FieldConfig;
+  /** 短信签名 */
+  signature: FieldConfig;
+}
 
 /** 联麓短信配置 */
 export const lianLuSmsConfig: LianLuSmsConfig = {
@@ -27,3 +40,8 @@ export const lianLuSmsConfig: LianLuSmsConfig = {
     required: true,
   },
 };
+
+export const LianLuSmsMessageConfig = new MessageConfig(lianLuSmsConfig, 'SMS', {
+  supportTemplateId: true,
+  supportTemplateContent: false,
+});

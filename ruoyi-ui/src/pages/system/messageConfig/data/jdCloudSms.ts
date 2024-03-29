@@ -1,4 +1,11 @@
-import type { JdCloudSmsConfig } from '@/pages/system/messageConfig/model';
+import type { FieldConfig, SignatureSmsConfig } from '../model';
+import { MessageConfig } from '../model';
+
+/** 京东云短信 */
+export interface JdCloudSmsConfig extends SignatureSmsConfig {
+  /** 地域信息 */
+  region: FieldConfig;
+}
 
 /** 京东云短信配置 */
 export const jdCloudSms: JdCloudSmsConfig = {
@@ -27,3 +34,8 @@ export const jdCloudSms: JdCloudSmsConfig = {
     required: true,
   },
 };
+
+export const JdCloudSmsMessageConfig = new MessageConfig(jdCloudSms, 'SMS', {
+  supportTemplateId: true,
+  supportTemplateContent: false,
+});

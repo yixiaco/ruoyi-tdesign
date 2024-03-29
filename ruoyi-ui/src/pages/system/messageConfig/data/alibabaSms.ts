@@ -1,4 +1,17 @@
-import type { AlibabaSmsConfig } from '@/pages/system/messageConfig/model';
+import type { FieldConfig, SignatureSmsConfig } from '../model';
+import { MessageConfig } from '../model';
+
+/** 阿里云短信 */
+export interface AlibabaSmsConfig extends SignatureSmsConfig {
+  /** 请求地址 */
+  requestUrl: FieldConfig;
+  /** 接口名称 */
+  action: FieldConfig;
+  /** 地域信息默认为 cn-hangzhou */
+  regionId: FieldConfig;
+  /** 接口版本号 */
+  version: FieldConfig;
+}
 
 /** 阿里云短信配置 */
 export const alibaba: AlibabaSmsConfig = {
@@ -50,3 +63,8 @@ export const alibaba: AlibabaSmsConfig = {
     help: '接口版本号默认为 2017-05-25 如无特殊改变可以不用设置',
   },
 };
+
+export const AlibabaMessageConfig = new MessageConfig(alibaba, 'SMS', {
+  supportTemplateId: true,
+  supportTemplateContent: false,
+});

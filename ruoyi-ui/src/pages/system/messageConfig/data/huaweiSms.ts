@@ -1,4 +1,15 @@
-import type { HuaweiSmsConfig } from '@/pages/system/messageConfig/model';
+import type { FieldConfig, SignatureSmsConfig } from '../model';
+import { MessageConfig } from '../model';
+
+/** 华为云 */
+export interface HuaweiSmsConfig extends SignatureSmsConfig {
+  /** 国内短信签名通道号 */
+  sender: FieldConfig;
+  /** 短信状态报告接收地 */
+  statusCallBack: FieldConfig;
+  /** APP接入地址 */
+  url: FieldConfig;
+}
 
 /** 华为云短信配置 */
 export const huawei: HuaweiSmsConfig = {
@@ -38,3 +49,8 @@ export const huawei: HuaweiSmsConfig = {
     help: 'APP接入地址 建立短信应用后获取到的地址',
   },
 };
+
+export const HuaweiMessageConfig = new MessageConfig(huawei, 'SMS', {
+  supportTemplateId: true,
+  supportTemplateContent: false,
+});

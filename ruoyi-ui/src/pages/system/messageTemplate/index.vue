@@ -219,9 +219,15 @@
               </t-select>
             </t-form-item>
           </t-col>
-          <t-col :span="6">
-            <t-form-item v-show="form.messageType" label="消息配置" name="messageConfigId">
-              <t-select v-model="form.messageConfigId" placeholder="请选择消息配置" filterable clearable>
+          <t-col v-show="form.messageType" :span="6">
+            <t-form-item label="消息配置" name="messageConfigId">
+              <t-select
+                v-model="form.messageConfigId"
+                placeholder="请选择消息配置"
+                filterable
+                clearable
+                @change="form.templateMode = null"
+              >
                 <t-option
                   v-for="item in messageConfigs"
                   :key="item.messageConfigId"
@@ -253,11 +259,15 @@
               </t-select>
             </t-form-item>
           </t-col>
-          <t-col :span="6">
+          <t-col v-show="form.messageConfigId" :span="6">
             <t-form-item label="模板类型" name="templateMode">
               <t-select v-model="form.templateMode" placeholder="请选择模板类型" clearable>
                 <t-option
-                  v-for="dict in sys_message_template_mode"
+                  v-for="dict in sys_message_template_mode.filter(
+                    (value) =>
+                      (value.value === 'TEMPLATE_ID' && messageConfig?.templateMode.supportTemplateId) ||
+                      (value.value === 'TEMPLATE_CONTENT' && messageConfig?.templateMode.supportTemplateContent),
+                  )"
                   :key="dict.value"
                   :label="dict.label"
                   :value="dict.value"
@@ -422,6 +432,7 @@
 defineOptions({
   name: 'MessageTemplate',
 });
+
 import {
   AddIcon,
   BrowseIcon,
@@ -463,6 +474,8 @@ import type {
   SysMessageTemplateVar,
   SysMessageTemplateVo,
 } from '@/api/system/model/messageTemplateModel';
+import { SUPPLIER_TYPE_MAP } from '@/pages/system/messageConfig/data';
+import type { MessageConfig } from '@/pages/system/messageConfig/model';
 import { ArrayOps } from '@/utils/array';
 
 const { proxy } = getCurrentInstance();
@@ -552,6 +565,14 @@ const pagination = computed(() => {
       getList();
     },
   };
+});
+
+const messageConfig = computed<MessageConfig>(() => {
+  if (!form.value.messageConfigId) {
+    return null;
+  }
+  const config = messageConfigs.value.find((value) => value.messageConfigId === form.value.messageConfigId);
+  return SUPPLIER_TYPE_MAP.get(config.supplierType);
 });
 
 const maxVarsLabelWidth = computed(() => {

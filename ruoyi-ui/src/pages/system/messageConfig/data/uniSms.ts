@@ -1,4 +1,11 @@
-import type { UniSmsConfig } from '@/pages/system/messageConfig/model';
+import type { FieldConfig, SignatureSmsConfig } from '../model';
+import { MessageConfig } from '../model';
+
+/** 合一短信 */
+export interface UniSmsConfig extends SignatureSmsConfig {
+  /** 是否为简易模式 */
+  isSimple: FieldConfig<boolean>;
+}
 
 /** 合一短信配置 */
 export const uniSms: UniSmsConfig = {
@@ -28,3 +35,8 @@ export const uniSms: UniSmsConfig = {
     help: '是否为简易模式 默认为true',
   },
 };
+
+export const UniSmsMessageConfig = new MessageConfig(uniSms, 'SMS', {
+  supportTemplateId: true,
+  supportTemplateContent: false,
+});

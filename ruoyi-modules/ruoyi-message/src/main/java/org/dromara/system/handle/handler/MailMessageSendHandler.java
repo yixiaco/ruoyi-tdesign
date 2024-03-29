@@ -2,7 +2,8 @@ package org.dromara.system.handle.handler;
 
 import cn.hutool.json.JSONUtil;
 import org.dromara.common.core.enums.CommonStatusEnum;
-import org.dromara.common.core.enums.MessageSupplierTypeEnum;
+import org.dromara.system.enums.MailMessageSupplierType;
+import org.dromara.system.enums.SmsMessageSupplierType;
 import org.dromara.common.core.enums.MessageTypeEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.mail.utils.MailAccount;
@@ -16,6 +17,7 @@ import org.springframework.stereotype.Component;
 import java.util.Collection;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Properties;
 import java.util.regex.Pattern;
 
@@ -57,12 +59,12 @@ public class MailMessageSendHandler extends BaseMessageSendHandler {
     public void send(Collection<String> account, Map<String, Object> message, SysMessageTemplate template, SysMessageConfig config) {
         LinkedHashMap<String, String> outputVars = getOutputVars(template, message);
         String content = getContent(template, outputVars);
-        MessageSupplierTypeEnum supplierType = MessageSupplierTypeEnum.valueOf(config.getSupplierType());
-
-        MailAccount mailAccount = switch (supplierType) {
-            case MAIL -> JSONUtil.toBean(config.getConfigJson(), MailAccount.class);
-            default -> throw new ServiceException("不支持的消息类型");
-        };
+        MailAccount mailAccount;
+        if (Objects.equals(config.getSupplierType(), MailMessageSupplierType.MAIL.name())) {
+            mailAccount = JSONUtil.toBean(config.getConfigJson(), MailAccount.class);
+        } else {
+            throw new ServiceException("不支持的邮箱消息类型");
+        }
         Properties properties = getProperties(message);
         String title = helper.replacePlaceholders(template.getTitle(), properties);
         String messageId;

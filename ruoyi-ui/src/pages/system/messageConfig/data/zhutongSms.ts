@@ -1,4 +1,13 @@
-import type { ZhutongSmsConfig } from '@/pages/system/messageConfig/model';
+import type { FieldConfig, SignatureSmsConfig } from '../model';
+import { MessageConfig } from '../model';
+
+/** 助通短信 */
+export interface ZhutongSmsConfig extends SignatureSmsConfig {
+  /** 模板变量名称 查看地址：https://mix2.zthysms.com/index.html#/TemplateManagement 允许为空，为空，使用无模板形式，发送短信 */
+  templateName: FieldConfig;
+  /** 默认请求地址 不同区域，可切换请求地址，也可以不修改，请参考官方文档：https://doc.zthysms.com/web/#/1/236 */
+  requestUrl: FieldConfig;
+}
 
 /** 助通短信配置 */
 export const zhutongSmsConfig: ZhutongSmsConfig = {
@@ -35,3 +44,8 @@ export const zhutongSmsConfig: ZhutongSmsConfig = {
     required: false,
   },
 };
+
+export const ZhutongSmsMessageConfig = new MessageConfig(zhutongSmsConfig, 'SMS', {
+  supportTemplateId: true,
+  supportTemplateContent: true,
+});

@@ -128,7 +128,10 @@ public class SysMessageTemplateController extends BaseController {
         List<SysMessageConfig> list = messageConfigService.lambdaQuery()
             .eq(SysMessageConfig::getStatus, NormalDisableEnum.NORMAL.getCode())
             .eq(SysMessageConfig::getMessageType, messageType)
-            .select(SysMessageConfig::getMessageConfigId, SysMessageConfig::getMessageType, SysMessageConfig::getTitle)
+            .select(SysMessageConfig::getMessageConfigId,
+                SysMessageConfig::getMessageType,
+                SysMessageConfig::getTitle,
+                SysMessageConfig::getSupplierType)
             .orderByDesc(SysMessageConfig::getCreateTime)
             .list();
         return R.ok(list);
