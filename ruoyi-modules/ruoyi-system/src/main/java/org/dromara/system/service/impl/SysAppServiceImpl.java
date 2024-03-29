@@ -1,7 +1,7 @@
 package org.dromara.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.service.AppService;
@@ -41,7 +41,7 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
      */
     @Override
     public SysAppVo queryById(Long appid) {
-        return baseMapper.selectVoById(appid);
+        return mapper.selectOneWithRelationsByIdAs(appid, SysAppVo.class);
     }
 
     /**
@@ -52,7 +52,7 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
      */
     @Override
     public TableDataInfo<SysAppVo> queryPageList(SysAppQuery query) {
-        return PageQuery.of(() -> baseMapper.queryList(query));
+        return PageQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -63,7 +63,7 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
      */
     @Override
     public List<SysAppVo> queryList(SysAppQuery query) {
-        return baseMapper.queryList(query);
+        return mapper.queryList(query);
     }
 
     /**
@@ -128,8 +128,8 @@ public class SysAppServiceImpl extends ServiceImpl<SysAppMapper, SysApp> impleme
      */
     private void checkRepeat(SysAppBo bo) {
         TenantHelper.ignore(() -> {
-            boolean exists = lambdaQuery()
-                .ne(bo.getAppid() != null, SysApp::getAppid, bo.getAppid())
+            boolean exists = queryChain()
+                .ne(SysApp::getAppid, bo.getAppid(), bo.getAppid() != null)
                 .eq(SysApp::getAppKey, bo.getAppKey())
                 .exists();
             if (exists) {

@@ -186,7 +186,14 @@ tenant:
     - sys_oss_category
     - sys_oss_config
 
-# MyBatisPlus配置
+# MyBatisFlex配置
+mybatis-flex:
+  global-config:
+    tenant-column: tenant_id
+    key-config:
+      key-type: generator
+      value: snowFlakeId
+  mapper-locations: classpath*:mapper/**/*Mapper.xml
 # https://baomidou.com/config/
 mybatis-plus:
   # 不支持多包, 如有需要可在注解配置 或 提升扫包等级

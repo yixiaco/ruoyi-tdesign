@@ -5,6 +5,7 @@ import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
+import com.mybatisflex.core.tenant.TenantFactory;
 import org.dromara.common.core.utils.reflect.ReflectUtils;
 import org.dromara.common.mybatis.config.MybatisPlusConfig;
 import org.dromara.common.redis.config.RedisConfig;
@@ -13,6 +14,7 @@ import org.dromara.common.satoken.config.SaTokenConfiguration;
 import org.dromara.common.satoken.online.OnlineUserCacheManager;
 import org.dromara.common.tenant.aspect.TenantAspect;
 import org.dromara.common.tenant.core.TenantSaTokenDao;
+import org.dromara.common.tenant.factory.GlobalTenantFactory;
 import org.dromara.common.tenant.handle.PlusTenantLineHandler;
 import org.dromara.common.tenant.handle.TenantKeyPrefixHandler;
 import org.dromara.common.tenant.manager.TenantSpringCacheManager;
@@ -53,6 +55,16 @@ public class TenantConfig {
         interceptors.addAll(mybatisPlusInterceptor.getInterceptors());
         mybatisPlusInterceptor.setInterceptors(interceptors);
         return true;
+    }
+
+    /**
+     * 初始化MybatisFlex多租户配置
+     *
+     * @return
+     */
+    @Bean
+    public TenantFactory tenantFactory() {
+        return new GlobalTenantFactory();
     }
 
     /**

@@ -5,6 +5,7 @@ import cn.dev33.satoken.dao.SaTokenDao;
 import cn.dev33.satoken.stp.StpInterface;
 import cn.dev33.satoken.stp.StpUtil;
 import cn.dev33.satoken.strategy.SaStrategy;
+import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.satoken.core.dao.PlusSaTokenDao;
 import org.dromara.common.satoken.core.service.SaPermissionImpl;
@@ -31,6 +32,12 @@ import java.util.Map;
 @AutoConfiguration
 @EnableConfigurationProperties(MultipleSaTokenProperties.class)
 public class SaTokenConfiguration implements WebMvcConfigurer {
+
+    @PostConstruct
+    public void init() {
+        // 重写Sa-Token的注解处理器，增加注解合并功能
+        SaStrategy.instance.getAnnotation = AnnotatedElementUtils::getMergedAnnotation;
+    }
 
     /**
      * 权限接口实现(使用bean注入方便用户替换)
@@ -63,15 +70,6 @@ public class SaTokenConfiguration implements WebMvcConfigurer {
         DynamicStpLogic.setConfig(config);
         // 初始化默认配置
         StpUtil.setStpLogic(MultipleStpUtil.SYSTEM);
-    }
-
-    /**
-     * 注解合并
-     */
-    @Autowired
-    public void rewriteSaStrategy() {
-        // 重写Sa-Token的注解处理器，增加注解合并功能
-        SaStrategy.me.getAnnotation = AnnotatedElementUtils::getMergedAnnotation;
     }
 
     /**

@@ -28,6 +28,7 @@
         <velocity.version>2.3</velocity.version>
         <satoken.version>1.37.0</satoken.version>
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
+        <mybatis-flex.version>1.8.4</mybatis-flex.version>
         <pagehelper.version>2.0.0</pagehelper.version>
         <p6spy.version>3.9.1</p6spy.version>
         <hutool.version>5.8.24</hutool.version>
@@ -215,6 +216,11 @@
                         <artifactId>mybatis-spring</artifactId>
                     </exclusion>
                 </exclusions>
+            </dependency>
+            <dependency>
+                <groupId>com.mybatis-flex</groupId>
+                <artifactId>mybatis-flex-spring-boot3-starter</artifactId>
+                <version>${mybatis-flex.version}</version>
             </dependency>
 
             <dependency>
@@ -418,6 +424,11 @@
                             <groupId>org.projectlombok</groupId>
                             <artifactId>lombok-mapstruct-binding</artifactId>
                             <version>${mapstruct-plus.lombok.version}</version>
+                        </path>
+                        <path>
+                            <groupId>com.mybatis-flex</groupId>
+                            <artifactId>mybatis-flex-processor</artifactId>
+                            <version>${mybatis-flex.version}</version>
                         </path>
                     </annotationProcessorPaths>
                     <compilerArgs>

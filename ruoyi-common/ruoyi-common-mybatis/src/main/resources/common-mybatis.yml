@@ -1,3 +1,40 @@
+# 内置配置 不允许修改 如需修改请在 配置中心 上写相同配置覆盖
+mybatis-flex:
+  # 启动时是否检查 MyBatis XML 文件的存在，默认不检查
+  check-config-location: true
+  configuration:
+    # 自动驼峰命名规则（camel case）映射
+    mapUnderscoreToCamelCase: true
+    # MyBatis 自动映射策略
+    # NONE：不启用 PARTIAL：只对非嵌套 resultMap 自动映射 FULL：对所有 resultMap 自动映射
+    autoMappingBehavior: FULL
+    # MyBatis 自动映射时未知列或未知属性处理策
+    # NONE：不做处理 WARNING：打印相关警告 FAILING：抛出异常和详细信息
+    autoMappingUnknownColumnBehavior: NONE
+    # 更详细的日志输出 会有性能损耗 org.apache.ibatis.logging.stdout.StdOutImpl
+    # 关闭日志记录 (可单纯使用 p6spy 分析) org.apache.ibatis.logging.nologging.NoLoggingImpl
+    # 默认日志输出 org.apache.ibatis.logging.slf4j.Slf4jImpl
+    logImpl: org.apache.ibatis.logging.nologging.NoLoggingImpl
+  global-config:
+    # 是否打印 Logo banner
+    print-banner: true
+    # 逻辑未删除值
+    normal-value-of-logic-delete: 0
+    # 逻辑已删除值(框架表均使用此值 禁止随意修改)
+    deleted-value-of-logic-delete: 1
+    logic-delete-column: del_flag
+    tenant-column: tenant_id
+    # 全局的 ID 生成策略配置
+    key-config:
+      # Auto 自增
+      # Sequence 通过执行数据库 sql 生成
+      # Generator 通过 IKeyGenerator 生成器生成
+      # None 其他方式，比如在代码层用户手动设置
+      key-type: generator
+      # uuid：通过 UUIDKeyGenerator 生成 UUID 作为数据库主键。
+      # flexId：独创的 FlexID 算法生成数据库主键（了解更多信息请参阅源码)。
+      # snowFlakeId：通过雪花算法（SnowFlakeIDKeyGenerator）生成数据库主键。
+      value: snowFlakeId
 # 内置配置 不允许修改 如需修改请在 nacos 上写相同配置覆盖
 # MyBatisPlus配置
 # https://baomidou.com/config/

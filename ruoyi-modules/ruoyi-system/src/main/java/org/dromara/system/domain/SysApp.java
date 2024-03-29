@@ -2,8 +2,8 @@ package org.dromara.system.domain;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.dromara.common.tenant.core.TenantEntity;
@@ -19,7 +19,7 @@ import java.util.Date;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys_app")
+@Table("sys_app")
 public class SysApp extends TenantEntity {
 
     @Serial
@@ -28,7 +28,7 @@ public class SysApp extends TenantEntity {
     /**
      * 应用id
      */
-    @TableId(value = "appid")
+    @Id
     private Long appid;
 
     /**
@@ -54,25 +54,21 @@ public class SysApp extends TenantEntity {
     /**
      * 创建部门
      */
-    @TableField(fill = FieldFill.INSERT)
     private Long createDept;
 
     /**
      * 创建者
      */
-    @TableField(fill = FieldFill.INSERT)
     private Long createBy;
 
     /**
      * 创建时间
      */
-    @TableField(fill = FieldFill.INSERT)
     private Date createTime;
 
     /**
      * 更新者
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
     private Long updateBy;
 
     /**
