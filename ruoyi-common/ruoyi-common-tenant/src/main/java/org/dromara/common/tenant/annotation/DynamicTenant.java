@@ -1,6 +1,8 @@
 package org.dromara.common.tenant.annotation;
 
 import org.intellij.lang.annotations.Language;
+import org.springframework.aot.hint.annotation.Reflective;
+import org.springframework.data.aot.PublicMethodReflectiveProcessor;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -32,6 +34,7 @@ import java.lang.annotation.Target;
 @Target(ElementType.METHOD)
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
+@Reflective({PublicMethodReflectiveProcessor.class})
 public @interface DynamicTenant {
 
     /**

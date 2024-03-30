@@ -1,7 +1,7 @@
 package org.dromara.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.system.domain.SysSocial;
 import org.dromara.system.domain.bo.SysSocialBo;
@@ -26,7 +26,7 @@ public class SysSocialServiceImpl extends ServiceImpl<SysSocialMapper, SysSocial
      */
     @Override
     public SysSocialVo queryById(String id) {
-        return baseMapper.selectVoById(id);
+        return mapper.selectVoById(id);
     }
 
     /**
@@ -34,12 +34,12 @@ public class SysSocialServiceImpl extends ServiceImpl<SysSocialMapper, SysSocial
      */
     @Override
     public List<SysSocialVo> queryList() {
-        return baseMapper.selectVoList();
+        return mapper.selectVoList();
     }
 
     @Override
     public List<SysSocialVo> queryListByUserId(Long userId) {
-        return baseMapper.selectVoList(new LambdaQueryWrapper<SysSocial>().eq(SysSocial::getUserId, userId));
+        return mapper.selectVoList(new LambdaQueryWrapper<SysSocial>().eq(SysSocial::getUserId, userId));
     }
 
 
@@ -50,7 +50,7 @@ public class SysSocialServiceImpl extends ServiceImpl<SysSocialMapper, SysSocial
     public Boolean insertByBo(SysSocialBo bo) {
         SysSocial add = MapstructUtils.convert(bo, SysSocial.class);
         validEntityBeforeSave(add);
-        boolean flag = baseMapper.insert(add) > 0;
+        boolean flag = mapper.insert(add) > 0;
         if (flag) {
             if (add != null) {
                 bo.setId(add.getId());
@@ -68,7 +68,7 @@ public class SysSocialServiceImpl extends ServiceImpl<SysSocialMapper, SysSocial
     public Boolean updateByBo(SysSocialBo bo) {
         SysSocial update = MapstructUtils.convert(bo, SysSocial.class);
         validEntityBeforeSave(update);
-        return baseMapper.updateById(update) > 0;
+        return mapper.updateById(update) > 0;
     }
 
     /**
@@ -84,7 +84,7 @@ public class SysSocialServiceImpl extends ServiceImpl<SysSocialMapper, SysSocial
      */
     @Override
     public Boolean deleteWithValidById(Long id) {
-        return baseMapper.deleteById(id) > 0;
+        return mapper.deleteById(id) > 0;
     }
 
 
@@ -96,7 +96,7 @@ public class SysSocialServiceImpl extends ServiceImpl<SysSocialMapper, SysSocial
      */
     @Override
     public SysSocialVo selectByAuthId(String authId) {
-        return baseMapper.selectVoOne(new LambdaQueryWrapper<SysSocial>().eq(SysSocial::getAuthId, authId));
+        return mapper.selectVoOne(new LambdaQueryWrapper<SysSocial>().eq(SysSocial::getAuthId, authId));
     }
 
 }

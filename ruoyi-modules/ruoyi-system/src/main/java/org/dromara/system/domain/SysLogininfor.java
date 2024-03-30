@@ -1,7 +1,7 @@
 package org.dromara.system.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import lombok.Data;
 
 import java.io.Serial;
@@ -15,7 +15,7 @@ import java.util.Date;
  */
 
 @Data
-@TableName("sys_logininfor")
+@Table("sys_logininfor")
 public class SysLogininfor implements Serializable {
 
     @Serial
@@ -24,7 +24,7 @@ public class SysLogininfor implements Serializable {
     /**
      * 访问ID
      */
-    @TableId(value = "info_id")
+    @Id
     private Long infoId;
 
     /**

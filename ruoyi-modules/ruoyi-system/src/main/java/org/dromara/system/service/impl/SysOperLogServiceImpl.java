@@ -1,7 +1,7 @@
 package org.dromara.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.ip.AddressUtils;
 import org.dromara.common.log.event.OperLogEvent;
@@ -38,7 +38,7 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
      */
     @Override
     public SysOperLogVo queryById(Long operId) {
-        return baseMapper.selectVoById(operId);
+        return mapper.selectVoById(operId);
     }
 
     /**
@@ -49,7 +49,7 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
      */
     @Override
     public TableDataInfo<SysOperLogVo> queryPageList(SysOperLogQuery query) {
-        return PageQuery.of(() -> baseMapper.queryList(query));
+        return PageQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -60,7 +60,7 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
      */
     @Override
     public List<SysOperLogVo> queryList(SysOperLogQuery query) {
-        return baseMapper.queryList(query);
+        return mapper.queryList(query);
     }
 
     /**
@@ -86,7 +86,7 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
     public void insertOperlog(SysOperLogBo bo) {
         SysOperLog operLog = MapstructUtils.convert(bo, SysOperLog.class);
         operLog.setOperTime(new Date());
-        baseMapper.insert(operLog);
+        mapper.insert(operLog);
     }
 
     /**
@@ -98,7 +98,7 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int deleteOperLogByIds(Long[] operIds) {
-        return baseMapper.deleteBatchIds(Arrays.asList(operIds));
+        return mapper.deleteBatchByIds(Arrays.asList(operIds));
     }
 
     /**
@@ -107,6 +107,6 @@ public class SysOperLogServiceImpl extends ServiceImpl<SysOperLogMapper, SysOper
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void cleanOperLog() {
-        baseMapper.delete(new LambdaQueryWrapper<>());
+        mapper.deleteByQuery(query());
     }
 }

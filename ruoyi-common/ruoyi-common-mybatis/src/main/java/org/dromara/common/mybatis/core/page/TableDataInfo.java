@@ -1,7 +1,7 @@
 package org.dromara.common.mybatis.core.page;
 
 import cn.hutool.http.HttpStatus;
-import com.baomidou.mybatisplus.core.metadata.IPage;
+import com.mybatisflex.core.paginate.Page;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
@@ -45,7 +45,7 @@ public class TableDataInfo<T> implements Serializable {
     /**
      * 分页页码
      */
-    private Integer pageNum;
+    private Long pageNum;
 
     /**
      * 分页数
@@ -63,14 +63,14 @@ public class TableDataInfo<T> implements Serializable {
         this.total = total;
     }
 
-    public static <T> TableDataInfo<T> build(IPage<T> page) {
+    public static <T> TableDataInfo<T> build(Page<T> page) {
         TableDataInfo<T> rspData = new TableDataInfo<>();
         rspData.setCode(HttpStatus.HTTP_OK);
         rspData.setMsg("查询成功");
         rspData.setRows(page.getRecords());
-        rspData.setTotal(page.getTotal());
-        rspData.setPageNum(Long.valueOf(page.getCurrent()).intValue());
-        rspData.setPageSize(page.getSize());
+        rspData.setTotal(page.getTotalRow());
+        rspData.setPageNum(page.getPageNumber());
+        rspData.setPageSize(page.getTotalRow());
         return rspData;
     }
 
@@ -80,7 +80,7 @@ public class TableDataInfo<T> implements Serializable {
         rspData.setMsg("查询成功");
         rspData.setRows(list);
         rspData.setTotal(list.size());
-        rspData.setPageNum(1);
+        rspData.setPageNum(1L);
         rspData.setPageSize((long) list.size());
         return rspData;
     }
@@ -89,7 +89,7 @@ public class TableDataInfo<T> implements Serializable {
         TableDataInfo<T> rspData = new TableDataInfo<>();
         rspData.setCode(HttpStatus.HTTP_OK);
         rspData.setMsg("查询成功");
-        rspData.setPageNum(1);
+        rspData.setPageNum(1L);
         rspData.setPageSize(0L);
         return rspData;
     }

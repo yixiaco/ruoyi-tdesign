@@ -33,13 +33,13 @@ public class TestDemoServiceImpl implements ITestDemoService {
 
     @Override
     public TestDemoVo queryById(Long id) {
-        return baseMapper.selectVoById(id);
+        return mapper.selectVoById(id);
     }
 
     @Override
     public TableDataInfo<TestDemoVo> queryPageList(TestDemoBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<TestDemo> lqw = buildQueryWrapper(bo);
-        Page<TestDemoVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
+        Page<TestDemoVo> result = mapper.selectVoPage(pageQuery.build(), lqw);
         return TableDataInfo.build(result);
     }
 
@@ -49,13 +49,13 @@ public class TestDemoServiceImpl implements ITestDemoService {
     @Override
     public TableDataInfo<TestDemoVo> customPageList(TestDemoBo bo, PageQuery pageQuery) {
         LambdaQueryWrapper<TestDemo> lqw = buildQueryWrapper(bo);
-        Page<TestDemoVo> result = baseMapper.customPageList(pageQuery.build(), lqw);
+        Page<TestDemoVo> result = mapper.customPageList(pageQuery.build(), lqw);
         return TableDataInfo.build(result);
     }
 
     @Override
     public List<TestDemoVo> queryList(TestDemoBo bo) {
-        return baseMapper.selectVoList(buildQueryWrapper(bo));
+        return mapper.selectVoList(buildQueryWrapper(bo));
     }
 
     private LambdaQueryWrapper<TestDemo> buildQueryWrapper(TestDemoBo bo) {
@@ -73,7 +73,7 @@ public class TestDemoServiceImpl implements ITestDemoService {
     public Boolean insertByBo(TestDemoBo bo) {
         TestDemo add = MapstructUtils.convert(bo, TestDemo.class);
         validEntityBeforeSave(add);
-        boolean flag = baseMapper.insert(add) > 0;
+        boolean flag = mapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());
         }
@@ -84,7 +84,7 @@ public class TestDemoServiceImpl implements ITestDemoService {
     public Boolean updateByBo(TestDemoBo bo) {
         TestDemo update = MapstructUtils.convert(bo, TestDemo.class);
         validEntityBeforeSave(update);
-        return baseMapper.updateById(update) > 0;
+        return mapper.updateById(update) > 0;
     }
 
     /**
@@ -101,11 +101,11 @@ public class TestDemoServiceImpl implements ITestDemoService {
         if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
-        return baseMapper.deleteBatchIds(ids) > 0;
+        return mapper.deleteBatchIds(ids) > 0;
     }
 
     @Override
     public Boolean saveBatch(List<TestDemo> list) {
-        return baseMapper.insertBatch(list);
+        return mapper.insertBatch(list);
     }
 }

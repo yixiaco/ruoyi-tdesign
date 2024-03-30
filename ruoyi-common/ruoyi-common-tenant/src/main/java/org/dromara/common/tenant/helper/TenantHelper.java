@@ -57,6 +57,15 @@ public class TenantHelper {
     }
 
     /**
+     * 是否启用了忽略租户
+     *
+     * @return
+     */
+    public static boolean isIgnoreDb() {
+        return HEAVY_ENTRY_IGNORE_DB_TENANT.get().get() == 0;
+    }
+
+    /**
      * 租户功能是否启用
      */
     public static boolean isEnable() {

@@ -1,8 +1,8 @@
 package org.dromara.system.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.Constants;
 import org.dromara.common.core.enums.CommonStatusEnum;
@@ -51,7 +51,7 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
      */
     @Override
     public SysLogininforVo queryById(Long infoId) {
-        return baseMapper.selectVoById(infoId);
+        return mapper.selectVoById(infoId);
     }
 
     /**
@@ -117,7 +117,7 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
      */
     @Override
     public TableDataInfo<SysLogininforVo> queryPageList(SysLogininforQuery query) {
-        return PageQuery.of(() -> baseMapper.queryList(query));
+        return PageQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -128,7 +128,7 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
      */
     @Override
     public List<SysLogininforVo> queryList(SysLogininforQuery query) {
-        return baseMapper.queryList(query);
+        return mapper.queryList(query);
     }
 
     /**
@@ -141,7 +141,7 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
         SysLogininfor logininfor = MapstructUtils.convert(bo, SysLogininfor.class);
         logininfor.setLoginTime(new Date());
         TenantHelper.ignore(s -> {
-            baseMapper.insert(logininfor);
+            mapper.insert(logininfor);
         });
     }
 
@@ -154,7 +154,7 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int deleteLogininforByIds(Long[] infoIds) {
-        return baseMapper.deleteBatchIds(Arrays.asList(infoIds));
+        return mapper.deleteBatchByIds(Arrays.asList(infoIds));
     }
 
     /**
@@ -162,6 +162,6 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
      */
     @Override
     public void cleanLogininfor() {
-        baseMapper.delete(new LambdaQueryWrapper<>());
+        mapper.deleteByQuery(QueryWrapper.create());
     }
 }

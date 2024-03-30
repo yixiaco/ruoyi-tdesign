@@ -1,6 +1,6 @@
 package org.dromara.system.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
@@ -43,7 +43,7 @@ public class SysMessageKeyServiceImpl extends ServiceImpl<SysMessageKeyMapper, S
      */
     @Override
     public SysMessageKeyVo queryById(Long messageKeyId) {
-        return baseMapper.selectVoById(messageKeyId);
+        return mapper.selectVoById(messageKeyId);
     }
 
     /**
@@ -54,7 +54,7 @@ public class SysMessageKeyServiceImpl extends ServiceImpl<SysMessageKeyMapper, S
      */
     @Override
     public TableDataInfo<SysMessageKeyVo> queryPageList(SysMessageKeyQuery query) {
-        return PageQuery.of(() -> baseMapper.queryList(query));
+        return PageQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -65,7 +65,7 @@ public class SysMessageKeyServiceImpl extends ServiceImpl<SysMessageKeyMapper, S
      */
     @Override
     public List<SysMessageKeyVo> queryList(SysMessageKeyQuery query) {
-        return SortQuery.of(() -> baseMapper.queryList(query));
+        return SortQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -109,9 +109,9 @@ public class SysMessageKeyServiceImpl extends ServiceImpl<SysMessageKeyMapper, S
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteWithValidByIds(Collection<Long> ids) {
-        List<SysMessageKey> list = lambdaQuery().in(SysMessageKey::getMessageKeyId, ids).select(SysMessageKey::getMessageKey).list();
+        List<SysMessageKey> list = queryChain().in(SysMessageKey::getMessageKeyId, ids).select(SysMessageKey::getMessageKey).list();
         List<String> keys = StreamUtils.toList(list, SysMessageKey::getMessageKey);
-        boolean exists = messageTemplateService.lambdaQuery().in(SysMessageTemplate::getMessageKey, keys).exists();
+        boolean exists = messageTemplateService.queryChain().in(SysMessageTemplate::getMessageKey, keys).exists();
         if (exists) {
             throw new ServiceException("存在关联的消息模板，无法删除");
         }
@@ -124,7 +124,7 @@ public class SysMessageKeyServiceImpl extends ServiceImpl<SysMessageKeyMapper, S
      * @param bo 业务对象
      */
     private void checkRepeat(SysMessageKeyBo bo) {
-        boolean exists = lambdaQuery()
+        boolean exists = queryChain()
             .ne(bo.getMessageKeyId() != null, SysMessageKey::getMessageKeyId, bo.getMessageKeyId())
             .eq(SysMessageKey::getMessageKey, bo.getMessageKey())
             .exists();
@@ -141,7 +141,7 @@ public class SysMessageKeyServiceImpl extends ServiceImpl<SysMessageKeyMapper, S
      */
     @Override
     public String getKeyById(Long messageKeyId) {
-        return lambdaQuery()
+        return queryChain()
             .eq(SysMessageKey::getMessageKeyId, messageKeyId)
             .select(SysMessageKey::getMessageKey)
             .oneOpt().map(SysMessageKey::getMessageKey).orElse(null);

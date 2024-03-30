@@ -1,7 +1,7 @@
 package org.dromara.system.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
@@ -41,7 +41,7 @@ public class SysTenantPackageServiceImpl extends ServiceImpl<SysTenantPackageMap
      */
     @Override
     public SysTenantPackageVo queryById(Long packageId) {
-        return baseMapper.queryById(packageId);
+        return mapper.queryById(packageId);
     }
 
     /**
@@ -49,12 +49,12 @@ public class SysTenantPackageServiceImpl extends ServiceImpl<SysTenantPackageMap
      */
     @Override
     public TableDataInfo<SysTenantPackageVo> queryPageList(SysTenantPackageQuery query) {
-        return PageQuery.of(() -> baseMapper.queryList(query));
+        return PageQuery.of(() -> mapper.queryList(query));
     }
 
     @Override
     public List<SysTenantPackageVo> selectList() {
-        return baseMapper.selectVoList(new LambdaQueryWrapper<SysTenantPackage>()
+        return mapper.selectVoList(new LambdaQueryWrapper<SysTenantPackage>()
                 .eq(SysTenantPackage::getStatus, NormalDisableEnum.NORMAL.getCode()));
     }
 
@@ -63,7 +63,7 @@ public class SysTenantPackageServiceImpl extends ServiceImpl<SysTenantPackageMap
      */
     @Override
     public List<SysTenantPackageVo> queryList(SysTenantPackageQuery query) {
-        return baseMapper.queryList(query);
+        return mapper.queryList(query);
     }
 
     /**
@@ -73,7 +73,7 @@ public class SysTenantPackageServiceImpl extends ServiceImpl<SysTenantPackageMap
     @Transactional(rollbackFor = Exception.class)
     public Boolean insertByBo(SysTenantPackageBo bo) {
         SysTenantPackage add = MapstructUtils.convert(bo, SysTenantPackage.class);
-        boolean flag = baseMapper.insert(add) > 0;
+        boolean flag = mapper.insert(add) > 0;
         if (flag) {
             bo.setPackageId(add.getPackageId());
             // 保存菜单id
@@ -106,7 +106,7 @@ public class SysTenantPackageServiceImpl extends ServiceImpl<SysTenantPackageMap
     @Override
     public int updatePackageStatus(SysTenantPackageBo bo) {
         SysTenantPackage tenantPackage = MapstructUtils.convert(bo, SysTenantPackage.class);
-        return baseMapper.updateById(tenantPackage);
+        return mapper.updateById(tenantPackage);
     }
 
     /**
@@ -121,7 +121,7 @@ public class SysTenantPackageServiceImpl extends ServiceImpl<SysTenantPackageMap
                 throw new ServiceException("租户套餐已被使用");
             }
         }
-        return baseMapper.deleteBatchIds(ids) > 0;
+        return mapper.deleteBatchIds(ids) > 0;
     }
 
     /**
@@ -133,6 +133,6 @@ public class SysTenantPackageServiceImpl extends ServiceImpl<SysTenantPackageMap
     @Override
     public boolean includeMenuId(Long menuId) {
         // 使用插件分页兼容数据库
-        return PageQuery.of(0,1,false).get(() -> baseMapper.queryIncludeMenuId(menuId));
+        return PageQuery.of(0,1,false).get(() -> mapper.queryIncludeMenuId(menuId));
     }
 }

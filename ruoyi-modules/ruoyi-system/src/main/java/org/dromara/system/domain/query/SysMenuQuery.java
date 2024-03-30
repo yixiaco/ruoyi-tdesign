@@ -15,6 +15,11 @@ import org.dromara.common.mybatis.core.domain.BaseEntity;
 public class SysMenuQuery extends BaseEntity {
 
     /**
+     * 用户id
+     */
+    private Long userId;
+
+    /**
      * 菜单名称
      */
     private String menuName;

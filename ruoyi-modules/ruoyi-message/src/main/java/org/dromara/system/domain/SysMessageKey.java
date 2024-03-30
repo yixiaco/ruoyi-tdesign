@@ -2,7 +2,7 @@ package org.dromara.system.domain;
 
 import com.baomidou.mybatisplus.annotation.FieldFill;
 import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.mybatisflex.annotation.Id;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -19,7 +19,7 @@ import java.util.Date;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys_message_key")
+@Table("sys_message_key")
 public class SysMessageKey extends BaseEntity {
 
     @Serial
@@ -28,7 +28,7 @@ public class SysMessageKey extends BaseEntity {
     /**
      * 消息key主键
      */
-    @TableId(value = "message_key_id")
+    @Id
     private Long messageKeyId;
 
     /**
@@ -49,31 +49,31 @@ public class SysMessageKey extends BaseEntity {
     /**
      * 创建部门
      */
-    @TableField(fill = FieldFill.INSERT)
+    @ColumnInsert(dateType = DateType.DEPT_ID)
     private Long createDept;
 
     /**
      * 更新者
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ColumnInsertOrUpdate(dateType = DateType.USER_ID)
     private Long updateBy;
 
     /**
      * 创建者
      */
-    @TableField(fill = FieldFill.INSERT)
+    @ColumnInsert(dateType = DateType.USER_ID)
     private Long createBy;
 
     /**
      * 更新时间
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ColumnInsertOrUpdate(dateType = DateType.DATE)
     private Date updateTime;
 
     /**
      * 创建时间
      */
-    @TableField(fill = FieldFill.INSERT)
+    @ColumnInsert(dateType = DateType.DATE)
     private Date createTime;
 
 }

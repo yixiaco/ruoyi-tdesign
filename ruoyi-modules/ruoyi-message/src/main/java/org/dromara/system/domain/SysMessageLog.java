@@ -1,6 +1,6 @@
 package org.dromara.system.domain;
 
-import com.baomidou.mybatisplus.annotation.TableId;
+import com.mybatisflex.annotation.Id;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
 
@@ -15,7 +15,7 @@ import java.util.Date;
  * @date 2023-06-29
  */
 @Data
-@TableName("sys_message_log")
+@Table("sys_message_log")
 public class SysMessageLog implements Serializable {
 
     @Serial
@@ -24,7 +24,7 @@ public class SysMessageLog implements Serializable {
     /**
      * 消息发送记录id
      */
-    @TableId(value = "message_log_id")
+    @Id
     private Long messageLogId;
 
     /**

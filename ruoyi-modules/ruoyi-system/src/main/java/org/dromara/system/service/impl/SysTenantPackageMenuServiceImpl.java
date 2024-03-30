@@ -1,7 +1,7 @@
 package org.dromara.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.tenant.annotation.IgnoreTenant;
 import org.dromara.system.domain.SysTenantPackageMenu;
@@ -53,12 +53,12 @@ public class SysTenantPackageMenuServiceImpl extends ServiceImpl<SysTenantPackag
     @IgnoreTenant
     @Transactional(rollbackFor = Exception.class)
     public void update(Long packageId, List<Long> menuIds) {
-        List<SysTenantPackageMenu> list = lambdaQuery().eq(SysTenantPackageMenu::getPackageId, packageId).list();
+        List<SysTenantPackageMenu> list = queryChain().eq(SysTenantPackageMenu::getPackageId, packageId).list();
         List<Long> olMenuIds = StreamUtils.toList(list, SysTenantPackageMenu::getMenuId);
         StreamUtils.diff(olMenuIds, menuIds, (id1, id2) -> {
             // 只有旧菜单才有的数据，需要删除
             if (CollUtil.isNotEmpty(id1)) {
-                lambdaUpdate()
+                updateChain()
                     .in(SysTenantPackageMenu::getMenuId, id1)
                     .eq(SysTenantPackageMenu::getPackageId, packageId)
                     .remove();
@@ -72,12 +72,12 @@ public class SysTenantPackageMenuServiceImpl extends ServiceImpl<SysTenantPackag
 
             // 1.删除租户角色多余菜单
             if (CollUtil.isNotEmpty(id1)) {
-                baseMapper.deleteTenantRoleMenuId(packageId, id1);
+                mapper.deleteTenantRoleMenuId(packageId, id1);
             }
 
             // 2.添加租户管理员角色新增菜单
             if (CollUtil.isNotEmpty(id2)) {
-                baseMapper.addTenantRoleAdminMenuId(packageId, id2);
+                mapper.addTenantRoleAdminMenuId(packageId, id2);
             }
         });
     }

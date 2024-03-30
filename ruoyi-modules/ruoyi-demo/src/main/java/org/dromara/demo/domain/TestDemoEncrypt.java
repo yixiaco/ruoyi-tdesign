@@ -8,7 +8,7 @@ import org.dromara.common.encrypt.enumd.AlgorithmType;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("test_demo")
+@Table("test_demo")
 public class TestDemoEncrypt extends TestDemo {
 
     /**

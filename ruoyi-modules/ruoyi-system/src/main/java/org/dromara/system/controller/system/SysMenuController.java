@@ -61,8 +61,9 @@ public class SysMenuController extends BaseController {
     }, mode = SaMode.OR)
     @SaCheckPermission("system:menu:list")
     @GetMapping("/list")
-    public R<List<SysMenuVo>> list(SysMenuQuery menu) {
-        List<SysMenuVo> menus = menuService.selectMenuList(menu, LoginHelper.getUserId());
+    public R<List<SysMenuVo>> list(SysMenuQuery query) {
+        query.setUserId(LoginHelper.getUserId());
+        List<SysMenuVo> menus = menuService.selectMenuList(query);
         return R.ok(menus);
     }
 
@@ -73,7 +74,8 @@ public class SysMenuController extends BaseController {
     @Log(title = "菜单权限", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(SysMenuQuery query, HttpServletResponse response) {
-        List<SysMenuVo> list = menuService.selectMenuList(query, LoginHelper.getUserId());
+        query.setUserId(LoginHelper.getUserId());
+        List<SysMenuVo> list = menuService.selectMenuList(query);
         ExcelUtil.exportExcel(list, "菜单权限", SysMenuVo.class, response);
     }
 
@@ -97,8 +99,9 @@ public class SysMenuController extends BaseController {
      */
     @SaCheckPermission("system:menu:query")
     @GetMapping("/treeselect")
-    public R<List<Tree<Long>>> treeselect(SysMenuQuery menu) {
-        List<SysMenuVo> menus = menuService.selectMenuList(menu, LoginHelper.getUserId());
+    public R<List<Tree<Long>>> treeselect(SysMenuQuery query) {
+        query.setUserId(LoginHelper.getUserId());
+        List<SysMenuVo> menus = menuService.selectMenuList(query);
         return R.ok(menuService.buildMenuTreeSelect(menus));
     }
 

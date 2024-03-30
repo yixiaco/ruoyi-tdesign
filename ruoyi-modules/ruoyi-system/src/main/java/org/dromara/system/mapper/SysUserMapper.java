@@ -1,12 +1,14 @@
 package org.dromara.system.mapper;
 
-import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
+import com.mybatisflex.core.FlexConsts;
+import com.mybatisflex.core.provider.EntitySqlProvider;
+import com.mybatisflex.core.query.QueryWrapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.UpdateProvider;
 import org.dromara.common.mybatis.annotation.DataColumn;
 import org.dromara.common.mybatis.annotation.DataPermission;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.tenant.annotation.IgnoreTenant;
 import org.dromara.system.domain.SysUser;
 import org.dromara.system.domain.query.SysUserQuery;
 import org.dromara.system.domain.vo.SysUserVo;
@@ -62,7 +64,7 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser, SysUserVo> {
      * @param userName 用户名
      * @return 用户对象信息
      */
-    @InterceptorIgnore(tenantLine = "true")
+    @IgnoreTenant
     SysUserVo selectUserByUserName(@Param("userName") String userName);
 
     /**
@@ -71,7 +73,7 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser, SysUserVo> {
      * @param phonenumber 手机号
      * @return 用户对象信息
      */
-    @InterceptorIgnore(tenantLine = "true")
+    @IgnoreTenant
     SysUserVo selectUserByPhonenumber(@Param("phonenumber") String phonenumber);
 
     /**
@@ -80,7 +82,7 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser, SysUserVo> {
      * @param email 邮箱
      * @return 用户对象信息
      */
-    @InterceptorIgnore(tenantLine = "true")
+    @IgnoreTenant
     SysUserVo selectUserByEmail(@Param("email") String email);
 
     /**
@@ -108,13 +110,15 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser, SysUserVo> {
         @DataColumn(key = "deptName", value = "dept_id"),
         @DataColumn(key = "userName", value = "user_id")
     })
-    int update(@Param(Constants.ENTITY) SysUser user, @Param(Constants.WRAPPER) Wrapper<SysUser> updateWrapper);
+    @UpdateProvider(type = EntitySqlProvider.class, method = "updateByQuery")
+    int updateByQuery(@Param(FlexConsts.ENTITY) SysUser user, @Param(FlexConsts.IGNORE_NULLS) boolean ignoreNulls, @Param(FlexConsts.QUERY) QueryWrapper queryWrapper);
 
     @Override
     @DataPermission({
         @DataColumn(key = "deptName", value = "dept_id"),
         @DataColumn(key = "userName", value = "user_id")
     })
-    int updateById(@Param(Constants.ENTITY) SysUser user);
+    @UpdateProvider(type = EntitySqlProvider.class, method = "update")
+    int update(@Param(FlexConsts.ENTITY) SysUser user, @Param(FlexConsts.IGNORE_NULLS) boolean ignoreNulls);
 
 }

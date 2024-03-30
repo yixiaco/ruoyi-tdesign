@@ -25,6 +25,12 @@
             <groupId>org.dromara</groupId>
             <artifactId>ruoyi-common-satoken</artifactId>
         </dependency>
+<!--
+        &lt;!&ndash; dynamic-datasource 多数据源&ndash;&gt;
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>dynamic-datasource-spring-boot3-starter</artifactId>
+        </dependency>
 
         <dependency>
             <groupId>org.mybatis.spring.boot</groupId>
@@ -40,7 +46,7 @@
                     <artifactId>mybatis-spring</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
+        </dependency>-->
 
         <dependency>
             <groupId>com.mybatis-flex</groupId>
@@ -50,7 +56,7 @@
         <!-- 分页插件 -->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
-            <artifactId>pagehelper-spring-boot-starter</artifactId>
+            <artifactId>pagehelper</artifactId>
         </dependency>
 
         <!-- sql性能分析插件 -->

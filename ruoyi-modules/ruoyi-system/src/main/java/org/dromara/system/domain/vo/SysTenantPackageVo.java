@@ -2,12 +2,13 @@ package org.dromara.system.domain.vo;
 
 import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import org.dromara.common.excel.annotation.ExcelDictFormat;
 import org.dromara.common.excel.convert.ExcelDictConvert;
+import org.dromara.common.mybatis.annotation.ColumnInsert;
+import org.dromara.common.mybatis.annotation.ColumnInsertOrUpdate;
+import org.dromara.common.mybatis.enums.DateType;
 import org.dromara.system.domain.SysTenantPackage;
 
 import java.io.Serial;
@@ -69,12 +70,12 @@ public class SysTenantPackageVo implements Serializable {
     /**
      * 创建时间
      */
-    @TableField(fill = FieldFill.INSERT)
+    @ColumnInsert(dateType = DateType.DATE)
     private Date createTime;
 
     /**
      * 更新时间
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ColumnInsertOrUpdate(dateType = DateType.DATE)
     private Date updateTime;
 }

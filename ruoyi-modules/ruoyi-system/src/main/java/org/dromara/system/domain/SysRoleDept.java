@@ -1,8 +1,6 @@
 package org.dromara.system.domain;
 
-import com.baomidou.mybatisplus.annotation.IdType;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.mybatisflex.annotation.Table;
 import lombok.Data;
 
 /**
@@ -12,13 +10,12 @@ import lombok.Data;
  */
 
 @Data
-@TableName("sys_role_dept")
+@Table("sys_role_dept")
 public class SysRoleDept {
 
     /**
      * 角色ID
      */
-    @TableId(type = IdType.INPUT)
     private Long roleId;
 
     /**

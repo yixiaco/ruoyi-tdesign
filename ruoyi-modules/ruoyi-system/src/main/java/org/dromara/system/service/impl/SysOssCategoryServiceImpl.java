@@ -1,7 +1,7 @@
 package org.dromara.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.enums.UserType;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
@@ -41,7 +41,7 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
      */
     @Override
     public SysOssCategoryVo query(SysOssCategoryQuery query) {
-        return baseMapper.queryVoById(query);
+        return mapper.queryVoById(query);
     }
 
     /**
@@ -52,7 +52,7 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
      */
     @Override
     public List<SysOssCategoryVo> queryList(SysOssCategoryQuery query) {
-        return baseMapper.queryList(query);
+        return mapper.queryList(query);
     }
 
     /**
@@ -124,7 +124,7 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
             // 检查分类名称是否重复
             checkRepeat(category);
             // 获取子分类，更新子分类的路径
-            List<SysOssCategory> children = lambdaQuery()
+            List<SysOssCategory> children = queryChain()
                 .likeRight(SysOssCategory::getCategoryPath, path + ROOT_PATH)
                 .select(SysOssCategory::getOssCategoryId, SysOssCategory::getCategoryPath, SysOssCategory::getLevel)
                 .list();
@@ -133,14 +133,13 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
                 child.setCategoryPath(child.getCategoryPath().replaceFirst(path, category.getCategoryPath()));
             }
             if (CollUtil.isNotEmpty(children)) {
-                updateBatchById(children);
+                updateBatch(children);
             }
         }
-        return update(category, lambdaQuery()
+        return update(category, query()
             .eq(SysOssCategory::getOssCategoryId, category.getOssCategoryId())
             .eq(SysOssCategory::getUserType, bo.getUserType())
-            .eq(SysOssCategory::getCreateBy, bo.getCreateBy())
-            .getWrapper());
+            .eq(SysOssCategory::getCreateBy, bo.getCreateBy()));
     }
 
     /**
@@ -154,15 +153,15 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteWithValidByIds(Collection<Long> ids, UserType userType, Long userId) {
-        boolean exists = ossService.lambdaQuery().in(SysOss::getOssCategoryId, ids).exists();
+        boolean exists = ossService.queryChain().in(SysOss::getOssCategoryId, ids).exists();
         if (exists) {
             throw new ServiceException("无法删除非空分类");
         }
-        exists = lambdaQuery().in(SysOssCategory::getParentId, ids).exists();
+        exists = queryChain().in(SysOssCategory::getParentId, ids).exists();
         if (exists) {
             throw new ServiceException("请先删除子分类");
         }
-        return lambdaUpdate()
+        return updateChain()
             .in(SysOssCategory::getOssCategoryId, ids)
             .eq(SysOssCategory::getUserType, userType.getUserType())
             .eq(SysOssCategory::getCreateBy, userId)
@@ -175,8 +174,8 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
      * @param category 分类对象
      */
     private void checkRepeat(SysOssCategory category) {
-        boolean exists = lambdaQuery()
-            .ne(category.getOssCategoryId() != null, SysOssCategory::getOssCategoryId, category.getOssCategoryId())
+        boolean exists = queryChain()
+            .ne(SysOssCategory::getOssCategoryId, category.getOssCategoryId(), category.getOssCategoryId() != null)
             .eq(SysOssCategory::getCategoryPath, category.getCategoryPath())
             .eq(SysOssCategory::getUserType, category.getUserType())
             .eq(SysOssCategory::getCreateBy, category.getCreateBy())
@@ -199,11 +198,10 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
         if (ossCategoryId == null) {
             return false;
         }
-        return lambdaQuery()
+        return queryChain()
             .eq(SysOssCategory::getOssCategoryId, ossCategoryId)
             .eq(SysOssCategory::getUserType, userType.getUserType())
             .eq(SysOssCategory::getCreateBy, userId)
-            .select(SysOssCategory::getOssCategoryId)
             .exists();
     }
 }

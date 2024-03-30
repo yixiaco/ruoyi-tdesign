@@ -46,7 +46,7 @@ public class TestEncryptController {
         demo.setValue(value);
         mapper.insert(demo);
         map.put("加密", demo);
-        TestDemoEncrypt testDemo = mapper.selectById(demo.getId());
+        TestDemoEncrypt testDemo = mapper.selectOneById(demo.getId());
         map.put("解密", testDemo);
         return R.ok(map);
     }

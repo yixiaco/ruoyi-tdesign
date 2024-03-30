@@ -19,13 +19,13 @@ import java.util.Objects;
 
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("gen_table_column")
+@Table("gen_table_column")
 public class GenTableColumn extends BaseEntity {
 
     /**
      * 编号
      */
-    @TableId(value = "column_id")
+    @Id
     private Long columnId;
 
     /**
@@ -117,25 +117,25 @@ public class GenTableColumn extends BaseEntity {
     /**
      * 创建者
      */
-    @TableField(fill = FieldFill.INSERT)
+    @ColumnInsert(dateType = DateType.USER_ID)
     private Long createBy;
 
     /**
      * 创建时间
      */
-    @TableField(fill = FieldFill.INSERT)
+    @ColumnInsert(dateType = DateType.DATE)
     private Date createTime;
 
     /**
      * 更新者
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ColumnInsertOrUpdate(dateType = DateType.USER_ID)
     private Long updateBy;
 
     /**
      * 更新时间
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ColumnInsertOrUpdate(dateType = DateType.DATE)
     private Date updateTime;
 
     /**

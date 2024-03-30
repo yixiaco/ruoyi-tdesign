@@ -29,7 +29,7 @@
         <satoken.version>1.37.0</satoken.version>
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
         <mybatis-flex.version>1.8.4</mybatis-flex.version>
-        <pagehelper.version>2.0.0</pagehelper.version>
+        <pagehelper.version>6.1.0</pagehelper.version>
         <p6spy.version>3.9.1</p6spy.version>
         <hutool.version>5.8.24</hutool.version>
         <okhttp.version>4.12.0</okhttp.version>
@@ -238,14 +238,8 @@
             <!-- pagehelper 分页插件 -->
             <dependency>
                 <groupId>com.github.pagehelper</groupId>
-                <artifactId>pagehelper-spring-boot-starter</artifactId>
+                <artifactId>pagehelper</artifactId>
                 <version>${pagehelper.version}</version>
-                <exclusions>
-                    <exclusion>
-                        <groupId>com.github.jsqlparser</groupId>
-                        <artifactId>jsqlparser</artifactId>
-                    </exclusion>
-                </exclusions>
             </dependency>
 
             <dependency>

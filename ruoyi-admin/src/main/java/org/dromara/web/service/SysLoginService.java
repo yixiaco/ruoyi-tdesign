@@ -87,7 +87,7 @@ public class SysLoginService {
         bo.setUserName(authUserData.getUsername());
         bo.setNickName(authUserData.getNickname());
         // 检查是否已经被绑定到其他账号上
-        Optional<SysSocial> optional = sysSocialService.lambdaQuery()
+        Optional<SysSocial> optional = sysSocialService.queryChain()
             .eq(SysSocial::getAuthId, bo.getAuthId())
             .select(SysSocial::getUserId)
             .oneOpt();

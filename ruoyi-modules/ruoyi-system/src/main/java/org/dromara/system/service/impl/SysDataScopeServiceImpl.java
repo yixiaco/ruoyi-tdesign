@@ -3,7 +3,7 @@ package org.dromara.system.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import org.dromara.common.core.utils.StreamUtils;
-import org.dromara.common.mybatis.helper.DataBaseHelper;
+import org.dromara.common.mybatis.helper.DbTypeHelper;
 import org.dromara.system.service.ISysDataScopeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -37,7 +37,7 @@ public class SysDataScopeServiceImpl implements ISysDataScopeService {
 
     @Override
     public String getDeptAndChild(Long deptId) {
-        List<Long> ids = jdbcTemplate.queryForList("select dept_id from sys_dept sd where " + DataBaseHelper.findInSet(deptId, "ancestors"), Long.class);
+        List<Long> ids = jdbcTemplate.queryForList("select dept_id from sys_dept sd where " + DbTypeHelper.findInSet(deptId, "ancestors"), Long.class);
         ids.add(deptId);
 
         if (CollUtil.isNotEmpty(ids)) {

@@ -1,6 +1,6 @@
 package org.dromara.system.domain;
 
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.mybatisflex.annotation.Table;
 import lombok.Data;
 
 import java.io.Serializable;
@@ -12,7 +12,7 @@ import java.io.Serializable;
  * @date 2023-11-08
  */
 @Data
-@TableName("sys_tenant_package_menu")
+@Table("sys_tenant_package_menu")
 public class SysTenantPackageMenu implements Serializable {
 
     /**

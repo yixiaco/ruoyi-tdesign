@@ -1,7 +1,7 @@
 package org.dromara.system.service;
 
 import cn.hutool.core.lang.tree.Tree;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.mybatisflex.core.service.IService;
 import org.dromara.system.domain.SysDept;
 import org.dromara.system.domain.bo.SysDeptBo;
 import org.dromara.system.domain.query.SysDeptQuery;

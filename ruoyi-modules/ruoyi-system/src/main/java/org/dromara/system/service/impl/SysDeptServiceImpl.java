@@ -4,9 +4,8 @@ import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.exception.ServiceException;
@@ -16,7 +15,7 @@ import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.TreeBuildUtils;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.mybatis.core.page.SortQuery;
-import org.dromara.common.mybatis.helper.DataBaseHelper;
+import org.dromara.common.mybatis.helper.DbTypeHelper;
 import org.dromara.common.redis.utils.CacheUtils;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.system.domain.SysDept;
@@ -59,7 +58,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      */
     @Override
     public List<SysDeptVo> selectDeptList(SysDeptQuery query) {
-        return SortQuery.of(() -> baseMapper.queryList(query));
+        return SortQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -102,8 +101,8 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      */
     @Override
     public List<Long> selectDeptListByRoleId(Long roleId) {
-        SysRole role = roleMapper.selectById(roleId);
-        return baseMapper.selectDeptListByRoleId(roleId, role.getDeptCheckStrictly());
+        SysRole role = roleMapper.selectOneById(roleId);
+        return mapper.selectDeptListByRoleId(roleId, role.getDeptCheckStrictly());
     }
 
     /**
@@ -115,7 +114,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @Cacheable(cacheNames = CacheNames.SYS_DEPT, key = "#deptId")
     @Override
     public SysDeptVo selectDeptById(Long deptId) {
-        return baseMapper.queryVoById(deptId);
+        return mapper.queryVoById(deptId);
     }
 
     /**
@@ -145,9 +144,10 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      */
     @Override
     public long selectNormalChildrenDeptById(Long deptId) {
-        return baseMapper.selectCount(new LambdaQueryWrapper<SysDept>()
+        return queryChain()
             .eq(SysDept::getStatus, NormalDisableEnum.NORMAL.getCode())
-            .apply(DataBaseHelper.findInSet(deptId, "ancestors")));
+            .where(DbTypeHelper.findInSet(deptId, "ancestors"))
+            .count();
     }
 
     /**
@@ -158,8 +158,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      */
     @Override
     public boolean hasChildByDeptId(Long deptId) {
-        return baseMapper.exists(new LambdaQueryWrapper<SysDept>()
-            .eq(SysDept::getParentId, deptId));
+        return queryChain().eq(SysDept::getParentId, deptId).exists();
     }
 
     /**
@@ -170,8 +169,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      */
     @Override
     public boolean checkDeptExistUser(Long deptId) {
-        return userMapper.exists(new LambdaQueryWrapper<SysUser>()
-            .eq(SysUser::getDeptId, deptId));
+        return userMapper.exists(QueryWrapper.create().eq(SysUser::getDeptId, deptId));
     }
 
     /**
@@ -182,10 +180,11 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      */
     @Override
     public boolean checkDeptNameUnique(SysDeptBo dept) {
-        boolean exist = baseMapper.exists(new LambdaQueryWrapper<SysDept>()
+        boolean exist = queryChain()
             .eq(SysDept::getDeptName, dept.getDeptName())
             .eq(SysDept::getParentId, dept.getParentId())
-            .ne(ObjectUtil.isNotNull(dept.getDeptId()), SysDept::getDeptId, dept.getDeptId()));
+            .ne(SysDept::getDeptId, dept.getDeptId(), ObjectUtil.isNotNull(dept.getDeptId()))
+            .exists();
         return !exist;
     }
 
@@ -202,7 +201,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         if (LoginHelper.isSuperAdmin()) {
             return;
         }
-        SysDeptVo dept = baseMapper.selectDeptById(deptId);
+        SysDeptVo dept = mapper.selectDeptById(deptId);
         if (ObjectUtil.isNull(dept)) {
             throw new ServiceException("没有权限访问部门数据！");
         }
@@ -216,14 +215,14 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      */
     @Override
     public int insertDept(SysDeptBo bo) {
-        SysDept info = baseMapper.selectById(bo.getParentId());
+        SysDept info = mapper.selectOneById(bo.getParentId());
         // 如果父节点不为正常状态,则不允许新增子节点
         if (!NormalDisableEnum.NORMAL.getCode().equals(info.getStatus())) {
             throw new ServiceException("部门停用，不允许新增");
         }
         SysDept dept = MapstructUtils.convert(bo, SysDept.class);
         dept.setAncestors(info.getAncestors() + StringUtils.SEPARATOR + dept.getParentId());
-        return baseMapper.insert(dept);
+        return mapper.insert(dept);
     }
 
     /**
@@ -236,15 +235,15 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @Override
     public int updateDept(SysDeptBo bo) {
         SysDept dept = MapstructUtils.convert(bo, SysDept.class);
-        SysDept newParentDept = baseMapper.selectById(dept.getParentId());
-        SysDept oldDept = baseMapper.selectById(dept.getDeptId());
+        SysDept newParentDept = mapper.selectOneById(dept.getParentId());
+        SysDept oldDept = mapper.selectOneById(dept.getDeptId());
         if (ObjectUtil.isNotNull(newParentDept) && ObjectUtil.isNotNull(oldDept)) {
             String newAncestors = newParentDept.getAncestors() + StringUtils.SEPARATOR + newParentDept.getDeptId();
             String oldAncestors = oldDept.getAncestors();
             dept.setAncestors(newAncestors);
             updateDeptChildren(dept.getDeptId(), newAncestors, oldAncestors);
         }
-        int result = baseMapper.updateById(dept);
+        int result = mapper.update(dept);
         if (NormalDisableEnum.NORMAL.getCode().equals(dept.getStatus()) && StringUtils.isNotEmpty(dept.getAncestors())
             && !StringUtils.equals(NormalDisableEnum.NORMAL.getCode(), dept.getAncestors())) {
             // 如果该部门是启用状态，则启用该部门的所有上级部门
@@ -261,9 +260,10 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     private void updateParentDeptStatusNormal(SysDept dept) {
         String ancestors = dept.getAncestors();
         Long[] deptIds = Convert.toLongArray(ancestors);
-        baseMapper.update(null, new LambdaUpdateWrapper<SysDept>()
+        updateChain()
             .set(SysDept::getStatus, NormalDisableEnum.NORMAL.getCode())
-            .in(SysDept::getDeptId, Arrays.asList(deptIds)));
+            .in(SysDept::getDeptId, Arrays.asList(deptIds))
+            .update();
     }
 
     /**
@@ -274,8 +274,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
      * @param oldAncestors 旧的父ID集合
      */
     private void updateDeptChildren(Long deptId, String newAncestors, String oldAncestors) {
-        List<SysDept> children = baseMapper.selectList(new LambdaQueryWrapper<SysDept>()
-            .apply(DataBaseHelper.findInSet(deptId, "ancestors")));
+        List<SysDept> children = queryChain().where(DbTypeHelper.findInSet(deptId, "ancestors")).list();
         List<SysDept> list = new ArrayList<>();
         for (SysDept child : children) {
             SysDept dept = new SysDept();
@@ -284,7 +283,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
             list.add(dept);
         }
         if (CollUtil.isNotEmpty(list)) {
-            if (baseMapper.updateBatchById(list)) {
+            if (mapper.updateBatchById(list)) {
                 list.forEach(dept -> CacheUtils.evict(CacheNames.SYS_DEPT, dept.getDeptId()));
             }
         }
@@ -299,7 +298,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
     @CacheEvict(cacheNames = CacheNames.SYS_DEPT, key = "#deptId")
     @Override
     public int deleteDeptById(Long deptId) {
-        return baseMapper.deleteById(deptId);
+        return mapper.deleteById(deptId);
     }
 
 }

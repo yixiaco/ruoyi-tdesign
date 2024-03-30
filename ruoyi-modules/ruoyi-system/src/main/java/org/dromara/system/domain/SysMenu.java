@@ -1,15 +1,17 @@
 package org.dromara.system.domain;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.mybatisflex.annotation.Column;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import lombok.Data;
 import org.dromara.common.core.constant.Constants;
 import org.dromara.common.core.constant.UserConstants;
 import org.dromara.common.core.enums.MenuTypeEnum;
 import org.dromara.common.core.enums.YesNoFrameEnum;
 import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.mybatis.annotation.ColumnInsert;
+import org.dromara.common.mybatis.annotation.ColumnInsertOrUpdate;
+import org.dromara.common.mybatis.enums.DateType;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -24,7 +26,7 @@ import java.util.List;
  */
 
 @Data
-@TableName("sys_menu")
+@Table("sys_menu")
 public class SysMenu implements Serializable {
 
     @Serial
@@ -33,7 +35,7 @@ public class SysMenu implements Serializable {
     /**
      * 菜单ID
      */
-    @TableId(value = "menu_id")
+    @Id
     private Long menuId;
 
     /**
@@ -114,43 +116,43 @@ public class SysMenu implements Serializable {
     /**
      * 父菜单名称
      */
-    @TableField(exist = false)
+    @Column(ignore = true)
     private String parentName;
 
     /**
      * 子菜单
      */
-    @TableField(exist = false)
+    @Column(ignore = true)
     private List<SysMenu> children = new ArrayList<>();
 
     /**
      * 创建部门
      */
-    @TableField(fill = FieldFill.INSERT)
+    @ColumnInsert(dateType = DateType.DEPT_ID)
     private Long createDept;
 
     /**
      * 创建者
      */
-    @TableField(fill = FieldFill.INSERT)
+    @ColumnInsert(dateType = DateType.USER_ID)
     private Long createBy;
 
     /**
      * 创建时间
      */
-    @TableField(fill = FieldFill.INSERT)
+    @ColumnInsert(dateType = DateType.DATE)
     private Date createTime;
 
     /**
      * 更新者
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ColumnInsertOrUpdate(dateType = DateType.USER_ID)
     private Long updateBy;
 
     /**
      * 更新时间
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ColumnInsertOrUpdate(dateType = DateType.DATE)
     private Date updateTime;
 
 

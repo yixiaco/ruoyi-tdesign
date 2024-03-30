@@ -3,7 +3,7 @@ package org.dromara.system.service.impl;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
@@ -36,7 +36,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
 
     @Override
     public TableDataInfo<SysPostVo> selectPagePostList(SysPostQuery post) {
-        return PageQuery.of(() -> baseMapper.queryList(post));
+        return PageQuery.of(() -> mapper.queryList(post));
     }
 
     /**
@@ -47,7 +47,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      */
     @Override
     public List<SysPostVo> selectPostList(SysPostQuery query) {
-        return SortQuery.of(() -> baseMapper.queryList(query));
+        return SortQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -57,7 +57,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      */
     @Override
     public List<SysPostVo> selectPostAll() {
-        return baseMapper.selectVoList(new QueryWrapper<>());
+        return mapper.selectVoList(new QueryWrapper<>());
     }
 
     /**
@@ -68,7 +68,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      */
     @Override
     public SysPostVo selectPostById(Long postId) {
-        return baseMapper.selectVoById(postId);
+        return mapper.selectVoById(postId);
     }
 
     /**
@@ -79,7 +79,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      */
     @Override
     public List<Long> selectPostListByUserId(Long userId) {
-        return baseMapper.selectPostListByUserId(userId);
+        return mapper.selectPostListByUserId(userId);
     }
 
     /**
@@ -90,7 +90,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      */
     @Override
     public boolean checkPostNameUnique(SysPostBo post) {
-        boolean exist = baseMapper.exists(new LambdaQueryWrapper<SysPost>()
+        boolean exist = mapper.exists(new LambdaQueryWrapper<SysPost>()
             .eq(SysPost::getPostName, post.getPostName())
             .ne(ObjectUtil.isNotNull(post.getPostId()), SysPost::getPostId, post.getPostId()));
         return !exist;
@@ -104,7 +104,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      */
     @Override
     public boolean checkPostCodeUnique(SysPostBo post) {
-        boolean exist = baseMapper.exists(new LambdaQueryWrapper<SysPost>()
+        boolean exist = mapper.exists(new LambdaQueryWrapper<SysPost>()
             .eq(SysPost::getPostCode, post.getPostCode())
             .ne(ObjectUtil.isNotNull(post.getPostId()), SysPost::getPostId, post.getPostId()));
         return !exist;
@@ -129,7 +129,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      */
     @Override
     public int deletePostById(Long postId) {
-        return baseMapper.deleteById(postId);
+        return mapper.deleteById(postId);
     }
 
     /**
@@ -141,12 +141,12 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     @Override
     public int deletePostByIds(Long[] postIds) {
         for (Long postId : postIds) {
-            SysPost post = baseMapper.selectById(postId);
+            SysPost post = mapper.selectOneById(postId);
             if (countUserPostById(postId) > 0) {
                 throw new ServiceException(String.format("%1$s已分配，不能删除!", post.getPostName()));
             }
         }
-        return baseMapper.deleteBatchIds(Arrays.asList(postIds));
+        return mapper.deleteBatchIds(Arrays.asList(postIds));
     }
 
     /**
@@ -158,7 +158,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     @Override
     public int insertPost(SysPostBo bo) {
         SysPost post = MapstructUtils.convert(bo, SysPost.class);
-        return baseMapper.insert(post);
+        return mapper.insert(post);
     }
 
     /**
@@ -170,6 +170,6 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     @Override
     public int updatePost(SysPostBo bo) {
         SysPost post = MapstructUtils.convert(bo, SysPost.class);
-        return baseMapper.updateById(post);
+        return mapper.updateById(post);
     }
 }

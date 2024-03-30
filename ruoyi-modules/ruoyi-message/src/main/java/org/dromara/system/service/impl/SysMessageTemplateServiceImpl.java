@@ -1,6 +1,6 @@
 package org.dromara.system.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.exception.ServiceException;
@@ -45,7 +45,7 @@ public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplat
      */
     @Override
     public SysMessageTemplateVo queryById(Long messageTemplateId) {
-        return baseMapper.selectVoById(messageTemplateId);
+        return mapper.selectVoById(messageTemplateId);
     }
 
     /**
@@ -56,7 +56,7 @@ public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplat
      */
     @Override
     public TableDataInfo<SysMessageTemplateVo> queryPageList(SysMessageTemplateQuery query) {
-        return PageQuery.of(() -> baseMapper.queryList(query));
+        return PageQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -67,7 +67,7 @@ public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplat
      */
     @Override
     public List<SysMessageTemplateVo> queryList(SysMessageTemplateQuery query) {
-        return baseMapper.queryList(query);
+        return mapper.queryList(query);
     }
 
     /**
@@ -143,7 +143,7 @@ public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplat
         if (!Objects.equals(bo.getStatus(), NormalDisableEnum.NORMAL.getCodeNum())) {
             return;
         }
-        boolean exists = lambdaQuery()
+        boolean exists = queryChain()
             .ne(bo.getMessageTemplateId() != null, SysMessageTemplate::getMessageTemplateId, bo.getMessageTemplateId())
             .eq(SysMessageTemplate::getMessageKeyId, bo.getMessageKeyId())
             .eq(SysMessageTemplate::getMessageType, bo.getMessageType())
@@ -163,12 +163,12 @@ public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplat
     @Override
     @Transactional(rollbackFor = Exception.class)
     public void updateMessageKey(Long messageKeyId, String messageKey) {
-        List<SysMessageTemplate> list = lambdaQuery().eq(SysMessageTemplate::getMessageKey, messageKey).list();
+        List<SysMessageTemplate> list = queryChain().eq(SysMessageTemplate::getMessageKey, messageKey).list();
         for (SysMessageTemplate template : list) {
             CacheUtils.evict(CacheNames.SYS_MESSAGE_TEMPLATE, template.getMessageKey() + ":" + template.getMessageType());
             CacheUtils.evict(CacheNames.SYS_MESSAGE_TEMPLATE_ID, template.getMessageTemplateId());
         }
-        lambdaUpdate()
+        updateChain()
             .eq(SysMessageTemplate::getMessageKeyId, messageKeyId)
             .set(SysMessageTemplate::getMessageKey, messageKey)
             .update();
@@ -184,7 +184,7 @@ public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplat
     @Override
     @Cacheable(cacheNames = CacheNames.SYS_MESSAGE_TEMPLATE, key = "#messageKey+':'+#messageType", condition = "#messageType != null && #messageKey != null")
     public SysMessageTemplate getCache(String messageType, String messageKey) {
-        return lambdaQuery()
+        return queryChain()
             .eq(SysMessageTemplate::getMessageKey, messageKey)
             .eq(SysMessageTemplate::getMessageType, messageType)
             .eq(SysMessageTemplate::getStatus, NormalDisableEnum.NORMAL.getCode())

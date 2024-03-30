@@ -1,6 +1,6 @@
 package org.dromara.system.service;
 
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.mybatisflex.core.service.IService;
 import org.dromara.common.core.enums.UserType;
 import org.dromara.system.domain.SysOssCategory;
 import org.dromara.system.domain.bo.SysOssCategoryBo;

@@ -1,7 +1,7 @@
 package org.dromara.system.service;
 
 import cn.hutool.core.lang.tree.Tree;
-import com.baomidou.mybatisplus.extension.service.IService;
+import com.mybatisflex.core.service.IService;
 import org.dromara.system.domain.SysMenu;
 import org.dromara.system.domain.bo.SysMenuBo;
 import org.dromara.system.domain.query.SysMenuQuery;
@@ -29,11 +29,10 @@ public interface ISysMenuService extends IService<SysMenu> {
     /**
      * 根据用户查询系统菜单列表
      *
-     * @param menu   菜单信息
-     * @param userId 用户ID
+     * @param query 查询条件
      * @return 菜单列表
      */
-    List<SysMenuVo> selectMenuList(SysMenuQuery menu, Long userId);
+    List<SysMenuVo> selectMenuList(SysMenuQuery query);
 
     /**
      * 根据用户ID查询权限

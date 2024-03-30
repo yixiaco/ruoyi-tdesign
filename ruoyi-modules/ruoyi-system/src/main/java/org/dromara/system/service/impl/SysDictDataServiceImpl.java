@@ -1,7 +1,6 @@
 package org.dromara.system.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
@@ -30,7 +29,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
 
     @Override
     public TableDataInfo<SysDictDataVo> selectPageDictDataList(SysDictDataQuery dictData) {
-        return PageQuery.of(() -> baseMapper.queryList(dictData));
+        return PageQuery.of(() -> mapper.queryList(dictData));
     }
 
     /**
@@ -41,7 +40,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
      */
     @Override
     public List<SysDictDataVo> selectDictDataList(SysDictDataQuery dictData) {
-        return baseMapper.queryList(dictData);
+        return mapper.queryList(dictData);
     }
 
     /**
@@ -53,11 +52,12 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
      */
     @Override
     public String selectDictLabel(String dictType, String dictValue) {
-        return baseMapper.selectOne(new LambdaQueryWrapper<SysDictData>()
-                .select(SysDictData::getDictLabel)
-                .eq(SysDictData::getDictType, dictType)
-                .eq(SysDictData::getDictValue, dictValue))
-            .getDictLabel();
+        return queryChain()
+            .select(SysDictData::getDictLabel)
+            .eq(SysDictData::getDictType, dictType)
+            .eq(SysDictData::getDictValue, dictValue)
+            .oneOpt().map(SysDictData::getDictLabel)
+            .orElse(null);
     }
 
     /**
@@ -68,7 +68,7 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
      */
     @Override
     public SysDictDataVo selectDictDataById(Long dictCode) {
-        return baseMapper.selectVoById(dictCode);
+        return mapper.selectVoById(dictCode);
     }
 
     /**
@@ -80,8 +80,8 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     @Transactional(rollbackFor = Exception.class)
     public void deleteDictDataByIds(Long[] dictCodes) {
         for (Long dictCode : dictCodes) {
-            SysDictData data = baseMapper.selectById(dictCode);
-            baseMapper.deleteById(dictCode);
+            SysDictData data = mapper.selectOneById(dictCode);
+            mapper.deleteById(dictCode);
             CacheUtils.evict(CacheNames.SYS_DICT, data.getDictType());
         }
     }
@@ -96,9 +96,9 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     @Override
     public List<SysDictDataVo> insertDictData(SysDictDataBo bo) {
         SysDictData data = MapstructUtils.convert(bo, SysDictData.class);
-        int row = baseMapper.insert(data);
+        int row = mapper.insert(data);
         if (row > 0) {
-            return baseMapper.selectDictDataByType(data.getDictType());
+            return mapper.selectDictDataByType(data.getDictType());
         }
         throw new ServiceException("操作失败");
     }
@@ -113,9 +113,9 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
     @Override
     public List<SysDictDataVo> updateDictData(SysDictDataBo bo) {
         SysDictData data = MapstructUtils.convert(bo, SysDictData.class);
-        int row = baseMapper.updateById(data);
+        int row = mapper.update(data);
         if (row > 0) {
-            return baseMapper.selectDictDataByType(data.getDictType());
+            return mapper.selectDictDataByType(data.getDictType());
         }
         throw new ServiceException("操作失败");
     }

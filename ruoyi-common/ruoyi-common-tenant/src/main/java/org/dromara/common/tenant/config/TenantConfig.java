@@ -44,6 +44,14 @@ import java.util.List;
 public class TenantConfig {
 
     /**
+     * 初始化MybatisFlex多租户配置
+     */
+    @Bean
+    public TenantFactory tenantFactory(TenantProperties tenantProperties) {
+        return new GlobalTenantFactory(tenantProperties);
+    }
+
+    /**
      * 初始化租户配置
      */
     @Bean
@@ -55,16 +63,6 @@ public class TenantConfig {
         interceptors.addAll(mybatisPlusInterceptor.getInterceptors());
         mybatisPlusInterceptor.setInterceptors(interceptors);
         return true;
-    }
-
-    /**
-     * 初始化MybatisFlex多租户配置
-     *
-     * @return
-     */
-    @Bean
-    public TenantFactory tenantFactory() {
-        return new GlobalTenantFactory();
     }
 
     /**

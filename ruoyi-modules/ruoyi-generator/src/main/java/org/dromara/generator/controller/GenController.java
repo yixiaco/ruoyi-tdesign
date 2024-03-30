@@ -9,7 +9,7 @@ import org.dromara.common.idempotent.annotation.RepeatSubmit;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
-import org.dromara.common.mybatis.helper.DataBaseHelper;
+import org.dromara.common.mybatis.helper.DbTypeHelper;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.generator.domain.GenTableColumn;
 import org.dromara.generator.domain.bo.GenTableBo;
@@ -224,6 +224,6 @@ public class GenController extends BaseController {
     @SaCheckPermission("tool:gen:list")
     @GetMapping(value = "/getDataNames")
     public R<List<String>> getCurrentDataSourceNameList() {
-        return R.ok(DataBaseHelper.getDataSourceNameList());
+        return R.ok(DbTypeHelper.getDataSourceNameList());
     }
 }

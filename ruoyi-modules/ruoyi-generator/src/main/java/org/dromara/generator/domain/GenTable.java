@@ -15,13 +15,13 @@ import java.util.Date;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("gen_table")
+@Table("gen_table")
 public class GenTable extends BaseEntity {
 
     /**
      * 编号
      */
-    @TableId(value = "table_id")
+    @Id
     private Long tableId;
 
     /**
@@ -97,25 +97,25 @@ public class GenTable extends BaseEntity {
     /**
      * 创建者
      */
-    @TableField(fill = FieldFill.INSERT)
+    @ColumnInsert(dateType = DateType.USER_ID)
     private Long createBy;
 
     /**
      * 创建时间
      */
-    @TableField(fill = FieldFill.INSERT)
+    @ColumnInsert(dateType = DateType.DATE)
     private Date createTime;
 
     /**
      * 更新者
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ColumnInsertOrUpdate(dateType = DateType.USER_ID)
     private Long updateBy;
 
     /**
      * 更新时间
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ColumnInsertOrUpdate(dateType = DateType.DATE)
     private Date updateTime;
 
     /**

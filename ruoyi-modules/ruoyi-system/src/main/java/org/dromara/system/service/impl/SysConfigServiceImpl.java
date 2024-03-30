@@ -1,8 +1,9 @@
 package org.dromara.system.service.impl;
 
 import cn.hutool.core.collection.CollUtil;
-import com.baomidou.dynamic.datasource.annotation.DS;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.annotation.UseDataSource;
+import com.mybatisflex.core.util.SqlUtil;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.enums.YesNoEnum;
@@ -43,7 +44,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
 
     @Override
     public TableDataInfo<SysConfigVo> selectPageConfigList(SysConfigBo config) {
-        return PageQuery.of(() -> baseMapper.queryList(config));
+        return PageQuery.of(() -> mapper.queryList(config));
     }
 
     /**
@@ -53,9 +54,9 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
      * @return 参数配置信息
      */
     @Override
-    @DS("master")
+    @UseDataSource("master")
     public SysConfigVo selectConfigById(Long configId) {
-        return baseMapper.selectVoById(configId);
+        return mapper.selectVoById(configId);
     }
 
     /**
@@ -67,9 +68,9 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     @Cacheable(cacheNames = CacheNames.SYS_CONFIG, key = "#configKey")
     @Override
     public String selectConfigByKey(String configKey) {
-        Optional<SysConfig> oneOpt = lambdaQuery()
-            .eq(SysConfig::getConfigKey, configKey)
+        Optional<SysConfig> oneOpt = queryChain()
             .select(SysConfig::getConfigId, SysConfig::getConfigValue)
+            .eq(SysConfig::getConfigKey, configKey)
             .eq(SysConfig::getIsGlobal, YesNoEnum.NO.getCodeNum())
             .oneOpt();
         if (oneOpt.isPresent()) {
@@ -86,7 +87,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
      */
     @Override
     public List<SysConfigVo> selectConfigList(SysConfigBo config) {
-        return baseMapper.queryList(config);
+        return mapper.queryList(config);
     }
 
     /**
@@ -100,7 +101,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
         SysConfig config = MapstructUtils.convert(bo, SysConfig.class);
         boolean isGlobal = Objects.equals(YesNoEnum.YES.getCodeNum(), bo.getIsGlobal());
         int row = TenantHelper.ignore(isGlobal, () ->
-            baseMapper.insert(config)
+            mapper.insert(config)
         );
         if (row > 0) {
             CacheUtils.put(GlobalConstants.getGlobalKey(isGlobal, CacheNames.SYS_CONFIG), config.getConfigKey(), config.getConfigValue());
@@ -117,27 +118,26 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
      */
     @Override
     public String updateConfigs(SysConfigBo bo) {
-        int row = 0;
+        boolean update;
         SysConfig config = MapstructUtils.convert(bo, SysConfig.class);
         boolean enabled = Objects.equals(YesNoEnum.YES.getCodeNum(), bo.getIsGlobal());
         if (config.getConfigId() != null) {
             // 更新
-            row = TenantHelper.ignore(enabled, () -> {
-                SysConfig temp = baseMapper.selectById(config.getConfigId());
+            update = TenantHelper.ignore(enabled, () -> {
+                SysConfig temp = getById(config.getConfigId());
                 if (!StringUtils.equals(temp.getConfigKey(), config.getConfigKey())) {
                     boolean isGlobal = YesNoEnum.YES.getCodeNum().equals(temp.getIsGlobal());
                     CacheUtils.evict(GlobalConstants.getGlobalKey(isGlobal, CacheNames.SYS_CONFIG), temp.getConfigKey());
                 }
-                return baseMapper.updateById(config);
+                return updateById(config);
             });
         } else {
             // 新增
-            row = TenantHelper.ignore(enabled,
-                () -> baseMapper.update(config, lambdaQuery()
-                    .eq(SysConfig::getConfigKey, config.getConfigKey())
-                    .getWrapper()));
+            update = TenantHelper.ignore(enabled,
+                () -> SqlUtil.toBool(mapper.updateByQuery(config, query()
+                    .eq(SysConfig::getConfigKey, config.getConfigKey()))));
         }
-        if (row > 0) {
+        if (update) {
             boolean isGlobal = YesNoEnum.YES.getCodeNum().equals(config.getIsGlobal());
             CacheUtils.evict(GlobalConstants.getGlobalKey(isGlobal, CacheNames.SYS_CONFIG), config.getConfigKey());
             return config.getConfigValue();
@@ -154,14 +154,14 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     @Transactional(rollbackFor = Exception.class)
     public void deleteConfigByIds(Long[] configIds) {
         for (Long configId : configIds) {
-            SysConfig config = baseMapper.selectById(configId);
+            SysConfig config = getById(configId);
             if (StringUtils.equals(YesNoEnum.YES.getCodeStr(), config.getConfigType())) {
                 throw new ServiceException(String.format("内置参数【%1$s】不能删除 ", config.getConfigKey()));
             }
             boolean isGlobal = YesNoEnum.YES.getCodeNum().equals(config.getIsGlobal());
             CacheUtils.evict(GlobalConstants.getGlobalKey(isGlobal, CacheNames.SYS_CONFIG), config.getConfigKey());
         }
-        baseMapper.deleteBatchIds(Arrays.asList(configIds));
+        mapper.deleteBatchByIds(Arrays.asList(configIds));
     }
 
     /**
@@ -183,8 +183,8 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     public boolean checkConfigKeyUnique(SysConfigBo config) {
         boolean isGlobal = YesNoEnum.YES.getCodeNum().equals(config.getIsGlobal());
         return TenantHelper.ignore(isGlobal, () ->
-            lambdaQuery()
-                .ne(config.getConfigId() != null, SysConfig::getConfigId, config.getConfigId())
+            queryChain()
+                .ne(SysConfig::getConfigId, config.getConfigId(), config.getConfigId() != null)
                 .eq(SysConfig::getConfigKey, config.getConfigKey())
                 .exists()
         );
@@ -198,7 +198,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
      */
     @Override
     public Map<String, SysConfigVo> queryConfigs(List<String> keys) {
-        List<SysConfig> list = lambdaQuery().in(SysConfig::getConfigKey, keys).list();
+        List<SysConfig> list = queryChain().in(SysConfig::getConfigKey, keys).list();
         return StreamUtils.toMap(list, SysConfig::getConfigKey, sysConfig -> MapstructUtils.convert(sysConfig, SysConfigVo.class));
     }
 
@@ -238,7 +238,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
         boolean enabled = Objects.equals(YesNoEnum.YES.getCodeNum(), isGlobal);
         TenantHelper.ignore(enabled, () -> {
             Set<String> keySet = configsMap.keySet();
-            List<SysConfig> list = lambdaQuery()
+            List<SysConfig> list = queryChain()
                 .in(SysConfig::getConfigKey, keySet)
                 .eq(SysConfig::getIsGlobal, isGlobal)
                 .list();
@@ -248,7 +248,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
                 config.setConfigValue(value);
             }
             if (CollUtil.isNotEmpty(list)) {
-                updateBatchById(list);
+                updateBatch(list);
                 updateCache(enabled, list);
             }
             // 新增
@@ -277,7 +277,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
         if (CollUtil.isEmpty(configs)) {
             return;
         }
-        List<SysConfig> list = lambdaQuery()
+        List<SysConfig> list = queryChain()
             .in(SysConfig::getConfigKey, StreamUtils.toSet(configs, SysConfigBo::getConfigKey))
             .eq(SysConfig::getIsGlobal, isGlobal ? YesNoEnum.YES.getCodeNum() : YesNoEnum.NO.getCodeNum())
             .list();
@@ -335,7 +335,7 @@ public class SysConfigServiceImpl extends ServiceImpl<SysConfigMapper, SysConfig
     @IgnoreTenant
     @Cacheable(cacheNames = GlobalConstants.GLOBAL_REDIS_KEY + CacheNames.SYS_CONFIG, key = "#configKey")
     public String getGlobalConfigValue(String configKey) {
-        Optional<SysConfig> oneOpt = lambdaQuery()
+        Optional<SysConfig> oneOpt = queryChain()
             .eq(SysConfig::getConfigKey, configKey)
             .select(SysConfig::getConfigId, SysConfig::getConfigValue)
             .eq(SysConfig::getIsGlobal, YesNoEnum.YES.getCodeNum())

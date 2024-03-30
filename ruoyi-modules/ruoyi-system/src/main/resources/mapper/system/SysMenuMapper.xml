@@ -20,16 +20,36 @@
             <if test="visible != null and visible != ''"> and sm.visible = #{visible}</if>
             <if test="status != null and status != ''"> and sm.status = #{status}</if>
         </where>
-        order by parent_id, order_num
+        order by sm.parent_id, sm.order_num
     </select>
 
     <select id="selectMenuListByUserId" parameterType="org.dromara.system.domain.SysMenu" resultMap="SysMenuResult">
-        select distinct m.menu_id, m.parent_id, m.menu_name, m.path, m.component, m.query_param, m.visible, m.status,
-        m.perms, m.is_frame, m.is_cache, m.menu_type, m.icon, m.order_num, m.create_time
-        from sys_menu m
-        left join sys_role_menu rm on m.menu_id = rm.menu_id
-        left join sys_user_role sur on rm.role_id = sur.role_id
-        ${ew.getCustomSqlSegment}
+        select distinct sm.menu_id,
+                        sm.parent_id,
+                        sm.menu_name,
+                        sm.path,
+                        sm.component,
+                        sm.query_param,
+                        sm.visible,
+                        sm.status,
+                        sm.perms,
+                        sm.is_frame,
+                        sm.is_cache,
+                        sm.menu_type,
+                        sm.icon,
+                        sm.order_num,
+                        sm.create_time
+        from sys_menu sm
+                 left join sys_role_menu rm on sm.menu_id = rm.menu_id
+                 left join sys_user_role sur on rm.role_id = sur.role_id
+        <where>
+            and sur.user_id = #{userId}
+            <if test="menuName != null and menuName != ''"> and sm.menu_name like concat(concat('%', #{menuName}), '%')</if>
+            <if test="componentName != null and componentName != ''"> and sm.component_name like concat(concat('%', #{componentName}), '%')</if>
+            <if test="visible != null and visible != ''"> and sm.visible = #{visible}</if>
+            <if test="status != null and status != ''"> and sm.status = #{status}</if>
+        </where>
+        order by sm.parent_id, sm.order_num
     </select>
 
     <select id="selectMenuTreeByUserId" parameterType="Long" resultMap="SysMenuResult">

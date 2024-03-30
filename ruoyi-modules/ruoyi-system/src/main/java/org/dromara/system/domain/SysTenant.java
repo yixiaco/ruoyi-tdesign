@@ -1,13 +1,13 @@
 package org.dromara.system.domain;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
-import com.baomidou.mybatisplus.annotation.TableId;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dromara.common.mybatis.annotation.ColumnInsert;
+import org.dromara.common.mybatis.annotation.ColumnInsertOrUpdate;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
+import org.dromara.common.mybatis.enums.DateType;
 
 import java.io.Serial;
 import java.util.Date;
@@ -19,7 +19,7 @@ import java.util.Date;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-@TableName("sys_tenant")
+@Table("sys_tenant")
 public class SysTenant extends BaseEntity {
 
     @Serial
@@ -28,7 +28,7 @@ public class SysTenant extends BaseEntity {
     /**
      * id
      */
-    @TableId(value = "id")
+    @Id
     private Long id;
 
     /**
@@ -99,36 +99,36 @@ public class SysTenant extends BaseEntity {
     /**
      * 删除标志（0代表存在 1代表删除）
      */
-    @TableLogic
+    @ColumnInsert(dateType = DateType.LOGIC_NOT_DELETE)
     private String delFlag;
 
     /**
      * 创建部门
      */
-    @TableField(fill = FieldFill.INSERT)
+    @ColumnInsert(dateType = DateType.DEPT_ID)
     private Long createDept;
 
     /**
      * 创建者
      */
-    @TableField(fill = FieldFill.INSERT)
+    @ColumnInsert(dateType = DateType.USER_ID)
     private Long createBy;
 
     /**
      * 创建时间
      */
-    @TableField(fill = FieldFill.INSERT)
+    @ColumnInsert(dateType = DateType.DATE)
     private Date createTime;
 
     /**
      * 更新者
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ColumnInsertOrUpdate(dateType = DateType.USER_ID)
     private Long updateBy;
 
     /**
      * 更新时间
      */
-    @TableField(fill = FieldFill.INSERT_UPDATE)
+    @ColumnInsertOrUpdate(dateType = DateType.DATE)
     private Date updateTime;
 }

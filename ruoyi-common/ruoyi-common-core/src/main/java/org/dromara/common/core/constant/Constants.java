@@ -7,6 +7,8 @@ package org.dromara.common.core.constant;
  */
 public interface Constants {
 
+    String WRAPPER = "ew";
+
     /**
      * 未删除标识
      */

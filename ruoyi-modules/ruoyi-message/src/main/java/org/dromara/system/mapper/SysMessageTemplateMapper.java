@@ -1,6 +1,6 @@
 package org.dromara.system.mapper;
 
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import com.mybatisflex.core.BaseMapper;
 import org.dromara.system.domain.SysMessageTemplate;
 import org.dromara.system.domain.query.SysMessageTemplateQuery;
 import org.dromara.system.domain.vo.SysMessageTemplateVo;
@@ -13,7 +13,7 @@ import java.util.List;
  * @author hexm
  * @date 2023-06-28
  */
-public interface SysMessageTemplateMapper extends BaseMapperPlus<SysMessageTemplate, SysMessageTemplateVo> {
+public interface SysMessageTemplateMapper extends BaseMapper<SysMessageTemplate> {
 
     /**
      * 查询消息模板列表

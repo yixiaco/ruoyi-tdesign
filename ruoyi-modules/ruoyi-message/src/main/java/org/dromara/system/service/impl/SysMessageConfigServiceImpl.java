@@ -1,6 +1,6 @@
 package org.dromara.system.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
@@ -45,7 +45,7 @@ public class SysMessageConfigServiceImpl extends ServiceImpl<SysMessageConfigMap
      */
     @Override
     public SysMessageConfigVo queryById(Long messageConfigId) {
-        return baseMapper.selectVoById(messageConfigId);
+        return mapper.selectVoById(messageConfigId);
     }
 
     /**
@@ -56,7 +56,7 @@ public class SysMessageConfigServiceImpl extends ServiceImpl<SysMessageConfigMap
      */
     @Override
     public TableDataInfo<SysMessageConfigVo> queryPageList(SysMessageConfigQuery query) {
-        return PageQuery.of(() -> baseMapper.queryList(query));
+        return PageQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -67,7 +67,7 @@ public class SysMessageConfigServiceImpl extends ServiceImpl<SysMessageConfigMap
      */
     @Override
     public List<SysMessageConfigVo> queryList(SysMessageConfigQuery query) {
-        return SortQuery.of(() -> baseMapper.queryList(query));
+        return SortQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -94,7 +94,7 @@ public class SysMessageConfigServiceImpl extends ServiceImpl<SysMessageConfigMap
     public Boolean updateByBo(SysMessageConfigBo bo) {
         SysMessageConfig config = getById(bo.getMessageConfigId());
         if (!Objects.equals(config.getMessageType(), bo.getMessageType())) {
-            boolean exists = messageTemplateService.lambdaQuery().eq(SysMessageTemplate::getMessageConfigId, bo.getMessageConfigId()).exists();
+            boolean exists = messageTemplateService.queryChain().eq(SysMessageTemplate::getMessageConfigId, bo.getMessageConfigId()).exists();
             if (exists) {
                 throw new ServiceException("存在关联的消息模板，无法切换消息类型");
             }
@@ -116,7 +116,7 @@ public class SysMessageConfigServiceImpl extends ServiceImpl<SysMessageConfigMap
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteWithValidByIds(Collection<Long> ids) {
-        boolean exists = messageTemplateService.lambdaQuery().in(SysMessageTemplate::getMessageConfigId, ids).exists();
+        boolean exists = messageTemplateService.queryChain().in(SysMessageTemplate::getMessageConfigId, ids).exists();
         if (exists) {
             throw new ServiceException("存在关联的消息模板，取消关联后重试");
         }

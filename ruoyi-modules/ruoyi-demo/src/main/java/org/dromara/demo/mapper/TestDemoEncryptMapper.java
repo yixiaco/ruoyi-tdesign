@@ -1,6 +1,6 @@
 package org.dromara.demo.mapper;
 
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import com.mybatisflex.core.BaseMapper;
 import org.dromara.demo.domain.TestDemoEncrypt;
 
 /**
@@ -8,6 +8,6 @@ import org.dromara.demo.domain.TestDemoEncrypt;
  *
  * @author Lion Li
  */
-public interface TestDemoEncryptMapper extends BaseMapperPlus<TestDemoEncrypt, TestDemoEncrypt> {
+public interface TestDemoEncryptMapper extends BaseMapper<TestDemoEncrypt> {
 
 }

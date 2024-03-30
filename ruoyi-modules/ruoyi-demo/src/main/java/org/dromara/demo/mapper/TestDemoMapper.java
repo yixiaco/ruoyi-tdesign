@@ -7,7 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import org.apache.ibatis.annotations.Param;
 import org.dromara.common.mybatis.annotation.DataColumn;
 import org.dromara.common.mybatis.annotation.DataPermission;
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import com.mybatisflex.core.BaseMapper;
 import org.dromara.demo.domain.TestDemo;
 import org.dromara.demo.domain.vo.TestDemoVo;
 
@@ -20,7 +20,7 @@ import java.util.List;
  * @author Lion Li
  * @date 2021-07-26
  */
-public interface TestDemoMapper extends BaseMapperPlus<TestDemo, TestDemoVo> {
+public interface TestDemoMapper extends BaseMapper<TestDemo> {
 
     @DataPermission({
         @DataColumn(key = "deptName", value = "dept_id"),

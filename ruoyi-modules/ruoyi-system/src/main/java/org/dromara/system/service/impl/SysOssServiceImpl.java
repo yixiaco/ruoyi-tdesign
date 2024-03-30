@@ -4,7 +4,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
 import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.CacheNames;
@@ -66,7 +66,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
      */
     @Override
     public SysOssVo queryById(Long ossId) {
-        return baseMapper.queryById(ossId);
+        return mapper.queryById(ossId);
     }
 
     /**
@@ -86,7 +86,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
             }
         }
         return PageQuery.of(() -> {
-            List<SysOssVo> vos = baseMapper.queryList(query);
+            List<SysOssVo> vos = mapper.queryList(query);
             for (SysOssVo vo : vos) {
                 matchingUrl(vo);
             }
@@ -102,7 +102,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
     @Override
     public List<SysOssVo> listVoByIds(Collection<Long> ossIds) {
         List<SysOssVo> list = CacheUtils.takeCache(CacheNames.SYS_OSS, ossIds, ids -> {
-            List<SysOssVo> ossVos = baseMapper.selectVoList(lambdaQuery().in(SysOss::getOssId, ossIds).getWrapper());
+            List<SysOssVo> ossVos = mapper.selectVoList(queryChain().in(SysOss::getOssId, ossIds).getWrapper());
             return StreamUtils.toIdentityMap(ossVos, SysOssVo::getOssId);
         });
         return StreamUtils.toList(list, this::matchingUrl);
@@ -116,7 +116,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
      */
     @Override
     public List<SysOssVo> listVoByUrls(List<String> urls) {
-        List<SysOssVo> ossVos = baseMapper.selectVoList(lambdaQuery().in(SysOss::getUrl, urls).getWrapper());
+        List<SysOssVo> ossVos = mapper.selectVoList(queryChain().in(SysOss::getUrl, urls).getWrapper());
         for (SysOssVo ossVo : ossVos) {
             matchingUrl(ossVo);
         }
@@ -145,7 +145,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
     @Cacheable(cacheNames = CacheNames.SYS_OSS, key = "#ossId")
     @Override
     public SysOssVo getById(Long ossId) {
-        return baseMapper.selectVoById(ossId);
+        return mapper.selectVoById(ossId);
     }
 
     @Override
@@ -226,7 +226,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
         oss.setCreateBy(bo.getCreateBy());
         oss.setIsLock(bo.getIsLock());
         oss.setOssCategoryId(bo.getOssCategoryId());
-        baseMapper.insert(oss);
+        mapper.insert(oss);
         SysOssVo sysOssVo = MapstructUtils.convert(oss, SysOssVo.class);
         return this.matchingUrl(sysOssVo);
     }
@@ -246,7 +246,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
         oss.setOriginalName(bo.getOriginalName());
         oss.setOssCategoryId(bo.getOssCategoryId());
         oss.setIsLock(bo.getIsLock());
-        return update(oss, lambdaQuery()
+        return update(oss, queryChain()
             .eq(SysOss::getOssId, bo.getOssId())
             .eq(SysOss::getUserType, bo.getUserTypeEnum().getUserType())
             .eq(SysOss::getCreateBy, bo.getCreateBy())
@@ -262,7 +262,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
      */
     private void checkCategory(Long ossCategoryId, UserType userType, Long userId) {
         if (!ossCategoryId.equals(0L)) {
-            boolean exists = categoryService.lambdaQuery()
+            boolean exists = categoryService.queryChain()
                 .eq(SysOssCategory::getOssCategoryId, ossCategoryId)
                 .eq(SysOssCategory::getUserType, userType.getUserType())
                 .eq(SysOssCategory::getCreateBy, userId)
@@ -282,11 +282,11 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteWithValidByIds(Collection<Long> ids) {
-        boolean exists = lambdaQuery().in(SysOss::getOssId, ids).eq(SysOss::getIsLock, YesNoEnum.YES.getCodeNum()).exists();
+        boolean exists = queryChain().in(SysOss::getOssId, ids).eq(SysOss::getIsLock, YesNoEnum.YES.getCodeNum()).exists();
         if (exists) {
             throw new ServiceException("加锁文件必须解锁后才能删除");
         }
-        List<SysOss> list = baseMapper.selectBatchIds(ids);
+        List<SysOss> list = mapper.selectBatchIds(ids);
         boolean b = removeBatchByIds(ids);
         if (b) {
             removeRealOss(list);
@@ -327,7 +327,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
     public void move(Long categoryId, List<Long> ossIds, UserType userType, Long userId) {
         checkCategory(categoryId, userType, userId);
         // 安全过滤
-        List<SysOss> ossList = lambdaQuery()
+        List<SysOss> ossList = queryChain()
             .in(SysOss::getOssId, ossIds)
             .eq(SysOss::getUserType, userType.getUserType())
             .eq(SysOss::getCreateBy, userId)
@@ -353,16 +353,16 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
     @Override
     @Transactional(rollbackFor = Exception.class)
     public boolean deleteMyIds(List<Long> ossIds, UserType userType, Long userId) {
-        boolean exists = lambdaQuery().in(SysOss::getOssId, ossIds).eq(SysOss::getIsLock, YesNoEnum.YES.getCodeNum()).exists();
+        boolean exists = queryChain().in(SysOss::getOssId, ossIds).eq(SysOss::getIsLock, YesNoEnum.YES.getCodeNum()).exists();
         if (exists) {
             throw new ServiceException("加锁文件必须解锁后才能删除");
         }
-        List<SysOss> ossList = lambdaQuery()
+        List<SysOss> ossList = queryChain()
             .in(SysOss::getOssId, ossIds)
             .eq(SysOss::getUserType, userType.getUserType())
             .eq(SysOss::getCreateBy, userId)
             .list();
-        boolean remove = lambdaUpdate()
+        boolean remove = updateChain()
             .in(SysOss::getOssId, ossIds)
             .eq(SysOss::getUserType, userType.getUserType())
             .eq(SysOss::getCreateBy, userId)

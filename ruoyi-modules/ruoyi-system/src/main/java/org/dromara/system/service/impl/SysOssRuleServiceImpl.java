@@ -7,7 +7,7 @@ import cn.hutool.core.net.url.UrlBuilder;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.CacheConstants;
 import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.enums.YesNoEnum;
@@ -54,7 +54,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
      */
     @Override
     public SysOssRuleVo queryById(Long ossRuleId) {
-        return baseMapper.selectVoById(ossRuleId);
+        return mapper.selectVoById(ossRuleId);
     }
 
     /**
@@ -65,7 +65,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
      */
     @Override
     public TableDataInfo<SysOssRuleVo> queryPageList(SysOssRuleQuery query) {
-        return PageQuery.of(() -> baseMapper.queryList(query));
+        return PageQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -76,7 +76,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
      */
     @Override
     public List<SysOssRuleVo> queryList(SysOssRuleQuery query) {
-        return baseMapper.queryList(query);
+        return mapper.queryList(query);
     }
 
     /**
@@ -154,14 +154,14 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
         if (YesNoEnum.YES.getCodeStr().equals(isOverwrite)
             && YesNoEnum.YES.getCodeStr().equals(rule.getIsDefault())) {
             // 设置其他相同域名并且为默认的规则为关闭覆盖字段值
-            lambdaUpdate()
+            updateChain()
                 .eq(SysOssRule::getDomain, rule.getDomain())
                 .eq(SysOssRule::getIsDefault, YesNoEnum.YES.getCodeStr())
                 .set(SysOssRule::getIsOverwrite, YesNoEnum.NO.getCodeStr())
                 .update();
         }
         // 设置当前规则
-        lambdaUpdate().eq(SysOssRule::getOssRuleId, ossRuleId)
+        updateChain().eq(SysOssRule::getOssRuleId, ossRuleId)
             .set(SysOssRule::getIsOverwrite, isOverwrite)
             .update();
         removeCache();
@@ -173,7 +173,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
      * @param bo 业务对象
      */
     private void checkRepeat(SysOssRuleBo bo) {
-        boolean exists = lambdaQuery()
+        boolean exists = queryChain()
             .ne(bo.getOssRuleId() != null, SysOssRule::getOssRuleId, bo.getOssRuleId())
             .eq(SysOssRule::getRuleName, bo.getRuleName())
             .eq(SysOssRule::getDomain, bo.getDomain())
@@ -209,7 +209,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
             // 如果二级缓存为空，则从redis缓存中读取
             rules = RedisLockUtil.getOrSaveList(CacheConstants.SYS_OSS_RULE, () ->
                 // 如果redis中为空，则从database中读取
-                lambdaQuery().eq(SysOssRule::getStatus, NormalDisableEnum.NORMAL.getCode()).orderByAsc(SysOssRule::getCreateTime).list()
+                queryChain().eq(SysOssRule::getStatus, NormalDisableEnum.NORMAL.getCode()).orderByAsc(SysOssRule::getCreateTime).list()
             );
             SaHolder.getStorage().set(CacheConstants.SYS_OSS_RULE, rules);
         }

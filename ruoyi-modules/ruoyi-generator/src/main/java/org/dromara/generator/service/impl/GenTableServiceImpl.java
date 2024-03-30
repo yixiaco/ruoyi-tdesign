@@ -7,7 +7,7 @@ import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.velocity.Template;
 import org.apache.velocity.VelocityContext;
@@ -90,7 +90,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
      */
     @Override
     public GenTableVo selectGenTableById(Long id) {
-        GenTableVo genTable = baseMapper.selectGenTableById(id);
+        GenTableVo genTable = mapper.selectGenTableById(id);
         setTableFromOptions(genTable);
         return genTable;
     }
@@ -105,7 +105,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
     public TableDataInfo<GenTableVo> selectPageGenTableList(GenTableQuery query) {
         query.setTableName(StringUtils.lowerCase(query.getTableName()));
         query.setTableComment(StringUtils.lowerCase(query.getTableComment()));
-        return PageQuery.of(() -> baseMapper.queryList(query));
+        return PageQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -117,8 +117,8 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
     @DS("#query.dataName")
     @Override
     public TableDataInfo<GenTableVo> selectPageDbTableList(GenTableQuery query) {
-        query.setGenTableNames(baseMapper.selectTableNameList(query.getDataName()));
-        return PageQuery.of(() -> baseMapper.selectDbTableList(query));
+        query.setGenTableNames(mapper.selectTableNameList(query.getDataName()));
+        return PageQuery.of(() -> mapper.selectDbTableList(query));
     }
 
     /**
@@ -131,7 +131,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
     @DS("#dataName")
     @Override
     public List<GenTableVo> selectDbTableListByNames(String[] tableNames, String dataName) {
-        return baseMapper.selectDbTableListByNames(tableNames);
+        return mapper.selectDbTableListByNames(tableNames);
     }
 
     /**
@@ -141,7 +141,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
      */
     @Override
     public List<GenTableVo> selectGenTableAll() {
-        return baseMapper.selectGenTableAll();
+        return mapper.selectGenTableAll();
     }
 
     /**
@@ -155,7 +155,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
         String options = JsonUtils.toJsonString(tableBo.getTableOptions());
         tableBo.setOptions(options);
         GenTable table = MapstructUtils.convert(tableBo, GenTable.class);
-        int row = baseMapper.updateById(table);
+        int row = mapper.updateById(table);
         if (row > 0) {
             for (GenTableColumn cenTableColumn : tableBo.getColumns()) {
                 genTableColumnMapper.updateById(cenTableColumn);
@@ -172,7 +172,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
     @Override
     public void deleteGenTableByIds(Long[] tableIds) {
         List<Long> ids = Arrays.asList(tableIds);
-        baseMapper.deleteBatchIds(ids);
+        mapper.deleteBatchIds(ids);
         genTableColumnMapper.delete(new LambdaQueryWrapper<GenTableColumn>().in(GenTableColumn::getTableId, ids));
     }
 
@@ -191,7 +191,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
                 String tableName = tableVo.getTableName();
                 GenUtils.initTable(table, LoginHelper.getUserId());
                 table.setDataName(dataName);
-                int row = baseMapper.insert(table);
+                int row = mapper.insert(table);
                 tableVo.setTableId(table.getTableId());
                 if (row > 0) {
                     // 保存列信息
@@ -220,7 +220,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
     @Override
     public Map<String, String> previewCode(Long tableId) {
         // 查询表信息
-        GenTableVo tableVo = baseMapper.selectGenTableById(tableId);
+        GenTableVo tableVo = mapper.selectGenTableById(tableId);
         return previewCode(tableVo);
     }
 
@@ -234,7 +234,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
         String options = JsonUtils.toJsonString(tableBo.getTableOptions());
         tableBo.setOptions(options);
         // 查询表信息
-        GenTableVo tableVo = baseMapper.selectGenTableById(tableBo.getTableId());
+        GenTableVo tableVo = mapper.selectGenTableById(tableBo.getTableId());
         MapstructUtils.convert(tableBo, tableVo);
         tableVo.setColumns(tableBo.getColumns());
         return previewCode(tableVo);
@@ -290,7 +290,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
     @Override
     public void generatorCode(Long tableId) {
         // 查询表信息
-        GenTableVo table = baseMapper.selectGenTableById(tableId);
+        GenTableVo table = mapper.selectGenTableById(tableId);
         // 设置主键列信息
         setPkColumn(table);
         // 设置其他选项
@@ -324,7 +324,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
     @DSTransactional
     @Override
     public void synchDb(Long tableId) {
-        GenTableVo tableVo = baseMapper.selectGenTableById(tableId);
+        GenTableVo tableVo = mapper.selectGenTableById(tableId);
         List<GenTableColumn> tableColumns = tableVo.getColumns();
         Map<String, GenTableColumn> tableColumnMap = tableColumns.stream()
             .collect(Collectors.toMap(GenTableColumn::getColumnName, Function.identity(), BiOperator::last));
@@ -372,7 +372,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
             GenTable genTable = MapstructUtils.convert(genTableVo, GenTable.class);
             genTable.setFunctionName(genTableVo.getFunctionName());
             genTable.setTableComment(genTableVo.getTableComment());
-            baseMapper.updateById(genTable);
+            mapper.updateById(genTable);
         }
     }
 
@@ -398,7 +398,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
      */
     private void generatorCode(Long tableId, ZipOutputStream zip) {
         // 查询表信息
-        GenTableVo table = baseMapper.selectGenTableById(tableId);
+        GenTableVo table = mapper.selectGenTableById(tableId);
         List<Long> menuIds = new ArrayList<>();
         for (int i = 0; i < 6; i++) {
             menuIds.add(identifierGenerator.nextId(null).longValue());

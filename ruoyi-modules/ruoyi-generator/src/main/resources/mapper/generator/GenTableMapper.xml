@@ -31,7 +31,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectDbTableList" resultMap="GenTableResultVo">
-        <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isMySql()">
+        <if test="@org.dromara.common.mybatis.helper.DbTypeHelper@isMySql()">
             select table_name, table_comment, create_time, update_time
             from information_schema.tables
             where table_schema = database()
@@ -47,7 +47,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </if>
             order by create_time desc
         </if>
-        <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isOracle()">
+        <if test="@org.dromara.common.mybatis.helper.DbTypeHelper@isOracle()">
             select lower(dt.table_name) as table_name, dtc.comments as table_comment, uo.created as create_time, uo.last_ddl_time as update_time
             from user_tables dt, user_tab_comments dtc, user_objects uo
             where dt.table_name = dtc.table_name
@@ -65,7 +65,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </if>
             order by create_time desc
         </if>
-        <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isPostgerSql()">
+        <if test="@org.dromara.common.mybatis.helper.DbTypeHelper@isPostgerSql()">
             select table_name, table_comment, create_time, update_time
             from (
                 SELECT c.relname AS table_name,
@@ -91,7 +91,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             </if>
             order by create_time desc
         </if>
-        <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isSqlServer()">
+        <if test="@org.dromara.common.mybatis.helper.DbTypeHelper@isSqlServer()">
             SELECT cast(D.NAME as nvarchar) as table_name,
                    cast(F.VALUE as nvarchar) as table_comment,
                    crdate as create_time,
@@ -114,7 +114,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectDbTableListByNames" resultMap="GenTableResultVo">
-        <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isMySql()">
+        <if test="@org.dromara.common.mybatis.helper.DbTypeHelper@isMySql()">
             select table_name, table_comment, create_time, update_time from information_schema.tables
             where table_name NOT LIKE 'pj_%' and table_schema = (select database())
             and table_name in
@@ -122,7 +122,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                  #{name}
             </foreach>
         </if>
-        <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isOracle()">
+        <if test="@org.dromara.common.mybatis.helper.DbTypeHelper@isOracle()">
             select lower(dt.table_name) as table_name, dtc.comments as table_comment, uo.created as create_time, uo.last_ddl_time as update_time
             from user_tables dt, user_tab_comments dtc, user_objects uo
             where dt.table_name = dtc.table_name
@@ -134,7 +134,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 #{name}
             </foreach>
         </if>
-        <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isPostgerSql()">
+        <if test="@org.dromara.common.mybatis.helper.DbTypeHelper@isPostgerSql()">
             select table_name, table_comment, create_time, update_time
             from (
                 SELECT c.relname AS table_name,
@@ -154,7 +154,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                 #{name}
             </foreach>
         </if>
-        <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isSqlServer()">
+        <if test="@org.dromara.common.mybatis.helper.DbTypeHelper@isSqlServer()">
             SELECT cast(D.NAME as nvarchar) as table_name,
                    cast(F.VALUE as nvarchar) as table_comment,
                    crdate as create_time,
@@ -171,12 +171,12 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     </select>
 
     <select id="selectTableByName" parameterType="String" resultMap="GenTableResult">
-        <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isMySql()">
+        <if test="@org.dromara.common.mybatis.helper.DbTypeHelper@isMySql()">
             select table_name, table_comment, create_time, update_time from information_schema.tables
             where table_name NOT LIKE 'pj_%' and table_schema = (select database())
             and table_name = #{tableName}
         </if>
-        <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isOracle()">
+        <if test="@org.dromara.common.mybatis.helper.DbTypeHelper@isOracle()">
             select lower(dt.table_name) as table_name, dtc.comments as table_comment, uo.created as create_time, uo.last_ddl_time as update_time
             from user_tables dt, user_tab_comments dtc, user_objects uo
             where dt.table_name = dtc.table_name
@@ -186,7 +186,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             AND dt.table_name NOT IN (select table_name from gen_table)
             and lower(dt.table_name) = #{tableName}
         </if>
-        <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isPostgerSql()">
+        <if test="@org.dromara.common.mybatis.helper.DbTypeHelper@isPostgerSql()">
             select table_name, table_comment, create_time, update_time
             from (
                 SELECT c.relname AS table_name,
@@ -203,7 +203,7 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             where table_name NOT LIKE 'pj_%'
             and table_name = #{tableName}
         </if>
-        <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isSqlServer()">
+        <if test="@org.dromara.common.mybatis.helper.DbTypeHelper@isSqlServer()">
             SELECT cast(D.NAME as nvarchar) as table_name,
                    cast(F.VALUE as nvarchar) as table_comment,
                    crdate as create_time,

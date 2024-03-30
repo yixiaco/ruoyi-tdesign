@@ -5,7 +5,7 @@ import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.RandomUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.constant.Constants;
@@ -65,7 +65,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      */
     @Override
     public SysTenantVo queryById(Long id) {
-        return baseMapper.selectVoById(id);
+        return mapper.selectVoById(id);
     }
 
     /**
@@ -74,7 +74,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Cacheable(cacheNames = CacheNames.SYS_TENANT, key = "#tenantId")
     @Override
     public SysTenantVo queryByTenantId(String tenantId) {
-        return baseMapper.selectVoOne(new LambdaQueryWrapper<SysTenant>().eq(SysTenant::getTenantId, tenantId));
+        return mapper.selectVoOne(new LambdaQueryWrapper<SysTenant>().eq(SysTenant::getTenantId, tenantId));
     }
 
     /**
@@ -82,7 +82,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      */
     @Override
     public TableDataInfo<SysTenantVo> queryPageList(SysTenantQuery query) {
-        return PageQuery.of(() -> baseMapper.queryList(query));
+        return PageQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -90,7 +90,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      */
     @Override
     public List<SysTenantVo> queryList(SysTenantQuery query) {
-        return baseMapper.queryList(query);
+        return mapper.queryList(query);
     }
 
     /**
@@ -108,13 +108,13 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         SysTenant add = MapstructUtils.convert(bo, SysTenant.class);
 
         // 获取所有租户编号
-        List<String> tenantIds = baseMapper.selectObjs(
+        List<String> tenantIds = mapper.selectObjs(
             new LambdaQueryWrapper<SysTenant>().select(SysTenant::getTenantId), x -> {
                 return Convert.toStr(x);
             });
         String tenantId = generateTenantId(tenantIds);
         add.setTenantId(tenantId);
-        boolean flag = baseMapper.insert(add) > 0;
+        boolean flag = mapper.insert(add) > 0;
         if (!flag) {
             throw new ServiceException("创建租户失败");
         }
@@ -277,7 +277,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Override
     public int updateTenantStatus(SysTenantBo bo) {
         SysTenant tenant = MapstructUtils.convert(bo, SysTenant.class);
-        return baseMapper.updateById(tenant);
+        return mapper.updateById(tenant);
     }
 
     /**
@@ -301,7 +301,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         if (isValid) {
             // 做一些业务上的校验,判断是否需要校验
         }
-        return baseMapper.deleteBatchIds(ids) > 0;
+        return mapper.deleteBatchIds(ids) > 0;
     }
 
     /**
@@ -309,7 +309,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
      */
     @Override
     public boolean checkCompanyNameUnique(SysTenantBo bo) {
-        boolean exist = baseMapper.exists(new LambdaQueryWrapper<SysTenant>()
+        boolean exist = mapper.exists(new LambdaQueryWrapper<SysTenant>()
             .eq(SysTenant::getCompanyName, bo.getCompanyName())
             .ne(ObjectUtil.isNotNull(bo.getTenantId()), SysTenant::getTenantId, bo.getTenantId()));
         return !exist;

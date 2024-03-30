@@ -1,6 +1,6 @@
 package org.dromara.system.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.SortQuery;
@@ -33,7 +33,7 @@ public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice
      */
     @Override
     public TableDataInfo<SysNoticeVo> queryPageList(SysNoticeQuery query) {
-        return PageQuery.of(() -> baseMapper.queryList(query));
+        return PageQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -44,7 +44,7 @@ public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice
      */
     @Override
     public List<SysNoticeVo> queryList(SysNoticeQuery query) {
-        return SortQuery.of(() -> baseMapper.queryList(query));
+        return SortQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -55,7 +55,7 @@ public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice
      */
     @Override
     public SysNoticeVo selectNoticeById(Long noticeId) {
-        return baseMapper.selectVoById(noticeId);
+        return mapper.selectVoById(noticeId);
     }
 
     /**
@@ -66,7 +66,7 @@ public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice
      */
     @Override
     public List<SysNoticeVo> selectNoticeList(SysNoticeQuery query) {
-        return SortQuery.of(() -> baseMapper.queryList(query));
+        return SortQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -101,7 +101,7 @@ public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice
      */
     @Override
     public int deleteNoticeById(Long noticeId) {
-        return baseMapper.deleteById(noticeId);
+        return mapper.deleteById(noticeId);
     }
 
     /**
@@ -113,6 +113,6 @@ public class SysNoticeServiceImpl extends ServiceImpl<SysNoticeMapper, SysNotice
     @Override
     @Transactional(rollbackFor = Exception.class)
     public int deleteNoticeByIds(Long[] noticeIds) {
-        return baseMapper.deleteBatchIds(Arrays.asList(noticeIds));
+        return mapper.deleteBatchByIds(Arrays.asList(noticeIds));
     }
 }

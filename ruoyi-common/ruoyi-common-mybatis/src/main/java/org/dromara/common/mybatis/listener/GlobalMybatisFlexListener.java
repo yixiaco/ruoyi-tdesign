@@ -2,10 +2,13 @@ package org.dromara.common.mybatis.listener;
 
 import com.mybatisflex.annotation.InsertListener;
 import com.mybatisflex.annotation.UpdateListener;
+import com.mybatisflex.core.FlexGlobalConfig;
 import org.dromara.common.core.domain.model.BaseUser;
 import org.dromara.common.core.utils.ServletUtils;
 import org.dromara.common.core.utils.ip.AddressUtils;
 import org.dromara.common.mybatis.annotation.ColumnFill;
+import org.dromara.common.mybatis.enums.DateType;
+import org.dromara.common.mybatis.enums.FillType;
 import org.dromara.common.satoken.context.SaSecurityContext;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.springframework.core.annotation.AnnotatedElementUtils;
@@ -29,6 +32,9 @@ import java.util.function.Supplier;
  */
 public class GlobalMybatisFlexListener implements InsertListener, UpdateListener {
 
+    public static final String ZERO = "0";
+    public static final String ONE = "1";
+
     /**
      * 新增操作的前置操作。
      *
@@ -46,7 +52,7 @@ public class GlobalMybatisFlexListener implements InsertListener, UpdateListener
                 return;
             }
             ColumnFill annotation = AnnotatedElementUtils.getMergedAnnotation(field, ColumnFill.class);
-            if (annotation != null && (annotation.fillType() == ColumnFill.FillType.INSERT || annotation.fillType() == ColumnFill.FillType.INSERT_UPDATE)) {
+            if (annotation != null && (annotation.fillType() == FillType.INSERT || annotation.fillType() == FillType.INSERT_UPDATE)) {
                 process(entity, field, annotation);
             }
         });
@@ -64,7 +70,7 @@ public class GlobalMybatisFlexListener implements InsertListener, UpdateListener
                 return;
             }
             ColumnFill annotation = AnnotatedElementUtils.getMergedAnnotation(field, ColumnFill.class);
-            if (annotation != null && (annotation.fillType() == ColumnFill.FillType.UPDATE || annotation.fillType() == ColumnFill.FillType.INSERT_UPDATE)) {
+            if (annotation != null && (annotation.fillType() == FillType.UPDATE || annotation.fillType() == FillType.INSERT_UPDATE)) {
                 process(entity, field, annotation);
             }
         });
@@ -78,7 +84,7 @@ public class GlobalMybatisFlexListener implements InsertListener, UpdateListener
      * @param fill   填充注解信息
      */
     protected void process(Object entity, Field field, ColumnFill fill) {
-        ColumnFill.DateType dateType = fill.dateType();
+        DateType dateType = fill.dateType();
         switch (dateType) {
             case DATE -> {
                 setValue(entity, field, Date.class, Date::new);
@@ -98,6 +104,40 @@ public class GlobalMybatisFlexListener implements InsertListener, UpdateListener
             case IP -> setValue(entity, field, String.class, ServletUtils::getClientIP);
             case IP_ADDRESS ->
                 setValue(entity, field, String.class, () -> AddressUtils.getRealAddressByIP(ServletUtils.getClientIP()));
+            case ZERO -> {
+                setValue(entity, field, String.class, () -> ZERO);
+                setValue(entity, field, Long.class, () -> 0L);
+                setValue(entity, field, Integer.class, () -> 0);
+                setValue(entity, field, Short.class, () -> (short) 0);
+                setValue(entity, field, Byte.class, () -> (byte) 0);
+                setValue(entity, field, Character.class, () -> '0');
+            }
+            case ONE -> {
+                setValue(entity, field, String.class, () -> ONE);
+                setValue(entity, field, Long.class, () -> 1L);
+                setValue(entity, field, Integer.class, () -> 1);
+                setValue(entity, field, Short.class, () -> (short) 1);
+                setValue(entity, field, Byte.class, () -> (byte) 1);
+                setValue(entity, field, Character.class, () -> '1');
+            }
+            case LOGIC_DELETE -> {
+                Object logicDelete = FlexGlobalConfig.getDefaultConfig().getDeletedValueOfLogicDelete();
+                setValue(entity, field, String.class, logicDelete::toString);
+                setValue(entity, field, Long.class, () -> Long.parseLong(logicDelete.toString()));
+                setValue(entity, field, Integer.class, () -> Integer.parseInt(logicDelete.toString()));
+                setValue(entity, field, Short.class, () -> Short.parseShort(logicDelete.toString()));
+                setValue(entity, field, Byte.class, () -> Byte.parseByte(logicDelete.toString()));
+                setValue(entity, field, Character.class, () -> logicDelete.toString().charAt(0));
+            }
+            case LOGIC_NOT_DELETE -> {
+                Object logicDelete = FlexGlobalConfig.getDefaultConfig().getNormalValueOfLogicDelete();
+                setValue(entity, field, String.class, logicDelete::toString);
+                setValue(entity, field, Long.class, () -> Long.parseLong(logicDelete.toString()));
+                setValue(entity, field, Integer.class, () -> Integer.parseInt(logicDelete.toString()));
+                setValue(entity, field, Short.class, () -> Short.parseShort(logicDelete.toString()));
+                setValue(entity, field, Byte.class, () -> Byte.parseByte(logicDelete.toString()));
+                setValue(entity, field, Character.class, () -> logicDelete.toString().charAt(0));
+            }
         }
     }
 

@@ -6,10 +6,7 @@ import cn.hutool.core.lang.tree.Tree;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.HttpStatus;
 import org.dromara.common.core.constant.UserConstants;
 import org.dromara.common.core.enums.MenuTypeEnum;
@@ -72,30 +69,25 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public List<SysMenuVo> selectMenuList(Long userId) {
-        return selectMenuList(new SysMenuQuery(), userId);
+        SysMenuQuery query = new SysMenuQuery();
+        query.setUserId(userId);
+        return selectMenuList(query);
     }
 
     /**
      * 查询系统菜单列表
      *
-     * @param menu 菜单信息
+     * @param query 查询条件
      * @return 菜单列表
      */
     @Override
-    public List<SysMenuVo> selectMenuList(SysMenuQuery menu, Long userId) {
+    public List<SysMenuVo> selectMenuList(SysMenuQuery query) {
         List<SysMenuVo> menuList;
         // 管理员显示所有菜单信息
-        if (LoginHelper.isSuperAdmin(userId)) {
-            menuList = SortQuery.of(() -> baseMapper.queryList(menu));
+        if (LoginHelper.isSuperAdmin(query.getUserId())) {
+            menuList = SortQuery.of(() -> mapper.queryList(query));
         } else {
-            QueryWrapper<SysMenu> wrapper = Wrappers.query();
-            wrapper.eq("sur.user_id", userId)
-                .like(StringUtils.isNotBlank(menu.getMenuName()), "m.menu_name", menu.getMenuName())
-                .eq(StringUtils.isNotBlank(menu.getVisible()), "m.visible", menu.getVisible())
-                .eq(StringUtils.isNotBlank(menu.getStatus()), "m.status", menu.getStatus())
-                .orderByAsc("m.parent_id")
-                .orderByAsc("m.order_num");
-            List<SysMenu> list = SortQuery.of(() -> baseMapper.selectMenuListByUserId(wrapper));
+            List<SysMenu> list = SortQuery.of(() -> mapper.selectMenuListByUserId(query));
             menuList = MapstructUtils.convert(list, SysMenuVo.class);
         }
         return menuList;
@@ -109,7 +101,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public Set<String> selectMenuPermsByUserId(Long userId) {
-        List<String> perms = baseMapper.selectMenuPermsByUserId(userId);
+        List<String> perms = mapper.selectMenuPermsByUserId(userId);
         Set<String> permsSet = new HashSet<>();
         for (String perm : perms) {
             if (StringUtils.isNotEmpty(perm)) {
@@ -127,7 +119,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public Set<String> selectMenuPermsByRoleId(Long roleId) {
-        List<String> perms = baseMapper.selectMenuPermsByRoleId(roleId);
+        List<String> perms = mapper.selectMenuPermsByRoleId(roleId);
         Set<String> permsSet = new HashSet<>();
         for (String perm : perms) {
             if (StringUtils.isNotEmpty(perm)) {
@@ -147,9 +139,9 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     public List<SysMenu> selectMenuTreeByUserId(Long userId) {
         List<SysMenu> menus;
         if (LoginHelper.isSuperAdmin(userId)) {
-            menus = baseMapper.selectMenuTreeAll();
+            menus = mapper.selectMenuTreeAll();
         } else {
-            menus = baseMapper.selectMenuTreeByUserId(userId);
+            menus = mapper.selectMenuTreeByUserId(userId);
         }
         return getChildPerms(menus, 0);
     }
@@ -162,8 +154,8 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public List<Long> selectMenuListByRoleId(Long roleId) {
-        SysRole role = roleMapper.selectById(roleId);
-        return baseMapper.selectMenuListByRoleId(roleId, role.getMenuCheckStrictly());
+        SysRole role = roleMapper.selectOneById(roleId);
+        return mapper.selectMenuListByRoleId(roleId, role.getMenuCheckStrictly());
     }
 
     /**
@@ -181,17 +173,13 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         }
         List<Long> parentIds = null;
         if (tenantPackage.getMenuCheckStrictly()) {
-            parentIds = baseMapper.selectObjs(new LambdaQueryWrapper<SysMenu>()
+            parentIds = mapper.selectObjs(query()
                 .select(SysMenu::getParentId)
-                .in(SysMenu::getMenuId, menuIds), x -> {
-                return Convert.toLong(x);
-            });
+                .in(SysMenu::getMenuId, menuIds), Convert::toLong);
         }
-        return baseMapper.selectObjs(new LambdaQueryWrapper<SysMenu>()
+        return mapper.selectObjs(query()
             .in(SysMenu::getMenuId, menuIds)
-            .notIn(CollUtil.isNotEmpty(parentIds), SysMenu::getMenuId, parentIds), x -> {
-            return Convert.toLong(x);
-        });
+            .notIn(SysMenu::getMenuId, parentIds, CollUtil.isNotEmpty(parentIds)), Convert::toLong);
     }
 
     /**
@@ -296,7 +284,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public SysMenuVo selectMenuById(Long menuId) {
-        return baseMapper.selectVoById(menuId);
+        return mapper.selectVoById(menuId);
     }
 
     /**
@@ -307,7 +295,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public boolean hasChildByMenuId(Long menuId) {
-        return baseMapper.exists(new LambdaQueryWrapper<SysMenu>().eq(SysMenu::getParentId, menuId));
+        return mapper.exists(query().eq(SysMenu::getParentId, menuId));
     }
 
     /**
@@ -318,7 +306,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public boolean checkMenuExistRole(Long menuId) {
-        return roleMenuMapper.exists(new LambdaQueryWrapper<SysRoleMenu>().eq(SysRoleMenu::getMenuId, menuId));
+        return roleMenuMapper.exists(query().eq(SysRoleMenu::getMenuId, menuId));
     }
 
     /**
@@ -337,7 +325,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             throw new ServiceException("新增菜单'" + bo.getMenuName() + "'失败，地址必须以http(s)://开头");
         }
         SysMenu menu = MapstructUtils.convert(bo, SysMenu.class);
-        return baseMapper.insert(menu);
+        return mapper.insert(menu);
     }
 
     /**
@@ -358,7 +346,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             throw new ServiceException("修改菜单'" + bo.getMenuName() + "'失败，上级菜单不能选择自己");
         }
         SysMenu menu = MapstructUtils.convert(bo, SysMenu.class);
-        return baseMapper.updateById(menu);
+        return mapper.update(menu);
     }
 
     /**
@@ -378,7 +366,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         if (TenantHelper.isEnable() && tenantPackageService.includeMenuId(menuId)) {
             throw new ServiceException("菜单已被租户套餐分配，不允许删除", HttpStatus.WARN);
         }
-        return baseMapper.deleteById(menuId);
+        return mapper.deleteById(menuId);
     }
 
     /**
@@ -389,10 +377,10 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public boolean checkMenuNameUnique(SysMenuBo menu) {
-        boolean exist = baseMapper.exists(new LambdaQueryWrapper<SysMenu>()
+        boolean exist = mapper.exists(query()
             .eq(SysMenu::getMenuName, menu.getMenuName())
             .eq(SysMenu::getParentId, menu.getParentId())
-            .ne(ObjectUtil.isNotNull(menu.getMenuId()), SysMenu::getMenuId, menu.getMenuId()));
+            .ne(SysMenu::getMenuId, menu.getMenuId(), ObjectUtil.isNotNull(menu.getMenuId())));
         return !exist;
     }
 
@@ -403,11 +391,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @return 结果
      */
     private boolean checkMenuPathUnique(SysMenuBo menu) {
-        boolean exist = lambdaQuery()
+        boolean exist = queryChain()
             .eq(SysMenu::getPath, menu.getPath())
             .in(SysMenu::getMenuType, MenuTypeEnum.MENU.getType())
             .eq(SysMenu::getParentId, menu.getParentId())
-            .ne(ObjectUtil.isNotNull(menu.getMenuId()), SysMenu::getMenuId, menu.getMenuId())
+            .ne(SysMenu::getMenuId, menu.getMenuId(), ObjectUtil.isNotNull(menu.getMenuId()))
             .exists();
         return !exist;
     }

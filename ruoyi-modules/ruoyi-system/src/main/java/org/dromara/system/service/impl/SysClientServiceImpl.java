@@ -1,9 +1,7 @@
 package org.dromara.system.service.impl;
 
 import cn.hutool.crypto.SecureUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
@@ -40,7 +38,7 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
      */
     @Override
     public SysClientVo queryById(Long id) {
-        return baseMapper.selectVoById(id);
+        return mapper.selectVoById(id);
     }
 
 
@@ -49,7 +47,7 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
      */
     @Override
     public SysClient queryByClientId(String clientId) {
-        return baseMapper.selectOne(new LambdaQueryWrapper<SysClient>().eq(SysClient::getClientId, clientId));
+        return queryChain().eq(SysClient::getClientId, clientId).one();
     }
 
     /**
@@ -60,7 +58,7 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
      */
     @Override
     public TableDataInfo<SysClientVo> queryPageList(SysClientQuery query) {
-        return PageQuery.of(() -> baseMapper.queryList(query));
+        return PageQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -71,7 +69,7 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
      */
     @Override
     public List<SysClientVo> queryList(SysClientQuery query) {
-        return SortQuery.of(() -> baseMapper.queryList(query));
+        return SortQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -89,7 +87,7 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
         String clientKey = bo.getClientKey();
         String clientSecret = bo.getClientSecret();
         add.setClientId(SecureUtil.md5(clientKey + clientSecret + System.currentTimeMillis()));
-        boolean flag = baseMapper.insert(add) > 0;
+        boolean flag = mapper.insert(add) > 0;
         if (flag) {
             bo.setId(add.getId());
         }
@@ -116,10 +114,10 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
      */
     @Override
     public int updateUserStatus(Long id, String status) {
-        return baseMapper.update(null,
-            new LambdaUpdateWrapper<SysClient>()
-                .set(SysClient::getStatus, status)
-                .eq(SysClient::getId, id));
+        SysClient client = new SysClient();
+        client.setId(id);
+        client.setStatus(status);
+        return mapper.update(client);
     }
 
     /**
@@ -140,7 +138,7 @@ public class SysClientServiceImpl extends ServiceImpl<SysClientMapper, SysClient
      * @param bo 业务对象
      */
     private void checkRepeat(SysClientBo bo) {
-        boolean exists = lambdaQuery().ne(bo.getId() != null, SysClient::getId, bo.getId())
+        boolean exists = queryChain().ne(SysClient::getId, bo.getId(), bo.getId() != null)
             .eq(SysClient::getClientKey, bo.getClientKey())
             .exists();
         if (exists) {

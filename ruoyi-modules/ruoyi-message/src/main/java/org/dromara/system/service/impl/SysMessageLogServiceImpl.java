@@ -1,6 +1,6 @@
 package org.dromara.system.service.impl;
 
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.SortQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
@@ -33,7 +33,7 @@ public class SysMessageLogServiceImpl extends ServiceImpl<SysMessageLogMapper, S
      */
     @Override
     public SysMessageLogVo queryById(Long messageLogId) {
-        return baseMapper.selectVoById(messageLogId);
+        return mapper.selectVoById(messageLogId);
     }
 
     /**
@@ -44,7 +44,7 @@ public class SysMessageLogServiceImpl extends ServiceImpl<SysMessageLogMapper, S
      */
     @Override
     public TableDataInfo<SysMessageLogVo> queryPageList(SysMessageLogQuery query) {
-        return PageQuery.of(() -> baseMapper.queryList(query));
+        return PageQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -55,7 +55,7 @@ public class SysMessageLogServiceImpl extends ServiceImpl<SysMessageLogMapper, S
      */
     @Override
     public List<SysMessageLogVo> queryList(SysMessageLogQuery query) {
-        return SortQuery.of(() -> baseMapper.queryList(query));
+        return SortQuery.of(() -> mapper.queryList(query));
     }
 
     /**
@@ -88,6 +88,6 @@ public class SysMessageLogServiceImpl extends ServiceImpl<SysMessageLogMapper, S
      */
     @Override
     public Boolean clear() {
-        return remove(lambdaQuery().getWrapper());
+        return remove(queryChain().getWrapper());
     }
 }

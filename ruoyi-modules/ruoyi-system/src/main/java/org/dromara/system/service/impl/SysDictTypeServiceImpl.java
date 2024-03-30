@@ -3,9 +3,7 @@ package org.dromara.system.service.impl;
 import cn.dev33.satoken.context.SaHolder;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
-import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.CacheConstants;
 import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.exception.ServiceException;
@@ -52,7 +50,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
 
     @Override
     public TableDataInfo<SysDictTypeVo> selectPageDictTypeList(SysDictTypeQuery dictType) {
-        return PageQuery.of(() -> baseMapper.queryList(dictType));
+        return PageQuery.of(() -> mapper.queryList(dictType));
     }
 
     /**
@@ -63,7 +61,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
      */
     @Override
     public List<SysDictTypeVo> selectDictTypeList(SysDictTypeQuery dictType) {
-        return baseMapper.queryList(dictType);
+        return mapper.queryList(dictType);
     }
 
     /**
@@ -75,7 +73,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     public List<SysDictTypeVo> selectDictTypeAll() {
         List<SysDictTypeVo> list = RedisUtils.getList(CacheConstants.SYS_ALL_DICT_TYPE_KEY);
         if (CollUtil.isEmpty(list)) {
-            list = baseMapper.selectVoList();
+            list = mapper.selectVoList();
             RedisUtils.setList(CacheConstants.SYS_ALL_DICT_TYPE_KEY, list);
         }
         return list;
@@ -105,7 +103,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
      */
     @Override
     public SysDictTypeVo selectDictTypeById(Long dictId) {
-        return baseMapper.selectVoById(dictId);
+        return mapper.selectVoById(dictId);
     }
 
     /**
@@ -116,7 +114,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
      */
     @Override
     public SysDictTypeVo selectDictTypeByType(String dictType) {
-        return baseMapper.selectVoOne(new LambdaQueryWrapper<SysDictType>().eq(SysDictType::getDictType, dictType));
+        return mapper.selectVoOne(query().eq(SysDictType::getDictType, dictType));
     }
 
     /**
@@ -128,14 +126,13 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     @Transactional(rollbackFor = Exception.class)
     public void deleteDictTypeByIds(Long[] dictIds) {
         for (Long dictId : dictIds) {
-            SysDictType dictType = baseMapper.selectById(dictId);
-            if (dictDataMapper.exists(new LambdaQueryWrapper<SysDictData>()
-                .eq(SysDictData::getDictType, dictType.getDictType()))) {
+            SysDictType dictType = mapper.selectOneById(dictId);
+            if (dictDataMapper.queryChain().eq(SysDictData::getDictType, dictType.getDictType()).exists()) {
                 throw new ServiceException(String.format("%1$s已分配,不能删除", dictType.getDictName()));
             }
             CacheUtils.evict(CacheNames.SYS_DICT, dictType.getDictType());
         }
-        baseMapper.deleteBatchIds(Arrays.asList(dictIds));
+        mapper.deleteBatchByIds(Arrays.asList(dictIds));
         clearAllDictTypeCache();
     }
 
@@ -165,7 +162,7 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     @Override
     public List<SysDictDataVo> insertDictType(SysDictTypeBo bo) {
         SysDictType dict = MapstructUtils.convert(bo, SysDictType.class);
-        int row = baseMapper.insert(dict);
+        int row = mapper.insert(dict);
         if (row > 0) {
             clearAllDictTypeCache();
             // 新增 type 下无 data 数据 返回空防止缓存穿透
@@ -185,11 +182,12 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
     @Transactional(rollbackFor = Exception.class)
     public List<SysDictDataVo> updateDictType(SysDictTypeBo bo) {
         SysDictType dict = MapstructUtils.convert(bo, SysDictType.class);
-        SysDictType oldDict = baseMapper.selectById(dict.getDictId());
-        dictDataMapper.update(null, new LambdaUpdateWrapper<SysDictData>()
+        SysDictType oldDict = mapper.selectOneById(dict.getDictId());
+        dictDataMapper.updateChain()
             .set(SysDictData::getDictType, dict.getDictType())
-            .eq(SysDictData::getDictType, oldDict.getDictType()));
-        int row = baseMapper.updateById(dict);
+            .eq(SysDictData::getDictType, oldDict.getDictType())
+            .update();
+        int row = mapper.update(dict);
         if (row > 0) {
             CacheUtils.evict(CacheNames.SYS_DICT, oldDict.getDictType());
             clearAllDictTypeCache();
@@ -206,9 +204,10 @@ public class SysDictTypeServiceImpl extends ServiceImpl<SysDictTypeMapper, SysDi
      */
     @Override
     public boolean checkDictTypeUnique(SysDictTypeBo dictType) {
-        boolean exist = baseMapper.exists(new LambdaQueryWrapper<SysDictType>()
+        boolean exist = queryChain()
             .eq(SysDictType::getDictType, dictType.getDictType())
-            .ne(ObjectUtil.isNotNull(dictType.getDictId()), SysDictType::getDictId, dictType.getDictId()));
+            .ne(SysDictType::getDictId, dictType.getDictId(), ObjectUtil.isNotNull(dictType.getDictId()))
+            .exists();
         return !exist;
     }
 

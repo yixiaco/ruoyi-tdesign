@@ -1,7 +1,5 @@
 package org.dromara.system.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
 import org.dromara.common.mybatis.annotation.DataColumn;
 import org.dromara.common.mybatis.annotation.DataPermission;
@@ -29,17 +27,6 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept, SysDeptVo> {
         @DataColumn(key = "deptName", value = "dept_id")
     })
     List<SysDeptVo> queryList(SysDeptQuery dept);
-
-    /**
-     * 查询部门管理数据
-     *
-     * @param queryWrapper 查询条件
-     * @return 部门信息集合
-     */
-    @DataPermission({
-        @DataColumn(key = "deptName", value = "dept_id")
-    })
-    List<SysDeptVo> selectDeptList(@Param(Constants.WRAPPER) Wrapper<SysDept> queryWrapper);
 
     @DataPermission({
         @DataColumn(key = "deptName", value = "dept_id")

@@ -125,7 +125,7 @@ public class SysMessageTemplateController extends BaseController {
     @GetMapping("/messageConfigs")
     @SaCheckPermission(value = {"system:messageTemplate:query", "system:messageTemplate:edit"}, mode = SaMode.OR)
     public R<List<SysMessageConfig>> getMessageConfigs(@NotBlank(message = "消息类型不能为空") String messageType) {
-        List<SysMessageConfig> list = messageConfigService.lambdaQuery()
+        List<SysMessageConfig> list = messageConfigService.queryChain()
             .eq(SysMessageConfig::getStatus, NormalDisableEnum.NORMAL.getCode())
             .eq(SysMessageConfig::getMessageType, messageType)
             .select(SysMessageConfig::getMessageConfigId,
@@ -145,7 +145,7 @@ public class SysMessageTemplateController extends BaseController {
     @GetMapping("/messageKeys")
     @SaCheckPermission(value = {"system:messageTemplate:query", "system:messageTemplate:edit"}, mode = SaMode.OR)
     public R<List<SysMessageKey>> getMessageKeys() {
-        List<SysMessageKey> list = messageKeyService.lambdaQuery()
+        List<SysMessageKey> list = messageKeyService.queryChain()
             .select(SysMessageKey::getName, SysMessageKey::getMessageKeyId, SysMessageKey::getMessageKey)
             .orderByDesc(SysMessageKey::getCreateTime)
             .list();

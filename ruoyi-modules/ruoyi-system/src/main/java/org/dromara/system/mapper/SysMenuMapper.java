@@ -1,8 +1,5 @@
 package org.dromara.system.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
 import org.dromara.common.core.enums.MenuTypeEnum;
 import org.dromara.common.core.enums.NormalDisableEnum;
@@ -23,10 +20,10 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenu, SysMenuVo> {
     /**
      * 查询菜单权限列表
      *
-     * @param menu
+     * @param query 查询条件
      * @return {@link SysMenu}
      */
-    List<SysMenuVo> queryList(SysMenuQuery menu);
+    List<SysMenuVo> queryList(SysMenuQuery query);
 
     /**
      * 根据用户所有权限
@@ -38,10 +35,10 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenu, SysMenuVo> {
     /**
      * 根据用户查询系统菜单列表
      *
-     * @param queryWrapper 查询条件
+     * @param query 查询条件
      * @return 菜单列表
      */
-    List<SysMenu> selectMenuListByUserId(@Param(Constants.WRAPPER) Wrapper<SysMenu> queryWrapper);
+    List<SysMenu> selectMenuListByUserId(SysMenuQuery query);
 
     /**
      * 根据用户ID查询权限
@@ -65,12 +62,12 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenu, SysMenuVo> {
      * @return 菜单列表
      */
     default List<SysMenu> selectMenuTreeAll() {
-        LambdaQueryWrapper<SysMenu> lqw = new LambdaQueryWrapper<SysMenu>()
+        return queryChain()
             .in(SysMenu::getMenuType, MenuTypeEnum.DIRECTORY.getType(), MenuTypeEnum.MENU.getType())
             .eq(SysMenu::getStatus, NormalDisableEnum.NORMAL.getCode())
-            .orderByAsc(SysMenu::getParentId)
-            .orderByAsc(SysMenu::getOrderNum);
-        return this.selectList(lqw);
+            .orderBy(SysMenu::getParentId, true)
+            .orderBy(SysMenu::getOrderNum, true)
+            .list();
     }
 
     /**
