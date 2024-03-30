@@ -1,4 +1,13 @@
-import type { CtyunSmsConfig } from '@/pages/system/messageConfig/model';
+import type { FieldConfig, SignatureSmsConfig } from '../model';
+import { MessageConfig } from '../model';
+
+/** 天翼云短信 */
+export interface CtyunSmsConfig extends SignatureSmsConfig {
+  /** 请求地址 */
+  requestUrl: FieldConfig;
+  /** 接口名称 */
+  action: FieldConfig;
+}
 
 /** 天翼云短信配置 */
 export const ctyunSmsConfig: CtyunSmsConfig = {
@@ -35,3 +44,8 @@ export const ctyunSmsConfig: CtyunSmsConfig = {
     help: '接口方法默认为 SendSms 如无特殊改变可以不用设置',
   },
 };
+
+export const CtyunSmsMessageConfig = new MessageConfig(ctyunSmsConfig, 'SMS', {
+  supportTemplateId: true,
+  supportTemplateContent: false,
+});

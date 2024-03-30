@@ -1,4 +1,13 @@
-import type { CloopenSmsConfig } from '@/pages/system/messageConfig/model';
+import type { FieldConfig, SmsConfig } from '../model';
+import { MessageConfig } from '../model';
+
+/** 容联云短信 */
+export interface CloopenSmsConfig extends SmsConfig {
+  /** 应用 ID */
+  sdkAppId: FieldConfig;
+  /** REST API Base URL */
+  baseUrl: FieldConfig;
+}
 
 /** 容联云短信配置 */
 export const cloopenSms: CloopenSmsConfig = {
@@ -27,3 +36,8 @@ export const cloopenSms: CloopenSmsConfig = {
     required: true,
   },
 };
+
+export const CloopenSmsMessageConfig = new MessageConfig(cloopenSms, 'SMS', {
+  supportTemplateId: true,
+  supportTemplateContent: false,
+});

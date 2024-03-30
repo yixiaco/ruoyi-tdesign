@@ -227,9 +227,9 @@
               <t-form-item
                 :label="value.name"
                 :name="`configJson[${key}]`"
-                :help="value.help"
                 :rules="[{ required: value.required, message: `${value.name}不能为空` }, ...(value.rules ?? [])]"
               >
+                <template #help><span v-html="value.help"></span></template>
                 <t-input
                   v-if="value.component === 'input'"
                   v-model.trim="(form.configJson as Record<string, any>)[key]"

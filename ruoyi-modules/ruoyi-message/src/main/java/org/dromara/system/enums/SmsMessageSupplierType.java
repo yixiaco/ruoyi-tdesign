@@ -1,4 +1,4 @@
-package org.dromara.common.core.enums;
+package org.dromara.system.enums;
 
 /**
  * 消息支持类型
@@ -6,9 +6,7 @@ package org.dromara.common.core.enums;
  * @author hexm
  * @date 2023/06/29 16:56
  */
-public enum MessageSupplierTypeEnum {
-    /** 邮箱 */
-    MAIL,
+public enum SmsMessageSupplierType {
     /** 阿里云短信 */
     ALIBABA,
     /** 华为云短信 */
@@ -35,4 +33,6 @@ public enum MessageSupplierTypeEnum {
     DING_ZHONG,
     /** 联麓短信 */
     LIAN_LU,
+    /** 七牛云短信 */
+    QI_NIU,
 }

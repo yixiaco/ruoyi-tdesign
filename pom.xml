@@ -50,7 +50,7 @@
         <!-- OSS 配置 -->
         <aws-java-sdk-s3.version>1.12.633</aws-java-sdk-s3.version>
         <!-- SMS 配置 -->
-        <sms4j.version>3.1.1</sms4j.version>
+        <sms4j.version>3.2.0</sms4j.version>
         <!-- 限制框架中的fastjson版本 -->
         <fastjson.version>1.2.83</fastjson.version>
 

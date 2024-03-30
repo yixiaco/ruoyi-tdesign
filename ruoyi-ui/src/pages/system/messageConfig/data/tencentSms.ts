@@ -1,4 +1,21 @@
-import type { TencentSmsConfig } from '@/pages/system/messageConfig/model';
+import type { FieldConfig, SignatureSmsConfig } from '../model';
+import { MessageConfig } from '../model';
+
+/** 腾讯云短信 */
+export interface TencentSmsConfig extends SignatureSmsConfig {
+  /** 短信sdkAppId */
+  sdkAppId: FieldConfig;
+  /** 地域信息默认为 ap-guangzhou */
+  territory: FieldConfig;
+  /** 请求超时时间 */
+  connTimeout: FieldConfig<number>;
+  /** 请求地址 */
+  requestUrl: FieldConfig;
+  /** 接口名称 */
+  action: FieldConfig;
+  /** 接口版本 */
+  version: FieldConfig;
+}
 
 /** 腾讯云短信配置 */
 export const tencent: TencentSmsConfig = {
@@ -67,3 +84,8 @@ export const tencent: TencentSmsConfig = {
     help: '接口版本默认为 2021-01-11 如无特殊改变可不用设置',
   },
 };
+
+export const TencentMessageConfig = new MessageConfig(tencent, 'SMS', {
+  supportTemplateId: true,
+  supportTemplateContent: false,
+});

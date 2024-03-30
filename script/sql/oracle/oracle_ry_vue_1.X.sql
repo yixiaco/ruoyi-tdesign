@@ -970,6 +970,7 @@ insert into sys_dict_data values(57, '000000', 0,  '小程序', 'xcx',       'sy
 insert into sys_dict_data values(58, '000000', 11, '助通短信', 'ZHUTONG', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, sysdate, 1, sysdate, null);
 insert into sys_dict_data values(59, '000000', 12, '鼎众短信', 'DING_ZHONG', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, sysdate, 1, sysdate, null);
 insert into sys_dict_data values(60, '000000', 13, '联麓短信', 'LIAN_LU', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, sysdate, 1, sysdate, null);
+insert into sys_dict_data values(61, '000000', 14, '七牛云短信', 'QI_NIU', 'sys_message_supplier_type', null, 'primary', null, 'N', 103, 1, sysdate, 1, sysdate, null);
 
 
 -- ----------------------------

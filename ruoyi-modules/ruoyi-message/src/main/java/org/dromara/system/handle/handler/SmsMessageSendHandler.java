@@ -2,7 +2,9 @@ package org.dromara.system.handle.handler;
 
 import cn.hutool.core.util.StrUtil;
 import org.dromara.common.core.enums.CommonStatusEnum;
-import org.dromara.common.core.enums.MessageSupplierTypeEnum;
+import org.dromara.sms4j.qiniu.config.QiNiuConfig;
+import org.dromara.sms4j.qiniu.config.QiNiuFactory;
+import org.dromara.system.enums.SmsMessageSupplierType;
 import org.dromara.common.core.enums.MessageTemplateMode;
 import org.dromara.common.core.enums.MessageTypeEnum;
 import org.dromara.common.core.exception.ServiceException;
@@ -78,7 +80,12 @@ public class SmsMessageSendHandler extends BaseMessageSendHandler {
     public void send(Collection<String> account, Map<String, Object> message, SysMessageTemplate template, SysMessageConfig config) {
         LinkedHashMap<String, String> outputVars = getOutputVars(template, message);
         String content = getContent(template, outputVars);
-        MessageSupplierTypeEnum supplierType = MessageSupplierTypeEnum.valueOf(config.getSupplierType());
+        SmsMessageSupplierType supplierType;
+        try {
+            supplierType = SmsMessageSupplierType.valueOf(config.getSupplierType());
+        } catch (IllegalArgumentException e) {
+            throw new ServiceException("不支持的短信消息类型");
+        }
         SmsBlend smsBlend = switch (supplierType) {
             case ALIBABA -> {
                 AlibabaConfig alibabaConfig = JsonUtils.parseObject(config.getConfigJson(), AlibabaConfig.class);
@@ -171,7 +178,13 @@ public class SmsMessageSendHandler extends BaseMessageSendHandler {
                 }
                 yield LianLuFactory.instance().createSms(lianLuConfig);
             }
-            default -> throw new ServiceException("不支持的消息类型");
+            case QI_NIU -> {
+                QiNiuConfig qiNiuConfig = JsonUtils.parseObject(config.getConfigJson(), QiNiuConfig.class);
+                if (qiNiuConfig != null && StrUtil.isNotBlank(template.getSignature())) {
+                    qiNiuConfig.setSignature(template.getSignature());
+                }
+                yield QiNiuFactory.instance().createSms(qiNiuConfig);
+            }
         };
         MessageTemplateMode templateMode = MessageTemplateMode.valueOf(template.getTemplateMode());
         for (String mobile : account) {

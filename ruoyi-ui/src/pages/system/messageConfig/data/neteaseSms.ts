@@ -1,4 +1,17 @@
-import type { NeteaseSmsConfig } from '@/pages/system/messageConfig/model';
+import type { FieldConfig, SignatureSmsConfig } from '../model';
+import { MessageConfig } from '../model';
+
+/** 网易云短信 */
+export interface NeteaseSmsConfig extends SignatureSmsConfig {
+  /** 模板短信请求地址 */
+  templateUrl: FieldConfig;
+  /** 验证码短信请求地址 */
+  codeUrl: FieldConfig;
+  /** 验证码验证请求地址 */
+  verifyUrl: FieldConfig;
+  /** 是否需要支持短信上行。true:需要，false:不需要 说明：如果开通了短信上行抄送功能，该参数需要设置为true，其它情况设置无效 */
+  needUp: FieldConfig<boolean>;
+}
 
 /** 网易云短信配置 */
 export const neteaseSmsConfig: NeteaseSmsConfig = {
@@ -46,3 +59,8 @@ export const neteaseSmsConfig: NeteaseSmsConfig = {
     help: '是否需要支持短信上行。true:需要，false:不需要 说明：如果开通了短信上行抄送功能，该参数需要设置为true，其它情况设置无效\n',
   },
 };
+
+export const NeteaseSmsMessageConfig = new MessageConfig(neteaseSmsConfig, 'SMS', {
+  supportTemplateId: true,
+  supportTemplateContent: false,
+});
