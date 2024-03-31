@@ -1,5 +1,7 @@
 package org.dromara.demo.service;
 
+import com.mybatisflex.core.service.IService;
+import org.dromara.demo.domain.TestTree;
 import org.dromara.demo.domain.bo.TestTreeBo;
 import org.dromara.demo.domain.vo.TestTreeVo;
 
@@ -12,7 +14,7 @@ import java.util.List;
  * @author Lion Li
  * @date 2021-07-26
  */
-public interface ITestTreeService {
+public interface ITestTreeService extends IService<TestTree> {
     /**
      * 查询单个
      *

@@ -1,6 +1,6 @@
 package org.dromara.system.mapper;
 
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysLogininfor;
 import org.dromara.system.domain.query.SysLogininforQuery;
 import org.dromara.system.domain.vo.SysLogininforVo;
@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysLogininforMapper extends BaseMapperPlus<SysLogininfor, SysLogininforVo> {
+public interface SysLogininforMapper extends MyBaseMapperVo<SysLogininfor, SysLogininforVo> {
 
     /**
      * 查询系统访问记录列表

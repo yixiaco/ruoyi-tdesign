@@ -31,9 +31,9 @@ import org.dromara.system.domain.vo.RouterVo;
 import org.dromara.system.domain.vo.SysMenuVo;
 import org.dromara.system.domain.vo.SysTenantPackageVo;
 import org.dromara.system.mapper.SysMenuMapper;
-import org.dromara.system.mapper.SysRoleMapper;
 import org.dromara.system.mapper.SysRoleMenuMapper;
 import org.dromara.system.service.ISysMenuService;
+import org.dromara.system.service.ISysRoleService;
 import org.dromara.system.service.ISysTenantPackageService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -55,7 +55,7 @@ import java.util.Set;
 public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> implements ISysMenuService {
 
     @Autowired
-    private SysRoleMapper roleMapper;
+    private ISysRoleService roleService;
     @Autowired
     private SysRoleMenuMapper roleMenuMapper;
     @Autowired
@@ -154,7 +154,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public List<Long> selectMenuListByRoleId(Long roleId) {
-        SysRole role = roleMapper.selectOneById(roleId);
+        SysRole role = roleService.getById(roleId);
         return mapper.selectMenuListByRoleId(roleId, role.getMenuCheckStrictly());
     }
 

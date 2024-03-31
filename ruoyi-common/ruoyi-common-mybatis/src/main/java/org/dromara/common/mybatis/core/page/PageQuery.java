@@ -3,10 +3,9 @@ package org.dromara.common.mybatis.core.page;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.HttpStatus;
-import com.baomidou.mybatisplus.core.metadata.OrderItem;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
+import com.mybatisflex.core.paginate.Page;
 import lombok.Data;
 import lombok.experimental.Accessors;
 import org.dromara.common.core.utils.ServletUtils;
@@ -21,7 +20,7 @@ import java.util.function.Supplier;
 /**
  * 分页查询实体类
  *
- * @author YiXiacoco、Lion Li
+ * @author YiXiacoco
  */
 @Data
 @Accessors(chain = true)
@@ -170,44 +169,37 @@ public class PageQuery implements Serializable {
             .setSortQuery(sortQuery);
     }
 
+    /**
+     * @deprecated 该方法现已不支持排序，非count操作。因此不再推荐使用该方法
+     */
+    @Deprecated
     public <T> Page<T> build() {
         Integer pageNum = ObjectUtil.defaultIfNull(getPageNum(), DEFAULT_PAGE_NUM);
         Integer pageSize = ObjectUtil.defaultIfNull(getPageSize(), DEFAULT_PAGE_SIZE);
         if (pageNum <= 0) {
             pageNum = DEFAULT_PAGE_NUM;
         }
-        Page<T> page = new Page<>(pageNum, pageSize, isSearchCount);
-        if (sortQuery != null) {
-            List<OrderItem> orderItems = sortQuery.build();
-            if (CollUtil.isNotEmpty(orderItems)) {
-                page.addOrder(orderItems);
-            }
-        }
-        return page;
+        return new Page<>(pageNum, pageSize);
     }
 
     /**
-     * 执行方法分页查询
+     * 执行方法分页查询。需要谨记，该方法执行时只会对第一个查询操作生效。
      *
      * @param supplier 查询方法
-     * @param <T>
+     * @param <T>      提供数据的泛型
      * @return TableDataInfo
      */
     public <T> T get(Supplier<T> supplier) {
-        Page<T> page = build();
-        if (CollUtil.isNotEmpty(page.orders())) {
-            List<OrderItem> orderItems = page.orders();
-            String orderBy = "";
-            if (orderItems != null) {
-                orderBy = SortQuery.getOrderBy(orderItems);
-            }
-            try (Closeable ignored = PageHelper.startPage(pageNum, pageSize, page.searchCount()).setOrderBy(orderBy)) {
+        List<OrderItem> orderItems = this.sortQuery.build();
+        if (CollUtil.isNotEmpty(orderItems)) {
+            String orderBy = SortQuery.getOrderBy(orderItems);
+            try (Closeable ignored = PageHelper.startPage(pageNum, pageSize, isSearchCount).setOrderBy(orderBy)) {
                 return supplier.get();
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
         } else {
-            try (Closeable ignored = PageHelper.startPage(pageNum, pageSize, page.searchCount())) {
+            try (Closeable ignored = PageHelper.startPage(pageNum, pageSize, isSearchCount)) {
                 return supplier.get();
             } catch (IOException e) {
                 throw new RuntimeException(e);
@@ -216,10 +208,10 @@ public class PageQuery implements Serializable {
     }
 
     /**
-     * 执行方法分页查询
+     * 执行方法分页查询。需要谨记，该方法执行时只会对第一个查询操作生效。
      *
      * @param supplier 查询方法
-     * @param <T>
+     * @param <T>      提供数据的泛型
      * @return TableDataInfo
      */
     public <T> TableDataInfo<T> execute(Supplier<List<T>> supplier) {
@@ -233,7 +225,7 @@ public class PageQuery implements Serializable {
         rspData.setMsg("查询成功");
         rspData.setRows(pageInfo.getList());
         rspData.setTotal(pageInfo.getTotal());
-        rspData.setPageNum(pageInfo.getPageNum());
+        rspData.setPageNum((long) pageInfo.getPageNum());
         rspData.setPageSize((long) pageInfo.getPageSize());
         return rspData;
     }
@@ -241,7 +233,7 @@ public class PageQuery implements Serializable {
     /**
      * 获取请求中的分页页码
      *
-     * @return
+     * @return 分页页码
      */
     public static Integer getRequestPageNum() {
         return ServletUtils.getParameterToInt(PAGE_NUM, DEFAULT_PAGE_NUM);
@@ -250,7 +242,7 @@ public class PageQuery implements Serializable {
     /**
      * 获取请求中的分页数
      *
-     * @return
+     * @return 分页数
      */
     public static Integer getRequestPageSize() {
         return ServletUtils.getParameterToInt(PAGE_SIZE, DEFAULT_PAGE_SIZE);
@@ -260,7 +252,7 @@ public class PageQuery implements Serializable {
      * mybatis分页插件的使用
      *
      * @param supplier 查询方法
-     * @param <T>
+     * @param <T>      提供数据的泛型
      * @return TableDataInfo
      */
     public static <T> TableDataInfo<T> of(Supplier<List<T>> supplier) {

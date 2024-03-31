@@ -1,7 +1,7 @@
 package org.dromara.system.mapper;
 
 import org.apache.ibatis.annotations.Param;
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysOss;
 import org.dromara.system.domain.query.SysOssQuery;
 import org.dromara.system.domain.vo.SysOssVo;
@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysOssMapper extends BaseMapperPlus<SysOss, SysOssVo> {
+public interface SysOssMapper extends MyBaseMapperVo<SysOss, SysOssVo> {
 
     /**
      * 查询OSS对象存储列表

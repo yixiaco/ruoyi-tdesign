@@ -1,6 +1,6 @@
 package org.dromara.system.mapper;
 
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysClient;
 import org.dromara.system.domain.query.SysClientQuery;
 import org.dromara.system.domain.vo.SysClientVo;
@@ -13,7 +13,7 @@ import java.util.List;
  * @author Michelle.Chung
  * @date 2023-05-15
  */
-public interface SysClientMapper extends BaseMapperPlus<SysClient, SysClientVo> {
+public interface SysClientMapper extends MyBaseMapperVo<SysClient, SysClientVo> {
 
     /**
      * 查询系统授权列表

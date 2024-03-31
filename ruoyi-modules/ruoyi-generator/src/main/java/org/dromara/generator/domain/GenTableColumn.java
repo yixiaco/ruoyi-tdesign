@@ -1,12 +1,16 @@
 package org.dromara.generator.domain;
 
-import com.baomidou.mybatisplus.annotation.*;
+import com.mybatisflex.annotation.Id;
+import com.mybatisflex.annotation.Table;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.apache.ibatis.type.JdbcType;
 import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.mybatis.annotation.ColumnInsert;
+import org.dromara.common.mybatis.annotation.ColumnInsertOrUpdate;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
+import org.dromara.common.mybatis.enums.DateType;
 
 import java.util.Date;
 import java.util.Objects;
@@ -41,7 +45,7 @@ public class GenTableColumn extends BaseEntity {
     /**
      * 列描述
      */
-    @TableField(updateStrategy = FieldStrategy.ALWAYS, jdbcType = JdbcType.VARCHAR)
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String columnComment;
 
     /**
@@ -63,55 +67,55 @@ public class GenTableColumn extends BaseEntity {
     /**
      * 是否主键（1是）
      */
-    @TableField(updateStrategy = FieldStrategy.ALWAYS, jdbcType = JdbcType.VARCHAR)
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String isPk;
 
     /**
      * 是否自增（1是）
      */
-    @TableField(updateStrategy = FieldStrategy.ALWAYS, jdbcType = JdbcType.VARCHAR)
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String isIncrement;
 
     /**
      * 是否必填（1是）
      */
-    @TableField(updateStrategy = FieldStrategy.ALWAYS, jdbcType = JdbcType.VARCHAR)
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String isRequired;
 
     /**
      * 是否为插入字段（1是）
      */
-    @TableField(updateStrategy = FieldStrategy.ALWAYS, jdbcType = JdbcType.VARCHAR)
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String isInsert;
 
     /**
      * 是否编辑字段（1是）
      */
-    @TableField(updateStrategy = FieldStrategy.ALWAYS, jdbcType = JdbcType.VARCHAR)
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String isEdit;
 
     /**
      * 是否列表字段（1是）
      */
-    @TableField(updateStrategy = FieldStrategy.ALWAYS, jdbcType = JdbcType.VARCHAR)
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String isList;
 
     /**
      * 是否查询字段（1是）
      */
-    @TableField(updateStrategy = FieldStrategy.ALWAYS, jdbcType = JdbcType.VARCHAR)
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String isQuery;
 
     /**
      * 是否详情字段（1是）
      */
-    @TableField(updateStrategy = FieldStrategy.ALWAYS, jdbcType = JdbcType.VARCHAR)
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String isDetail;
 
     /**
      * 是否排序字段（1是）
      */
-    @TableField(updateStrategy = FieldStrategy.ALWAYS, jdbcType = JdbcType.VARCHAR)
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String isSort;
 
     /**

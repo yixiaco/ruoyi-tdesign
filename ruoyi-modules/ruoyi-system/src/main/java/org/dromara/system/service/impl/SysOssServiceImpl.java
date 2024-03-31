@@ -102,7 +102,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
     @Override
     public List<SysOssVo> listVoByIds(Collection<Long> ossIds) {
         List<SysOssVo> list = CacheUtils.takeCache(CacheNames.SYS_OSS, ossIds, ids -> {
-            List<SysOssVo> ossVos = mapper.selectVoList(queryChain().in(SysOss::getOssId, ossIds).getWrapper());
+            List<SysOssVo> ossVos = mapper.selectVoList(query().in(SysOss::getOssId, ossIds));
             return StreamUtils.toIdentityMap(ossVos, SysOssVo::getOssId);
         });
         return StreamUtils.toList(list, this::matchingUrl);
@@ -116,7 +116,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
      */
     @Override
     public List<SysOssVo> listVoByUrls(List<String> urls) {
-        List<SysOssVo> ossVos = mapper.selectVoList(queryChain().in(SysOss::getUrl, urls).getWrapper());
+        List<SysOssVo> ossVos = mapper.selectVoList(query().in(SysOss::getUrl, urls));
         for (SysOssVo ossVo : ossVos) {
             matchingUrl(ossVo);
         }
@@ -246,11 +246,11 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
         oss.setOriginalName(bo.getOriginalName());
         oss.setOssCategoryId(bo.getOssCategoryId());
         oss.setIsLock(bo.getIsLock());
-        return update(oss, queryChain()
+        return update(oss, query()
             .eq(SysOss::getOssId, bo.getOssId())
             .eq(SysOss::getUserType, bo.getUserTypeEnum().getUserType())
             .eq(SysOss::getCreateBy, bo.getCreateBy())
-            .getWrapper());
+        );
     }
 
     /**
@@ -286,8 +286,8 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
         if (exists) {
             throw new ServiceException("加锁文件必须解锁后才能删除");
         }
-        List<SysOss> list = mapper.selectBatchIds(ids);
-        boolean b = removeBatchByIds(ids);
+        List<SysOss> list = mapper.selectListByIds(ids);
+        boolean b = removeByIds(ids);
         if (b) {
             removeRealOss(list);
         }
@@ -340,7 +340,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
             oss.setOssCategoryId(categoryId);
             return oss;
         }).toList();
-        updateBatchById(list);
+        updateBatch(list);
     }
 
     /**

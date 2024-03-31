@@ -125,7 +125,7 @@ public class SysOssCategoryServiceImpl extends ServiceImpl<SysOssCategoryMapper,
             checkRepeat(category);
             // 获取子分类，更新子分类的路径
             List<SysOssCategory> children = queryChain()
-                .likeRight(SysOssCategory::getCategoryPath, path + ROOT_PATH)
+                .likeLeft(SysOssCategory::getCategoryPath, path + ROOT_PATH)
                 .select(SysOssCategory::getOssCategoryId, SysOssCategory::getCategoryPath, SysOssCategory::getLevel)
                 .list();
             for (SysOssCategory child : children) {

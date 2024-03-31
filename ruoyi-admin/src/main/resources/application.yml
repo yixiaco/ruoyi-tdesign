@@ -170,6 +170,8 @@ tenant:
   enable: true
   # 排除表
   excludes:
+    - gen_table
+    - gen_table_column
     - sys_menu
     - sys_tenant
     - sys_tenant_package
@@ -189,9 +191,10 @@ tenant:
 # MyBatisFlex配置
 mybatis-flex:
   global-config:
-    tenant-column: tenant_id
     key-config:
-      key-type: generator
+      # uuid：通过 UUIDKeyGenerator 生成 UUID 作为数据库主键。
+      # flexId：独创的 FlexID 算法生成数据库主键（了解更多信息请参阅源码)。
+      # snowFlakeId：通过雪花算法（SnowFlakeIDKeyGenerator）生成数据库主键。
       value: snowFlakeId
   mapper-locations: classpath*:mapper/**/*Mapper.xml
 # https://baomidou.com/config/

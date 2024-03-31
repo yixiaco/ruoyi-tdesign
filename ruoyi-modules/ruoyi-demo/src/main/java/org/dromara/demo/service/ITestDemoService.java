@@ -1,5 +1,6 @@
 package org.dromara.demo.service;
 
+import com.mybatisflex.core.service.IService;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.demo.domain.TestDemo;
@@ -15,7 +16,7 @@ import java.util.List;
  * @author Lion Li
  * @date 2021-07-26
  */
-public interface ITestDemoService {
+public interface ITestDemoService extends IService<TestDemo> {
 
     /**
      * 查询单个

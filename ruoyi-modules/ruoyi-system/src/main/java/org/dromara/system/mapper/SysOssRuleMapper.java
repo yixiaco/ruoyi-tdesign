@@ -1,6 +1,6 @@
 package org.dromara.system.mapper;
 
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysOssRule;
 import org.dromara.system.domain.query.SysOssRuleQuery;
 import org.dromara.system.domain.vo.SysOssRuleVo;
@@ -13,7 +13,7 @@ import java.util.List;
  * @author hexm
  * @date 2023-05-05
  */
-public interface SysOssRuleMapper extends BaseMapperPlus<SysOssRule, SysOssRuleVo> {
+public interface SysOssRuleMapper extends MyBaseMapperVo<SysOssRule, SysOssRuleVo> {
 
     /**
      * 查询OSS处理规则列表

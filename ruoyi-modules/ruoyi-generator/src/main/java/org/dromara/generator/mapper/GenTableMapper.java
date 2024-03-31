@@ -1,9 +1,7 @@
 package org.dromara.generator.mapper;
 
-import com.baomidou.dynamic.datasource.annotation.DS;
-import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
-import org.apache.ibatis.annotations.Param;
 import com.mybatisflex.core.BaseMapper;
+import org.apache.ibatis.annotations.Param;
 import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.query.GenTableQuery;
 import org.dromara.generator.domain.vo.GenTableVo;
@@ -15,7 +13,6 @@ import java.util.List;
  *
  * @author Lion Li
  */
-@InterceptorIgnore(dataPermission = "true", tenantLine = "true")
 public interface GenTableMapper extends BaseMapper<GenTable> {
 
     /**
@@ -71,6 +68,5 @@ public interface GenTableMapper extends BaseMapper<GenTable> {
      * @param dataName 数据源
      * @return
      */
-    @DS("")
     List<String> selectTableNameList(@Param("dataName") String dataName);
 }

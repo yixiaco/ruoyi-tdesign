@@ -1,9 +1,8 @@
 package org.dromara.generator.mapper;
 
-import com.baomidou.dynamic.datasource.annotation.DS;
-import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
+import com.mybatisflex.annotation.UseDataSource;
 import org.apache.ibatis.annotations.Param;
-import com.mybatisflex.core.BaseMapper;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapper;
 import org.dromara.generator.domain.GenTableColumn;
 
 import java.util.List;
@@ -13,8 +12,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-@InterceptorIgnore(dataPermission = "true", tenantLine = "true")
-public interface GenTableColumnMapper extends BaseMapper<GenTableColumn> {
+public interface GenTableColumnMapper extends MyBaseMapper<GenTableColumn> {
     /**
      * 根据表名称查询列信息
      *
@@ -22,7 +20,7 @@ public interface GenTableColumnMapper extends BaseMapper<GenTableColumn> {
      * @param dataName  数据源名称
      * @return 列信息
      */
-    @DS("#dataName")
+    @UseDataSource("#dataName")
     List<GenTableColumn> selectDbTableColumnsByName(@Param("tableName") String tableName, String dataName);
 
 }

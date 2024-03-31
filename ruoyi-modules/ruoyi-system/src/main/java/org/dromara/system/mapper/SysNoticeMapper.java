@@ -1,6 +1,6 @@
 package org.dromara.system.mapper;
 
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysNotice;
 import org.dromara.system.domain.query.SysNoticeQuery;
 import org.dromara.system.domain.vo.SysNoticeVo;
@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysNoticeMapper extends BaseMapperPlus<SysNotice, SysNoticeVo> {
+public interface SysNoticeMapper extends MyBaseMapperVo<SysNotice, SysNoticeVo> {
 
     /**
      * 查询通知公告列表

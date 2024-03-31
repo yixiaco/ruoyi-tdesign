@@ -76,11 +76,11 @@ public class SysUser extends TenantEntity {
     /**
      * 密码
      */
-//    @TableField(
-//        insertStrategy = FieldStrategy.NOT_EMPTY,
-//        updateStrategy = FieldStrategy.NOT_EMPTY,
-//        whereStrategy = FieldStrategy.NOT_EMPTY
-//    )
+    @TableField(
+        insertStrategy = FieldStrategy.NOT_EMPTY,
+        updateStrategy = FieldStrategy.NOT_EMPTY,
+        whereStrategy = FieldStrategy.NOT_EMPTY
+    )
     private String password;
 
     /**

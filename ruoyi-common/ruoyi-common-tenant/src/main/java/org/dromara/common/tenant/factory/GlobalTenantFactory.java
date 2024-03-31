@@ -46,9 +46,6 @@ public class GlobalTenantFactory implements TenantFactory {
     public boolean ignoreTable(String tableName) {
         // 不需要过滤租户的表
         Set<String> excludes = tenantProperties.getExcludes();
-        // 非业务表
-        excludes.add("gen_table");
-        excludes.add("gen_table_column");
         return excludes.contains(tableName);
     }
 }

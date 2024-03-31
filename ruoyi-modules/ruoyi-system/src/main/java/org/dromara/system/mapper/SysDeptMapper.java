@@ -3,7 +3,7 @@ package org.dromara.system.mapper;
 import org.apache.ibatis.annotations.Param;
 import org.dromara.common.mybatis.annotation.DataColumn;
 import org.dromara.common.mybatis.annotation.DataPermission;
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysDept;
 import org.dromara.system.domain.query.SysDeptQuery;
 import org.dromara.system.domain.vo.SysDeptVo;
@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysDeptMapper extends BaseMapperPlus<SysDept, SysDeptVo> {
+public interface SysDeptMapper extends MyBaseMapperVo<SysDept, SysDeptVo> {
 
     /**
      * 查询部门列表

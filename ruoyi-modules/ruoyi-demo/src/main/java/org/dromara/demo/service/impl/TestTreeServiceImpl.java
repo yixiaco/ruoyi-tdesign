@@ -1,7 +1,7 @@
 package org.dromara.demo.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.demo.domain.TestTree;
@@ -9,7 +9,6 @@ import org.dromara.demo.domain.bo.TestTreeBo;
 import org.dromara.demo.domain.vo.TestTreeVo;
 import org.dromara.demo.mapper.TestTreeMapper;
 import org.dromara.demo.service.ITestTreeService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -24,10 +23,7 @@ import java.util.Map;
  */
 // @DS("slave") // 切换从库查询
 @Service
-public class TestTreeServiceImpl implements ITestTreeService {
-
-    @Autowired
-    private TestTreeMapper baseMapper;
+public class TestTreeServiceImpl extends ServiceImpl<TestTreeMapper, TestTree> implements ITestTreeService {
 
     @Override
     public TestTreeVo queryById(Long id) {
@@ -37,18 +33,19 @@ public class TestTreeServiceImpl implements ITestTreeService {
     // @DS("slave") // 切换从库查询
     @Override
     public List<TestTreeVo> queryList(TestTreeBo bo) {
-        LambdaQueryWrapper<TestTree> lqw = buildQueryWrapper(bo);
+        QueryWrapper lqw = buildQueryWrapper(bo);
         return mapper.selectVoList(lqw);
     }
 
-    private LambdaQueryWrapper<TestTree> buildQueryWrapper(TestTreeBo bo) {
+    private QueryWrapper buildQueryWrapper(TestTreeBo bo) {
         Map<String, Object> params = bo.getParams();
-        LambdaQueryWrapper<TestTree> lqw = Wrappers.lambdaQuery();
-        lqw.like(StringUtils.isNotBlank(bo.getTreeName()), TestTree::getTreeName, bo.getTreeName());
-        lqw.between(params.get("beginCreateTime") != null && params.get("endCreateTime") != null,
-            TestTree::getCreateTime, params.get("beginCreateTime"), params.get("endCreateTime"));
-        lqw.orderByAsc(TestTree::getId);
-        return lqw;
+        return query()
+            .like(TestTree::getTreeName, bo.getTreeName(), StringUtils.isNotBlank(bo.getTreeName()))
+            .between(TestTree::getCreateTime,
+                params.get("beginCreateTime"),
+                params.get("endCreateTime"),
+                params.get("beginCreateTime") != null && params.get("endCreateTime") != null)
+            .orderBy(TestTree::getId, true);
     }
 
     @Override
@@ -66,7 +63,7 @@ public class TestTreeServiceImpl implements ITestTreeService {
     public Boolean updateByBo(TestTreeBo bo) {
         TestTree update = MapstructUtils.convert(bo, TestTree.class);
         validEntityBeforeSave(update);
-        return mapper.updateById(update) > 0;
+        return mapper.update(update) > 0;
     }
 
     /**
@@ -83,6 +80,6 @@ public class TestTreeServiceImpl implements ITestTreeService {
         if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
-        return mapper.deleteBatchIds(ids) > 0;
+        return mapper.deleteBatchByIds(ids) > 0;
     }
 }

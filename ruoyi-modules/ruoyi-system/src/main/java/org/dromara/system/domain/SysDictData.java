@@ -52,7 +52,7 @@ public class SysDictData extends TenantEntity {
     /**
      * 样式属性（其他样式扩展）
      */
-//    @TableField(updateStrategy = FieldStrategy.ALWAYS)
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String cssClass;
 
     /**
@@ -63,7 +63,7 @@ public class SysDictData extends TenantEntity {
     /**
      * 回显风格
      */
-//    @TableField(updateStrategy = FieldStrategy.ALWAYS)
+    @TableField(updateStrategy = FieldStrategy.ALWAYS)
     private String tagStyle;
 
     /**

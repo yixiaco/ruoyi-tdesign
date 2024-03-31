@@ -1,6 +1,5 @@
 package org.dromara.system.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.exception.ServiceException;
@@ -12,10 +11,10 @@ import org.dromara.system.domain.SysTenantPackage;
 import org.dromara.system.domain.bo.SysTenantPackageBo;
 import org.dromara.system.domain.query.SysTenantPackageQuery;
 import org.dromara.system.domain.vo.SysTenantPackageVo;
-import org.dromara.system.mapper.SysTenantMapper;
 import org.dromara.system.mapper.SysTenantPackageMapper;
 import org.dromara.system.service.ISysTenantPackageMenuService;
 import org.dromara.system.service.ISysTenantPackageService;
+import org.dromara.system.service.ISysTenantService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -32,7 +31,7 @@ import java.util.List;
 public class SysTenantPackageServiceImpl extends ServiceImpl<SysTenantPackageMapper, SysTenantPackage> implements ISysTenantPackageService {
 
     @Autowired
-    private SysTenantMapper tenantMapper;
+    private ISysTenantService tenantService;
     @Autowired
     private ISysTenantPackageMenuService tenantPackageMenuService;
 
@@ -54,7 +53,7 @@ public class SysTenantPackageServiceImpl extends ServiceImpl<SysTenantPackageMap
 
     @Override
     public List<SysTenantPackageVo> selectList() {
-        return mapper.selectVoList(new LambdaQueryWrapper<SysTenantPackage>()
+        return mapper.selectVoList(query()
                 .eq(SysTenantPackage::getStatus, NormalDisableEnum.NORMAL.getCode()));
     }
 
@@ -106,7 +105,7 @@ public class SysTenantPackageServiceImpl extends ServiceImpl<SysTenantPackageMap
     @Override
     public int updatePackageStatus(SysTenantPackageBo bo) {
         SysTenantPackage tenantPackage = MapstructUtils.convert(bo, SysTenantPackage.class);
-        return mapper.updateById(tenantPackage);
+        return mapper.update(tenantPackage);
     }
 
     /**
@@ -116,12 +115,12 @@ public class SysTenantPackageServiceImpl extends ServiceImpl<SysTenantPackageMap
     @Transactional(rollbackFor = Exception.class)
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
         if (isValid) {
-            boolean exists = tenantMapper.exists(new LambdaQueryWrapper<SysTenant>().in(SysTenant::getPackageId, ids));
+            boolean exists = tenantService.exists(query().in(SysTenant::getPackageId, ids));
             if (exists) {
                 throw new ServiceException("租户套餐已被使用");
             }
         }
-        return mapper.deleteBatchIds(ids) > 0;
+        return mapper.deleteBatchByIds(ids) > 0;
     }
 
     /**

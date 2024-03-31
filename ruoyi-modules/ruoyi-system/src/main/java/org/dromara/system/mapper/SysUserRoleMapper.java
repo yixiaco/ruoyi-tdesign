@@ -1,7 +1,7 @@
 package org.dromara.system.mapper;
 
 import org.apache.ibatis.annotations.Param;
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysUserRole;
 
 import java.util.List;
@@ -11,7 +11,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysUserRoleMapper extends BaseMapperPlus<SysUserRole, SysUserRole> {
+public interface SysUserRoleMapper extends MyBaseMapperVo<SysUserRole, SysUserRole> {
 
     List<Long> selectUserIdsByRoleId(@Param("roleId") Long roleId);
 

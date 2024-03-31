@@ -24,6 +24,7 @@ mybatis-flex:
     deleted-value-of-logic-delete: 1
     logic-delete-column: del_flag
     tenant-column: tenant_id
+    version-column: version
     # 全局的 ID 生成策略配置
     key-config:
       # Auto 自增

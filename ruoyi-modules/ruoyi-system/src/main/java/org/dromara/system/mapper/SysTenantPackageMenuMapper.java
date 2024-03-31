@@ -1,7 +1,7 @@
 package org.dromara.system.mapper;
 
-import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.apache.ibatis.annotations.Param;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapper;
 import org.dromara.system.domain.SysTenantPackageMenu;
 
 import java.util.List;
@@ -13,7 +13,7 @@ import java.util.List;
  * @author hexm
  * @date 2023-11-08
  */
-public interface SysTenantPackageMenuMapper extends BaseMapper<SysTenantPackageMenu> {
+public interface SysTenantPackageMenuMapper extends MyBaseMapper<SysTenantPackageMenu> {
 
     /**
      * 删除租户角色多余菜单

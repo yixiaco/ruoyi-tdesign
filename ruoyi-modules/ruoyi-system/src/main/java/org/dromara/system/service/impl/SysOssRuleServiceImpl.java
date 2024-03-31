@@ -174,7 +174,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
      */
     private void checkRepeat(SysOssRuleBo bo) {
         boolean exists = queryChain()
-            .ne(bo.getOssRuleId() != null, SysOssRule::getOssRuleId, bo.getOssRuleId())
+            .ne(SysOssRule::getOssRuleId, bo.getOssRuleId(), bo.getOssRuleId() != null)
             .eq(SysOssRule::getRuleName, bo.getRuleName())
             .eq(SysOssRule::getDomain, bo.getDomain())
             .exists();
@@ -188,7 +188,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
      *
      * @param fieldName   字段名称
      * @param originalUrl url
-     * @param ruleNames       限定使用规则，为空则不限制
+     * @param ruleNames   限定使用规则，为空则不限制
      * @param join        字段与规则的连接符
      * @param useDefault  指定规则时，是否使用默认规则。 指定的规则不存在时，即使是false也将使用默认规则
      * @return
@@ -209,7 +209,10 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
             // 如果二级缓存为空，则从redis缓存中读取
             rules = RedisLockUtil.getOrSaveList(CacheConstants.SYS_OSS_RULE, () ->
                 // 如果redis中为空，则从database中读取
-                queryChain().eq(SysOssRule::getStatus, NormalDisableEnum.NORMAL.getCode()).orderByAsc(SysOssRule::getCreateTime).list()
+                queryChain()
+                    .eq(SysOssRule::getStatus, NormalDisableEnum.NORMAL.getCode())
+                    .orderBy(SysOssRule::getCreateTime, true)
+                    .list()
             );
             SaHolder.getStorage().set(CacheConstants.SYS_OSS_RULE, rules);
         }

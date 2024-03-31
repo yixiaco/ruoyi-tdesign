@@ -3,8 +3,6 @@ package org.dromara.system.service.impl;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.update.LambdaUpdateWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.CacheNames;
@@ -84,13 +82,12 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
     public Boolean updateByBo(SysOssConfigBo bo) {
         SysOssConfig config = MapstructUtils.convert(bo, SysOssConfig.class);
         validEntityBeforeSave(config);
-        LambdaUpdateWrapper<SysOssConfig> luw = new LambdaUpdateWrapper<>();
-        luw.set(ObjectUtil.isNull(config.getPrefix()), SysOssConfig::getPrefix, "");
-        luw.set(ObjectUtil.isNull(config.getRegion()), SysOssConfig::getRegion, "");
-        luw.set(ObjectUtil.isNull(config.getExt1()), SysOssConfig::getExt1, "");
-        luw.set(ObjectUtil.isNull(config.getRemark()), SysOssConfig::getRemark, "");
-        luw.eq(SysOssConfig::getOssConfigId, config.getOssConfigId());
-        boolean flag = mapper.update(config, luw) > 0;
+        config.setPrefix(ObjectUtil.defaultIfNull(config.getPrefix(), ""));
+        config.setRegion(ObjectUtil.defaultIfNull(config.getRegion(), ""));
+        config.setExt1(ObjectUtil.defaultIfNull(config.getExt1(), ""));
+        config.setRemark(ObjectUtil.defaultIfNull(config.getRemark(), ""));
+        mapper.update(config);
+        boolean flag = updateById(config);
         if (flag) {
             // 从数据库查询完整的数据做缓存
             config = mapper.selectOneById(config.getOssConfigId());
@@ -122,7 +119,7 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
             SysOssConfig config = mapper.selectOneById(configId);
             list.add(config);
         }
-        boolean flag = mapper.deleteBatchIds(ids) > 0;
+        boolean flag = mapper.deleteBatchByIds(ids) > 0;
         if (flag) {
             list.forEach(sysOssConfig ->
                 CacheUtils.evict(CacheNames.SYS_OSS_CONFIG, sysOssConfig.getConfigKey()));
@@ -135,13 +132,10 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
      */
     private boolean checkConfigKeyUnique(SysOssConfig sysOssConfig) {
         long ossConfigId = ObjectUtil.isNull(sysOssConfig.getOssConfigId()) ? -1L : sysOssConfig.getOssConfigId();
-        SysOssConfig info = mapper.selectOne(new LambdaQueryWrapper<SysOssConfig>()
+        SysOssConfig info = mapper.selectOneByQuery(query()
             .select(SysOssConfig::getOssConfigId, SysOssConfig::getConfigKey)
             .eq(SysOssConfig::getConfigKey, sysOssConfig.getConfigKey()));
-        if (ObjectUtil.isNotNull(info) && info.getOssConfigId() != ossConfigId) {
-            return false;
-        }
-        return true;
+        return ObjectUtil.isNull(info) || info.getOssConfigId() == ossConfigId;
     }
 
     /**
@@ -151,9 +145,9 @@ public class SysOssConfigServiceImpl extends ServiceImpl<SysOssConfigMapper, Sys
     @Transactional(rollbackFor = Exception.class)
     public int updateOssConfigStatus(SysOssConfigBo bo) {
         SysOssConfig sysOssConfig = MapstructUtils.convert(bo, SysOssConfig.class);
-        int row = mapper.update(null, new LambdaUpdateWrapper<SysOssConfig>()
-            .set(SysOssConfig::getStatus, NormalDisableEnum.DISABLE.getCode()));
-        row += mapper.updateById(sysOssConfig);
+
+        int row = mapper.update(mapper.getUpdateWrapper().set(SysOssConfig::getStatus, NormalDisableEnum.DISABLE.getCode()));
+        row += mapper.update(sysOssConfig);
         if (row > 0) {
             String json = CacheUtils.get(CacheNames.SYS_OSS_CONFIG, sysOssConfig.getConfigKey());
             if (StrUtil.isBlank(json)) {

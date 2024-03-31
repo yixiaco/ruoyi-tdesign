@@ -16,7 +16,7 @@ import java.lang.annotation.Target;
  * @see org.dromara.common.tenant.aspect.TenantAspect#handleIgnore
  */
 @Inherited
-@Target(ElementType.METHOD)
+@Target({ElementType.METHOD, ElementType.TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface IgnoreTenant {

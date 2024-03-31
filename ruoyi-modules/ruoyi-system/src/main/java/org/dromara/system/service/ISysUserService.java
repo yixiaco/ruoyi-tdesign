@@ -173,7 +173,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param status 帐号状态
      * @return 结果
      */
-    int updateUserStatus(Long userId, String status);
+    boolean updateUserStatus(Long userId, String status);
 
     /**
      * 修改用户基本信息
@@ -181,7 +181,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param user 用户信息
      * @return 结果
      */
-    int updateUserProfile(SysUserBo user);
+    boolean updateUserProfile(SysUserBo user);
 
     /**
      * 修改用户头像
@@ -199,7 +199,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param password 密码
      * @return 结果
      */
-    int resetUserPwd(Long userId, String password);
+    boolean resetUserPwd(Long userId, String password);
 
     /**
      * 通过用户ID删除用户

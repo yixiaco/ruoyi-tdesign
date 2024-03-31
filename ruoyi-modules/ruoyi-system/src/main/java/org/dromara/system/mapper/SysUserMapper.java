@@ -7,7 +7,7 @@ import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.UpdateProvider;
 import org.dromara.common.mybatis.annotation.DataColumn;
 import org.dromara.common.mybatis.annotation.DataPermission;
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.common.tenant.annotation.IgnoreTenant;
 import org.dromara.system.domain.SysUser;
 import org.dromara.system.domain.query.SysUserQuery;
@@ -20,7 +20,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysUserMapper extends BaseMapperPlus<SysUser, SysUserVo> {
+public interface SysUserMapper extends MyBaseMapperVo<SysUser, SysUserVo> {
 
     /**
      * 查询用户信息列表

@@ -1,8 +1,6 @@
 package org.dromara.system.service.impl;
 
 import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
@@ -57,7 +55,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      */
     @Override
     public List<SysPostVo> selectPostAll() {
-        return mapper.selectVoList(new QueryWrapper<>());
+        return mapper.selectVoList();
     }
 
     /**
@@ -90,9 +88,10 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      */
     @Override
     public boolean checkPostNameUnique(SysPostBo post) {
-        boolean exist = mapper.exists(new LambdaQueryWrapper<SysPost>()
+        boolean exist = queryChain()
             .eq(SysPost::getPostName, post.getPostName())
-            .ne(ObjectUtil.isNotNull(post.getPostId()), SysPost::getPostId, post.getPostId()));
+            .ne(SysPost::getPostId, post.getPostId(), ObjectUtil.isNotNull(post.getPostId()))
+            .exists();
         return !exist;
     }
 
@@ -104,9 +103,9 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      */
     @Override
     public boolean checkPostCodeUnique(SysPostBo post) {
-        boolean exist = mapper.exists(new LambdaQueryWrapper<SysPost>()
+        boolean exist = mapper.exists(query()
             .eq(SysPost::getPostCode, post.getPostCode())
-            .ne(ObjectUtil.isNotNull(post.getPostId()), SysPost::getPostId, post.getPostId()));
+            .ne(SysPost::getPostId, post.getPostId(), ObjectUtil.isNotNull(post.getPostId())));
         return !exist;
     }
 
@@ -118,7 +117,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      */
     @Override
     public long countUserPostById(Long postId) {
-        return userPostMapper.selectCount(new LambdaQueryWrapper<SysUserPost>().eq(SysUserPost::getPostId, postId));
+        return userPostMapper.selectCountByQuery(query().eq(SysUserPost::getPostId, postId));
     }
 
     /**
@@ -146,7 +145,7 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
                 throw new ServiceException(String.format("%1$s已分配，不能删除!", post.getPostName()));
             }
         }
-        return mapper.deleteBatchIds(Arrays.asList(postIds));
+        return mapper.deleteBatchByIds(Arrays.asList(postIds));
     }
 
     /**
@@ -170,6 +169,6 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     @Override
     public int updatePost(SysPostBo bo) {
         SysPost post = MapstructUtils.convert(bo, SysPost.class);
-        return mapper.updateById(post);
+        return mapper.update(post);
     }
 }

@@ -2,7 +2,6 @@ package org.dromara.common.mybatis.core.page;
 
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.metadata.OrderItem;
 import com.github.pagehelper.PageHelper;
 import lombok.Data;
 import lombok.experimental.Accessors;
@@ -34,7 +33,7 @@ public class SortQuery implements Serializable {
     /**
      * 格式安全正则
      */
-    private static final Pattern SAFE_SORT = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]*$");
+    private static final Pattern SAFE_SORT = Pattern.compile("^(?:[a-zA-Z]+\\.)?[a-zA-Z0-9_]+$");
 
     /**
      * 排序列

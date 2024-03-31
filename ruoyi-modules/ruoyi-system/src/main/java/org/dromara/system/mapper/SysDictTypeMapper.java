@@ -1,6 +1,6 @@
 package org.dromara.system.mapper;
 
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysDictType;
 import org.dromara.system.domain.query.SysDictTypeQuery;
 import org.dromara.system.domain.vo.SysDictTypeVo;
@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysDictTypeMapper extends BaseMapperPlus<SysDictType, SysDictTypeVo> {
+public interface SysDictTypeMapper extends MyBaseMapperVo<SysDictType, SysDictTypeVo> {
 
     /**
      * 查询字典类型列表

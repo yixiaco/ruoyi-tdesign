@@ -1,6 +1,6 @@
 package org.dromara.system.mapper;
 
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysOssConfig;
 import org.dromara.system.domain.query.SysOssConfigQuery;
 import org.dromara.system.domain.vo.SysOssConfigVo;
@@ -14,7 +14,7 @@ import java.util.List;
  * @author 孤舟烟雨
  * @date 2021-08-13
  */
-public interface SysOssConfigMapper extends BaseMapperPlus<SysOssConfig, SysOssConfigVo> {
+public interface SysOssConfigMapper extends MyBaseMapperVo<SysOssConfig, SysOssConfigVo> {
 
     /**
      * 查询对象存储配置列表

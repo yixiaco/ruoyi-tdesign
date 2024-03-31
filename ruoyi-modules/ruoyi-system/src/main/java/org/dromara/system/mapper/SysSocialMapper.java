@@ -1,6 +1,6 @@
 package org.dromara.system.mapper;
 
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysSocial;
 import org.dromara.system.domain.vo.SysSocialVo;
 
@@ -9,6 +9,6 @@ import org.dromara.system.domain.vo.SysSocialVo;
  *
  * @author thiszhc
  */
-public interface SysSocialMapper extends BaseMapperPlus<SysSocial, SysSocialVo> {
+public interface SysSocialMapper extends MyBaseMapperVo<SysSocial, SysSocialVo> {
 
 }

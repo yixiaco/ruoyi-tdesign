@@ -1,8 +1,8 @@
 package org.dromara.demo.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
-import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.mybatisflex.core.query.QueryWrapper;
+import com.mybatisflex.core.util.SqlUtil;
+import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
@@ -12,7 +12,6 @@ import org.dromara.demo.domain.bo.TestDemoBo;
 import org.dromara.demo.domain.vo.TestDemoVo;
 import org.dromara.demo.mapper.TestDemoMapper;
 import org.dromara.demo.service.ITestDemoService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Collection;
@@ -26,10 +25,7 @@ import java.util.Map;
  * @date 2021-07-26
  */
 @Service
-public class TestDemoServiceImpl implements ITestDemoService {
-
-    @Autowired
-    private TestDemoMapper baseMapper;
+public class TestDemoServiceImpl extends ServiceImpl<TestDemoMapper, TestDemo> implements ITestDemoService {
 
     @Override
     public TestDemoVo queryById(Long id) {
@@ -38,9 +34,8 @@ public class TestDemoServiceImpl implements ITestDemoService {
 
     @Override
     public TableDataInfo<TestDemoVo> queryPageList(TestDemoBo bo, PageQuery pageQuery) {
-        LambdaQueryWrapper<TestDemo> lqw = buildQueryWrapper(bo);
-        Page<TestDemoVo> result = mapper.selectVoPage(pageQuery.build(), lqw);
-        return TableDataInfo.build(result);
+        QueryWrapper lqw = buildQueryWrapper(bo);
+        return PageQuery.of(() -> mapper.selectVoList(lqw));
     }
 
     /**
@@ -48,9 +43,8 @@ public class TestDemoServiceImpl implements ITestDemoService {
      */
     @Override
     public TableDataInfo<TestDemoVo> customPageList(TestDemoBo bo, PageQuery pageQuery) {
-        LambdaQueryWrapper<TestDemo> lqw = buildQueryWrapper(bo);
-        Page<TestDemoVo> result = mapper.customPageList(pageQuery.build(), lqw);
-        return TableDataInfo.build(result);
+        QueryWrapper lqw = buildQueryWrapper(bo);
+        return PageQuery.of(() -> mapper.customList(lqw));
     }
 
     @Override
@@ -58,15 +52,16 @@ public class TestDemoServiceImpl implements ITestDemoService {
         return mapper.selectVoList(buildQueryWrapper(bo));
     }
 
-    private LambdaQueryWrapper<TestDemo> buildQueryWrapper(TestDemoBo bo) {
+    private QueryWrapper buildQueryWrapper(TestDemoBo bo) {
         Map<String, Object> params = bo.getParams();
-        LambdaQueryWrapper<TestDemo> lqw = Wrappers.lambdaQuery();
-        lqw.like(StringUtils.isNotBlank(bo.getTestKey()), TestDemo::getTestKey, bo.getTestKey());
-        lqw.eq(StringUtils.isNotBlank(bo.getValue()), TestDemo::getValue, bo.getValue());
-        lqw.between(params.get("beginCreateTime") != null && params.get("endCreateTime") != null,
-            TestDemo::getCreateTime, params.get("beginCreateTime"), params.get("endCreateTime"));
-        lqw.orderByAsc(TestDemo::getId);
-        return lqw;
+        return QueryWrapper.create()
+            .like(TestDemo::getTestKey, bo.getTestKey(), StringUtils.isNotBlank(bo.getTestKey()))
+            .eq(TestDemo::getValue, bo.getValue(), StringUtils.isNotBlank(bo.getValue()))
+            .between(TestDemo::getCreateTime,
+                params.get("beginCreateTime"),
+                params.get("endCreateTime"),
+                params.get("beginCreateTime") != null && params.get("endCreateTime") != null)
+            .orderBy(TestDemo::getId, true);
     }
 
     @Override
@@ -84,7 +79,7 @@ public class TestDemoServiceImpl implements ITestDemoService {
     public Boolean updateByBo(TestDemoBo bo) {
         TestDemo update = MapstructUtils.convert(bo, TestDemo.class);
         validEntityBeforeSave(update);
-        return mapper.updateById(update) > 0;
+        return mapper.update(update) > 0;
     }
 
     /**
@@ -101,11 +96,11 @@ public class TestDemoServiceImpl implements ITestDemoService {
         if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验
         }
-        return mapper.deleteBatchIds(ids) > 0;
+        return mapper.deleteBatchByIds(ids) > 0;
     }
 
     @Override
     public Boolean saveBatch(List<TestDemo> list) {
-        return mapper.insertBatch(list);
+        return SqlUtil.toBool(mapper.insertBatch(list));
     }
 }

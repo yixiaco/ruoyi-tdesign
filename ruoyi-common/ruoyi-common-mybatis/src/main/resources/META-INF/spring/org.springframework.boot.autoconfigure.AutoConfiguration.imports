@@ -1,1 +1,2 @@
 org.dromara.common.mybatis.config.MybatisPlusConfig
+org.dromara.common.mybatis.config.MyBatisFlexConfiguration

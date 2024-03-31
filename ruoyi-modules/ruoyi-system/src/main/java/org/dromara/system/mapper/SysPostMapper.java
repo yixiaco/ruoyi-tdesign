@@ -1,7 +1,7 @@
 package org.dromara.system.mapper;
 
 import org.apache.ibatis.annotations.Param;
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysPost;
 import org.dromara.system.domain.query.SysPostQuery;
 import org.dromara.system.domain.vo.SysPostVo;
@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysPostMapper extends BaseMapperPlus<SysPost, SysPostVo> {
+public interface SysPostMapper extends MyBaseMapperVo<SysPost, SysPostVo> {
 
     /**
      * 根据用户ID获取岗位选择框列表

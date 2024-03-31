@@ -1,6 +1,6 @@
 package org.dromara.system.mapper;
 
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysRoleMenu;
 
 /**
@@ -8,6 +8,6 @@ import org.dromara.system.domain.SysRoleMenu;
  *
  * @author Lion Li
  */
-public interface SysRoleMenuMapper extends BaseMapperPlus<SysRoleMenu, SysRoleMenu> {
+public interface SysRoleMenuMapper extends MyBaseMapperVo<SysRoleMenu, SysRoleMenu> {
 
 }

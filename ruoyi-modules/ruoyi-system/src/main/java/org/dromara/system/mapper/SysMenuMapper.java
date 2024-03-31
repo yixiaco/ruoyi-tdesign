@@ -3,7 +3,7 @@ package org.dromara.system.mapper;
 import org.apache.ibatis.annotations.Param;
 import org.dromara.common.core.enums.MenuTypeEnum;
 import org.dromara.common.core.enums.NormalDisableEnum;
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysMenu;
 import org.dromara.system.domain.query.SysMenuQuery;
 import org.dromara.system.domain.vo.SysMenuVo;
@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysMenuMapper extends BaseMapperPlus<SysMenu, SysMenuVo> {
+public interface SysMenuMapper extends MyBaseMapperVo<SysMenu, SysMenuVo> {
 
     /**
      * 查询菜单权限列表

@@ -1,7 +1,7 @@
 package org.dromara.system.mapper;
 
 import org.apache.ibatis.annotations.Param;
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysTenantPackage;
 import org.dromara.system.domain.query.SysTenantPackageQuery;
 import org.dromara.system.domain.vo.SysTenantPackageVo;
@@ -13,7 +13,7 @@ import java.util.List;
  *
  * @author Michelle.Chung
  */
-public interface SysTenantPackageMapper extends BaseMapperPlus<SysTenantPackage, SysTenantPackageVo> {
+public interface SysTenantPackageMapper extends MyBaseMapperVo<SysTenantPackage, SysTenantPackageVo> {
 
     /**
      * 查询租户套餐列表

@@ -134,7 +134,7 @@ public interface ISysRoleService extends IService<SysRole> {
      * @param status 角色状态
      * @return 结果
      */
-    int updateRoleStatus(Long roleId, String status);
+    boolean updateRoleStatus(Long roleId, String status);
 
     /**
      * 修改数据权限信息

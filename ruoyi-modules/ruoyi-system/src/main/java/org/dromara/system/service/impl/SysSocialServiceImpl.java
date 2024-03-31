@@ -1,6 +1,5 @@
 package org.dromara.system.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.system.domain.SysSocial;
@@ -39,9 +38,8 @@ public class SysSocialServiceImpl extends ServiceImpl<SysSocialMapper, SysSocial
 
     @Override
     public List<SysSocialVo> queryListByUserId(Long userId) {
-        return mapper.selectVoList(new LambdaQueryWrapper<SysSocial>().eq(SysSocial::getUserId, userId));
+        return mapper.selectVoList(query().eq(SysSocial::getUserId, userId));
     }
-
 
     /**
      * 新增社会化关系
@@ -68,7 +66,7 @@ public class SysSocialServiceImpl extends ServiceImpl<SysSocialMapper, SysSocial
     public Boolean updateByBo(SysSocialBo bo) {
         SysSocial update = MapstructUtils.convert(bo, SysSocial.class);
         validEntityBeforeSave(update);
-        return mapper.updateById(update) > 0;
+        return updateById(update);
     }
 
     /**
@@ -96,7 +94,7 @@ public class SysSocialServiceImpl extends ServiceImpl<SysSocialMapper, SysSocial
      */
     @Override
     public SysSocialVo selectByAuthId(String authId) {
-        return mapper.selectVoOne(new LambdaQueryWrapper<SysSocial>().eq(SysSocial::getAuthId, authId));
+        return mapper.selectVoOne(query().eq(SysSocial::getAuthId, authId));
     }
 
 }

@@ -1,6 +1,6 @@
 package org.dromara.system.mapper;
 
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysUserPost;
 
 /**
@@ -8,6 +8,6 @@ import org.dromara.system.domain.SysUserPost;
  *
  * @author Lion Li
  */
-public interface SysUserPostMapper extends BaseMapperPlus<SysUserPost, SysUserPost> {
+public interface SysUserPostMapper extends MyBaseMapperVo<SysUserPost, SysUserPost> {
 
 }

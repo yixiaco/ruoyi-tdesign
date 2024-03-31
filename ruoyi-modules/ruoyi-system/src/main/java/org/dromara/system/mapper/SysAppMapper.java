@@ -1,6 +1,6 @@
 package org.dromara.system.mapper;
 
-import com.mybatisflex.core.BaseMapper;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysApp;
 import org.dromara.system.domain.query.SysAppQuery;
 import org.dromara.system.domain.vo.SysAppVo;
@@ -13,7 +13,7 @@ import java.util.List;
  * @author yixiacoco
  * @date 2023-05-17
  */
-public interface SysAppMapper extends BaseMapper<SysApp> {
+public interface SysAppMapper extends MyBaseMapperVo<SysApp, SysAppVo> {
 
     /**
      * 查询应用管理列表

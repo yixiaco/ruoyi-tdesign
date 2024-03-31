@@ -1,6 +1,5 @@
 package org.dromara.system.service.impl;
 
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.mybatisflex.spring.service.impl.ServiceImpl;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.ip.AddressUtils;

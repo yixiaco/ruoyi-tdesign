@@ -1,6 +1,6 @@
 package org.dromara.system.mapper;
 
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysRoleDept;
 
 /**
@@ -8,6 +8,6 @@ import org.dromara.system.domain.SysRoleDept;
  *
  * @author Lion Li
  */
-public interface SysRoleDeptMapper extends BaseMapperPlus<SysRoleDept, SysRoleDept> {
+public interface SysRoleDeptMapper extends MyBaseMapperVo<SysRoleDept, SysRoleDept> {
 
 }

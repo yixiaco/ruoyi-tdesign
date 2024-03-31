@@ -3,7 +3,7 @@ package org.dromara.system.mapper;
 import org.apache.ibatis.annotations.Param;
 import org.dromara.common.mybatis.annotation.DataColumn;
 import org.dromara.common.mybatis.annotation.DataPermission;
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysRole;
 import org.dromara.system.domain.query.SysRoleQuery;
 import org.dromara.system.domain.vo.SysRoleVo;
@@ -15,7 +15,7 @@ import java.util.List;
  *
  * @author Lion Li
  */
-public interface SysRoleMapper extends BaseMapperPlus<SysRole, SysRoleVo> {
+public interface SysRoleMapper extends MyBaseMapperVo<SysRole, SysRoleVo> {
 
     /**
      * 查询角色信息列表

@@ -1,6 +1,6 @@
 package org.dromara.system.mapper;
 
-import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysOperLog;
 import org.dromara.system.domain.query.SysOperLogQuery;
 import org.dromara.system.domain.vo.SysOperLogVo;
@@ -12,7 +12,7 @@ import java.util.List;
  *
  * @author hexm
  */
-public interface SysOperLogMapper extends BaseMapperPlus<SysOperLog, SysOperLogVo> {
+public interface SysOperLogMapper extends MyBaseMapperVo<SysOperLog, SysOperLogVo> {
 
     /**
      * 查询操作日志记录列表
