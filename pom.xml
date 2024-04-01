@@ -28,7 +28,7 @@
         <velocity.version>2.3</velocity.version>
         <satoken.version>1.37.0</satoken.version>
         <mybatis-plus.version>3.5.5</mybatis-plus.version>
-        <mybatis-flex.version>1.8.4</mybatis-flex.version>
+        <mybatis-flex.version>1.8.5</mybatis-flex.version>
         <pagehelper.version>6.1.0</pagehelper.version>
         <p6spy.version>3.9.1</p6spy.version>
         <hutool.version>5.8.24</hutool.version>

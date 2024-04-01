@@ -88,6 +88,6 @@ public class SysMessageLogServiceImpl extends ServiceImpl<SysMessageLogMapper, S
      */
     @Override
     public Boolean clear() {
-        return remove(queryChain().getWrapper());
+        return remove(queryChain());
     }
 }

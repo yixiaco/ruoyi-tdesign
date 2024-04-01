@@ -125,7 +125,7 @@ public class SysMessageKeyServiceImpl extends ServiceImpl<SysMessageKeyMapper, S
      */
     private void checkRepeat(SysMessageKeyBo bo) {
         boolean exists = queryChain()
-            .ne(bo.getMessageKeyId() != null, SysMessageKey::getMessageKeyId, bo.getMessageKeyId())
+            .ne(SysMessageKey::getMessageKeyId, bo.getMessageKeyId(), bo.getMessageKeyId() != null)
             .eq(SysMessageKey::getMessageKey, bo.getMessageKey())
             .exists();
         if (exists) {

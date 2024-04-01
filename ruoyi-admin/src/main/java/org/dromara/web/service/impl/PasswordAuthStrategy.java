@@ -3,7 +3,7 @@ package org.dromara.web.service.impl;
 import cn.dev33.satoken.secure.BCrypt;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.hutool.core.util.ObjectUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.mybatisflex.core.query.QueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.Constants;
@@ -112,7 +112,7 @@ public class PasswordAuthStrategy implements IAuthStrategy<PasswordLoginBody> {
     }
 
     private SysUserVo loadUserByUsername(String username) {
-        SysUser user = userMapper.selectOne(new LambdaQueryWrapper<SysUser>()
+        SysUser user = userMapper.selectOneByQuery(QueryWrapper.create()
             .select(SysUser::getUserName, SysUser::getStatus)
 //            .eq(TenantHelper.isEnable(), SysUser::getTenantId, tenantId)
             .eq(SysUser::getUserName, username));

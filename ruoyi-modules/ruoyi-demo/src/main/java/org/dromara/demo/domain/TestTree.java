@@ -1,14 +1,14 @@
 package org.dromara.demo.domain;
 
-import com.baomidou.mybatisplus.annotation.FieldFill;
-import com.baomidou.mybatisplus.annotation.TableField;
 import com.mybatisflex.annotation.Id;
-import com.baomidou.mybatisplus.annotation.TableLogic;
-import com.baomidou.mybatisplus.annotation.TableName;
-import com.baomidou.mybatisplus.annotation.Version;
+import com.mybatisflex.annotation.Table;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import org.dromara.common.mybatis.annotation.ColumnInsert;
+import org.dromara.common.mybatis.annotation.ColumnInsertOrUpdate;
+import org.dromara.common.mybatis.enums.DateType;
 import org.dromara.common.tenant.core.TenantEntity;
+import org.springframework.data.annotation.Version;
 
 import java.io.Serial;
 import java.util.Date;

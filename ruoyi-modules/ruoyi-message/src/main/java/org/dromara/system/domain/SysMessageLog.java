@@ -1,8 +1,10 @@
 package org.dromara.system.domain;
 
 import com.mybatisflex.annotation.Id;
-import com.baomidou.mybatisplus.annotation.TableName;
+import com.mybatisflex.annotation.Table;
 import lombok.Data;
+import org.dromara.common.mybatis.annotation.ColumnInsert;
+import org.dromara.common.mybatis.enums.DateType;
 
 import java.io.Serial;
 import java.io.Serializable;
@@ -95,6 +97,7 @@ public class SysMessageLog implements Serializable {
     /**
      * 记录时间
      */
+    @ColumnInsert(dateType = DateType.DATE)
     private Date logTime;
 
     /**

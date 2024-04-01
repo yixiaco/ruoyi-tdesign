@@ -3,7 +3,7 @@ package org.dromara.web.service.impl;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
+import com.mybatisflex.core.query.QueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.model.AuthResponse;
@@ -102,9 +102,9 @@ public class SocialAuthStrategy implements IAuthStrategy<SocialLoginBody> {
     }
 
     private SysUserVo loadUser(String tenantId, Long userId) {
-        SysUser user = userMapper.selectOne(new LambdaQueryWrapper<SysUser>()
+        SysUser user = userMapper.selectOneByQuery(QueryWrapper.create()
             .select(SysUser::getUserName, SysUser::getStatus)
-            .eq(TenantHelper.isEnable(), SysUser::getTenantId, tenantId)
+            .eq(SysUser::getTenantId, tenantId, TenantHelper.isEnable())
             .eq(SysUser::getUserId, userId));
         if (ObjectUtil.isNull(user)) {
             log.info("登录用户：{} 不存在.", "");

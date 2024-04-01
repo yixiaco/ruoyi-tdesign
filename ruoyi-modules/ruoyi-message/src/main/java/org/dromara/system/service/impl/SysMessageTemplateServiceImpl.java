@@ -144,7 +144,7 @@ public class SysMessageTemplateServiceImpl extends ServiceImpl<SysMessageTemplat
             return;
         }
         boolean exists = queryChain()
-            .ne(bo.getMessageTemplateId() != null, SysMessageTemplate::getMessageTemplateId, bo.getMessageTemplateId())
+            .ne(SysMessageTemplate::getMessageTemplateId, bo.getMessageTemplateId(), bo.getMessageTemplateId() != null)
             .eq(SysMessageTemplate::getMessageKeyId, bo.getMessageKeyId())
             .eq(SysMessageTemplate::getMessageType, bo.getMessageType())
             .eq(SysMessageTemplate::getStatus, NormalDisableEnum.NORMAL.getCodeNum())

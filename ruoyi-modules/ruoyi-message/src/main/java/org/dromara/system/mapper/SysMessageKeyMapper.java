@@ -1,6 +1,6 @@
 package org.dromara.system.mapper;
 
-import com.mybatisflex.core.BaseMapper;
+import org.dromara.common.mybatis.core.mapper.MyBaseMapperVo;
 import org.dromara.system.domain.SysMessageKey;
 import org.dromara.system.domain.query.SysMessageKeyQuery;
 import org.dromara.system.domain.vo.SysMessageKeyVo;
@@ -13,7 +13,7 @@ import java.util.List;
  * @author hexm
  * @date 2023-06-28
  */
-public interface SysMessageKeyMapper extends BaseMapper<SysMessageKey> {
+public interface SysMessageKeyMapper extends MyBaseMapperVo<SysMessageKey, SysMessageKeyVo> {
 
     /**
      * 查询消息常量列表

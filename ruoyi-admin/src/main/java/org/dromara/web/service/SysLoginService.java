@@ -186,7 +186,7 @@ public class SysLoginService {
         sysUser.setLoginIp(ip);
         sysUser.setLoginDate(DateUtils.getNowDate());
         sysUser.setUpdateBy(userId);
-        DataPermissionHelper.ignore(() -> userMapper.updateById(sysUser));
+        DataPermissionHelper.ignore(() -> userMapper.update(sysUser));
     }
 
     /**

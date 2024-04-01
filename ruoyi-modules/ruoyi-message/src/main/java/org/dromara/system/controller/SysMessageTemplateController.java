@@ -132,7 +132,7 @@ public class SysMessageTemplateController extends BaseController {
                 SysMessageConfig::getMessageType,
                 SysMessageConfig::getTitle,
                 SysMessageConfig::getSupplierType)
-            .orderByDesc(SysMessageConfig::getCreateTime)
+            .orderBy(SysMessageConfig::getCreateTime).desc()
             .list();
         return R.ok(list);
     }
@@ -147,7 +147,7 @@ public class SysMessageTemplateController extends BaseController {
     public R<List<SysMessageKey>> getMessageKeys() {
         List<SysMessageKey> list = messageKeyService.queryChain()
             .select(SysMessageKey::getName, SysMessageKey::getMessageKeyId, SysMessageKey::getMessageKey)
-            .orderByDesc(SysMessageKey::getCreateTime)
+            .orderBy(SysMessageKey::getCreateTime).desc()
             .list();
         return R.ok(list);
     }
