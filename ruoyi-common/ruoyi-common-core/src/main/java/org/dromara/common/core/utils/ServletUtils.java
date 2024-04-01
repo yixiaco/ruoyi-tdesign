@@ -43,7 +43,7 @@ public class ServletUtils extends JakartaServletUtil {
      * 获取String参数
      */
     public static String getParameter(String name, String defaultValue) {
-        return Convert.toStr(FunctionUtils.getNonNullElseGet(getRequest(), request -> request.getParameter(name), defaultValue));
+        return Convert.toStr(FunctionUtils.getNonNullElseGet(getRequest(), request -> request.getParameter(name), defaultValue), defaultValue);
     }
 
     /**
@@ -57,7 +57,7 @@ public class ServletUtils extends JakartaServletUtil {
      * 获取Integer参数
      */
     public static Integer getParameterToInt(String name, Integer defaultValue) {
-        return Convert.toInt(FunctionUtils.getNonNullElseGet(getRequest(), request -> request.getParameter(name), defaultValue));
+        return Convert.toInt(FunctionUtils.getNonNullElseGet(getRequest(), request -> request.getParameter(name), defaultValue), defaultValue);
     }
 
     /**
@@ -71,7 +71,7 @@ public class ServletUtils extends JakartaServletUtil {
      * 获取Boolean参数
      */
     public static Boolean getParameterToBool(String name, Boolean defaultValue) {
-        return Convert.toBool(FunctionUtils.getNonNullElseGet(getRequest(), request -> request.getParameter(name), defaultValue));
+        return Convert.toBool(FunctionUtils.getNonNullElseGet(getRequest(), request -> request.getParameter(name), defaultValue), defaultValue);
     }
 
     /**
