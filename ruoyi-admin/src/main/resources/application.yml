@@ -197,21 +197,6 @@ mybatis-flex:
       # snowFlakeId：通过雪花算法（SnowFlakeIDKeyGenerator）生成数据库主键。
       value: snowFlakeId
   mapper-locations: classpath*:mapper/**/*Mapper.xml
-# https://baomidou.com/config/
-mybatis-plus:
-  # 不支持多包, 如有需要可在注解配置 或 提升扫包等级
-  # 例如 com.**.**.mapper
-  mapperPackage: org.dromara.**.mapper
-  # 对应的 XML 文件位置
-  mapperLocations: classpath*:mapper/**/*Mapper.xml
-  # 实体扫描，多个package用逗号或者分号分隔
-  typeAliasesPackage: org.dromara.**.domain
-  global-config:
-    dbConfig:
-      # 主键类型
-      # AUTO 自增 NONE 空 INPUT 用户输入 ASSIGN_ID 雪花 ASSIGN_UUID 唯一 UUID
-      # 如需改为自增 需要将数据库表全部设置为自增
-      idType: ASSIGN_ID
 
 # 数据加密
 mybatis-encryptor:

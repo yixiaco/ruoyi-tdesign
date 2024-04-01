@@ -6,23 +6,32 @@ import com.mybatisflex.spring.boot.MultiDataSourceAutoConfiguration;
 import com.mybatisflex.spring.boot.MyBatisFlexCustomizer;
 import com.mybatisflex.spring.datasource.DataSourceAdvice;
 import org.apache.ibatis.plugin.Interceptor;
+import org.dromara.common.core.factory.YmlPropertySourceFactory;
 import org.dromara.common.mybatis.aop.CustomDataSourceAdvice;
 import org.dromara.common.mybatis.listener.GlobalMybatisFlexListener;
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.factory.config.BeanDefinition;
 import org.springframework.boot.autoconfigure.AutoConfigureBefore;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.PropertySource;
 import org.springframework.context.annotation.Role;
+import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * mybatis-flex配置类
  *
  * @author hexm
  */
+@MapperScan("${mybatis-plus.mapperPackage}")
+@EnableTransactionManagement(proxyTargetClass = true)
 @Configuration(proxyBeanMethods = false)
 @AutoConfigureBefore(MultiDataSourceAutoConfiguration.class)
+@PropertySource(value = "classpath:common-mybatis.yml", factory = YmlPropertySourceFactory.class)
 public class MyBatisFlexConfiguration implements MyBatisFlexCustomizer {
 
     @Override
@@ -40,11 +49,14 @@ public class MyBatisFlexConfiguration implements MyBatisFlexCustomizer {
     }
 
     /**
-     * 分页插件
+     * 拦截器
      */
     @Bean
-    public Interceptor pageInterceptor() {
-        return new PageInterceptor();
+    public List<Interceptor> interceptors() {
+        List<Interceptor> interceptors = new ArrayList<>();
+        // 分页插件
+        interceptors.add(new PageInterceptor());
+        return interceptors;
     }
 
     /**
