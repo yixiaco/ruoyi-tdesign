@@ -250,7 +250,7 @@ import type {
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import type { TreeModel } from '@/api/model/resultModel';
-import { tenantPackageMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
+import { tenantPackageMenuTreeSelect, menuTreeSelect as menuTreeselect } from '@/api/system/menu';
 import type {
   SysTenantPackageForm,
   SysTenantPackageQuery,
@@ -342,7 +342,7 @@ function getMenuTreeselect() {
 
 /** 根据租户套餐ID查询菜单树结构 */
 function getPackageMenuTreeselect(packageId: number) {
-  return tenantPackageMenuTreeselect(packageId).then((response) => {
+  return tenantPackageMenuTreeSelect(packageId).then((response) => {
     menuOptions.value = response.data.menus;
     return response;
   });

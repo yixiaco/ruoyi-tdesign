@@ -18,7 +18,6 @@ import java.io.Serializable;
  *
  * @author Michelle.Chung
  */
-
 @Data
 @AutoMapper(target = SysMenu.class, reverseConvertGenerate = false)
 public class SysMenuBo implements Serializable {
@@ -110,6 +109,16 @@ public class SysMenuBo implements Serializable {
      * 菜单图标
      */
     private String icon;
+
+    /**
+     * 隐藏表达式
+     */
+    private String hiddenExpression;
+
+    /**
+     * 停用表达式
+     */
+    private String shopExpression;
 
     /**
      * 备注

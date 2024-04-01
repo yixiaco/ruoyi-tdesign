@@ -385,7 +385,7 @@ import { computed, getCurrentInstance, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import type { TreeModel } from '@/api/model/resultModel';
-import { roleMenuTreeselect, treeselect as menuTreeselect } from '@/api/system/menu';
+import { roleMenuTreeSelect, menuTreeSelect as menuTreeselect } from '@/api/system/menu';
 import type { SysRoleForm, SysRoleQuery, SysRoleVo } from '@/api/system/model/roleModel';
 import {
   addRole,
@@ -643,7 +643,7 @@ function handleUpdate(row?: SysRoleVo) {
 }
 /** 根据角色ID查询菜单树结构 */
 function getRoleMenuTreeselect(roleId: number) {
-  return roleMenuTreeselect(roleId).then((response) => {
+  return roleMenuTreeSelect(roleId).then((response) => {
     menuOptions.value = response.data.menus;
     return response;
   });

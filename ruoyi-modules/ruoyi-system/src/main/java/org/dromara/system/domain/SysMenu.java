@@ -22,7 +22,6 @@ import java.util.List;
  *
  * @author Lion Li
  */
-
 @Data
 @TableName("sys_menu")
 public class SysMenu implements Serializable {
@@ -107,21 +106,14 @@ public class SysMenu implements Serializable {
     private String icon;
 
     /**
-     * 备注
+     * 隐藏表达式
      */
-    private String remark;
+    private String hiddenExpression;
 
     /**
-     * 父菜单名称
+     * 停用表达式
      */
-    @TableField(exist = false)
-    private String parentName;
-
-    /**
-     * 子菜单
-     */
-    @TableField(exist = false)
-    private List<SysMenu> children = new ArrayList<>();
+    private String shopExpression;
 
     /**
      * 创建部门
@@ -153,6 +145,22 @@ public class SysMenu implements Serializable {
     @TableField(fill = FieldFill.INSERT_UPDATE)
     private Date updateTime;
 
+    /**
+     * 备注
+     */
+    private String remark;
+
+    /**
+     * 父菜单名称
+     */
+    @TableField(exist = false)
+    private String parentName;
+
+    /**
+     * 子菜单
+     */
+    @TableField(exist = false)
+    private List<SysMenu> children = new ArrayList<>();
 
 
     /**

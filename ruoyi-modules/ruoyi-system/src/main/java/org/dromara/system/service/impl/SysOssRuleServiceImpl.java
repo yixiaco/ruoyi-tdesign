@@ -15,7 +15,7 @@ import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.service.OssRuleService;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
-import org.dromara.common.core.utils.spring.SpringExpressionUtil;
+import org.dromara.common.core.utils.spring.SpringExpressionCreated;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.redis.utils.RedisLockUtil;
@@ -188,7 +188,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
      *
      * @param fieldName   字段名称
      * @param originalUrl url
-     * @param ruleNames       限定使用规则，为空则不限制
+     * @param ruleNames   限定使用规则，为空则不限制
      * @param join        字段与规则的连接符
      * @param useDefault  指定规则时，是否使用默认规则。 指定的规则不存在时，即使是false也将使用默认规则
      * @return
@@ -279,7 +279,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
         variable.put("path", String.join("/", segments.subList(0, segments.size() - 1)));
         variable.put("filename", segments.get(segments.size() - 1));
         variable.put("url", url);
-        return SpringExpressionUtil.parseTemplateExpression(rule, variable);
+        return SpringExpressionCreated.createSimple(variable).getValueString(rule);
     }
 
     /**
