@@ -66,9 +66,9 @@ public class PageQuery implements Serializable {
     public static final int DEFAULT_PAGE_NUM = 1;
 
     /**
-     * 每页显示记录数 默认值 默认查全部
+     * 每页显示记录数 默认值 10
      */
-    public static final int DEFAULT_PAGE_SIZE = Integer.MAX_VALUE;
+    public static final int DEFAULT_PAGE_SIZE = 10;
 
     /**
      * 使用请求参数设置分页页码
