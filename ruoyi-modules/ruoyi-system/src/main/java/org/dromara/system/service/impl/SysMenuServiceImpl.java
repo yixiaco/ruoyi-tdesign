@@ -198,7 +198,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
     private List<RouterVo> buildMenus(String path, List<SysMenu> menus) {
         List<RouterVo> routers = new LinkedList<>();
+        SpringExpressionCreated standard = SpringExpressionCreated.createStandard(SpringUtils.getApplicationContext().getEnvironment());
         for (SysMenu menu : menus) {
+            if (StrUtil.isNotBlank(menu.getShopExpression()) && standard.equalsValue(menu.getShopExpression(), true)) {
+                continue;
+            }
             RouterVo router = new RouterVo();
             router.setName(menu.getRouteName());
             router.setPath(menu.getRouterPath());
@@ -209,7 +213,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             meta.setIcon(menu.getIcon());
             meta.setNoCache(Objects.equals(YesNoEnum.NO.getCodeNum(), menu.getIsCache()));
             meta.setLink(menu.getPath());
-            meta.setHidden(ShowHiddenEnum.HIDDEN.getCode().equals(menu.getVisible()));
+            if (StrUtil.isNotBlank(menu.getHiddenExpression()) && standard.equalsValue(menu.getHiddenExpression(), true)) {
+                meta.setHidden(true);
+            } else {
+                meta.setHidden(ShowHiddenEnum.HIDDEN.getCode().equals(menu.getVisible()));
+            }
             if (MenuTypeEnum.MENU.getType().equals(menu.getMenuType())) {
                 meta.setComponentName(StringUtils.blankToDefault(menu.getComponentName(), router.getName()));
             }
@@ -340,6 +348,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public int updateMenu(SysMenuBo bo) {
+        checkExpression(bo);
         if (!checkMenuNameUnique(bo)) {
             throw new ServiceException("修改菜单'" + bo.getMenuName() + "'失败，菜单名称已存在");
         } else if (!checkMenuPathUnique(bo)) {
@@ -373,9 +382,25 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
         return baseMapper.deleteById(menuId);
     }
 
+    /**
+     * 检查表达式是否正确
+     *
+     * @param bo
+     */
     private void checkExpression(SysMenuBo bo) {
-        if (StrUtil.isBlank(bo.getHiddenExpression())) {
-            String valueString = SpringExpressionCreated.createStandard(SpringUtils.getApplicationContext().getEnvironment()).getValueString(bo.getHiddenExpression());
+        if (StrUtil.isNotBlank(bo.getHiddenExpression())) {
+            boolean isBoolean = SpringExpressionCreated.createStandard(SpringUtils.getApplicationContext().getEnvironment())
+                .isValueType(bo.getHiddenExpression(), boolean.class);
+            if (!isBoolean) {
+                throw new ServiceException("保存菜单'" + bo.getMenuName() + "'失败，隐藏菜单表达式错误！");
+            }
+        }
+        if (StrUtil.isNotBlank(bo.getShopExpression())) {
+            boolean isBoolean = SpringExpressionCreated.createStandard(SpringUtils.getApplicationContext().getEnvironment())
+                .isValueType(bo.getShopExpression(), boolean.class);
+            if (!isBoolean) {
+                throw new ServiceException("保存菜单'" + bo.getMenuName() + "'失败，停用菜单表达式错误！");
+            }
         }
     }
 
