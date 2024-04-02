@@ -27,6 +27,6 @@ declare module 'vue-router' {
     // 面包屑重定向地址
     breadcrumbRedirect?: string;
     // 组件名称
-    conponentName?: string;
+    componentName?: string;
   }
 }

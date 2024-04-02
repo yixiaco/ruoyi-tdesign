@@ -199,12 +199,12 @@ export const getRoutesExpanded = () => {
   return uniq(expandedRoutes);
 };
 
-export const getActive = (route: RouteLocationNormalizedLoaded, maxLevel = 3): string => {
-  if (!route.path) {
+export const getActive = (path: string, maxLevel = 3): string => {
+  if (!path) {
     return '';
   }
 
-  return route.path
+  return path
     .split('/')
     .filter((_item: string, index: number) => index <= maxLevel && index > 0)
     .map((item: string) => `/${item}`)

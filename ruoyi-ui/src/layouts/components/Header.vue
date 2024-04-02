@@ -153,16 +153,17 @@ const toggleSettingPanel = () => {
 
 // const active = computed(() => getActive());
 const active = computed(() => {
-  const { path } = route;
+  const { path, meta } = route;
+  const effectivePath = meta.activeMenu ?? path;
   if (settingStore.layout === 'mix') {
     if (settingStore.splitMenu) {
-      if (path && path.lastIndexOf('/') > 0) {
-        const tmpPath = path.substring(1, path.length);
+      if (effectivePath && effectivePath.lastIndexOf('/') > 0) {
+        const tmpPath = effectivePath.substring(1, effectivePath.length);
         return `/${tmpPath.substring(0, tmpPath.indexOf('/'))}`;
       }
     }
   }
-  return getActive(route);
+  return getActive(effectivePath);
 });
 
 const layoutCls = computed(() => [`${prefix}-header-layout`]);
