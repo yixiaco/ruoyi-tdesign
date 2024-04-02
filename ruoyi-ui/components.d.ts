@@ -66,6 +66,7 @@ declare module 'vue' {
     TLoading: typeof import('tdesign-vue-next')['Loading']
     TMenu: typeof import('tdesign-vue-next')['Menu']
     TMenuItem: typeof import('tdesign-vue-next')['MenuItem']
+    ToggleAdvanced: typeof import('./src/components/toggle-advanced/index.vue')['default']
     TOption: typeof import('tdesign-vue-next')['Option']
     TPagination: typeof import('tdesign-vue-next')['Pagination']
     TPopup: typeof import('tdesign-vue-next')['Popup']

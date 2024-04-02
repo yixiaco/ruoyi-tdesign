@@ -109,6 +109,7 @@
       :header="title"
       destroy-on-close
       :close-on-overlay-click="false"
+      placement="center"
       width="680px"
       attach="body"
       @confirm="onConfirm"
@@ -291,6 +292,26 @@
                 </t-radio-group>
               </t-form-item>
             </t-col>
+            <toggle-advanced v-if="form.menuType !== 'F'">
+              <t-col :span="12">
+                <t-form-item
+                  label="隐藏表达式"
+                  name="hiddenExpression"
+                  help="使用SpEL表达式注入变量，返回值只能为true或false"
+                >
+                  <t-input v-model="form.hiddenExpression" placeholder="请输入隐藏表达式" clearable />
+                </t-form-item>
+              </t-col>
+              <t-col :span="12">
+                <t-form-item
+                  label="停用表达式"
+                  name="shopExpression"
+                  help="使用SpEL表达式注入变量，返回值只能为true或false"
+                >
+                  <t-input v-model="form.shopExpression" placeholder="请输入停用表达式" clearable />
+                </t-form-item>
+              </t-col>
+            </toggle-advanced>
           </t-row>
         </t-form>
       </t-loading>
@@ -362,6 +383,20 @@
             </t-col>
             <t-col :span="6">
               <t-form-item label="菜单图标">{{ form.icon }}</t-form-item>
+            </t-col>
+            <t-col :span="12">
+              <t-form-item label="隐藏表达式">
+                <template v-if="form.hiddenExpression">
+                  <t-tag>{{ form.hiddenExpression }}</t-tag>
+                </template>
+              </t-form-item>
+            </t-col>
+            <t-col :span="12">
+              <t-form-item label="停用表达式">
+                <template v-if="form.shopExpression">
+                  <t-tag>{{ form.shopExpression }}</t-tag>
+                </template>
+              </t-form-item>
             </t-col>
             <t-col :span="6">
               <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>

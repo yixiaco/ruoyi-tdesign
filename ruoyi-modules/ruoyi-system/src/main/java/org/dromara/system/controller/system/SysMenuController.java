@@ -61,8 +61,8 @@ public class SysMenuController extends BaseController {
     }, mode = SaMode.OR)
     @SaCheckPermission("system:menu:list")
     @GetMapping("/list")
-    public R<List<SysMenuVo>> list(SysMenuQuery menu) {
-        List<SysMenuVo> menus = menuService.selectMenuList(menu, LoginHelper.getUserId());
+    public R<List<SysMenuVo>> list(SysMenuQuery query) {
+        List<SysMenuVo> menus = menuService.selectMenuList(query, LoginHelper.getUserId());
         return R.ok(menus);
     }
 
@@ -96,9 +96,9 @@ public class SysMenuController extends BaseController {
      * 获取菜单下拉树列表
      */
     @SaCheckPermission("system:menu:query")
-    @GetMapping("/treeselect")
-    public R<List<Tree<Long>>> treeselect(SysMenuQuery menu) {
-        List<SysMenuVo> menus = menuService.selectMenuList(menu, LoginHelper.getUserId());
+    @GetMapping("/treeSelect")
+    public R<List<Tree<Long>>> treeSelect(SysMenuQuery query) {
+        List<SysMenuVo> menus = menuService.selectMenuList(query, LoginHelper.getUserId());
         return R.ok(menuService.buildMenuTreeSelect(menus));
     }
 
@@ -108,8 +108,8 @@ public class SysMenuController extends BaseController {
      * @param roleId 角色ID
      */
     @SaCheckPermission("system:menu:query")
-    @GetMapping(value = "/roleMenuTreeselect/{roleId}")
-    public R<MenuTreeSelectVo> roleMenuTreeselect(@PathVariable("roleId") Long roleId) {
+    @GetMapping(value = "/roleMenuTreeSelect/{roleId}")
+    public R<MenuTreeSelectVo> roleMenuTreeSelect(@PathVariable("roleId") Long roleId) {
         List<SysMenuVo> menus = menuService.selectMenuList(LoginHelper.getUserId());
         MenuTreeSelectVo selectVo = new MenuTreeSelectVo();
         selectVo.setCheckedKeys(menuService.selectMenuListByRoleId(roleId));
@@ -124,8 +124,8 @@ public class SysMenuController extends BaseController {
      */
     @SaCheckRole(TenantConstants.SUPER_ADMIN_ROLE_KEY)
     @SaCheckPermission("system:menu:query")
-    @GetMapping(value = "/tenantPackageMenuTreeselect/{packageId}")
-    public R<MenuTreeSelectVo> tenantPackageMenuTreeselect(@PathVariable("packageId") Long packageId) {
+    @GetMapping(value = "/tenantPackageMenuTreeSelect/{packageId}")
+    public R<MenuTreeSelectVo> tenantPackageMenuTreeSelect(@PathVariable("packageId") Long packageId) {
         List<SysMenuVo> menus = menuService.selectMenuList(LoginHelper.getUserId());
         MenuTreeSelectVo selectVo = new MenuTreeSelectVo();
         selectVo.setCheckedKeys(menuService.selectMenuListByPackageId(packageId));

@@ -9,7 +9,7 @@ import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MessageUtils;
 import org.dromara.common.core.utils.ServletUtils;
 import org.dromara.common.core.utils.StringUtils;
-import org.dromara.common.core.utils.spring.SpringExpressionUtil;
+import org.dromara.common.core.utils.spring.SpringExpressionCreated;
 import org.dromara.common.ratelimiter.annotation.RateLimiter;
 import org.dromara.common.ratelimiter.enums.LimitType;
 import org.dromara.common.redis.utils.RedisUtils;
@@ -60,9 +60,9 @@ public class RateLimiterAspect {
         // 判断是否是spel格式
         try {
             if (StringUtils.containsAny(key, "#{") && StringUtils.containsAny(key, "}")) {
-                key = SpringExpressionUtil.parseAspectTemplateExpression(rateLimiter.key(), point) + split;
+                key = SpringExpressionCreated.createStandardTemplate(point).getValueString(rateLimiter.key()) + split;
             } else if (StringUtils.containsAny(key, "#")) {
-                key = SpringExpressionUtil.parseAspectExpression(rateLimiter.key(), point) + split;
+                key = SpringExpressionCreated.createStandard(point).getValueString(rateLimiter.key()) + split;
             }
         } catch (Exception e) {
             throw new ServiceException("限流key解析异常，请联系管理员!");

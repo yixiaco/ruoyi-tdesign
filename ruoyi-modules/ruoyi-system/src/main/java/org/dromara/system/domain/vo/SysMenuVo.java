@@ -121,6 +121,18 @@ public class SysMenuVo implements Serializable {
     private String icon;
 
     /**
+     * 隐藏表达式
+     */
+    @ExcelProperty(value = "隐藏表达式")
+    private String hiddenExpression;
+
+    /**
+     * 停用表达式
+     */
+    @ExcelProperty(value = "停用表达式")
+    private String shopExpression;
+
+    /**
      * 创建部门
      */
     private Long createDept;

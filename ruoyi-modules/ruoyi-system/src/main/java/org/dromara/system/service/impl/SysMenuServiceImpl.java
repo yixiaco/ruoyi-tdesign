@@ -7,8 +7,6 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import cn.hutool.json.JSONUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.HttpStatus;
 import org.dromara.common.core.constant.UserConstants;
@@ -21,6 +19,8 @@ import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.TreeBuildUtils;
+import org.dromara.common.core.utils.spring.SpringExpressionCreated;
+import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.mybatis.core.page.SortQuery;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.tenant.helper.TenantHelper;
@@ -78,27 +78,18 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
     /**
      * 查询系统菜单列表
      *
-     * @param menu 菜单信息
+     * @param query 查询对象
      * @return 菜单列表
      */
     @Override
-    public List<SysMenuVo> selectMenuList(SysMenuQuery menu, Long userId) {
-        List<SysMenuVo> menuList;
+    public List<SysMenuVo> selectMenuList(SysMenuQuery query, Long userId) {
+        query.setUserId(userId);
         // 管理员显示所有菜单信息
         if (LoginHelper.isSuperAdmin(userId)) {
-            menuList = SortQuery.of(() -> baseMapper.queryList(menu));
+            return SortQuery.of(() -> baseMapper.queryList(query));
         } else {
-            QueryWrapper<SysMenu> wrapper = Wrappers.query();
-            wrapper.eq("sur.user_id", userId)
-                .like(StringUtils.isNotBlank(menu.getMenuName()), "m.menu_name", menu.getMenuName())
-                .eq(StringUtils.isNotBlank(menu.getVisible()), "m.visible", menu.getVisible())
-                .eq(StringUtils.isNotBlank(menu.getStatus()), "m.status", menu.getStatus())
-                .orderByAsc("m.parent_id")
-                .orderByAsc("m.order_num");
-            List<SysMenu> list = SortQuery.of(() -> baseMapper.selectMenuListByUserId(wrapper));
-            menuList = MapstructUtils.convert(list, SysMenuVo.class);
+            return SortQuery.of(() -> baseMapper.selectMenuListByUserId(query));
         }
-        return menuList;
     }
 
     /**
@@ -207,7 +198,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
 
     private List<RouterVo> buildMenus(String path, List<SysMenu> menus) {
         List<RouterVo> routers = new LinkedList<>();
+        SpringExpressionCreated standard = SpringExpressionCreated.createStandard(SpringUtils.getApplicationContext().getEnvironment());
         for (SysMenu menu : menus) {
+            if (StrUtil.isNotBlank(menu.getShopExpression()) && standard.equalsValue(menu.getShopExpression(), true)) {
+                continue;
+            }
             RouterVo router = new RouterVo();
             router.setName(menu.getRouteName());
             router.setPath(menu.getRouterPath());
@@ -218,7 +213,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             meta.setIcon(menu.getIcon());
             meta.setNoCache(Objects.equals(YesNoEnum.NO.getCodeNum(), menu.getIsCache()));
             meta.setLink(menu.getPath());
-            meta.setHidden(ShowHiddenEnum.HIDDEN.getCode().equals(menu.getVisible()));
+            if (StrUtil.isNotBlank(menu.getHiddenExpression()) && standard.equalsValue(menu.getHiddenExpression(), true)) {
+                meta.setHidden(true);
+            } else {
+                meta.setHidden(ShowHiddenEnum.HIDDEN.getCode().equals(menu.getVisible()));
+            }
             if (MenuTypeEnum.MENU.getType().equals(menu.getMenuType())) {
                 meta.setComponentName(StringUtils.blankToDefault(menu.getComponentName(), router.getName()));
             }
@@ -329,6 +328,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public int insertMenu(SysMenuBo bo) {
+        checkExpression(bo);
         if (!checkMenuNameUnique(bo)) {
             throw new ServiceException("新增菜单'" + bo.getMenuName() + "'失败，菜单名称已存在");
         } else if (!checkMenuPathUnique(bo)) {
@@ -348,6 +348,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      */
     @Override
     public int updateMenu(SysMenuBo bo) {
+        checkExpression(bo);
         if (!checkMenuNameUnique(bo)) {
             throw new ServiceException("修改菜单'" + bo.getMenuName() + "'失败，菜单名称已存在");
         } else if (!checkMenuPathUnique(bo)) {
@@ -379,6 +380,28 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             throw new ServiceException("菜单已被租户套餐分配，不允许删除", HttpStatus.WARN);
         }
         return baseMapper.deleteById(menuId);
+    }
+
+    /**
+     * 检查表达式是否正确
+     *
+     * @param bo
+     */
+    private void checkExpression(SysMenuBo bo) {
+        if (StrUtil.isNotBlank(bo.getHiddenExpression())) {
+            boolean isBoolean = SpringExpressionCreated.createStandard(SpringUtils.getApplicationContext().getEnvironment())
+                .isValueType(bo.getHiddenExpression(), boolean.class);
+            if (!isBoolean) {
+                throw new ServiceException("保存菜单'" + bo.getMenuName() + "'失败，隐藏菜单表达式错误！");
+            }
+        }
+        if (StrUtil.isNotBlank(bo.getShopExpression())) {
+            boolean isBoolean = SpringExpressionCreated.createStandard(SpringUtils.getApplicationContext().getEnvironment())
+                .isValueType(bo.getShopExpression(), boolean.class);
+            if (!isBoolean) {
+                throw new ServiceException("保存菜单'" + bo.getMenuName() + "'失败，停用菜单表达式错误！");
+            }
+        }
     }
 
     /**

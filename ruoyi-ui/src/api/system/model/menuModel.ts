@@ -47,6 +47,10 @@ export interface SysMenuForm {
   perms?: string;
   /** 菜单图标 */
   icon?: string;
+  /** 隐藏表达式 */
+  hiddenExpression?: string;
+  /** 停用表达式 */
+  shopExpression?: string;
   /** 备注 */
   remark?: string;
 }
@@ -84,6 +88,10 @@ export interface SysMenuVo {
   perms?: string;
   /** 菜单图标 */
   icon?: string;
+  /** 隐藏表达式 */
+  hiddenExpression?: string;
+  /** 停用表达式 */
+  shopExpression?: string;
   /** 创建时间 */
   createTime?: any;
   /** 更新时间 */

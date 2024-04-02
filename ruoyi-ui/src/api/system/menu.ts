@@ -24,23 +24,23 @@ export function getMenu(menuId: number) {
 }
 
 // 查询菜单下拉树结构
-export function treeselect() {
+export function menuTreeSelect() {
   return request.get<R<Array<TreeModel<number>>>>({
-    url: '/system/menu/treeselect',
+    url: '/system/menu/treeSelect',
   });
 }
 
 // 根据角色ID查询菜单下拉树结构
-export function roleMenuTreeselect(roleId: number) {
+export function roleMenuTreeSelect(roleId: number) {
   return request.get<R<RoleMenuTreeselect>>({
-    url: `/system/menu/roleMenuTreeselect/${roleId}`,
+    url: `/system/menu/roleMenuTreeSelect/${roleId}`,
   });
 }
 
 // 根据角色ID查询菜单下拉树结构
-export function tenantPackageMenuTreeselect(packageId: number) {
+export function tenantPackageMenuTreeSelect(packageId: number) {
   return request.get<R<MenuTreeSelectVo>>({
-    url: `/system/menu/tenantPackageMenuTreeselect/${packageId}`,
+    url: `/system/menu/tenantPackageMenuTreeSelect/${packageId}`,
   });
 }
 

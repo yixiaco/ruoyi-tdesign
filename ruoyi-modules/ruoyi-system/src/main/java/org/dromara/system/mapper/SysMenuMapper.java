@@ -1,8 +1,6 @@
 package org.dromara.system.mapper;
 
-import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
 import org.dromara.common.core.enums.MenuTypeEnum;
 import org.dromara.common.core.enums.NormalDisableEnum;
@@ -38,10 +36,10 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenu, SysMenuVo> {
     /**
      * 根据用户查询系统菜单列表
      *
-     * @param queryWrapper 查询条件
+     * @param query 查询条件
      * @return 菜单列表
      */
-    List<SysMenu> selectMenuListByUserId(@Param(Constants.WRAPPER) Wrapper<SysMenu> queryWrapper);
+    List<SysMenuVo> selectMenuListByUserId(SysMenuQuery query);
 
     /**
      * 根据用户ID查询权限

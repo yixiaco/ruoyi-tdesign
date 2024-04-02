@@ -5,7 +5,7 @@ import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.dromara.common.core.exception.ServiceException;
-import org.dromara.common.core.utils.spring.SpringExpressionUtil;
+import org.dromara.common.core.utils.spring.SpringExpressionCreated;
 import org.dromara.common.tenant.annotation.DynamicTenant;
 import org.dromara.common.tenant.annotation.IgnoreTenant;
 import org.dromara.common.tenant.helper.TenantHelper;
@@ -63,10 +63,10 @@ public class TenantAspect {
             throw new ServiceException("动态租户未配置值！");
         }
         String tenantId;
-        if (dynamicTenant.value().contains(SpringExpressionUtil.PARSER_CONTEXT.getExpressionPrefix())) {
-            tenantId = SpringExpressionUtil.parseAspectTemplateExpression(dynamicTenant.value(), point);
+        if (dynamicTenant.value().contains(SpringExpressionCreated.PARSER_CONTEXT.getExpressionPrefix())) {
+            tenantId = SpringExpressionCreated.createStandardTemplate(point).getValueString(dynamicTenant.value());
         } else {
-            tenantId = SpringExpressionUtil.parseAspectExpression(dynamicTenant.value(), point);
+            tenantId = SpringExpressionCreated.createStandard(point).getValueString(dynamicTenant.value());
         }
         boolean blank = StrUtil.isBlank(tenantId);
         if (blank && dynamicTenant.required()) {
