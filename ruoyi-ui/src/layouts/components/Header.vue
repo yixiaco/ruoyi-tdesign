@@ -43,7 +43,7 @@
                 <t-dropdown-item
                   v-if="!dynamic"
                   class="operations-dropdown-container-item"
-                  @click="handleNav('/user/profile')"
+                  @click="handleNav('/profile/index')"
                 >
                   <user-circle-icon />{{ $t('layout.header.user') }}
                 </t-dropdown-item>
