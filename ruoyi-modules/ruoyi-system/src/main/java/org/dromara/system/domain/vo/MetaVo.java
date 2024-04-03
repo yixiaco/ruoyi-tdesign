@@ -2,6 +2,7 @@ package org.dromara.system.domain.vo;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
 import lombok.Data;
+import lombok.experimental.Accessors;
 import org.dromara.common.core.utils.StringUtils;
 
 import java.io.Serializable;
@@ -12,6 +13,7 @@ import java.io.Serializable;
  * @author ruoyi
  */
 @Data
+@Accessors(chain = true)
 @JsonInclude(JsonInclude.Include.NON_EMPTY)
 public class MetaVo implements Serializable {
 
@@ -45,7 +47,21 @@ public class MetaVo implements Serializable {
      */
     private String componentName;
 
+    /**
+     * 单层路由
+     */
+    private Boolean single;
+
+    /**
+     * 激活的菜单。例如字典数据激活的菜单是字典类型菜单，/system/dict
+     */
+    private String activeMenu;
+
     public MetaVo() {
+    }
+
+    public MetaVo(Boolean single) {
+        this.single = single;
     }
 
     public MetaVo(String title, String icon) {

@@ -1,5 +1,5 @@
 import uniq from 'lodash/uniq';
-import type { RouteLocationNormalizedLoaded, RouteRecordRaw } from 'vue-router';
+import type { RouteRecordRaw } from 'vue-router';
 import { createRouter, createWebHistory } from 'vue-router';
 
 import Layout from '@/layouts/index.vue';
@@ -78,14 +78,14 @@ export const defaultRouterList: Array<RouteRecordRaw> = [
     ],
   },
   {
-    path: '/user',
+    path: '/profile',
     component: Layout,
     meta: {
       hidden: true,
     },
     children: [
       {
-        path: 'profile',
+        path: 'index',
         component: () => import('@/pages/system/user/profile/index.vue'),
         name: 'Profile',
         meta: { title: '个人中心', icon: 'user' },
@@ -199,12 +199,12 @@ export const getRoutesExpanded = () => {
   return uniq(expandedRoutes);
 };
 
-export const getActive = (route: RouteLocationNormalizedLoaded, maxLevel = 3): string => {
-  if (!route.path) {
+export const getActive = (path: string, maxLevel = 3): string => {
+  if (!path) {
     return '';
   }
 
-  return route.path
+  return path
     .split('/')
     .filter((_item: string, index: number) => index <= maxLevel && index > 0)
     .map((item: string) => `/${item}`)

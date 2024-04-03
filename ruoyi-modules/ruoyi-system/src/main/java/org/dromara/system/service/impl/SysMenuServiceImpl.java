@@ -231,16 +231,19 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 RouterVo childRoute = router.getChildren().get(0);
                 router.setRedirect(redirect + "/" + childRoute.getPath());
             } else if (menu.isMenuFrame()) {
+                meta.setSingle(true);
                 router.setMeta(meta);
                 router.setPath(router.getPath() + menu.getPath());
                 List<RouterVo> childrenList = new ArrayList<>();
                 RouterVo children = new RouterVo();
-                children.setPath("");
+                children.setPath("index");
                 children.setComponent(menu.getComponent());
                 children.setName(StringUtils.capitalize(menu.getPath()));
                 children.setQuery(getQueryParam(menu.getQueryParam()));
+                children.setMeta(new MetaVo().setActiveMenu(router.getPath()));
                 childrenList.add(children);
                 router.setChildren(childrenList);
+                router.setRedirect(router.getPath() + "/" + children.getPath());
             } else if (Objects.equals(menu.getParentId(), 0L) && menu.isInnerLink()) {
                 router.setMeta(new MetaVo(menu.getMenuName(), menu.getIcon()));
                 router.setPath("/");
