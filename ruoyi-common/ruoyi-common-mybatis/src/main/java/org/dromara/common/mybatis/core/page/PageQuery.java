@@ -178,7 +178,7 @@ public class PageQuery implements Serializable {
         }
         Page<T> page = new Page<>(pageNum, pageSize, isSearchCount);
         if (sortQuery != null) {
-            List<OrderItem> orderItems = sortQuery.build();
+            List<OrderItem> orderItems = sortQuery.getOrderItems();
             if (CollUtil.isNotEmpty(orderItems)) {
                 page.addOrder(orderItems);
             }

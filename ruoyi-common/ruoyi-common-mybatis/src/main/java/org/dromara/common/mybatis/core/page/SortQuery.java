@@ -15,9 +15,9 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.StringJoiner;
 import java.util.function.Supplier;
 import java.util.regex.Pattern;
-import java.util.stream.Collectors;
 
 /**
  * 排序查询实体类
@@ -47,49 +47,79 @@ public class SortQuery implements Serializable {
     public static final String IS_ASC = "isAsc";
 
     /**
-     * 排序列
+     * 排序
      */
-    private String orderByColumn;
+    private final List<OrderItem> orderItems = new ArrayList<>();
 
     /**
-     * 排序的方向desc或者asc
+     * 清除排序条件
      */
-    private String isAsc;
-
-    /**
-     * 使用请求参数设置排序字段名称
-     *
-     * @return
-     */
-    public SortQuery defaultOrderByColumn() {
-        orderByColumn = getRequestOrderByColumn();
+    public SortQuery clear() {
+        orderItems.clear();
         return this;
     }
 
     /**
-     * 使用请求参数设置排序顺序
-     *
-     * @return
+     * 使用请求参数设置排序
      */
-    public SortQuery defaultIsAsc() {
-        isAsc = getRequestIsAsc();
+    public SortQuery defaultOrder() {
+        orderItems.clear();
+        String orderByColumn = getRequestOrderByColumn();
+        String isAsc = getRequestIsAsc();
+        List<OrderItem> itemList = buildOrderItem(orderByColumn, isAsc);
+        if (itemList != null) {
+            orderItems.addAll(itemList);
+        }
         return this;
+    }
+
+    /**
+     * 添加排序字段
+     *
+     * @param orderByColumn 排序字段
+     */
+    public SortQuery addOrderByColumn(String orderByColumn) {
+        if (StrUtil.isNotBlank(orderByColumn)) {
+            this.orderItems.add(OrderItem.asc(orderByColumn));
+        }
+        return this;
+    }
+
+    /**
+     * 添加排序字段
+     *
+     * @param orderByColumn 排序字段
+     * @param isAsc         是否升序
+     */
+    public SortQuery addOrderByColumn(String orderByColumn, boolean isAsc) {
+        if (StrUtil.isNotBlank(orderByColumn)) {
+            this.orderItems.add(isAsc ? OrderItem.asc(orderByColumn) : OrderItem.desc(orderByColumn));
+        }
+        return this;
+    }
+
+    /**
+     * 使用默认的请求参数排序创建对象
+     */
+    public static SortQuery of() {
+        SortQuery sortQuery = new SortQuery();
+        return sortQuery.defaultOrder();
+    }
+
+    /**
+     * 使用升序排序创建对象
+     */
+    public static SortQuery of(String orderByColumn) {
+        SortQuery sortQuery = new SortQuery();
+        return sortQuery.addOrderByColumn(orderByColumn);
     }
 
     /**
      * 使用排序创建对象
-     *
-     * @return
      */
-    public static SortQuery of() {
+    public static SortQuery of(String orderByColumn, boolean isAsc) {
         SortQuery sortQuery = new SortQuery();
-        return sortQuery
-            .defaultOrderByColumn()
-            .defaultIsAsc();
-    }
-
-    public List<OrderItem> build() {
-        return buildOrderItem(orderByColumn, isAsc);
+        return sortQuery.addOrderByColumn(orderByColumn, isAsc);
     }
 
     /**
@@ -99,10 +129,11 @@ public class SortQuery implements Serializable {
      * @return
      */
     public static String getOrderBy(List<OrderItem> orders) {
-        return orders
-            .stream()
-            .map(orderItem -> orderItem.getColumn() + (orderItem.isAsc() ? " asc" : " desc"))
-            .collect(Collectors.joining(","));
+        StringJoiner joiner = new StringJoiner(",");
+        for (OrderItem order : orders) {
+            joiner.add(order.getColumn() + (order.isAsc() ? " asc" : " desc"));
+        }
+        return joiner.toString();
     }
 
     /**
@@ -113,9 +144,8 @@ public class SortQuery implements Serializable {
      * @return TableDataInfo
      */
     public <T> List<T> execute(Supplier<List<T>> supplier) {
-        List<OrderItem> orders = build();
-        if (CollUtil.isNotEmpty(orders)) {
-            String orderBy = getOrderBy(orders);
+        if (CollUtil.isNotEmpty(orderItems)) {
+            String orderBy = getOrderBy(orderItems);
             PageHelper.orderBy(orderBy);
             try {
                 return supplier.get();
@@ -129,8 +159,6 @@ public class SortQuery implements Serializable {
 
     /**
      * 获取请求中的排序字段
-     *
-     * @return
      */
     public static String getRequestOrderByColumn() {
         return ServletUtils.getParameter(ORDER_BY_COLUMN);
