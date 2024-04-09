@@ -2,6 +2,7 @@ import path from 'node:path';
 
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
+import copy from 'rollup-plugin-copy';
 import AutoImport from 'unplugin-auto-import/vite';
 import { TDesignResolver } from 'unplugin-vue-components/resolvers';
 import Components from 'unplugin-vue-components/vite';
@@ -43,6 +44,20 @@ export default ({ mode }: ConfigEnv): UserConfig => {
     },
 
     plugins: [
+      copy({
+        targets: [
+          {
+            src: 'node_modules/tinymce/skins/ui/oxide/*.css',
+            dest: 'public/tinymce/skins/ui/oxide/', // 目标public目录下的子目录
+          },
+          {
+            src: 'node_modules/tinymce/skins/ui/oxide-dark/*.css',
+            dest: 'public/tinymce/skins/ui/oxide-dark/', // 目标public目录下的子目录
+          },
+        ],
+        copyOnce: true,
+        verbose: true,
+      }),
       prismjs({
         // 放置常用的代码
         languages: [
@@ -135,7 +150,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
         '/api': 'http://127.0.0.1:3000/',
         // https://cn.vitejs.dev/config/#server-proxy
         '/dev-api': {
-          target: 'http://localhost:8080',
+          target: 'http://localhost:8082',
           changeOrigin: true,
           ws: true,
           rewrite: (p) => p.replace(/^\/dev-api/, ''),

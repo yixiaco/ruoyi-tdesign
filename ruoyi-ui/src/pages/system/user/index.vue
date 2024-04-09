@@ -224,7 +224,8 @@
       :header="title"
       destroy-on-close
       :close-on-overlay-click="false"
-      width="650px"
+      placement="center"
+      width="700px"
       attach="body"
       @close="cancel"
       @confirm="submitForm"
@@ -270,12 +271,18 @@
             </t-col>
             <t-col v-if="!form.userId" :span="6">
               <t-form-item label="用户名称" name="userName">
-                <t-input v-model="form.userName" placeholder="请输入用户名称" :maxlength="30" />
+                <t-input v-model="form.userName" placeholder="请输入用户名称" :maxlength="30" autocomplete="off" />
               </t-form-item>
             </t-col>
             <t-col v-if="!form.userId" :span="6">
               <t-form-item label="用户密码" name="password">
-                <t-input v-model="form.password" placeholder="请输入用户密码" type="password" :maxlength="20" />
+                <t-input
+                  v-model="form.password"
+                  placeholder="请输入用户密码"
+                  type="password"
+                  :maxlength="20"
+                  autocomplete="new-password"
+                />
               </t-form-item>
             </t-col>
             <t-col :span="6">

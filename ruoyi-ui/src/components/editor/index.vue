@@ -28,8 +28,8 @@
 // eslint-disable-next-line
 import tinymce from 'tinymce/tinymce';
 import 'tinymce/models/dom';
-import 'tinymce/icons/default'; // 引入编辑器图标icon，不引入则不显示对应图标
-import 'tinymce/themes/silver'; // 引入编辑器主题
+import 'tinymce/icons/default/icons.min.js'; // 引入编辑器图标icon，不引入则不显示对应图标
+import 'tinymce/themes/silver/theme.min.js'; // 引入编辑器主题
 // Skins
 import 'tinymce/skins/ui/oxide/skin.min.css';
 import 'tinymce/skins/ui/oxide/content.min.css';
@@ -60,15 +60,14 @@ import 'tinymce/plugins/lists'; // 列表插件
 import 'tinymce/plugins/wordcount'; // 字数统计
 import 'tinymce/plugins/help'; // 帮助
 import 'tinymce/plugins/quickbars'; // 快速工具栏
-import 'tinymce/plugins/template'; // 内容模板
 import 'tinymce/plugins/emoticons'; // 表情
-import 'tinymce/plugins/help/js/i18n/keynav/en.js'; // 导入这个help才能够显示
+import 'tinymce/plugins/help/js/i18n/keynav/zh_CN.js'; // 导入这个help才能够显示
 
 import 'prismjs'; // 代码高亮
 import Editor from '@tinymce/tinymce-vue';
 import type { RawEditorOptions } from 'tinymce';
 import emojisURL from 'tinymce/plugins/emoticons/js/emojis.js?url';
-import contentDarkURL from 'tinymce/skins/content/dark/content.min.css?url';
+import contentDarkURL from 'tinymce/skins/content/tinymce-5-dark/content.min.css?url';
 import contentURL from 'tinymce/skins/content/default/content.min.css?url';
 import { computed, getCurrentInstance, onMounted, ref, watch } from 'vue';
 
@@ -124,8 +123,8 @@ interface EditorProps {
 const props = withDefaults(defineProps<EditorProps>(), {
   modelValue: '',
   plugins:
-    'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons template',
-  toolbar: `undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | code fullscreen  preview save print | insertfile image media template link anchor codesample | ltr rtl`,
+    'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
+  toolbar: `undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | code fullscreen  preview save print | insertfile image media link anchor codesample | ltr rtl`,
   menubar: 'file edit view insert format tools table help',
   width: '100%',
   height: 600,
@@ -249,10 +248,11 @@ const conf = computed<RawEditorOptions>(() => {
   const config: RawEditorOptions = {
     setup: props.setup,
     promotion: false,
+    license_key: 'gpl',
     // 语言包下载：https://www.tiny.cloud/get-tiny/language-packages/
-    language_url: `${baseURL}/langs/zh-Hans.js`,
-    base_url: '/',
-    language: 'zh-Hans',
+    language_url: `${baseURL}/langs/zh_CN.js`,
+    base_url: baseURL,
+    language: 'zh_CN',
     plugins: props.plugins,
     menubar: props.menubar,
     menu: props.menu,
@@ -302,7 +302,6 @@ const conf = computed<RawEditorOptions>(() => {
     images_upload_handler: imageUploadHandler,
     // 文件选择器类型
     file_picker_types: filePickerTypes.value, // 指定所需的文件选择器类型
-    // images_upload_url: 'http://localhost:3000/upload/album',
     file_picker_callback: (callback, _value, meta) => {
       const mimeList = [
         'text/plain',
@@ -402,21 +401,6 @@ const conf = computed<RawEditorOptions>(() => {
     // emoticons_images_url: 'http://my.server/images/emoticons/',
     // 此选项使您能够控制 TinyMCE 是否智能并将 URL 恢复为其原始值。默认情况下，URL 会自动转换（混乱），因为浏览器的内置逻辑就是这样工作的。除非您将其存储起来，否则无法获取真实的 URL。如果将此选项设置为 false，它会尝试保持这些 URL 不变。此选项默认设置为 true，这意味着 URL 被强制为绝对或相对，具体取决于 relative_urls 的状态。
     convert_urls: false, // 这个参数加上去就可以了
-    // 配置参考文档 https://www.tiny.cloud/docs/tinymce/6/template/
-    template_mdate_format: '%Y-%m-%d %H:%M:%S',
-    template_cdate_format: '%Y-%m-%d %H:%M:%S',
-    templates: [
-      {
-        title: '修改日期示例',
-        description: '添加指示文档上次修改时间的时间戳。',
-        content: '<p>上一次更改: <time class="mdate">这里将会被替换为修改日期。</time></p>',
-      },
-      {
-        title: '创建日期示例',
-        description: '添加指示文档创建时间的时间戳。',
-        content: '<p>创建时间: <time class="cdate">这里将会被替换为创建日期。</time></p>',
-      },
-    ],
   };
   return config;
 });

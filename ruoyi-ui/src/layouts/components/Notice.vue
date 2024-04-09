@@ -61,7 +61,12 @@ import { closeWebsocket, initWebSocket } from '@/utils/websocket';
 
 onMounted(() => {
   const protocol = window.location.protocol === 'https:' ? 'wss://' : 'ws://';
-  initWebSocket(`${protocol}${window.location.host}${import.meta.env.VITE_APP_BASE_API}/resource/websocket`);
+  const baseApi = import.meta.env.VITE_APP_BASE_API;
+  let address = `${protocol}${window.location.host}${baseApi}`;
+  if (baseApi.startsWith('http')) {
+    address = baseApi.replace('http', 'ws');
+  }
+  initWebSocket(`${address}/resource/websocket`);
 });
 
 onUnmounted(() => {
