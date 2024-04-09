@@ -240,8 +240,9 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
             Optional<SysOssRule> overwriteRuleOpt = StreamUtils.findFirst(list, o -> YesNoEnum.YES.getCodeStr().equals(o.getIsOverwrite()));
             String realUrl = url;
             // 如果存在覆盖默认字段值规则，则覆盖默认值
+            HashMap<String, Object> urlVariable = getUrlVariable(url);
             if (overwriteRuleOpt.isPresent()) {
-                realUrl = getRealUrl(overwriteRuleOpt.get().getRule(), url);
+                realUrl = getRealUrl(overwriteRuleOpt.get().getRule(), urlVariable);
             }
             result.merge(fieldName, realUrl, (s, s2) -> String.join(",", s, s2));
 
@@ -252,7 +253,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
                 .toList();
             for (SysOssRule rule : noOverwriteRule) {
                 String key = fieldName + join + rule.getRuleName();
-                realUrl = getRealUrl(rule.getRule(), url);
+                realUrl = getRealUrl(rule.getRule(), urlVariable);
                 result.merge(key, realUrl, (s, s2) -> String.join(",", s, s2));
             }
         }
@@ -263,10 +264,17 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
      * 得到渲染后的url
      *
      * @param rule 规则
-     * @param url  原始url
+     * @param urlVariable
      * @return
      */
-    private String getRealUrl(String rule, String url) {
+    private String getRealUrl(String rule, HashMap<String, Object> urlVariable) {
+        if (rule.contains("#{") && rule.contains("}")) {
+            return SpringExpressionCreated.createSimpleTemplate(urlVariable).getValueString(rule);
+        }
+        return SpringExpressionCreated.createSimple(urlVariable).getValueString(rule);
+    }
+
+    private static HashMap<String, Object> getUrlVariable(String url) {
         // 解析url
         UrlBuilder builder = UrlBuilder.ofHttp(url, CharsetUtil.CHARSET_UTF_8);
         HashMap<String, Object> variable = new HashMap<>(4);
@@ -279,7 +287,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
         variable.put("path", String.join("/", segments.subList(0, segments.size() - 1)));
         variable.put("filename", segments.get(segments.size() - 1));
         variable.put("url", url);
-        return SpringExpressionCreated.createSimple(variable).getValueString(rule);
+        return variable;
     }
 
     /**

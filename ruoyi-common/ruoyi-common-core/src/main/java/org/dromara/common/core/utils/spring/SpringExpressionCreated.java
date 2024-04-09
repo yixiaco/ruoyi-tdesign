@@ -183,7 +183,7 @@ public class SpringExpressionCreated {
      * @param variable      上下文对象中的变量
      */
     public static SpringExpressionCreated createStandardTemplate(Map<String, Object> variable) {
-        return createInstance(PARSER_CONTEXT, null, getStandardEvaluationContext(variable));
+        return createInstance(PARSER_CONTEXT, getStandardEvaluationContext(variable), null);
     }
 
     /**
@@ -198,7 +198,7 @@ public class SpringExpressionCreated {
      * @param variable      上下文对象中的变量
      */
     public static SpringExpressionCreated createSimpleTemplate(Map<String, Object> variable) {
-        return createInstance(PARSER_CONTEXT, null, getSimpleEvaluationContext(variable));
+        return createInstance(PARSER_CONTEXT, getSimpleEvaluationContext(variable), null);
     }
 
     /**
