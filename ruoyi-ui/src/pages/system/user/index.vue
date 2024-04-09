@@ -788,7 +788,7 @@ function handleDetail(row: SysUserVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const userId = row.userId || ids.value.at(0);
+  const userId = row.userId;
   getUser(userId).then((response) => {
     formView.value = response.data?.user;
     openViewLoading.value = false;

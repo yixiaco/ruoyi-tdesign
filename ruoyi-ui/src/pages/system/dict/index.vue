@@ -349,7 +349,7 @@ function handleDetail(row: SysDictTypeVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const dictId = row.dictId || ids.value.at(0);
+  const dictId = row.dictId;
   getType(dictId).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
@@ -409,7 +409,7 @@ function handleDelete(row?: SysDictTypeVo) {
 }
 /** 导出按钮操作 */
 function handleExport() {
-  proxy.addDateRange(queryParams.value, dateRange.value)
+  proxy.addDateRange(queryParams.value, dateRange.value);
   proxy.download(
     'system/dict/type/export',
     {

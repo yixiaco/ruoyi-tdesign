@@ -1021,6 +1021,7 @@ create table sys_oss_rule  (
     is_overwrite  char(1)      not null                  comment '是否覆盖默认字段值',
     is_default    char(1)      not null                  comment '是否默认（不指定规则时，默认输出的规则）',
     status        char(1)      not null                  comment '启用状态',
+    rule_sort     int          not null default 0        comment '规则顺序',
     create_dept   bigint       null     default null     comment '创建部门',
     create_by     bigint       null     default null     comment '创建者',
     create_time   datetime     null     default null     comment '创建时间',
@@ -1030,8 +1031,8 @@ create table sys_oss_rule  (
     primary key (oss_rule_id) using btree
 ) engine = innodb comment = 'OSS处理规则表';
 
-insert into sys_oss_rule values (1, '000000', '180x180', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_180/quality,q_90', 'N', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
-insert into sys_oss_rule values (2, '000000', '800x800', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_800/quality,q_90', 'N', 'N', '1', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_oss_rule values (1, '000000', '180x180', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_180/quality,q_90', 'N', 'N', '1', 0, 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_oss_rule values (2, '000000', '800x800', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_800/quality,q_90', 'N', 'N', '1', 1, 103, 1, sysdate(), 1, sysdate(), null);
 
 -- ----------------------------
 -- 应用管理表

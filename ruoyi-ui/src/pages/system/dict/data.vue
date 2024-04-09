@@ -436,7 +436,7 @@ function handleDetail(row: SysDictDataVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const dictCode = row.dictCode || ids.value.at(0);
+  const dictCode = row.dictCode;
   getData(dictCode).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;

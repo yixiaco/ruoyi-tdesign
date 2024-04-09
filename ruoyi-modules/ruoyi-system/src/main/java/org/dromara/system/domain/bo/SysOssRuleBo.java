@@ -4,11 +4,12 @@ import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
-import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.system.domain.SysOssRule;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * OSS处理规则业务对象 sys_oss_rule
@@ -17,9 +18,11 @@ import org.dromara.system.domain.SysOssRule;
  * @date 2023-05-05
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @AutoMapper(target = SysOssRule.class, reverseConvertGenerate = false)
-public class SysOssRuleBo extends BaseEntity {
+public class SysOssRuleBo implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * oss规则id
@@ -68,6 +71,12 @@ public class SysOssRuleBo extends BaseEntity {
      */
     @NotBlank(message = "启用状态不能为空", groups = {AddGroup.class, EditGroup.class})
     private String status;
+
+    /**
+     * 规则顺序
+     */
+    @NotNull(message = "规则顺序不能为空", groups = {AddGroup.class, EditGroup.class})
+    private Integer ruleSort;
 
     /**
      * 备注

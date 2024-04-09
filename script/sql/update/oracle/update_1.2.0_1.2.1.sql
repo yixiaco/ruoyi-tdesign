@@ -10,3 +10,6 @@ UPDATE sys_menu SET shop_expression = 'getProperty(''spring.profiles.active'') !
 UPDATE sys_menu SET shop_expression = '!getProperty(''tenant.enable'')' WHERE menu_id = 6;
 UPDATE sys_menu SET shop_expression = '!getProperty(''spring.boot.admin.client.enabled'')' WHERE menu_id = 117;
 UPDATE sys_menu SET shop_expression = '!getProperty(''powerjob.worker.enabled'')' WHERE menu_id = 120;
+
+alter table sys_oss_rule add rule_sort number(4) default 0 not null;
+comment on column sys_oss_rule.rule_sort is '规则顺序'

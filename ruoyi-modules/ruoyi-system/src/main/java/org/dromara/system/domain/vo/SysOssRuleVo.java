@@ -78,10 +78,34 @@ public class SysOssRuleVo implements Serializable {
     private String status;
 
     /**
+     * 规则顺序
+     */
+    @ExcelProperty(value = "规则顺序")
+    private Integer ruleSort;
+
+    /**
+     * 创建部门
+     */
+    @ExcelProperty(value = "创建部门")
+    private Long createDept;
+
+    /**
+     * 创建者
+     */
+    @ExcelProperty(value = "创建者")
+    private Long createBy;
+
+    /**
      * 创建时间
      */
     @ExcelProperty(value = "创建时间")
     private Date createTime;
+
+    /**
+     * 更新者
+     */
+    @ExcelProperty(value = "更新者")
+    private Long updateBy;
 
     /**
      * 更新时间

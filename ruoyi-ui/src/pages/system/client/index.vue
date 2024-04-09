@@ -408,7 +408,7 @@ function handleDetail(row: SysClientVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const id = row.id || ids.value.at(0);
+  const id = row.id;
   getClient(id).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;

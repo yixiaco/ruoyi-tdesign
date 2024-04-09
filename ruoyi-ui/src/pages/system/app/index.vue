@@ -308,7 +308,7 @@ function handleDetail(row: SysAppVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const appid = row.appid || ids.value.at(0);
+  const appid = row.appid;
   getApp(appid).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;

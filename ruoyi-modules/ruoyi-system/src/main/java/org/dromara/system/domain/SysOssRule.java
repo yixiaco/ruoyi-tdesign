@@ -5,10 +5,9 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.dromara.common.tenant.core.TenantEntity;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
@@ -18,9 +17,8 @@ import java.util.Date;
  * @date 2023-05-05
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
 @TableName("sys_oss_rule")
-public class SysOssRule extends TenantEntity {
+public class SysOssRule implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;
@@ -70,6 +68,11 @@ public class SysOssRule extends TenantEntity {
      * 启用状态
      */
     private String status;
+
+    /**
+     * 规则顺序
+     */
+    private Integer ruleSort;
 
     /**
      * 创建部门

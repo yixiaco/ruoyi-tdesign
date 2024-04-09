@@ -331,7 +331,7 @@ function handleDetail(row: SysMessageKeyVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const messageKeyId = row.messageKeyId || ids.value.at(0);
+  const messageKeyId = row.messageKeyId;
   getMessageKey(messageKeyId).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;

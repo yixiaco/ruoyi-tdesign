@@ -209,7 +209,11 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
             // 如果二级缓存为空，则从redis缓存中读取
             rules = RedisLockUtil.getOrSaveList(CacheConstants.SYS_OSS_RULE, () ->
                 // 如果redis中为空，则从database中读取
-                lambdaQuery().eq(SysOssRule::getStatus, NormalDisableEnum.NORMAL.getCode()).orderByAsc(SysOssRule::getCreateTime).list()
+                lambdaQuery()
+                    .eq(SysOssRule::getStatus, NormalDisableEnum.NORMAL.getCode())
+                    .orderByAsc(SysOssRule::getRuleSort)
+                    .orderByAsc(SysOssRule::getCreateTime)
+                    .list()
             );
             SaHolder.getStorage().set(CacheConstants.SYS_OSS_RULE, rules);
         }
@@ -263,7 +267,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
     /**
      * 得到渲染后的url
      *
-     * @param rule 规则
+     * @param rule        规则
      * @param urlVariable
      * @return
      */

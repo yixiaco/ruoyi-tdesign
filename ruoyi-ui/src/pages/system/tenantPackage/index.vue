@@ -250,7 +250,7 @@ import type {
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import type { TreeModel } from '@/api/model/resultModel';
-import { tenantPackageMenuTreeSelect, menuTreeSelect as menuTreeselect } from '@/api/system/menu';
+import { menuTreeSelect, tenantPackageMenuTreeSelect } from '@/api/system/menu';
 import type {
   SysTenantPackageForm,
   SysTenantPackageQuery,
@@ -334,14 +334,14 @@ const pagination = computed(() => {
 });
 
 /** 查询菜单树结构 */
-function getMenuTreeselect() {
-  menuTreeselect().then((response) => {
+function getMenuTreeSelect() {
+  menuTreeSelect().then((response) => {
     menuOptions.value = response.data;
   });
 }
 
 /** 根据租户套餐ID查询菜单树结构 */
-function getPackageMenuTreeselect(packageId: number) {
+function getPackageMenuTreeSelect(packageId: number) {
   return tenantPackageMenuTreeSelect(packageId).then((response) => {
     menuOptions.value = response.data.menus;
     return response;
@@ -422,7 +422,7 @@ function handleAdd() {
   reset();
   open.value = true;
   title.value = '添加租户套餐';
-  getMenuTreeselect();
+  getMenuTreeSelect();
 }
 
 /** 详情按钮操作 */
@@ -448,7 +448,7 @@ async function handleUpdate(row?: SysTenantPackageVo) {
   await getTenantPackage(packageId).then((response) => {
     form.value = response.data;
   });
-  await getPackageMenuTreeselect(packageId).then((res) => {
+  await getPackageMenuTreeSelect(packageId).then((res) => {
     menuIds.value = res.data.checkedKeys;
     loadingTree.value = false;
   });

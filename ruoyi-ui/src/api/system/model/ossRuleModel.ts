@@ -8,6 +8,8 @@ export interface SysOssRuleQuery extends BaseEntity {
   ruleName?: string;
   /** 匹配域名 */
   domain?: string;
+  /** 媒体类型（规则对匹配的媒体类型生效） */
+  mimeType?: string;
   /** 是否覆盖默认字段值 */
   isOverwrite?: string;
   /** 是否默认（不指定规则时，默认输出的规则） */
@@ -35,6 +37,8 @@ export interface SysOssRuleForm {
   isDefault?: string;
   /** 启用状态 */
   status?: string;
+  /** 规则顺序 */
+  ruleSort?: number;
   /** 备注 */
   remark?: string;
 }
@@ -58,8 +62,16 @@ export interface SysOssRuleVo {
   isDefault?: string;
   /** 启用状态 */
   status?: string;
+  /** 规则顺序 */
+  ruleSort?: number;
+  /** 创建部门 */
+  createDept?: number;
+  /** 创建者 */
+  createBy?: number;
   /** 创建时间 */
   createTime?: any;
+  /** 更新者 */
+  updateBy?: number;
   /** 更新时间 */
   updateTime?: any;
   /** 备注 */

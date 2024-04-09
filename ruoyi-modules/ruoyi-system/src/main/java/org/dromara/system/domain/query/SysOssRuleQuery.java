@@ -25,6 +25,11 @@ public class SysOssRuleQuery extends BaseEntity {
     private String domain;
 
     /**
+     * 媒体类型（规则对匹配的媒体类型生效）
+     */
+    private String mimeType;
+
+    /**
      * 是否覆盖默认字段值
      */
     private String isOverwrite;

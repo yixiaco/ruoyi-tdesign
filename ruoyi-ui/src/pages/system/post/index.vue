@@ -361,7 +361,7 @@ function handleDetail(row: SysPostVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const postId = row.postId || ids.value.at(0);
+  const postId = row.postId;
   getPost(postId).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;

@@ -738,7 +738,7 @@ function handleDetail(row: SysMessageTemplateVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const messageTemplateId = row.messageTemplateId || ids.value.at(0);
+  const messageTemplateId = row.messageTemplateId;
   getMessageTemplate(messageTemplateId).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;

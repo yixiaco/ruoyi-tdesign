@@ -1,12 +1,22 @@
 <template>
   <t-card>
     <t-space direction="vertical" style="width: 100%">
-      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="calc(5em + 12px)">
+      <t-form
+        v-show="showSearch"
+        ref="queryRef"
+        :data="queryParams"
+        layout="inline"
+        reset-type="initial"
+        label-width="calc(5em + 12px)"
+      >
         <t-form-item label="规则名称" name="ruleName">
           <t-input v-model="queryParams.ruleName" placeholder="请输入规则名称" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="匹配域名" name="domain">
           <t-input v-model="queryParams.domain" placeholder="请输入匹配域名" clearable @enter="handleQuery" />
+        </t-form-item>
+        <t-form-item label="媒体类型" name="mimeType">
+          <t-input v-model="queryParams.mimeType" placeholder="请输入媒体类型" clearable @enter="handleQuery" />
         </t-form-item>
         <t-form-item label="覆盖字段值" name="isOverwrite">
           <t-select v-model="queryParams.isOverwrite" placeholder="请选择覆盖字段值" clearable>
@@ -48,6 +58,9 @@
         :column-controller="{
           hideTriggerButton: true,
         }"
+        :sort="sort"
+        show-sort-column-bg-color
+        @sort-change="handleSortChange"
         @select-change="handleSelectionChange"
       >
         <template #topContent>
@@ -118,7 +131,7 @@
           <dict-tag :options="sys_normal_disable" :value="row.status" />
         </template>
         <template #operation="{ row }">
-          <t-space :size="8">
+          <t-space :size="8" break-line>
             <t-link v-hasPermi="['system:ossRule:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
               <browse-icon />详情
             </t-link>
@@ -185,6 +198,9 @@
         <t-form-item label="启用状态" name="status">
           <t-switch v-model="form.status" :custom-value="['1', '0']" />
         </t-form-item>
+        <t-form-item label="规则顺序" name="ruleSort">
+          <t-input-number v-model="form.ruleSort" placeholder="请输入" />
+        </t-form-item>
         <t-form-item label="备注" name="remark">
           <t-textarea v-model="form.remark" placeholder="请输入备注" />
         </t-form-item>
@@ -234,7 +250,19 @@
               </t-form-item>
             </t-col>
             <t-col :span="6">
+              <t-form-item label="规则顺序">{{ form.ruleSort }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="创建部门">{{ form.createDept }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="更新者">{{ form.updateBy }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
               <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="创建者">{{ form.createBy }}</t-form-item>
             </t-col>
             <t-col :span="6">
               <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
@@ -262,7 +290,14 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
+import type {
+  FormInstanceFunctions,
+  FormRule,
+  PageInfo,
+  PrimaryTableCol,
+  SubmitContext,
+  TableSort,
+} from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
 import type { SysOssRuleForm, SysOssRuleQuery, SysOssRuleVo } from '@/api/system/model/ossRuleModel';
@@ -294,6 +329,7 @@ const single = ref(true);
 const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
+const sort = ref<TableSort>();
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
@@ -304,7 +340,9 @@ const rules = ref<Record<string, Array<FormRule>>>({
   isOverwrite: [{ required: true, message: '是否覆盖默认字段值不能为空' }],
   isDefault: [{ required: true, message: '是否默认不能为空' }],
   status: [{ required: true, message: '启用状态不能为空' }],
+  ruleSort: [{ required: true, message: '规则顺序不能为空' }],
 });
+
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
@@ -315,6 +353,7 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `覆盖字段值`, colKey: 'isOverwrite', align: 'center' },
   { title: `是否默认`, colKey: 'isDefault', align: 'center' },
   { title: `启用状态`, colKey: 'status', align: 'center' },
+  { title: `规则顺序`, colKey: 'ruleSort', align: 'center', sorter: true },
   { title: `更新时间`, colKey: 'updateTime', align: 'center' },
   { title: `创建时间`, colKey: 'createTime', align: 'center' },
   { title: `备注`, colKey: 'remark', align: 'center', ellipsis: true },
@@ -332,11 +371,11 @@ const queryParams = ref<SysOssRuleQuery>({
   pageSize: 10,
   ruleName: undefined,
   domain: undefined,
+  mimeType: undefined,
   isOverwrite: undefined,
   isDefault: undefined,
   status: undefined,
 });
-
 // 分页
 const pagination = computed(() => {
   return {
@@ -369,6 +408,7 @@ function reset() {
     isOverwrite: 'N',
     isDefault: 'N',
     status: '1',
+    ruleSort: 0,
   };
   proxy.resetForm('ossRuleRef');
 }
@@ -382,10 +422,24 @@ function handleQuery() {
 /** 重置按钮操作 */
 function resetQuery() {
   proxy.resetForm('queryRef');
-  handleQuery();
+  queryParams.value.pageNum = 1;
+  handleSortChange(null);
 }
 
-// 多选框选中数据
+/** 排序触发事件 */
+function handleSortChange(value?: TableSort) {
+  sort.value = value;
+  if (Array.isArray(value)) {
+    queryParams.value.orderByColumn = value.map((item) => item.sortBy).join(',');
+    queryParams.value.isAsc = value.map((item) => (item.descending ? 'descending' : 'ascending')).join(',');
+  } else {
+    queryParams.value.orderByColumn = value?.sortBy;
+    queryParams.value.isAsc = value?.descending ? 'descending' : 'ascending';
+  }
+  getList();
+}
+
+/** 多选框选中数据 */
 function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
@@ -404,7 +458,7 @@ function handleDetail(row: SysOssRuleVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const ossRuleId = row.ossRuleId || ids.value.at(0);
+  const ossRuleId = row.ossRuleId;
   getOssRule(ossRuleId).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;

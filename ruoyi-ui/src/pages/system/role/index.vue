@@ -385,7 +385,7 @@ import { computed, getCurrentInstance, ref } from 'vue';
 import { useRouter } from 'vue-router';
 
 import type { TreeModel } from '@/api/model/resultModel';
-import { roleMenuTreeSelect, menuTreeSelect as menuTreeselect } from '@/api/system/menu';
+import { menuTreeSelect, roleMenuTreeSelect } from '@/api/system/menu';
 import type { SysRoleForm, SysRoleQuery, SysRoleVo } from '@/api/system/model/roleModel';
 import {
   addRole,
@@ -570,8 +570,8 @@ function handleAuthUser(row: SysRoleVo) {
   router.push(`/system/role-auth/user/${row.roleId}`);
 }
 /** 查询菜单树结构 */
-async function getMenuTreeselect() {
-  return menuTreeselect().then((response) => {
+async function getMenuTreeSelect() {
+  return menuTreeSelect().then((response) => {
     menuOptions.value = response.data;
   });
 }
@@ -608,7 +608,7 @@ function handleDetail(row: SysRoleVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const roleId = row.roleId || ids.value.at(0);
+  const roleId = row.roleId;
   getRole(roleId).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
@@ -619,7 +619,7 @@ async function handleAdd() {
   reset();
   open.value = true;
   loadingEdit.value = true;
-  await getMenuTreeselect();
+  await getMenuTreeSelect();
   loadingEdit.value = false;
   title.value = '添加角色';
 }
@@ -627,7 +627,7 @@ async function handleAdd() {
 function handleUpdate(row?: SysRoleVo) {
   reset();
   const roleId = row?.roleId || ids.value.at(0);
-  const roleMenu = getRoleMenuTreeselect(roleId);
+  const roleMenu = getRoleMenuTreeSelect(roleId);
   open.value = true;
   loadingEdit.value = true;
   title.value = '修改角色';
@@ -642,7 +642,7 @@ function handleUpdate(row?: SysRoleVo) {
   });
 }
 /** 根据角色ID查询菜单树结构 */
-function getRoleMenuTreeselect(roleId: number) {
+function getRoleMenuTreeSelect(roleId: number) {
   return roleMenuTreeSelect(roleId).then((response) => {
     menuOptions.value = response.data.menus;
     return response;

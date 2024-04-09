@@ -512,7 +512,7 @@ function handleDetail(row: SysMessageConfigVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const messageConfigId = row.messageConfigId || ids.value.at(0);
+  const messageConfigId = row.messageConfigId;
   getMessageConfig(messageConfigId).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;

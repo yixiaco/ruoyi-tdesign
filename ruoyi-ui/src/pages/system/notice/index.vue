@@ -390,7 +390,7 @@ function handleDetail(row: SysNoticeVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const noticeId = row.noticeId || ids.value.at(0);
+  const noticeId = row.noticeId;
   getNotice(noticeId).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;

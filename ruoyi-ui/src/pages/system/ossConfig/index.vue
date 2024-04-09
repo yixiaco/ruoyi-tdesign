@@ -450,7 +450,7 @@ function handleDetail(row: SysOssConfigVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
-  const ossConfigId = row.ossConfigId || ids.value.at(0);
+  const ossConfigId = row.ossConfigId;
   getOssConfig(ossConfigId).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
