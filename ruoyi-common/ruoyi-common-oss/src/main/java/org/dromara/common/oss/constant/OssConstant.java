@@ -18,9 +18,9 @@ public interface OssConstant {
     String DEFAULT_CONFIG_KEY = GlobalConstants.GLOBAL_REDIS_KEY + "sys_oss:default_config";
 
     /**
-     * 预览列表资源开关Key
+     * OSS规则KEY
      */
-    String PEREVIEW_LIST_RESOURCE_KEY = "sys.oss.previewListResource";
+    String OSS_RULE_KEY = GlobalConstants.GLOBAL_REDIS_KEY + "sys_oss_rule";
 
     /**
      * 系统数据ids
@@ -30,7 +30,7 @@ public interface OssConstant {
     /**
      * 云服务商
      */
-    String[] CLOUD_SERVICE = new String[] {"aliyun", "qcloud", "qiniu", "obs"};
+    String[] CLOUD_SERVICE = new String[]{"aliyun", "qcloud", "qiniu", "obs"};
 
     /**
      * https 状态

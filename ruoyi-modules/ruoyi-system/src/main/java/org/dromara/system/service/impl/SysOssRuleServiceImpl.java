@@ -8,7 +8,6 @@ import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.CharsetUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
-import org.dromara.common.core.constant.CacheConstants;
 import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.enums.YesNoEnum;
 import org.dromara.common.core.exception.ServiceException;
@@ -18,9 +17,9 @@ import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.spring.SpringExpressionCreated;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.oss.constant.OssConstant;
 import org.dromara.common.redis.utils.RedisLockUtil;
 import org.dromara.common.redis.utils.RedisUtils;
-import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.system.domain.SysOssRule;
 import org.dromara.system.domain.bo.SysOssRuleBo;
 import org.dromara.system.domain.query.SysOssRuleQuery;
@@ -137,7 +136,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
      */
     @Override
     public void removeCache() {
-        RedisUtils.deleteObject(CacheConstants.SYS_OSS_RULE);
+        RedisUtils.deleteObject(OssConstant.OSS_RULE_KEY);
     }
 
     /**
@@ -196,18 +195,14 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
     @Override
     @SuppressWarnings("unchecked cast")
     public Map<String, String> getUrls(String fieldName, String originalUrl, String[] ruleNames, String join, boolean useDefault) {
-        // 如果启用了租户，但获取不到租户，则直接返回null
-        if (TenantHelper.isEnable() && StrUtil.isBlank(TenantHelper.getTenantId())) {
-            return null;
-        }
         // 二级缓存
         List<SysOssRule> rules = null;
         if (SpringMVCUtil.isWeb()) {
-            rules = (List<SysOssRule>) SaHolder.getStorage().get(CacheConstants.SYS_OSS_RULE);
+            rules = (List<SysOssRule>) SaHolder.getStorage().get(OssConstant.OSS_RULE_KEY);
         }
         if (rules == null) {
             // 如果二级缓存为空，则从redis缓存中读取
-            rules = RedisLockUtil.getOrSaveList(CacheConstants.SYS_OSS_RULE, () ->
+            rules = RedisLockUtil.getOrSaveList(OssConstant.OSS_RULE_KEY, () ->
                 // 如果redis中为空，则从database中读取
                 lambdaQuery()
                     .eq(SysOssRule::getStatus, NormalDisableEnum.NORMAL.getCode())
@@ -215,7 +210,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
                     .orderByAsc(SysOssRule::getCreateTime)
                     .list()
             );
-            SaHolder.getStorage().set(CacheConstants.SYS_OSS_RULE, rules);
+            SaHolder.getStorage().set(OssConstant.OSS_RULE_KEY, rules);
         }
         Map<String, String> result = new LinkedHashMap<>();
         // 多个url拆分
@@ -281,7 +276,7 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
     private static HashMap<String, Object> getUrlVariable(String url) {
         // 解析url
         UrlBuilder builder = UrlBuilder.ofHttp(url, CharsetUtil.CHARSET_UTF_8);
-        HashMap<String, Object> variable = new HashMap<>(4);
+        HashMap<String, Object> variable = new HashMap<>(8);
         String domain = builder.getScheme() + "://" + builder.getHost();
         if (builder.getPort() > 0) {
             domain += ":" + builder.getPort();
@@ -289,8 +284,11 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
         variable.put("domain", domain);
         List<String> segments = builder.getPath().getSegments();
         variable.put("path", String.join("/", segments.subList(0, segments.size() - 1)));
+        variable.put("fullPath", builder.getPathStr());
         variable.put("filename", segments.get(segments.size() - 1));
-        variable.put("url", url);
+        variable.put("url", domain + builder.getPathStr());
+        variable.put("fullUrl", url);
+        variable.put("query", builder.getQueryStr());
         return variable;
     }
 

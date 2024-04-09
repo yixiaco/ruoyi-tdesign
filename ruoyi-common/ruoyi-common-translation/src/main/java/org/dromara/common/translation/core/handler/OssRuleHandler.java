@@ -48,7 +48,7 @@ public class OssRuleHandler extends JsonSerializer<Object> implements Contextual
                 if (value instanceof Number || (value instanceof String val && isIdMode(val))) {
                     value = ossService.selectUrlByIds(value.toString());
                 }
-                String value0 = value.toString();
+                String value0 = value != null ? value.toString() : "";
                 String join = ossRule.join();
                 String[] rules = ossRule.value();
                 boolean useDefault = ossRule.useDefault();
@@ -56,7 +56,7 @@ public class OssRuleHandler extends JsonSerializer<Object> implements Contextual
                 String wrapName = ossRule.wrapName();
 
                 Map<String, String> urls = ossRuleService.getUrls(fieldName, value0, rules, join, useDefault);
-                if (urls == null) {
+                if (urls == null || urls.isEmpty()) {
                     gen.writeObject(value);
                     return;
                 }
