@@ -804,6 +804,7 @@ create table if not exists sys_oper_log
 (
     oper_id        int8,
     tenant_id      varchar(20)   default '000000'::varchar,
+    user_id        int8,
     title          varchar(50)   default ''::varchar,
     business_type  int4          default 0,
     method         varchar(100)  default ''::varchar,
@@ -830,6 +831,7 @@ create index idx_sys_oper_log_ot ON sys_oper_log (oper_time);
 comment on table sys_oper_log                   is '操作日志记录';
 comment on column sys_oper_log.oper_id          is '日志主键';
 comment on column sys_oper_log.tenant_id        is '租户编号';
+comment on column sys_oper_log.user_id          is '用户id';
 comment on column sys_oper_log.title            is '模块标题';
 comment on column sys_oper_log.business_type    is '业务类型（0其它 1新增 2修改 3删除）';
 comment on column sys_oper_log.method           is '方法名称';
@@ -1051,6 +1053,7 @@ create table if not exists sys_logininfor
 (
     info_id        int8,
     tenant_id      varchar(20)  default '000000'::varchar,
+    user_id        int8,
     user_name      varchar(50)  default ''::varchar,
     ipaddr         varchar(128) default ''::varchar,
     login_location varchar(255) default ''::varchar,
@@ -1070,6 +1073,7 @@ create index idx_sys_logininfor_lt ON sys_logininfor (login_time);
 comment on table sys_logininfor                 is '系统访问记录';
 comment on column sys_logininfor.info_id        is '访问ID';
 comment on column sys_logininfor.tenant_id      is '租户编号';
+comment on column sys_logininfor.user_id        is '用户id';
 comment on column sys_logininfor.user_name      is '用户账号';
 comment on column sys_logininfor.ipaddr         is '登录IP地址';
 comment on column sys_logininfor.login_location is '登录地点';

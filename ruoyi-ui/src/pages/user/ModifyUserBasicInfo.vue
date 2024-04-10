@@ -1,8 +1,7 @@
 <template>
-  <!-- 添加或修改用户配置对话框 -->
   <t-dialog
     v-model:visible="visible"
-    header="修改密码"
+    header="修改基础信息"
     destroy-on-close
     :close-on-overlay-click="false"
     placement="center"
@@ -29,7 +28,7 @@
 import type { FormInstanceFunctions, FormRule, SubmitContext } from 'tdesign-vue-next';
 import { getCurrentInstance, ref } from 'vue';
 
-import type { SysUserForm } from '@/api/system/model/userModel';
+import type { SysUserProfileBo } from '@/api/system/model/userModel';
 import { updateUserProfile } from '@/api/system/profile';
 
 const visible = defineModel('visible', {
@@ -42,18 +41,22 @@ const props = defineProps({
     type: Object,
   },
 });
-
+const emit = defineEmits(['submit']);
 const { proxy } = getCurrentInstance();
 const userRef = ref<FormInstanceFunctions>();
 
-const form = ref<SysUserForm>({});
+const form = ref<SysUserProfileBo>({});
 
 const rules = ref<Record<string, Array<FormRule>>>({
   nickName: [{ required: true, message: '用户昵称不能为空' }],
 });
 
 function reset() {
-  form.value = props.user || {};
+  const { user } = props;
+  form.value = {
+    nickName: user?.nickName,
+    sex: user?.sex,
+  };
 }
 
 /** 提交按钮 */
@@ -63,6 +66,7 @@ function submit({ validateResult }: SubmitContext) {
     updateUserProfile(form.value)
       .then(() => {
         proxy.$modal.msgSuccess('修改成功');
+        emit('submit');
       })
       .finally(() => proxy.$modal.msgClose(msgLoading));
   }

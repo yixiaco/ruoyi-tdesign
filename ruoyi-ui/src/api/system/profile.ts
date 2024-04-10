@@ -1,6 +1,6 @@
 import type { R, TableDataInfo } from '@/api/model/resultModel';
 import type { SysLogininforQuery, SysLogininforVo } from '@/api/monitor/model/logininforModel';
-import type { AvatarVo, ProfileVo, SysUserForm } from '@/api/system/model/userModel';
+import type { AvatarVo, ProfileVo, SysUserProfileBo } from '@/api/system/model/userModel';
 import { request } from '@/utils/request';
 
 // 查询用户个人信息
@@ -11,7 +11,7 @@ export function getUserProfile() {
 }
 
 // 修改用户个人信息
-export function updateUserProfile(data: SysUserForm) {
+export function updateUserProfile(data: SysUserProfileBo) {
   return request.put<R<void>>({
     url: '/system/user/profile/basic',
     data,
@@ -62,10 +62,17 @@ export function uploadAvatar(data: FormData) {
   });
 }
 
+// 删除用户头像
+export function removeAvatar() {
+  return request.delete<void>({
+    url: '/system/user/profile/avatar/remove',
+  });
+}
+
 // 查询用户访问记录列表
 export function loginLogList(query: SysLogininforQuery) {
   return request.get<TableDataInfo<SysLogininforVo>>({
-    url: '/system/user/profile//loginLog/list',
+    url: '/system/user/profile/loginLog/list',
     params: query,
   });
 }

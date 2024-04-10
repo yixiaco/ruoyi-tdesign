@@ -21,20 +21,28 @@
         </template>
         <t-descriptions :column="4" item-layout="vertical">
           <t-descriptions-item label="用户账号">{{ userInfo.user?.userName }}</t-descriptions-item>
-          <t-descriptions-item label="用户名称">{{ userInfo.user?.nickName }}</t-descriptions-item>
           <t-descriptions-item>
             <template #label>
-              <a class="user-intro-edit" @click="false">手机 <edit2-icon /></a>
+              <a class="user-intro-edit" @click="openModifyBasicInfo = true">用户名称 <edit2-icon /></a>
+            </template>
+            {{ userInfo.user?.nickName }}
+          </t-descriptions-item>
+          <t-descriptions-item>
+            <template #label>
+              <a class="user-intro-edit" @click="openBindingPhone = true">手机 <edit2-icon /></a>
             </template>
             +86 {{ userInfo.user?.phonenumber }}
           </t-descriptions-item>
           <t-descriptions-item>
             <template #label>
-              <a class="user-intro-edit" @click="false">邮箱 <edit2-icon /></a>
+              <a class="user-intro-edit" @click="openBindingEmail = true">邮箱 <edit2-icon /></a>
             </template>
             {{ userInfo.user?.email }}
           </t-descriptions-item>
-          <t-descriptions-item label="性别">
+          <t-descriptions-item>
+            <template #label>
+              <a class="user-intro-edit" @click="openModifyBasicInfo = true">性别 <edit2-icon /></a>
+            </template>
             <dict-tag :options="sys_user_sex" :value="userInfo.user?.sex" />
           </t-descriptions-item>
           <t-descriptions-item label="最后登录IP">{{ userInfo.user?.loginIp }}</t-descriptions-item>
@@ -60,7 +68,20 @@
         </t-descriptions>
       </t-card>
 
-      <modify-user-basic-info v-model:visible="openModifyBasicInfo" :user="userInfo.user" />
+      <!--   修改基础信息   -->
+      <modify-user-basic-info v-model:visible="openModifyBasicInfo" :user="userInfo.user" @submit="getUser()" />
+      <!--   绑定手机号   -->
+      <binding-phone
+        v-model:visible="openBindingPhone"
+        :phone="userInfo.user?.phonenumber"
+        @submit="(phonenumber) => (userInfo.user.phonenumber = phonenumber)"
+      />
+      <!--   绑定邮箱   -->
+      <binding-email
+        v-model:visible="openBindingEmail"
+        :email="userInfo.user?.email"
+        @submit="(email) => (userInfo.user.email = email)"
+      />
 
       <!--   内容tabs   -->
       <t-card class="content-container" title="第三方应用" :bordered="false">
@@ -102,6 +123,8 @@ import { getUserProfile } from '@/api/system/profile';
 import { useTenantStore } from '@/store/modules/tenant';
 import { dateDiffAbs, dateFormat } from '@/utils/date';
 
+import BindingEmail from './BindingEmail.vue';
+import BindingPhone from './BindingPhone.vue';
 import ModifyUserBasicInfo from './ModifyUserBasicInfo.vue';
 import ThirdParty from './ThirdParty.vue';
 import UserAvatar from './UserAvatar.vue';
@@ -114,6 +137,8 @@ const userInfo = ref<ProfileVo>({});
 const companyName = ref(import.meta.env.VITE_APP_COMPANY_NAME);
 const { tenantEnabled } = storeToRefs(useTenantStore());
 const openModifyBasicInfo = ref(false);
+const openBindingPhone = ref(false);
+const openBindingEmail = ref(false);
 
 function getUser() {
   getUserProfile().then((response) => {

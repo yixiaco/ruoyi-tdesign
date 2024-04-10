@@ -121,6 +121,16 @@ export interface SysUserVo {
   roleId?: number;
 }
 
+/**
+ * 个人信息业务处理
+ */
+export interface SysUserProfileBo {
+  /** 用户昵称 */
+  nickName?: string;
+  /** 用户性别（0男 1女 2未知） */
+  sex?: string;
+}
+
 export interface ProfileVo {
   /** 用户信息 */
   user?: SysUserVo;

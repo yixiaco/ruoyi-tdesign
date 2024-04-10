@@ -51,6 +51,10 @@
           <div class="avatar-upload-preview">
             <img :src="previews.url" :style="previews.img" />
           </div>
+          <div style="position: absolute; bottom: 0; left: 0; right: 0; text-align: center">
+            <t-button theme="primary" @click="uploadImg()">提 交</t-button>
+            <t-button theme="danger" @click="removeUserAvatar()">删 除</t-button>
+          </div>
         </t-col>
       </t-row>
       <br />
@@ -90,20 +94,12 @@
             </t-button>
           </t-tooltip>
         </t-col>
-        <t-col
-          :sm="{ span: 3, offset: 1, order: 0, pull: 0, push: 0 }"
-          :xs="{ span: 7, offset: 5, order: 0, pull: 0, push: 0 }"
-        >
-          <t-button theme="primary" @click="uploadImg()">提 交</t-button>
-        </t-col>
       </t-row>
     </t-dialog>
   </div>
 </template>
 
 <script lang="ts" setup>
-import { uploadAvatar } from '@/api/system/profile';
-
 defineOptions({
   name: 'UserAvatar',
 });
@@ -123,6 +119,7 @@ import type { UploadFile } from 'tdesign-vue-next';
 import { getCurrentInstance, reactive, ref } from 'vue';
 import { VueCropper } from 'vue-cropper';
 
+import { removeAvatar, uploadAvatar } from '@/api/system/profile';
 import { useUserStore } from '@/store/modules/user';
 
 const userStore = useUserStore();
@@ -197,9 +194,22 @@ function uploadImg() {
       .then((response) => {
         open.value = false;
         options.img = response.data.imgUrl;
-        userStore.avatar = options.img;
+        userStore.updateAvatar(options.img);
         proxy.$modal.msgSuccess('修改成功');
         visible.value = false;
+      })
+      .finally(() => proxy.$modal.msgClose(msgLoading));
+  });
+}
+function removeUserAvatar() {
+  proxy.$modal.confirm(`是否确认删除用户头像？`, () => {
+    const msgLoading = proxy.$modal.msgLoading('删除中...');
+    removeAvatar()
+      .then(() => {
+        open.value = false;
+        userStore.updateAvatar(null);
+        options.img = userStore.avatar;
+        proxy.$modal.msgSuccess('删除成功');
       })
       .finally(() => proxy.$modal.msgClose(msgLoading));
   });
@@ -218,11 +228,11 @@ function closeDialog() {
 .avatar-upload-preview {
   position: absolute;
   top: 50%;
-  transform: translate(50%, -50%);
+  transform: translate(43%, -50%);
   width: 200px;
   height: 200px;
   border-radius: 50%;
-  box-shadow: 0 0 4px #ccc;
+  box-shadow: 1px 2px 4px #ccc;
   overflow: hidden;
 }
 </style>

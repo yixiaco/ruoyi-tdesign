@@ -190,6 +190,19 @@ public class SysProfileController extends BaseController {
     }
 
     /**
+     * 删除用户头像
+     */
+    @Log(title = "用户头像", businessType = BusinessType.DELETE)
+    @DeleteMapping("/avatar/remove")
+    public R<Void> removeAvatar() {
+        userService.lambdaUpdate()
+            .set(SysUser::getAvatar, null)
+            .eq(SysUser::getUserId, LoginHelper.getUserId())
+            .update();
+        return R.ok();
+    }
+
+    /**
      * 获取访问记录列表
      */
     @GetMapping("/loginLog/list")
