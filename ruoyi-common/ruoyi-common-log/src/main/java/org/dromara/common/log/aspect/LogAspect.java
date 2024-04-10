@@ -98,6 +98,7 @@ public class LogAspect {
             LoginUser loginUser = LoginHelper.getUser();
             operLog.setOperName(loginUser.getUsername());
             operLog.setDeptName(loginUser.getDeptName());
+            operLog.setUserId(loginUser.getUserId());
 
             if (e != null) {
                 operLog.setStatus(BusinessStatus.FAIL.ordinal());

@@ -301,7 +301,9 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         user.setUpdateBy(user.getUserId());
         SysUser sysUser = MapstructUtils.convert(user, SysUser.class);
         sysUser.setTenantId(tenantId);
-        return baseMapper.insert(sysUser) > 0;
+        boolean b = baseMapper.insert(sysUser) > 0;
+        user.setUserId(sysUser.getUserId());
+        return b;
     }
 
     /**
@@ -364,8 +366,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         return baseMapper.update(null,
             new LambdaUpdateWrapper<SysUser>()
                 .set(ObjectUtil.isNotNull(user.getNickName()), SysUser::getNickName, user.getNickName())
-                .set(SysUser::getPhonenumber, user.getPhonenumber())
-                .set(SysUser::getEmail, user.getEmail())
+//                .set(SysUser::getPhonenumber, user.getPhonenumber())
+//                .set(SysUser::getEmail, user.getEmail())
                 .set(SysUser::getSex, user.getSex())
                 .eq(SysUser::getUserId, user.getUserId()));
     }

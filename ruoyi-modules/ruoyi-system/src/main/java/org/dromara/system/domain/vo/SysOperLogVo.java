@@ -36,7 +36,14 @@ public class SysOperLogVo implements Serializable {
     /**
      * 租户编号
      */
+    @ExcelProperty(value = "租户编号")
     private String tenantId;
+
+    /**
+     * 用户id
+     */
+    @ExcelProperty(value = "用户id")
+    private Long userId;
 
     /**
      * 模块标题
@@ -141,4 +148,5 @@ public class SysOperLogVo implements Serializable {
      */
     @ExcelProperty(value = "消耗时间")
     private Long costTime;
+
 }

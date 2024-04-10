@@ -70,7 +70,7 @@ public class SysRegisterService {
         if (!regFlag) {
             throw new UserException("user.register.error");
         }
-        recordLogininfor(tenantId, username, Constants.REGISTER, MessageUtils.message("user.register.success"));
+        recordLogininfor(tenantId, sysUser.getUserId(), username, Constants.REGISTER, MessageUtils.message("user.register.success"));
     }
 
     /**
@@ -85,11 +85,11 @@ public class SysRegisterService {
         String captcha = RedisUtils.getObject(verifyKey);
         RedisUtils.deleteObject(verifyKey);
         if (captcha == null) {
-            recordLogininfor(tenantId, username, Constants.REGISTER, MessageUtils.message("user.jcaptcha.expire"));
+            recordLogininfor(tenantId, null, username, Constants.REGISTER, MessageUtils.message("user.jcaptcha.expire"));
             throw new CaptchaExpireException();
         }
         if (!code.equalsIgnoreCase(captcha)) {
-            recordLogininfor(tenantId, username, Constants.REGISTER, MessageUtils.message("user.jcaptcha.error"));
+            recordLogininfor(tenantId, null, username, Constants.REGISTER, MessageUtils.message("user.jcaptcha.error"));
             throw new CaptchaException();
         }
     }
@@ -98,12 +98,13 @@ public class SysRegisterService {
      * 记录登录信息
      *
      * @param tenantId 租户ID
+     * @param userId
      * @param username 用户名
      * @param status   状态
      * @param message  消息内容
      * @return
      */
-    private void recordLogininfor(String tenantId, String username, String status, String message) {
+    private void recordLogininfor(String tenantId, Long userId, String username, String status, String message) {
         HttpServletRequest request = ServletUtils.getRequest();
         final UserAgent userAgent = UserAgentUtil.parse(request.getHeader(Header.USER_AGENT.getValue()));
         final String ip = ServletUtils.getClientIP(request);
@@ -114,6 +115,7 @@ public class SysRegisterService {
         String browser = userAgent.getBrowser().getName();
         LogininforEvent logininforEvent = new LogininforEvent();
         logininforEvent.setTenantId(tenantId);
+        logininforEvent.setUserId(userId);
         logininforEvent.setUsername(username);
         logininforEvent.setStatus(status);
         logininforEvent.setMessage(message);

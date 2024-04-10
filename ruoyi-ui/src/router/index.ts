@@ -86,7 +86,7 @@ export const defaultRouterList: Array<RouteRecordRaw> = [
     children: [
       {
         path: 'index',
-        component: () => import('@/pages/system/user/profile/index.vue'),
+        component: () => import('@/pages/user/index.vue'),
         name: 'Profile',
         meta: { title: '个人中心', icon: 'user' },
       },

@@ -82,6 +82,7 @@ public class SysLogininforServiceImpl extends ServiceImpl<SysLogininforMapper, S
         // 封装对象
         SysLogininforBo logininfor = new SysLogininforBo();
         logininfor.setTenantId(logininforEvent.getTenantId());
+        logininfor.setUserId(logininforEvent.getUserId());
         logininfor.setUserName(logininforEvent.getUsername());
         logininfor.setIpaddr(ip);
         logininfor.setLoginLocation(address);

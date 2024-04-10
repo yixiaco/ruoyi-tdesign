@@ -12,6 +12,7 @@ import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.service.DeptService;
 import org.dromara.common.core.utils.MapstructUtils;
+import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.TreeBuildUtils;
 import org.dromara.common.core.utils.spring.SpringUtils;
@@ -37,6 +38,9 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 /**
  * 部门管理 服务实现
@@ -92,6 +96,29 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
                 .setParentId(dept.getParentId())
                 .setName(dept.getDeptName())
                 .setWeight(dept.getOrderNum()));
+    }
+
+    /**
+     * 查询部门名称
+     *
+     * @param deptIds   多个部门id
+     * @param separator 分隔符
+     * @return
+     */
+    @Override
+    public String selectDeptNameByDeptIds(List<Long> deptIds, CharSequence separator) {
+        if (CollUtil.isEmpty(deptIds)) {
+            return null;
+        }
+        List<SysDept> deptList = lambdaQuery()
+            .select(SysDept::getDeptId, SysDept::getDeptName)
+            .in(SysDept::getDeptId, deptIds)
+            .list();
+        Map<Long, SysDept> identityMap = StreamUtils.toIdentityMap(deptList, SysDept::getDeptId);
+        return deptIds.stream().map(identityMap::get)
+            .filter(Objects::nonNull)
+            .map(SysDept::getDeptName)
+            .collect(Collectors.joining(separator));
     }
 
     /**

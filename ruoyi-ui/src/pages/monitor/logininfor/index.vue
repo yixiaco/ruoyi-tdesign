@@ -168,6 +168,12 @@
               <t-form-item label="访问ID">{{ form.infoId }}</t-form-item>
             </t-col>
             <t-col :span="6">
+              <t-form-item label="租户编号">{{ form.tenantId }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="用户id">{{ form.userId }}</t-form-item>
+            </t-col>
+            <t-col :span="6">
               <t-form-item label="用户账号">{{ form.userName }}</t-form-item>
             </t-col>
             <t-col :span="6">

@@ -115,7 +115,7 @@
         </template>
         <template #costTime="{ row }"> {{ row.costTime }}毫秒 </template>
         <template #operation="{ row }">
-          <t-space :size="8">
+          <t-space :size="8" break-line>
             <t-link v-hasPermi="['monitor:operlog:query']" theme="primary" hover="color" @click.stop="handleView(row)">
               <browse-icon />详细
             </t-link>
@@ -144,6 +144,9 @@
           <t-col :span="6">
             <t-form-item label="请求地址">{{ form.operUrl }}</t-form-item>
             <t-form-item label="请求方式">{{ form.requestMethod }}</t-form-item>
+          </t-col>
+          <t-col :span="6">
+            <t-form-item label="用户id">{{ form.userId }}</t-form-item>
           </t-col>
           <t-col :span="6">
             <t-form-item label="操作类别">

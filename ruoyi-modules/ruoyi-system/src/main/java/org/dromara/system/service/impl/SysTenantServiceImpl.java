@@ -13,6 +13,7 @@ import org.dromara.common.core.constant.TenantConstants;
 import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.enums.YesNoEnum;
 import org.dromara.common.core.exception.ServiceException;
+import org.dromara.common.core.service.TenantService;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
@@ -38,6 +39,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 /**
  * 租户Service业务层处理
@@ -46,7 +48,7 @@ import java.util.Objects;
  */
 @RequiredArgsConstructor
 @Service
-public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant> implements ISysTenantService {
+public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant> implements ISysTenantService, TenantService {
 
     private final SysUserMapper userMapper;
     private final SysDeptMapper deptMapper;
@@ -376,5 +378,17 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
                 new LambdaQueryWrapper<SysRoleMenu>().in(SysRoleMenu::getRoleId, roleIds).notIn(!menuIds.isEmpty(), SysRoleMenu::getMenuId, menuIds));
         }
         return true;
+    }
+
+    /**
+     * 通过租户ID查询租户企业名称
+     *
+     * @param tenantId 租户ID
+     * @return 租户名称
+     */
+    @Override
+    public String selectTenantNameById(String tenantId) {
+        Optional<SysTenant> tenantOptional = lambdaQuery().eq(SysTenant::getTenantId, tenantId).select(SysTenant::getCompanyName).oneOpt();
+        return tenantOptional.map(SysTenant::getCompanyName).orElse(null);
     }
 }

@@ -1,13 +1,5 @@
 import type { R, TableDataInfo, TreeModel } from '@/api/model/resultModel';
-import type {
-  AvatarVo,
-  ProfileVo,
-  SysUserForm,
-  SysUserInfoVo,
-  SysUserQuery,
-  SysUserVo,
-  UserAuthRole,
-} from '@/api/system/model/userModel';
+import type { SysUserForm, SysUserInfoVo, SysUserQuery, SysUserVo, UserAuthRole } from '@/api/system/model/userModel';
 import { request } from '@/utils/request';
 import { parseStrEmpty } from '@/utils/ruoyi';
 
@@ -75,49 +67,6 @@ export function changeUserStatus(userId: number, status: string) {
   };
   return request.put<R<void>>({
     url: '/system/user/changeStatus',
-    data,
-  });
-}
-
-// 查询用户个人信息
-export function getUserProfile() {
-  return request.get<R<ProfileVo>>({
-    url: '/system/user/profile',
-  });
-}
-
-// 修改用户个人信息
-export function updateUserProfile(data: SysUserForm) {
-  return request.put<R<void>>({
-    url: '/system/user/profile',
-    data,
-  });
-}
-
-// 用户密码重置
-export function updateUserPwd(oldPassword: string, newPassword: string) {
-  const data = {
-    oldPassword,
-    newPassword,
-  };
-  return request.put<R<void>>(
-    {
-      url: '/system/user/profile/updatePwd',
-      data,
-    },
-    {
-      withEncrypt: true,
-    },
-  );
-}
-
-// 用户头像上传
-export function uploadAvatar(data: FormData) {
-  return request.post<R<AvatarVo>>({
-    url: '/system/user/profile/avatar',
-    headers: {
-      'content-type': 'multipart/form-data',
-    },
     data,
   });
 }

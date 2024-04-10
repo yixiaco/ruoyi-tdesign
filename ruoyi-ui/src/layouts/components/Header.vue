@@ -37,7 +37,7 @@
             </t-button>
           </t-tooltip>
           <translate-select />
-          <t-dropdown :min-column-width="120" trigger="click">
+          <t-dropdown :min-column-width="120" :max-column-width="180" trigger="click">
             <template #dropdown>
               <t-dropdown-menu>
                 <t-dropdown-item
@@ -46,6 +46,9 @@
                   @click="handleNav('/profile/index')"
                 >
                   <user-circle-icon />{{ $t('layout.header.user') }}
+                </t-dropdown-item>
+                <t-dropdown-item class="operations-dropdown-container-item" @click="openModifyPassword = true">
+                  <secured-icon />{{ $t('layout.header.modifyPassword') }}
                 </t-dropdown-item>
                 <t-dropdown-item class="operations-dropdown-container-item" @click="handleLogout">
                   <poweroff-icon />{{ $t('layout.header.signOut') }}
@@ -77,6 +80,7 @@
         </div>
       </template>
     </t-head-menu>
+    <modify-password v-model:visible="openModifyPassword" />
   </div>
 </template>
 
@@ -86,6 +90,7 @@ import {
   HelpCircleIcon,
   LogoGithubIcon,
   PoweroffIcon,
+  SecuredIcon,
   SettingIcon,
   UserCircleIcon,
   ViewListIcon,
@@ -97,6 +102,7 @@ import { useRoute, useRouter } from 'vue-router';
 import LogoFull from '@/assets/icons/assets-logo-full.svg?component';
 import TranslateSelect from '@/components/translate-select/index.vue';
 import { prefix } from '@/config/global';
+import ModifyPassword from '@/layouts/components/ModifyPassword.vue';
 import { getActive } from '@/router';
 import { useSettingStore, useUserStore } from '@/store';
 import type { ComplexRoute, ModeType } from '@/types/interface';
@@ -139,6 +145,7 @@ const props = defineProps({
   },
 });
 
+const openModifyPassword = ref(false);
 const router = useRouter();
 const route = useRoute();
 const settingStore = useSettingStore();

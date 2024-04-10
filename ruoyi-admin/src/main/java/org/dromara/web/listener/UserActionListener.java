@@ -74,6 +74,7 @@ public class UserActionListener implements SaTokenListener {
             // 记录登录日志
             LogininforEvent logininforEvent = new LogininforEvent();
             logininforEvent.setTenantId(user.getTenantId());
+            logininforEvent.setUserId(user.getUserId());
             logininforEvent.setUsername(user.getUsername());
             logininforEvent.setStatus(Constants.LOGIN_SUCCESS);
             logininforEvent.setMessage(MessageUtils.message("user.login.success"));

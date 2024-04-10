@@ -2,13 +2,22 @@
   <div>
     <t-image
       :src="options.img"
-      :style="{ width: '160px', height: '160px', margin: '0 auto' }"
+      :style="{ width: '80px', height: '80px' }"
       shape="circle"
       overlay-trigger="hover"
       @click="editCropper()"
     >
       <template #overlayContent>
-        <div style="background: rgb(0 0 0 / 40%); color: #fff; height: 100%; border-radius: 50%; line-height: 160px">
+        <div
+          style="
+            background: rgb(0 0 0 / 40%);
+            color: #fff;
+            height: 100%;
+            border-radius: 50%;
+            line-height: 80px;
+            text-align: center;
+          "
+        >
           <camera-icon size="2em" />
         </div>
       </template>
@@ -93,6 +102,12 @@
 </template>
 
 <script lang="ts" setup>
+import { uploadAvatar } from '@/api/system/profile';
+
+defineOptions({
+  name: 'UserAvatar',
+});
+
 import 'vue-cropper/dist/index.css';
 
 import {
@@ -108,7 +123,6 @@ import type { UploadFile } from 'tdesign-vue-next';
 import { getCurrentInstance, reactive, ref } from 'vue';
 import { VueCropper } from 'vue-cropper';
 
-import { uploadAvatar } from '@/api/system/profile';
 import { useUserStore } from '@/store/modules/user';
 
 const userStore = useUserStore();

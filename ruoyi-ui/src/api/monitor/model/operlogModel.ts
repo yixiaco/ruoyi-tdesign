@@ -4,6 +4,8 @@ import type { BaseEntity } from '@/api/model/resultModel';
  * 操作日志记录查询对象
  */
 export interface SysOperLogQuery extends BaseEntity {
+  /** 用户id */
+  userId?: number;
   /** 模块标题 */
   title?: string;
   /** 业务类型 */
@@ -23,6 +25,8 @@ export interface SysOperLogVo {
   operId?: number;
   /** 租户编号 */
   tenantId?: string;
+  /** 用户id */
+  userId?: number;
   /** 模块标题 */
   title?: string;
   /** 业务类型（0其它 1新增 2修改 3删除） */

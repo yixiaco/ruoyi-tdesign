@@ -3,6 +3,9 @@ package org.dromara.system.controller.system;
 import cn.dev33.satoken.secure.BCrypt;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
+import cn.hutool.core.util.StrUtil;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.enums.UserType;
 import org.dromara.common.core.exception.ServiceException;
@@ -11,32 +14,34 @@ import org.dromara.common.core.utils.file.MimeTypeUtils;
 import org.dromara.common.encrypt.annotation.ApiEncrypt;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
+import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.common.web.core.BaseController;
+import org.dromara.system.domain.SysUser;
 import org.dromara.system.domain.bo.SysOssBo;
 import org.dromara.system.domain.bo.SysUserBo;
 import org.dromara.system.domain.bo.SysUserPasswordBo;
 import org.dromara.system.domain.bo.SysUserProfileBo;
+import org.dromara.system.domain.query.SysLogininforQuery;
 import org.dromara.system.domain.vo.AvatarVo;
 import org.dromara.system.domain.vo.ProfileVo;
+import org.dromara.system.domain.vo.SysLogininforVo;
 import org.dromara.system.domain.vo.SysOssVo;
 import org.dromara.system.domain.vo.SysUserVo;
+import org.dromara.system.service.ISysDeptService;
+import org.dromara.system.service.ISysLogininforService;
 import org.dromara.system.service.ISysOssService;
 import org.dromara.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestPart;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 个人信息 业务处理
@@ -52,6 +57,10 @@ public class SysProfileController extends BaseController {
     private ISysUserService userService;
     @Autowired
     private ISysOssService ossService;
+    @Autowired
+    private ISysDeptService deptService;
+    @Autowired
+    private ISysLogininforService logininforService;
 
     /**
      * 个人信息
@@ -63,6 +72,12 @@ public class SysProfileController extends BaseController {
         profileVo.setUser(user);
         profileVo.setRoleGroup(userService.selectUserRoleGroup(user.getUserName()));
         profileVo.setPostGroup(userService.selectUserPostGroup(user.getUserName()));
+        if (user.getDept() != null) {
+            List<Long> deptIds = Arrays.stream(StrUtil.splitToLong(user.getDept().getAncestors(), ','))
+                .boxed().collect(Collectors.toList());
+            deptIds.add(user.getDept().getDeptId());
+            profileVo.setDeptGroup(deptService.selectDeptNameByDeptIds(deptIds, "/"));
+        }
         return R.ok(profileVo);
     }
 
@@ -70,19 +85,9 @@ public class SysProfileController extends BaseController {
      * 修改用户
      */
     @Log(title = "个人信息", businessType = BusinessType.UPDATE)
-    @PutMapping
+    @PutMapping("/basic")
     public R<Void> updateProfile(@RequestBody SysUserProfileBo profile) {
         SysUserBo user = BeanUtil.toBean(profile, SysUserBo.class);
-        String username = LoginHelper.getUsername();
-        // 检查全局
-        TenantHelper.ignore(() -> {
-            if (StringUtils.isNotEmpty(user.getPhonenumber()) && !userService.checkPhoneUnique(user)) {
-                throw new ServiceException("修改用户'" + username + "'失败，手机号码已存在");
-            }
-            if (StringUtils.isNotEmpty(user.getEmail()) && !userService.checkEmailUnique(user)) {
-                throw new ServiceException("修改用户'" + username + "'失败，邮箱账号已存在");
-            }
-        });
         user.setUserId(LoginHelper.getUserId());
         if (userService.updateUserProfile(user) > 0) {
             return R.ok();
@@ -91,7 +96,48 @@ public class SysProfileController extends BaseController {
     }
 
     /**
-     * 重置密码
+     * 修改手机号
+     */
+    @Log(title = "个人信息", businessType = BusinessType.UPDATE)
+    @PutMapping("/updatePhonenumber")
+    public R<Void> updateNickname(@RequestParam String phonenumber) {
+        String username = LoginHelper.getUsername();
+        SysUserBo bo = new SysUserBo();
+        bo.setUserId(LoginHelper.getUserId());
+        bo.setPhonenumber(phonenumber);
+        TenantHelper.ignore(() -> {
+            if (StringUtils.isNotEmpty(phonenumber) && !userService.checkPhoneUnique(bo)) {
+                throw new ServiceException("修改用户'" + username + "'失败，手机号码已存在");
+            }
+        });
+        userService.lambdaUpdate().set(SysUser::getPhonenumber, phonenumber)
+            .eq(SysUser::getUserId, LoginHelper.getUserId()).update();
+        return R.ok();
+    }
+
+    /**
+     * 修改邮箱
+     */
+    @Log(title = "个人信息", businessType = BusinessType.UPDATE)
+    @PutMapping("/updateEmail")
+    public R<Void> updateEmail(@RequestParam @Email(message = "邮箱格式不正确")
+                               @Size(min = 0, max = 50, message = "邮箱长度不能超过{max}个字符") String email) {
+        String username = LoginHelper.getUsername();
+        SysUserBo bo = new SysUserBo();
+        bo.setUserId(LoginHelper.getUserId());
+        bo.setEmail(email);
+        TenantHelper.ignore(() -> {
+            if (StringUtils.isNotEmpty(email) && !userService.checkEmailUnique(bo)) {
+                throw new ServiceException("修改用户'" + username + "'失败，邮箱账号已存在");
+            }
+        });
+        userService.lambdaUpdate().set(SysUser::getEmail, email)
+            .eq(SysUser::getUserId, LoginHelper.getUserId()).update();
+        return R.ok();
+    }
+
+    /**
+     * 修改密码
      *
      * @param bo 新旧密码
      */
@@ -141,5 +187,14 @@ public class SysProfileController extends BaseController {
             }
         }
         return R.fail("上传图片异常，请联系管理员");
+    }
+
+    /**
+     * 获取访问记录列表
+     */
+    @GetMapping("/loginLog/list")
+    public TableDataInfo<SysLogininforVo> loginLogList(SysLogininforQuery query) {
+        query.setUserId(LoginHelper.getUserId());
+        return logininforService.queryPageList(query);
     }
 }

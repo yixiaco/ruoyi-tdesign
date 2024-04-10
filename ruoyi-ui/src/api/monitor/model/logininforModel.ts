@@ -4,6 +4,8 @@ import type { BaseEntity } from '@/api/model/resultModel';
  * 系统访问记录查询对象
  */
 export interface SysLogininforQuery extends BaseEntity {
+  /** 用户id */
+  userId?: number;
   /** 用户账号 */
   userName?: string;
   /** 登录IP地址 */
@@ -21,6 +23,10 @@ export interface SysLogininforQuery extends BaseEntity {
 export interface SysLogininforVo {
   /** 访问ID */
   infoId?: number;
+  /** 租户编号 */
+  tenantId?: string;
+  /** 用户id */
+  userId?: number;
   /** 用户账号 */
   userName?: string;
   /** 登录IP地址 */

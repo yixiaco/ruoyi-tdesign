@@ -1,89 +1,89 @@
 <template>
   <t-row :gutter="[24, 24]">
+    <!--  欢迎信息  -->
     <t-col :flex="3">
       <div class="user-left-greeting">
         <div>
-          Hi，Image
-          <span class="regular"> {{ $t('pages.user.markDay') }}</span>
+          Hi，{{ userInfo.user?.nickName }}
+          <span class="regular">
+            你好，今天是你加入 {{ companyName }} 的第
+            {{ dateDiffAbs(userInfo.user?.createTime ?? new Date(), new Date(), 'day') }} 天
+          </span>
         </div>
-        <img src="@/assets/assets-tencent-logo.png" class="logo" />
+        <!--    腾讯logo，自定义logo放开注释    -->
+        <!--        <img src="@/assets/assets-tencent-logo.png" class="logo" />-->
       </div>
 
-      <t-card class="user-info-list" :title="$t('pages.user.personalInfo.title')" :bordered="false">
+      <!--   个人信息   -->
+      <t-card class="user-info-list" title="个人信息" :bordered="false">
         <template #actions>
-          <t-button theme="default" shape="square" variant="text">
-            <ellipsis-icon />
-          </t-button>
+          <t-button theme="default" variant="text" @click="openModifyBasicInfo = true"> 修改基础信息 </t-button>
         </template>
-        <t-row class="content" justify="space-between">
-          <t-col v-for="(item, index) in USER_INFO_LIST" :key="index" class="contract" :span="item.span ?? 3">
-            <div class="contract-title">
-              {{ $t(item.title) }}
-            </div>
-            <div class="contract-detail">
-              {{ item.content }}
-            </div>
-          </t-col>
-        </t-row>
+        <t-descriptions :column="4" item-layout="vertical">
+          <t-descriptions-item label="用户账号">{{ userInfo.user?.userName }}</t-descriptions-item>
+          <t-descriptions-item label="用户名称">{{ userInfo.user?.nickName }}</t-descriptions-item>
+          <t-descriptions-item>
+            <template #label>
+              <a class="user-intro-edit" @click="false">手机 <edit2-icon /></a>
+            </template>
+            +86 {{ userInfo.user?.phonenumber }}
+          </t-descriptions-item>
+          <t-descriptions-item>
+            <template #label>
+              <a class="user-intro-edit" @click="false">邮箱 <edit2-icon /></a>
+            </template>
+            {{ userInfo.user?.email }}
+          </t-descriptions-item>
+          <t-descriptions-item label="性别">
+            <dict-tag :options="sys_user_sex" :value="userInfo.user?.sex" />
+          </t-descriptions-item>
+          <t-descriptions-item label="最后登录IP">{{ userInfo.user?.loginIp }}</t-descriptions-item>
+          <t-descriptions-item label="用户账号">{{ userInfo.user?.loginDate }}</t-descriptions-item>
+          <t-descriptions-item v-if="tenantEnabled" label="租户">{{ userInfo.user?.tenantId }}</t-descriptions-item>
+          <t-descriptions-item v-if="tenantEnabled" label="租户企业名称">
+            {{ userInfo.user?.tenantName }}
+          </t-descriptions-item>
+          <t-descriptions-item label="岗位">
+            {{ userInfo.postGroup }}
+          </t-descriptions-item>
+          <t-descriptions-item label="加入时间">
+            {{ dateFormat(userInfo.user?.createTime, 'YYYY-MM-DD') }}
+          </t-descriptions-item>
+        </t-descriptions>
+        <t-descriptions :column="2" item-layout="vertical">
+          <t-descriptions-item label="角色">
+            {{ userInfo.roleGroup }}
+          </t-descriptions-item>
+          <t-descriptions-item label="部门">
+            {{ userInfo.deptGroup }}
+          </t-descriptions-item>
+        </t-descriptions>
       </t-card>
 
-      <t-card class="content-container" :bordered="false">
-        <t-tabs value="second">
-          <t-tab-panel value="first" :label="$t('pages.user.contentList')">
-            <p>{{ $t('pages.user.contentList') }}</p>
-          </t-tab-panel>
-          <t-tab-panel value="second" :label="$t('pages.user.contentList')">
-            <t-card :bordered="false" class="card-padding-no" :title="$t('pages.user.visitData')" describe="（次）">
-              <template #actions>
-                <t-date-range-picker
-                  class="card-date-picker-container"
-                  :default-value="LAST_7_DAYS"
-                  theme="primary"
-                  mode="date"
-                  @change="onLineChange"
-                />
-              </template>
-              <div id="lineContainer" style="width: 100%; height: 328px" />
-            </t-card>
-          </t-tab-panel>
-          <t-tab-panel value="third" :label="$t('pages.user.contentList')">
-            <p>{{ $t('pages.user.contentList') }}</p>
-          </t-tab-panel>
-        </t-tabs>
+      <modify-user-basic-info v-model:visible="openModifyBasicInfo" :user="userInfo.user" />
+
+      <!--   内容tabs   -->
+      <t-card class="content-container" title="第三方应用" :bordered="false">
+        <third-party />
       </t-card>
     </t-col>
 
+    <!--  用户头像卡片  -->
     <t-col :flex="1">
       <t-card class="user-intro" :bordered="false">
-        <t-avatar size="80px">T</t-avatar>
-        <div class="name">My Account</div>
-        <div class="position">{{ $t('pages.user.personalInfo.position') }}</div>
+        <user-avatar />
+        <div class="name">{{ userInfo.user?.userName }}</div>
+        <div class="position">{{ userInfo.deptGroup }}员工</div>
       </t-card>
 
-      <t-card :title="$t('pages.user.teamMember')" class="user-team" :bordered="false">
+      <!--   登录日志   -->
+      <t-card title="登录日志" class="user-team" :bordered="false">
         <template #actions>
           <t-button theme="default" shape="square" variant="text">
             <ellipsis-icon />
           </t-button>
         </template>
-        <t-list :split="false">
-          <t-list-item v-for="(item, index) in TEAM_MEMBERS" :key="index">
-            <t-list-item-meta :image="item.avatar" :title="item.title" :description="item.description" />
-          </t-list-item>
-        </t-list>
-      </t-card>
-
-      <t-card :title="$t('pages.user.serviceProduction')" class="product-container" :bordered="false">
-        <template #actions>
-          <t-button theme="default" shape="square" variant="text">
-            <ellipsis-icon />
-          </t-button>
-        </template>
-        <t-row class="content" :getters="16">
-          <t-col v-for="(item, index) in PRODUCT_LIST" :key="index" :span="3">
-            <component :is="getIcon(item)"></component>
-          </t-col>
-        </t-row>
+        <user-login-log />
       </t-card>
     </t-col>
   </t-row>
@@ -92,96 +92,48 @@
 defineOptions({
   name: 'UserIndex',
 });
-import { LineChart } from 'echarts/charts';
-import { GridComponent, LegendComponent, TooltipComponent } from 'echarts/components';
-import * as echarts from 'echarts/core';
-import { CanvasRenderer } from 'echarts/renderers';
-import { EllipsisIcon } from 'tdesign-icons-vue-next';
-import type { DateRangeValue } from 'tdesign-vue-next';
-import { computed, nextTick, onMounted, onUnmounted, watch } from 'vue';
 
-import ProductAIcon from '@/assets/icons/assets-product-1.svg';
-import ProductBIcon from '@/assets/icons/assets-product-2.svg';
-import ProductCIcon from '@/assets/icons/assets-product-3.svg';
-import ProductDIcon from '@/assets/icons/assets-product-4.svg';
-import { useSettingStore } from '@/store';
-import { changeChartsTheme } from '@/utils/color';
-import { LAST_7_DAYS } from '@/utils/date';
+import { storeToRefs } from 'pinia';
+import { Edit2Icon, EllipsisIcon } from 'tdesign-icons-vue-next';
+import { getCurrentInstance, onMounted, ref } from 'vue';
 
-import { PRODUCT_LIST, TEAM_MEMBERS, USER_INFO_LIST } from './constants';
-import { getFolderLineDataSet } from './data';
+import type { ProfileVo } from '@/api/system/model/userModel';
+import { getUserProfile } from '@/api/system/profile';
+import { useTenantStore } from '@/store/modules/tenant';
+import { dateDiffAbs, dateFormat } from '@/utils/date';
 
-echarts.use([GridComponent, TooltipComponent, LineChart, CanvasRenderer, LegendComponent]);
+import ModifyUserBasicInfo from './ModifyUserBasicInfo.vue';
+import ThirdParty from './ThirdParty.vue';
+import UserAvatar from './UserAvatar.vue';
+import UserLoginLog from './UserLoginLog.vue';
 
-let lineContainer: HTMLElement;
-let lineChart: echarts.ECharts;
-const store = useSettingStore();
-const chartColors = computed(() => store.chartColors);
+const { proxy } = getCurrentInstance();
+const { sys_user_sex } = proxy.useDict('sys_user_sex');
 
-const onLineChange = (value: DateRangeValue) => {
-  lineChart.setOption(
-    getFolderLineDataSet({
-      dateTime: value as string[],
-      ...chartColors.value,
-    }),
-  );
-};
+const userInfo = ref<ProfileVo>({});
+const companyName = ref(import.meta.env.VITE_APP_COMPANY_NAME);
+const { tenantEnabled } = storeToRefs(useTenantStore());
+const openModifyBasicInfo = ref(false);
 
-const initChart = () => {
-  lineContainer = document.getElementById('lineContainer');
-  lineChart = echarts.init(lineContainer);
-  lineChart.setOption({
-    grid: {
-      x: 30, // 默认是80px
-      y: 30, // 默认是60px
-      x2: 10, // 默认80px
-      y2: 30, // 默认60px
-    },
-    ...getFolderLineDataSet({ ...chartColors.value }),
+function getUser() {
+  getUserProfile().then((response) => {
+    userInfo.value = response.data;
   });
-};
-
-const updateContainer = () => {
-  lineChart?.resize({
-    width: lineContainer.clientWidth,
-    height: lineContainer.clientHeight,
-  });
-};
+}
 
 onMounted(() => {
-  nextTick(() => {
-    initChart();
-  });
-  window.addEventListener('resize', updateContainer, false);
+  getUser();
 });
-
-onUnmounted(() => {
-  window.removeEventListener('resize', updateContainer);
-});
-
-const getIcon = (type: string) => {
-  switch (type) {
-    case 'a':
-      return ProductAIcon;
-    case 'b':
-      return ProductBIcon;
-    case 'c':
-      return ProductCIcon;
-    case 'd':
-      return ProductDIcon;
-    default:
-      return ProductAIcon;
-  }
-};
-
-watch(
-  () => store.brandTheme,
-  () => {
-    changeChartsTheme([lineChart]);
-  },
-);
 </script>
 
 <style lang="less" scoped>
 @import './index.less';
+
+.user-intro-edit {
+  cursor: pointer;
+
+  &:hover {
+    color: var(--td-brand-color-active);
+  }
+}
 </style>

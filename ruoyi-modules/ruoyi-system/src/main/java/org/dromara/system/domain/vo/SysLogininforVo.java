@@ -31,19 +31,57 @@ public class SysLogininforVo implements Serializable {
     /**
      * 访问ID
      */
-    @ExcelProperty(value = "序号")
+    @ExcelProperty(value = "访问ID")
     private Long infoId;
 
     /**
      * 租户编号
      */
+    @ExcelProperty(value = "租户编号")
     private String tenantId;
+
+    /**
+     * 用户id
+     */
+    @ExcelProperty(value = "用户id")
+    private Long userId;
 
     /**
      * 用户账号
      */
     @ExcelProperty(value = "用户账号")
     private String userName;
+
+    /**
+     * 登录IP地址
+     */
+    @ExcelProperty(value = "登录IP地址")
+    private String ipaddr;
+
+    /**
+     * 登录地点
+     */
+    @ExcelProperty(value = "登录地点")
+    private String loginLocation;
+
+    /**
+     * 浏览器类型
+     */
+    @ExcelProperty(value = "浏览器类型")
+    private String browser;
+
+    /**
+     * 操作系统
+     */
+    @ExcelProperty(value = "操作系统")
+    private String os;
+
+    /**
+     * 登录状态
+     */
+    @ExcelProperty(value = "登录状态", converter = ExcelDictConvert.class)
+    @ExcelDictFormat(dictType = "sys_common_status")
+    private String status;
 
     /**
      * 客户端
@@ -59,38 +97,6 @@ public class SysLogininforVo implements Serializable {
     private String deviceType;
 
     /**
-     * 登录状态（1成功 0失败）
-     */
-    @ExcelProperty(value = "登录状态", converter = ExcelDictConvert.class)
-    @ExcelDictFormat(dictType = "sys_common_status")
-    private String status;
-
-    /**
-     * 登录IP地址
-     */
-    @ExcelProperty(value = "登录地址")
-    private String ipaddr;
-
-    /**
-     * 登录地点
-     */
-    @ExcelProperty(value = "登录地点")
-    private String loginLocation;
-
-    /**
-     * 浏览器类型
-     */
-    @ExcelProperty(value = "浏览器")
-    private String browser;
-
-    /**
-     * 操作系统
-     */
-    @ExcelProperty(value = "操作系统")
-    private String os;
-
-
-    /**
      * 提示消息
      */
     @ExcelProperty(value = "提示消息")
@@ -101,6 +107,5 @@ public class SysLogininforVo implements Serializable {
      */
     @ExcelProperty(value = "访问时间")
     private Date loginTime;
-
 
 }

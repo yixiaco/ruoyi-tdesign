@@ -27,7 +27,7 @@ import type { FormRule, SubmitContext } from 'tdesign-vue-next';
 import { getCurrentInstance, ref, toRefs } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
-import { updateUserProfile } from '@/api/system/user';
+import { updateUserProfile } from '@/api/system/profile';
 import { useTabsRouterStore } from '@/store';
 
 const tabsRouterStore = useTabsRouterStore();

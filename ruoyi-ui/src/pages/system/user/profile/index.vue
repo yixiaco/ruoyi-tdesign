@@ -70,11 +70,12 @@
 defineOptions({
   name: 'Profile',
 });
+
 import { CalendarIcon, MailIcon, MobileIcon, SecuredIcon, TreeSquareDotIcon, UserIcon } from 'tdesign-icons-vue-next';
 import { reactive, ref } from 'vue';
 
 import type { ProfileVo } from '@/api/system/model/userModel';
-import { getUserProfile } from '@/api/system/user';
+import { getUserProfile } from '@/api/system/profile';
 import ResetPwd from '@/pages/system/user/profile/resetPwd.vue';
 import ThirdParty from '@/pages/system/user/profile/thirdParty.vue';
 import UserAvatar from '@/pages/system/user/profile/userAvatar.vue';

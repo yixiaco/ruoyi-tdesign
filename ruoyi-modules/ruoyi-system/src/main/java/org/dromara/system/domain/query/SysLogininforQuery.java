@@ -15,6 +15,11 @@ import org.dromara.common.mybatis.core.domain.BaseEntity;
 public class SysLogininforQuery extends BaseEntity {
 
     /**
+     * 用户id
+     */
+    private Long userId;
+
+    /**
      * 用户账号
      */
     private String userName;
