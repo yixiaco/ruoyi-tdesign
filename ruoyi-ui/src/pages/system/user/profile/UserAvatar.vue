@@ -52,8 +52,8 @@
             <img :src="previews.url" :style="previews.img" />
           </div>
           <div style="position: absolute; bottom: 0; left: 0; right: 0; text-align: center">
-            <t-button theme="primary" @click="uploadImg()">提 交</t-button>
             <t-button theme="danger" @click="removeUserAvatar()">删 除</t-button>
+            <t-button theme="primary" @click="uploadImg()">提 交</t-button>
           </div>
         </t-col>
       </t-row>
