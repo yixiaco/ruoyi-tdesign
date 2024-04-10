@@ -52,7 +52,7 @@ public class EmailAuthStrategy implements IAuthStrategy<EmailLoginBody> {
         SysUserVo user = loadUserByEmail(email);
         String tenantId = user.getTenantId();
 
-        loginService.checkLogin(LoginType.EMAIL, tenantId, user.getUserName(), () -> !validateEmailCode(tenantId, email, emailCode));
+        loginService.checkLogin(LoginType.EMAIL, tenantId, user.getUserId(), user.getUserName(), () -> !validateEmailCode(tenantId, user.getUserId(), email, emailCode));
         // 此处可根据登录用户的数据不同 自行创建 loginUser 属性不够用继承扩展就行了
         LoginUser loginUser = loginService.buildLoginUser(user);
         loginUser.setClientKey(client.getClientKey());
@@ -80,10 +80,10 @@ public class EmailAuthStrategy implements IAuthStrategy<EmailLoginBody> {
     /**
      * 校验邮箱验证码
      */
-    private boolean validateEmailCode(String tenantId, String email, String emailCode) {
+    private boolean validateEmailCode(String tenantId, Long userId, String email, String emailCode) {
         String code = RedisUtils.getObject(GlobalConstants.CAPTCHA_CODE_KEY + email);
         if (StringUtils.isBlank(code)) {
-            loginService.recordLogininfor(tenantId, email, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.expire"));
+            loginService.recordLogininfor(tenantId, userId, email, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.expire"));
             throw new CaptchaExpireException();
         }
         return code.equals(emailCode);

@@ -77,6 +77,8 @@ export interface SysUserVo {
   userId?: number;
   /** 租户ID */
   tenantId?: string;
+  /** 租户企业名称 */
+  tenantName?: string;
   /** 部门ID */
   deptId?: number;
   /** 用户账号 */
@@ -119,6 +121,16 @@ export interface SysUserVo {
   roleId?: number;
 }
 
+/**
+ * 个人信息业务处理
+ */
+export interface SysUserProfileBo {
+  /** 用户昵称 */
+  nickName?: string;
+  /** 用户性别（0男 1女 2未知） */
+  sex?: string;
+}
+
 export interface ProfileVo {
   /** 用户信息 */
   user?: SysUserVo;
@@ -126,6 +138,8 @@ export interface ProfileVo {
   roleGroup?: string;
   /** 用户所属岗位组 */
   postGroup?: string;
+  /** 部门 */
+  deptGroup?: string;
 }
 
 export interface AvatarVo {

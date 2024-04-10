@@ -46,6 +46,9 @@ export const useUserStore = defineStore('user', {
           });
       });
     },
+    updateAvatar(avatar: string) {
+      this.avatar = !avatar ? defAva : avatar;
+    },
     getUserInfo() {
       return new Promise<R<UserInfo>>((resolve, reject) => {
         getInfo()

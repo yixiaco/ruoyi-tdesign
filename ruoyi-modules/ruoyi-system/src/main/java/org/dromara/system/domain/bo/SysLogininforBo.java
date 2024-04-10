@@ -4,6 +4,8 @@ import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import org.dromara.system.domain.SysLogininfor;
 
+import java.io.Serial;
+import java.io.Serializable;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
@@ -16,7 +18,10 @@ import java.util.Map;
 
 @Data
 @AutoMapper(target = SysLogininfor.class, reverseConvertGenerate = false)
-public class SysLogininforBo {
+public class SysLogininforBo implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * 访问ID
@@ -27,6 +32,11 @@ public class SysLogininforBo {
      * 租户编号
      */
     private String tenantId;
+
+    /**
+     * 用户id
+     */
+    private Long userId;
 
     /**
      * 用户账号

@@ -10,11 +10,12 @@
     </resultMap>
 
     <sql id="selectSysLogininforVo">
-        select sl.info_id, sl.tenant_id, sl.user_name, sl.ipaddr, sl.login_location, sl.browser, sl.os, sl.status, sl.client_key, sl.device_type, sl.msg, sl.login_time from sys_logininfor sl
+        select sl.info_id, sl.tenant_id, sl.user_id, sl.user_name, sl.ipaddr, sl.login_location, sl.browser, sl.os, sl.status, sl.client_key, sl.device_type, sl.msg, sl.login_time from sys_logininfor sl
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.bo.SysLogininforBo" resultMap="SysLogininforResultVo">
         <include refid="selectSysLogininforVo"/>
         <where>
+            <if test="userId != null"> and sl.user_id = #{userId}</if>
             <if test="userName != null and userName != ''"> and sl.user_name like concat(concat('%', #{userName}), '%')</if>
             <if test="ipaddr != null and ipaddr != ''"> and sl.ipaddr like concat(concat('%', #{ipaddr}), '%')</if>
             <if test="status != null and status != ''"> and sl.status = #{status}</if>

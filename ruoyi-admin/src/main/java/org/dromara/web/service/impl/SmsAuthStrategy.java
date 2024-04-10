@@ -53,7 +53,7 @@ public class SmsAuthStrategy implements IAuthStrategy<SmsLoginBody> {
         SysUserVo user = loadUserByPhonenumber(phonenumber);
         String tenantId = user.getTenantId();
 
-        loginService.checkLogin(LoginType.SMS, tenantId, user.getUserName(), () -> !validateSmsCode(tenantId, phonenumber, smsCode));
+        loginService.checkLogin(LoginType.SMS, tenantId, user.getUserId(), user.getUserName(), () -> !validateSmsCode(tenantId, user.getUserId(), phonenumber, smsCode));
         // 此处可根据登录用户的数据不同 自行创建 loginUser 属性不够用继承扩展就行了
         LoginUser loginUser = loginService.buildLoginUser(user);
         loginUser.setClientKey(client.getClientKey());
@@ -81,10 +81,10 @@ public class SmsAuthStrategy implements IAuthStrategy<SmsLoginBody> {
     /**
      * 校验短信验证码
      */
-    private boolean validateSmsCode(String tenantId, String phonenumber, String smsCode) {
+    private boolean validateSmsCode(String tenantId, Long userId, String phonenumber, String smsCode) {
         String code = RedisUtils.getObject(GlobalConstants.CAPTCHA_CODE_KEY + phonenumber);
         if (StringUtils.isBlank(code)) {
-            loginService.recordLogininfor(tenantId, phonenumber, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.expire"));
+            loginService.recordLogininfor(tenantId, userId, phonenumber, Constants.LOGIN_FAIL, MessageUtils.message("user.jcaptcha.expire"));
             throw new CaptchaExpireException();
         }
         return code.equals(smsCode);

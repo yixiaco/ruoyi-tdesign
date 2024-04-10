@@ -43,7 +43,10 @@
             "
             @click.stop="open"
           >
-            <t-tag style="background: transparent; color: #fff"> <browse-icon size="16" />预览 </t-tag>
+            <t-tag style="background: transparent; color: #fff">
+              <slot name="previewSlot" />
+              <template v-if="!$slots.previewSlot"> <browse-icon size="16" /> {{ previewText }} </template>
+            </t-tag>
           </div>
         </template>
         <template #error>
@@ -54,7 +57,7 @@
   </t-image-viewer>
 </template>
 
-<script lang="ts" setup>
+<script lang="tsx" setup>
 import { BrowseIcon, ImageErrorIcon } from 'tdesign-icons-vue-next';
 import type { ImageViewerScale } from 'tdesign-vue-next';
 import type { PropType } from 'vue';
@@ -71,6 +74,11 @@ const props = defineProps({
   // 预览地址，为空则使用src显示地址
   previewSrc: {
     type: String,
+  },
+  // 预览文本，previewSlot插槽会覆盖它
+  previewText: {
+    type: String,
+    default: '预览',
   },
   width: {
     type: [Number, String],

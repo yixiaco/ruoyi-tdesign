@@ -115,7 +115,7 @@ public class SysLoginService {
                     // 超级管理员 登出清除动态租户
                     TenantHelper.clearUserDynamicTenant();
                 }
-                recordLogininfor(loginUser.getTenantId(), loginUser.getUsername(), Constants.LOGOUT, MessageUtils.message("user.logout.success"));
+                recordLogininfor(loginUser.getTenantId(), loginUser.getUserId(), loginUser.getUsername(), Constants.LOGOUT, MessageUtils.message("user.logout.success"));
             }
         } catch (NotLoginException ignored) {
         } finally {
@@ -134,7 +134,7 @@ public class SysLoginService {
      * @param status   状态
      * @param message  消息内容
      */
-    public void recordLogininfor(String tenantId, String username, String status, String message) {
+    public void recordLogininfor(String tenantId, Long userId, String username, String status, String message) {
         HttpServletRequest request = ServletUtils.getRequest();
         final UserAgent userAgent = UserAgentUtil.parse(request.getHeader(Header.USER_AGENT.getValue()));
         final String ip = ServletUtils.getClientIP(request);
@@ -146,6 +146,7 @@ public class SysLoginService {
 
         LogininforEvent logininforEvent = new LogininforEvent();
         logininforEvent.setTenantId(tenantId);
+        logininforEvent.setUserId(userId);
         logininforEvent.setUsername(username);
         logininforEvent.setStatus(status);
         logininforEvent.setMessage(message);
@@ -192,7 +193,7 @@ public class SysLoginService {
     /**
      * 登录校验
      */
-    public void checkLogin(LoginType loginType, String tenantId, String username, Supplier<Boolean> supplier) {
+    public void checkLogin(LoginType loginType, String tenantId, Long userId, String username, Supplier<Boolean> supplier) {
         // 校验租户
         checkTenant(tenantId);
         String errorKey = GlobalConstants.PWD_ERR_CNT_KEY + username;
@@ -204,7 +205,7 @@ public class SysLoginService {
         int errorNumber = ObjectUtil.defaultIfNull(RedisUtils.getObject(errorKey), 0);
         // 锁定时间内登录 则踢出
         if (errorNumber >= maxRetryCount) {
-            recordLogininfor(tenantId, username, loginFail, MessageUtils.message(loginType.getRetryLimitExceed(), maxRetryCount, lockTime));
+            recordLogininfor(tenantId, userId, username, loginFail, MessageUtils.message(loginType.getRetryLimitExceed(), maxRetryCount, lockTime));
             throw new UserException(loginType.getRetryLimitExceed(), maxRetryCount, lockTime.getSeconds());
         }
 
@@ -215,12 +216,12 @@ public class SysLoginService {
             // 达到规定错误次数 则锁定登录
             if (errorNumber >= maxRetryCount) {
                 RedisUtils.setObject(errorKey, errorNumber, lockTime);
-                recordLogininfor(tenantId, username, loginFail, MessageUtils.message(loginType.getRetryLimitExceed(), maxRetryCount, lockTime));
+                recordLogininfor(tenantId, userId, username, loginFail, MessageUtils.message(loginType.getRetryLimitExceed(), maxRetryCount, lockTime));
                 throw new UserException(loginType.getRetryLimitExceed(), maxRetryCount, lockTime.getSeconds());
             } else {
                 // 未达到规定错误次数
                 RedisUtils.setObject(errorKey, errorNumber);
-                recordLogininfor(tenantId, username, loginFail, MessageUtils.message(loginType.getRetryLimitCount(), errorNumber));
+                recordLogininfor(tenantId, userId, username, loginFail, MessageUtils.message(loginType.getRetryLimitCount(), errorNumber));
                 throw new UserException(loginType.getRetryLimitCount(), errorNumber);
             }
         }

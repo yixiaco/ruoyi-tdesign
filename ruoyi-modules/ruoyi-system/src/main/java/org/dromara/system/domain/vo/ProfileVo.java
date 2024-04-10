@@ -27,5 +27,9 @@ public class ProfileVo {
      */
     private String postGroup;
 
+    /**
+     * 部门
+     */
+    private String deptGroup;
 
 }

@@ -18,23 +18,20 @@
 </template>
 
 <script lang="ts" setup>
-import { onMounted, ref, toRefs } from 'vue';
+import { storeToRefs } from 'pinia';
+import { ref, toRefs } from 'vue';
 import { useRouter } from 'vue-router';
 
-import { getTenantList } from '@/api/login';
-import type { TenantListVo } from '@/api/model/loginModel';
 import { dynamicClear, dynamicTenant } from '@/api/system/tenant';
 import Company from '@/assets/icons/svg/company.svg?component';
 import { useTabsRouterStore, useUserStore } from '@/store';
+import { useTenantStore } from '@/store/modules/tenant';
 
 const { userId } = toRefs(useUserStore());
 const tenantId = ref(undefined);
 const tabsRouterStore = useTabsRouterStore();
 const router = useRouter();
-// 租户列表
-const tenantList = ref<TenantListVo[]>([]);
-// 租户开关
-const tenantEnabled = ref(false);
+const { tenantEnabled, tenantList } = storeToRefs(useTenantStore());
 
 const emit = defineEmits(['dynamicChange']);
 
@@ -61,21 +58,6 @@ function dynamicClearEvent() {
     router.push('/');
   });
 }
-
-// 租户列表
-function initTenantList() {
-  getTenantList().then((res) => {
-    const vo = res.data;
-    tenantEnabled.value = !!vo.tenantEnabled;
-    if (tenantEnabled.value) {
-      tenantList.value = vo.voList;
-    }
-  });
-}
-
-onMounted(() => {
-  initTenantList();
-});
 </script>
 
 <style scoped></style>

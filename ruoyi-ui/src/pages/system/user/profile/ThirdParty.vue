@@ -1,8 +1,8 @@
 <template>
   <t-space direction="vertical" style="width: 100%">
-    <t-table :loading="loading" hover row-key="id" :data="socialList" :columns="columns" style="font-size: 10px">
+    <t-table :loading="loading" hover row-key="id" :data="socialList" :columns="columns" style="font-size: 12px">
       <template #avatar="{ row }">
-        <image-preview :src="row.avatar" :width="45" :height="45" />
+        <image-preview :src="row.avatar" preview-text="" :width="45" :height="45" />
       </template>
       <template #operation="{ row }">
         <t-link theme="primary" hover="color" @click.stop="unlockAuth(row)"> 解绑 </t-link>
@@ -41,6 +41,9 @@
 </template>
 
 <script lang="ts" setup>
+defineOptions({
+  name: 'ThirdParty',
+});
 import { LogoGithubFilledIcon, LogoQqIcon, LogoWechatIcon } from 'tdesign-icons-vue-next';
 import type { PrimaryTableCol } from 'tdesign-vue-next';
 import { getCurrentInstance, onMounted, ref } from 'vue';

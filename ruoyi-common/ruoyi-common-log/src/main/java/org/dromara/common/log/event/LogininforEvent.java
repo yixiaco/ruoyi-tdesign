@@ -22,6 +22,11 @@ public class LogininforEvent implements Serializable {
     private String tenantId;
 
     /**
+     * 用户id
+     */
+    private Long userId;
+
+    /**
      * 用户账号
      */
     private String username;

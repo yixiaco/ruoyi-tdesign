@@ -33,24 +33,14 @@ public class SysLogininfor implements Serializable {
     private String tenantId;
 
     /**
+     * 用户id
+     */
+    private Long userId;
+
+    /**
      * 用户账号
      */
     private String userName;
-
-    /**
-     * 客户端
-     */
-    private String clientKey;
-
-    /**
-     * 设备类型
-     */
-    private String deviceType;
-
-    /**
-     * 登录状态 1成功 0失败
-     */
-    private String status;
 
     /**
      * 登录IP地址
@@ -71,6 +61,21 @@ public class SysLogininfor implements Serializable {
      * 操作系统
      */
     private String os;
+
+    /**
+     * 登录状态
+     */
+    private String status;
+
+    /**
+     * 客户端
+     */
+    private String clientKey;
+
+    /**
+     * 设备类型
+     */
+    private String deviceType;
 
     /**
      * 提示消息

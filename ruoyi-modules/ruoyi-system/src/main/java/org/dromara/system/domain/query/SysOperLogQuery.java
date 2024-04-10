@@ -15,6 +15,11 @@ import org.dromara.common.mybatis.core.domain.BaseEntity;
 public class SysOperLogQuery extends BaseEntity {
 
     /**
+     * 用户id
+     */
+    private Long userId;
+
+    /**
      * 模块标题
      */
     private String title;
@@ -42,6 +47,6 @@ public class SysOperLogQuery extends BaseEntity {
     /**
      * 操作状态
      */
-    private Long status;
+    private Integer status;
 
 }

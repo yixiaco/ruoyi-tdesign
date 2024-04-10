@@ -785,6 +785,7 @@ insert into sys_user_post values ('2', '2');
 create table sys_oper_log (
   oper_id           number(20)      not null,
   tenant_id         varchar2(20)    default '000000',
+  user_id           number(20),
   title             varchar2(50)    default '',
   business_type     number(2)       default 0,
   method            varchar2(100)   default '',
@@ -811,6 +812,7 @@ create index idx_sys_oper_log_ot on sys_oper_log (oper_time);
 comment on table  sys_oper_log                is '操作日志记录';
 comment on column sys_oper_log.oper_id        is '日志主键';
 comment on column sys_oper_log.tenant_id      is '租户编号';
+comment on column sys_oper_log.user_id        is '用户id';
 comment on column sys_oper_log.title          is '模块标题';
 comment on column sys_oper_log.business_type  is '业务类型（0其它 1新增 2修改 3删除）';
 comment on column sys_oper_log.method         is '方法名称';
@@ -1025,6 +1027,7 @@ insert into sys_config values(11, '000000', 'OSS预览列表资源开关',      
 create table sys_logininfor (
   info_id         number(20)     not null,
   tenant_id       varchar2(20)   default '000000',
+  user_id         number(20),
   user_name       varchar2(50)   default '',
   ipaddr          varchar2(128)  default '',
   login_location  varchar2(255)  default '',
@@ -1044,6 +1047,7 @@ create index idx_sys_logininfor_lt on sys_logininfor (login_time);
 comment on table  sys_logininfor                is '系统访问记录';
 comment on column sys_logininfor.info_id        is '访问ID';
 comment on column sys_logininfor.tenant_id      is '租户编号';
+comment on column sys_logininfor.user_id        is '用户id';
 comment on column sys_logininfor.user_name      is '登录账号';
 comment on column sys_logininfor.ipaddr         is '登录IP地址';
 comment on column sys_logininfor.login_location is '登录地点';

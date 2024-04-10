@@ -3,6 +3,7 @@ export default {
     code: '代码仓库',
     help: '帮助文档',
     user: '个人中心',
+    modifyPassword: '修改密码',
     signOut: '退出登录',
     setting: '系统设置',
   },

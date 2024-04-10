@@ -12,3 +12,9 @@ UPDATE sys_menu SET shop_expression = '!getProperty(\'powerjob.worker.enabled\')
 
 ALTER TABLE sys_oss_rule
 ADD COLUMN rule_sort int NOT NULL DEFAULT 0 COMMENT '规则顺序' AFTER status;
+
+ALTER TABLE sys_logininfor
+ADD COLUMN user_id bigint NULL COMMENT '用户id' AFTER tenant_id;
+
+ALTER TABLE sys_oper_log
+ADD COLUMN user_id bigint NULL COMMENT '用户id' AFTER tenant_id;

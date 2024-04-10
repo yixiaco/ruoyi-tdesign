@@ -3,6 +3,7 @@ export default {
     code: 'Code Repository',
     help: 'Document',
     user: 'Profile',
+    modifyPassword: 'Modify Password',
     signOut: 'Sign Out',
     setting: 'Setting',
   },

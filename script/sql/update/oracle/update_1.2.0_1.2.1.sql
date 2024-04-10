@@ -12,4 +12,10 @@ UPDATE sys_menu SET shop_expression = '!getProperty(''spring.boot.admin.client.e
 UPDATE sys_menu SET shop_expression = '!getProperty(''powerjob.worker.enabled'')' WHERE menu_id = 120;
 
 alter table sys_oss_rule add rule_sort number(4) default 0 not null;
-comment on column sys_oss_rule.rule_sort is '规则顺序'
+comment on column sys_oss_rule.rule_sort is '规则顺序';
+
+alter table sys_logininfor add user_id number(20);
+comment on column sys_logininfor.user_id is '用户id';
+
+alter table sys_oper_log add user_id number(20);
+comment on column sys_oper_log.user_id is '用户id';

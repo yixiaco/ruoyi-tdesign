@@ -39,6 +39,12 @@ public class SysUserVo implements Serializable {
     private String tenantId;
 
     /**
+     * 租户企业名称
+     */
+    @Translation(type = TransConstant.TENANT_ID_TO_NAME, mapper = "tenantId")
+    private String tenantName;
+
+    /**
      * 部门ID
      */
     private Long deptId;
