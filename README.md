@@ -8,7 +8,7 @@
 [![ruoyi-tdesign](https://img.shields.io/badge/ruoyi%20tdesign-1.2.0-success.svg)](https://gitee.com/yixiacoco/ruoyi-tdesign)
 [![Spring Boot](https://img.shields.io/badge/Spring%20Boot-3.0-blue.svg)]()
 [![JDK-17](https://img.shields.io/badge/JDK-17-green.svg)]()
-[![JDK-21](https://img.shields.io/badge/JDK-19-green.svg)]()
+[![JDK-21](https://img.shields.io/badge/JDK-21-green.svg)]()
 
 > ruoyi-tdesign 是重写 RuoYi-Vue-Plus UI的场景及其他功能场景的升级(不兼容原框架)
 
@@ -112,63 +112,19 @@
 
 ## 演示图例
 
-<table border="1" cellpadding="1" cellspacing="1" style="width:500px">
-    <tbody>
-        <tr>
-            <td><img src="./doc/images/登录页.png" width="1920" /></td>
-            <td><img src="./doc/images/首页.png" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="./doc/images/用户管理.png" width="1920" /></td>
-            <td><img src="./doc/images/角色管理.png" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="./doc/images/菜单管理.png" width="1920" /></td>
-            <td><img src="./doc/images/部门管理.png" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="./doc/images/岗位管理.png" width="1920" /></td>
-            <td><img src="./doc/images/字典管理.png" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="./doc/images/字典数据.png" width="1920" /></td>
-            <td><img src="./doc/images/参数管理.png" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="./doc/images/通知公告.png" width="1920" /></td>
-            <td><img src="./doc/images/操作日志.png" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="./doc/images/OSS配置管理.png" width="1920" /></td>
-            <td><img src="./doc/images/文件管理.png" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="./doc/images/OSS处理规则.png" width="1920" /></td>
-            <td><img src="./doc/images/消息配置.png" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="./doc/images/消息常量.png" width="1920" /></td>
-            <td><img src="./doc/images/消息模板.png" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="./doc/images/消息发送记录.png" width="1920" /></td>
-            <td><img src="./doc/images/客户端管理.png" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="./doc/images/租户管理.png" width="1920" /></td>
-            <td><img src="./doc/images/租户套餐管理.png" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="./doc/images/应用管理.png" width="1920" /></td>
-            <td><img src="./doc/images/登录日志.png" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="./doc/images/在线用户.png" width="1920" /></td>
-            <td><img src="./doc/images/缓存监控.png" width="1920" /></td>
-        </tr>
-        <tr>
-            <td><img src="./doc/images/代码生成.png" width="1920" /></td>
-            <td><img src="./doc/images/个人中心.png" width="1920" /></td>
-        </tr>
-    </tbody>
-</table>
+|                                  |                              |
+|----------------------------------|------------------------------|
+| ![登录页.png](./doc/images/登录页.png) | ![](./doc/images/首页.png)     |
+| ![](./doc/images/用户管理.png)       | ![](./doc/images/角色管理.png)   |
+| ![](./doc/images/菜单管理.png)       | ![](./doc/images/部门管理.png)   |
+| ![](./doc/images/岗位管理.png)       | ![](./doc/images/字典管理.png)   |
+| ![](./doc/images/字典数据.png)       | ![](./doc/images/参数管理.png)   |
+| ![](./doc/images/通知公告.png)       | ![](./doc/images/操作日志.png)   |
+| ![](./doc/images/OSS配置管理.png)    | ![](./doc/images/文件管理.png)   |
+| ![](./doc/images/OSS处理规则.png)    | ![](./doc/images/消息配置.png)   |
+| ![](./doc/images/消息常量.png)       | ![](./doc/images/消息模板.png)   |
+| ![](./doc/images/消息发送记录.png)     | ![](./doc/images/客户端管理.png)  |
+| ![](./doc/images/租户管理.png)       | ![](./doc/images/租户套餐管理.png) |
+| ![](./doc/images/应用管理.png)       | ![](./doc/images/登录日志.png)   |
+| ![](./doc/images/在线用户.png)       | ![](./doc/images/缓存监控.png)   |
+| ![](./doc/images/代码生成.png)       | ![](./doc/images/个人中心.png)   |
