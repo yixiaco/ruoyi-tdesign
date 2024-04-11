@@ -34,7 +34,7 @@ public class SortQuery implements Serializable {
     /**
      * 格式安全正则
      */
-    private static final Pattern SAFE_SORT = Pattern.compile("^[a-zA-Z][a-zA-Z0-9_]*$");
+    private static final Pattern SAFE_SORT = Pattern.compile("^([a-zA-Z0-9_]+\\.)?[a-zA-Z0-9_]+$");
 
     /**
      * 排序列
