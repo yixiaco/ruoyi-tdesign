@@ -1,9 +1,9 @@
 package org.dromara.amqp.handler;
 
+import org.dromara.amqp.proxy.AmqpTransactionalTemplate;
 import org.dromara.common.core.transactional.TransactionalEventPublisher;
 import org.springframework.amqp.core.AmqpTemplate;
 import org.springframework.amqp.core.MessagePostProcessor;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.Duration;
 
@@ -13,16 +13,16 @@ import java.time.Duration;
  * @author hexm
  * @date 2023/5/9 10:50
  */
-public class AmqpEventPublisher {
+public class AmqpEventPublisher extends AmqpTransactionalTemplate {
 
     /**
      * 通用的消息队列后缀
      */
     public static final String QUEUE = "_QUEUE";
-    @Autowired
-    private TransactionalEventPublisher transactionalEventPublisher;
-    @Autowired
-    private AmqpTemplate amqpTemplate;
+
+    public AmqpEventPublisher(TransactionalEventPublisher transactionalEventPublisher, AmqpTemplate amqpTemplate) {
+        super(transactionalEventPublisher, amqpTemplate);
+    }
 
     /**
      * 提交后发送消息
@@ -73,13 +73,10 @@ public class AmqpEventPublisher {
      *
      * @param exchange 交换机
      * @param message  消息
-     * @param time     延迟时间
+     * @param delay    延迟时间
      */
-    public void commitSendDelay(String exchange, Object message, Duration time) {
-        transactionalEventPublisher.commit(() -> send(exchange, message, message1 -> {
-            message1.getMessageProperties().setDelayLong(time.toMillis());
-            return message1;
-        }));
+    public void commitSendDelay(String exchange, Object message, Duration delay) {
+        transactionalEventPublisher.commit(() -> send(exchange, message, getDelayMessagePostProcessor(delay)));
     }
 
     /**
@@ -131,12 +128,9 @@ public class AmqpEventPublisher {
      *
      * @param exchange 交换机
      * @param message  消息
-     * @param time     延迟时间
+     * @param delay    延迟时间
      */
-    public void sendDelay(String exchange, Object message, Duration time) {
-        amqpTemplate.convertAndSend(exchange, exchange + QUEUE, message, message1 -> {
-            message1.getMessageProperties().setDelayLong(time.toMillis());
-            return message1;
-        });
+    public void sendDelay(String exchange, Object message, Duration delay) {
+        amqpTemplate.convertAndSend(exchange, exchange + QUEUE, message, getDelayMessagePostProcessor(delay));
     }
 }
