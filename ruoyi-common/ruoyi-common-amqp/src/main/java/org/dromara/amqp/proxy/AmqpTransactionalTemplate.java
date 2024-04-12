@@ -150,6 +150,96 @@ public class AmqpTransactionalTemplate {
         return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(exchange, routingKey, message, messagePostProcessor), transactionalEventPublisher);
     }
 
+    /**
+     * Set the x-delay header to a long.
+     * Convert a Java object to an Amqp {@link Message} and send it to a default exchange
+     * with a default routing key.
+     *
+     * @param message a message to send
+     * @param delay   the delay.
+     * @throws AmqpException if there is a problem
+     */
+    public AmqpTransactionalProxy convertAndSendDelay(Object message, Duration delay) {
+        return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(message, getDelayMessagePostProcessor(delay)), transactionalEventPublisher);
+    }
+
+    /**
+     * Set the x-delay header to a long.
+     * Convert a Java object to an Amqp {@link Message} and send it to a default exchange
+     * with a specific routing key.
+     *
+     * @param routingKey the routing key
+     * @param message    a message to send
+     * @param delay      the delay.
+     * @throws AmqpException if there is a problem
+     */
+    public AmqpTransactionalProxy convertAndSendDelay(String routingKey, Object message, Duration delay) {
+        return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(routingKey, message, getDelayMessagePostProcessor(delay)), transactionalEventPublisher);
+    }
+
+    /**
+     * Set the x-delay header to a long.
+     * Convert a Java object to an Amqp {@link Message} and send it to a specific exchange
+     * with a specific routing key.
+     *
+     * @param exchange   the name of the exchange
+     * @param routingKey the routing key
+     * @param message    a message to send
+     * @param delay      the delay.
+     * @throws AmqpException if there is a problem
+     */
+    public AmqpTransactionalProxy convertAndSendDelay(String exchange, String routingKey, Object message, Duration delay) {
+        return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(exchange, routingKey, message, getDelayMessagePostProcessor(delay)), transactionalEventPublisher);
+    }
+
+    /**
+     * Set the message expiration. This is a String property per the AMQP 0.9.1 spec. For
+     * RabbitMQ, this is a String representation of the message time to live in
+     * milliseconds.
+     * Convert a Java object to an Amqp {@link Message} and send it to a default exchange
+     * with a default routing key.
+     *
+     * @param message    a message to send
+     * @param expiration the expiration.
+     * @throws AmqpException if there is a problem
+     */
+    public AmqpTransactionalProxy convertAndSendExpiration(Object message, Duration expiration) {
+        return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(message, getExpirationMessagePostProcessor(expiration)), transactionalEventPublisher);
+    }
+
+    /**
+     * Set the message expiration. This is a String property per the AMQP 0.9.1 spec. For
+     * RabbitMQ, this is a String representation of the message time to live in
+     * milliseconds.
+     * Convert a Java object to an Amqp {@link Message} and send it to a default exchange
+     * with a specific routing key.
+     *
+     * @param routingKey the routing key
+     * @param message    a message to send
+     * @param expiration the expiration.
+     * @throws AmqpException if there is a problem
+     */
+    public AmqpTransactionalProxy convertAndSendExpiration(String routingKey, Object message, Duration expiration) {
+        return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(routingKey, message, getExpirationMessagePostProcessor(expiration)), transactionalEventPublisher);
+    }
+
+    /**
+     * Set the message expiration. This is a String property per the AMQP 0.9.1 spec. For
+     * RabbitMQ, this is a String representation of the message time to live in
+     * milliseconds.
+     * Convert a Java object to an Amqp {@link Message} and send it to a specific exchange
+     * with a specific routing key.
+     *
+     * @param exchange   the name of the exchange
+     * @param routingKey the routing key
+     * @param message    a message to send
+     * @param expiration the expiration.
+     * @throws AmqpException if there is a problem
+     */
+    public AmqpTransactionalProxy convertAndSendExpiration(String exchange, String routingKey, Object message, Duration expiration) {
+        return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(exchange, routingKey, message, getExpirationMessagePostProcessor(expiration)), transactionalEventPublisher);
+    }
+
     // receive methods for messages
 
     /**
