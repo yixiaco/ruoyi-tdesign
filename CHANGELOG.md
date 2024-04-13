@@ -1,3 +1,109 @@
+## 🌈 1.3.0 `2024-4-13`
+> 本次更新需要执行`update_1.2.0-1.3.0.sql`脚本<br>
+> PowerJob需要额外更新SQL<br>
+
+### 🚀 New Features
+- amqp新增AmqpTransactionalTemplate，废弃AmqpEventPublisher (#62)
+- 使用tdesign-vue-next-starter个人中心页替换旧的个人中心页 (#61)
+- OssRule表增加排序字段
+- 新增使用表达式动态设置菜单隐藏、停用逻辑 (#57)
+- 新增集合差异比较工具
+- 新增列表选中项的数量展示
+- 增加多表多数据模板导出excel方法
+- websocket支持多账号体系、支持自定义处理器
+- 将代码迁移至TS严格模式
+- 新增侧边栏颜色切换
+### 🔥 Performance
+- mybatis数据注入时不再强制报错
+- 适配tinymce6 -> tinymce7
+- @OssRule支持Number类型数据
+- 更新Sms4J，新增七牛云短信发送配置
+- 优化菜单显示间距问题
+- 增加StreamUtils集合对象合并操作
+- 优化SpEL表达式解析工具代码，修改@DynamicTenant注解的使用方式；优化消息发送参数
+- 删除用户时，退出用户的登录状态
+- 使用@OssRule注解替代@Translation(type = TransConstant.OSS_RULE)
+- oss规则支持内容为id时自动转为url
+- 个人信息中邮箱、手机号非必填
+- 增加忽略脱敏注解逻辑
+- 数据脱敏权限支持多个，并适配多账号类型
+- AnyEnum默认不忽略大小写
+- 使用还原初始值作为表单重置的默认项
+- 优化websocket重连逻辑
+- 使用type-only import的esLint自动修复
+- 类型导入支持自动判断是否使用 type 关键字
+- 优化消息配置提示
+### 🐞 Bug Fixes
+- 修正支持排序安全正则支持别名
+- OSS规则应随OSS配置一同忽略租户；处理@OssRule字段url带参情况
+- 修复当用户管理菜单设置为第一层菜单时，与个人中心菜单冲突，导致无法显示页面
+- 修复单层菜单显示问题
+- 修复获取默认分页值问题，默认分页值修改为10
+- @RateLimiter#key使用解析器在解析#var形式的变量时异常
+- 修复IgnoreTenant#cache=true时，读取keys报错（需要注意代码语义变更）
+- 新增角色时的加载进度不会停止
+- 修复关闭的消息模板，如果存在相同的消息常量+消息类型，则保存失败
+- 路由重定向次数超过三次后跳转到500页面
+- SensitiveHandler在数组中报错
+- 手机号校验，空字符串导致校验不通过
+- 错误的获取可空用户对象方式
+- 修复image-preview组件在id模式下请求多次
+- 修复ECharts环形图文字重叠的问题
+- 修复路由切换时过渡动画异常的问题
+- 修复EsLint问题
+- 修复登录页报错
+### 🏡 Chore
+- 重构SortQuery
+- 移除vue-dev-tools(影响debug速度)
+- 增加项目文档地址
+- 将整体代码规范为ESM
+### 🔨 Dependency Upgrades
+#### 🔨 java pom
+- Upgrade to spring-boot-3.2.4
+- Upgrade to springdoc-openapi-starter-webmvc-api-2.5.0
+- Upgrade to easyexcel-3.3.4
+- Upgrade to mybatis-plus-3.5.6
+- Upgrade to pagehelper-spring-boot-starter-2.1.0
+- Upgrade to hutool-5.8.27
+- Upgrade to spring-boot-admin-3.2.3
+- Upgrade to redisson-3.28.0
+- Upgrade to lock4j-redisson-spring-boot-starter-2.2.7
+- Upgrade to powerJob-4.3.9
+- Upgrade to mapstruct-plus-1.4.0
+- Upgrade to lombok-1.18.32
+- Upgrade to aws-java-sdk-s3-1.12.700
+- Upgrade to sms4j-3.2.1
+#### 🔨 node package
+- Upgrade to @vueuse/core@^10.9.0
+- Upgrade to axios@^1.6.8
+- Upgrade to echarts@5.4.3
+- Upgrade to qs@^6.12.0
+- Upgrade to tdesign-vue-next@1.9.3
+- Upgrade to tinymce@^7.0.1
+- Upgrade to vue-i18n@^9.12.0
+- Upgrade to vue-router@^4.3.0
+- Upgrade to @commitlint/cli@^19.2.1
+- Upgrade to @commitlint/config-conventional@^19.1.0
+- Upgrade to @types/lodash@^4.17.0
+- Upgrade to @types/qs@^6.9.14
+- Upgrade to @typescript-eslint/eslint-plugin@^7.6.0
+- Upgrade to @typescript-eslint/parser@^7.6.0
+- Upgrade to @vitejs/plugin-vue@^5.0.4
+- Upgrade to @vue/eslint-config-typescript@~12.0.0
+- Upgrade to cz-conventional-changelog@^3.3.0
+- Upgrade to eslint@~8.57.0
+- Upgrade to eslint-plugin-simple-import-sort@^12.0.0
+- Upgrade to eslint-plugin-vue@^9.24.1
+- Upgrade to eslint-plugin-vue-scoped-css@^2.8.0
+- Upgrade to lint-staged@^15.2.2
+- Upgrade to prettier@^3.2.5
+- Upgrade to rollup-plugin-copy@^3.5.0
+- Upgrade to stylelint@~16.3.1
+- Upgrade to typescript@~5.4.4
+- Upgrade to vite@~5.2.8
+- Upgrade to vue-tsc@^2.0.13
+- Remove vite-plugin-vue-devtools
+
 ## 🌈 1.2.0 `2024-2-08`
 > 本次更新需要执行`update_1.1.0-1.2.0.sql`脚本<br>
 > 重要更新（破坏性）：
