@@ -3,6 +3,7 @@ package org.dromara.common.core.transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.stereotype.Component;
+import org.springframework.transaction.event.TransactionPhase;
 
 /**
  * 事务监听事件发布
@@ -17,29 +18,43 @@ public class TransactionalEventPublisher {
     private ApplicationEventPublisher applicationEventPublisher;
 
     /**
-     * 在成功完成提交后触发事件
+     * 在事务提交之前处理事件
      *
-     * @param apply 执行事件
+     * @param callback 回调事件
+     * @see TransactionPhase#BEFORE_COMMIT
      */
-    public void commit(TransactionalApply apply) {
-        applicationEventPublisher.publishEvent(new AlterCommitTransactionalEvent(apply));
+    public void beforeCommit(TransactionalCallback callback) {
+        applicationEventPublisher.publishEvent(new BeforeCommitTransactionalEvent(callback));
     }
 
     /**
-     * 如果事务已回滚，则触发事件
+     * 在提交成功完成后处理事件。
      *
-     * @param apply 执行事件
+     * @param callback 回调事件
+     * @see TransactionPhase#AFTER_COMMIT
      */
-    public void rollback(TransactionalApply apply) {
-        applicationEventPublisher.publishEvent(new RollbackTransactionalEvent(apply));
+    public void commit(TransactionalCallback callback) {
+        applicationEventPublisher.publishEvent(new AlterCommitTransactionalEvent(callback));
     }
 
     /**
-     * 在事务完成后触发事件(不管成功还是回滚)
+     * 如果事务已回滚，则处理该事件。
      *
-     * @param apply 执行事件
+     * @param callback 回调事件
+     * @see TransactionPhase#AFTER_ROLLBACK
      */
-    public void completion(TransactionalApply apply) {
-        applicationEventPublisher.publishEvent(new AlterCompletionTransactionalEvent(apply));
+    public void rollback(TransactionalCallback callback) {
+        applicationEventPublisher.publishEvent(new RollbackTransactionalEvent(callback));
+    }
+
+    /**
+     * 在事务完成后处理事件(不管成功还是回滚)
+     * 对于更细粒度的事件，请分别使用 {@link #commit} 或 {@link #rollback} 截获事务提交或回滚。
+     *
+     * @param callback 回调事件
+     * @see TransactionPhase#AFTER_COMPLETION
+     */
+    public void completion(TransactionalCallback callback) {
+        applicationEventPublisher.publishEvent(new AlterCompletionTransactionalEvent(callback));
     }
 }

@@ -52,6 +52,7 @@ import java.util.Objects;
  * }
  * @author hexm
  * @date 2024/4/2
+ * @since 1.3.0
  */
 @Data
 public class SpringExpressionCreated {

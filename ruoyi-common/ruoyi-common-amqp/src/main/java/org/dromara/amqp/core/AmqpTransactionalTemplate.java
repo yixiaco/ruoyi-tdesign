@@ -1,6 +1,7 @@
-package org.dromara.amqp.proxy;
+package org.dromara.amqp.core;
 
-import org.dromara.common.core.transactional.TransactionalApply;
+import lombok.Getter;
+import org.dromara.common.core.transactional.TransactionalCallback;
 import org.dromara.common.core.transactional.TransactionalEventPublisher;
 import org.springframework.amqp.AmqpException;
 import org.springframework.amqp.core.AmqpTemplate;
@@ -9,6 +10,7 @@ import org.springframework.amqp.core.MessagePostProcessor;
 import org.springframework.amqp.core.ReceiveAndReplyCallback;
 import org.springframework.amqp.core.ReplyToAddressCallback;
 import org.springframework.core.ParameterizedTypeReference;
+import org.springframework.transaction.event.TransactionPhase;
 
 import java.time.Duration;
 import java.util.function.Consumer;
@@ -17,9 +19,9 @@ import java.util.function.Supplier;
 /**
  * 支持事务的AmqpTemplate。
  * <p>
- * {@link AmqpTransactionalProxy#commit()}: 对前面的最终操作，并在事务提交后，执行方法
- * {@link AmqpTransactionalProxy#rollback()}: 对前面的最终操作，并在事务回滚后，执行方法
- * {@link AmqpTransactionalProxy#completion()}: 对前面的最终操作，并在事务提交或回滚后，执行方法
+ * {@link AmqpTransactionalEventPublisherSubmit#commit()}: 对前面的最终操作，并在事务提交后，执行方法
+ * {@link AmqpTransactionalEventPublisherSubmit#rollback()}: 对前面的最终操作，并在事务回滚后，执行方法
+ * {@link AmqpTransactionalEventPublisherSubmit#completion()}: 对前面的最终操作，并在事务提交或回滚后，执行方法
  * <p>
  * example:
  * <pre>{@code
@@ -29,7 +31,10 @@ import java.util.function.Supplier;
  *
  * @author hexm
  * @date 2024/4/12
+ * @see AmqpTemplate
+ * @since 1.3.0
  */
+@Getter
 public class AmqpTransactionalTemplate {
 
     protected final TransactionalEventPublisher transactionalEventPublisher;
@@ -46,8 +51,8 @@ public class AmqpTransactionalTemplate {
      * @param message a message to send
      * @throws AmqpException if there is a problem
      */
-    public AmqpTransactionalProxy send(Message message) {
-        return new AmqpTransactionalProxy(() -> amqpTemplate.send(message), transactionalEventPublisher);
+    public AmqpTransactionalEventPublisherSubmit send(Message message) {
+        return new AmqpTransactionalEventPublisherSubmit(() -> amqpTemplate.send(message), transactionalEventPublisher);
     }
 
     /**
@@ -57,8 +62,8 @@ public class AmqpTransactionalTemplate {
      * @param message    a message to send
      * @throws AmqpException if there is a problem
      */
-    public AmqpTransactionalProxy send(String routingKey, Message message) {
-        return new AmqpTransactionalProxy(() -> amqpTemplate.send(routingKey, message), transactionalEventPublisher);
+    public AmqpTransactionalEventPublisherSubmit send(String routingKey, Message message) {
+        return new AmqpTransactionalEventPublisherSubmit(() -> amqpTemplate.send(routingKey, message), transactionalEventPublisher);
     }
 
     /**
@@ -69,8 +74,8 @@ public class AmqpTransactionalTemplate {
      * @param message    a message to send
      * @throws AmqpException if there is a problem
      */
-    public AmqpTransactionalProxy send(String exchange, String routingKey, Message message) {
-        return new AmqpTransactionalProxy(() -> amqpTemplate.send(exchange, routingKey, message), transactionalEventPublisher);
+    public AmqpTransactionalEventPublisherSubmit send(String exchange, String routingKey, Message message) {
+        return new AmqpTransactionalEventPublisherSubmit(() -> amqpTemplate.send(exchange, routingKey, message), transactionalEventPublisher);
     }
 
     // send methods with conversion
@@ -82,8 +87,8 @@ public class AmqpTransactionalTemplate {
      * @param message a message to send
      * @throws AmqpException if there is a problem
      */
-    public AmqpTransactionalProxy convertAndSend(Object message) {
-        return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(message), transactionalEventPublisher);
+    public AmqpTransactionalEventPublisherSubmit convertAndSend(Object message) {
+        return new AmqpTransactionalEventPublisherSubmit(() -> amqpTemplate.convertAndSend(message), transactionalEventPublisher);
     }
 
     /**
@@ -94,8 +99,8 @@ public class AmqpTransactionalTemplate {
      * @param message    a message to send
      * @throws AmqpException if there is a problem
      */
-    public AmqpTransactionalProxy convertAndSend(String routingKey, Object message) {
-        return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(routingKey, message), transactionalEventPublisher);
+    public AmqpTransactionalEventPublisherSubmit convertAndSend(String routingKey, Object message) {
+        return new AmqpTransactionalEventPublisherSubmit(() -> amqpTemplate.convertAndSend(routingKey, message), transactionalEventPublisher);
     }
 
     /**
@@ -107,8 +112,8 @@ public class AmqpTransactionalTemplate {
      * @param message    a message to send
      * @throws AmqpException if there is a problem
      */
-    public AmqpTransactionalProxy convertAndSend(String exchange, String routingKey, Object message) {
-        return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(exchange, routingKey, message), transactionalEventPublisher);
+    public AmqpTransactionalEventPublisherSubmit convertAndSend(String exchange, String routingKey, Object message) {
+        return new AmqpTransactionalEventPublisherSubmit(() -> amqpTemplate.convertAndSend(exchange, routingKey, message), transactionalEventPublisher);
     }
 
     /**
@@ -119,8 +124,8 @@ public class AmqpTransactionalTemplate {
      * @param messagePostProcessor a processor to apply to the message before it is sent
      * @throws AmqpException if there is a problem
      */
-    public AmqpTransactionalProxy convertAndSend(Object message, MessagePostProcessor messagePostProcessor) {
-        return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(message, messagePostProcessor), transactionalEventPublisher);
+    public AmqpTransactionalEventPublisherSubmit convertAndSend(Object message, MessagePostProcessor messagePostProcessor) {
+        return new AmqpTransactionalEventPublisherSubmit(() -> amqpTemplate.convertAndSend(message, messagePostProcessor), transactionalEventPublisher);
     }
 
     /**
@@ -132,8 +137,8 @@ public class AmqpTransactionalTemplate {
      * @param messagePostProcessor a processor to apply to the message before it is sent
      * @throws AmqpException if there is a problem
      */
-    public AmqpTransactionalProxy convertAndSend(String routingKey, Object message, MessagePostProcessor messagePostProcessor) {
-        return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(routingKey, message, messagePostProcessor), transactionalEventPublisher);
+    public AmqpTransactionalEventPublisherSubmit convertAndSend(String routingKey, Object message, MessagePostProcessor messagePostProcessor) {
+        return new AmqpTransactionalEventPublisherSubmit(() -> amqpTemplate.convertAndSend(routingKey, message, messagePostProcessor), transactionalEventPublisher);
     }
 
     /**
@@ -146,8 +151,8 @@ public class AmqpTransactionalTemplate {
      * @param messagePostProcessor a processor to apply to the message before it is sent
      * @throws AmqpException if there is a problem
      */
-    public AmqpTransactionalProxy convertAndSend(String exchange, String routingKey, Object message, MessagePostProcessor messagePostProcessor) {
-        return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(exchange, routingKey, message, messagePostProcessor), transactionalEventPublisher);
+    public AmqpTransactionalEventPublisherSubmit convertAndSend(String exchange, String routingKey, Object message, MessagePostProcessor messagePostProcessor) {
+        return new AmqpTransactionalEventPublisherSubmit(() -> amqpTemplate.convertAndSend(exchange, routingKey, message, messagePostProcessor), transactionalEventPublisher);
     }
 
     /**
@@ -159,8 +164,8 @@ public class AmqpTransactionalTemplate {
      * @param delay   the delay.
      * @throws AmqpException if there is a problem
      */
-    public AmqpTransactionalProxy convertAndSendDelay(Object message, Duration delay) {
-        return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(message, getDelayMessagePostProcessor(delay)), transactionalEventPublisher);
+    public AmqpTransactionalEventPublisherSubmit convertAndSendDelay(Object message, Duration delay) {
+        return new AmqpTransactionalEventPublisherSubmit(() -> amqpTemplate.convertAndSend(message, getDelayMessagePostProcessor(delay)), transactionalEventPublisher);
     }
 
     /**
@@ -173,8 +178,8 @@ public class AmqpTransactionalTemplate {
      * @param delay      the delay.
      * @throws AmqpException if there is a problem
      */
-    public AmqpTransactionalProxy convertAndSendDelay(String routingKey, Object message, Duration delay) {
-        return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(routingKey, message, getDelayMessagePostProcessor(delay)), transactionalEventPublisher);
+    public AmqpTransactionalEventPublisherSubmit convertAndSendDelay(String routingKey, Object message, Duration delay) {
+        return new AmqpTransactionalEventPublisherSubmit(() -> amqpTemplate.convertAndSend(routingKey, message, getDelayMessagePostProcessor(delay)), transactionalEventPublisher);
     }
 
     /**
@@ -188,8 +193,8 @@ public class AmqpTransactionalTemplate {
      * @param delay      the delay.
      * @throws AmqpException if there is a problem
      */
-    public AmqpTransactionalProxy convertAndSendDelay(String exchange, String routingKey, Object message, Duration delay) {
-        return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(exchange, routingKey, message, getDelayMessagePostProcessor(delay)), transactionalEventPublisher);
+    public AmqpTransactionalEventPublisherSubmit convertAndSendDelay(String exchange, String routingKey, Object message, Duration delay) {
+        return new AmqpTransactionalEventPublisherSubmit(() -> amqpTemplate.convertAndSend(exchange, routingKey, message, getDelayMessagePostProcessor(delay)), transactionalEventPublisher);
     }
 
     /**
@@ -203,8 +208,8 @@ public class AmqpTransactionalTemplate {
      * @param expiration the expiration.
      * @throws AmqpException if there is a problem
      */
-    public AmqpTransactionalProxy convertAndSendExpiration(Object message, Duration expiration) {
-        return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(message, getExpirationMessagePostProcessor(expiration)), transactionalEventPublisher);
+    public AmqpTransactionalEventPublisherSubmit convertAndSendExpiration(Object message, Duration expiration) {
+        return new AmqpTransactionalEventPublisherSubmit(() -> amqpTemplate.convertAndSend(message, getExpirationMessagePostProcessor(expiration)), transactionalEventPublisher);
     }
 
     /**
@@ -219,8 +224,8 @@ public class AmqpTransactionalTemplate {
      * @param expiration the expiration.
      * @throws AmqpException if there is a problem
      */
-    public AmqpTransactionalProxy convertAndSendExpiration(String routingKey, Object message, Duration expiration) {
-        return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(routingKey, message, getExpirationMessagePostProcessor(expiration)), transactionalEventPublisher);
+    public AmqpTransactionalEventPublisherSubmit convertAndSendExpiration(String routingKey, Object message, Duration expiration) {
+        return new AmqpTransactionalEventPublisherSubmit(() -> amqpTemplate.convertAndSend(routingKey, message, getExpirationMessagePostProcessor(expiration)), transactionalEventPublisher);
     }
 
     /**
@@ -236,8 +241,8 @@ public class AmqpTransactionalTemplate {
      * @param expiration the expiration.
      * @throws AmqpException if there is a problem
      */
-    public AmqpTransactionalProxy convertAndSendExpiration(String exchange, String routingKey, Object message, Duration expiration) {
-        return new AmqpTransactionalProxy(() -> amqpTemplate.convertAndSend(exchange, routingKey, message, getExpirationMessagePostProcessor(expiration)), transactionalEventPublisher);
+    public AmqpTransactionalEventPublisherSubmit convertAndSendExpiration(String exchange, String routingKey, Object message, Duration expiration) {
+        return new AmqpTransactionalEventPublisherSubmit(() -> amqpTemplate.convertAndSend(exchange, routingKey, message, getExpirationMessagePostProcessor(expiration)), transactionalEventPublisher);
     }
 
     // receive methods for messages
@@ -803,11 +808,38 @@ public class AmqpTransactionalTemplate {
     }
 
     /**
+     * 提交事务后执行方法
+     *
+     * @param consumer 执行方法
+     */
+    public void commit(Consumer<AmqpTemplate> consumer) {
+        transactionalEventPublisher.commit(() -> consumer.accept(amqpTemplate));
+    }
+
+    /**
+     * 回滚事务后执行方法
+     *
+     * @param consumer 执行方法
+     */
+    public void rollback(Consumer<AmqpTemplate> consumer) {
+        transactionalEventPublisher.rollback(() -> consumer.accept(amqpTemplate));
+    }
+
+    /**
+     * 提交事务或回滚事务后执行方法
+     *
+     * @param consumer 执行方法
+     */
+    public void completion(Consumer<AmqpTemplate> consumer) {
+        transactionalEventPublisher.completion(() -> consumer.accept(amqpTemplate));
+    }
+
+    /**
      * 获取延迟消息属性头
      *
      * @param delay 延迟时间
      */
-    public MessagePostProcessor getDelayMessagePostProcessor(Duration delay) {
+    public static MessagePostProcessor getDelayMessagePostProcessor(Duration delay) {
         return message -> messageDelayHandle(message, delay);
     }
 
@@ -816,7 +848,7 @@ public class AmqpTransactionalTemplate {
      *
      * @param delay 延迟时间
      */
-    public Message messageDelayHandle(Message message, Duration delay) {
+    public static Message messageDelayHandle(Message message, Duration delay) {
         message.getMessageProperties().setDelayLong(delay.toMillis());
         return message;
     }
@@ -826,7 +858,7 @@ public class AmqpTransactionalTemplate {
      *
      * @param expiration 过期时间
      */
-    public MessagePostProcessor getExpirationMessagePostProcessor(Duration expiration) {
+    public static MessagePostProcessor getExpirationMessagePostProcessor(Duration expiration) {
         return message -> messageExpirationHandle(message, expiration);
     }
 
@@ -835,7 +867,7 @@ public class AmqpTransactionalTemplate {
      *
      * @param expiration 过期时间
      */
-    public Message messageExpirationHandle(Message message, Duration expiration) {
+    public static Message messageExpirationHandle(Message message, Duration expiration) {
         message.getMessageProperties().setExpiration(String.valueOf(expiration.toMillis()));
         return message;
     }
@@ -843,35 +875,61 @@ public class AmqpTransactionalTemplate {
     /**
      * 最终提交的事务处理
      */
-    public static class AmqpTransactionalProxy {
+    public static class AmqpTransactionalEventPublisherSubmit {
 
-        protected final TransactionalApply apply;
+        protected final TransactionalCallback callback;
         protected final TransactionalEventPublisher transactionalEventPublisher;
 
-        public AmqpTransactionalProxy(TransactionalApply apply, TransactionalEventPublisher transactionalEventPublisher) {
-            this.apply = apply;
+        public AmqpTransactionalEventPublisherSubmit(TransactionalCallback callback, TransactionalEventPublisher transactionalEventPublisher) {
+            this.callback = callback;
             this.transactionalEventPublisher = transactionalEventPublisher;
         }
 
         /**
-         * 在成功完成提交后触发事件
+         * 在事务提交之前处理事件
+         *
+         * @see TransactionPhase#BEFORE_COMMIT
+         */
+        public void beforeCommit() {
+            transactionalEventPublisher.beforeCommit(callback);
+        }
+
+        /**
+         * 在提交成功完成后处理事件
+         * 在此阶段不会提交与基础事务资源的交互。
+         *
+         * @see TransactionPhase#AFTER_COMMIT
          */
         public void commit() {
-            transactionalEventPublisher.commit(apply);
+            transactionalEventPublisher.commit(callback);
         }
 
         /**
-         * 如果事务已回滚，则触发事件
+         * 如果事务已回滚，则处理该事件。
+         * 在此阶段不会提交与基础事务资源的交互。
+         *
+         * @see TransactionPhase#AFTER_ROLLBACK
          */
         public void rollback() {
-            transactionalEventPublisher.rollback(apply);
+            transactionalEventPublisher.rollback(callback);
         }
 
         /**
-         * 在事务完成后触发事件(不管成功还是回滚)
+         * 在事务完成后处理事件(不管成功还是回滚)
+         * 对于更细粒度的事件，请分别使用 {@link #commit} 或 {@link #rollback} 截获事务提交或回滚。
+         * 在此阶段不会提交与基础事务资源的交互。
+         *
+         * @see TransactionPhase#AFTER_COMPLETION
          */
         public void completion() {
-            transactionalEventPublisher.completion(apply);
+            transactionalEventPublisher.completion(callback);
+        }
+
+        /**
+         * 直接执行（没有事务处理）
+         */
+        public void execute() {
+            callback.callback();
         }
     }
 
@@ -880,9 +938,9 @@ public class AmqpTransactionalTemplate {
      *
      * @param <R>
      */
-    public static class AmqpResultConsumer<R> extends AmqpTransactionalProxy {
+    public static class AmqpResultConsumer<R> extends AmqpTransactionalEventPublisherSubmit {
 
-        private final Supplier<R> supplier;
+        protected final Supplier<R> supplier;
 
         public AmqpResultConsumer(Supplier<R> supplier, TransactionalEventPublisher transactionalEventPublisher) {
             super(supplier::get, transactionalEventPublisher);
@@ -894,8 +952,8 @@ public class AmqpTransactionalTemplate {
          *
          * @param consumer 对结果进行处理
          */
-        public AmqpTransactionalProxy result(Consumer<R> consumer) {
-            return new AmqpTransactionalProxy(() -> consumer.accept(supplier.get()), transactionalEventPublisher);
+        public AmqpTransactionalEventPublisherSubmit result(Consumer<R> consumer) {
+            return new AmqpTransactionalEventPublisherSubmit(() -> consumer.accept(supplier.get()), transactionalEventPublisher);
         }
     }
 }
