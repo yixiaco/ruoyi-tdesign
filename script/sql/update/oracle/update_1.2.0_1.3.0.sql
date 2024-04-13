@@ -19,3 +19,11 @@ comment on column sys_logininfor.user_id is '用户id';
 
 alter table sys_oper_log add user_id number(20);
 comment on column sys_oper_log.user_id is '用户id';
+
+-- 如果启用PowerJob则执行以下脚本
+-- Upgrade PowerJob SQL FROM 4.3.7 to 4.3.8
+-- ----------------------------
+-- Table change for job_info
+-- ----------------------------
+-- alter table "pj_job_info" add "dispatch_strategy_config" varchar(255);
+-- alter table "pj_job_info" add "advanced_runtime_config" varchar(255);

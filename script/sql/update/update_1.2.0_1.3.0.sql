@@ -18,3 +18,11 @@ ADD COLUMN user_id bigint NULL COMMENT '用户id' AFTER tenant_id;
 
 ALTER TABLE sys_oper_log
 ADD COLUMN user_id bigint NULL COMMENT '用户id' AFTER tenant_id;
+
+-- 如果启用PowerJob则执行以下脚本
+-- Upgrade PowerJob SQL FROM 4.3.7 to 4.3.8
+-- ----------------------------
+-- Table change for job_info
+-- ----------------------------
+-- alter table pj_job_info add dispatch_strategy_config varchar(255) comment 'dispatch_strategy_config' default null;
+-- alter table pj_job_info add advanced_runtime_config varchar(255) comment 'advanced_runtime_config' default null;

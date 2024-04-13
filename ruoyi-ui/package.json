@@ -41,15 +41,15 @@
     "qs": "^6.12.0",
     "tdesign-icons-vue-next": "0.2.2",
     "tdesign-vue-next": "1.9.3",
-    "tinymce": "^7.0.0",
+    "tinymce": "^7.0.1",
     "tvision-color": "^1.6.0",
     "vue": "~3.3.13",
     "vue-cropper": "^1.1.1",
-    "vue-i18n": "^9.10.2",
+    "vue-i18n": "^9.12.0",
     "vue-router": "^4.3.0"
   },
   "devDependencies": {
-    "@commitlint/cli": "^19.1.0",
+    "@commitlint/cli": "^19.2.1",
     "@commitlint/config-conventional": "^19.1.0",
     "@types/crypto-js": "^4.2.2",
     "@types/echarts": "^4.9.22",
@@ -57,7 +57,7 @@
     "@types/lodash": "^4.17.0",
     "@types/nprogress": "^0.2.3",
     "@types/prismjs": "^1.26.3",
-    "@types/qs": "^6.9.12",
+    "@types/qs": "^6.9.14",
     "@typescript-eslint/eslint-plugin": "^7.6.0",
     "@typescript-eslint/parser": "^7.6.0",
     "@vitejs/plugin-vue": "^5.0.4",
@@ -92,7 +92,7 @@
     "vite-plugin-mock": "^3.0.1",
     "vite-plugin-prismjs": "^0.0.11",
     "vite-svg-loader": "^5.1.0",
-    "vue-tsc": "^2.0.11"
+    "vue-tsc": "^2.0.13"
   },
   "config": {
     "commitizen": {
