@@ -14,41 +14,59 @@ import org.springframework.transaction.event.TransactionalEventListener;
 public class TransactionListener {
 
     /**
-     * 在成功完成提交后触发事件
+     * 在事务提交之前处理事件。
      *
      * @param event 监听事件
+     * @see TransactionPhase#BEFORE_COMMIT
+     */
+    @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
+    public void onBeforeCommitHandler(AlterCommitTransactionalEvent event) {
+        TransactionalCallback apply = event.getSource();
+        if (apply != null) {
+            apply.callback();
+        }
+    }
+
+    /**
+     * 在提交成功完成后处理事件。
+     * 注意：这是 AFTER_COMPLETION 的专用化，因此以与 AFTER_COMPLETION （而不是 ） TransactionSynchronization. afterCommit()相同的事件序列执行。
+     *
+     * @param event 监听事件
+     * @see TransactionPhase#AFTER_COMMIT
      */
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
     public void onAlterCommitHandler(AlterCommitTransactionalEvent event) {
-        TransactionalApply apply = event.getSource();
+        TransactionalCallback apply = event.getSource();
         if (apply != null) {
-            apply.apply();
+            apply.callback();
         }
     }
 
     /**
-     * 如果事务已回滚，则触发事件
+     * 如果事务已回滚，则处理该事件。
      *
      * @param event 监听事件
+     * @see TransactionPhase#AFTER_ROLLBACK
      */
     @TransactionalEventListener(phase = TransactionPhase.AFTER_ROLLBACK)
     public void onRollbackHandler(RollbackTransactionalEvent event) {
-        TransactionalApply apply = event.getSource();
+        TransactionalCallback apply = event.getSource();
         if (apply != null) {
-            apply.apply();
+            apply.callback();
         }
     }
 
     /**
-     * 在事务完成后触发事件
+     * 在事务完成后处理事件
      *
      * @param event 监听事件
+     * @see TransactionPhase#AFTER_COMPLETION
      */
     @TransactionalEventListener(phase = TransactionPhase.AFTER_COMPLETION)
     public void onCompletionHandler(AlterCompletionTransactionalEvent event) {
-        TransactionalApply apply = event.getSource();
+        TransactionalCallback apply = event.getSource();
         if (apply != null) {
-            apply.apply();
+            apply.callback();
         }
     }
 }

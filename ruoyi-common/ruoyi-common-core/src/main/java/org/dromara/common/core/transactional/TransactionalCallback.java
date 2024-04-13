@@ -1,15 +1,15 @@
 package org.dromara.common.core.transactional;
 
 /**
- * 事务处理应用
+ * 事务回调
  *
  * @author hexm
  */
 @FunctionalInterface
-public interface TransactionalApply {
+public interface TransactionalCallback {
 
     /**
-     * 执行
+     * 回调方法
      */
-    void apply();
+    void callback();
 }

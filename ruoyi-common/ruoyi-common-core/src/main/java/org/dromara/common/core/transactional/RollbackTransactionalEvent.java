@@ -10,21 +10,16 @@ import org.springframework.context.ApplicationEvent;
  */
 public class RollbackTransactionalEvent extends ApplicationEvent {
 
-    public RollbackTransactionalEvent(TransactionalApply source) {
+    public RollbackTransactionalEvent(TransactionalCallback source) {
         super(source);
     }
 
-    public static RollbackTransactionalEvent of(TransactionalApply apply) {
+    public static RollbackTransactionalEvent of(TransactionalCallback apply) {
         return new RollbackTransactionalEvent(apply);
     }
 
-    /**
-     * The object on which the Event initially occurred.
-     *
-     * @return The object on which the Event initially occurred.
-     */
     @Override
-    public TransactionalApply getSource() {
-        return (TransactionalApply) super.getSource();
+    public TransactionalCallback getSource() {
+        return (TransactionalCallback) super.getSource();
     }
 }
