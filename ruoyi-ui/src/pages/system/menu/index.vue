@@ -615,9 +615,9 @@ function handleAdd(row?: SysMenuVo) {
 /** 修改按钮操作 */
 async function handleUpdate(row: SysMenuVo) {
   reset();
+  open.value = true;
   await getTreeselect();
   title.value = '修改菜单';
-  open.value = true;
   eLoading.value = true;
   getMenu(row.menuId).then((response) => {
     form.value = response.data;
@@ -627,9 +627,9 @@ async function handleUpdate(row: SysMenuVo) {
 /** 复制新增操作 */
 async function handleCopyAdd(row: SysMenuVo) {
   reset();
+  open.value = true;
   await getTreeselect();
   title.value = '添加菜单';
-  open.value = true;
   eLoading.value = true;
   getMenu(row.menuId).then((response) => {
     form.value = response.data;

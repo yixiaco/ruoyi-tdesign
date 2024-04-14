@@ -57,7 +57,7 @@ public interface ISysMenuService extends IService<SysMenu> {
      * @param userId 用户ID
      * @return 菜单列表
      */
-    List<SysMenu> selectMenuTreeByUserId(Long userId);
+    List<SysMenuVo> selectMenuTreeByUserId(Long userId);
 
     /**
      * 根据角色ID查询菜单树信息
@@ -81,7 +81,7 @@ public interface ISysMenuService extends IService<SysMenu> {
      * @param menus 菜单列表
      * @return 路由列表
      */
-    List<RouterVo> buildMenus(List<SysMenu> menus);
+    List<RouterVo> buildMenus(List<SysMenuVo> menus);
 
     /**
      * 构建前端所需要下拉树结构

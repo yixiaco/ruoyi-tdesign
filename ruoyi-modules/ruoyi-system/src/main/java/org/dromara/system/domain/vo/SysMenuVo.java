@@ -4,6 +4,11 @@ import com.alibaba.excel.annotation.ExcelIgnoreUnannotated;
 import com.alibaba.excel.annotation.ExcelProperty;
 import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
+import org.dromara.common.core.constant.Constants;
+import org.dromara.common.core.constant.UserConstants;
+import org.dromara.common.core.enums.MenuTypeEnum;
+import org.dromara.common.core.enums.YesNoFrameEnum;
+import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.excel.annotation.ExcelDictFormat;
 import org.dromara.common.excel.convert.ExcelDictConvert;
 import org.dromara.system.domain.SysMenu;
@@ -156,8 +161,90 @@ public class SysMenuVo implements Serializable {
     private String remark;
 
     /**
+     * 父菜单名称
+     */
+    private String parentName;
+
+    /**
      * 子菜单
      */
     private List<SysMenuVo> children = new ArrayList<>();
 
+
+    /**
+     * 获取路由名称
+     */
+    public String getRouteName() {
+        String routerName = StringUtils.capitalize(path);
+        // 非外链并且是一级目录（类型为目录）
+        if (isMenuFrame()) {
+            routerName = StringUtils.EMPTY;
+        }
+        return routerName;
+    }
+
+    /**
+     * 获取路由地址
+     */
+    public String getRouterPath() {
+        String routerPath = this.path;
+        // 内链打开外网方式
+        if (getParentId() != 0L && isInnerLink()) {
+            routerPath = innerLinkReplaceEach(routerPath);
+        }
+        // 非外链并且是一级目录（类型为目录）
+        if (0L == getParentId() && MenuTypeEnum.DIRECTORY.getType().equals(getMenuType())
+            && YesNoFrameEnum.NO.getCode().equals(getIsFrame())) {
+            routerPath = "/" + this.path;
+        }
+        // 非外链并且是一级目录（类型为菜单）
+        else if (isMenuFrame()) {
+            routerPath = "/";
+        }
+        return routerPath;
+    }
+
+    /**
+     * 获取组件信息
+     */
+    public String getComponentInfo() {
+        String component = UserConstants.LAYOUT;
+        if (StringUtils.isNotEmpty(this.component) && !isMenuFrame()) {
+            component = this.component;
+        } else if (StringUtils.isEmpty(this.component) && getParentId() != 0L && isInnerLink()) {
+            component = UserConstants.INNER_LINK;
+        } else if (StringUtils.isEmpty(this.component) && isParentView()) {
+            component = UserConstants.PARENT_VIEW;
+        }
+        return component;
+    }
+
+    /**
+     * 是否为菜单内部跳转
+     */
+    public boolean isMenuFrame() {
+        return getParentId() == 0L && MenuTypeEnum.MENU.getType().equals(menuType) && YesNoFrameEnum.NO.getCode().equals(isFrame);
+    }
+
+    /**
+     * 是否为内链组件
+     */
+    public boolean isInnerLink() {
+        return YesNoFrameEnum.NO.getCode().equals(isFrame) && StringUtils.ishttp(path);
+    }
+
+    /**
+     * 是否为parent_view组件
+     */
+    public boolean isParentView() {
+        return getParentId() != 0L && MenuTypeEnum.DIRECTORY.getType().equals(menuType);
+    }
+
+    /**
+     * 内链域名特殊字符替换
+     */
+    public static String innerLinkReplaceEach(String path) {
+        return StringUtils.replaceEach(path, new String[]{Constants.HTTP, Constants.HTTPS, Constants.WWW, ".", ":"},
+            new String[]{"", "", "", "/", "/"});
+    }
 }

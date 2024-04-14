@@ -62,13 +62,13 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenu, SysMenuVo> {
      *
      * @return 菜单列表
      */
-    default List<SysMenu> selectMenuTreeAll() {
+    default List<SysMenuVo> selectMenuTreeAll() {
         LambdaQueryWrapper<SysMenu> lqw = new LambdaQueryWrapper<SysMenu>()
             .in(SysMenu::getMenuType, MenuTypeEnum.DIRECTORY.getType(), MenuTypeEnum.MENU.getType())
             .eq(SysMenu::getStatus, NormalDisableEnum.NORMAL.getCode())
             .orderByAsc(SysMenu::getParentId)
             .orderByAsc(SysMenu::getOrderNum);
-        return this.selectList(lqw);
+        return this.selectVoList(lqw);
     }
 
     /**
@@ -77,7 +77,7 @@ public interface SysMenuMapper extends BaseMapperPlus<SysMenu, SysMenuVo> {
      * @param userId 用户ID
      * @return 菜单列表
      */
-    List<SysMenu> selectMenuTreeByUserId(@Param("userId") Long userId);
+    List<SysMenuVo> selectMenuTreeByUserId(@Param("userId") Long userId);
 
     /**
      * 根据角色ID查询菜单树信息

@@ -135,14 +135,14 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @return 菜单列表
      */
     @Override
-    public List<SysMenu> selectMenuTreeByUserId(Long userId) {
-        List<SysMenu> menus;
+    public List<SysMenuVo> selectMenuTreeByUserId(Long userId) {
+        List<SysMenuVo> menus;
         if (LoginHelper.isSuperAdmin(userId)) {
             menus = baseMapper.selectMenuTreeAll();
         } else {
             menus = baseMapper.selectMenuTreeByUserId(userId);
         }
-        return getChildPerms(menus, 0);
+        return getChildPerms(menus, 0L);
     }
 
     /**
@@ -192,14 +192,14 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @return 路由列表
      */
     @Override
-    public List<RouterVo> buildMenus(List<SysMenu> menus) {
+    public List<RouterVo> buildMenus(List<SysMenuVo> menus) {
         return buildMenus("", menus);
     }
 
-    private List<RouterVo> buildMenus(String path, List<SysMenu> menus) {
+    private List<RouterVo> buildMenus(String path, List<SysMenuVo> menus) {
         List<RouterVo> routers = new LinkedList<>();
         SpringExpressionCreated standard = SpringExpressionCreated.createStandard(SpringUtils.getApplicationContext().getEnvironment());
-        for (SysMenu menu : menus) {
+        for (SysMenuVo menu : menus) {
             if (StrUtil.isNotBlank(menu.getShopExpression()) && standard.equalsValue(menu.getShopExpression(), true)) {
                 continue;
             }
@@ -223,7 +223,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
             }
 
             router.setMeta(meta);
-            List<SysMenu> cMenus = menu.getChildren();
+            List<SysMenuVo> cMenus = menu.getChildren();
             if (CollUtil.isNotEmpty(cMenus) && MenuTypeEnum.DIRECTORY.getType().equals(menu.getMenuType())) {
                 router.setAlwaysShow(true);
                 String redirect = path + "/" + menu.getPath();
@@ -249,7 +249,7 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
                 router.setPath("/");
                 List<RouterVo> childrenList = new ArrayList<>();
                 RouterVo children = new RouterVo();
-                String routerPath = SysMenu.innerLinkReplaceEach(menu.getPath());
+                String routerPath = SysMenuVo.innerLinkReplaceEach(menu.getPath());
                 children.setPath(routerPath);
                 children.setComponent(UserConstants.INNER_LINK);
                 children.setName(StringUtils.capitalize(routerPath));
@@ -445,11 +445,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @param parentId 传入的父节点ID
      * @return String
      */
-    private List<SysMenu> getChildPerms(List<SysMenu> list, int parentId) {
-        List<SysMenu> returnList = new ArrayList<>();
-        for (SysMenu t : list) {
+    private List<SysMenuVo> getChildPerms(List<SysMenuVo> list, long parentId) {
+        List<SysMenuVo> returnList = new ArrayList<>();
+        for (SysMenuVo t : list) {
             // 一、根据传入的某个父节点ID,遍历该父节点的所有子节点
-            if (t.getParentId() == parentId) {
+            if (Objects.equals(t.getParentId(), parentId)) {
                 recursionFn(list, t);
                 returnList.add(t);
             }
@@ -463,11 +463,11 @@ public class SysMenuServiceImpl extends ServiceImpl<SysMenuMapper, SysMenu> impl
      * @param list
      * @param t
      */
-    private void recursionFn(List<SysMenu> list, SysMenu t) {
+    private void recursionFn(List<SysMenuVo> list, SysMenuVo t) {
         // 得到子节点列表
-        List<SysMenu> childList = StreamUtils.filter(list, n -> n.getParentId().equals(t.getMenuId()));
+        List<SysMenuVo> childList = StreamUtils.filter(list, n -> n.getParentId().equals(t.getMenuId()));
         t.setChildren(childList);
-        for (SysMenu tChild : childList) {
+        for (SysMenuVo tChild : childList) {
             // 判断是否有子节点
             if (list.stream().anyMatch(n -> n.getParentId().equals(tChild.getMenuId()))) {
                 recursionFn(list, tChild);

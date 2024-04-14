@@ -40,7 +40,7 @@
         order by parent_id, order_num
     </select>
 
-    <select id="selectMenuTreeByUserId" parameterType="Long" resultMap="SysMenuResult">
+    <select id="selectMenuTreeByUserId" parameterType="Long" resultMap="SysMenuResultVo">
         select distinct sm.menu_id,
                         sm.parent_id,
                         sm.menu_name,
