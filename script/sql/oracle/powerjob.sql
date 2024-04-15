@@ -17,7 +17,7 @@ CREATE TABLE "pj_app_info" (
 INSERT INTO "pj_app_info" VALUES ('1', 'ruoyi-worker', '127.0.0.1:10010', NULL, NULL, '123456');
 
 -- ----------------------------
--- Table structure for PJ_CONTAINER_INFO
+-- Table structure for pj_container_info
 -- ----------------------------
 DROP TABLE "pj_container_info";
 CREATE TABLE "pj_container_info" (
@@ -35,7 +35,7 @@ CREATE TABLE "pj_container_info" (
 ;
 
 -- ----------------------------
--- Table structure for PJ_INSTANCE_INFO
+-- Table structure for pj_instance_info
 -- ----------------------------
 DROP TABLE "pj_instance_info";
 CREATE TABLE "pj_instance_info" (
@@ -61,7 +61,7 @@ CREATE TABLE "pj_instance_info" (
 ;
 
 -- ----------------------------
--- Table structure for PJ_JOB_INFO
+-- Table structure for pj_job_info
 -- ----------------------------
 DROP TABLE "pj_job_info";
 CREATE TABLE "pj_job_info" (
@@ -115,7 +115,7 @@ INSERT INTO "pj_job_info" VALUES ('14', NULL,'{\"alertThreshold\":0,\"silenceWin
 INSERT INTO "pj_job_info" VALUES ('15', NULL,'{\"alertThreshold\":0,\"silenceWindowLen\":0,\"statisticWindowLen\":0}', '1','5', NULL, '2', NULL, '1', NULL, NULL, NULL, '0', '0', '每年1月1日执行任务', '每年执行', NULL, '{}', '{\"type\":1}', 1, 0, 0, 0, 0, NULL, NULL, 'org.dromara.job.handle.EveryYearProcessor', 1, 1, NULL, 1, '0 0 0 1 1 ? *', 2);
 
 -- ----------------------------
--- Table structure for PJ_OMS_LOCK
+-- Table structure for pj_oms_lock
 -- ----------------------------
 DROP TABLE "pj_oms_lock";
 CREATE TABLE "pj_oms_lock" (
@@ -129,7 +129,7 @@ CREATE TABLE "pj_oms_lock" (
 ;
 
 -- ----------------------------
--- Table structure for PJ_SERVER_INFO
+-- Table structure for pj_server_info
 -- ----------------------------
 DROP TABLE "pj_server_info";
 CREATE TABLE "pj_server_info" (
@@ -141,7 +141,7 @@ CREATE TABLE "pj_server_info" (
 ;
 
 -- ----------------------------
--- Table structure for PJ_USER_INFO
+-- Table structure for pj_user_info
 -- ----------------------------
 DROP TABLE "pj_user_info";
 CREATE TABLE "pj_user_info" (
@@ -158,7 +158,7 @@ CREATE TABLE "pj_user_info" (
 ;
 
 -- ----------------------------
--- Table structure for PJ_WORKFLOW_INFO
+-- Table structure for pj_workflow_info
 -- ----------------------------
 DROP TABLE "pj_workflow_info";
 CREATE TABLE "pj_workflow_info" (
@@ -181,7 +181,7 @@ CREATE TABLE "pj_workflow_info" (
 ;
 
 -- ----------------------------
--- Table structure for PJ_WORKFLOW_INSTANCE_INFO
+-- Table structure for pj_workflow_instance_info
 -- ----------------------------
 DROP TABLE "pj_workflow_instance_info";
 CREATE TABLE "pj_workflow_instance_info" (
@@ -204,7 +204,7 @@ CREATE TABLE "pj_workflow_instance_info" (
 ;
 
 -- ----------------------------
--- Table structure for PJ_WORKFLOW_NODE_INFO
+-- Table structure for pj_workflow_node_info
 -- ----------------------------
 DROP TABLE "pj_workflow_node_info";
 CREATE TABLE "pj_workflow_node_info" (

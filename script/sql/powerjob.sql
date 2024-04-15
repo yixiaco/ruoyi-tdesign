@@ -67,10 +67,10 @@ CREATE TABLE `pj_instance_info`  (
 ) ENGINE = InnoDB AUTO_INCREMENT = 4 ROW_FORMAT = Dynamic;
 
 -- ----------------------------
--- Table structure for job_info
+-- Table structure for pj_job_info
 -- ----------------------------
-DROP TABLE IF EXISTS `job_info`;
-CREATE TABLE `job_info` (
+DROP TABLE IF EXISTS `pj_job_info`;
+CREATE TABLE `pj_job_info` (
     `id` bigint NOT NULL AUTO_INCREMENT,
     `advanced_runtime_config` varchar(255) DEFAULT NULL,
     `alarm_config` varchar(255) DEFAULT NULL,
