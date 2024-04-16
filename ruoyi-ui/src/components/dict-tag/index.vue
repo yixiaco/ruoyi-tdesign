@@ -12,6 +12,8 @@
         v-else
         :key="item.value + ''"
         :index="index"
+        :size="size"
+        :shape="shape"
         :theme="(theme || item.tagType || 'default') as any"
         :variant="variant || item.tagStyle || 'light'"
         :class="item.tagClass"
@@ -27,7 +29,12 @@
 </template>
 
 <script lang="ts" setup>
+defineOptions({
+  name: 'DictTag',
+});
+
 import { isNumber } from 'lodash';
+import type { SizeEnum } from 'tdesign-vue-next';
 import type { PropType } from 'vue';
 import { computed } from 'vue';
 
@@ -38,6 +45,12 @@ const props = defineProps({
   options: {
     type: Array as PropType<Array<DictModel>>,
     default: null,
+  },
+  size: {
+    type: String as PropType<SizeEnum>,
+  },
+  shape: {
+    type: String as PropType<'mark' | 'square' | 'round'>,
   },
   // 当前的值
   value: [Number, String, Array] as PropType<number | string | Array<string | number>>,
@@ -81,7 +94,7 @@ const rowOptions = computed<Array<DictModel>>(() => {
 });
 </script>
 
-<style scoped>
+<style lang="less" scoped>
 .t-tag + .t-tag {
   margin-left: 10px;
 }
