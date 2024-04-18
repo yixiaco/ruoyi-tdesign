@@ -15,6 +15,7 @@ import org.dromara.common.tenant.aspect.TenantAspect;
 import org.dromara.common.tenant.core.TenantSaTokenDao;
 import org.dromara.common.tenant.handle.PlusTenantLineHandler;
 import org.dromara.common.tenant.handle.TenantKeyPrefixHandler;
+import org.dromara.common.tenant.inner.CompatibleTenantLineInnerInterceptor;
 import org.dromara.common.tenant.manager.TenantSpringCacheManager;
 import org.dromara.common.tenant.online.TenantOnlineUserCacheManager;
 import org.dromara.common.tenant.properties.TenantProperties;
@@ -59,7 +60,7 @@ public class TenantConfig {
      * 多租户插件
      */
     public TenantLineInnerInterceptor tenantLineInnerInterceptor(TenantProperties tenantProperties) {
-        return new TenantLineInnerInterceptor(new PlusTenantLineHandler(tenantProperties));
+        return new CompatibleTenantLineInnerInterceptor(new PlusTenantLineHandler(tenantProperties));
     }
 
     @Bean
