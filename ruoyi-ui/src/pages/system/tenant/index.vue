@@ -357,7 +357,7 @@ const packageList = ref<SysTenantPackageVo[]>([]);
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
   contactUserName: [{ required: true, message: '联系人不能为空' }],
-  contactPhone: [{ required: true, message: '联系电话不能为空' }],
+  contactPhone: [{ telnumber: true, message: '联系电话格式错误' }],
   companyName: [{ required: true, message: '企业名称不能为空' }],
   packageId: [{ required: true, message: '租户套餐不能为空' }],
   username: [
