@@ -7,6 +7,7 @@ import merge from 'lodash/merge';
 import { DialogPlugin, LoadingPlugin, MessagePlugin, NotifyPlugin } from 'tdesign-vue-next';
 
 import { ContentTypeEnum } from '@/constants';
+import { i18n } from '@/locales';
 import cache from '@/plugins/cache';
 import { messageOptionMerge } from '@/plugins/modal';
 import { useUserStore } from '@/store/modules/user';
@@ -21,6 +22,8 @@ import type { AxiosTransform, CreateAxiosOptions } from './AxiosTransform';
 import { formatRequestDate, joinTimestamp, setObjToUrlParams } from './utils';
 
 const encryptHeader = 'encrypt-key';
+// 多语言key
+const contentLanguage = 'Content-Language';
 // const env = import.meta.env.MODE || 'development';
 // 是否显示重新登录
 export const isRelogin = { show: false };
@@ -239,6 +242,7 @@ const transform: AxiosTransform = {
           ? encryptWithAes(JSON.stringify(config.data), aesKey)
           : encryptWithAes(config.data, aesKey);
     }
+    config.headers[contentLanguage] = i18n?.global?.locale?.value || config.headers[contentLanguage];
     return config;
   },
 

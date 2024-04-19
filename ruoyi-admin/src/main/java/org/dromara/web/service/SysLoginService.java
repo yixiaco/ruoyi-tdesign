@@ -196,7 +196,7 @@ public class SysLoginService {
     public void checkLogin(LoginType loginType, String tenantId, Long userId, String username, Supplier<Boolean> supplier) {
         // 校验租户
         checkTenant(tenantId);
-        String errorKey = GlobalConstants.PWD_ERR_CNT_KEY + username;
+        String errorKey = GlobalConstants.PWD_ERR_CNT_KEY + username + ServletUtils.getClientIP().replaceAll(":", "");
         String loginFail = Constants.LOGIN_FAIL;
         Integer maxRetryCount = userLoginConfig.getMaxRetryCount();
         Duration lockTime = userLoginConfig.getLockTime();
@@ -220,7 +220,7 @@ public class SysLoginService {
                 throw new UserException(loginType.getRetryLimitExceed(), maxRetryCount, lockTime.getSeconds());
             } else {
                 // 未达到规定错误次数
-                RedisUtils.setObject(errorKey, errorNumber);
+                RedisUtils.setObject(errorKey, errorNumber, lockTime);
                 recordLogininfor(tenantId, userId, username, loginFail, MessageUtils.message(loginType.getRetryLimitCount(), errorNumber));
                 throw new UserException(loginType.getRetryLimitCount(), errorNumber);
             }
