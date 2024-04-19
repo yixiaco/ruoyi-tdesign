@@ -20,11 +20,11 @@ public interface CacheConstants {
     /**
      * 字典管理 cache key
      */
-    String SYS_DICT_KEY = "sys_dict:";
+    String SYS_DICT_KEY = GlobalConstants.GLOBAL_REDIS_KEY + "sys_dict:";
 
     /**
      * 字典类型管理 cache key
      */
-    String SYS_ALL_DICT_TYPE_KEY = "sys_all_dict_type";
+    String SYS_ALL_DICT_TYPE_KEY = GlobalConstants.GLOBAL_REDIS_KEY + "sys_all_dict_type";
 
 }

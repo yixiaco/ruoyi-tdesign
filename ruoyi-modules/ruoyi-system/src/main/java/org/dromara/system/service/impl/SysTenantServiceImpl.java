@@ -56,8 +56,6 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     private final SysRoleMenuMapper roleMenuMapper;
     private final SysRoleDeptMapper roleDeptMapper;
     private final SysUserRoleMapper userRoleMapper;
-    private final SysDictTypeMapper dictTypeMapper;
-    private final SysDictDataMapper dictDataMapper;
     private final SysConfigMapper configMapper;
     @Autowired
     private ISysTenantPackageService tenantPackageService;
@@ -161,20 +159,7 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
         userRoleMapper.insert(userRole);
 
         String defaultTenantId = TenantConstants.DEFAULT_TENANT_ID;
-        List<SysDictType> dictTypeList = dictTypeMapper.selectList(
-            new LambdaQueryWrapper<SysDictType>().eq(SysDictType::getTenantId, defaultTenantId));
-        List<SysDictData> dictDataList = dictDataMapper.selectList(
-            new LambdaQueryWrapper<SysDictData>().eq(SysDictData::getTenantId, defaultTenantId));
-        for (SysDictType dictType : dictTypeList) {
-            dictType.setDictId(null);
-            dictType.setTenantId(tenantId);
-        }
-        for (SysDictData dictData : dictDataList) {
-            dictData.setDictCode(null);
-            dictData.setTenantId(tenantId);
-        }
-        dictTypeMapper.insertBatch(dictTypeList);
-        dictDataMapper.insertBatch(dictDataList);
+        // 字典不再支持多租户操作，转为通用表
 
         List<SysConfig> sysConfigList = configMapper.selectList(
             new LambdaQueryWrapper<SysConfig>()

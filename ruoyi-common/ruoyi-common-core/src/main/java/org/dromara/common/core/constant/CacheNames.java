@@ -28,7 +28,7 @@ public interface CacheNames {
     /**
      * 数据字典
      */
-    String SYS_DICT = "sys_dict";
+    String SYS_DICT = GlobalConstants.GLOBAL_REDIS_KEY + "sys_dict";
 
     /**
      * 租户

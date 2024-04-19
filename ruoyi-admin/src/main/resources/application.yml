@@ -186,6 +186,8 @@ tenant:
     - sys_oss_category
     - sys_oss_config
     - sys_oss_rule
+    - sys_dict_data
+    - sys_dict_type
 
 # MyBatisPlus配置
 # https://baomidou.com/config/
