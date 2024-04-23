@@ -185,11 +185,23 @@
           <t-input v-model.trim="form.mimeType" placeholder="请输入媒体类型" clearable />
         </t-form-item>
         <t-form-item label="规则" name="rule" help="内置domain、path、filename、url变量，使用#{#url}的方式使用">
-          <t-textarea v-model.trim="form.rule" placeholder="请输入规则" clearable />
+          <t-textarea v-model.trim="form.rule" class="ruleCss" placeholder="请输入规则" clearable />
+        </t-form-item>
+        <t-form-item>
+          <t-button
+            v-for="rule in ossRules"
+            :key="rule"
+            theme="default"
+            variant="dashed"
+            size="small"
+            @click="insertRuleData(rule)"
+          >
+            {{ rule.substring(0, 1).toUpperCase() + rule.substring(1) }}
+          </t-button>
         </t-form-item>
         <t-form-item label="是否默认" name="isDefault">
           <template #help>
-            使用@Translation(type = TransConstant.OSS_RULE, other = "800x800")的方式指定使用规则
+            使用@OssRule("800x800")的方式指定使用规则
             <br />
             不指定规则时，使用默认规则。
           </template>
@@ -298,7 +310,7 @@ import type {
   SubmitContext,
   TableSort,
 } from 'tdesign-vue-next';
-import { computed, getCurrentInstance, ref } from 'vue';
+import { computed, getCurrentInstance, nextTick, ref } from 'vue';
 
 import type { SysOssRuleForm, SysOssRuleQuery, SysOssRuleVo } from '@/api/system/model/ossRuleModel';
 import {
@@ -330,6 +342,7 @@ const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
 const sort = ref<TableSort>();
+const ossRules = ['domain', 'path', 'fullPath', 'filename', 'url', 'fullUrl', 'query'];
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
@@ -390,6 +403,32 @@ const pagination = computed(() => {
     },
   };
 });
+
+/** 插入规则数据 */
+function insertRuleData(value: string) {
+  value = `#{#${value}}`;
+  const element = document
+    .getElementsByClassName('ruleCss')
+    .item(0)
+    .getElementsByTagName('textarea')
+    .item(0) as HTMLTextAreaElement;
+  if (element.selectionStart || element.selectionStart === 0) {
+    // 正常浏览器
+    const startPos = element.selectionStart;
+    const endPos = element.selectionEnd;
+    const startStr = form.value.rule?.substring(0, startPos) || '';
+    const endStr = form.value.rule?.substring(endPos, form.value.rule.length) || '';
+    form.value.rule = startStr + value + endStr;
+    const index = startPos + value.length;
+    nextTick(() => {
+      element.setSelectionRange?.(index, index);
+      element.focus();
+    });
+  } else {
+    form.value.rule = (form.value.rule ?? '') + value;
+    element.focus();
+  }
+}
 
 /** 查询OSS处理规则列表 */
 function getList() {
