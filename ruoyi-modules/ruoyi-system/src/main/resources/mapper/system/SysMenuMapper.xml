@@ -29,9 +29,11 @@
         from sys_menu sm
         left join sys_role_menu rm on sm.menu_id = rm.menu_id
         left join sys_user_role sur on rm.role_id = sur.role_id
-        ${ew.getCustomSqlSegment}
+        left join sys_role ro on sur.role_id = ro.role_id
         <where>
             and sur.user_id = #{userId}
+            and ro.status = '1'
+            and ro.del_flag = '0'
             <if test="menuName != null and menuName != ''"> and sm.menu_name like concat(concat('%', #{menuName}), '%')</if>
             <if test="componentName != null and componentName != ''"> and sm.component_name like concat(concat('%', #{componentName}), '%')</if>
             <if test="visible != null and visible != ''"> and sm.visible = #{visible}</if>
@@ -62,11 +64,11 @@
                  left join sys_role_menu rm on sm.menu_id = rm.menu_id
                  left join sys_user_role sur on rm.role_id = sur.role_id
                  left join sys_role ro on sur.role_id = ro.role_id
-                 left join sys_user u on sur.user_id = u.user_id
-        where u.user_id = #{userId}
+        where sur.user_id = #{userId}
           and sm.menu_type in ('M', 'C')
           and sm.status = '1'
           and ro.status = '1'
+          and ro.del_flag = '0'
         order by sm.parent_id, sm.order_num
     </select>
 
