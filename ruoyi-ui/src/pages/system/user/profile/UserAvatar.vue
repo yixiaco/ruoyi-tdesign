@@ -60,13 +60,48 @@
       <br />
       <t-row>
         <t-col :sm="2" :xs="3">
-          <t-upload accept=".jpg,.jpeg,.png" action="#" :show-file-list="false" :before-upload="beforeUpload">
+          <t-dropdown
+            :min-column-width="80"
+            :max-column-width="120"
+            trigger="click"
+            :popup-props="{ placement: 'bottom' }"
+          >
             <t-button>
               <template #icon><upload-icon /></template>
               选择
             </t-button>
-          </t-upload>
+            <t-dropdown-menu>
+              <t-dropdown-item @click="uploadRef.triggerUpload()">
+                <t-upload
+                  ref="uploadRef"
+                  accept=".jpg,.jpeg,.png"
+                  action="#"
+                  :show-file-list="false"
+                  :before-upload="beforeUpload"
+                >
+                  上传
+                </t-upload>
+              </t-dropdown-item>
+              <t-dropdown-item v-if="useHasPermission(['system:ossCategory:list'])" @click="selectOpen = true">
+                我的文件
+              </t-dropdown-item>
+            </t-dropdown-menu>
+          </t-dropdown>
         </t-col>
+        <upload-select
+          v-model:visible="selectOpen"
+          title="选择图片"
+          :support-url="false"
+          :support-select-file="true"
+          :query-param="{ suffixes: ['jpg', 'jpeg', 'png'] }"
+          :multiple="false"
+          :file-upload="false"
+          :image-upload-props="{
+            fileSize: 5,
+            fileType: ['jpg', 'jpeg', 'png'],
+          }"
+          :on-submit="handleSelectSubmit"
+        />
         <t-col :sm="6" :xs="7">
           <t-tooltip content="放大">
             <t-button @click="changeScale(1)">
@@ -115,12 +150,14 @@ import {
   ZoomInIcon,
   ZoomOutIcon,
 } from 'tdesign-icons-vue-next';
-import type { UploadFile } from 'tdesign-vue-next';
+import type { UploadFile, UploadInstanceFunctions } from 'tdesign-vue-next';
 import { getCurrentInstance, reactive, ref } from 'vue';
 import { VueCropper } from 'vue-cropper';
 
 import { removeAvatar, uploadAvatar } from '@/api/system/profile';
+import type { SelectFile } from '@/components/upload-select/index.vue';
 import { useUserStore } from '@/store/modules/user';
+import { useHasPermission } from '@/utils/auth';
 
 const userStore = useUserStore();
 const { proxy } = getCurrentInstance();
@@ -129,6 +166,8 @@ const open = ref(false);
 const cropperRef = ref(null);
 const visible = ref(false);
 const title = ref('修改头像');
+const selectOpen = ref(false);
+const uploadRef = ref<UploadInstanceFunctions>();
 
 // 图片裁剪数据
 const options = reactive({
@@ -169,6 +208,18 @@ function changeScale(num: number) {
 /** 重置 */
 function refresh() {
   cropperRef.value.refresh();
+}
+function handleSelectSubmit(values: SelectFile[]) {
+  const file = values.at(0);
+  options.img = file.url;
+  options.filename = file.name;
+  return true;
+  // const reader = new FileReader();
+  // reader.read(file.url);
+  // reader.onload = () => {
+  //   options.img = reader.result.toString();
+  //   options.filename = file.name;
+  // };
 }
 /** 上传预处理 */
 function beforeUpload(file: UploadFile) {

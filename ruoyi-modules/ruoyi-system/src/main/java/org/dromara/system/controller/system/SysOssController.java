@@ -61,7 +61,7 @@ public class SysOssController extends BaseController {
     /**
      * 查询我的OSS对象存储列表
      */
-    @SaCheckPermission("system:oss:list")
+    @SaCheckPermission(value = {"system:oss:list", "system:ossCategory:list", "system:ossCategory:query", "system:ossCategory:edit"}, mode = SaMode.OR)
     @GetMapping("/my/list")
     public TableDataInfo<SysOssVo> myList(SysOssQuery query) {
         query.setCreateBy(LoginHelper.getUserId());
