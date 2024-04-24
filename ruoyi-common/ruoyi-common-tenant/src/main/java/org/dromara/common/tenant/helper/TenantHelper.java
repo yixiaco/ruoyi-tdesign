@@ -17,8 +17,9 @@ import org.dromara.common.core.utils.funtion.Apply;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.satoken.context.SaSecurityContext;
-import org.dromara.common.tenant.annotation.DynamicTenant;
 
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.function.Consumer;
@@ -36,16 +37,14 @@ public class TenantHelper {
 
     // 动态租户的缓存key
     private static final String DYNAMIC_TENANT_KEY = GlobalConstants.GLOBAL_REDIS_KEY + "dynamicTenant";
-    // 临时动态租户
-    private static final ThreadLocal<String> TEMP_DYNAMIC_TENANT = new TransmittableThreadLocal<>();
+    // 临时动态租户，可重入可动态切换
+    private static final ThreadLocal<Deque<String>> TEMP_DYNAMIC_TENANT = TransmittableThreadLocal.withInitial(ArrayDeque::new);
     // 忽略缓存
     private static final ThreadLocal<Boolean> IGNORE_CACHE_TENANT = new TransmittableThreadLocal<>();
     // 忽略租户db重入计数,防止重入调用提前关闭租户
     private static final ThreadLocal<AtomicInteger> HEAVY_ENTRY_IGNORE_DB_TENANT = TransmittableThreadLocal.withInitial(() -> new AtomicInteger(0));
     // 忽略租户缓存重入计数,防止重入调用提前关闭租户
     private static final ThreadLocal<AtomicInteger> HEAVY_ENTRY_IGNORE_CACHE_TENANT = TransmittableThreadLocal.withInitial(() -> new AtomicInteger(0));
-    // 动态租户重入计数,防止重入调用提前清理租户
-    private static final ThreadLocal<AtomicInteger> HEAVY_ENTRY_TEMP_DYNAMIC_TENANT = TransmittableThreadLocal.withInitial(() -> new AtomicInteger(0));
 
     /**
      * 是否启用了缓存忽略租户
@@ -128,8 +127,7 @@ public class TenantHelper {
      * @param tenantId 租户id
      */
     public static void setDynamicTenant(String tenantId) {
-        TEMP_DYNAMIC_TENANT.set(tenantId);
-        HEAVY_ENTRY_TEMP_DYNAMIC_TENANT.get().incrementAndGet();
+        TEMP_DYNAMIC_TENANT.get().push(tenantId);
     }
 
     /**
@@ -138,7 +136,7 @@ public class TenantHelper {
      * @return
      */
     public static String getDynamicTenant() {
-        return TEMP_DYNAMIC_TENANT.get();
+        return TEMP_DYNAMIC_TENANT.get().peek();
     }
 
     /**
@@ -154,9 +152,9 @@ public class TenantHelper {
      * @param force 是否强制
      */
     public static void removeDynamicTenant(boolean force) {
-        if (force || HEAVY_ENTRY_TEMP_DYNAMIC_TENANT.get().decrementAndGet() <= 0) {
+        TEMP_DYNAMIC_TENANT.get().poll();
+        if (TEMP_DYNAMIC_TENANT.get().isEmpty() || force) {
             TEMP_DYNAMIC_TENANT.remove();
-            HEAVY_ENTRY_TEMP_DYNAMIC_TENANT.remove();
         }
     }
 
