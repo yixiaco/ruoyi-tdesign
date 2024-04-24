@@ -12,6 +12,17 @@ export interface GenTableQuery extends BaseEntity {
   tableComment?: string;
 }
 /**
+ * 修改表名业务对象
+ */
+export interface GenUpdateTableNameForm {
+  /** 编号 */
+  tableId?: number;
+  /** 数据源名称 */
+  dataName?: string;
+  /** 表名称 */
+  tableName?: string;
+}
+/**
  * 代码生成业务业务对象
  */
 export interface GenTableForm {

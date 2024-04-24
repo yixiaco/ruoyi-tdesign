@@ -23,6 +23,6 @@ public interface GenTableColumnMapper extends BaseMapperPlus<GenTableColumn, Gen
      * @return 列信息
      */
     @DS("#dataName")
-    List<GenTableColumn> selectDbTableColumnsByName(@Param("tableName") String tableName, String dataName);
+    List<GenTableColumn> selectDbTableColumnsByName(@Param("tableName") String tableName, @Param("dataName") String dataName);
 
 }

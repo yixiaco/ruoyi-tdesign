@@ -13,6 +13,7 @@ import org.dromara.common.mybatis.helper.DataBaseHelper;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.generator.domain.GenTableColumn;
 import org.dromara.generator.domain.bo.GenTableBo;
+import org.dromara.generator.domain.bo.GenUpdateTableNameBo;
 import org.dromara.generator.domain.query.GenTableQuery;
 import org.dromara.generator.domain.vo.GenTableVo;
 import org.dromara.generator.service.IGenTableService;
@@ -114,6 +115,18 @@ public class GenController extends BaseController {
     public R<Void> editSave(@Validated @RequestBody GenTableBo tableBo) {
         genTableService.validateEdit(tableBo);
         genTableService.updateGenTable(tableBo);
+        return R.ok();
+    }
+
+    /**
+     * 修改表名
+     */
+    @SaCheckPermission("tool:gen:edit")
+    @Log(title = "代码生成", businessType = BusinessType.UPDATE)
+    @RepeatSubmit()
+    @PutMapping("/updateTableName")
+    public R<Void> updateTableName(@Validated @RequestBody GenUpdateTableNameBo updateTableNameBo) {
+        genTableService.updateTableName(updateTableNameBo);
         return R.ok();
     }
 

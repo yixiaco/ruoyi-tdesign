@@ -1,5 +1,11 @@
 import type { R, TableDataInfo } from '@/api/model/resultModel';
-import type { GenTableForm, GenTableInfo, GenTableQuery, GenTableVo } from '@/api/tool/model/genModel';
+import type {
+  GenTableForm,
+  GenTableInfo,
+  GenTableQuery,
+  GenTableVo,
+  GenUpdateTableNameForm,
+} from '@/api/tool/model/genModel';
 import { request } from '@/utils/request';
 
 // 查询生成表数据
@@ -29,6 +35,14 @@ export function getGenTable(tableId: number | string) {
 export function updateGenTable(data: GenTableForm) {
   return request.put<R<void>>({
     url: '/tool/gen',
+    data,
+  });
+}
+
+// 修改代码生成信息
+export function updateGenTableName(data: GenUpdateTableNameForm) {
+  return request.put<R<void>>({
+    url: '/tool/gen/updateTableName',
     data,
   });
 }

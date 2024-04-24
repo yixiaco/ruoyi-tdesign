@@ -5,6 +5,7 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
 import org.dromara.generator.domain.bo.GenTableBo;
+import org.dromara.generator.domain.bo.GenUpdateTableNameBo;
 import org.dromara.generator.domain.query.GenTableQuery;
 import org.dromara.generator.domain.vo.GenTableVo;
 
@@ -72,6 +73,11 @@ public interface IGenTableService extends IService<GenTable> {
      * @param tableBo 业务信息
      */
     void updateGenTable(GenTableBo tableBo);
+
+    /**
+     * 修改表名
+     */
+    void updateTableName(GenUpdateTableNameBo updateTableNameBo);
 
     /**
      * 删除业务信息

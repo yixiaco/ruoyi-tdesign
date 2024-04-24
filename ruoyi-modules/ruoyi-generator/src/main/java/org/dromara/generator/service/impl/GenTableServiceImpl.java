@@ -5,6 +5,7 @@ import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.dynamic.datasource.annotation.DS;
 import com.baomidou.dynamic.datasource.annotation.DSTransactional;
+import com.baomidou.dynamic.datasource.toolkit.DynamicDataSourceContextHolder;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
@@ -19,14 +20,17 @@ import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.file.FileUtils;
 import org.dromara.common.core.utils.funtion.BiOperator;
+import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.json.utils.JsonUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.satoken.utils.LoginHelper;
+import org.dromara.generator.config.GenConfig;
 import org.dromara.generator.constant.GenConstants;
 import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
 import org.dromara.generator.domain.bo.GenTableBo;
+import org.dromara.generator.domain.bo.GenUpdateTableNameBo;
 import org.dromara.generator.domain.query.GenTableQuery;
 import org.dromara.generator.domain.vo.GenTableOptions;
 import org.dromara.generator.domain.vo.GenTableVo;
@@ -128,10 +132,14 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
      * @param dataName   数据源名称
      * @return 数据库表集合
      */
-    @DS("#dataName")
     @Override
     public List<GenTableVo> selectDbTableListByNames(String[] tableNames, String dataName) {
-        return baseMapper.selectDbTableListByNames(tableNames);
+        DynamicDataSourceContextHolder.push(dataName);
+        try {
+            return baseMapper.selectDbTableListByNames(tableNames);
+        } finally {
+            DynamicDataSourceContextHolder.poll();
+        }
     }
 
     /**
@@ -157,9 +165,19 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
         GenTable table = MapstructUtils.convert(tableBo, GenTable.class);
         int row = baseMapper.updateById(table);
         if (row > 0) {
-            for (GenTableColumn cenTableColumn : tableBo.getColumns()) {
-                genTableColumnMapper.updateById(cenTableColumn);
-            }
+            genTableColumnMapper.updateBatchById(tableBo.getColumns());
+        }
+    }
+
+    /**
+     * 修改表名
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public void updateTableName(GenUpdateTableNameBo bo) {
+        List<GenTableVo> tableVos = selectDbTableListByNames(new String[]{bo.getTableName()}, bo.getDataName());
+        if (tableVos.isEmpty()) {
+            throw new ServiceException("数据源【%s】不存在表【%s】".formatted(bo.getDataName(), bo.getTableName()));
         }
     }
 
@@ -209,6 +227,18 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
         } catch (Exception e) {
             throw new ServiceException("导入失败：" + e.getMessage());
         }
+        GenTableVo tableVo = tableVos.get(0);
+        GenTable table = MapstructUtils.convert(tableVo, GenTable.class);
+        GenUtils.initTable(table, LoginHelper.getUserId());
+
+        GenTable updateTable = getById(bo.getTableId());
+        updateTable.setDataName(bo.getDataName());
+        updateTable.setClassName(table.getClassName());
+        updateTable.setBusinessName(table.getBusinessName());
+        updateTable.setFunctionName(table.getFunctionName());
+        updateTable.setTableName(bo.getTableName());
+        updateTable.setTableComment(table.getTableComment());
+        baseMapper.updateById(updateTable);
     }
 
     /**

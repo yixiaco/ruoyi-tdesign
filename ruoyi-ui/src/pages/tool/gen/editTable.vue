@@ -160,17 +160,28 @@
         </t-button>
         <t-button theme="primary" :loading="buttonLoading" type="submit">提交</t-button>
         <t-button theme="primary" :loading="buttonLoading" variant="outline" @click="handleSyncDb()">同步代码</t-button>
+        <t-button theme="primary" :loading="buttonLoading" variant="outline" @click="openUpdateTable = true">
+          修改表名
+        </t-button>
         <t-button theme="default" :loading="buttonLoading" variant="outline" @click="close()">返回</t-button>
       </div>
     </t-form>
     <!-- 预览界面 -->
     <gen-preview v-model:visible="preview.open" :data="preview.data" :loading="preview.loading" />
+    <!-- 更新表名 -->
+    <update-table-name
+      v-model:visible="openUpdateTable"
+      v-model:loading="buttonLoading"
+      :table-vo="info"
+      @submit="getGenTableData(info.tableId)"
+    />
   </t-card>
 </template>
 <script lang="ts" setup>
 defineOptions({
   name: 'GenEdit',
 });
+
 import { RefreshIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import type { FormInstanceFunctions, FormRule, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, onMounted, reactive, ref, toRefs } from 'vue';
@@ -185,6 +196,7 @@ import { useTabsRouterStore } from '@/store';
 
 import BasicInfoForm from './basicInfoForm.vue';
 import TCustomCheckbox from './components/checkbox.vue';
+import UpdateTableName from './components/UpdateTableName.vue';
 import GenInfoForm from './genInfoForm.vue';
 
 const tabsRouterStore = useTabsRouterStore();
@@ -198,6 +210,7 @@ const activeName = ref('columnInfo');
 const dictOptions = ref<SysDictTypeVo[]>([]);
 const loading = ref(false);
 const buttonLoading = ref(false);
+const openUpdateTable = ref(false);
 const preview = ref({
   open: false,
   loading: true,
