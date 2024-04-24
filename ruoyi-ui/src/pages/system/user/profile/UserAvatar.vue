@@ -209,17 +209,12 @@ function changeScale(num: number) {
 function refresh() {
   cropperRef.value.refresh();
 }
+/** 选择我的文件 */
 function handleSelectSubmit(values: SelectFile[]) {
   const file = values.at(0);
   options.img = file.url;
   options.filename = file.name;
   return true;
-  // const reader = new FileReader();
-  // reader.read(file.url);
-  // reader.onload = () => {
-  //   options.img = reader.result.toString();
-  //   options.filename = file.name;
-  // };
 }
 /** 上传预处理 */
 function beforeUpload(file: UploadFile) {
