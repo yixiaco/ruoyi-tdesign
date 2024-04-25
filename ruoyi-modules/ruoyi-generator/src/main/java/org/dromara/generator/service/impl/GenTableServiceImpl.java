@@ -17,6 +17,7 @@ import org.dromara.common.core.constant.Constants;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.DateUtils;
 import org.dromara.common.core.utils.MapstructUtils;
+import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.file.FileUtils;
 import org.dromara.common.core.utils.funtion.BiOperator;
@@ -52,6 +53,7 @@ import java.util.Arrays;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
@@ -177,6 +179,18 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
         if (tableVos.isEmpty()) {
             throw new ServiceException("数据源【%s】不存在表【%s】".formatted(bo.getDataName(), bo.getTableName()));
         }
+        GenTableVo tableVo = tableVos.get(0);
+        GenTable table = MapstructUtils.convert(tableVo, GenTable.class);
+        GenUtils.initTable(table, LoginHelper.getUserId());
+
+        GenTable updateTable = getById(bo.getTableId());
+        updateTable.setDataName(bo.getDataName());
+        updateTable.setClassName(table.getClassName());
+        updateTable.setBusinessName(table.getBusinessName());
+        updateTable.setFunctionName(table.getFunctionName());
+        updateTable.setTableName(bo.getTableName());
+        updateTable.setTableComment(table.getTableComment());
+        baseMapper.updateById(updateTable);
     }
 
     /**
@@ -225,18 +239,6 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
         } catch (Exception e) {
             throw new ServiceException("导入失败：" + e.getMessage());
         }
-        GenTableVo tableVo = tableVos.get(0);
-        GenTable table = MapstructUtils.convert(tableVo, GenTable.class);
-        GenUtils.initTable(table, LoginHelper.getUserId());
-
-        GenTable updateTable = getById(bo.getTableId());
-        updateTable.setDataName(bo.getDataName());
-        updateTable.setClassName(table.getClassName());
-        updateTable.setBusinessName(table.getBusinessName());
-        updateTable.setFunctionName(table.getFunctionName());
-        updateTable.setTableName(bo.getTableName());
-        updateTable.setTableComment(table.getTableComment());
-        baseMapper.updateById(updateTable);
     }
 
     /**
@@ -353,7 +355,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
     @Override
     public void synchDb(Long tableId) {
         GenTableVo tableVo = baseMapper.selectGenTableById(tableId);
-        List<GenTableColumn> tableColumns = tableVo.getColumns();
+        List<GenTableColumn> tableColumns = StreamUtils.filter(tableVo.getColumns(), column -> Objects.nonNull(column.getColumnId()));
         Map<String, GenTableColumn> tableColumnMap = tableColumns.stream()
             .collect(Collectors.toMap(GenTableColumn::getColumnName, Function.identity(), BiOperator::last));
 
