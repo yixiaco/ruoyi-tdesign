@@ -20,12 +20,10 @@ import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.file.FileUtils;
 import org.dromara.common.core.utils.funtion.BiOperator;
-import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.json.utils.JsonUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.satoken.utils.LoginHelper;
-import org.dromara.generator.config.GenConfig;
 import org.dromara.generator.constant.GenConstants;
 import org.dromara.generator.domain.GenTable;
 import org.dromara.generator.domain.GenTableColumn;
@@ -173,7 +171,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
      * 修改表名
      */
     @Override
-    @Transactional(rollbackFor = Exception.class)
+    @DSTransactional(rollbackFor = Exception.class)
     public void updateTableName(GenUpdateTableNameBo bo) {
         List<GenTableVo> tableVos = selectDbTableListByNames(new String[]{bo.getTableName()}, bo.getDataName());
         if (tableVos.isEmpty()) {
