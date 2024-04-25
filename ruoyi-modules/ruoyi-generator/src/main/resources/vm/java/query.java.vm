@@ -8,7 +8,7 @@ import java.util.Date;
 #foreach ($import in $importList)
 import ${import};
 #end
-import org.dromara.common.mybatis.core.domain.BaseEntity;
+import org.dromara.common.mybatis.core.domain.BasePageQuery;
 
 /**
  * ${functionName}查询对象 ${tableName}
@@ -18,7 +18,7 @@ import org.dromara.common.mybatis.core.domain.BaseEntity;
  */
 @Data
 @EqualsAndHashCode(callSuper = true)
-public class ${ClassName}Query extends BaseEntity {
+public class ${ClassName}Query extends BasePageQuery {
 
 #foreach ($column in $columns)
 #if($column.isQuery() && $column.queryType != "BETWEEN")
