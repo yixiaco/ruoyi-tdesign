@@ -1,6 +1,7 @@
 package org.dromara.generator.util;
 
 import cn.hutool.core.collection.ListUtil;
+import cn.hutool.core.util.NumberUtil;
 import cn.hutool.core.util.StrUtil;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -260,12 +261,15 @@ public class GenUtils {
      * @return 截取后的列类型
      */
     public static Integer getColumnLength(String columnType) {
-        if (StringUtils.indexOf(columnType, '(') > 0) {
-            String length = StringUtils.substringBetween(columnType, "(", ")");
-            return Integer.valueOf(length);
-        } else {
+        // 检查是否包含括号，不包含直接返回0
+        if (StringUtils.indexOf(columnType, '(') <= 0 || StringUtils.indexOf(columnType, ')') <= 0) {
             return 0;
         }
+        String length = StringUtils.substringBetween(columnType, "(", ")");
+        if (NumberUtil.isInteger(length)) {
+            return Integer.valueOf(length);
+        }
+        return 0;
     }
 
     /**
