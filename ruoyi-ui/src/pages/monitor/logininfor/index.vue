@@ -161,55 +161,25 @@
 
     <!-- 系统访问记录详情 -->
     <t-dialog v-model:visible="openView" header="系统访问记录详情" width="700px" attach="body" :footer="false">
-      <t-loading :loading="openViewLoading">
-        <t-form class="form-detail" label-align="right" colon label-width="calc(5em + 28px)">
-          <t-row :gutter="[0, 20]">
-            <t-col :span="6">
-              <t-form-item label="访问ID">{{ form.infoId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="租户编号">{{ form.tenantId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="用户id">{{ form.userId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="用户账号">{{ form.userName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="登录IP地址">{{ form.ipaddr }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="登录地点">{{ form.loginLocation }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="浏览器类型">{{ form.browser }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="操作系统">{{ form.os }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="登录状态">
-                <dict-tag :options="sys_common_status" :value="form.status" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="客户端">{{ form.clientKey }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="设备类型">
-                <dict-tag :options="sys_device_type" :value="form.deviceType" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="提示消息">{{ form.msg }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="访问时间">{{ parseTime(form.loginTime) }}</t-form-item>
-            </t-col>
-          </t-row>
-        </t-form>
-      </t-loading>
+      <my-descriptions :loading="openViewLoading">
+        <t-descriptions-item label="访问ID">{{ form.infoId }}</t-descriptions-item>
+        <t-descriptions-item label="租户编号">{{ form.tenantId }}</t-descriptions-item>
+        <t-descriptions-item label="用户id">{{ form.userId }}</t-descriptions-item>
+        <t-descriptions-item label="用户账号">{{ form.userName }}</t-descriptions-item>
+        <t-descriptions-item label="登录IP地址">{{ form.ipaddr }}</t-descriptions-item>
+        <t-descriptions-item label="登录地点">{{ form.loginLocation }}</t-descriptions-item>
+        <t-descriptions-item label="浏览器类型">{{ form.browser }}</t-descriptions-item>
+        <t-descriptions-item label="操作系统">{{ form.os }}</t-descriptions-item>
+        <t-descriptions-item label="登录状态">
+          <dict-tag :options="sys_common_status" :value="form.status" />
+        </t-descriptions-item>
+        <t-descriptions-item label="客户端">{{ form.clientKey }}</t-descriptions-item>
+        <t-descriptions-item label="设备类型">
+          <dict-tag :options="sys_device_type" :value="form.deviceType" />
+        </t-descriptions-item>
+        <t-descriptions-item label="提示消息">{{ form.msg }}</t-descriptions-item>
+        <t-descriptions-item label="访问时间">{{ parseTime(form.loginTime) }}</t-descriptions-item>
+      </my-descriptions>
     </t-dialog>
   </t-card>
 </template>

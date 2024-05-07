@@ -233,62 +233,26 @@
       attach="body"
       :footer="false"
     >
-      <t-loading :loading="openViewLoading">
-        <t-form class="form-detail" label-align="right" colon label-width="calc(6em + 28px)">
-          <t-row :gutter="[0, 20]">
-            <t-col :span="6">
-              <t-form-item label="id">{{ form.id }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="租户编号">{{ form.tenantId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="联系人">{{ form.contactUserName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="联系电话">{{ form.contactPhone }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="企业名称">{{ form.companyName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="社会信用代码">{{ form.licenseNumber }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="地址">{{ form.address }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="企业简介">{{ form.intro }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="备注">{{ form.remark }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="域名">{{ form.domain }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="租户套餐编号">{{ form.packageId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="过期时间">{{ parseTime(form.expireTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="用户数量">{{ form.accountCount }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="租户状态">
-                <dict-tag :options="sys_normal_disable" :value="form.status" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
-            </t-col>
-          </t-row>
-        </t-form>
-      </t-loading>
+      <my-descriptions :loading="openViewLoading">
+        <t-descriptions-item label="id">{{ form.id }}</t-descriptions-item>
+        <t-descriptions-item label="租户编号">{{ form.tenantId }}</t-descriptions-item>
+        <t-descriptions-item label="联系人">{{ form.contactUserName }}</t-descriptions-item>
+        <t-descriptions-item label="联系电话">{{ form.contactPhone }}</t-descriptions-item>
+        <t-descriptions-item label="企业名称">{{ form.companyName }}</t-descriptions-item>
+        <t-descriptions-item label="统一社会信用代码">{{ form.licenseNumber }}</t-descriptions-item>
+        <t-descriptions-item label="地址">{{ form.address }}</t-descriptions-item>
+        <t-descriptions-item label="企业简介" :span="2">{{ form.intro }}</t-descriptions-item>
+        <t-descriptions-item label="域名">{{ form.domain }}</t-descriptions-item>
+        <t-descriptions-item label="备注" :span="2">{{ form.remark }}</t-descriptions-item>
+        <t-descriptions-item label="租户套餐编号">{{ form.packageId }}</t-descriptions-item>
+        <t-descriptions-item label="过期时间">{{ parseTime(form.expireTime) }}</t-descriptions-item>
+        <t-descriptions-item label="用户数量">{{ form.accountCount }}</t-descriptions-item>
+        <t-descriptions-item label="租户状态">
+          <dict-tag :options="sys_normal_disable" :value="form.status" />
+        </t-descriptions-item>
+        <t-descriptions-item label="更新时间">{{ parseTime(form.updateTime) }}</t-descriptions-item>
+        <t-descriptions-item label="创建时间">{{ parseTime(form.createTime) }}</t-descriptions-item>
+      </my-descriptions>
     </t-dialog>
   </t-card>
 </template>

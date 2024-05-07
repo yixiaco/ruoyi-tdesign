@@ -164,7 +164,7 @@
             <t-input v-model="form.accessKey" placeholder="请输入accessKey" />
           </t-form-item>
           <t-form-item label="secretKey" name="secretKey">
-            <t-input v-model="form.secretKey" placeholder="请输入秘钥" show-password />
+            <t-input v-model="form.secretKey" placeholder="请输入秘钥" type="password" />
           </t-form-item>
           <t-form-item label="桶名称" name="bucketName">
             <t-input v-model="form.bucketName" placeholder="请输入桶名称" />
@@ -202,66 +202,31 @@
       attach="body"
       :footer="false"
     >
-      <t-loading :loading="openViewLoading">
-        <t-form class="form-detail" label-align="right" colon label-width="calc(5em + 28px)">
-          <t-row :gutter="[0, 20]">
-            <t-col :span="6">
-              <t-form-item label="主建">{{ form.ossConfigId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="配置key">{{ form.configKey }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="accessKey">{{ form.accessKey }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="秘钥">{{ form.secretKey }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="桶名称">{{ form.bucketName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="前缀">{{ form.prefix }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="访问站点">{{ form.endpoint }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="自定义域名">{{ form.domain }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="是否https">
-                <dict-tag :options="sys_yes_no" :value="form.isHttps" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="域">{{ form.region }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="桶权限类型">
-                <dict-tag :options="accessPolicyOptions" :value="form.accessPolicy" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="状态">
-                <dict-tag :options="sys_normal_disable" :value="form.status" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="扩展字段">{{ form.ext1 }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="备注">{{ form.remark }}</t-form-item>
-            </t-col>
-          </t-row>
-        </t-form>
-      </t-loading>
+      <my-descriptions :loading="openViewLoading">
+        <t-descriptions-item label="主建">{{ form.ossConfigId }}</t-descriptions-item>
+        <t-descriptions-item label="配置key">{{ form.configKey }}</t-descriptions-item>
+        <t-descriptions-item label="accessKey">{{ form.accessKey }}</t-descriptions-item>
+        <t-descriptions-item label="秘钥">{{ form.secretKey }}</t-descriptions-item>
+        <t-descriptions-item label="桶名称">{{ form.bucketName }}</t-descriptions-item>
+        <t-descriptions-item label="前缀">{{ form.prefix }}</t-descriptions-item>
+        <t-descriptions-item label="访问站点">{{ form.endpoint }}</t-descriptions-item>
+        <t-descriptions-item label="自定义域名">{{ form.domain }}</t-descriptions-item>
+        <t-descriptions-item label="是否https">
+          <dict-tag :options="sys_yes_no" :value="form.isHttps" />
+        </t-descriptions-item>
+        <t-descriptions-item label="域">{{ form.region }}</t-descriptions-item>
+        <t-descriptions-item label="桶权限类型">
+          <dict-tag :options="accessPolicyOptions" :value="form.accessPolicy" />
+        </t-descriptions-item>
+        <t-descriptions-item label="状态">
+          <dict-tag :options="sys_normal_disable" :value="form.status" />
+        </t-descriptions-item>
+        <t-descriptions-item label="创建桶">{{ form.createBucket === 1 ? '是' : '否' }}</t-descriptions-item>
+        <t-descriptions-item label="扩展字段">{{ form.ext1 }}</t-descriptions-item>
+        <t-descriptions-item label="创建时间">{{ parseTime(form.createTime) }}</t-descriptions-item>
+        <t-descriptions-item label="更新时间">{{ parseTime(form.updateTime) }}</t-descriptions-item>
+        <t-descriptions-item label="备注" :span="2">{{ form.remark }}</t-descriptions-item>
+      </my-descriptions>
     </t-dialog>
   </t-card>
 </template>

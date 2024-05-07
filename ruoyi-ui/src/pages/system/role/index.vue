@@ -314,53 +314,23 @@
       attach="body"
       :footer="false"
     >
-      <t-loading :loading="openViewLoading">
-        <t-form class="form-detail" label-align="right" colon label-width="calc(12em + 28px)">
-          <t-row :gutter="[0, 20]">
-            <t-col :span="6">
-              <t-form-item label="角色ID">{{ form.roleId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="角色名称">{{ form.roleName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="角色权限字符串">{{ form.roleKey }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="显示顺序">{{ form.roleSort }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="数据范围">
-                <dict-tag :options="dataScopeOptions" theme="primary" :value="form.dataScope" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="菜单树选择项是否关联显示" label-width="calc(12em + 28px)">
-                {{ form.menuCheckStrictly }}
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="部门树选择项是否关联显示" label-width="calc(12em + 28px)">
-                {{ form.deptCheckStrictly }}
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="角色状态">
-                <dict-tag :options="sys_normal_disable" :value="form.status" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="备注">{{ form.remark }}</t-form-item>
-            </t-col>
-          </t-row>
-        </t-form>
-      </t-loading>
+      <my-descriptions :loading="openViewLoading">
+        <t-descriptions-item label="角色ID">{{ form.roleId }}</t-descriptions-item>
+        <t-descriptions-item label="角色名称">{{ form.roleName }}</t-descriptions-item>
+        <t-descriptions-item label="角色权限字符串">{{ form.roleKey }}</t-descriptions-item>
+        <t-descriptions-item label="显示顺序">{{ form.roleSort }}</t-descriptions-item>
+        <t-descriptions-item label="数据范围">
+          <dict-tag :options="dataScopeOptions" theme="primary" :value="form.dataScope" />
+        </t-descriptions-item>
+        <t-descriptions-item label="角色状态">
+          <dict-tag :options="sys_normal_disable" :value="form.status" />
+        </t-descriptions-item>
+        <t-descriptions-item label="菜单树选择项是否关联显示" :span="2">{{ form.menuCheckStrictly }}</t-descriptions-item>
+        <t-descriptions-item label="部门树选择项是否关联显示" :span="2">{{ form.deptCheckStrictly }}</t-descriptions-item>
+        <t-descriptions-item label="备注" :span="2">{{ form.remark }}</t-descriptions-item>
+        <t-descriptions-item label="更新时间">{{ parseTime(form.updateTime) }}</t-descriptions-item>
+        <t-descriptions-item label="创建时间">{{ parseTime(form.createTime) }}</t-descriptions-item>
+      </my-descriptions>
     </t-dialog>
   </t-card>
 </template>

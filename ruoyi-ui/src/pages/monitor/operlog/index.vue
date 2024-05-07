@@ -133,76 +133,54 @@
       attach="body"
       :footer="false"
     >
-      <t-form class="form-detail" label-align="right" colon label-width="calc(4em + 28px)">
-        <t-row :gutter="[0, 20]">
-          <t-col :span="6">
-            <t-form-item label="操作模块">{{ form.title }} / {{ typeFormat(form) }}</t-form-item>
-            <t-form-item label="登录信息">
-              {{ form.operName }} / {{ form.operIp }} / {{ form.operLocation }}
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="请求地址">{{ form.operUrl }}</t-form-item>
-            <t-form-item label="请求方式">{{ form.requestMethod }}</t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="用户id">{{ form.userId }}</t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="操作类别">
-              <dict-tag :options="operatorTypeOptions" :value="form.operatorType" />
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="业务类型">
-              <dict-tag :options="sys_oper_type" :value="form.businessType" />
-            </t-form-item>
-          </t-col>
-          <t-col :span="12">
-            <t-form-item label="操作方法">{{ form.method }}</t-form-item>
-          </t-col>
-          <t-col :span="12">
-            <t-form-item label="请求参数">
-              <div style="max-height: 300px; width: 100%" class="content-scrollbar">
-                <template v-if="!isJson(form.operParam)">{{ form.operParam }}...</template>
-                <preview-code
-                  v-else
-                  :code="JSON.stringify(JSON.parse(form.operParam), null, 2)"
-                  language="json"
-                  style="width: 100%"
-                />
-              </div>
-            </t-form-item>
-          </t-col>
-          <t-col :span="12">
-            <t-form-item label="返回参数">
-              <div style="max-height: 300px; width: 100%" class="content-scrollbar">
-                <template v-if="!isJson(form.jsonResult)">{{ form.jsonResult }}...</template>
-                <preview-code
-                  v-else
-                  :code="JSON.stringify(JSON.parse(form.jsonResult), null, 2)"
-                  language="json"
-                  style="width: 100%"
-                />
-              </div>
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="操作状态">
-              <dict-tag :options="sys_common_status" :value="form.status" />
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="操作时间">{{ parseTime(form.operTime) }}</t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="消耗时间">{{ form.costTime }}毫秒</t-form-item>
-          </t-col>
-          <t-col :span="12">
-            <t-form-item v-if="form.status === 0" label="异常信息">{{ form.errorMsg }}</t-form-item>
-          </t-col>
-        </t-row>
-      </t-form>
+      <my-descriptions>
+        <t-descriptions-item label="操作模块">{{ form.title }} / {{ typeFormat(form) }}</t-descriptions-item>
+        <t-descriptions-item label="登录信息">
+          {{ form.operName }} / {{ form.operIp }} / {{ form.operLocation }}
+        </t-descriptions-item>
+        <t-descriptions-item label="请求地址">{{ form.operUrl }}</t-descriptions-item>
+        <t-descriptions-item label="请求方式">{{ form.requestMethod }}</t-descriptions-item>
+        <t-descriptions-item label="用户id">{{ form.userId }}</t-descriptions-item>
+        <t-descriptions-item label="操作类别">
+          <dict-tag :options="operatorTypeOptions" :value="form.operatorType" />
+        </t-descriptions-item>
+        <t-descriptions-item label="业务类型">
+          <dict-tag :options="sys_oper_type" :value="form.businessType" />
+        </t-descriptions-item>
+        <t-descriptions-item label="操作方法">{{ form.method }}</t-descriptions-item>
+        <t-descriptions-item label="操作人员">{{ form.operName }}</t-descriptions-item>
+        <t-descriptions-item label="部门名称">{{ form.deptName }}</t-descriptions-item>
+        <t-descriptions-item label="请求参数" :span="2">
+          <div style="max-height: 300px; width: 100%" class="content-scrollbar">
+            <template v-if="!isJson(form.operParam)">{{ form.operParam }}...</template>
+            <preview-code
+              v-else
+              :code="JSON.stringify(JSON.parse(form.operParam), null, 2)"
+              language="json"
+              style="width: 100%"
+            />
+          </div>
+        </t-descriptions-item>
+        <t-descriptions-item label="返回参数" :span="2">
+          <div style="max-height: 300px; width: 100%" class="content-scrollbar">
+            <template v-if="!isJson(form.jsonResult)">{{ form.jsonResult }}...</template>
+            <preview-code
+              v-else
+              :code="JSON.stringify(JSON.parse(form.jsonResult), null, 2)"
+              language="json"
+              style="width: 100%"
+            />
+          </div>
+        </t-descriptions-item>
+        <t-descriptions-item label="操作状态">
+          <dict-tag :options="sys_common_status" :value="form.status" />
+        </t-descriptions-item>
+        <t-descriptions-item label="操作时间">{{ parseTime(form.operTime) }}</t-descriptions-item>
+        <t-descriptions-item label="消耗时间">{{ form.costTime }}</t-descriptions-item>
+        <t-descriptions-item v-if="form.status === 0" label="异常信息" :span="2">{{
+          form.errorMsg
+        }}</t-descriptions-item>
+      </my-descriptions>
     </t-dialog>
   </t-card>
 </template>

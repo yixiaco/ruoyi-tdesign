@@ -169,72 +169,38 @@
       v-model:visible="openView"
       header="消息发送记录详情"
       top="3%"
-      width="min(900px, 90%)"
+      width="min(950px, 90%)"
       attach="body"
       :footer="false"
     >
-      <t-loading :loading="openViewLoading">
-        <t-form class="form-detail" label-align="right" colon label-width="calc(7em + 28px)">
-          <t-row :gutter="[0, 20]">
-            <t-col :span="6">
-              <t-form-item label="消息发送记录id">{{ form.messageLogId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="消息模板id">{{ form.messageTemplateId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="消息key">{{ form.messageKey }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="模板名称">{{ form.messageTemplateName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="消息类型">
-                <dict-tag :options="sys_message_type" :value="form.messageType" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="模板类型">
-                <dict-tag :options="sys_message_template_mode" :value="form.templateMode" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="发送账号">{{ form.account }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="标题">{{ form.title }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="模板ID">{{ form.templateId }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="发送内容"><div v-html="form.content"></div></t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="消息配置标题">{{ form.messageConfigTitle }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="平台标识">
-                <dict-tag :options="sys_message_supplier_type" :value="form.supplierType" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="是否成功">
-                <dict-tag :options="sys_common_status" :value="form.isSuccess" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="返回主体消息">{{ form.responseBody }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="记录时间">{{ parseTime(form.logTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="消耗时间">{{ form.costTime ?? 0 }}毫秒</t-form-item>
-            </t-col>
-          </t-row>
-        </t-form>
-      </t-loading>
+      <my-descriptions :loading="openViewLoading">
+        <t-descriptions-item label="消息发送记录id">{{ form.messageLogId }}</t-descriptions-item>
+        <t-descriptions-item label="消息模板id">{{ form.messageTemplateId }}</t-descriptions-item>
+        <t-descriptions-item label="消息key">{{ form.messageKey }}</t-descriptions-item>
+        <t-descriptions-item label="模板名称">{{ form.messageTemplateName }}</t-descriptions-item>
+        <t-descriptions-item label="消息类型">
+          <dict-tag :options="sys_message_type" :value="form.messageType" />
+        </t-descriptions-item>
+        <t-descriptions-item label="模板类型">
+          <dict-tag :options="sys_message_template_mode" :value="form.templateMode" />
+        </t-descriptions-item>
+        <t-descriptions-item label="发送账号">{{ form.account }}</t-descriptions-item>
+        <t-descriptions-item label="标题">{{ form.title }}</t-descriptions-item>
+        <t-descriptions-item label="模板ID">{{ form.templateId }}</t-descriptions-item>
+        <t-descriptions-item label="发送内容" :span="2">
+          <div v-html="form.content"></div>
+        </t-descriptions-item>
+        <t-descriptions-item label="消息配置标题">{{ form.messageConfigTitle }}</t-descriptions-item>
+        <t-descriptions-item label="平台标识">
+          <dict-tag :options="sys_message_supplier_type" :value="form.supplierType" />
+        </t-descriptions-item>
+        <t-descriptions-item label="是否成功">
+          <dict-tag :options="sys_common_status" :value="form.isSuccess" />
+        </t-descriptions-item>
+        <t-descriptions-item label="返回主体消息" :span="2">{{ form.responseBody }}</t-descriptions-item>
+        <t-descriptions-item label="记录时间">{{ parseTime(form.logTime) }}</t-descriptions-item>
+        <t-descriptions-item label="消耗时间">{{ form.costTime ?? 0 }}毫秒</t-descriptions-item>
+      </my-descriptions>
     </t-dialog>
   </t-card>
 </template>

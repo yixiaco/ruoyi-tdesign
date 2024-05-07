@@ -176,54 +176,26 @@
       attach="body"
       :footer="false"
     >
-      <t-loading :loading="openViewLoading">
-        <t-form class="form-detail" label-align="right" colon label-width="calc(6em + 28px)">
-          <t-row :gutter="[0, 20]">
-            <t-col :span="6">
-              <t-form-item label="字典编码">{{ form.dictCode }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="字典排序">{{ form.dictSort }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="字典标签">
-                <dict-tag :options="dictOptions" :value="form.dictValue" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="字典键值">{{ form.dictValue }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="字典类型">{{ form.dictType }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="样式属性">{{ form.cssClass }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="表格回显样式">
-                <dict-tag :options="listClassOptions" :value="form.listClass" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="回显风格">{{ form.tagStyle }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="是否默认">
-                <dict-tag :options="sys_yes_no" :value="form.isDefault" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="备注">{{ form.remark }}</t-form-item>
-            </t-col>
-          </t-row>
-        </t-form>
-      </t-loading>
+      <my-descriptions :loading="openViewLoading">
+        <t-descriptions-item label="字典编码">{{ form.dictCode }}</t-descriptions-item>
+        <t-descriptions-item label="字典排序">{{ form.dictSort }}</t-descriptions-item>
+        <t-descriptions-item label="字典标签">
+          <dict-tag :options="dictOptions" :value="form.dictValue" />
+        </t-descriptions-item>
+        <t-descriptions-item label="字典键值">{{ form.dictValue }}</t-descriptions-item>
+        <t-descriptions-item label="字典类型">{{ form.dictType }}</t-descriptions-item>
+        <t-descriptions-item label="样式属性">{{ form.cssClass }}</t-descriptions-item>
+        <t-descriptions-item label="表格回显样式">
+          <dict-tag :options="listClassOptions" :value="form.listClass" />
+        </t-descriptions-item>
+        <t-descriptions-item label="回显风格">{{ form.tagStyle }}</t-descriptions-item>
+        <t-descriptions-item label="是否默认">
+          <dict-tag :options="sys_yes_no" :value="form.isDefault" />
+        </t-descriptions-item>
+        <t-descriptions-item label="更新时间">{{ parseTime(form.updateTime) }}</t-descriptions-item>
+        <t-descriptions-item label="创建时间">{{ parseTime(form.createTime) }}</t-descriptions-item>
+        <t-descriptions-item label="备注" :span="2">{{ form.remark }}</t-descriptions-item>
+      </my-descriptions>
     </t-dialog>
   </t-card>
 </template>

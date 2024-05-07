@@ -156,30 +156,14 @@
 
     <!-- 消息常量详情 -->
     <t-dialog v-model:visible="openView" header="消息常量详情" width="700px" attach="body" :footer="false">
-      <t-loading :loading="openViewLoading">
-        <t-form class="form-detail" label-align="right" colon label-width="calc(6em + 28px)">
-          <t-row :gutter="[0, 20]">
-            <t-col :span="6">
-              <t-form-item label="消息key主键">{{ form.messageKeyId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="消息名称">{{ form.name }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="消息key">{{ form.messageKey }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="备注">{{ form.remark }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
-            </t-col>
-          </t-row>
-        </t-form>
-      </t-loading>
+      <my-descriptions :loading="openViewLoading">
+        <t-descriptions-item label="消息key主键">{{ form.messageKeyId }}</t-descriptions-item>
+        <t-descriptions-item label="消息名称">{{ form.name }}</t-descriptions-item>
+        <t-descriptions-item label="消息key">{{ form.messageKey }}</t-descriptions-item>
+        <t-descriptions-item label="备注" :span="2">{{ form.remark }}</t-descriptions-item>
+        <t-descriptions-item label="更新时间">{{ parseTime(form.updateTime) }}</t-descriptions-item>
+        <t-descriptions-item label="创建时间">{{ parseTime(form.createTime) }}</t-descriptions-item>
+      </my-descriptions>
     </t-dialog>
   </t-card>
 </template>

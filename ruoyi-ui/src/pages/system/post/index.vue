@@ -172,38 +172,18 @@
       attach="body"
       :footer="false"
     >
-      <t-loading :loading="openViewLoading">
-        <t-form class="form-detail" label-align="right" colon label-width="calc(4em + 28px)">
-          <t-row :gutter="[0, 20]">
-            <t-col :span="6">
-              <t-form-item label="岗位ID">{{ form.postId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="岗位编码">{{ form.postCode }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="岗位名称">{{ form.postName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="显示顺序">{{ form.postSort }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="状态">
-                <dict-tag :options="sys_normal_disable" :value="form.status" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="备注">{{ form.remark }}</t-form-item>
-            </t-col>
-          </t-row>
-        </t-form>
-      </t-loading>
+      <my-descriptions :loading="openViewLoading">
+        <t-descriptions-item label="岗位ID">{{ form.postId }}</t-descriptions-item>
+        <t-descriptions-item label="岗位编码">{{ form.postCode }}</t-descriptions-item>
+        <t-descriptions-item label="岗位名称">{{ form.postName }}</t-descriptions-item>
+        <t-descriptions-item label="显示顺序">{{ form.postSort }}</t-descriptions-item>
+        <t-descriptions-item label="状态">
+          <dict-tag :options="sys_normal_disable" :value="form.status" />
+        </t-descriptions-item>
+        <t-descriptions-item label="更新时间">{{ parseTime(form.updateTime) }}</t-descriptions-item>
+        <t-descriptions-item label="创建时间">{{ parseTime(form.createTime) }}</t-descriptions-item>
+        <t-descriptions-item label="备注" :span="2">{{ form.remark }}</t-descriptions-item>
+      </my-descriptions>
     </t-dialog>
   </t-card>
 </template>

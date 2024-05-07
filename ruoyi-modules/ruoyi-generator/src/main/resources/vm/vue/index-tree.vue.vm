@@ -338,9 +338,7 @@
       attach="body"
       :footer="false"
     >
-      <t-loading :loading="openViewLoading">
-        <t-form class="form-detail" label-align="right" colon label-width="calc(5em + 28px)">
-          <t-row :gutter="[0, 20]">
+      <my-descriptions :loading="openViewLoading">
 #foreach($column in $columns)
 #set($javaField=$column.javaField)
 #set($parentheseIndex=$column.columnComment.indexOf("（"))
@@ -351,39 +349,27 @@
 #end
 #if($column.isDetail())
 #if($column.htmlType == "imageUpload")
-            <t-col :span="6">
-              <t-form-item label="${comment}">
-                <image-preview :src="form.${javaField}" :width="60" :height="60" />
-              </t-form-item>
-            </t-col>
+        <t-descriptions-item label="${comment}">
+          <image-preview :src="form.${javaField}" :width="60" :height="60" />
+        </t-descriptions-item>
 #elseif($column.htmlType == "datetime")
-            <t-col :span="6">
-              <t-form-item label="${comment}">{{ parseTime(form.${javaField}) }}</t-form-item>
-            </t-col>
+        <t-descriptions-item label="${comment}">{{ parseTime(form.${javaField}) }}</t-descriptions-item>
 #elseif($column.dictType && "" != $column.dictType)
-            <t-col :span="6">
-              <t-form-item label="${comment}">
-                <dict-tag :options="${column.dictType}" :value="form.${javaField}" />
-              </t-form-item>
-            </t-col>
+        <t-descriptions-item label="${comment}">
+          <dict-tag :options="${column.dictType}" :value="form.${javaField}" />
+        </t-descriptions-item>
 #elseif($column.htmlType == "textarea")
-            <t-col :span="12">
-              <t-form-item label="${comment}">{{ form.${javaField} }}</t-form-item>
-            </t-col>
+        <t-descriptions-item label="${comment}" :span="2">{{ form.${javaField} }}</t-descriptions-item>
 #elseif($column.htmlType == "editor")
-            <t-col :span="12">
-              <t-form-item label="${comment}"><editor-preview :html-text="form.${javaField}" /></t-form-item>
-            </t-col>
+        <t-descriptions-item label="${comment}" :span="2">
+          <editor-preview :html-text="form.${javaField}" />
+        </t-descriptions-item>
 #else
-            <t-col :span="6">
-              <t-form-item label="${comment}">{{ form.${javaField} }}</t-form-item>
-            </t-col>
+        <t-descriptions-item label="${comment}">{{ form.${javaField} }}</t-descriptions-item>
 #end
 #end
 #end
-          </t-row>
-        </t-form>
-      </t-loading>
+      </my-descriptions>
     </t-dialog>
 #end
   </t-card>

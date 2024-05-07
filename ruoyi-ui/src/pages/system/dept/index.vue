@@ -192,47 +192,21 @@
       attach="body"
       :footer="false"
     >
-      <t-loading :loading="openViewLoading">
-        <t-form class="form-detail" label-align="right" colon label-width="calc(5em + 28px)">
-          <t-row :gutter="[0, 20]">
-            <t-col :span="6">
-              <t-form-item label="部门id">{{ form.deptId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="父部门id">{{ form.parentId }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="祖级列表">{{ form.ancestors }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="部门名称">{{ form.deptName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="显示顺序">{{ form.orderNum }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="负责人">{{ form.leaderName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="联系电话">{{ form.phone }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="邮箱">{{ form.email }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="部门状态">
-                <dict-tag :options="sys_normal_disable" :value="form.status" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
-            </t-col>
-          </t-row>
-        </t-form>
-      </t-loading>
+      <my-descriptions :loading="openViewLoading">
+        <t-descriptions-item label="部门id">{{ form.deptId }}</t-descriptions-item>
+        <t-descriptions-item label="父部门id">{{ form.parentId }}</t-descriptions-item>
+        <t-descriptions-item label="祖级列表" :span="2">{{ form.ancestors }}</t-descriptions-item>
+        <t-descriptions-item label="部门名称">{{ form.deptName }}</t-descriptions-item>
+        <t-descriptions-item label="显示顺序">{{ form.orderNum }}</t-descriptions-item>
+        <t-descriptions-item label="负责人">{{ form.leader }}</t-descriptions-item>
+        <t-descriptions-item label="联系电话">{{ form.phone }}</t-descriptions-item>
+        <t-descriptions-item label="邮箱">{{ form.email }}</t-descriptions-item>
+        <t-descriptions-item label="部门状态">
+          <dict-tag :options="sys_normal_disable" :value="form.status" />
+        </t-descriptions-item>
+        <t-descriptions-item label="更新时间">{{ parseTime(form.updateTime) }}</t-descriptions-item>
+        <t-descriptions-item label="创建时间">{{ parseTime(form.createTime) }}</t-descriptions-item>
+      </my-descriptions>
     </t-dialog>
   </t-card>
 </template>

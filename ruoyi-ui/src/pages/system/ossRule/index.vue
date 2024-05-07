@@ -228,63 +228,31 @@
       attach="body"
       :footer="false"
     >
-      <t-loading :loading="openViewLoading">
-        <t-form class="form-detail" label-align="right" colon label-width="calc(7em + 28px)">
-          <t-row :gutter="[0, 20]">
-            <t-col :span="6">
-              <t-form-item label="oss规则id">{{ form.ossRuleId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="规则名称">{{ form.ruleName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="匹配域名">{{ form.domain }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="媒体类型">{{ form.mimeType }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="规则" style="word-break: break-all">{{ form.rule }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="覆盖默认字段值">
-                <dict-tag :options="sys_yes_no" :value="form.isOverwrite" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="是否默认">
-                <dict-tag :options="sys_yes_no" :value="form.isDefault" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="启用状态">
-                <dict-tag :options="sys_normal_disable" :value="form.status" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="规则顺序">{{ form.ruleSort }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="创建部门">{{ form.createDept }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="更新者">{{ form.updateBy }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="创建者">{{ form.createBy }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="备注">{{ form.remark }}</t-form-item>
-            </t-col>
-          </t-row>
-        </t-form>
-      </t-loading>
+      <my-descriptions :loading="openViewLoading">
+        <t-descriptions-item label="oss规则id">{{ form.ossRuleId }}</t-descriptions-item>
+        <t-descriptions-item label="规则名称">{{ form.ruleName }}</t-descriptions-item>
+        <t-descriptions-item label="匹配域名">{{ form.domain }}</t-descriptions-item>
+        <t-descriptions-item label="媒体类型">{{ form.mimeType }}</t-descriptions-item>
+        <t-descriptions-item label="规则" :span="2">
+          <span style="word-break: break-all">{{ form.rule }}</span>
+        </t-descriptions-item>
+        <t-descriptions-item label="覆盖默认字段值">
+          <dict-tag :options="sys_yes_no" :value="form.isOverwrite" />
+        </t-descriptions-item>
+        <t-descriptions-item label="是否默认">
+          <dict-tag :options="sys_yes_no" :value="form.isDefault" />
+        </t-descriptions-item>
+        <t-descriptions-item label="启用状态">
+          <dict-tag :options="sys_normal_disable" :value="form.status" />
+        </t-descriptions-item>
+        <t-descriptions-item label="规则顺序">{{ form.ruleSort }}</t-descriptions-item>
+        <t-descriptions-item label="创建部门">{{ form.createDept }}</t-descriptions-item>
+        <t-descriptions-item label="更新者">{{ form.updateBy }}</t-descriptions-item>
+        <t-descriptions-item label="更新时间">{{ parseTime(form.updateTime) }}</t-descriptions-item>
+        <t-descriptions-item label="创建者">{{ form.createBy }}</t-descriptions-item>
+        <t-descriptions-item label="创建时间">{{ parseTime(form.createTime) }}</t-descriptions-item>
+        <t-descriptions-item label="备注" :span="2">{{ form.remark }}</t-descriptions-item>
+      </my-descriptions>
     </t-dialog>
   </t-card>
 </template>

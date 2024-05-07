@@ -83,14 +83,14 @@
         </template>
         <template #operation="{ row }">
           <t-space :size="4" break-line>
-            <t-link v-hasPermi="['system:menu:edit']" theme="primary" hover="color" @click.stop="handleCopyAdd(row)">
-              <copy-icon />复制
-            </t-link>
             <t-link v-hasPermi="['system:menu:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
               <browse-icon />详情
             </t-link>
             <t-link v-hasPermi="['system:menu:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
               <edit-icon />修改
+            </t-link>
+            <t-link v-hasPermi="['system:menu:edit']" theme="primary" hover="color" @click.stop="handleCopyAdd(row)">
+              <copy-icon />复制
             </t-link>
             <t-link v-hasPermi="['system:menu:add']" theme="primary" hover="color" @click.stop="handleAdd(row)">
               <add-icon />新增
@@ -329,90 +329,42 @@
       attach="body"
       :footer="false"
     >
-      <t-loading :loading="openViewLoading">
-        <t-form class="form-detail" label-align="right" colon label-width="calc(5em + 28px)">
-          <t-row :gutter="[0, 20]">
-            <t-col :span="6">
-              <t-form-item label="菜单ID">{{ form.menuId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="菜单名称">{{ form.menuName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="父菜单ID">{{ form.parentId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="显示顺序">{{ form.orderNum }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="路由地址">{{ form.path }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="组件名称">{{ form.componentName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="组件路径">{{ form.component }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="路由参数">{{ form.queryParam }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="是否为外链">
-                <dict-tag :options="yesNoOptions" theme="primary" :value="form.isFrame" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="是否缓存">
-                <dict-tag :options="cacheOptions" theme="primary" :value="form.isCache" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="菜单类型">
-                <dict-tag :options="menuTypeOptions" :value="form.menuType" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="显示状态">
-                <dict-tag :options="sys_show_hide" :value="form.visible" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="菜单状态">
-                <dict-tag :options="sys_normal_disable" :value="form.status" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="权限标识">{{ form.perms }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="菜单图标">{{ form.icon }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="隐藏表达式">
-                <template v-if="form.hiddenExpression">
-                  <t-tag>{{ form.hiddenExpression }}</t-tag>
-                </template>
-              </t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="停用表达式">
-                <template v-if="form.shopExpression">
-                  <t-tag>{{ form.shopExpression }}</t-tag>
-                </template>
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="备注">{{ form.remark }}</t-form-item>
-            </t-col>
-          </t-row>
-        </t-form>
-      </t-loading>
+      <my-descriptions :loading="openViewLoading">
+        <t-descriptions-item label="菜单ID">{{ form.menuId }}</t-descriptions-item>
+        <t-descriptions-item label="菜单名称">{{ form.menuName }}</t-descriptions-item>
+        <t-descriptions-item label="父菜单ID">{{ form.parentId }}</t-descriptions-item>
+        <t-descriptions-item label="显示顺序">{{ form.orderNum }}</t-descriptions-item>
+        <t-descriptions-item label="路由地址">{{ form.path }}</t-descriptions-item>
+        <t-descriptions-item label="组件名称">{{ form.componentName }}</t-descriptions-item>
+        <t-descriptions-item label="组件路径">{{ form.component }}</t-descriptions-item>
+        <t-descriptions-item label="路由参数">{{ form.queryParam }}</t-descriptions-item>
+        <t-descriptions-item label="是否为外链">
+          <dict-tag :options="yesNoOptions" theme="primary" :value="form.isFrame" />
+        </t-descriptions-item>
+        <t-descriptions-item label="是否缓存">
+          <dict-tag :options="cacheOptions" theme="primary" :value="form.isCache" />
+        </t-descriptions-item>
+        <t-descriptions-item label="菜单类型">
+          <dict-tag :options="menuTypeOptions" :value="form.menuType" />
+        </t-descriptions-item>
+        <t-descriptions-item label="显示状态">
+          <dict-tag :options="sys_show_hide" :value="form.visible" />
+        </t-descriptions-item>
+        <t-descriptions-item label="菜单状态">
+          <dict-tag :options="sys_normal_disable" :value="form.status" />
+        </t-descriptions-item>
+        <t-descriptions-item label="权限标识">{{ form.perms }}</t-descriptions-item>
+        <t-descriptions-item label="菜单图标">{{ form.icon }}</t-descriptions-item>
+        <t-descriptions-item label="隐藏表达式">
+          <t-tag v-if="form.hiddenExpression">{{ form.hiddenExpression }}</t-tag>
+        </t-descriptions-item>
+        <t-descriptions-item label="停用表达式">
+          <t-tag v-if="form.shopExpression">{{ form.shopExpression }}</t-tag>
+        </t-descriptions-item>
+        <t-descriptions-item label="更新时间">{{ parseTime(form.updateTime) }}</t-descriptions-item>
+        <t-descriptions-item label="创建时间">{{ parseTime(form.createTime) }}</t-descriptions-item>
+        <t-descriptions-item label="备注" :span="2">{{ form.remark }}</t-descriptions-item>
+      </my-descriptions>
     </t-dialog>
   </t-card>
 </template>

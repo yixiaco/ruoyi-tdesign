@@ -174,42 +174,18 @@
 
     <!-- OSS分类详情 -->
     <t-dialog v-model:visible="openView" header="OSS分类详情" width="700px" :footer="false">
-      <t-loading :loading="openViewLoading">
-        <t-form class="form-detail" label-align="right" colon label-width="calc(5em + 28px)">
-          <t-row :gutter="[0, 20]">
-            <t-col :span="6">
-              <t-form-item label="oss分类id">{{ form.ossCategoryId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="分类名称">{{ form.categoryName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="文件数量">{{ form.fileCount }} 个文件</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="父级分类id">{{ form.parentId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="父级分类">{{ form.parentCategoryName }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="分类路径">{{ form.categoryPath }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="层级">{{ form.level }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="显示顺序">{{ form.orderNum }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
-            </t-col>
-          </t-row>
-        </t-form>
-      </t-loading>
+      <my-descriptions :loading="openViewLoading">
+        <t-descriptions-item label="oss分类id">{{ form.ossCategoryId }}</t-descriptions-item>
+        <t-descriptions-item label="分类名称">{{ form.categoryName }}</t-descriptions-item>
+        <t-descriptions-item label="文件数量">{{ form.fileCount }}</t-descriptions-item>
+        <t-descriptions-item label="父级分类id">{{ form.parentId }}</t-descriptions-item>
+        <t-descriptions-item label="父级分类">{{ form.parentCategoryName }}</t-descriptions-item>
+        <t-descriptions-item label="分类路径" :span="2">{{ form.categoryPath }}</t-descriptions-item>
+        <t-descriptions-item label="层级">{{ form.level }}</t-descriptions-item>
+        <t-descriptions-item label="显示顺序">{{ form.orderNum }}</t-descriptions-item>
+        <t-descriptions-item label="更新时间">{{ parseTime(form.updateTime) }}</t-descriptions-item>
+        <t-descriptions-item label="创建时间">{{ parseTime(form.createTime) }}</t-descriptions-item>
+      </my-descriptions>
     </t-dialog>
   </t-card>
 </template>

@@ -329,64 +329,35 @@
       v-model:visible="openView"
       header="消息模板详情"
       placement="center"
-      width="700px"
+      width="min(100%, 850px)"
       attach="body"
       :footer="false"
     >
-      <t-loading :loading="openViewLoading">
-        <t-form class="form-detail" label-align="right" colon label-width="calc(5em + 28px)">
-          <t-row :gutter="[0, 20]">
-            <t-col :span="6">
-              <t-form-item label="消息模板id">{{ form.messageTemplateId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="模板名称">{{ form.templateName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="消息配置id">{{ form.messageConfigId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="消息key">{{ form.messageKey }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="消息类型">
-                <dict-tag :options="sys_message_type" :value="form.messageType" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="模板类型">
-                <dict-tag :options="sys_message_template_mode" :value="form.templateMode" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="签名">{{ form.signature }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="模板id">{{ form.templateId }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="内容"><div v-html="form.content"></div></t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="输入变量">{{ form.varsJson }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="状态">
-                <dict-tag :options="sys_normal_disable" :value="form.status" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="备注">{{ form.remark }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
-            </t-col>
-          </t-row>
-        </t-form>
-      </t-loading>
+      <my-descriptions :loading="openViewLoading">
+        <t-descriptions-item label="消息模板id">{{ form.messageTemplateId }}</t-descriptions-item>
+        <t-descriptions-item label="模板名称">{{ form.templateName }}</t-descriptions-item>
+        <t-descriptions-item label="消息配置id">{{ form.messageConfigId }}</t-descriptions-item>
+        <t-descriptions-item label="消息key">{{ form.messageKey }}</t-descriptions-item>
+        <t-descriptions-item label="消息类型">
+          <dict-tag :options="sys_message_type" :value="form.messageType" />
+        </t-descriptions-item>
+        <t-descriptions-item label="模板类型">
+          <dict-tag :options="sys_message_template_mode" :value="form.templateMode" />
+        </t-descriptions-item>
+        <t-descriptions-item label="标题">{{ form.title }}</t-descriptions-item>
+        <t-descriptions-item label="签名">{{ form.signature }}</t-descriptions-item>
+        <t-descriptions-item label="模板id">{{ form.templateId }}</t-descriptions-item>
+        <t-descriptions-item label="内容" :span="2">
+          <div v-html="form.content"></div>
+        </t-descriptions-item>
+        <t-descriptions-item label="输入变量" :span="2">{{ form.varsJson }}</t-descriptions-item>
+        <t-descriptions-item label="状态">
+          <dict-tag :options="sys_normal_disable" :value="form.status" />
+        </t-descriptions-item>
+        <t-descriptions-item label="备注" :span="2">{{ form.remark }}</t-descriptions-item>
+        <t-descriptions-item label="更新时间">{{ parseTime(form.updateTime) }}</t-descriptions-item>
+        <t-descriptions-item label="创建时间">{{ parseTime(form.createTime) }}</t-descriptions-item>
+      </my-descriptions>
     </t-dialog>
 
     <t-dialog

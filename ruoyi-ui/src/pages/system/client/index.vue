@@ -190,48 +190,24 @@
 
     <!-- 系统授权详情 -->
     <t-dialog v-model:visible="openView" header="系统授权详情" width="min(900px, 100%)" attach="body" :footer="false">
-      <t-loading :loading="openViewLoading">
-        <t-form class="form-detail" label-align="right" colon label-width="calc(9em + 28px)">
-          <t-row :gutter="[0, 20]">
-            <t-col :span="6">
-              <t-form-item label="客户端id">{{ form.clientId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="客户端key">{{ form.clientKey }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="客户端秘钥">{{ form.clientSecret }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="授权类型">
-                <dict-tag :options="sys_grant_type" :value="form.grantType" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="设备类型">
-                <dict-tag :options="sys_device_type" :value="form.deviceType" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="token活跃超时时间">{{ form.activeTimeout }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="token固定超时">{{ form.timeout }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="状态">
-                <dict-tag :options="sys_normal_disable" :value="form.status" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
-            </t-col>
-          </t-row>
-        </t-form>
-      </t-loading>
+      <my-descriptions :loading="openViewLoading">
+        <t-descriptions-item label="客户端id">{{ form.clientId }}</t-descriptions-item>
+        <t-descriptions-item label="客户端key">{{ form.clientKey }}</t-descriptions-item>
+        <t-descriptions-item label="客户端秘钥">{{ form.clientSecret }}</t-descriptions-item>
+        <t-descriptions-item label="授权类型">
+          <dict-tag :options="sys_grant_type" :value="form.grantType" />
+        </t-descriptions-item>
+        <t-descriptions-item label="设备类型">
+          <dict-tag :options="sys_device_type" :value="form.deviceType" />
+        </t-descriptions-item>
+        <t-descriptions-item label="token活跃超时时间">{{ form.activeTimeout }}</t-descriptions-item>
+        <t-descriptions-item label="token固定超时">{{ form.timeout }}</t-descriptions-item>
+        <t-descriptions-item label="状态">
+          <dict-tag :options="sys_normal_disable" :value="form.status" />
+        </t-descriptions-item>
+        <t-descriptions-item label="更新时间">{{ parseTime(form.updateTime) }}</t-descriptions-item>
+        <t-descriptions-item label="创建时间">{{ parseTime(form.createTime) }}</t-descriptions-item>
+      </my-descriptions>
     </t-dialog>
   </t-card>
 </template>

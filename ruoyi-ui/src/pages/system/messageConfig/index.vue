@@ -269,45 +269,33 @@
       attach="body"
       :footer="false"
     >
-      <t-loading :loading="openViewLoading">
-        <t-form class="form-detail" label-align="right" colon label-width="calc(5em + 28px)">
-          <t-row :gutter="[0, 20]">
-            <t-col :span="6">
-              <t-form-item label="消息设置id">{{ form.messageConfigId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="标题">{{ form.title }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="消息类型">
-                <dict-tag :options="sys_message_type" :value="form.messageType" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="支持平台标识">
-                <dict-tag :options="sys_message_supplier_type" :value="form.supplierType" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="配置json">{{ form.configJson }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="状态">
-                <dict-tag :options="sys_normal_disable" :value="form.status" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="备注">{{ form.remark }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
-            </t-col>
-          </t-row>
-        </t-form>
-      </t-loading>
+      <my-descriptions :loading="openViewLoading">
+        <t-descriptions-item label="消息设置id">{{ form.messageConfigId }}</t-descriptions-item>
+        <t-descriptions-item label="标题">{{ form.title }}</t-descriptions-item>
+        <t-descriptions-item label="消息类型">
+          <dict-tag :options="sys_message_type" :value="form.messageType" />
+        </t-descriptions-item>
+        <t-descriptions-item label="支持平台标识">
+          <dict-tag :options="sys_message_supplier_type" :value="form.supplierType" />
+        </t-descriptions-item>
+        <t-descriptions-item label="配置json" :span="2">
+          <div style="max-height: 300px; width: 100%" class="content-scrollbar">
+            <template v-if="!isJson(form.configJson as string)">{{ form.configJson }}...</template>
+            <preview-code
+              v-else
+              :code="JSON.stringify(JSON.parse(form.configJson as string), null, 2)"
+              language="json"
+              style="width: 100%"
+            />
+          </div>
+        </t-descriptions-item>
+        <t-descriptions-item label="状态">
+          <dict-tag :options="sys_normal_disable" :value="form.status" />
+        </t-descriptions-item>
+        <t-descriptions-item label="备注" :span="2">{{ form.remark }}</t-descriptions-item>
+        <t-descriptions-item label="更新时间">{{ parseTime(form.updateTime) }}</t-descriptions-item>
+        <t-descriptions-item label="创建时间">{{ parseTime(form.createTime) }}</t-descriptions-item>
+      </my-descriptions>
     </t-dialog>
   </t-card>
 </template>
@@ -315,6 +303,7 @@
 defineOptions({
   name: 'MessageConfig',
 });
+
 import {
   AddIcon,
   BrowseIcon,
@@ -349,6 +338,7 @@ import type {
   SysMessageConfigVo,
 } from '@/api/system/model/messageConfigModel';
 import { ArrayOps } from '@/utils/array';
+import { isJson } from '@/utils/ruoyi';
 
 import { SUPPLIER_TYPE_MAP } from './data/index';
 import type { MessageConfig } from './model';

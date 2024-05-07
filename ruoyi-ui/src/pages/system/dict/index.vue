@@ -168,34 +168,18 @@
       v-model:visible="openView"
       header="字典类型详情"
       placement="center"
-      width="600px"
+      width="700px"
       attach="body"
       :footer="false"
     >
-      <t-loading :loading="openViewLoading">
-        <t-form class="form-detail" label-align="right" colon label-width="calc(4em + 28px)">
-          <t-row :gutter="[0, 20]">
-            <t-col :span="6">
-              <t-form-item label="字典主键">{{ form.dictId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="字典名称">{{ form.dictName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="字典类型">{{ form.dictType }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(form.updateTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(form.createTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="备注">{{ form.remark }}</t-form-item>
-            </t-col>
-          </t-row>
-        </t-form>
-      </t-loading>
+      <my-descriptions :loading="openViewLoading">
+        <t-descriptions-item label="字典主键">{{ form.dictId }}</t-descriptions-item>
+        <t-descriptions-item label="字典名称">{{ form.dictName }}</t-descriptions-item>
+        <t-descriptions-item label="字典类型" :span="2">{{ form.dictType }}</t-descriptions-item>
+        <t-descriptions-item label="备注" :span="2">{{ form.remark }}</t-descriptions-item>
+        <t-descriptions-item label="更新时间">{{ parseTime(form.updateTime) }}</t-descriptions-item>
+        <t-descriptions-item label="创建时间">{{ parseTime(form.createTime) }}</t-descriptions-item>
+      </my-descriptions>
     </t-dialog>
   </t-card>
 </template>

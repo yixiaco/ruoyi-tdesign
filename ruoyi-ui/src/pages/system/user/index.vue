@@ -394,63 +394,29 @@
       placement="center"
       :footer="false"
     >
-      <t-loading :loading="openViewLoading">
-        <t-form class="form-detail" label-align="right" colon label-width="calc(5em + 28px)">
-          <t-row :gutter="[0, 20]">
-            <t-col :span="6">
-              <t-form-item label="用户ID">{{ formView.userId }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="部门">{{ formView.dept?.deptName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="用户账号">{{ formView.userName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="用户昵称">{{ formView.nickName }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="用户类型">{{ formView.userType }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="用户邮箱">{{ formView.email }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="手机号码">{{ formView.phonenumber }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="用户性别">
-                <dict-tag :options="sys_user_sex" :value="formView.sex" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="头像地址">
-                <image-preview :src="formView.avatar" :width="60" :height="60" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="帐号状态">
-                <dict-tag :options="sys_normal_disable" :value="formView.status" />
-              </t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="最后登录IP">{{ formView.loginIp }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="最后登录时间">{{ parseTime(formView.loginDate) }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="更新时间">{{ parseTime(formView.updateTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="6">
-              <t-form-item label="创建时间">{{ parseTime(formView.createTime) }}</t-form-item>
-            </t-col>
-            <t-col :span="12">
-              <t-form-item label="备注">{{ formView.remark }}</t-form-item>
-            </t-col>
-          </t-row>
-        </t-form>
-      </t-loading>
+      <my-descriptions :loading="openViewLoading">
+        <t-descriptions-item label="用户ID">{{ formView.userId }}</t-descriptions-item>
+        <t-descriptions-item label="部门">{{ formView.dept?.deptName }}</t-descriptions-item>
+        <t-descriptions-item label="用户账号">{{ formView.userName }}</t-descriptions-item>
+        <t-descriptions-item label="用户昵称">{{ formView.nickName }}</t-descriptions-item>
+        <t-descriptions-item label="用户类型">{{ formView.userType }}</t-descriptions-item>
+        <t-descriptions-item label="用户邮箱">{{ formView.email }}</t-descriptions-item>
+        <t-descriptions-item label="手机号码">{{ formView.phonenumber }}</t-descriptions-item>
+        <t-descriptions-item label="用户性别">
+          <dict-tag :options="sys_user_sex" :value="formView.sex" />
+        </t-descriptions-item>
+        <t-descriptions-item label="头像地址">
+          <image-preview :src="formView.avatar" :width="60" :height="60" />
+        </t-descriptions-item>
+        <t-descriptions-item label="帐号状态">
+          <dict-tag :options="sys_normal_disable" :value="formView.status" />
+        </t-descriptions-item>
+        <t-descriptions-item label="最后登录IP">{{ formView.loginIp }}</t-descriptions-item>
+        <t-descriptions-item label="最后登录时间">{{ parseTime(formView.loginDate) }}</t-descriptions-item>
+        <t-descriptions-item label="更新时间">{{ parseTime(formView.updateTime) }}</t-descriptions-item>
+        <t-descriptions-item label="创建时间">{{ parseTime(formView.createTime) }}</t-descriptions-item>
+        <t-descriptions-item label="备注" :span="2">{{ formView.remark }}</t-descriptions-item>
+      </my-descriptions>
     </t-dialog>
   </t-card>
 </template>
