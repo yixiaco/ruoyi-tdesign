@@ -185,77 +185,77 @@
       placement="center"
       width="550px"
       :confirm-btn="{
-        content: '确 定',
-        theme: 'primary',
         loading: buttonLoading,
       }"
       @confirm="onConfirm"
     >
-      <t-form
-        ref="ossRef"
-        label-align="right"
-        :data="form"
-        :rules="rules"
-        label-width="calc(4em + 31px)"
-        scroll-to-first-error="smooth"
-        @submit="submitForm"
-      >
-        <t-form-item label="ossId" name="ossId">
-          {{ form.ossId }}
-        </t-form-item>
-        <t-form-item label="原名" name="originalName">
-          <t-input v-model="form.originalName" placeholder="请输入原名" clearable />
-        </t-form-item>
-        <t-form-item label="分类" name="ossCategoryId">
-          <t-tree-select
-            v-model="form.ossCategoryId"
-            :data="ossCategoryOptions"
-            :tree-props="{
-              keys: { value: 'ossCategoryId', label: 'categoryName', children: 'children' },
-              checkStrictly: true,
-            }"
-            placeholder="请选择分类"
-          />
-        </t-form-item>
-        <t-form-item label="锁定状态" name="isLock">
-          <t-switch v-model="form.isLock" :custom-value="[1, 0]" />
-        </t-form-item>
-        <t-form-item label="URL" name="url">
-          <t-space direction="vertical" size="2px">
-            <div
-              style="
-                word-wrap: break-word;
-                border: 1px solid #dedede;
-                line-height: 1.4;
-                padding: 8px;
-                white-space: normal;
-                word-break: break-all;
-              "
-            >
-              {{ form.url }}
-            </div>
-            <t-space>
-              <t-link theme="primary" @click="handleDownload(form.ossId)">下载</t-link>
-              <t-link theme="primary" @click="copyText(form.url)">复制链接URL</t-link>
+      <t-loading :loading="buttonLoading" size="small">
+        <t-form
+          ref="ossRef"
+          label-align="right"
+          :data="form"
+          :rules="rules"
+          label-width="calc(4em + 31px)"
+          scroll-to-first-error="smooth"
+          @submit="submitForm"
+        >
+          <t-form-item label="ossId" name="ossId">
+            {{ form.ossId }}
+          </t-form-item>
+          <t-form-item label="原名" name="originalName">
+            <t-input v-model="form.originalName" placeholder="请输入原名" clearable />
+          </t-form-item>
+          <t-form-item label="分类" name="ossCategoryId">
+            <t-tree-select
+              v-model="form.ossCategoryId"
+              :data="ossCategoryOptions"
+              :tree-props="{
+                keys: { value: 'ossCategoryId', label: 'categoryName', children: 'children' },
+                checkStrictly: true,
+              }"
+              placeholder="请选择分类"
+            />
+          </t-form-item>
+          <t-form-item label="锁定状态" name="isLock">
+            <t-switch v-model="form.isLock" :custom-value="[1, 0]" />
+          </t-form-item>
+          <t-form-item label="URL" name="url">
+            <t-space direction="vertical" size="2px">
+              <div
+                style="
+                  word-wrap: break-word;
+                  border: 1px solid #dedede;
+                  line-height: 1.4;
+                  padding: 8px;
+                  white-space: normal;
+                  word-break: break-all;
+                "
+              >
+                {{ form.url }}
+              </div>
+              <t-space>
+                <t-link theme="primary" @click="handleDownload(form.ossId)">下载</t-link>
+                <t-link theme="primary" @click="copyText(form.url)">复制链接URL</t-link>
+              </t-space>
             </t-space>
-          </t-space>
-        </t-form-item>
-        <t-form-item label="分类路径" name="categoryPath">
-          {{ form.categoryPath ?? '/' }}
-        </t-form-item>
-        <t-form-item label="文件类型" name="contentType" style="word-break: break-all">
-          {{ form.contentType }}
-        </t-form-item>
-        <t-form-item label="大小" name="size">
-          {{ bytesToSize(form.size).replace(' ', '') }}
-        </t-form-item>
-        <t-form-item label="修改时间" name="updateTime">
-          {{ parseTime(form.updateTime) }}
-        </t-form-item>
-        <t-form-item label="创建时间" name="createTime">
-          {{ parseTime(form.createTime) }}
-        </t-form-item>
-      </t-form>
+          </t-form-item>
+          <t-form-item label="分类路径" name="categoryPath">
+            {{ form.categoryPath ?? '/' }}
+          </t-form-item>
+          <t-form-item label="文件类型" name="contentType" style="word-break: break-all">
+            {{ form.contentType }}
+          </t-form-item>
+          <t-form-item label="大小" name="size">
+            {{ bytesToSize(form.size).replace(' ', '') }}
+          </t-form-item>
+          <t-form-item label="修改时间" name="updateTime">
+            {{ parseTime(form.updateTime) }}
+          </t-form-item>
+          <t-form-item label="创建时间" name="createTime">
+            {{ parseTime(form.createTime) }}
+          </t-form-item>
+        </t-form>
+      </t-loading>
     </t-dialog>
     <!-- 移动OSS对象存储对话框 -->
     <t-dialog
@@ -264,33 +264,33 @@
       :header="title"
       width="500px"
       :confirm-btn="{
-        content: '确 定',
-        theme: 'primary',
         loading: buttonLoading,
       }"
       @confirm="onConfirmMove"
     >
-      <t-form
-        ref="ossMoveRef"
-        label-align="right"
-        :data="form"
-        :rules="rules"
-        label-width="calc(2em + 41px)"
-        scroll-to-first-error="smooth"
-        @submit="submitMoveForm"
-      >
-        <t-form-item label="分类" name="ossCategoryId">
-          <t-tree-select
-            v-model="form.ossCategoryId"
-            :data="ossCategoryOptions"
-            :tree-props="{
-              keys: { value: 'ossCategoryId', label: 'categoryName', children: 'children' },
-              checkStrictly: true,
-            }"
-            placeholder="请选择分类"
-          />
-        </t-form-item>
-      </t-form>
+      <t-loading :loading="buttonLoading" size="small">
+        <t-form
+          ref="ossMoveRef"
+          label-align="right"
+          :data="form"
+          :rules="rules"
+          label-width="calc(2em + 41px)"
+          scroll-to-first-error="smooth"
+          @submit="submitMoveForm"
+        >
+          <t-form-item label="分类" name="ossCategoryId">
+            <t-tree-select
+              v-model="form.ossCategoryId"
+              :data="ossCategoryOptions"
+              :tree-props="{
+                keys: { value: 'ossCategoryId', label: 'categoryName', children: 'children' },
+                checkStrictly: true,
+              }"
+              placeholder="请选择分类"
+            />
+          </t-form-item>
+        </t-form>
+      </t-loading>
     </t-dialog>
   </div>
 </template>

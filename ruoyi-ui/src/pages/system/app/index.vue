@@ -112,36 +112,36 @@
       width="500px"
       attach="body"
       :confirm-btn="{
-        content: '确 定',
-        theme: 'primary',
         loading: buttonLoading,
       }"
       @confirm="onConfirm"
     >
-      <t-form
-        ref="appRef"
-        label-align="right"
-        :data="form"
-        :rules="rules"
-        label-width="calc(4em + 41px)"
-        scroll-to-first-error="smooth"
-        @submit="submitForm"
-      >
-        <t-form-item label="应用名称" name="appName">
-          <t-input v-model="form.appName" placeholder="请输入应用名称" clearable />
-        </t-form-item>
-        <t-form-item label="应用类型" name="appType">
-          <t-select v-model="form.appType" placeholder="请选择应用类型" clearable>
-            <t-option v-for="dict in sys_app_type" :key="dict.value" :label="dict.label" :value="dict.value" />
-          </t-select>
-        </t-form-item>
-        <t-form-item label="应用key" name="appKey" help="请求头X-APP-KEY">
-          <t-input v-model="form.appKey" placeholder="请输入应用key" clearable />
-        </t-form-item>
-        <t-form-item label="备注" name="remark">
-          <t-textarea v-model="form.remark" placeholder="请输入备注" />
-        </t-form-item>
-      </t-form>
+      <t-loading :loading="buttonLoading" size="small">
+        <t-form
+          ref="appRef"
+          label-align="right"
+          :data="form"
+          :rules="rules"
+          label-width="calc(4em + 41px)"
+          scroll-to-first-error="smooth"
+          @submit="submitForm"
+        >
+          <t-form-item label="应用名称" name="appName">
+            <t-input v-model="form.appName" placeholder="请输入应用名称" clearable />
+          </t-form-item>
+          <t-form-item label="应用类型" name="appType">
+            <t-select v-model="form.appType" placeholder="请选择应用类型" clearable>
+              <t-option v-for="dict in sys_app_type" :key="dict.value" :label="dict.label" :value="dict.value" />
+            </t-select>
+          </t-form-item>
+          <t-form-item label="应用key" name="appKey" help="请求头X-APP-KEY">
+            <t-input v-model="form.appKey" placeholder="请输入应用key" clearable />
+          </t-form-item>
+          <t-form-item label="备注" name="remark">
+            <t-textarea v-model="form.remark" placeholder="请输入备注" />
+          </t-form-item>
+        </t-form>
+      </t-loading>
     </t-dialog>
 
     <!-- 应用管理详情 -->

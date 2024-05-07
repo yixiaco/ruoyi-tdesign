@@ -126,102 +126,102 @@
       width="800px"
       attach="body"
       :confirm-btn="{
-        content: '确 定',
-        theme: 'primary',
         loading: buttonLoading,
       }"
       @confirm="onConfirm"
     >
-      <t-form
-        ref="tenantRef"
-        label-align="right"
-        :data="form"
-        :rules="rules"
-        label-width="calc(4em + 41px)"
-        scroll-to-first-error="smooth"
-        @submit="submitForm"
-      >
-        <t-row :gutter="[0, 20]">
-          <t-col :span="6">
-            <t-form-item label="企业名称" name="companyName">
-              <t-input v-model="form.companyName" placeholder="请输入企业名称" />
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="联系人" name="contactUserName">
-              <t-input v-model="form.contactUserName" placeholder="请输入联系人" />
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="联系电话" name="contactPhone">
-              <t-input v-model="form.contactPhone" placeholder="请输入联系电话" />
-            </t-form-item>
-          </t-col>
-          <t-col v-if="form.tenantId !== DEFAULT_TENANT_ID" :span="6">
-            <t-form-item label="租户套餐" name="packageId">
-              <t-select v-model="form.packageId" placeholder="请选择租户套餐" clearable>
-                <t-option
-                  v-for="item in packageList"
-                  :key="item.packageId"
-                  :label="item.packageName"
-                  :value="item.packageId"
+      <t-loading :loading="buttonLoading" size="small">
+        <t-form
+          ref="tenantRef"
+          label-align="right"
+          :data="form"
+          :rules="rules"
+          label-width="calc(4em + 41px)"
+          scroll-to-first-error="smooth"
+          @submit="submitForm"
+        >
+          <t-row :gutter="[0, 20]">
+            <t-col :span="6">
+              <t-form-item label="企业名称" name="companyName">
+                <t-input v-model="form.companyName" placeholder="请输入企业名称" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="联系人" name="contactUserName">
+                <t-input v-model="form.contactUserName" placeholder="请输入联系人" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="联系电话" name="contactPhone">
+                <t-input v-model="form.contactPhone" placeholder="请输入联系电话" />
+              </t-form-item>
+            </t-col>
+            <t-col v-if="form.tenantId !== DEFAULT_TENANT_ID" :span="6">
+              <t-form-item label="租户套餐" name="packageId">
+                <t-select v-model="form.packageId" placeholder="请选择租户套餐" clearable>
+                  <t-option
+                    v-for="item in packageList"
+                    :key="item.packageId"
+                    :label="item.packageName"
+                    :value="item.packageId"
+                  />
+                </t-select>
+              </t-form-item>
+            </t-col>
+            <t-col v-if="!form.id" :span="6">
+              <t-form-item label="用户名" name="username">
+                <t-input v-model="form.username" :maxlength="30" placeholder="请输入系统用户名" />
+              </t-form-item>
+            </t-col>
+            <t-col v-if="!form.id" :span="6">
+              <t-form-item label="用户密码" name="password">
+                <t-input v-model="form.password" type="password" :maxlength="20" placeholder="请输入系统用户密码" />
+              </t-form-item>
+            </t-col>
+            <t-col v-if="form.tenantId !== DEFAULT_TENANT_ID" :span="6">
+              <t-form-item label="过期时间" name="expireTime">
+                <t-date-picker
+                  v-model="form.expireTime"
+                  enable-time-picker
+                  allow-input
+                  clearable
+                  placeholder="请选择过期时间"
                 />
-              </t-select>
-            </t-form-item>
-          </t-col>
-          <t-col v-if="!form.id" :span="6">
-            <t-form-item label="用户名" name="username">
-              <t-input v-model="form.username" :maxlength="30" placeholder="请输入系统用户名" />
-            </t-form-item>
-          </t-col>
-          <t-col v-if="!form.id" :span="6">
-            <t-form-item label="用户密码" name="password">
-              <t-input v-model="form.password" type="password" :maxlength="20" placeholder="请输入系统用户密码" />
-            </t-form-item>
-          </t-col>
-          <t-col v-if="form.tenantId !== DEFAULT_TENANT_ID" :span="6">
-            <t-form-item label="过期时间" name="expireTime">
-              <t-date-picker
-                v-model="form.expireTime"
-                enable-time-picker
-                allow-input
-                clearable
-                placeholder="请选择过期时间"
-              />
-            </t-form-item>
-          </t-col>
-          <t-col v-if="form.tenantId !== DEFAULT_TENANT_ID" :span="6">
-            <t-form-item label="用户数量" name="accountCount" help="-1不限制">
-              <t-input-number v-model="form.accountCount" placeholder="请输入用户数量" :min="-1" />
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="域名" name="domain">
-              <t-input v-model="form.domain" placeholder="请输入域名" />
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="地址" name="address">
-              <t-input v-model="form.address" placeholder="请输入地址" />
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="企业代码" name="licenseNumber">
-              <t-input v-model="form.licenseNumber" placeholder="请输入统一社会信用代码" />
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="企业简介" name="intro">
-              <t-textarea v-model="form.intro" placeholder="请输入企业简介" />
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="备注" name="remark">
-              <t-textarea v-model="form.remark" placeholder="请输入备注" />
-            </t-form-item>
-          </t-col>
-        </t-row>
-      </t-form>
+              </t-form-item>
+            </t-col>
+            <t-col v-if="form.tenantId !== DEFAULT_TENANT_ID" :span="6">
+              <t-form-item label="用户数量" name="accountCount" help="-1不限制">
+                <t-input-number v-model="form.accountCount" placeholder="请输入用户数量" :min="-1" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="域名" name="domain">
+                <t-input v-model="form.domain" placeholder="请输入域名" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="地址" name="address">
+                <t-input v-model="form.address" placeholder="请输入地址" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="企业代码" name="licenseNumber">
+                <t-input v-model="form.licenseNumber" placeholder="请输入统一社会信用代码" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="企业简介" name="intro">
+                <t-textarea v-model="form.intro" placeholder="请输入企业简介" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="备注" name="remark">
+                <t-textarea v-model="form.remark" placeholder="请输入备注" />
+              </t-form-item>
+            </t-col>
+          </t-row>
+        </t-form>
+      </t-loading>
     </t-dialog>
 
     <!-- 租户详情 -->

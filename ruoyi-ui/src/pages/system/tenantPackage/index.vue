@@ -133,56 +133,56 @@
       width="700px"
       attach="body"
       :confirm-btn="{
-        content: '确 定',
-        theme: 'primary',
         loading: buttonLoading,
       }"
       @confirm="onConfirm"
     >
-      <t-form
-        ref="tenantPackageRef"
-        label-align="right"
-        :data="form"
-        :rules="rules"
-        label-width="calc(4em + 41px)"
-        scroll-to-first-error="smooth"
-        @submit="submitForm"
-      >
-        <t-form-item label="套餐名称" name="packageName">
-          <t-input v-model="form.packageName" placeholder="请输入套餐名称" />
-        </t-form-item>
-        <t-form-item label="关联菜单" name="menuIds">
-          <t-loading :loading="loadingTree" size="small">
-            <t-space direction="vertical">
-              <t-space>
-                <t-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')"
-                  >展开/折叠</t-checkbox
-                >
-                <t-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">
-                  全选/全不选
-                </t-checkbox>
-                <t-checkbox v-model="form.menuCheckStrictly">父子联动</t-checkbox>
+      <t-loading :loading="buttonLoading" size="small">
+        <t-form
+          ref="tenantPackageRef"
+          label-align="right"
+          :data="form"
+          :rules="rules"
+          label-width="calc(4em + 41px)"
+          scroll-to-first-error="smooth"
+          @submit="submitForm"
+        >
+          <t-form-item label="套餐名称" name="packageName">
+            <t-input v-model="form.packageName" placeholder="请输入套餐名称" />
+          </t-form-item>
+          <t-form-item label="关联菜单" name="menuIds">
+            <t-loading :loading="loadingTree" size="small">
+              <t-space direction="vertical">
+                <t-space>
+                  <t-checkbox v-model="menuExpand" @change="handleCheckedTreeExpand($event, 'menu')"
+                    >展开/折叠</t-checkbox
+                  >
+                  <t-checkbox v-model="menuNodeAll" @change="handleCheckedTreeNodeAll($event, 'menu')">
+                    全选/全不选
+                  </t-checkbox>
+                  <t-checkbox v-model="form.menuCheckStrictly">父子联动</t-checkbox>
+                </t-space>
+                <t-tree
+                  ref="menuRef"
+                  v-model="menuIds"
+                  class="tree-border"
+                  style="padding: 0 10px"
+                  :data="menuOptions"
+                  checkable
+                  :expanded="menuExpandNode"
+                  :check-strictly="!form.menuCheckStrictly"
+                  empty="加载中，请稍候"
+                  :keys="{ value: 'id', label: 'label', children: 'children' }"
+                  @expand="onExpand('menu', $event)"
+                ></t-tree>
               </t-space>
-              <t-tree
-                ref="menuRef"
-                v-model="menuIds"
-                class="tree-border"
-                style="padding: 0 10px"
-                :data="menuOptions"
-                checkable
-                :expanded="menuExpandNode"
-                :check-strictly="!form.menuCheckStrictly"
-                empty="加载中，请稍候"
-                :keys="{ value: 'id', label: 'label', children: 'children' }"
-                @expand="onExpand('menu', $event)"
-              ></t-tree>
-            </t-space>
-          </t-loading>
-        </t-form-item>
-        <t-form-item label="备注" name="remark">
-          <t-textarea v-model="form.remark" placeholder="请输入备注" />
-        </t-form-item>
-      </t-form>
+            </t-loading>
+          </t-form-item>
+          <t-form-item label="备注" name="remark">
+            <t-textarea v-model="form.remark" placeholder="请输入备注" />
+          </t-form-item>
+        </t-form>
+      </t-loading>
     </t-dialog>
 
     <!-- 租户套餐详情 -->

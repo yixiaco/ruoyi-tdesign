@@ -174,149 +174,154 @@
       width="700px"
       attach="body"
       :confirm-btn="{
-        content: '确 定',
-        theme: 'primary',
         loading: buttonLoading,
       }"
       @confirm="onConfirm"
     >
-      <t-form
-        ref="messageTemplateRef"
-        label-align="right"
-        :data="form"
-        :rules="rules"
-        label-width="calc(4em + 41px)"
-        scroll-to-first-error="smooth"
-        @submit="submitForm"
-      >
-        <t-row :gutter="[0, 20]">
-          <t-col :span="6">
-            <t-form-item label="模板名称" name="templateName">
-              <t-input v-model="form.templateName" placeholder="请输入模板名称" clearable />
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="消息key" name="messageKeyId">
-              <t-select v-model="form.messageKeyId" placeholder="请选择消息key" clearable>
-                <t-option
-                  v-for="item in messageKeys"
-                  :key="item.messageKeyId"
-                  :label="item.name"
-                  :value="item.messageKeyId"
-                />
-              </t-select>
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="消息类型" name="messageType">
-              <t-select
-                v-model="form.messageType"
-                placeholder="请选择消息类型"
-                clearable
-                @change="handleMessageTypeChange($event as string)"
-              >
-                <t-option v-for="dict in sys_message_type" :key="dict.value" :label="dict.label" :value="dict.value" />
-              </t-select>
-            </t-form-item>
-          </t-col>
-          <t-col v-show="form.messageType" :span="6">
-            <t-form-item label="消息配置" name="messageConfigId">
-              <t-select
-                v-model="form.messageConfigId"
-                placeholder="请选择消息配置"
-                filterable
-                clearable
-                @change="form.templateMode = null"
-              >
-                <t-option
-                  v-for="item in messageConfigs"
-                  :key="item.messageConfigId"
-                  :label="item.title"
-                  :value="item.messageConfigId"
-                />
-              </t-select>
-            </t-form-item>
-          </t-col>
-          <t-col v-if="form.messageType === 'SMS'" :span="6">
-            <t-form-item label="签名" name="signature">
-              <t-input v-model="form.signature" placeholder="请输入签名" clearable />
-            </t-form-item>
-          </t-col>
-          <t-col v-if="form.messageType === 'MAIL'" :span="6">
-            <t-form-item label="标题" name="title" help="支持变量模式：${title}">
-              <t-input v-model="form.title" placeholder="请输入标题" clearable @change="handleVarsChange" />
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="状态" name="status">
-              <t-select v-model="form.status" placeholder="请选择状态" clearable>
-                <t-option
-                  v-for="dict in sys_normal_disable"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="parseInt(dict.value)"
-                />
-              </t-select>
-            </t-form-item>
-          </t-col>
-          <t-col v-show="form.messageConfigId" :span="6">
-            <t-form-item label="模板类型" name="templateMode">
-              <t-select v-model="form.templateMode" placeholder="请选择模板类型" clearable>
-                <t-option
-                  v-for="dict in sys_message_template_mode.filter(
-                    (value) =>
-                      (value.value === 'TEMPLATE_ID' && messageConfig?.templateMode.supportTemplateId) ||
-                      (value.value === 'TEMPLATE_CONTENT' && messageConfig?.templateMode.supportTemplateContent),
-                  )"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                />
-              </t-select>
-            </t-form-item>
-          </t-col>
-          <t-col v-if="form.templateMode === 'TEMPLATE_ID'" :span="6">
-            <t-form-item label="模板ID" name="templateId">
-              <t-input v-model="form.templateId" placeholder="请输入模板ID" clearable />
-            </t-form-item>
-          </t-col>
-          <t-col :span="12">
-            <t-form-item label="内容" name="content">
-              <template #help>
-                <b>变量格式</b>：${name}；例如，尊敬的 ${name}，您的快递已飞奔在路上，将今天 ${time}
-                送达您的手里，请留意查收。
-              </template>
-              <t-textarea v-model="form.content" placeholder="请输入内容" @change="handleVarsChange" />
-            </t-form-item>
-          </t-col>
-          <t-col v-if="form.varsList && form.varsList.length > 0" :span="12">
-            <t-form-item label="变量属性">
-              <t-space direction="vertical">
-                <t-form-item
-                  v-for="(value, index) in form.varsList"
-                  :key="value.key"
-                  :label="value.key"
-                  :name="`varsList[${index}].value`"
-                  label-align="left"
-                  :label-width="`${maxVarsLabelWidth * 12}px`"
-                  :rules="[{ required: true, message: '输入变量不能为空' }]"
+      <t-loading :loading="buttonLoading" size="small">
+        <t-form
+          ref="messageTemplateRef"
+          label-align="right"
+          :data="form"
+          :rules="rules"
+          label-width="calc(4em + 41px)"
+          scroll-to-first-error="smooth"
+          @submit="submitForm"
+        >
+          <t-row :gutter="[0, 20]">
+            <t-col :span="6">
+              <t-form-item label="模板名称" name="templateName">
+                <t-input v-model="form.templateName" placeholder="请输入模板名称" clearable />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="消息key" name="messageKeyId">
+                <t-select v-model="form.messageKeyId" placeholder="请选择消息key" clearable>
+                  <t-option
+                    v-for="item in messageKeys"
+                    :key="item.messageKeyId"
+                    :label="item.name"
+                    :value="item.messageKeyId"
+                  />
+                </t-select>
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="消息类型" name="messageType">
+                <t-select
+                  v-model="form.messageType"
+                  placeholder="请选择消息类型"
+                  clearable
+                  @change="handleMessageTypeChange($event as string)"
                 >
-                  <template v-if="form.varsList.length - 1 === index" #help>
-                    <b>变量格式</b>：${name}、${name:这里可以填写默认值}<br />
-                    变量属性是根据内容自动生成的，变量属性值需要在调用的时候注入到Map中，后台会根据值组合填入内容或模板变量中发送
-                  </template>
-                  <t-input v-model="form.varsList[index].value" />
-                </t-form-item>
-              </t-space>
-            </t-form-item>
-          </t-col>
-          <t-col :span="12">
-            <t-form-item label="备注" name="remark">
-              <t-textarea v-model="form.remark" placeholder="请输入备注" />
-            </t-form-item>
-          </t-col>
-        </t-row>
-      </t-form>
+                  <t-option
+                    v-for="dict in sys_message_type"
+                    :key="dict.value"
+                    :label="dict.label"
+                    :value="dict.value"
+                  />
+                </t-select>
+              </t-form-item>
+            </t-col>
+            <t-col v-show="form.messageType" :span="6">
+              <t-form-item label="消息配置" name="messageConfigId">
+                <t-select
+                  v-model="form.messageConfigId"
+                  placeholder="请选择消息配置"
+                  filterable
+                  clearable
+                  @change="form.templateMode = null"
+                >
+                  <t-option
+                    v-for="item in messageConfigs"
+                    :key="item.messageConfigId"
+                    :label="item.title"
+                    :value="item.messageConfigId"
+                  />
+                </t-select>
+              </t-form-item>
+            </t-col>
+            <t-col v-if="form.messageType === 'SMS'" :span="6">
+              <t-form-item label="签名" name="signature">
+                <t-input v-model="form.signature" placeholder="请输入签名" clearable />
+              </t-form-item>
+            </t-col>
+            <t-col v-if="form.messageType === 'MAIL'" :span="6">
+              <t-form-item label="标题" name="title" help="支持变量模式：${title}">
+                <t-input v-model="form.title" placeholder="请输入标题" clearable @change="handleVarsChange" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="状态" name="status">
+                <t-select v-model="form.status" placeholder="请选择状态" clearable>
+                  <t-option
+                    v-for="dict in sys_normal_disable"
+                    :key="dict.value"
+                    :label="dict.label"
+                    :value="parseInt(dict.value)"
+                  />
+                </t-select>
+              </t-form-item>
+            </t-col>
+            <t-col v-show="form.messageConfigId" :span="6">
+              <t-form-item label="模板类型" name="templateMode">
+                <t-select v-model="form.templateMode" placeholder="请选择模板类型" clearable>
+                  <t-option
+                    v-for="dict in sys_message_template_mode.filter(
+                      (value) =>
+                        (value.value === 'TEMPLATE_ID' && messageConfig?.templateMode.supportTemplateId) ||
+                        (value.value === 'TEMPLATE_CONTENT' && messageConfig?.templateMode.supportTemplateContent),
+                    )"
+                    :key="dict.value"
+                    :label="dict.label"
+                    :value="dict.value"
+                  />
+                </t-select>
+              </t-form-item>
+            </t-col>
+            <t-col v-if="form.templateMode === 'TEMPLATE_ID'" :span="6">
+              <t-form-item label="模板ID" name="templateId">
+                <t-input v-model="form.templateId" placeholder="请输入模板ID" clearable />
+              </t-form-item>
+            </t-col>
+            <t-col :span="12">
+              <t-form-item label="内容" name="content">
+                <template #help>
+                  <b>变量格式</b>：${name}；例如，尊敬的 ${name}，您的快递已飞奔在路上，将今天 ${time}
+                  送达您的手里，请留意查收。
+                </template>
+                <t-textarea v-model="form.content" placeholder="请输入内容" @change="handleVarsChange" />
+              </t-form-item>
+            </t-col>
+            <t-col v-if="form.varsList && form.varsList.length > 0" :span="12">
+              <t-form-item label="变量属性">
+                <t-space direction="vertical">
+                  <t-form-item
+                    v-for="(value, index) in form.varsList"
+                    :key="value.key"
+                    :label="value.key"
+                    :name="`varsList[${index}].value`"
+                    label-align="left"
+                    :label-width="`${maxVarsLabelWidth * 12}px`"
+                    :rules="[{ required: true, message: '输入变量不能为空' }]"
+                  >
+                    <template v-if="form.varsList.length - 1 === index" #help>
+                      <b>变量格式</b>：${name}、${name:这里可以填写默认值}<br />
+                      变量属性是根据内容自动生成的，变量属性值需要在调用的时候注入到Map中，后台会根据值组合填入内容或模板变量中发送
+                    </template>
+                    <t-input v-model="form.varsList[index].value" />
+                  </t-form-item>
+                </t-space>
+              </t-form-item>
+            </t-col>
+            <t-col :span="12">
+              <t-form-item label="备注" name="remark">
+                <t-textarea v-model="form.remark" placeholder="请输入备注" />
+              </t-form-item>
+            </t-col>
+          </t-row>
+        </t-form>
+      </t-loading>
     </t-dialog>
 
     <!-- 消息模板详情 -->
@@ -572,7 +577,7 @@ const messageConfig = computed<MessageConfig>(() => {
     return null;
   }
   const config = messageConfigs.value.find((value) => value.messageConfigId === form.value.messageConfigId);
-  return SUPPLIER_TYPE_MAP.get(config.supplierType);
+  return SUPPLIER_TYPE_MAP.get(config?.supplierType);
 });
 
 const maxVarsLabelWidth = computed(() => {

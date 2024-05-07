@@ -163,101 +163,101 @@
       attach="body"
       top="3%"
       :confirm-btn="{
-        content: '确 定',
-        theme: 'primary',
         loading: buttonLoading,
       }"
       @confirm="onConfirm"
     >
-      <t-form
-        ref="messageConfigRef"
-        label-align="right"
-        :data="form"
-        :rules="rules"
-        label-width="calc(8em + 41px)"
-        scroll-to-first-error="smooth"
-        @submit="submitForm"
-      >
-        <t-row :gutter="[0, 20]">
-          <t-col :span="6">
-            <t-form-item label="标题" name="title">
-              <t-input v-model.trim="form.title" placeholder="请输入标题" clearable />
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="消息类型" name="messageType">
-              <dict-tag :options="sys_message_type" :value="form.messageType" />
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="支持平台" name="supplierType">
-              <t-select
-                v-model="form.supplierType"
-                placeholder="请选择支持平台"
-                clearable
-                filterable
-                @change="handleSupplierTypeChange"
-              >
-                <t-option
-                  v-for="dict in sys_message_supplier_type"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="dict.value"
-                />
-              </t-select>
-            </t-form-item>
-          </t-col>
-          <t-col :span="6">
-            <t-form-item label="状态" name="status">
-              <t-select v-model="form.status" placeholder="请选择状态" clearable>
-                <t-option
-                  v-for="dict in sys_normal_disable"
-                  :key="dict.value"
-                  :label="dict.label"
-                  :value="parseInt(dict.value)"
-                />
-              </t-select>
-            </t-form-item>
-          </t-col>
-          <template v-for="(value, key) in messageConfig.supplierConfig" :key="key">
-            <t-col
-              v-if="!value.visible || (form.configJson as Record<string, any>)[value.visible]"
-              :span="value.span ?? 12"
-            >
-              <t-form-item
-                :label="value.name"
-                :name="`configJson[${key}]`"
-                :rules="[{ required: value.required, message: `${value.name}不能为空` }, ...(value.rules ?? [])]"
-              >
-                <template #help><span v-html="value.help"></span></template>
-                <t-input
-                  v-if="value.component === 'input'"
-                  v-model.trim="(form.configJson as Record<string, any>)[key]"
-                  :placeholder="`请输入${value.name}`"
-                  :type="value.type"
-                />
-                <t-input-number
-                  v-else-if="value.component === 'input-number'"
-                  v-model="(form.configJson as Record<string, any>)[key]"
-                  :allow-input-over-limit="false"
-                  :min="value.min"
-                  :max="value.max"
-                  :decimal-places="0"
-                />
-                <t-switch
-                  v-else-if="value.component === 'switch'"
-                  v-model="(form.configJson as Record<string, any>)[key]"
-                />
+      <t-loading :loading="buttonLoading" size="small">
+        <t-form
+          ref="messageConfigRef"
+          label-align="right"
+          :data="form"
+          :rules="rules"
+          label-width="calc(8em + 41px)"
+          scroll-to-first-error="smooth"
+          @submit="submitForm"
+        >
+          <t-row :gutter="[0, 20]">
+            <t-col :span="6">
+              <t-form-item label="标题" name="title">
+                <t-input v-model.trim="form.title" placeholder="请输入标题" clearable />
               </t-form-item>
             </t-col>
-          </template>
-          <t-col :span="12">
-            <t-form-item label="备注" name="remark">
-              <t-textarea v-model="form.remark" placeholder="请输入备注" />
-            </t-form-item>
-          </t-col>
-        </t-row>
-      </t-form>
+            <t-col :span="6">
+              <t-form-item label="消息类型" name="messageType">
+                <dict-tag :options="sys_message_type" :value="form.messageType" />
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="支持平台" name="supplierType">
+                <t-select
+                  v-model="form.supplierType"
+                  placeholder="请选择支持平台"
+                  clearable
+                  filterable
+                  @change="handleSupplierTypeChange"
+                >
+                  <t-option
+                    v-for="dict in sys_message_supplier_type"
+                    :key="dict.value"
+                    :label="dict.label"
+                    :value="dict.value"
+                  />
+                </t-select>
+              </t-form-item>
+            </t-col>
+            <t-col :span="6">
+              <t-form-item label="状态" name="status">
+                <t-select v-model="form.status" placeholder="请选择状态" clearable>
+                  <t-option
+                    v-for="dict in sys_normal_disable"
+                    :key="dict.value"
+                    :label="dict.label"
+                    :value="parseInt(dict.value)"
+                  />
+                </t-select>
+              </t-form-item>
+            </t-col>
+            <template v-for="(value, key) in messageConfig.supplierConfig" :key="key">
+              <t-col
+                v-if="!value.visible || (form.configJson as Record<string, any>)[value.visible]"
+                :span="value.span ?? 12"
+              >
+                <t-form-item
+                  :label="value.name"
+                  :name="`configJson[${key}]`"
+                  :rules="[{ required: value.required, message: `${value.name}不能为空` }, ...(value.rules ?? [])]"
+                >
+                  <template #help><span v-html="value.help"></span></template>
+                  <t-input
+                    v-if="value.component === 'input'"
+                    v-model.trim="(form.configJson as Record<string, any>)[key]"
+                    :placeholder="`请输入${value.name}`"
+                    :type="value.type"
+                  />
+                  <t-input-number
+                    v-else-if="value.component === 'input-number'"
+                    v-model="(form.configJson as Record<string, any>)[key]"
+                    :allow-input-over-limit="false"
+                    :min="value.min"
+                    :max="value.max"
+                    :decimal-places="0"
+                  />
+                  <t-switch
+                    v-else-if="value.component === 'switch'"
+                    v-model="(form.configJson as Record<string, any>)[key]"
+                  />
+                </t-form-item>
+              </t-col>
+            </template>
+            <t-col :span="12">
+              <t-form-item label="备注" name="remark">
+                <t-textarea v-model="form.remark" placeholder="请输入备注" />
+              </t-form-item>
+            </t-col>
+          </t-row>
+        </t-form>
+      </t-loading>
     </t-dialog>
 
     <!-- 消息配置详情 -->

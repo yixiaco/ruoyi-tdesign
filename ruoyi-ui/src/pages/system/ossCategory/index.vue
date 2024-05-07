@@ -137,39 +137,39 @@
       :close-on-overlay-click="false"
       width="500px"
       :confirm-btn="{
-        content: '确 定',
-        theme: 'primary',
         loading: buttonLoading,
       }"
       @confirm="onConfirmCategory"
     >
-      <t-form
-        ref="ossCategoryRef"
-        :data="form"
-        :rules="rules"
-        label-align="right"
-        label-width="calc(4em + 41px)"
-        scroll-to-first-error="smooth"
-        @submit="submitCategoryForm"
-      >
-        <t-form-item label="分类名称" name="categoryName">
-          <t-input v-model="form.categoryName" placeholder="请输入分类名称" clearable :maxlength="50" />
-        </t-form-item>
-        <t-form-item label="父级分类" name="parentId">
-          <t-tree-select
-            v-model="form.parentId"
-            :data="ossCategoryOptions"
-            :tree-props="{
-              keys: { value: 'ossCategoryId', label: 'categoryName', children: 'children' },
-              checkStrictly: true,
-            }"
-            placeholder="请选择父级分类"
-          />
-        </t-form-item>
-        <t-form-item label="显示顺序" name="orderNum">
-          <t-input-number v-model="form.orderNum" placeholder="请输入" />
-        </t-form-item>
-      </t-form>
+      <t-loading :loading="buttonLoading" size="small">
+        <t-form
+          ref="ossCategoryRef"
+          :data="form"
+          :rules="rules"
+          label-align="right"
+          label-width="calc(4em + 41px)"
+          scroll-to-first-error="smooth"
+          @submit="submitCategoryForm"
+        >
+          <t-form-item label="分类名称" name="categoryName">
+            <t-input v-model="form.categoryName" placeholder="请输入分类名称" clearable :maxlength="50" />
+          </t-form-item>
+          <t-form-item label="父级分类" name="parentId">
+            <t-tree-select
+              v-model="form.parentId"
+              :data="ossCategoryOptions"
+              :tree-props="{
+                keys: { value: 'ossCategoryId', label: 'categoryName', children: 'children' },
+                checkStrictly: true,
+              }"
+              placeholder="请选择父级分类"
+            />
+          </t-form-item>
+          <t-form-item label="显示顺序" name="orderNum">
+            <t-input-number v-model="form.orderNum" placeholder="请输入" />
+          </t-form-item>
+        </t-form>
+      </t-loading>
     </t-dialog>
 
     <!-- OSS分类详情 -->

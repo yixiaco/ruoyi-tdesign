@@ -1,6 +1,6 @@
 <template>
   <div>
-    <t-loading :loading="loading">
+    <t-loading :loading="loading" size="small">
       <t-form
         label-align="right"
         colon

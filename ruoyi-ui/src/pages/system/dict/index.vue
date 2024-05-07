@@ -143,9 +143,12 @@
       :close-on-overlay-click="false"
       width="500px"
       attach="body"
+      :confirm-btn="{
+        loading: eLoading,
+      }"
       @confirm="onConfirm"
     >
-      <t-loading :loading="eLoading">
+      <t-loading :loading="eLoading" size="small">
         <t-form ref="dictRef" label-align="right" :data="form" :rules="rules" label-width="80px" @submit="submitForm">
           <t-form-item label="字典名称" name="dictName">
             <t-input v-model="form.dictName" placeholder="请输入字典名称" />

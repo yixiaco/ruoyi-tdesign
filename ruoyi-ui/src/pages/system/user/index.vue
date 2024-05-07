@@ -227,10 +227,13 @@
       placement="center"
       width="700px"
       attach="body"
+      :confirm-btn="{
+        loading: dLoading,
+      }"
       @close="cancel"
       @confirm="submitForm"
     >
-      <t-loading :loading="dLoading" show-overlay>
+      <t-loading :loading="dLoading" size="small">
         <t-form
           ref="userRef"
           label-align="right"

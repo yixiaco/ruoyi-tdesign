@@ -127,31 +127,31 @@
       width="500px"
       attach="body"
       :confirm-btn="{
-        content: '确 定',
-        theme: 'primary',
         loading: buttonLoading,
       }"
       @confirm="onConfirm"
     >
-      <t-form
-        ref="messageKeyRef"
-        label-align="right"
-        :data="form"
-        :rules="rules"
-        label-width="calc(4em + 41px)"
-        scroll-to-first-error="smooth"
-        @submit="submitForm"
-      >
-        <t-form-item label="消息名称" name="name">
-          <t-input v-model="form.name" placeholder="请输入消息名称" clearable />
-        </t-form-item>
-        <t-form-item label="消息key" name="messageKey">
-          <t-input v-model="form.messageKey" placeholder="请输入消息key" clearable />
-        </t-form-item>
-        <t-form-item label="备注" name="remark">
-          <t-textarea v-model="form.remark" placeholder="请输入备注" />
-        </t-form-item>
-      </t-form>
+      <t-loading :loading="buttonLoading" size="small">
+        <t-form
+          ref="messageKeyRef"
+          label-align="right"
+          :data="form"
+          :rules="rules"
+          label-width="calc(4em + 41px)"
+          scroll-to-first-error="smooth"
+          @submit="submitForm"
+        >
+          <t-form-item label="消息名称" name="name">
+            <t-input v-model="form.name" placeholder="请输入消息名称" clearable />
+          </t-form-item>
+          <t-form-item label="消息key" name="messageKey">
+            <t-input v-model="form.messageKey" placeholder="请输入消息key" clearable />
+          </t-form-item>
+          <t-form-item label="备注" name="remark">
+            <t-textarea v-model="form.remark" placeholder="请输入备注" />
+          </t-form-item>
+        </t-form>
+      </t-loading>
     </t-dialog>
 
     <!-- 消息常量详情 -->

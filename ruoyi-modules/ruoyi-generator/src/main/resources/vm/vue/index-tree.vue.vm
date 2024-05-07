@@ -192,21 +192,20 @@
       width="500px"
       attach="body"
       :confirm-btn="{
-        content: '确 定',
-        theme: 'primary',
         loading: buttonLoading,
       }"
       @confirm="onConfirm"
     >
-      <t-form
-        ref="${businessName}Ref"
-        :data="form"
-        :rules="rules"
-        label-align="right"
-        label-width="calc(5em + 41px)"
-        scroll-to-first-error="smooth"
-        @submit="submitForm"
-      >
+      <t-loading :loading="buttonLoading" size="small">
+        <t-form
+          ref="${businessName}Ref"
+          :data="form"
+          :rules="rules"
+          label-align="right"
+          label-width="calc(5em + 41px)"
+          scroll-to-first-error="smooth"
+          @submit="submitForm"
+        >
 #foreach($column in $columns)
 #set($field=$column.javaField)
 #if(($column.isInsert() || $column.isEdit()) && !$column.isPk())
@@ -218,113 +217,114 @@
 #end
 #set($dictType=$column.dictType)
 #if("" != $treeParentCode && $column.javaField == $treeParentCode)
-        <t-form-item label="${comment}" name="${treeParentCode}">
-          <t-tree-select
-            v-model="form.${treeParentCode}"
-            :data="${businessName}Options"
-            :tree-props="{
-              keys: { value: '${treeCode}', label: '${treeName}', children: 'children' },
-              checkStrictly: true,
-            }"
-            placeholder="请选择${comment}"
-          />
-        </t-form-item>
-#elseif($column.htmlType == "input")
-        <t-form-item label="${comment}" name="${field}">
-          <t-input v-model="form.${field}" placeholder="请输入${comment}" clearable />
-        </t-form-item>
-#elseif($column.htmlType == "input-number")
-        <t-form-item label="${comment}" name="${field}">
-          <t-input-number v-model="form.${field}" placeholder="请输入" />
-        </t-form-item>
-#elseif($column.htmlType == "imageUpload")
-        <t-form-item label="${comment}" name="${field}">
-          <image-upload v-model="form.${field}" :limit="1" />
-        </t-form-item>
-#elseif($column.htmlType == "fileUpload")
-        <t-form-item label="${comment}" name="${field}">
-          <file-upload v-model="form.${field}" />
-        </t-form-item>
-#elseif($column.htmlType == "editor")
-        <t-form-item label="${comment}" name="${field}">
-          <editor v-model="form.${field}" />
-        </t-form-item>
-#elseif($column.htmlType == "select" && "" != $dictType)
-        <t-form-item label="${comment}" name="${field}">
-          <t-select v-model="form.${field}" placeholder="请选择${comment}" clearable>
-            <t-option
-              v-for="dict in ${dictType}"
-              :key="dict.value"
-              :label="dict.label"
-#if($column.javaType == "Integer" || $column.javaType == "Long")
-              :value="parseInt(dict.value)"
-#else
-              :value="dict.value"
-#end
+          <t-form-item label="${comment}" name="${treeParentCode}">
+            <t-tree-select
+              v-model="form.${treeParentCode}"
+              :data="${businessName}Options"
+              :tree-props="{
+                keys: { value: '${treeCode}', label: '${treeName}', children: 'children' },
+                checkStrictly: true,
+              }"
+              placeholder="请选择${comment}"
             />
-          </t-select>
-        </t-form-item>
+          </t-form-item>
+#elseif($column.htmlType == "input")
+          <t-form-item label="${comment}" name="${field}">
+            <t-input v-model="form.${field}" placeholder="请输入${comment}" clearable />
+          </t-form-item>
+#elseif($column.htmlType == "input-number")
+          <t-form-item label="${comment}" name="${field}">
+            <t-input-number v-model="form.${field}" placeholder="请输入" />
+          </t-form-item>
+#elseif($column.htmlType == "imageUpload")
+          <t-form-item label="${comment}" name="${field}">
+            <image-upload v-model="form.${field}" :limit="1" />
+          </t-form-item>
+#elseif($column.htmlType == "fileUpload")
+          <t-form-item label="${comment}" name="${field}">
+            <file-upload v-model="form.${field}" />
+          </t-form-item>
+#elseif($column.htmlType == "editor")
+          <t-form-item label="${comment}" name="${field}">
+            <editor v-model="form.${field}" />
+          </t-form-item>
+#elseif($column.htmlType == "select" && "" != $dictType)
+          <t-form-item label="${comment}" name="${field}">
+            <t-select v-model="form.${field}" placeholder="请选择${comment}" clearable>
+              <t-option
+                v-for="dict in ${dictType}"
+                :key="dict.value"
+                :label="dict.label"
+#if($column.javaType == "Integer" || $column.javaType == "Long")
+                :value="parseInt(dict.value)"
+#else
+                :value="dict.value"
+#end
+              />
+            </t-select>
+          </t-form-item>
 #elseif($column.htmlType == "select" && $dictType)
-        <t-form-item label="${comment}" name="${field}">
-          <t-select v-model="form.${field}" placeholder="请选择${comment}" clearable>
-            <t-option label="请选择字典生成" value="" />
-          </t-select>
-        </t-form-item>
+          <t-form-item label="${comment}" name="${field}">
+            <t-select v-model="form.${field}" placeholder="请选择${comment}" clearable>
+              <t-option label="请选择字典生成" value="" />
+            </t-select>
+          </t-form-item>
 #elseif($column.htmlType == "checkbox" && "" != $dictType)
-        <t-form-item label="${comment}" name="${field}">
-          <t-checkbox-group :model-value="form.${field}?.split(',') ?? []" @update:model-value="form.${field} = ${event}.filter((item: any) => item).join(',')">
-            <t-checkbox
-              v-for="dict in ${dictType}"
-              :key="dict.value"
-              :value="dict.value">
-              {{dict.label}}
-            </t-checkbox>
-          </t-checkbox-group>
-        </t-form-item>
+          <t-form-item label="${comment}" name="${field}">
+            <t-checkbox-group :model-value="form.${field}?.split(',') ?? []" @update:model-value="form.${field} = ${event}.filter((item: any) => item).join(',')">
+              <t-checkbox
+                v-for="dict in ${dictType}"
+                :key="dict.value"
+                :value="dict.value">
+                {{dict.label}}
+              </t-checkbox>
+            </t-checkbox-group>
+          </t-form-item>
 #elseif($column.htmlType == "checkbox" && $dictType)
-        <t-form-item label="${comment}" name="${field}">
-          <t-checkbox-group :model-value="form.${field}?.split(',') ?? []" @update:model-value="form.${field} = ${event}.filter((item: any) => item).join(',')">
-            <t-checkbox>请选择字典生成</t-checkbox>
-          </t-checkbox-group>
-        </t-form-item>
+          <t-form-item label="${comment}" name="${field}">
+            <t-checkbox-group :model-value="form.${field}?.split(',') ?? []" @update:model-value="form.${field} = ${event}.filter((item: any) => item).join(',')">
+              <t-checkbox>请选择字典生成</t-checkbox>
+            </t-checkbox-group>
+          </t-form-item>
 #elseif($column.htmlType == "radio" && "" != $dictType)
-        <t-form-item label="${comment}" name="${field}">
-          <t-radio-group v-model="form.${field}">
-            <t-radio
-              v-for="dict in ${dictType}"
-              :key="dict.value"
+          <t-form-item label="${comment}" name="${field}">
+            <t-radio-group v-model="form.${field}">
+              <t-radio
+                v-for="dict in ${dictType}"
+                :key="dict.value"
 #if($column.javaType == "Integer" || $column.javaType == "Long")
               :value="parseInt(dict.value)"
 #else
-              :value="dict.value"
+                :value="dict.value"
 #end
-            >{{dict.label}}</t-radio>
-          </t-radio-group>
-        </t-form-item>
+              >{{dict.label}}</t-radio>
+            </t-radio-group>
+          </t-form-item>
 #elseif($column.htmlType == "radio" && $dictType)
-        <t-form-item label="${comment}" name="${field}">
-          <t-radio-group v-model="form.${field}">
-            <t-radio value="1">请选择字典生成</t-radio>
-          </t-radio-group>
-        </t-form-item>
+          <t-form-item label="${comment}" name="${field}">
+            <t-radio-group v-model="form.${field}">
+              <t-radio value="1">请选择字典生成</t-radio>
+            </t-radio-group>
+          </t-form-item>
 #elseif($column.htmlType == "datetime")
-        <t-form-item label="${comment}" name="${field}">
-          <t-date-picker
-            v-model="form.${field}"
-            enable-time-picker
-            allow-input
-            clearable
-            placeholder="请选择${comment}"
-          />
-        </t-form-item>
+          <t-form-item label="${comment}" name="${field}">
+            <t-date-picker
+              v-model="form.${field}"
+              enable-time-picker
+              allow-input
+              clearable
+              placeholder="请选择${comment}"
+            />
+          </t-form-item>
 #elseif($column.htmlType == "textarea")
-        <t-form-item label="${comment}" name="${field}">
-          <t-textarea v-model="form.${field}" placeholder="请输入${comment}" />
-        </t-form-item>
+          <t-form-item label="${comment}" name="${field}">
+            <t-textarea v-model="form.${field}" placeholder="请输入${comment}" />
+          </t-form-item>
 #end
 #end
 #end
-      </t-form>
+          </t-form>
+      </t-loading>
     </t-dialog>
 #end
 #if($isUseDetailMethod)

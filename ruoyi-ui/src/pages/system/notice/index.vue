@@ -134,9 +134,12 @@
       :close-on-overlay-click="false"
       width="780px"
       attach="body"
+      :confirm-btn="{
+        loading: eLoading,
+      }"
       @confirm="onConfirm"
     >
-      <t-loading :loading="eLoading">
+      <t-loading :loading="eLoading" size="small">
         <t-form
           ref="noticeRef"
           label-align="right"

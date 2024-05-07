@@ -172,10 +172,13 @@
       :close-on-overlay-click="false"
       width="600px"
       attach="body"
+      :confirm-btn="{
+        loading: loadingEdit,
+      }"
       @close="cancel"
       @confirm="confirm('menu')"
     >
-      <t-loading :loading="loadingEdit">
+      <t-loading :loading="loadingEdit" size="small">
         <t-form
           ref="roleRef"
           label-align="right"
@@ -203,9 +206,9 @@
           </t-form-item>
           <t-form-item label="状态">
             <t-radio-group v-model="form.status">
-              <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{
-                dict.label
-              }}</t-radio>
+              <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">
+                {{ dict.label }}
+              </t-radio>
             </t-radio-group>
           </t-form-item>
           <t-form-item label="菜单权限">
@@ -248,51 +251,58 @@
       placement="center"
       width="500px"
       attach="body"
+      :confirm-btn="{
+        loading: loadingEdit,
+      }"
       @close="cancelDataScope"
       @confirm="confirm('dept')"
     >
-      <t-form ref="dataScopeRef" :data="form" label-width="calc(4em + 12px)" @submit="submitDataScope">
-        <t-form-item label="角色名称">
-          <t-input v-model="form.roleName" :disabled="true" />
-        </t-form-item>
-        <t-form-item label="权限字符">
-          <t-input v-model="form.roleKey" :disabled="true" />
-        </t-form-item>
-        <t-form-item label="权限范围">
-          <t-select v-model="form.dataScope" @change="dataScopeSelectChange($event as string)">
-            <t-option
-              v-for="item in dataScopeOptions"
-              :key="item.value"
-              :label="item.label"
-              :value="item.value"
-            ></t-option>
-          </t-select>
-        </t-form-item>
-        <t-form-item v-show="form.dataScope === '2'" label="数据权限">
-          <t-space direction="vertical">
-            <t-space>
-              <t-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')">展开/折叠</t-checkbox>
-              <t-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">
-                全选/全不选
-              </t-checkbox>
-              <t-checkbox v-model="form.deptCheckStrictly">父子联动</t-checkbox>
+      <t-loading :loading="loadingEdit" size="small">
+        <t-form ref="dataScopeRef" :data="form" label-width="calc(4em + 12px)" @submit="submitDataScope">
+          <t-form-item label="角色名称">
+            <t-input v-model="form.roleName" :disabled="true" />
+          </t-form-item>
+          <t-form-item label="权限字符">
+            <t-input v-model="form.roleKey" :disabled="true" />
+          </t-form-item>
+          <t-form-item label="权限范围">
+            <t-select v-model="form.dataScope" @change="dataScopeSelectChange($event as string)">
+              <t-option
+                v-for="item in dataScopeOptions"
+                :key="item.value"
+                :label="item.label"
+                :value="item.value"
+              ></t-option>
+            </t-select>
+          </t-form-item>
+          <t-form-item v-show="form.dataScope === '2'" label="数据权限">
+            <t-space direction="vertical">
+              <t-space>
+                <t-checkbox v-model="deptExpand" @change="handleCheckedTreeExpand($event, 'dept')"
+                  >展开/折叠</t-checkbox
+                >
+                <t-checkbox v-model="deptNodeAll" @change="handleCheckedTreeNodeAll($event, 'dept')">
+                  全选/全不选
+                </t-checkbox>
+                <t-checkbox v-model="form.deptCheckStrictly">父子联动</t-checkbox>
+              </t-space>
+              <t-tree
+                ref="deptRef"
+                v-model="deptIds"
+                class="tree-border"
+                :data="deptOptions"
+                checkable
+                :expanded="deptExpandNode"
+                expand-all
+                :check-strictly="!form.deptCheckStrictly"
+                empty="加载中，请稍候"
+                :keys="{ value: 'id', label: 'label', children: 'children' }"
+                @expand="onExpand('dept', $event)"
+              ></t-tree>
             </t-space>
-            <t-tree
-              ref="deptRef"
-              v-model="deptIds"
-              class="tree-border"
-              :data="deptOptions"
-              checkable
-              :expanded="deptExpandNode"
-              expand-all
-              :check-strictly="!form.deptCheckStrictly"
-              empty="加载中，请稍候"
-              :keys="{ value: 'id', label: 'label', children: 'children' }"
-              @expand="onExpand('dept', $event)"
-            ></t-tree>
-          </t-space>
-        </t-form-item>
-      </t-form>
+          </t-form-item>
+        </t-form>
+      </t-loading>
     </t-dialog>
 
     <!-- 角色信息详情 -->
@@ -748,13 +758,15 @@ function dataScopeSelectChange(value: string) {
 function handleDataScope(row: SysRoleVo) {
   reset();
   const deptTreeSelect = getDeptTree(row.roleId);
+  openDataScope.value = true;
+  loadingEdit.value = true;
   getRole(row.roleId).then((response) => {
     form.value = { ...form.value, ...response.data };
-    openDataScope.value = true;
     deptTreeSelect.then((res) => {
       deptIds.value = res.data.checkedKeys;
     });
     title.value = '分配数据权限';
+    loadingEdit.value = false;
   });
 }
 /** 提交按钮（数据权限） */

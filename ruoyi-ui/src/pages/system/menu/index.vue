@@ -112,9 +112,12 @@
       placement="center"
       width="680px"
       attach="body"
+      :confirm-btn="{
+        loading: eLoading,
+      }"
       @confirm="onConfirm"
     >
-      <t-loading :loading="eLoading">
+      <t-loading :loading="eLoading" size="small">
         <t-form
           ref="menuRef"
           label-align="right"
@@ -616,9 +619,9 @@ function handleAdd(row?: SysMenuVo) {
 async function handleUpdate(row: SysMenuVo) {
   reset();
   open.value = true;
-  await getTreeselect();
-  title.value = '修改菜单';
   eLoading.value = true;
+  title.value = '修改菜单';
+  await getTreeselect();
   getMenu(row.menuId).then((response) => {
     form.value = response.data;
     eLoading.value = false;
@@ -628,9 +631,9 @@ async function handleUpdate(row: SysMenuVo) {
 async function handleCopyAdd(row: SysMenuVo) {
   reset();
   open.value = true;
-  await getTreeselect();
   title.value = '添加菜单';
   eLoading.value = true;
+  await getTreeselect();
   getMenu(row.menuId).then((response) => {
     form.value = response.data;
     form.value.menuId = undefined;

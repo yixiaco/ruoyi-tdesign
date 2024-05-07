@@ -145,52 +145,52 @@
       attach="body"
       top="3vh"
       :confirm-btn="{
-        content: '确 定',
-        theme: 'primary',
         loading: buttonLoading,
       }"
       @confirm="onConfirm"
     >
-      <t-form ref="ossConfigRef" :data="form" :rules="rules" label-width="calc(6em + 41px)" @submit="submitForm">
-        <t-form-item label="配置key" name="configKey">
-          <t-input v-model="form.configKey" placeholder="请输入配置key" />
-        </t-form-item>
-        <t-form-item label="访问站点" name="endpoint">
-          <t-input v-model="form.endpoint" placeholder="请输入访问站点" />
-        </t-form-item>
-        <t-form-item label="自定义域名" name="domain">
-          <t-input v-model="form.domain" placeholder="请输入自定义域名" />
-        </t-form-item>
-        <t-form-item label="accessKey" name="accessKey">
-          <t-input v-model="form.accessKey" placeholder="请输入accessKey" />
-        </t-form-item>
-        <t-form-item label="secretKey" name="secretKey">
-          <t-input v-model="form.secretKey" placeholder="请输入秘钥" show-password />
-        </t-form-item>
-        <t-form-item label="桶名称" name="bucketName">
-          <t-input v-model="form.bucketName" placeholder="请输入桶名称" />
-        </t-form-item>
-        <t-form-item label="创建桶" name="createBucket">
-          <t-switch v-model="form.createBucket" :custom-value="[1, 0]" />
-        </t-form-item>
-        <t-form-item label="前缀" name="prefix">
-          <t-input v-model="form.prefix" placeholder="请输入前缀" />
-        </t-form-item>
-        <t-form-item label="是否HTTPS">
-          <t-radio-group v-model="form.isHttps">
-            <t-radio v-for="dict in sys_yes_no" :key="dict.value" :value="dict.value">{{ dict.label }}</t-radio>
-          </t-radio-group>
-        </t-form-item>
-        <t-form-item label="桶权限类型">
-          <t-radio-group v-model="form.accessPolicy" :options="accessPolicyOptions" />
-        </t-form-item>
-        <t-form-item label="域" name="region">
-          <t-input v-model="form.region" placeholder="请输入域" />
-        </t-form-item>
-        <t-form-item label="备注" name="remark">
-          <t-textarea v-model="form.remark" placeholder="请输入备注" />
-        </t-form-item>
-      </t-form>
+      <t-loading :loading="buttonLoading" size="small">
+        <t-form ref="ossConfigRef" :data="form" :rules="rules" label-width="calc(6em + 41px)" @submit="submitForm">
+          <t-form-item label="配置key" name="configKey">
+            <t-input v-model="form.configKey" placeholder="请输入配置key" />
+          </t-form-item>
+          <t-form-item label="访问站点" name="endpoint">
+            <t-input v-model="form.endpoint" placeholder="请输入访问站点" />
+          </t-form-item>
+          <t-form-item label="自定义域名" name="domain">
+            <t-input v-model="form.domain" placeholder="请输入自定义域名" />
+          </t-form-item>
+          <t-form-item label="accessKey" name="accessKey">
+            <t-input v-model="form.accessKey" placeholder="请输入accessKey" />
+          </t-form-item>
+          <t-form-item label="secretKey" name="secretKey">
+            <t-input v-model="form.secretKey" placeholder="请输入秘钥" show-password />
+          </t-form-item>
+          <t-form-item label="桶名称" name="bucketName">
+            <t-input v-model="form.bucketName" placeholder="请输入桶名称" />
+          </t-form-item>
+          <t-form-item label="创建桶" name="createBucket">
+            <t-switch v-model="form.createBucket" :custom-value="[1, 0]" />
+          </t-form-item>
+          <t-form-item label="前缀" name="prefix">
+            <t-input v-model="form.prefix" placeholder="请输入前缀" />
+          </t-form-item>
+          <t-form-item label="是否HTTPS">
+            <t-radio-group v-model="form.isHttps">
+              <t-radio v-for="dict in sys_yes_no" :key="dict.value" :value="dict.value">{{ dict.label }}</t-radio>
+            </t-radio-group>
+          </t-form-item>
+          <t-form-item label="桶权限类型">
+            <t-radio-group v-model="form.accessPolicy" :options="accessPolicyOptions" />
+          </t-form-item>
+          <t-form-item label="域" name="region">
+            <t-input v-model="form.region" placeholder="请输入域" />
+          </t-form-item>
+          <t-form-item label="备注" name="remark">
+            <t-textarea v-model="form.remark" placeholder="请输入备注" />
+          </t-form-item>
+        </t-form>
+      </t-loading>
     </t-dialog>
 
     <!-- 对象存储配置详情 -->

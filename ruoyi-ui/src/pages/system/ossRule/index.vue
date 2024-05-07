@@ -156,67 +156,67 @@
       width="650px"
       attach="body"
       :confirm-btn="{
-        content: '确 定',
-        theme: 'primary',
         loading: buttonLoading,
       }"
       @confirm="onConfirm"
     >
-      <t-form
-        ref="ossRuleRef"
-        label-align="right"
-        :data="form"
-        :rules="rules"
-        label-width="calc(4em + 41px)"
-        scroll-to-first-error="smooth"
-        @submit="submitForm"
-      >
-        <t-form-item label="规则名称" name="ruleName" help="例如：80x80，则字段名称将输出字段名_80x80">
-          <t-input v-model.trim="form.ruleName" placeholder="请输入规则名称" clearable />
-        </t-form-item>
-        <t-form-item label="匹配域名" name="domain" help="只有URL中包含匹配的域名，该规则才生效">
-          <t-input v-model.trim="form.domain" placeholder="请输入匹配域名" clearable />
-        </t-form-item>
-        <t-form-item
-          label="媒体类型"
-          name="mimeType"
-          help="规则对匹配的媒体类型或者匹配的文件后缀生效，多个使用逗号分割"
+      <t-loading :loading="buttonLoading" size="small">
+        <t-form
+          ref="ossRuleRef"
+          label-align="right"
+          :data="form"
+          :rules="rules"
+          label-width="calc(4em + 41px)"
+          scroll-to-first-error="smooth"
+          @submit="submitForm"
         >
-          <t-input v-model.trim="form.mimeType" placeholder="请输入媒体类型" clearable />
-        </t-form-item>
-        <t-form-item label="规则" name="rule" help="内置domain、path、filename、url变量，使用#{#url}的方式使用">
-          <t-textarea v-model.trim="form.rule" class="ruleCss" placeholder="请输入规则" clearable />
-        </t-form-item>
-        <t-form-item>
-          <t-button
-            v-for="rule in ossRules"
-            :key="rule"
-            theme="default"
-            variant="dashed"
-            size="small"
-            @click="insertRuleData(rule)"
+          <t-form-item label="规则名称" name="ruleName" help="例如：80x80，则字段名称将输出字段名_80x80">
+            <t-input v-model.trim="form.ruleName" placeholder="请输入规则名称" clearable />
+          </t-form-item>
+          <t-form-item label="匹配域名" name="domain" help="只有URL中包含匹配的域名，该规则才生效">
+            <t-input v-model.trim="form.domain" placeholder="请输入匹配域名" clearable />
+          </t-form-item>
+          <t-form-item
+            label="媒体类型"
+            name="mimeType"
+            help="规则对匹配的媒体类型或者匹配的文件后缀生效，多个使用逗号分割"
           >
-            {{ rule.substring(0, 1).toUpperCase() + rule.substring(1) }}
-          </t-button>
-        </t-form-item>
-        <t-form-item label="是否默认" name="isDefault">
-          <template #help>
-            使用@OssRule("800x800")的方式指定使用规则
-            <br />
-            不指定规则时，使用默认规则。
-          </template>
-          <t-switch v-model="form.isDefault" :custom-value="['Y', 'N']" />
-        </t-form-item>
-        <t-form-item label="启用状态" name="status">
-          <t-switch v-model="form.status" :custom-value="['1', '0']" />
-        </t-form-item>
-        <t-form-item label="规则顺序" name="ruleSort">
-          <t-input-number v-model="form.ruleSort" placeholder="请输入" />
-        </t-form-item>
-        <t-form-item label="备注" name="remark">
-          <t-textarea v-model="form.remark" placeholder="请输入备注" />
-        </t-form-item>
-      </t-form>
+            <t-input v-model.trim="form.mimeType" placeholder="请输入媒体类型" clearable />
+          </t-form-item>
+          <t-form-item label="规则" name="rule" help="内置domain、path、filename、url变量，使用#{#url}的方式使用">
+            <t-textarea v-model.trim="form.rule" class="ruleCss" placeholder="请输入规则" clearable />
+          </t-form-item>
+          <t-form-item>
+            <t-button
+              v-for="rule in ossRules"
+              :key="rule"
+              theme="default"
+              variant="dashed"
+              size="small"
+              @click="insertRuleData(rule)"
+            >
+              {{ rule.substring(0, 1).toUpperCase() + rule.substring(1) }}
+            </t-button>
+          </t-form-item>
+          <t-form-item label="是否默认" name="isDefault">
+            <template #help>
+              使用@OssRule("800x800")的方式指定使用规则
+              <br />
+              不指定规则时，使用默认规则。
+            </template>
+            <t-switch v-model="form.isDefault" :custom-value="['Y', 'N']" />
+          </t-form-item>
+          <t-form-item label="启用状态" name="status">
+            <t-switch v-model="form.status" :custom-value="['1', '0']" />
+          </t-form-item>
+          <t-form-item label="规则顺序" name="ruleSort">
+            <t-input-number v-model="form.ruleSort" placeholder="请输入" />
+          </t-form-item>
+          <t-form-item label="备注" name="remark">
+            <t-textarea v-model="form.remark" placeholder="请输入备注" />
+          </t-form-item>
+        </t-form>
+      </t-loading>
     </t-dialog>
 
     <!-- OSS处理规则详情 -->

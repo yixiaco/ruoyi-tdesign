@@ -126,9 +126,12 @@
       :close-on-overlay-click="false"
       width="500px"
       attach="body"
+      :confirm-btn="{
+        loading: eLoading,
+      }"
       @confirm="onConfirm"
     >
-      <t-loading :loading="eLoading">
+      <t-loading :loading="eLoading" size="small">
         <t-form
           ref="postRef"
           label-align="right"
@@ -148,9 +151,9 @@
           </t-form-item>
           <t-form-item label="岗位状态" name="status">
             <t-radio-group v-model="form.status">
-              <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{
-                dict.label
-              }}</t-radio>
+              <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">
+                {{ dict.label }}
+              </t-radio>
             </t-radio-group>
           </t-form-item>
           <t-form-item label="备注" name="remark">

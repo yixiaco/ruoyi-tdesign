@@ -135,55 +135,57 @@
       width="600px"
       attach="body"
       :confirm-btn="{
-        content: '确 定',
-        theme: 'primary',
         loading: buttonLoading,
       }"
       @confirm="onConfirm"
     >
-      <t-form
-        ref="clientRef"
-        label-align="right"
-        :data="form"
-        :rules="rules"
-        label-width="calc(9em + 41px)"
-        scroll-to-first-error="smooth"
-        @submit="submitForm"
-      >
-        <t-form-item label="客户端key" name="clientKey">
-          <t-input v-model="form.clientKey" placeholder="请输入客户端key" clearable />
-        </t-form-item>
-        <t-form-item label="客户端秘钥" name="clientSecret">
-          <t-input v-model="form.clientSecret" placeholder="请输入客户端秘钥" clearable />
-        </t-form-item>
-        <t-form-item label="授权类型" name="grantTypeList">
-          <t-select
-            v-model="form.grantTypeList"
-            multiple
-            placeholder="请选择授权类型"
-            clearable
-            :tag-props="{ theme: 'primary', variant: 'light' }"
-          >
-            <t-option v-for="dict in sys_grant_type" :key="dict.value" :label="dict.label" :value="dict.value" />
-          </t-select>
-        </t-form-item>
-        <t-form-item label="设备类型" name="deviceType">
-          <t-select v-model="form.deviceType" placeholder="请选择设备类型" clearable>
-            <t-option v-for="dict in sys_device_type" :key="dict.value" :label="dict.label" :value="dict.value" />
-          </t-select>
-        </t-form-item>
-        <t-form-item label="token活跃超时时间" name="activeTimeout">
-          <t-input-number v-model="form.activeTimeout" clearable :min="60" :allow-input-over-limit="false" />
-        </t-form-item>
-        <t-form-item label="token固定超时" name="timeout">
-          <t-input-number v-model="form.timeout" clearable :min="180" :allow-input-over-limit="false" />
-        </t-form-item>
-        <t-form-item v-if="form.clientId !== clientId" label="状态" name="status">
-          <t-radio-group v-model="form.status">
-            <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{ dict.label }}</t-radio>
-          </t-radio-group>
-        </t-form-item>
-      </t-form>
+      <t-loading :loading="buttonLoading" size="small">
+        <t-form
+          ref="clientRef"
+          label-align="right"
+          :data="form"
+          :rules="rules"
+          label-width="calc(9em + 41px)"
+          scroll-to-first-error="smooth"
+          @submit="submitForm"
+        >
+          <t-form-item label="客户端key" name="clientKey">
+            <t-input v-model="form.clientKey" placeholder="请输入客户端key" clearable />
+          </t-form-item>
+          <t-form-item label="客户端秘钥" name="clientSecret">
+            <t-input v-model="form.clientSecret" placeholder="请输入客户端秘钥" clearable />
+          </t-form-item>
+          <t-form-item label="授权类型" name="grantTypeList">
+            <t-select
+              v-model="form.grantTypeList"
+              multiple
+              placeholder="请选择授权类型"
+              clearable
+              :tag-props="{ theme: 'primary', variant: 'light' }"
+            >
+              <t-option v-for="dict in sys_grant_type" :key="dict.value" :label="dict.label" :value="dict.value" />
+            </t-select>
+          </t-form-item>
+          <t-form-item label="设备类型" name="deviceType">
+            <t-select v-model="form.deviceType" placeholder="请选择设备类型" clearable>
+              <t-option v-for="dict in sys_device_type" :key="dict.value" :label="dict.label" :value="dict.value" />
+            </t-select>
+          </t-form-item>
+          <t-form-item label="token活跃超时时间" name="activeTimeout">
+            <t-input-number v-model="form.activeTimeout" clearable :min="60" :allow-input-over-limit="false" />
+          </t-form-item>
+          <t-form-item label="token固定超时" name="timeout">
+            <t-input-number v-model="form.timeout" clearable :min="180" :allow-input-over-limit="false" />
+          </t-form-item>
+          <t-form-item v-if="form.clientId !== clientId" label="状态" name="status">
+            <t-radio-group v-model="form.status">
+              <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{
+                dict.label
+              }}</t-radio>
+            </t-radio-group>
+          </t-form-item>
+        </t-form>
+      </t-loading>
     </t-dialog>
 
     <!-- 系统授权详情 -->
