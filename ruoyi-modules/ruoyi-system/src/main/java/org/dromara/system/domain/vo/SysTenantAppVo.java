@@ -6,22 +6,22 @@ import io.github.linpeilie.annotations.AutoMapper;
 import lombok.Data;
 import org.dromara.common.excel.annotation.ExcelDictFormat;
 import org.dromara.common.excel.convert.ExcelDictConvert;
-import org.dromara.system.domain.SysApp;
+import org.dromara.system.domain.SysTenantApp;
 
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 应用管理视图对象 sys_app
+ * 租户应用管理视图对象 sys_tenant_app
  *
  * @author yixiacoco
  * @date 2023-05-17
  */
 @Data
 @ExcelIgnoreUnannotated
-@AutoMapper(target = SysApp.class)
-public class SysAppVo implements Serializable {
+@AutoMapper(target = SysTenantApp.class)
+public class SysTenantAppVo implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

@@ -419,13 +419,13 @@ insert into sys_menu values('1062', '客户端管理新增', '123', '2',  '#', '
 insert into sys_menu values('1063', '客户端管理修改', '123', '3',  '#', '', '', '', 0, 1, 'F', '1', '1', 'system:client:edit',         '#', null, null, 103, 1, sysdate(), null, null, '');
 insert into sys_menu values('1064', '客户端管理删除', '123', '4',  '#', '', '', '', 0, 1, 'F', '1', '1', 'system:client:remove',       '#', null, null, 103, 1, sysdate(), null, null, '');
 insert into sys_menu values('1065', '客户端管理导出', '123', '5',  '#', '', '', '', 0, 1, 'F', '1', '1', 'system:client:export',       '#', null, null, 103, 1, sysdate(), null, null, '');
--- 应用管理
-insert into sys_menu values('1701', '应用管理',    '6',    3, 'app','system/app/index','App', null, 0, 1, 'C', '1', '1', 'system:app:list', 'app', null, null, 103, 1, sysdate(), 1, sysdate(), '应用管理菜单');
-insert into sys_menu values('1702', '应用管理查询', '1701', 1, '#', '', '', null, 0, 1, 'F', '1', '1', 'system:app:query', '#', null, null, 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1703', '应用管理新增', '1701', 2, '#', '', '', null, 0, 1, 'F', '1', '1', 'system:app:add', '#', null, null, 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1704', '应用管理修改', '1701', 3, '#', '', '', null, 0, 1, 'F', '1', '1', 'system:app:edit', '#', null, null, 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1705', '应用管理删除', '1701', 4, '#', '', '', null, 0, 1, 'F', '1', '1', 'system:app:remove', '#', null, null, 103, 1, sysdate(), null, null, '');
-insert into sys_menu values('1706', '应用管理导出', '1701', 5, '#', '', '', null, 0, 1, 'F', '1', '1', 'system:app:export', '#', null, null, 103, 1, sysdate(), null, null, '');
+-- 租户应用管理表
+insert into sys_menu values('1701', '租户应用管理',    '6',    3, 'tenantApp','system/tenantApp/index','TenantApp', null, 0, 1, 'C', '1', '1', 'system:tenantApp:list', 'app', null, null, 103, 1, sysdate(), 1, sysdate(), '租户应用管理菜单');
+insert into sys_menu values('1702', '租户应用管理查询', '1701', 1, '#', '', '', null, 0, 1, 'F', '1', '1', 'system:tenantApp:query', '#', null, null, 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1703', '租户应用管理新增', '1701', 2, '#', '', '', null, 0, 1, 'F', '1', '1', 'system:tenantApp:add', '#', null, null, 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1704', '租户应用管理修改', '1701', 3, '#', '', '', null, 0, 1, 'F', '1', '1', 'system:tenantApp:edit', '#', null, null, 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1705', '租户应用管理删除', '1701', 4, '#', '', '', null, 0, 1, 'F', '1', '1', 'system:tenantApp:remove', '#', null, null, 103, 1, sysdate(), null, null, '');
+insert into sys_menu values('1706', '租户应用管理导出', '1701', 5, '#', '', '', null, 0, 1, 'F', '1', '1', 'system:tenantApp:export', '#', null, null, 103, 1, sysdate(), null, null, '');
 
 -- 消息管理
 insert into sys_menu values('1801', '消息管理', '1', 11, 'messageManage', null, null, null, 0, 1, 'M', '1', '1', null, 'chat', null, null, 103, 1, sysdate(), 1, sysdate(), '');
@@ -1037,10 +1037,10 @@ insert into sys_oss_rule values (1, '000000', '180x180', 'oss-cn-beijing.aliyunc
 insert into sys_oss_rule values (2, '000000', '800x800', 'oss-cn-beijing.aliyuncs.com', 'image', '#{#url}?x-oss-process=image/auto-orient,1/resize,m_lfit,w_800/quality,q_90', 'N', 'N', '1', 1, 103, 1, sysdate(), 1, sysdate(), null);
 
 -- ----------------------------
--- 应用管理表
+-- 租户应用管理表
 -- ----------------------------
-drop table if exists sys_app;
-create table sys_app  (
+drop table if exists sys_tenant_app;
+create table sys_tenant_app  (
     appid         bigint          not null                        comment '应用id',
     tenant_id     varchar(20)     null        default '000000'    comment '租户编号',
     app_type      varchar(20)     not null                        comment '应用类型',
@@ -1053,7 +1053,7 @@ create table sys_app  (
     update_time   datetime        null        default null        comment '更新时间',
     remark        varchar(500)    null        default null        comment '备注',
     primary key (appid) using btree
-) engine = innodb comment = '应用管理表';
+) engine = innodb comment = '租户应用管理表';
 
 -- ----------------------------
 -- 消息配置表

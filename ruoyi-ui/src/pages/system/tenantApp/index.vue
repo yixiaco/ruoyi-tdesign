@@ -1,7 +1,14 @@
 <template>
   <t-card>
     <t-space direction="vertical" style="width: 100%">
-      <t-form v-show="showSearch" ref="queryRef" :data="queryParams" layout="inline" label-width="calc(4em + 12px)">
+      <t-form
+        v-show="showSearch"
+        ref="queryRef"
+        :data="queryParams"
+        layout="inline"
+        reset-type="initial"
+        label-width="calc(4em + 12px)"
+      >
         <t-form-item label="应用类型" name="appType">
           <t-select v-model="queryParams.appType" placeholder="请选择应用类型" clearable>
             <t-option v-for="dict in sys_app_type" :key="dict.value" :label="dict.label" :value="dict.value" />
@@ -30,7 +37,7 @@
         :loading="loading"
         hover
         row-key="appid"
-        :data="appList"
+        :data="tenantAppList"
         :columns="columns"
         :selected-row-keys="ids"
         select-on-row-click
@@ -43,12 +50,12 @@
         <template #topContent>
           <t-row>
             <t-col flex="auto">
-              <t-button v-hasPermi="['system:app:add']" theme="primary" @click="handleAdd">
+              <t-button v-hasPermi="['system:tenantApp:add']" theme="primary" @click="handleAdd">
                 <template #icon> <add-icon /></template>
                 新增
               </t-button>
               <t-button
-                v-hasPermi="['system:app:edit']"
+                v-hasPermi="['system:tenantApp:edit']"
                 theme="default"
                 variant="outline"
                 :disabled="single"
@@ -58,7 +65,7 @@
                 修改
               </t-button>
               <t-button
-                v-hasPermi="['system:app:remove']"
+                v-hasPermi="['system:tenantApp:remove']"
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
@@ -67,7 +74,12 @@
                 <template #icon> <delete-icon /> </template>
                 删除
               </t-button>
-              <t-button v-hasPermi="['system:app:export']" theme="default" variant="outline" @click="handleExport">
+              <t-button
+                v-hasPermi="['system:tenantApp:export']"
+                theme="default"
+                variant="outline"
+                @click="handleExport"
+              >
                 <template #icon> <download-icon /> </template>
                 导出
               </t-button>
@@ -89,13 +101,28 @@
         </template>
         <template #operation="{ row }">
           <t-space :size="8" break-line>
-            <t-link v-hasPermi="['system:app:query']" theme="primary" hover="color" @click.stop="handleDetail(row)">
+            <t-link
+              v-hasPermi="['system:tenantApp:query']"
+              theme="primary"
+              hover="color"
+              @click.stop="handleDetail(row)"
+            >
               <browse-icon />详情
             </t-link>
-            <t-link v-hasPermi="['system:app:edit']" theme="primary" hover="color" @click.stop="handleUpdate(row)">
+            <t-link
+              v-hasPermi="['system:tenantApp:edit']"
+              theme="primary"
+              hover="color"
+              @click.stop="handleUpdate(row)"
+            >
               <edit-icon />修改
             </t-link>
-            <t-link v-hasPermi="['system:app:remove']" theme="danger" hover="color" @click.stop="handleDelete(row)">
+            <t-link
+              v-hasPermi="['system:tenantApp:remove']"
+              theme="danger"
+              hover="color"
+              @click.stop="handleDelete(row)"
+            >
               <delete-icon />删除
             </t-link>
           </t-space>
@@ -103,7 +130,7 @@
       </t-table>
     </t-space>
 
-    <!-- 添加或修改应用管理对话框 -->
+    <!-- 添加或修改租户应用管理对话框 -->
     <t-dialog
       v-model:visible="open"
       :header="title"
@@ -114,11 +141,11 @@
       :confirm-btn="{
         loading: buttonLoading,
       }"
-      @confirm="onConfirm"
+      @confirm="tenantAppRef.submit()"
     >
       <t-loading :loading="buttonLoading" size="small">
         <t-form
-          ref="appRef"
+          ref="tenantAppRef"
           label-align="right"
           :data="form"
           :rules="rules"
@@ -144,8 +171,15 @@
       </t-loading>
     </t-dialog>
 
-    <!-- 应用管理详情 -->
-    <t-dialog v-model:visible="openView" header="应用管理详情" width="700px" attach="body" :footer="false">
+    <!-- 租户应用管理详情 -->
+    <t-dialog
+      v-model:visible="openView"
+      header="租户应用管理详情"
+      placement="center"
+      width="700px"
+      attach="body"
+      :footer="false"
+    >
       <my-descriptions :loading="openViewLoading">
         <t-descriptions-item label="应用id">{{ form.appid }}</t-descriptions-item>
         <t-descriptions-item label="应用类型">
@@ -162,7 +196,7 @@
 </template>
 <script lang="ts" setup>
 defineOptions({
-  name: 'App',
+  name: 'TenantApp',
 });
 import {
   AddIcon,
@@ -177,27 +211,27 @@ import {
 import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
-import { addApp, delApp, getApp, listApp, updateApp } from '@/api/system/app';
-import type { SysAppForm, SysAppQuery, SysAppVo } from '@/api/system/model/appModel';
+import type { SysTenantAppForm, SysTenantAppQuery, SysTenantAppVo } from '@/api/system/model/tenantAppModel';
+import { addTenantApp, delTenantApp, getTenantApp, listTenantApp, updateTenantApp } from '@/api/system/tenantApp';
 import { ArrayOps } from '@/utils/array';
 
 const { proxy } = getCurrentInstance();
 const { sys_app_type } = proxy.useDict('sys_app_type');
 
-const appList = ref<SysAppVo[]>([]);
-const appRef = ref<FormInstanceFunctions>();
-const open = ref(false);
 const openView = ref(false);
 const openViewLoading = ref(false);
+const tenantAppRef = ref<FormInstanceFunctions>();
+const open = ref(false);
 const buttonLoading = ref(false);
+const title = ref('');
+const tenantAppList = ref<SysTenantAppVo[]>([]);
 const loading = ref(false);
 const columnControllerVisible = ref(false);
 const showSearch = ref(true);
+const total = ref(0);
 const ids = ref([]);
 const single = ref(true);
 const multiple = ref(true);
-const total = ref(0);
-const title = ref('');
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
@@ -205,6 +239,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
   appKey: [{ required: true, message: '应用key不能为空' }],
   appName: [{ required: true, message: '应用名称不能为空' }],
 });
+
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
@@ -217,16 +252,15 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `操作`, colKey: 'operation', align: 'center', width: 180 },
 ]);
 // 提交表单对象
-const form = ref<SysAppVo & SysAppForm>({});
+const form = ref<SysTenantAppVo & SysTenantAppForm>({});
 // 查询对象
-const queryParams = ref<SysAppQuery>({
+const queryParams = ref<SysTenantAppQuery>({
   pageNum: 1,
   pageSize: 10,
   appType: undefined,
   appKey: undefined,
   appName: undefined,
 });
-
 // 分页
 const pagination = computed(() => {
   return {
@@ -242,12 +276,12 @@ const pagination = computed(() => {
   };
 });
 
-/** 查询应用管理列表 */
+/** 查询租户应用管理列表 */
 function getList() {
   loading.value = true;
-  listApp(queryParams.value)
+  listTenantApp(queryParams.value)
     .then((response) => {
-      appList.value = response.rows;
+      tenantAppList.value = response.rows;
       total.value = response.total;
     })
     .finally(() => (loading.value = false));
@@ -256,7 +290,7 @@ function getList() {
 // 表单重置
 function reset() {
   form.value = {};
-  proxy.resetForm('appRef');
+  proxy.resetForm('tenantAppRef');
 }
 
 /** 搜索按钮操作 */
@@ -271,7 +305,7 @@ function resetQuery() {
   handleQuery();
 }
 
-// 多选框选中数据
+/** 多选框选中数据 */
 function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
   single.value = selection.length !== 1;
@@ -282,37 +316,32 @@ function handleSelectionChange(selection: Array<string | number>) {
 function handleAdd() {
   reset();
   open.value = true;
-  title.value = '添加应用管理';
+  title.value = '添加租户应用管理';
 }
 
 /** 详情按钮操作 */
-function handleDetail(row: SysAppVo) {
+function handleDetail(row: SysTenantAppVo) {
   reset();
   openView.value = true;
   openViewLoading.value = true;
   const appid = row.appid;
-  getApp(appid).then((response) => {
+  getTenantApp(appid).then((response) => {
     form.value = response.data;
     openViewLoading.value = false;
   });
 }
 
 /** 修改按钮操作 */
-function handleUpdate(row?: SysAppVo) {
+function handleUpdate(row?: SysTenantAppVo) {
   buttonLoading.value = true;
   reset();
   open.value = true;
-  title.value = '修改应用管理';
+  title.value = '修改租户应用管理';
   const appid = row?.appid || ids.value.at(0);
-  getApp(appid).then((response) => {
+  getTenantApp(appid).then((response) => {
     buttonLoading.value = false;
     form.value = response.data;
   });
-}
-
-/** 提交按钮 */
-function onConfirm() {
-  appRef.value.submit();
 }
 
 /** 提交表单 */
@@ -321,7 +350,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
     buttonLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');
     if (form.value.appid) {
-      updateApp(form.value)
+      updateTenantApp(form.value)
         .then(() => {
           proxy.$modal.msgSuccess('修改成功');
           open.value = false;
@@ -332,7 +361,7 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
           proxy.$modal.msgClose(msgLoading);
         });
     } else {
-      addApp(form.value)
+      addTenantApp(form.value)
         .then(() => {
           proxy.$modal.msgSuccess('新增成功');
           open.value = false;
@@ -349,11 +378,11 @@ function submitForm({ validateResult, firstError }: SubmitContext) {
 }
 
 /** 删除按钮操作 */
-function handleDelete(row?: SysAppVo) {
+function handleDelete(row?: SysTenantAppVo) {
   const appids = row?.appid || ids.value;
-  proxy.$modal.confirm(`是否确认删除应用管理编号为${appids}的数据项？`, () => {
+  proxy.$modal.confirm(`是否确认删除租户应用管理编号为${appids}的数据项？`, () => {
     const msgLoading = proxy.$modal.msgLoading('正在删除中...');
-    return delApp(appids)
+    return delTenantApp(appids)
       .then(() => {
         ids.value = ArrayOps.fastDeleteElement(ids.value, appids);
         getList();
@@ -368,11 +397,11 @@ function handleDelete(row?: SysAppVo) {
 /** 导出按钮操作 */
 function handleExport() {
   proxy.download(
-    'system/app/export',
+    'system/tenantApp/export',
     {
       ...queryParams.value,
     },
-    `app_${new Date().getTime()}.xlsx`,
+    `tenantApp_${new Date().getTime()}.xlsx`,
   );
 }
 

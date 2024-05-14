@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.domain.model.BaseUser;
-import org.dromara.common.core.service.AppService;
+import org.dromara.common.core.service.TenantAppService;
 import org.dromara.common.core.utils.ServletUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.funtion.Apply;
@@ -371,7 +371,7 @@ public class TenantHelper {
         if (StringUtils.isBlank(tenantId)) {
             String appKey = ServletUtils.getAppKey();
             if (StringUtils.isNotBlank(appKey)) {
-                AppService service = SpringUtils.getBean(AppService.class);
+                TenantAppService service = SpringUtils.getBean(TenantAppService.class);
                 tenantId = service.getTenantIdByAppKey(appKey);
             }
         }

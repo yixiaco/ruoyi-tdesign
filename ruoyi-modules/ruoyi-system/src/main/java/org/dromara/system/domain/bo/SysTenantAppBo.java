@@ -4,11 +4,12 @@ import io.github.linpeilie.annotations.AutoMapper;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
-import org.dromara.common.mybatis.core.domain.BaseEntity;
-import org.dromara.system.domain.SysApp;
+import org.dromara.system.domain.SysTenantApp;
+
+import java.io.Serial;
+import java.io.Serializable;
 
 /**
  * 应用管理业务对象 sys_app
@@ -17,9 +18,11 @@ import org.dromara.system.domain.SysApp;
  * @date 2023-05-17
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-@AutoMapper(target = SysApp.class, reverseConvertGenerate = false)
-public class SysAppBo extends BaseEntity {
+@AutoMapper(target = SysTenantApp.class, reverseConvertGenerate = false)
+public class SysTenantAppBo implements Serializable {
+
+    @Serial
+    private static final long serialVersionUID = 1L;
 
     /**
      * 应用id

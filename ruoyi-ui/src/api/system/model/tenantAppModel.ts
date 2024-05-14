@@ -1,9 +1,9 @@
 import type { BaseEntity } from '@/api/model/resultModel';
 
 /**
- * 应用管理查询对象
+ * 租户应用管理查询对象
  */
-export interface SysAppQuery extends BaseEntity {
+export interface SysTenantAppQuery extends BaseEntity {
   /** 应用类型 */
   appType?: string;
   /** 应用key */
@@ -12,9 +12,9 @@ export interface SysAppQuery extends BaseEntity {
   appName?: string;
 }
 /**
- * 应用管理业务对象
+ * 租户应用管理业务对象
  */
-export interface SysAppForm {
+export interface SysTenantAppForm {
   /** 应用id */
   appid?: number;
   /** 应用类型 */
@@ -27,9 +27,9 @@ export interface SysAppForm {
   remark?: string;
 }
 /**
- * 应用管理视图对象
+ * 租户应用管理视图对象
  */
-export interface SysAppVo {
+export interface SysTenantAppVo {
   /** 应用id */
   appid?: number;
   /** 应用类型 */

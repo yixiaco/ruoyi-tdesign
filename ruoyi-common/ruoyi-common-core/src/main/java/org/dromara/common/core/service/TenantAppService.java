@@ -1,18 +1,18 @@
 package org.dromara.common.core.service;
 
 /**
- * 通用应用服务
+ * 通用租户应用服务
  *
  * @author hexm
  * @date 2023/5/17
  */
-public interface AppService {
+public interface TenantAppService {
 
     /**
      * 查询appKey对应的租户id
      *
-     * @param appKey
-     * @return
+     * @param appKey 应用key
+     * @return 租户id
      */
     String getTenantIdByAppKey(String appKey);
 }

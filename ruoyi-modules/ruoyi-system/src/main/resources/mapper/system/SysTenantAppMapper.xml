@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dromara.system.mapper.SysTenantAppMapper">
+
+    <resultMap id="SysTenantAppResult" autoMapping="true" type="org.dromara.system.domain.SysTenantApp">
+        <id property="appid" column="appid"/>
+    </resultMap>
+    <resultMap id="SysTenantAppResultVo" autoMapping="true" type="org.dromara.system.domain.vo.SysTenantAppVo">
+        <id property="appid" column="appid"/>
+    </resultMap>
+
+    <sql id="selectSysTenantAppVo">
+        select sta.appid, sta.tenant_id, sta.app_type, sta.app_key, sta.app_name, sta.create_dept, sta.create_by, sta.create_time, sta.update_by, sta.update_time, sta.remark from sys_tenant_app sta
+    </sql>
+    <select id="queryList" parameterType="org.dromara.system.domain.query.SysTenantAppQuery" resultMap="SysTenantAppResultVo">
+        <include refid="selectSysTenantAppVo"/>
+        <where>
+            <if test="appType != null and appType != ''"> and sta.app_type = #{appType}</if>
+            <if test="appKey != null and appKey != ''"> and sta.app_key like concat(concat('%', #{appKey}), '%')</if>
+            <if test="appName != null and appName != ''"> and sta.app_name like concat(concat('%', #{appName}), '%')</if>
+        </where>
+        order by sta.create_time desc
+    </select>
+
+</mapper>

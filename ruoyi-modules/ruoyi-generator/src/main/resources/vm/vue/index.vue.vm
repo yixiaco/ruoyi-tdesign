@@ -218,7 +218,7 @@
       :confirm-btn="{
         loading: buttonLoading,
       }"
-      @confirm="onConfirm"
+      @confirm="${businessName}Ref.submit()"
     >
       <t-loading :loading="buttonLoading" size="small">
         <t-form
@@ -693,11 +693,6 @@ function handleUpdate(row?: ${vo}) {
 }
 #end
 #if($addOrUpdate)
-
-/** 提交按钮 */
-function onConfirm() {
-  ${businessName}Ref.value.submit();
-}
 
 /** 提交表单 */
 function submitForm({ validateResult, firstError }: SubmitContext) {

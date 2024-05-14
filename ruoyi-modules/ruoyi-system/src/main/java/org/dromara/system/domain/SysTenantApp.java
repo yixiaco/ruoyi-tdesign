@@ -5,22 +5,20 @@ import com.baomidou.mybatisplus.annotation.TableField;
 import com.baomidou.mybatisplus.annotation.TableId;
 import com.baomidou.mybatisplus.annotation.TableName;
 import lombok.Data;
-import lombok.EqualsAndHashCode;
-import org.dromara.common.tenant.core.TenantEntity;
 
 import java.io.Serial;
+import java.io.Serializable;
 import java.util.Date;
 
 /**
- * 应用管理对象 sys_app
+ * 租户应用管理对象 sys_tenant_app
  *
  * @author yixiacoco
  * @date 2023-05-17
  */
 @Data
-@EqualsAndHashCode(callSuper = true)
-@TableName("sys_app")
-public class SysApp extends TenantEntity {
+@TableName("sys_tenant_app")
+public class SysTenantApp implements Serializable {
 
     @Serial
     private static final long serialVersionUID = 1L;

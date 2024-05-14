@@ -33,9 +33,9 @@ public interface GlobalConstants {
     String PWD_ERR_CNT_KEY = GLOBAL_REDIS_KEY + "pwd_err_cnt:";
 
     /**
-     * 应用key redis map key
+     * 租户应用key redis map key
      */
-    String APP_KEY = GLOBAL_REDIS_KEY + "app_key";
+    String TENANT_APP_KEY = GLOBAL_REDIS_KEY + "tenant_app_key";
 
     /**
      * 三方认证 redis key
