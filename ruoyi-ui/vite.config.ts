@@ -122,6 +122,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
             library: 'vue-next',
           }),
         ],
+        imports: ['vue-router', 'vue', 'pinia'],
       }),
       Components({
         resolvers: [

@@ -1,19 +1,21 @@
 <template>
   <t-loading :loading="loading" size="small">
-    <t-descriptions
-      :bordered="bordered"
-      :colon="colon"
-      :column="column"
-      :item-layout="itemLayout"
-      :items="items"
-      :layout="layout"
-      :size="size"
-      :title="title"
-      :label-style="effectiveLabelStyle"
-      :content-style="contentStyle"
-    >
-      <slot />
-    </t-descriptions>
+    <my-scrollbar class="dialog-content-max-height" :scrollbar="scrollbar">
+      <t-descriptions
+        :bordered="bordered"
+        :colon="colon"
+        :column="column"
+        :item-layout="itemLayout"
+        :items="items"
+        :layout="layout"
+        :size="size"
+        :title="title"
+        :label-style="effectiveLabelStyle"
+        :content-style="contentStyle"
+      >
+        <slot />
+      </t-descriptions>
+    </my-scrollbar>
   </t-loading>
 </template>
 <script setup lang="ts">
@@ -76,6 +78,7 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  // 标签对齐方式
   labelAlign: {
     type: String as PropType<'left' | 'right' | 'center'>,
     default: 'left',
@@ -87,6 +90,11 @@ const props = defineProps({
   // 自定义描述项内容的样式。
   contentStyle: {
     type: Object,
+  },
+  // 是否显示滚动条
+  scrollbar: {
+    type: Boolean,
+    default: true,
   },
 });
 

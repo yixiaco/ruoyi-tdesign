@@ -17,6 +17,7 @@ declare module 'vue' {
     ImagePreview: typeof import('./src/components/image-preview/index.vue')['default']
     ImageUpload: typeof import('./src/components/image-upload/index.vue')['default']
     MyDescriptions: typeof import('./src/components/my-descriptions/index.vue')['default']
+    MyScrollbar: typeof import('./src/components/my-scrollbar/index.vue')['default']
     ParentView: typeof import('./src/components/ParentView/index.vue')['default']
     PreviewCode: typeof import('./src/components/preview-code/index.vue')['default']
     ProductCard: typeof import('./src/components/product-card/index.vue')['default']
