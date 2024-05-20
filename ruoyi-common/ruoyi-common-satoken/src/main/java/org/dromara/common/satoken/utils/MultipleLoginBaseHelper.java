@@ -101,7 +101,7 @@ public class MultipleLoginBaseHelper {
     @SuppressWarnings("unchecked")
     public static <T extends BaseUser> T getUser(StpLogic logic) {
         return StorageUtil.getStorageIfAbsentSet(getLoginType(logic) + LOGIN_USER_KEY, () -> {
-            SaSession session = logic.getTokenSession();
+            SaSession session = logic.getTokenSession(false);
             if (session != null) {
                 return (T) session.get(LOGIN_USER_KEY);
             }
@@ -112,15 +112,8 @@ public class MultipleLoginBaseHelper {
     /**
      * 获取用户(多级缓存)
      */
-    @SuppressWarnings("unchecked")
     public static <T extends BaseUser> Optional<T> getUserOptional(StpLogic logic) {
-        return Optional.ofNullable(StorageUtil.getStorageIfAbsentSet(getLoginType(logic) + LOGIN_USER_KEY, () -> {
-            SaSession session = logic.getTokenSession();
-            if (session != null) {
-                return (T) session.get(LOGIN_USER_KEY);
-            }
-            return null;
-        }));
+        return Optional.ofNullable(getUser(logic));
     }
 
     /**
@@ -128,25 +121,18 @@ public class MultipleLoginBaseHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T extends BaseUser> T getUser(StpLogic logic, String token) {
-        try {
-            SaSession session = logic.getTokenSessionByToken(token);
+        SaSession session = logic.getTokenSessionByToken(token, false);
+        if (session != null) {
             return (T) session.get(LOGIN_USER_KEY);
-        } catch (Exception e) {
-            return null;
         }
+        return null;
     }
 
     /**
      * 获取用户基于token
      */
-    @SuppressWarnings("unchecked")
     public static <T extends BaseUser> Optional<T> getUserOptional(StpLogic logic, String token) {
-        try {
-            SaSession session = logic.getTokenSessionByToken(token);
-            return Optional.ofNullable((T) session.get(LOGIN_USER_KEY));
-        } catch (Exception e) {
-            return Optional.empty();
-        }
+        return Optional.ofNullable(getUser(logic, token));
     }
 
     /**
@@ -178,16 +164,20 @@ public class MultipleLoginBaseHelper {
         }
         if (CollUtil.isNotEmpty(tokens)) {
             for (String token : tokens) {
-                SaSession session = logic.getTokenSessionByToken(token);
-                if (session != null) {
-                    T tokenUser = (T) session.get(LOGIN_USER_KEY);
-                    updateBy.accept(tokenUser);
-                    session.set(LOGIN_USER_KEY, tokenUser);
-                    if (Objects.equals(tokenValue, token)) {
-                        SaStorage storage = SaHolder.getStorage();
-                        if (storage != null) {
-                            storage.set(getLoginType(logic) + LOGIN_USER_KEY, tokenUser);
-                        }
+                SaSession session = logic.getTokenSessionByToken(token, false);
+                if (session == null) {
+                    continue;
+                }
+                T tokenUser = (T) session.get(LOGIN_USER_KEY);
+                if (tokenUser == null) {
+                    continue;
+                }
+                updateBy.accept(tokenUser);
+                session.set(LOGIN_USER_KEY, tokenUser);
+                if (Objects.equals(tokenValue, token)) {
+                    SaStorage storage = SaHolder.getStorage();
+                    if (storage != null) {
+                        storage.set(getLoginType(logic) + LOGIN_USER_KEY, tokenUser);
                     }
                 }
             }
