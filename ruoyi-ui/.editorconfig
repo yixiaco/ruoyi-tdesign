@@ -10,5 +10,5 @@ insert_final_newline = true
 [*.md]
 trim_trailing_whitespace = false
 
-[*.{ts,js,vue,css,less,scss}]
+[*.{ts,js,vue,css,less,scss,tsx,jsx}]
 indent_size = 2
