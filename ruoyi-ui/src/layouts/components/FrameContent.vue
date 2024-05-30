@@ -73,10 +73,11 @@ function hideLoading() {
 }
 
 // 如果窗口大小发生变化
-watch([width, height], debounce(calcHeight, 250));
+const calcHeightOnDebounce = debounce(calcHeight, 250);
+watch([width, height], calcHeightOnDebounce);
 watch(
   [() => settingStore.showFooter, () => settingStore.isUseTabsRouter, () => settingStore.showBreadcrumb],
-  debounce(calcHeight, 250),
+  calcHeightOnDebounce,
 );
 </script>
 <style lang="less" scoped>

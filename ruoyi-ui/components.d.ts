@@ -12,6 +12,7 @@ declare module 'vue' {
     Editor: typeof import('./src/components/editor/index.vue')['default']
     EditorPreview: typeof import('./src/components/editor-preview/index.vue')['default']
     FileUpload: typeof import('./src/components/file-upload/index.vue')['default']
+    HtmlImagePreview: typeof import('./src/components/html-image-preview/index.vue')['default']
     IconSelect: typeof import('./src/components/icon-select/index.vue')['default']
     IFrame: typeof import('./src/components/i-frame/index.vue')['default']
     ImagePreview: typeof import('./src/components/image-preview/index.vue')['default']

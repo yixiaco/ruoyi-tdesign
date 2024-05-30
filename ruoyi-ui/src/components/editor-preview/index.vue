@@ -1,9 +1,12 @@
 <template>
-  <div class="editor_preview line-numbers">
-    <div ref="html" v-html="htmlText"></div>
-  </div>
+  <html-image-preview v-if="imagePreview">
+    <component :is="content" />
+  </html-image-preview>
+  <template v-else>
+    <component :is="content" />
+  </template>
 </template>
-<script lang="ts" setup>
+<script lang="tsx" setup>
 import Prism from 'prismjs';
 import { nextTick, onMounted, onUpdated, ref } from 'vue';
 
@@ -22,9 +25,40 @@ const props = defineProps({
   codeMaxHeight: {
     type: String,
   },
+  // 是否开启图片预览
+  imagePreview: {
+    type: Boolean,
+    default: false,
+  },
+  // 图片懒加载 (使用浏览器原生懒加载)
+  imageLazy: {
+    type: Boolean,
+    default: false,
+  },
 });
 
 const html = ref<HTMLElement>();
+
+const htmlText = computed(() => {
+  if (props.imageLazy && props.htmlText) {
+    // 使用正则，兼容非客户端环境
+    return props.htmlText?.replaceAll(/<img [^>]*>/g, (substring) => {
+      if (substring.search('loading=') === -1) {
+        return `${substring.slice(0, 5)} loading="lazy" ${substring.slice(5)}`;
+      }
+      return substring;
+    });
+  }
+  return props.htmlText;
+});
+
+const content = () => {
+  return (
+    <div class="editor_preview line-numbers">
+      <div ref={html} v-html={htmlText.value}></div>
+    </div>
+  );
+};
 
 /**
  * 渲染元素

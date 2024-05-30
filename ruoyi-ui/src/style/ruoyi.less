@@ -88,3 +88,11 @@
     color: var(--td-text-color-placeholder)
   }
 }
+
+// 图片预览禁止选中
+.t-image-viewer-preview-image .t-image-viewer__modal-pic .t-image-viewer__modal-box .t-image-viewer__modal-image {
+  -webkit-user-select: none;  /* Safari */
+  -moz-user-select: none;    /* Firefox */
+  -ms-user-select: none;      /* IE10+/Edge */
+  user-select: none;          /* Standard syntax */
+}
