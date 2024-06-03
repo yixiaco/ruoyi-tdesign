@@ -504,14 +504,15 @@ const dateRange${AttrName} = ref([]);
 const rules = ref<Record<string, Array<FormRule>>>({
 #foreach ($column in $columns)
 #if($column.isInsert() || $column.isEdit())
-#if($column.isRequired())
+#set($length = $GenUtil.getColumnLength($column.getColumnType()))
+#if($column.isRequired() || ($column.javaType == 'String' && $length > 0))
 #set($parentheseIndex=$column.columnComment.indexOf("（"))
 #if($parentheseIndex != -1)
 #set($comment=$column.columnComment.substring(0, $parentheseIndex))
 #else
 #set($comment=$column.columnComment)
 #end
-  $column.javaField: [{ required: true, message: '$comment不能为空' }],
+  $column.javaField: [#if($column.isRequired()){ required: true, message: '$comment不能为空' }#end#if($column.javaType == 'String' && $length > 0)#if($column.isRequired()), #end{ max: $length, message: '${comment}不能超过${length}个字符}' }#end],
 #end
 #end
 #end
