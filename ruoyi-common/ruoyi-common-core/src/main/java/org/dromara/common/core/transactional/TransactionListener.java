@@ -20,7 +20,7 @@ public class TransactionListener {
      * @see TransactionPhase#BEFORE_COMMIT
      */
     @TransactionalEventListener(phase = TransactionPhase.BEFORE_COMMIT)
-    public void onBeforeCommitHandler(AlterCommitTransactionalEvent event) {
+    public void onBeforeCommitHandler(BeforeCommitTransactionalEvent event) {
         TransactionalCallback apply = event.getSource();
         if (apply != null) {
             apply.callback();

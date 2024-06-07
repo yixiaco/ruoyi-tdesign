@@ -15,6 +15,7 @@ import org.dromara.common.core.utils.spring.SpringUtils;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 /**
  * JSON 工具类
@@ -108,6 +109,22 @@ public class JsonUtils {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Map<String, Object> convertMap(Object obj) {
+        if (obj != null) {
+            return OBJECT_MAPPER.convertValue(obj, new TypeReference<>() {
+            });
+        }
+        return null;
+    }
+
+    public static List<Map<String, Object>> convertListMap(Object obj) {
+        if (obj != null) {
+            return OBJECT_MAPPER.convertValue(obj, new TypeReference<>() {
+            });
+        }
+        return null;
     }
 
 }
