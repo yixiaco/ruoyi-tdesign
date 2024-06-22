@@ -1,5 +1,6 @@
 package org.dromara.amqp.config;
 
+import org.dromara.amqp.aspect.AmqpAspect;
 import org.dromara.amqp.core.AmqpTransactionalTemplate;
 import org.dromara.amqp.handler.AmqpEventPublisher;
 import org.dromara.common.core.transactional.TransactionalEventPublisher;
@@ -46,5 +47,10 @@ public class AmqpConfiguration {
     @Bean
     public AmqpTransactionalTemplate amqpTransactionalTemplate(TransactionalEventPublisher transactionalEventPublisher, AmqpTemplate amqpTemplate) {
         return new AmqpTransactionalTemplate(transactionalEventPublisher, amqpTemplate);
+    }
+
+    @Bean
+    public AmqpAspect amqpAspect() {
+        return new AmqpAspect();
     }
 }

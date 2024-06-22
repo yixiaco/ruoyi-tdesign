@@ -309,7 +309,7 @@ public class RedisLockUtil {
      * @param runnable 运行过程
      */
     public static <T> T execute(String key, Supplier<T> runnable) {
-        RLock lock = RedisUtils.getClient().getLock(getKey(key));
+        RLock lock = getLock(getKey(key));
         lock.lock();
         try {
             return runnable.get();
@@ -319,9 +319,19 @@ public class RedisLockUtil {
     }
 
     /**
+     * 获取锁
+     *
+     * @param key 缓存key
+     * @return
+     */
+    public static RLock getLock(String key) {
+        return RedisUtils.getClient().getLock(getKey(key));
+    }
+
+    /**
      * 获取key
      *
-     * @param key
+     * @param key 缓存key
      * @return
      */
     public static String getKey(String key) {

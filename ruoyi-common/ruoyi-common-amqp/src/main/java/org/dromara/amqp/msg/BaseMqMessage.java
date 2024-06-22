@@ -17,6 +17,6 @@ public class BaseMqMessage implements Serializable {
     private String msgId;
 
     public BaseMqMessage() {
-        this.msgId = IdUtil.objectId();
+        this.msgId = IdUtil.getSnowflakeNextIdStr();
     }
 }

@@ -29,7 +29,7 @@ public class TenantAspect {
      * @return
      * @throws Throwable
      */
-    @Around("@within(ignoreTenant) || @annotation(ignoreTenant)")
+    @Around("@annotation(ignoreTenant)")
     public Object handleIgnore(ProceedingJoinPoint point, IgnoreTenant ignoreTenant) throws Throwable {
         if (ignoreTenant.db()) {
             TenantHelper.enableIgnore();
@@ -57,7 +57,7 @@ public class TenantAspect {
      * @return
      * @throws Throwable
      */
-    @Around("@within(dynamicTenant) || @annotation(dynamicTenant)")
+    @Around("@annotation(dynamicTenant)")
     public Object handleDynamic(ProceedingJoinPoint point, DynamicTenant dynamicTenant) throws Throwable {
         if (StrUtil.isBlank(dynamicTenant.value())) {
             throw new ServiceException("动态租户未配置值！");

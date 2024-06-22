@@ -28,7 +28,7 @@ public class TenantMQMessage implements Serializable {
     private String tenantId;
 
     public TenantMQMessage() {
-        this.msgId = IdUtil.objectId();
+        this.msgId = IdUtil.getSnowflakeNextIdStr();
         this.tenantId = TenantHelper.getTenantId();
     }
 }
