@@ -181,6 +181,60 @@ public class StreamUtils {
     }
 
     /**
+     * 将collection按照两个规则(比如有相同的年级id,班级id)分类成双层map<br>
+     * <B>{@code Collection<E>  --->  Map<T,Map<U,List<E>>> } </B>
+     *
+     * @param collection 需要分类的集合
+     * @param groupKey   分组
+     * @param key        Map中的key
+     * @param <T>        第一个map中的key类型
+     * @param <U>        第二个map中的key类型
+     * @param <E>        collection中的泛型
+     * @param <V>        Map中的value
+     * @return 分类后的map
+     */
+    public static <E, T, U, V> Map<T, Map<U, List<V>>> group2MapList(Collection<E> collection, Function<E, T> groupKey, Function<E, U> key, Function<E, V> value) {
+        if (CollUtil.isEmpty(collection) || groupKey == null || key == null || value == null) {
+            return MapUtil.newHashMap();
+        }
+        return collection
+            .stream().filter(Objects::nonNull)
+            .collect(Collectors.groupingBy(
+                    groupKey,
+                    LinkedHashMap::new,
+                    Collectors.groupingBy(key, Collectors.mapping(value, Collectors.toList()))
+                )
+            );
+    }
+
+    /**
+     * 将collection按照两个规则(比如有相同的年级id,班级id)分类成双层map<br>
+     * <B>{@code Collection<E>  --->  Map<T,Map<U,Set<E>>> } </B>
+     *
+     * @param collection 需要分类的集合
+     * @param groupKey   分组
+     * @param key        Map中的key
+     * @param <T>        第一个map中的key类型
+     * @param <U>        第二个map中的key类型
+     * @param <E>        collection中的泛型
+     * @param <V>        Map中的value
+     * @return 分类后的map
+     */
+    public static <E, T, U, V> Map<T, Map<U, Set<V>>> group2MapSet(Collection<E> collection, Function<E, T> groupKey, Function<E, U> key, Function<E, V> value) {
+        if (CollUtil.isEmpty(collection) || groupKey == null || key == null || value == null) {
+            return MapUtil.newHashMap();
+        }
+        return collection
+            .stream().filter(Objects::nonNull)
+            .collect(Collectors.groupingBy(
+                    groupKey,
+                    LinkedHashMap::new,
+                    Collectors.groupingBy(key, Collectors.mapping(value, Collectors.toCollection(LinkedHashSet::new)))
+                )
+            );
+    }
+
+    /**
      * 将collection转化为List集合，但是两者的泛型不同<br>
      * <B>{@code Collection<E>  ------>  List<T> } </B>
      *
@@ -220,7 +274,7 @@ public class StreamUtils {
             .stream()
             .map(function)
             .filter(Objects::nonNull)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
 
@@ -314,7 +368,7 @@ public class StreamUtils {
         Set<R> set = compareValues.stream()
             .map(compareValuesConvert)
             .filter(Objects::nonNull)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
         return data.stream().filter(t -> !set.contains(dataConvert.apply(t))).collect(Collectors.toList());
     }
 
@@ -373,7 +427,7 @@ public class StreamUtils {
         Set<R> set = compareValues.stream()
             .map(compareValuesConvert)
             .filter(Objects::nonNull)
-            .collect(Collectors.toSet());
+            .collect(Collectors.toCollection(LinkedHashSet::new));
         return data.stream().filter(t -> set.contains(dataConvert.apply(t))).collect(Collectors.toList());
     }
 
@@ -414,7 +468,7 @@ public class StreamUtils {
      */
     @SafeVarargs
     public static <T> Set<T> mergeToSet(Collection<T>... collections) {
-        return Arrays.stream(collections).filter(Objects::nonNull).flatMap(Collection::stream).collect(Collectors.toSet());
+        return Arrays.stream(collections).filter(Objects::nonNull).flatMap(Collection::stream).collect(Collectors.toCollection(LinkedHashSet::new));
     }
 
     /**
@@ -448,7 +502,7 @@ public class StreamUtils {
                 return false;
             }
             return true;
-        }).collect(Collectors.toSet());
+        }).collect(Collectors.toCollection(LinkedHashSet::new));
         if (!kSet.isEmpty()) {
             Map<K, T> ts = notPresent.apply(kSet);
             if (ts != null && !ts.isEmpty()) {
