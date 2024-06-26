@@ -85,7 +85,7 @@ public class InjectionMetaObjectHandler implements MetaObjectHandler {
      * 获取登录用户名
      */
     private String getLoginUsername() {
-        return SaSecurityContext.getContentOptional().map(BaseUser::getUsername).orElse(null);
+        return SaSecurityContext.getContextOptional().map(BaseUser::getUsername).orElse(null);
     }
 
     /**
@@ -94,7 +94,7 @@ public class InjectionMetaObjectHandler implements MetaObjectHandler {
      * @return
      */
     private Long getLoginId() {
-        return SaSecurityContext.getContentOptional().map(BaseUser::getUserId).orElse(null);
+        return SaSecurityContext.getContextOptional().map(BaseUser::getUserId).orElse(null);
     }
 
     /**
