@@ -65,7 +65,7 @@ public class SysLogininforController extends BaseController {
      *
      * @param infoId 主键
      */
-    @SaCheckPermission("system:logininfor:query")
+    @SaCheckPermission("monitor:logininfor:query")
     @GetMapping("/{infoId}")
     public R<SysLogininforVo> getInfo(@NotNull(message = "主键不能为空") @PathVariable Long infoId) {
         return R.ok(logininforService.queryById(infoId));
