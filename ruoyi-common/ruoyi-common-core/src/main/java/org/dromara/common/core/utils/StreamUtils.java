@@ -494,6 +494,21 @@ public class StreamUtils {
      * @return
      */
     public static <K, T> List<T> take(Collection<K> keys, Function<K, T> take, Function<Set<K>, Map<K, T>> notPresent) {
+        return take(keys, take, null, notPresent);
+    }
+
+    /**
+     * 从方法中获取key的数据， 如果没有这个数据，则汇总后，从回调中获取
+     *
+     * @param keys       关键字，一般是一个id
+     * @param take       获取方法
+     * @param set        设置方法
+     * @param notPresent 没有值时的获取方法
+     * @param <K>
+     * @param <T>
+     * @return
+     */
+    public static <K, T> List<T> take(Collection<K> keys, Function<K, T> take, BiConsumer<K, T> set, Function<Set<K>, Map<K, T>> notPresent) {
         Map<K, T> temp = new LinkedHashMap<>();
         Set<K> kSet = keys.stream().distinct().filter(k -> {
             T t = take.apply(k);
@@ -510,7 +525,16 @@ public class StreamUtils {
             }
         }
         // 按照顺序，重新获取一遍
-        return keys.stream().map(temp::get).filter(Objects::nonNull).collect(Collectors.toList());
+        return keys.stream()
+            .map(k -> {
+                T t = temp.get(k);
+                if (t != null && set != null) {
+                    set.accept(k, t);
+                }
+                return t;
+            })
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
     }
 
     /**

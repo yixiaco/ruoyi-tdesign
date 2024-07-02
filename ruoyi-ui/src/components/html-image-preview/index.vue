@@ -38,7 +38,7 @@ function replaceImageWithComponent() {
       images.value = imageElements
         .filter((img) => img.src)
         .map((img, i) => {
-          img.style.cursor = 'pointer';
+          img.style.cursor = 'zoom-in';
           img.addEventListener('click', () => {
             index.value = i;
             visible.value = true;
