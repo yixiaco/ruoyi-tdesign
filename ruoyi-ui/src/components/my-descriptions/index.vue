@@ -12,6 +12,7 @@
         :title="title"
         :label-style="effectiveLabelStyle"
         :content-style="contentStyle"
+        :table-layout="tableLayout"
       >
         <slot />
       </t-descriptions>
@@ -19,7 +20,7 @@
   </t-loading>
 </template>
 <script setup lang="ts">
-import type { TdDescriptionItemProps } from 'tdesign-vue-next';
+import type { TdDescriptionsProps } from 'tdesign-vue-next';
 import type { PropType } from 'vue';
 import { computed } from 'vue';
 
@@ -50,23 +51,28 @@ const props = defineProps({
   },
   // 描述列表的布局方式
   itemLayout: {
-    type: String as PropType<'horizontal' | 'vertical'>,
+    type: String as PropType<TdDescriptionsProps['itemLayout']>,
     default: 'horizontal',
   },
   // 描述项的列表。
   items: {
-    type: Array as PropType<Array<TdDescriptionItemProps>>,
+    type: Array as PropType<TdDescriptionsProps['items']>,
     default: () => null,
   },
   // 排列方向
   layout: {
-    type: String as PropType<'horizontal' | 'vertical'>,
+    type: String as PropType<TdDescriptionsProps['layout']>,
     default: 'horizontal',
   },
   // 描述列表的尺寸
   size: {
-    type: String as PropType<'small' | 'medium' | 'large'>,
+    type: String as PropType<TdDescriptionsProps['size']>,
     default: 'medium',
+  },
+  // 用于设置底层 table 单元格、行和列的布局算法，与原生 table-layout css 属性完全一致。fixed：采用固定布局算法；auto：采用自动布局算法。详情可参考 MDN。可选项：fixed/auto
+  tableLayout: {
+    type: String as PropType<TdDescriptionsProps['tableLayout']>,
+    default: 'auto',
   },
   // 描述列表的标题
   title: {
