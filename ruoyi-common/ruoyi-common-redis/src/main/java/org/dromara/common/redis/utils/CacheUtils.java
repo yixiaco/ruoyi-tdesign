@@ -108,4 +108,18 @@ public class CacheUtils {
     public static <K, T> List<T> takeCache(String cacheNames, Collection<K> keys, Function<Set<K>, Map<K, T>> notPresent) {
         return StreamUtils.take(keys, k -> get(cacheNames, k), notPresent);
     }
+
+    /**
+     * 从缓存中拿值，如果不存在的话，则从回调中取值并将值放入缓存中
+     *
+     * @param cacheNames 缓存组名称
+     * @param keys       缓存keys
+     * @param notPresent 获取不存在的值的回调
+     * @param <K>
+     * @param <T>
+     * @return
+     */
+    public static <K, T> List<T> takeCacheAndSet(String cacheNames, Collection<K> keys, Function<Set<K>, Map<K, T>> notPresent) {
+        return StreamUtils.take(keys, k -> get(cacheNames, k), (k, t) -> put(cacheNames, k, t), notPresent);
+    }
 }

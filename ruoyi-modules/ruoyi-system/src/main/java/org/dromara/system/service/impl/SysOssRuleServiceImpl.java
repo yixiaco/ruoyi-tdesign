@@ -210,7 +210,9 @@ public class SysOssRuleServiceImpl extends ServiceImpl<SysOssRuleMapper, SysOssR
                     .orderByAsc(SysOssRule::getCreateTime)
                     .list()
             );
-            SaHolder.getStorage().set(OssConstant.OSS_RULE_KEY, rules);
+            if (SpringMVCUtil.isWeb()) {
+                SaHolder.getStorage().set(OssConstant.OSS_RULE_KEY, rules);
+            }
         }
         Map<String, String> result = new LinkedHashMap<>();
         // 多个url拆分

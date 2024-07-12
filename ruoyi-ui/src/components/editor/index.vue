@@ -38,7 +38,7 @@ import 'tinymce/plugins/preview'; // 预览
 import 'tinymce/plugins/importcss'; // 引入css
 import 'tinymce/plugins/searchreplace'; // 查找替换
 import 'tinymce/plugins/autolink'; // 自动链接
-import 'tinymce/plugins/autosave'; // 自动存稿
+// import 'tinymce/plugins/autosave'; // 自动存稿
 import 'tinymce/plugins/save'; // 保存
 import 'tinymce/plugins/directionality'; // 文字方向
 import 'tinymce/plugins/code'; // 编辑源码
@@ -123,7 +123,7 @@ interface EditorProps {
 const props = withDefaults(defineProps<EditorProps>(), {
   modelValue: '',
   plugins:
-    'preview importcss searchreplace autolink autosave save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
+    'preview importcss searchreplace autolink save directionality code visualblocks visualchars fullscreen image link media codesample table charmap pagebreak nonbreaking anchor insertdatetime advlist lists wordcount help charmap quickbars emoticons',
   toolbar: `undo redo | bold italic underline strikethrough | fontfamily fontsize blocks | alignleft aligncenter alignright alignjustify | outdent indent |  numlist bullist | forecolor backcolor removeformat | pagebreak | charmap emoticons | code fullscreen  preview save print | insertfile image media link anchor codesample | ltr rtl`,
   menubar: 'file edit view insert format tools table help',
   width: '100%',
@@ -291,11 +291,11 @@ const conf = computed<RawEditorOptions>(() => {
       { text: 'Typescript', value: 'typescript' },
     ],
     codesample_global_prismjs: true, // 使用全局加载
-    autosave_ask_before_unload: true,
-    autosave_interval: '30s',
-    autosave_prefix: '{path}{query}-{id}-',
-    autosave_restore_when_empty: false,
-    autosave_retention: '2m',
+    // autosave_ask_before_unload: true,
+    // autosave_interval: '30s',
+    // autosave_prefix: '{path}{query}-{id}-',
+    // autosave_restore_when_empty: false,
+    // autosave_retention: '2m',
     image_advtab: true,
     image_caption: true,
     image_uploadtab: props.imageEnableUpload,

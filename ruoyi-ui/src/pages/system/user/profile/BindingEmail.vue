@@ -53,7 +53,7 @@ const form = ref({
 });
 
 function reset() {
-  form.value.email = props.email || {};
+  form.value.email = props.email || '';
 }
 
 /** 提交按钮 */

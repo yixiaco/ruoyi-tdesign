@@ -162,7 +162,7 @@ public class RedisLockUtil {
     public static <T> T getOrAfter(String key, Duration lease, Supplier<T> defaultSupplier, BiConsumer<String, T> after) {
         T data = RedisUtils.getObject(key);
         if (data == null) {
-            RLock lock = RedisUtils.getClient().getLock(getKey(key));
+            RLock lock = getLock(key);
             if (lease == null || lease.getSeconds() < 0) {
                 lock.lock();
             } else {
@@ -195,7 +195,7 @@ public class RedisLockUtil {
             return RedisUtils.getList(key);
         } else {
             List<T> data;
-            RLock lock = RedisUtils.getClient().getLock(getKey(key));
+            RLock lock = getLock(key);
             if (lease == null || lease.getSeconds() < 0) {
                 lock.lock();
             } else {
@@ -230,7 +230,7 @@ public class RedisLockUtil {
             return RedisUtils.getSet(key);
         } else {
             Set<T> data;
-            RLock lock = RedisUtils.getClient().getLock(getKey(key));
+            RLock lock = getLock(key);
             if (lease == null || lease.getSeconds() < 0) {
                 lock.lock();
             } else {
@@ -265,7 +265,7 @@ public class RedisLockUtil {
             return RedisUtils.getMap(key);
         } else {
             Map<String, T> data;
-            RLock lock = RedisUtils.getClient().getLock(getKey(key));
+            RLock lock = getLock(key);
             if (lease == null || lease.getSeconds() < 0) {
                 lock.lock();
             } else {
@@ -293,7 +293,7 @@ public class RedisLockUtil {
      * @param runnable 运行过程
      */
     public static void execute(String key, Runnable runnable) {
-        RLock lock = RedisUtils.getClient().getLock(getKey(key));
+        RLock lock = getLock(key);
         lock.lock();
         try {
             runnable.run();
@@ -309,7 +309,7 @@ public class RedisLockUtil {
      * @param runnable 运行过程
      */
     public static <T> T execute(String key, Supplier<T> runnable) {
-        RLock lock = RedisUtils.getClient().getLock(getKey(key));
+        RLock lock = getLock(key);
         lock.lock();
         try {
             return runnable.get();
@@ -319,9 +319,19 @@ public class RedisLockUtil {
     }
 
     /**
+     * 获取锁
+     *
+     * @param key 缓存key
+     * @return
+     */
+    public static RLock getLock(String key) {
+        return RedisUtils.getClient().getLock(getKey(key));
+    }
+
+    /**
      * 获取key
      *
-     * @param key
+     * @param key 缓存key
      * @return
      */
     public static String getKey(String key) {

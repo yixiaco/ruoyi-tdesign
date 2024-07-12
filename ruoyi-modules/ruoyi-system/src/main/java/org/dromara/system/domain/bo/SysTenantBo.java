@@ -7,6 +7,7 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.dromara.common.core.validate.AddGroup;
 import org.dromara.common.core.validate.EditGroup;
+import org.dromara.common.core.validation.Mobile;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 import org.dromara.system.domain.SysTenant;
 
@@ -17,7 +18,6 @@ import java.util.Date;
  *
  * @author Michelle.Chung
  */
-
 @Data
 @EqualsAndHashCode(callSuper = true)
 @AutoMapper(target = SysTenant.class, reverseConvertGenerate = false)
@@ -43,6 +43,7 @@ public class SysTenantBo extends BaseEntity {
     /**
      * 联系电话
      */
+    @Mobile(message = "联系电话格式错误", groups = { AddGroup.class, EditGroup.class })
     @NotBlank(message = "联系电话不能为空", groups = { AddGroup.class, EditGroup.class })
     private String contactPhone;
 

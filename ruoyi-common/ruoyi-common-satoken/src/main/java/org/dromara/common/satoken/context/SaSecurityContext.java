@@ -43,7 +43,7 @@ public class SaSecurityContext {
      *
      * @return
      */
-    public static <T extends BaseUser> Optional<T> getContentOptional() {
+    public static <T extends BaseUser> Optional<T> getContextOptional() {
         return Optional.ofNullable(getContext());
     }
 }

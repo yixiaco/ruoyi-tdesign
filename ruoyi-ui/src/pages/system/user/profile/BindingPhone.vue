@@ -53,7 +53,7 @@ const form = ref({
 });
 
 function reset() {
-  form.value.phonenumber = props.phone || {};
+  form.value.phonenumber = props.phone || '';
 }
 
 /** 提交按钮 */
