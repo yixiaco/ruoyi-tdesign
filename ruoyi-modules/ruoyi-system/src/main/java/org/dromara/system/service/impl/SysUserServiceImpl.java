@@ -420,11 +420,11 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     private void insertUserPost(SysUserBo user, boolean clear) {
         Long[] posts = user.getPostIds();
+        if (clear) {
+            // 删除用户与岗位关联
+            userPostMapper.delete(new LambdaQueryWrapper<SysUserPost>().eq(SysUserPost::getUserId, user.getUserId()));
+        }
         if (ArrayUtil.isNotEmpty(posts)) {
-            if (clear) {
-                // 删除用户与岗位关联
-                userPostMapper.delete(new LambdaQueryWrapper<SysUserPost>().eq(SysUserPost::getUserId, user.getUserId()));
-            }
             // 新增用户与岗位管理
             List<SysUserPost> list = StreamUtils.toList(List.of(posts), postId -> {
                 SysUserPost up = new SysUserPost();
