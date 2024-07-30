@@ -257,6 +257,29 @@ public class StreamUtils {
     }
 
     /**
+     * 将collection转化为扁平的List集合，但是两者的泛型不同<br>
+     * <B>{@code Collection<E>  ------>  List<T> } </B>
+     *
+     * @param collection 需要转化的集合
+     * @param function   collection中的泛型转化为list泛型的lambda表达式
+     * @param <E>        collection中的泛型
+     * @param <T>        List中的泛型
+     * @return 转化后的list
+     */
+    public static <E, T> List<T> toFlatList(Collection<E> collection, Function<E, Collection<T>> function) {
+        if (CollUtil.isEmpty(collection)) {
+            return CollUtil.newArrayList();
+        }
+        // 注意此处不要使用 .toList() 新语法 因为返回的是不可变List 会导致序列化问题
+        return collection
+            .stream()
+            .filter(Objects::nonNull)
+            .flatMap(e -> function.apply(e).stream())
+            .filter(Objects::nonNull)
+            .collect(Collectors.toList());
+    }
+
+    /**
      * 将collection转化为Set集合，但是两者的泛型不同<br>
      * <B>{@code Collection<E>  ------>  Set<T> } </B>
      *
@@ -273,6 +296,27 @@ public class StreamUtils {
         return collection
             .stream()
             .map(function)
+            .filter(Objects::nonNull)
+            .collect(Collectors.toCollection(LinkedHashSet::new));
+    }
+
+    /**
+     * 将collection转化为扁平的Set集合，但是两者的泛型不同<br>
+     * <B>{@code Collection<E>  ------>  Set<T> } </B>
+     *
+     * @param collection 需要转化的集合
+     * @param function   collection中的泛型转化为set泛型的lambda表达式
+     * @param <E>        collection中的泛型
+     * @param <T>        Set中的泛型
+     * @return 转化后的Set
+     */
+    public static <E, T> Set<T> toFlatSet(Collection<E> collection, Function<E, Collection<T>> function) {
+        if (CollUtil.isEmpty(collection) || function == null) {
+            return CollUtil.newHashSet();
+        }
+        return collection
+            .stream()
+            .flatMap(e -> function.apply(e).stream())
             .filter(Objects::nonNull)
             .collect(Collectors.toCollection(LinkedHashSet::new));
     }
