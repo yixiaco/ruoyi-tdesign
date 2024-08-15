@@ -22,6 +22,7 @@
         :shape="shape"
         :position="position"
         :referrerpolicy="referrerPolicy"
+        class="image-preview"
         :class="{ image_animation: animation }"
         :lazy="lazy"
         :gallery="realPreviewSrcList.length > 1"
@@ -29,7 +30,7 @@
         @mouseenter="hover = true"
         @mouseleave="hover = false"
       >
-        <template #overlayContent>
+        <template v-if="preview" #overlayContent>
           <div
             class="overlay"
             style="
@@ -40,12 +41,14 @@
               align-items: center;
               justify-content: center;
               border-radius: inherit;
+              cursor: pointer;
             "
             @click.stop="open"
           >
             <t-tag style="background: transparent; color: #fff">
-              <slot name="previewSlot" />
-              <template v-if="!$slots.previewSlot"> <browse-icon size="16" /> {{ previewText }} </template>
+              <slot name="previewSlot">
+                <browse-icon size="16" /> <span class="preview-text">{{ previewText }}</span>
+              </slot>
             </t-tag>
           </div>
         </template>
@@ -59,7 +62,7 @@
 
 <script lang="tsx" setup>
 import { BrowseIcon, ImageErrorIcon } from 'tdesign-icons-vue-next';
-import type { ImageViewerScale } from 'tdesign-vue-next';
+import type { TdImageProps, TdImageViewerProps } from 'tdesign-vue-next';
 import type { PropType } from 'vue';
 import { computed, ref, watchEffect } from 'vue';
 
@@ -70,6 +73,11 @@ const props = defineProps({
   // 显示地址
   src: {
     type: String,
+  },
+  // 是否可预览
+  preview: {
+    type: Boolean,
+    default: true,
   },
   // 预览地址，为空则使用src显示地址
   previewSrc: {
@@ -106,41 +114,32 @@ const props = defineProps({
   alt: [String],
   // 图片填充模式
   fit: {
-    type: String as PropType<'contain' | 'cover' | 'fill' | 'none' | 'scale-down'>,
-    default: 'fill',
+    type: String as PropType<TdImageProps['fit']>,
+    default: 'cover',
   },
   // 图片圆角类型
   shape: {
-    type: String as PropType<'circle' | 'round' | 'square'>,
+    type: String as PropType<TdImageProps['shape']>,
     default: 'round',
   },
   // 等同于原生的 object-position 属性，可选值为 top right bottom left 或 string，可以自定义任何单位，px 或者 百分比
   position: {
-    type: String as PropType<'top' | 'right' | 'bottom' | 'left' | 'center' | string>,
+    type: String as PropType<TdImageProps['position']>,
     default: 'center',
   },
   // img标签的原生属性，<a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Referrer-Policy">MDN 定义</a>
   referrerPolicy: {
-    type: String as PropType<
-      | 'no-referrer'
-      | 'no-referrer-when-downgrade'
-      | 'origin'
-      | 'origin-when-cross-origin'
-      | 'same-origin'
-      | 'strict-origin'
-      | 'strict-origin-when-cross-origin'
-      | 'unsafe-url'
-    >,
+    type: String as PropType<TdImageProps['referrerpolicy']>,
     default: 'strict-origin-when-cross-origin',
   },
   // 模态预览（modal）和非模态预览（modeless)。可选项：modal/modeless
   mode: {
-    type: String as PropType<'modal' | 'modeless'>,
+    type: String as PropType<TdImageViewerProps['mode']>,
     default: 'modal',
   },
   // 限制预览器缩放的最小宽度和最小高度，仅 mode=modeless 时有效
   viewerScale: {
-    type: Object as PropType<ImageViewerScale>,
+    type: Object as PropType<TdImageViewerProps['viewerScale']>,
   },
   // 预览标题。
   title: {
@@ -149,7 +148,7 @@ const props = defineProps({
 });
 
 const realSrc = ref('');
-const realPreviewSrcList = ref([]);
+const realPreviewSrcList = ref<string[]>([]);
 const hover = ref(false);
 const scale = computed(() => (hover.value ? 1.1 : 1));
 
@@ -159,8 +158,8 @@ watchEffect(() => {
   const srcIdMode = src && /^([0-9],?)+$/.test(src);
   const previewSrcIdMode = previewSrc && /^([0-9],?)+$/.test(previewSrc);
   let ids: string[] = [];
-  let srcFirst: string;
-  let previewSrcArr: string[];
+  let srcFirst: string = '';
+  let previewSrcArr: string[] = [];
   if (srcIdMode) {
     srcFirst = src.split(',')[0];
     ids.push(srcFirst);
@@ -220,8 +219,28 @@ const realHeight = computed(() => (typeof props.height === 'string' ? props.heig
   img,
   .overlay {
     transition: all 0.3s;
-    cursor: pointer;
     transform: scale(v-bind(scale));
+  }
+}
+
+.image-preview {
+  cursor: unset;
+  :deep(img) {
+    vertical-align: top;
+  }
+  .overlay {
+    container: overlay-container / size;
+    .preview-text {
+      display: inline;
+    }
+  }
+  @container overlay-container (width <= 50px) {
+    .overlay .preview-text {
+      display: none;
+    }
+    .t-tag .t-icon {
+      margin-right: 0;
+    }
   }
 }
 
