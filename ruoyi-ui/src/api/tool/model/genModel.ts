@@ -198,6 +198,8 @@ export interface GenTableOptions {
   isUseEditMethod?: boolean;
   /** 是否使用删除方法 */
   isUseRemoveMethod?: boolean;
+  /** 是否使用导入方法 */
+  isUseImportMethod?: boolean;
   /** 是否使用导出方法 */
   isUseExportMethod?: boolean;
   /** 是否使用详情方法 */

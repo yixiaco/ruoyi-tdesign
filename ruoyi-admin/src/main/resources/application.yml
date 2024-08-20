@@ -188,6 +188,7 @@ tenant:
     - sys_oss_rule
     - sys_dict_data
     - sys_dict_type
+    - sys_sensitive_word
 
 # MyBatisPlus配置
 # https://baomidou.com/config/

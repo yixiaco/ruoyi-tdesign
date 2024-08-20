@@ -1,0 +1,100 @@
+package ${packageName}.listener;
+
+import com.alibaba.excel.context.AnalysisContext;
+import com.alibaba.excel.event.AnalysisEventListener;
+import org.dromara.common.core.exception.ServiceException;
+import org.dromara.common.core.utils.MapstructUtils;
+import org.dromara.common.core.utils.ValidatorUtils;
+import org.dromara.common.core.validate.AddGroup;
+import org.dromara.common.core.validate.EditGroup;
+import org.dromara.common.excel.core.ExcelListener;
+import org.dromara.common.excel.core.ExcelResult;
+#if($isUseBO)
+#set($bo="${ClassName}Bo")
+#set($boObjName="bo")
+import ${packageName}.domain.bo.${ClassName}Bo;
+#else
+#set($bo=$ClassName)
+#set($boObjName="${className}")
+import ${packageName}.domain.${ClassName};
+#end
+import ${packageName}.domain.template.${ClassName}ImportTemplate;
+import ${packageName}.service.I${ClassName}Service;
+
+import java.util.List;
+
+/**
+ * ${functionName}自定义导入
+ *
+ * @author ${author}
+ * @date ${datetime}
+ */
+public class ${ClassName}ImportListener extends AnalysisEventListener<${ClassName}ImportTemplate> implements ExcelListener<${ClassName}ImportTemplate> {
+
+    private final I${ClassName}Service ${className}Service;
+
+    private final boolean isUpdateSupport;
+
+    private int successNum = 1;
+    private int failureNum = 0;
+    private final StringBuilder successMsg = new StringBuilder();
+    private final StringBuilder failureMsg = new StringBuilder();
+
+    public ${ClassName}ImportListener(I${ClassName}Service sysSensitiveWordService, boolean isUpdateSupport) {
+        this.sysSensitiveWordService = sysSensitiveWordService;
+        this.isUpdateSupport = isUpdateSupport;
+    }
+
+    @Override
+    public void invoke(${ClassName}ImportTemplate importTemplate, AnalysisContext context) {
+        try {
+            $bo $boObjName = MapstructUtils.convert(importTemplate, ${bo}.class);
+            if (!isUpdateSupport) {
+                ValidatorUtils.validate($boObjName, AddGroup.class);
+                sysSensitiveWordService.insertByBo($boObjName);
+                successNum++;
+                successMsg.append("<br/>第").append(successNum).append("行 导入成功");
+            } else {
+                ValidatorUtils.validate($boObjName, EditGroup.class);
+                sysSensitiveWordService.updateByBo($boObjName);
+                successNum++;
+                successMsg.append("<br/>第").append(successNum).append("行 更新成功");
+            }
+        } catch (Exception e) {
+            failureNum++;
+            failureMsg.append("<br/>第").append(failureNum).append("行 导入失败：").append(e.getMessage());
+        }
+    }
+
+    @Override
+    public void doAfterAllAnalysed(AnalysisContext context) {
+
+    }
+
+    @Override
+    public ExcelResult<${ClassName}ImportTemplate> getExcelResult() {
+        return new ExcelResult<>() {
+
+            @Override
+            public String getAnalysis() {
+                if (failureNum > 0) {
+                    failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
+                    throw new ServiceException(failureMsg.toString());
+                } else {
+                    successMsg.insert(0, "恭喜您，数据已全部导入成功！共 " + successNum + " 条，数据如下：");
+                }
+                return successMsg.toString();
+            }
+
+            @Override
+            public List<${ClassName}ImportTemplate> getList() {
+                return null;
+            }
+
+            @Override
+            public List<String> getErrorList() {
+                return null;
+            }
+        };
+    }
+}

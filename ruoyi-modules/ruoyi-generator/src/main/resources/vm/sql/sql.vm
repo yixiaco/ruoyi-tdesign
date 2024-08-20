@@ -28,3 +28,8 @@ insert into sys_menu (menu_id, menu_name, parent_id, order_num, path, component,
 values(${table.menuIds[5]}, '${functionName}导出', ${table.menuIds[0]}, '5',  '#', '', '', 0, 1, 'F', '1', '1', '${permissionPrefix}:export',       '#', 103, 1, sysdate(), null, null, '');
 
 #end
+#if($isUseImportMethod)
+insert into sys_menu (menu_id, menu_name, parent_id, order_num, path, component, query_param, is_frame, is_cache, menu_type, visible, status, perms, icon, create_dept, create_by, create_time, update_by, update_time, remark)
+values(${table.menuIds[6]}, '${functionName}导入', ${table.menuIds[0]}, '6',  '#', '', '', 0, 1, 'F', '1', '1', '${permissionPrefix}:import',       '#', 103, 1, sysdate(), null, null, '');
+
+#end

@@ -366,23 +366,27 @@
       attach="body"
       :footer="null"
     >
-      <t-upload
-        ref="uploadRef"
-        :limit="1"
-        accept=".xlsx, .xls"
-        :headers="upload.headers"
-        :action="upload.url + '?updateSupport=' + upload.updateSupport"
-        :disabled="upload.isUploading"
-        :on-progress="handleFileUploadProgress"
-        :on-success="handleFileSuccess"
-        :auto-upload="false"
-        theme="file"
-        draggable
-        tips="仅允许导入xls、xlsx格式文件。"
-      >
-      </t-upload>
-      <div><t-checkbox v-model="upload.updateSupport" />是否更新已经存在的用户数据</div>
-      <t-link hover="color" style="font-size: 12px; vertical-align: baseline" @click="importTemplate">下载模板</t-link>
+      <t-space direction="vertical" size="4px">
+        <t-upload
+          ref="uploadRef"
+          :limit="1"
+          accept=".xlsx, .xls"
+          :headers="upload.headers"
+          :action="upload.url + '?updateSupport=' + upload.updateSupport"
+          :disabled="upload.isUploading"
+          :on-progress="handleFileUploadProgress"
+          :on-success="handleFileSuccess"
+          :auto-upload="false"
+          theme="file"
+          draggable
+          tips="仅允许导入xls、xlsx格式文件。"
+        >
+        </t-upload>
+        <div><t-checkbox v-model="upload.updateSupport" />是否更新已经存在的用户数据</div>
+        <t-link theme="primary" hover="color" style="font-size: 12px; vertical-align: baseline" @click="importTemplate">
+          下载模板
+        </t-link>
+      </t-space>
     </t-dialog>
 
     <!-- 用户信息详情 -->
@@ -501,7 +505,7 @@ const roleOptions = ref<SysRoleVo[]>([]);
 const deptActived = ref<number[]>([]);
 const sort = ref<TableSort>();
 const { token } = storeToRefs(useUserStore());
-/** * 用户导入参数 */
+/** 用户导入参数 */
 const upload = reactive({
   // 是否显示弹出层（用户导入）
   open: false,

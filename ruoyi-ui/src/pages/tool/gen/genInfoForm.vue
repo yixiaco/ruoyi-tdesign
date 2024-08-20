@@ -163,6 +163,7 @@
             <t-checkbox v-model="info.tableOptions.isUseAddMethod">新增</t-checkbox>
             <t-checkbox v-model="info.tableOptions.isUseEditMethod">编辑</t-checkbox>
             <t-checkbox v-model="info.tableOptions.isUseRemoveMethod">删除</t-checkbox>
+            <t-checkbox v-model="info.tableOptions.isUseImportMethod">导入</t-checkbox>
             <t-checkbox v-model="info.tableOptions.isUseExportMethod">导出</t-checkbox>
             <t-checkbox v-model="info.tableOptions.isUseDetailMethod">详情</t-checkbox>
             <t-checkbox v-model="info.tableOptions.isUseQueryMethod">查询</t-checkbox>

@@ -116,6 +116,11 @@
             <scope>compile</scope>
         </dependency>
 
+        <dependency>
+            <groupId>cn.hutool</groupId>
+            <artifactId>hutool-dfa</artifactId>
+        </dependency>
+
     </dependencies>
 
 </project>

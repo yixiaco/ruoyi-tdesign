@@ -110,11 +110,15 @@ public class VelocityUtils {
         if (options.getIsUseQuery()) {
             templates.add("vm/java/query.java.vm");
         }
+        if (options.getIsUseBO()) {
+            templates.add("vm/java/bo.java.vm");
+        }
         if (options.getIsUseVO()) {
             templates.add("vm/java/vo.java.vm");
         }
-        if (options.getIsUseBO()) {
-            templates.add("vm/java/bo.java.vm");
+        if (options.getIsUseImportMethod()) {
+            templates.add("vm/java/import.java.vm");
+            templates.add("vm/java/listener.java.vm");
         }
         if (options.getIsUseController()) {
             templates.add("vm/java/controller.java.vm");
@@ -176,6 +180,12 @@ public class VelocityUtils {
         }
         if (template.contains("bo.java.vm")) {
             fileName = StringUtils.format("{}/domain/bo/{}Bo.java", javaPath, className);
+        }
+        if (template.contains("import.java.vm")) {
+            fileName = StringUtils.format("{}/domain/template/{}ImportTemplate.java", javaPath, className);
+        }
+        if (template.contains("listener.java.vm")) {
+            fileName = StringUtils.format("{}/listener/{}ImportListener.java", javaPath, className);
         }
         if (template.contains("mapper.java.vm")) {
             fileName = StringUtils.format("{}/mapper/{}Mapper.java", javaPath, className);
