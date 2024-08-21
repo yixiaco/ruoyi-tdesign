@@ -272,7 +272,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
 
     private Map<String, String> previewCode(GenTableVo tableVo) {
         List<Long> menuIds = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 7; i++) {
             menuIds.add(identifierGenerator.nextId(null).longValue());
         }
         tableVo.setMenuIds(menuIds);
@@ -430,7 +430,7 @@ public class GenTableServiceImpl extends ServiceImpl<GenTableMapper, GenTable> i
         // 查询表信息
         GenTableVo table = baseMapper.selectGenTableById(tableId);
         List<Long> menuIds = new ArrayList<>();
-        for (int i = 0; i < 6; i++) {
+        for (int i = 0; i < 7; i++) {
             menuIds.add(identifierGenerator.nextId(null).longValue());
         }
         table.setMenuIds(menuIds);

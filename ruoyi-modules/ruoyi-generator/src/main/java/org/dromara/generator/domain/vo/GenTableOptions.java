@@ -69,6 +69,10 @@ public class GenTableOptions implements Serializable {
      */
     private Boolean isUseRemoveMethod = true;
     /**
+     * 是否使用导入方法
+     */
+    private Boolean isUseImportMethod = false;
+    /**
      * 是否使用导出方法
      */
     private Boolean isUseExportMethod = true;

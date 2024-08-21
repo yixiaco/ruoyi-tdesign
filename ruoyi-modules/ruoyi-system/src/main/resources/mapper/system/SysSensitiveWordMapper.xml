@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="org.dromara.system.mapper.SysSensitiveWordMapper">
+
+    <resultMap id="SysSensitiveWordResult" autoMapping="true" type="org.dromara.system.domain.SysSensitiveWord">
+        <id property="wordId" column="word_id"/>
+    </resultMap>
+    <resultMap id="SysSensitiveWordResultVo" autoMapping="true" type="org.dromara.system.domain.vo.SysSensitiveWordVo">
+        <id property="wordId" column="word_id"/>
+    </resultMap>
+
+    <sql id="selectSysSensitiveWordVo">
+        select ssw.word_id, ssw.word, ssw.category, ssw.description, ssw.status, ssw.create_dept, ssw.create_by, ssw.update_by, ssw.update_time, ssw.create_time from sys_sensitive_word ssw
+    </sql>
+    <select id="queryList" parameterType="org.dromara.system.domain.query.SysSensitiveWordQuery" resultMap="SysSensitiveWordResultVo">
+        <include refid="selectSysSensitiveWordVo"/>
+        <where>
+            <if test="word != null and word != ''"> and ssw.word like concat(concat('%', #{word}), '%')</if>
+            <if test="category != null and category != ''"> and ssw.category = #{category}</if>
+            <if test="status != null"> and ssw.status = #{status}</if>
+        </where>
+        order by ssw.create_time desc
+    </select>
+
+</mapper>

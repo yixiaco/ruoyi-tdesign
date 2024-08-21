@@ -298,6 +298,7 @@ insert into sys_menu values('115',  '代码生成',     '3',   '2', 'gen',      
 insert into sys_menu values('121',  '租户管理',     '6',   '1', 'tenant',           'system/tenant/index','Tenant',          '', 0, 1, 'C', '1', '1', 'system:tenant:list',          'bulletpoint',          null, null, 103, 1, sysdate(), null, null, '租户管理菜单');
 insert into sys_menu values('122',  '租户套餐管理',  '6',   '2', 'tenantPackage',    'system/tenantPackage/index','TenantPackage',   '', 0, 1, 'C', '1', '1', 'system:tenantPackage:list',   'edit-1',          null, null, 103, 1, sysdate(), null, null, '租户套餐管理菜单');
 insert into sys_menu values('123',  '客户端管理',   '1',   '12', 'client',           'system/client/index','Client',          '', 0, 1, 'C', '1', '1', 'system:client:list',          'internet', null, null, 103, 1, sysdate(), null, null, '客户端管理菜单');
+insert into sys_menu values('124',  '敏感词',      '1', '13', 'sensitiveWord', 'system/sensitiveWord/index', 'SensitiveWord', '', 0, 1, 'C', '1', '1', 'system:sensitiveWord:list', 'book-open', null, null, 103, 1, sysdate(), 1, sysdate(), '敏感词菜单');
 
 -- springboot-admin监控
 insert into sys_menu values('117',  'Admin监控',   '2',   '5',  'Admin',            'monitor/admin/index','Admin',         '', 0, 1, 'C', '1', '1', 'monitor:admin:list',           'dashboard',     null, '!getProperty(\'spring.boot.admin.client.enabled\')', 103, 1, sysdate(), null, null, 'Admin监控菜单');
@@ -426,6 +427,13 @@ insert into sys_menu values('1703', '租户应用管理新增', '1701', 2, '#', 
 insert into sys_menu values('1704', '租户应用管理修改', '1701', 3, '#', '', '', null, 0, 1, 'F', '1', '1', 'system:tenantApp:edit', '#', null, null, 103, 1, sysdate(), null, null, '');
 insert into sys_menu values('1705', '租户应用管理删除', '1701', 4, '#', '', '', null, 0, 1, 'F', '1', '1', 'system:tenantApp:remove', '#', null, null, 103, 1, sysdate(), null, null, '');
 insert into sys_menu values('1706', '租户应用管理导出', '1701', 5, '#', '', '', null, 0, 1, 'F', '1', '1', 'system:tenantApp:export', '#', null, null, 103, 1, sysdate(), null, null, '');
+-- 敏感词
+insert into sys_menu values ('1710', '敏感词查询', '124', 1, '#', '', NULL, '', 0, 1, 'F', '1', '1', 'system:sensitiveWord:query', '#', null, null, 103, 1, sysdate(), null, null, '');
+insert into sys_menu values ('1711', '敏感词新增', '124', 2, '#', '', null, '', 0, 1, 'F', '1', '1', 'system:sensitiveWord:add', '#', null, null, 103, 1, sysdate(), null, null, '');
+insert into sys_menu values ('1712', '敏感词修改', '124', 3, '#', '', null, '', 0, 1, 'F', '1', '1', 'system:sensitiveWord:edit', '#', null, null, 103, 1, sysdate(), null, null, '');
+insert into sys_menu values ('1713', '敏感词删除', '124', 4, '#', '', null, '', 0, 1, 'F', '1', '1', 'system:sensitiveWord:remove', '#', null, null, 103, 1, sysdate(), null, null, '');
+insert into sys_menu values ('1714', '敏感词导出', '124', 5, '#', '', null, '', 0, 1, 'F', '1', '1', 'system:sensitiveWord:export', '#', null, null, 103, 1, sysdate(), null, null, '');
+insert into sys_menu values ('1715', '敏感词导入', '124', 6, '#', '', null, '', 0, 1, 'F', '1', '1', 'system:sensitiveWord:import', '#', null, null, 103, 1, sysdate(), null, null, '');
 
 -- 消息管理
 insert into sys_menu values('1801', '消息管理', '1', 11, 'messageManage', null, null, null, 0, 1, 'M', '1', '1', null, 'chat', null, null, 103, 1, sysdate(), 1, sysdate(), '');
@@ -673,6 +681,7 @@ insert into sys_dict_type values(13, '000000', '消息支持平台', 'sys_messag
 insert into sys_dict_type values(14, '000000', '消息模板类型', 'sys_message_template_mode', 103, 1, sysdate(), 1, sysdate(), null);
 insert into sys_dict_type values(15, '000000', '授权类型', 'sys_grant_type',     103, 1, sysdate(), null, null, '认证授权类型');
 insert into sys_dict_type values(16, '000000', '设备类型', 'sys_device_type',    103, 1, sysdate(), null, null, '客户端设备类型');
+insert into sys_dict_type values(17, '000000', '敏感词类别', 'sensitive_words_category', 103, 1, sysdate(), 1, sysdate(), null);
 
 
 -- ----------------------------
@@ -757,7 +766,7 @@ insert into sys_dict_data values(58, '000000', 11, '助通短信', 'ZHUTONG', 's
 insert into sys_dict_data values(59, '000000', 12, '鼎众短信', 'DING_ZHONG', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, sysdate(), 1, sysdate(), null);
 insert into sys_dict_data values(60, '000000', 13, '联麓短信', 'LIAN_LU', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, sysdate(), 1, sysdate(), null);
 insert into sys_dict_data values(61, '000000', 14, '七牛云短信', 'QI_NIU', 'sys_message_supplier_type', null, 'primary', null, 'N', 103, 1, sysdate(), 1, sysdate(), null);
-
+insert into sys_dict_data values(70, '000000', 99, '其他', 'other', 'sensitive_words_category', null, 'primary', null, 'N', 103, 1, sysdate(), 1, sysdate(), null);
 
 
 
@@ -1146,3 +1155,21 @@ create table sys_message_template  (
     index idx_message_key_id(message_key_id) using btree,
     index idx_message_key(message_key, message_type, status) using btree
 ) engine = innodb comment = '消息模板表';
+
+-- ----------------------------
+-- 敏感词表
+-- ----------------------------
+drop table if exists sys_sensitive_word;
+create table sys_sensitive_word  (
+  word_id       bigint          not null            comment '敏感词id',
+  word          varchar(255)    not null            comment '敏感词',
+  category      varchar(20)     not null            comment '敏感词类别',
+  description   varchar(500)    null default null   comment '描述',
+  status        tinyint         not null            comment '启用状态 1启用 0禁用',
+  create_dept   bigint          null default null   comment '创建部门',
+  create_by     bigint          null default null   comment '创建者',
+  update_by     bigint          null default null   comment '更新者',
+  update_time   datetime        null default null   comment '更新时间',
+  create_time   datetime        not null            comment '创建时间',
+  primary key (word_id) using btree
+) engine = innodb comment = '敏感词表';

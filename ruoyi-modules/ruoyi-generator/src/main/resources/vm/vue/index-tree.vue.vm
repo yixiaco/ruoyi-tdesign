@@ -20,7 +20,7 @@
         <t-form-item label="${comment}" name="${column.javaField}">
           <t-input v-model="queryParams.${column.javaField}" placeholder="请输入${comment}" clearable @enter="handleQuery" />
         </t-form-item>
-#elseif(($column.htmlType == "select" || $column.htmlType == "radio" || $column.htmlType == "checkbox") && "" != $dictType)
+#elseif(($column.htmlType == "select" || $column.htmlType == "radio" || $column.htmlType == "checkbox") && $dictType)
         <t-form-item label="${comment}" name="${column.javaField}">
           #if($column.queryType == "IN")
           <t-select
@@ -43,7 +43,7 @@
             />
           </t-select>
         </t-form-item>
-#elseif(($column.htmlType == "select" || $column.htmlType == "radio" || $column.htmlType == "checkbox") && $dictType)
+#elseif($column.htmlType == "select" || $column.htmlType == "radio" || $column.htmlType == "checkbox")
         <t-form-item label="${comment}" name="${column.javaField}">
           <t-select v-model="queryParams.${column.javaField}" placeholder="请选择${comment}" clearable>
             <t-option label="请选择字典生成" value="" />
@@ -116,6 +116,17 @@
                 <template #icon> <unfold-less-icon v-if="isExpand" /> <unfold-more-icon v-else /> </template>
                 全部{{ isExpand ? '折叠' : '展开' }}
               </t-button>
+#if($isUseImportMethod)
+              <t-button
+                v-hasPermi="['${moduleName}:${businessName}:import']"
+                theme="default"
+                variant="outline"
+                @click="openImportExcel = true"
+              >
+                <template #icon> <upload-icon /> </template>
+                导入
+              </t-button>
+#end
 #if($isUseExportMethod)
               <t-button v-hasPermi="['${moduleName}:${businessName}:export']" theme="default" variant="outline" @click="handleExport">
                 <template #icon> <download-icon /> </template>
@@ -189,7 +200,7 @@
       :header="title"
       destroy-on-close
       :close-on-overlay-click="false"
-      width="500px"
+      width="min(500px, 100%)"
       attach="body"
       :confirm-btn="{
         loading: buttonLoading,
@@ -248,7 +259,7 @@
           <t-form-item label="${comment}" name="${field}">
             <editor v-model="form.${field}" />
           </t-form-item>
-#elseif($column.htmlType == "select" && "" != $dictType)
+#elseif($column.htmlType == "select" && $dictType)
           <t-form-item label="${comment}" name="${field}">
             <t-select v-model="form.${field}" placeholder="请选择${comment}" clearable>
               <t-option
@@ -263,13 +274,13 @@
               />
             </t-select>
           </t-form-item>
-#elseif($column.htmlType == "select" && $dictType)
+#elseif($column.htmlType == "select")
           <t-form-item label="${comment}" name="${field}">
             <t-select v-model="form.${field}" placeholder="请选择${comment}" clearable>
               <t-option label="请选择字典生成" value="" />
             </t-select>
           </t-form-item>
-#elseif($column.htmlType == "checkbox" && "" != $dictType)
+#elseif($column.htmlType == "checkbox" && $dictType)
           <t-form-item label="${comment}" name="${field}">
             <t-checkbox-group :model-value="form.${field}?.split(',') ?? []" @update:model-value="form.${field} = ${event}.filter((item: any) => item).join(',')">
               <t-checkbox
@@ -280,13 +291,13 @@
               </t-checkbox>
             </t-checkbox-group>
           </t-form-item>
-#elseif($column.htmlType == "checkbox" && $dictType)
+#elseif($column.htmlType == "checkbox")
           <t-form-item label="${comment}" name="${field}">
             <t-checkbox-group :model-value="form.${field}?.split(',') ?? []" @update:model-value="form.${field} = ${event}.filter((item: any) => item).join(',')">
               <t-checkbox>请选择字典生成</t-checkbox>
             </t-checkbox-group>
           </t-form-item>
-#elseif($column.htmlType == "radio" && "" != $dictType)
+#elseif($column.htmlType == "radio" && $dictType)
           <t-form-item label="${comment}" name="${field}">
             <t-radio-group v-model="form.${field}">
               <t-radio
@@ -300,7 +311,7 @@
               >{{dict.label}}</t-radio>
             </t-radio-group>
           </t-form-item>
-#elseif($column.htmlType == "radio" && $dictType)
+#elseif($column.htmlType == "radio")
           <t-form-item label="${comment}" name="${field}">
             <t-radio-group v-model="form.${field}">
               <t-radio value="1">请选择字典生成</t-radio>
@@ -334,7 +345,7 @@
       v-model:visible="openView"
       header="${functionName}详情"
       placement="center"
-      width="700px"
+      width="min(700px, 100%)"
       attach="body"
       :footer="false"
     >
@@ -372,6 +383,18 @@
       </my-descriptions>
     </t-dialog>
 #end
+#if($isUseImportMethod)
+
+    <!-- ${functionName}导入对话框 -->
+    <upload-excel
+      v-model:visible="openImportExcel"
+      title="敏感词导入"
+      upload-api="${moduleName}/${businessName}/importData"
+      download-template-api="/${moduleName}/${businessName}/importTemplate"
+      template-filename="${businessName}_template"
+      @refresh="getList()"
+    />
+#end
   </t-card>
 </template>
 <script lang="ts" setup>
@@ -400,6 +423,9 @@ import {
   SettingIcon,
   UnfoldLessIcon,
   UnfoldMoreIcon,
+#if($isUseImportMethod)
+  UploadIcon,
+#end
 } from 'tdesign-icons-vue-next';
 #end
 import type {
@@ -421,7 +447,6 @@ import type {
 #end
 } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
-
 ## 导入对象类型
 #set($importApiModel = [])
 #if((!$isUseBO && $addOrUpdate || (!$isUseQuery && !$isUseBO) || !$isUseVO) && $importApiModel.add(${ClassName}))#end
@@ -496,6 +521,9 @@ const expandedTreeNodes = ref([]);
 #set($AttrName=$column.javaField.substring(0,1).toUpperCase() + ${column.javaField.substring(1)})
 const dateRange${AttrName} = ref([]);
 #end
+#end
+#if($isUseImportMethod)
+const openImportExcel = ref(false);
 #end
 #if($addOrUpdate)
 

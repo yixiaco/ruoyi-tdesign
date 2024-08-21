@@ -457,6 +457,7 @@ insert into sys_menu values('115',  '代码生成',     '3',   '2', 'gen',      
 insert into sys_menu values('121',  '租户管理',     '6',   '1', 'tenant',           'system/tenant/index', 'Tenant',          '', 0, 1, 'C', '1', '1', 'system:tenant:list',          'bulletpoint',          null, null, 103, 1, sysdate, null, null, '租户管理菜单');
 insert into sys_menu values('122',  '租户套餐管理', '6',   '2', 'tenantPackage',    'system/tenantPackage/index', 'TenantPackage',   '', 0, 1, 'C', '1', '1', 'system:tenantPackage:list',   'edit-1',          null, null, 103, 1, sysdate, null, null, '租户套餐管理菜单');
 insert into sys_menu values('123',  '客户端管理',   '1',   '12', 'client',           'system/client/index', 'Client',          '', 0, 1, 'C', '1', '1', 'system:client:list',          'internet', null, null, 103, 1, sysdate, null, null, '客户端管理菜单');
+insert into sys_menu values('124',  '敏感词',      '1', '13', 'sensitiveWord', 'system/sensitiveWord/index', 'SensitiveWord', '', 0, 1, 'C', '1', '1', 'system:sensitiveWord:list', 'book-open', null, null, 103, 1, sysdate, 1, sysdate, '敏感词菜单');
 -- springboot-admin监控
 insert into sys_menu values('117',  'Admin监控',   '2',    '5', 'Admin',            'monitor/admin/index', 'Admin',         '', 0, 1, 'C', '1', '1', 'monitor:admin:list',          'dashboard',     null, '!getProperty(''spring.boot.admin.client.enabled'')', 103, 1, sysdate, null, null, 'Admin监控菜单');
 -- oss菜单
@@ -584,6 +585,13 @@ insert into sys_menu values('1703', '租户应用管理新增', '1701', 2, '#', 
 insert into sys_menu values('1704', '租户应用管理修改', '1701', 3, '#', '', '', null, 0, 1, 'F', '1', '1', 'system:tenantApp:edit', '#', null, null, 103, 1, sysdate, null, null, '');
 insert into sys_menu values('1705', '租户应用管理删除', '1701', 4, '#', '', '', null, 0, 1, 'F', '1', '1', 'system:tenantApp:remove', '#', null, null, 103, 1, sysdate, null, null, '');
 insert into sys_menu values('1706', '租户应用管理导出', '1701', 5, '#', '', '', null, 0, 1, 'F', '1', '1', 'system:tenantApp:export', '#', null, null, 103, 1, sysdate, null, null, '');
+-- 敏感词
+insert into sys_menu values ('1710', '敏感词查询', '124', 1, '#', '', NULL, '', 0, 1, 'F', '1', '1', 'system:sensitiveWord:query', '#', null, null, 103, 1, sysdate, null, null, '');
+insert into sys_menu values ('1711', '敏感词新增', '124', 2, '#', '', null, '', 0, 1, 'F', '1', '1', 'system:sensitiveWord:add', '#', null, null, 103, 1, sysdate, null, null, '');
+insert into sys_menu values ('1712', '敏感词修改', '124', 3, '#', '', null, '', 0, 1, 'F', '1', '1', 'system:sensitiveWord:edit', '#', null, null, 103, 1, sysdate, null, null, '');
+insert into sys_menu values ('1713', '敏感词删除', '124', 4, '#', '', null, '', 0, 1, 'F', '1', '1', 'system:sensitiveWord:remove', '#', null, null, 103, 1, sysdate, null, null, '');
+insert into sys_menu values ('1714', '敏感词导出', '124', 5, '#', '', null, '', 0, 1, 'F', '1', '1', 'system:sensitiveWord:export', '#', null, null, 103, 1, sysdate, null, null, '');
+insert into sys_menu values ('1715', '敏感词导入', '124', 6, '#', '', null, '', 0, 1, 'F', '1', '1', 'system:sensitiveWord:import', '#', null, null, 103, 1, sysdate, null, null, '');
 -- 消息管理
 insert into sys_menu values('1801', '消息管理', '1', 11, 'messageManage', '', '', NULL, 0, 1, 'M', '1', '1', NULL, 'chat', null, null, 103, 1, sysdate, 1, sysdate, '');
 -- 消息配置
@@ -876,6 +884,7 @@ insert into sys_dict_type values(13, '000000', '消息支持平台', 'sys_messag
 insert into sys_dict_type values(14, '000000', '消息模板类型', 'sys_message_template_mode', 103, 1, sysdate, 1, sysdate, NULL);
 insert into sys_dict_type values(15, '000000', '授权类型', 'sys_grant_type',     103, 1, sysdate, null, null, '认证授权类型');
 insert into sys_dict_type values(16, '000000', '设备类型', 'sys_device_type',    103, 1, sysdate, null, null, '客户端设备类型');
+insert into sys_dict_type values(17, '000000', '敏感词类别', 'sensitive_words_category', 103, 1, sysdate, 1, sysdate, null);
 
 
 -- ----------------------------
@@ -977,6 +986,7 @@ insert into sys_dict_data values(58, '000000', 11, '助通短信', 'ZHUTONG', 's
 insert into sys_dict_data values(59, '000000', 12, '鼎众短信', 'DING_ZHONG', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, sysdate, 1, sysdate, null);
 insert into sys_dict_data values(60, '000000', 13, '联麓短信', 'LIAN_LU', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, sysdate, 1, sysdate, null);
 insert into sys_dict_data values(61, '000000', 14, '七牛云短信', 'QI_NIU', 'sys_message_supplier_type', null, 'primary', null, 'N', 103, 1, sysdate, 1, sysdate, null);
+insert into sys_dict_data values(70, '000000', 99, '其他', 'other', 'sensitive_words_category', null, 'primary', null, 'N', 103, 1, sysdate, 1, sysdate, null);
 
 
 -- ----------------------------
@@ -1615,6 +1625,34 @@ comment on column sys_message_template.update_by            is '更新者';
 comment on column sys_message_template.create_by            is '创建者';
 comment on column sys_message_template.update_time          is '更新时间';
 comment on column sys_message_template.create_time          is '创建时间';
+
+-- ----------------------------
+-- 敏感词表
+-- ----------------------------
+create table sys_sensitive_word (
+  word_id       number(20)      not null,
+  word          nvarchar2(255)  not null,
+  category      nvarchar2(20)   not null,
+  description   nvarchar2(500),
+  status        number(4)       not null,
+  create_dept   number(20),
+  create_by     number(20),
+  update_by     number(20),
+  update_time   date,
+  create_time   date not null
+);
+alter table sys_sensitive_word add primary key (word_id);
+comment on table sys_sensitive_word                 is '敏感词表';
+comment on column sys_sensitive_word.word_id        is '敏感词id';
+comment on column sys_sensitive_word.word           is '敏感词';
+comment on column sys_sensitive_word.category       is '敏感词类别';
+comment on column sys_sensitive_word.description    is '描述';
+comment on column sys_sensitive_word.status         is '启用状态 1启用 0禁用';
+comment on column sys_sensitive_word.create_dept    is '创建部门';
+comment on column sys_sensitive_word.create_by      is '创建者';
+comment on column sys_sensitive_word.update_by      is '更新者';
+comment on column sys_sensitive_word.update_time    is '更新时间';
+comment on column sys_sensitive_word.create_time    is '创建时间';
 
 -- ----------------------------
 -- 钩子 ，用于session连接之后 自动设置默认的date类型格式化 简化时间查询

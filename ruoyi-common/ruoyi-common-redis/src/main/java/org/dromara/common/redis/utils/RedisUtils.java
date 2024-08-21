@@ -4,9 +4,11 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.redisson.api.*;
+import org.redisson.api.listener.MessageListener;
 
 import java.time.Duration;
 import java.util.Collection;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -85,6 +87,29 @@ public class RedisUtils {
     public static <T> void subscribe(String channelKey, Class<T> clazz, Consumer<T> consumer) {
         RTopic topic = CLIENT.getTopic(channelKey);
         topic.addListener(clazz, (channel, msg) -> consumer.accept(msg));
+    }
+
+    /**
+     * 订阅通道接收消息
+     *
+     * @param channelKey 通道key
+     * @param clazz      消息类型
+     * @param listener   自定义处理
+     */
+    public static <T> void subscribe(String channelKey, Class<T> clazz, MessageListener<? extends T> listener) {
+        RTopic topic = CLIENT.getTopic(channelKey);
+        topic.addListener(clazz, listener);
+    }
+
+    /**
+     * 取消订阅
+     *
+     * @param channelKey 通道key
+     * @param listener   自定义处理
+     */
+    public static void unsubscribe(String channelKey, MessageListener<?> listener) {
+        RTopic topic = CLIENT.getTopic(channelKey);
+        topic.removeListener(listener);
     }
 
     /**
@@ -393,6 +418,78 @@ public class RedisUtils {
     public static <T> Set<T> getSet(final String key) {
         RSet<T> rSet = CLIENT.getSet(key);
         return rSet.readAll();
+    }
+
+    /**
+     * 缓存ZSet
+     *
+     * @param key     缓存键值
+     * @param dataSet 缓存的数据
+     * @return 缓存数据的对象
+     */
+    public static <T> int addZSet(final String key, final Map<T, Double> dataSet) {
+        RScoredSortedSet<T> scoredSortedSet = CLIENT.getScoredSortedSet(key);
+        return scoredSortedSet.addAll(dataSet);
+    }
+
+    /**
+     * 缓存ZSet
+     *
+     * @param key     缓存键值
+     * @param dataSet 缓存的数据
+     * @return 缓存数据的对象
+     */
+    public static <T> void setZSet(final String key, final Map<T, Double> dataSet) {
+        RBatch batch = CLIENT.createBatch();
+        RScoredSortedSetAsync<T> scoredSortedSet = batch.getScoredSortedSet(key);
+        scoredSortedSet.deleteAsync();
+        scoredSortedSet.addAllAsync(dataSet);
+        batch.execute();
+    }
+
+    /**
+     * 缓存Set
+     *
+     * @param key     缓存键值
+     * @param dataSet 缓存的数据
+     * @param expire  过期时间
+     * @return 缓存数据的对象
+     */
+    public static <T> void setZSet(final String key, final Map<T, Double> dataSet, final Duration expire) {
+        RBatch batch = CLIENT.createBatch();
+        RScoredSortedSetAsync<T> scoredSortedSet = batch.getScoredSortedSet(key);
+        scoredSortedSet.deleteAsync();
+        scoredSortedSet.expireAsync(expire);
+        scoredSortedSet.addAllAsync(dataSet);
+        batch.execute();
+    }
+
+    /**
+     * 注册ZSet监听器
+     * <p>
+     * key 监听器需开启 `notify-keyspace-events` 等 redis 相关配置
+     *
+     * @param key      缓存的键值
+     * @param listener 监听器配置
+     */
+    public static <T> void addZSetListener(final String key, final ObjectListener listener) {
+        RScoredSortedSet<T> scoredSortedSet = CLIENT.getScoredSortedSet(key);
+        scoredSortedSet.addListener(listener);
+    }
+
+    /**
+     * 获得缓存的set
+     *
+     * @param key 缓存的key
+     * @return set对象
+     */
+    public static <T> Set<T> getZSet(final String key) {
+        RScoredSortedSet<T> scoredSortedSet = CLIENT.getScoredSortedSet(key);
+        Collection<T> all = scoredSortedSet.readAll();
+        if (all instanceof Set) {
+            return (Set<T>) all;
+        }
+        return new LinkedHashSet<>(all);
     }
 
     /**

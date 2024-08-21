@@ -1,5 +1,7 @@
 package org.dromara.common.websocket.constant;
 
+import org.dromara.common.core.constant.GlobalConstants;
+
 /**
  * websocket的常量配置
  *
@@ -14,7 +16,7 @@ public interface WebSocketConstants {
     /**
      * 订阅的频道
      */
-    String WEB_SOCKET_TOPIC = "global:websocket";
+    String WEB_SOCKET_TOPIC = GlobalConstants.GLOBAL_REDIS_KEY + "websocket";
 
     /**
      * 前端心跳检查的命令

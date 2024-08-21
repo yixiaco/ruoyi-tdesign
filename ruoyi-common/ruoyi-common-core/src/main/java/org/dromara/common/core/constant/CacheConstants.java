@@ -23,6 +23,11 @@ public interface CacheConstants {
     String SYS_DICT_KEY = GlobalConstants.GLOBAL_REDIS_KEY + "sys_dict:";
 
     /**
+     * 敏感词管理 cache key
+     */
+    String SYS_SENSITIVE_WORD = GlobalConstants.GLOBAL_REDIS_KEY + "sys_sensitive_word:";
+
+    /**
      * 字典类型管理 cache key
      */
     String SYS_ALL_DICT_TYPE_KEY = GlobalConstants.GLOBAL_REDIS_KEY + "sys_all_dict_type";

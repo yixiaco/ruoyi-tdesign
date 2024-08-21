@@ -3,6 +3,14 @@ package ${packageName}.controller;
 #if($isUseQueryMethod || $isUseExportMethod || $isUseRemoveMethod)
 import java.util.List;
 #end
+#if($isUseImportMethod)
+import java.util.ArrayList;
+import org.dromara.common.excel.core.ExcelResult;
+import ${packageName}.domain.template.${ClassName}ImportTemplate;
+import ${packageName}.listener.${ClassName}ImportListener;
+import org.springframework.http.MediaType;
+import org.springframework.web.multipart.MultipartFile;
+#end
 
 #if($isUseExportMethod)
 import jakarta.servlet.http.HttpServletResponse;
@@ -112,6 +120,32 @@ public class ${ClassName}Controller extends BaseController {
     public void export(${query} query, HttpServletResponse response) {
         List<${vo}> list = ${className}Service.queryList(query);
         ExcelUtil.exportExcel(list, "${functionName}", ${vo}.class, response);
+    }
+#end
+#if($isUseImportMethod)
+
+    /**
+     * 导入数据
+     *
+     * @param file          导入文件
+     * @param updateSupport 是否更新已存在数据
+     */
+    @Log(title = "${functionName}", businessType = BusinessType.IMPORT)
+    @SaCheckPermission("${permissionPrefix}:import")
+    @PostMapping(value = "/importData", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public R<Void> importData(@RequestPart("file") MultipartFile file, boolean updateSupport) throws Exception {
+        ${ClassName}ImportListener listener = new ${ClassName}ImportListener(${className}Service, updateSupport);
+        ExcelResult<${ClassName}ImportTemplate> result = ExcelUtil.importExcel(file.getInputStream(), ${ClassName}ImportTemplate.class, listener);
+        return R.msg(result.getAnalysis());
+    }
+
+    /**
+     * 获取导入模板
+     */
+    @SaCheckPermission("${permissionPrefix}:import")
+    @PostMapping("/importTemplate")
+    public void importTemplate(HttpServletResponse response) {
+        ExcelUtil.exportExcel(new ArrayList<>(), "${functionName}", ${ClassName}ImportTemplate.class, response);
     }
 #end
 #if($isUseEditMethod || $isUseDetailMethod)
