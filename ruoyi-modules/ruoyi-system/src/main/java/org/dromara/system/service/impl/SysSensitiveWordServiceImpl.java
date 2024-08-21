@@ -78,7 +78,7 @@ public class SysSensitiveWordServiceImpl extends ServiceImpl<SysSensitiveWordMap
     }
 
     /**
-     * 根据新增业务对象插入敏感词
+     * 新增敏感词
      *
      * @param bo 敏感词新增业务对象
      * @return Boolean
@@ -86,17 +86,30 @@ public class SysSensitiveWordServiceImpl extends ServiceImpl<SysSensitiveWordMap
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean insertByBo(SysSensitiveWordBo bo) {
+        return insertByBo(bo, true);
+    }
+
+    /**
+     * 根据新增业务对象插入敏感词
+     *
+     * @param bo           敏感词新增业务对象
+     * @param refreshCache 刷新缓存
+     * @return Boolean
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean insertByBo(SysSensitiveWordBo bo, boolean refreshCache) {
         saveValid(bo);
         SysSensitiveWord add = MapstructUtils.convert(bo, SysSensitiveWord.class);
         boolean save = save(add);
-        if (save) {
+        if (save && refreshCache) {
             refreshCache();
         }
         return save;
     }
 
     /**
-     * 根据编辑业务对象修改敏感词
+     * 修改敏感词
      *
      * @param bo 敏感词编辑业务对象
      * @return Boolean
@@ -104,11 +117,24 @@ public class SysSensitiveWordServiceImpl extends ServiceImpl<SysSensitiveWordMap
     @Override
     @Transactional(rollbackFor = Exception.class)
     public Boolean updateByBo(SysSensitiveWordBo bo) {
+        return updateByBo(bo, true);
+    }
+
+    /**
+     * 根据编辑业务对象修改敏感词
+     *
+     * @param bo           敏感词编辑业务对象
+     * @param refreshCache 刷新缓存
+     * @return Boolean
+     */
+    @Override
+    @Transactional(rollbackFor = Exception.class)
+    public Boolean updateByBo(SysSensitiveWordBo bo, boolean refreshCache) {
         saveValid(bo);
         SysSensitiveWord word = getById(bo.getWordId());
         SysSensitiveWord update = MapstructUtils.convert(bo, SysSensitiveWord.class);
         boolean b = updateById(update);
-        if (b) {
+        if (b && refreshCache) {
             // 只有改变以下数据的值才刷新缓存
             if (!Objects.equals(word.getWord(), bo.getWord())
                 || !Objects.equals(word.getCategory(), bo.getCategory())

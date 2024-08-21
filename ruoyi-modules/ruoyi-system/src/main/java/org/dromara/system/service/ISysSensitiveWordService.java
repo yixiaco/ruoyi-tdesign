@@ -46,18 +46,36 @@ public interface ISysSensitiveWordService extends IService<SysSensitiveWord> {
     /**
      * 新增敏感词
      *
-     * @param bo 敏感词新增业务对象
+     * @param bo           敏感词新增业务对象
      * @return Boolean
      */
     Boolean insertByBo(SysSensitiveWordBo bo);
 
     /**
+     * 新增敏感词
+     *
+     * @param bo           敏感词新增业务对象
+     * @param refreshCache 刷新缓存
+     * @return Boolean
+     */
+    Boolean insertByBo(SysSensitiveWordBo bo, boolean refreshCache);
+
+    /**
      * 修改敏感词
      *
-     * @param bo 敏感词编辑业务对象
+     * @param bo           敏感词编辑业务对象
      * @return Boolean
      */
     Boolean updateByBo(SysSensitiveWordBo bo);
+
+    /**
+     * 修改敏感词
+     *
+     * @param bo           敏感词编辑业务对象
+     * @param refreshCache 刷新缓存
+     * @return Boolean
+     */
+    Boolean updateByBo(SysSensitiveWordBo bo, boolean refreshCache);
 
     /**
      * 校验并批量删除敏感词信息

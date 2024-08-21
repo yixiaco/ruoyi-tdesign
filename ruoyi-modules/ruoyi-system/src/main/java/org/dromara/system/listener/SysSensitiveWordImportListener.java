@@ -27,7 +27,7 @@ public class SysSensitiveWordImportListener extends AnalysisEventListener<SysSen
 
     private final boolean isUpdateSupport;
 
-    private int successNum = 1;
+    private int successNum = 0;
     private int failureNum = 0;
     private final StringBuilder successMsg = new StringBuilder();
     private final StringBuilder failureMsg = new StringBuilder();
@@ -43,12 +43,12 @@ public class SysSensitiveWordImportListener extends AnalysisEventListener<SysSen
             SysSensitiveWordBo bo = MapstructUtils.convert(importTemplate, SysSensitiveWordBo.class);
             if (!isUpdateSupport) {
                 ValidatorUtils.validate(bo, AddGroup.class);
-                sysSensitiveWordService.insertByBo(bo);
+                sysSensitiveWordService.insertByBo(bo, false);
                 successNum++;
                 successMsg.append("<br/>第").append(successNum).append("行 导入成功");
             } else {
                 ValidatorUtils.validate(bo, EditGroup.class);
-                sysSensitiveWordService.updateByBo(bo);
+                sysSensitiveWordService.updateByBo(bo, false);
                 successNum++;
                 successMsg.append("<br/>第").append(successNum).append("行 更新成功");
             }
@@ -60,7 +60,9 @@ public class SysSensitiveWordImportListener extends AnalysisEventListener<SysSen
 
     @Override
     public void doAfterAllAnalysed(AnalysisContext context) {
-
+        if (successNum > 0) {
+            sysSensitiveWordService.refreshCache();
+        }
     }
 
     @Override
@@ -69,7 +71,10 @@ public class SysSensitiveWordImportListener extends AnalysisEventListener<SysSen
 
             @Override
             public String getAnalysis() {
-                if (failureNum > 0) {
+                if (successNum > 0 && failureNum > 0) {
+                    failureMsg.insert(0, "部分导入失败！共 " + successNum + " 条导入成功，" + failureNum + " 条导入失败，错误如下：");
+                    throw new ServiceException(failureMsg.toString());
+                } else if (failureNum > 0) {
                     failureMsg.insert(0, "很抱歉，导入失败！共 " + failureNum + " 条数据格式不正确，错误如下：");
                     throw new ServiceException(failureMsg.toString());
                 } else {
