@@ -180,10 +180,6 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 
 export const allRoutes = [...defaultRouterList, ...asyncRouterList];
 
-/**
- *
- * @deprecated 未使用
- */
 export const getRoutesExpanded = () => {
   const expandedRoutes: Array<string> = [];
 
