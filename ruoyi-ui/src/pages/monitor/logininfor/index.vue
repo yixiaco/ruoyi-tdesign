@@ -239,8 +239,8 @@ const columns = ref<Array<PrimaryTableCol>>([
   { title: `登录状态`, colKey: 'status', align: 'center' },
   { title: `客户端`, colKey: 'clientKey', align: 'center' },
   { title: `设备类型`, colKey: 'deviceType', align: 'center' },
-  { title: `描述`, colKey: 'msg', align: 'center' },
-  { title: `访问时间`, colKey: 'loginTime', align: 'center', width: 180, sorter: true },
+  { title: `描述`, colKey: 'msg', align: 'center', ellipsis: true },
+  { title: `访问时间`, colKey: 'loginTime', align: 'center', width: 170, sorter: true },
   { title: `操作`, colKey: 'operation', align: 'center', width: 160 },
 ]);
 // 提交表单对象
