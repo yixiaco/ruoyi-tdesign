@@ -4,6 +4,7 @@
       ref="imageUpload"
       v-model="fileList"
       multiple
+      :abridge-name="abridgeName"
       :theme="theme"
       :accept="rawAccept"
       :action="uploadImgUrl"
@@ -75,6 +76,8 @@ import { getHttpFileName, getHttpFileSuffix } from '@/utils/ruoyi';
 
 export interface ImageUploadProps {
   modelValue?: string | string[];
+  // 文件名过长时，需要省略中间的文本，保留首尾文本。示例：[10, 7]，表示首尾分别保留的文本长度。
+  abridgeName?: Array<number>;
   // 图片数量限制,为0不限制
   limit?: number;
   // 是否支持拖拽上传
@@ -103,6 +106,7 @@ export interface ImageUploadProps {
   theme?: 'custom' | 'image' | 'image-flow';
   // 模式，id模式返回ossId，url模式返回url链接
   mode?: 'id' | 'url';
+  // 禁用组件
   disabled?: boolean;
   // 是否允许重复上传相同文件名的文件
   allowUploadDuplicateFile?: boolean;
