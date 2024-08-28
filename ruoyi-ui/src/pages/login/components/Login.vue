@@ -159,8 +159,8 @@ const type = ref('password');
 const form = ref<FormInstanceFunctions>();
 const formData = ref({
   phone: '',
-  account: 'admin',
-  password: 'admin123',
+  account: import.meta.env.VITE_APP_ACCOUNT || '',
+  password: import.meta.env.VITE_APP_PASSWORD || '',
   rememberMe: false,
   code: '',
   uuid: '',

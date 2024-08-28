@@ -22,4 +22,8 @@ export interface ImportMetaEnv {
   readonly VITE_APP_RSA_PRIVATE_KEY: string;
   /** websocket 开关 */
   readonly VITE_APP_WEBSOCKET: string;
+  /** 账号 */
+  readonly VITE_APP_ACCOUNT: string;
+  /** 密码 */
+  readonly VITE_APP_PASSWORD: string;
 }
