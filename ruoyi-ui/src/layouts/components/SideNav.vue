@@ -5,8 +5,9 @@
       :theme="theme"
       :value="activeMenu"
       :collapsed="collapsed"
-      expand-mutex
-      :default-expanded="defaultExpanded"
+      :expanded="expanded"
+      :expand-mutex="menuAutoCollapsed"
+      @expand="onExpanded"
     >
       <template #logo>
         <span v-if="showLogo" :class="`${prefix}-side-nav-logo-wrapper`" @click="goHome">
@@ -23,15 +24,16 @@
 </template>
 
 <script lang="ts" setup>
-import union from 'lodash/union';
+import { difference, remove, union } from 'lodash';
+import type { MenuValue } from 'tdesign-vue-next';
 import type { PropType } from 'vue';
-import { computed, onMounted } from 'vue';
+import { computed, onMounted, ref, watch } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
 
 import AssetLogoFull from '@/assets/icons/assets-logo-full.svg?component'; // 全
 import AssetLogo from '@/assets/icons/assets-t-logo.svg?component'; // 简
 import { prefix } from '@/config/global';
-import { getRoutesExpanded } from '@/router';
+import { getActive } from '@/router';
 import { useSettingStore } from '@/store';
 import type { MenuRoute, ModeType } from '@/types/interface';
 
@@ -83,15 +85,27 @@ const activeMenu = computed(() => {
 });
 
 const collapsed = computed(() => useSettingStore().isSidebarCompact);
+const menuAutoCollapsed = computed(() => useSettingStore().menuAutoCollapsed);
 
-// const active = computed(() => getActive());
+const active = computed(() => getActive());
 
-const defaultExpanded = computed(() => {
-  const path = activeMenu.value;
-  const parentPath = path.substring(0, path.lastIndexOf('/'));
-  const expanded = getRoutesExpanded();
-  return union(expanded, parentPath === '' ? [] : [parentPath]);
-});
+const expanded = ref<MenuValue[]>([]);
+
+watch(
+  () => active.value,
+  () => {
+    const path = getActive();
+    const parentPath = path.substring(0, path.lastIndexOf('/'));
+    expanded.value = menuAutoCollapsed.value ? [parentPath] : union([parentPath], expanded.value);
+  },
+);
+
+const onExpanded = (value: MenuValue[]) => {
+  const currentOperationMenu = difference(expanded.value, value);
+  const allExpanded = union(value, expanded.value);
+  remove(allExpanded, (item) => currentOperationMenu.includes(item));
+  expanded.value = allExpanded;
+};
 
 const sideMode = computed(() => {
   const { theme } = props;
@@ -145,6 +159,9 @@ const autoCollapsed = () => {
 };
 
 onMounted(() => {
+  const path = getActive();
+  const parentPath = path.substring(0, path.lastIndexOf('/'));
+  expanded.value = union([parentPath], expanded.value);
   autoCollapsed();
   window.onresize = () => {
     autoCollapsed();

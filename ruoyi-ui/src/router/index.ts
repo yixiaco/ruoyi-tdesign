@@ -180,6 +180,10 @@ export const dynamicRoutes: Array<RouteRecordRaw> = [
 
 export const allRoutes = [...defaultRouterList, ...asyncRouterList];
 
+/**
+ *
+ * @deprecated 未使用
+ */
 export const getRoutesExpanded = () => {
   const expandedRoutes: Array<string> = [];
 
@@ -199,7 +203,12 @@ export const getRoutesExpanded = () => {
   return uniq(expandedRoutes);
 };
 
-export const getActive = (path: string, maxLevel = 3): string => {
+export const getActive = (path?: string, maxLevel = 3): string => {
+  // 非组件内调用必须通过Router实例获取当前路由
+  const route = router.currentRoute.value;
+
+  path = path || route.path;
+
   if (!path) {
     return '';
   }
