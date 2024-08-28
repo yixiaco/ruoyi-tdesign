@@ -1,12 +1,12 @@
 <template>
   <div :class="sideNavCls">
     <t-menu
+      v-model:expanded="expanded"
       :class="menuCls"
       :theme="theme"
       :value="activeMenu"
       :collapsed="collapsed"
-      expand-mutex
-      :default-expanded="defaultExpanded"
+      :expand-mutex="menuAutoCollapsed"
     >
       <template #logo>
         <span v-if="showLogo" :class="`${prefix}-side-nav-logo-wrapper`" @click="goHome">
@@ -23,7 +23,8 @@
 </template>
 
 <script lang="ts" setup>
-import union from 'lodash/union';
+import { union } from 'lodash';
+import type { MenuValue } from 'tdesign-vue-next';
 import type { PropType } from 'vue';
 import { computed, onMounted } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
@@ -83,15 +84,26 @@ const activeMenu = computed(() => {
 });
 
 const collapsed = computed(() => useSettingStore().isSidebarCompact);
+const menuAutoCollapsed = computed(() => useSettingStore().menuAutoCollapsed);
 
 // const active = computed(() => getActive());
 
-const defaultExpanded = computed(() => {
+const defaultExpanded = () => {
   const path = activeMenu.value;
-  const parentPath = path.substring(0, path.lastIndexOf('/'));
+  const expandedParent: string[] = [];
+  const filter = path.split('/').filter((item) => item);
+  filter.forEach((value, index) => {
+    if (index === 0) {
+      expandedParent.push(`/${value}`);
+    } else if (index < filter.length - 1) {
+      expandedParent.push(`${expandedParent[index - 1]}/${value}`);
+    }
+  });
   const expanded = getRoutesExpanded();
-  return union(expanded, parentPath === '' ? [] : [parentPath]);
-});
+  return union(expanded, expandedParent);
+};
+
+const expanded = ref<MenuValue[]>(defaultExpanded());
 
 const sideMode = computed(() => {
   const { theme } = props;
