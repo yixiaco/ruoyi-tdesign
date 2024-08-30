@@ -1,3 +1,100 @@
+## 🌈 1.3.1 `2024-8-30`
+> 本次更新需要执行`update_1.3.0-1.3.1.sql`脚本<br>
+
+### 🚀 New Features
+- 新增菜单自动折叠
+- 新增用户校验分组并更新页码大小校验规则 新增了UserAddGroup、UserEditGroup和UserQueryGroup三个校验分组接口，用于用户相关操作的验证逻辑区分。同时，更新了BasePageQuery中的校验规则，将页码和每页大小的校验增加了UserQueryGroup分组，以便进行更细致的验证控制。
+- 增加takeCacheAndSet方法并更新CacheNames缓存策略
+- 新增amqp消息去重注解
+- 增加图片内容识别预览组件
+- 富文本预览组件支持图片懒加载
+- 增加滚动条组件&详情弹窗默认使用滚动条
+- 增加自动导入vue、vue-router、pinia类型
+- 代码生成支持修改表名称
+- 个人头像支持选择我的文件上传
+- 新增敏感词功能、代码生成新增导入功能、RedisUtils工具新增ZSet by @yixiaco in [#76](https://github.com/yixiaco/ruoyi-tdesign/pull/76)
+- 新增StreamUtils工具方法
+- 新增集合的两次分组后的值操作转为List和Set
+### 🔥 Performance
+- 新增上传组件文件名称长度限制参数
+- 账号密码只在开发环境填充
+- 登录消息推送，项目名称使用配置名称，而不是固定值
+- 由于存在隐私泄露风险删除富文本autosave插件。（草稿存储在localStorage中，且直接关闭页面不会清理）
+- 代码生成模板增加校验字符串长度限制
+- 详情使用描述组件替代表单组件
+- Query对象默认继承BasePageQuery而不是BaseEntity
+- 动态租户设置支持重入时保持当前的租户设置
+- 登录用户信息只返回用户数据
+- Oss规则页面优化
+- 创建租户联系电话改为非必填，校验联系电话格式
+- 字典不再支持多租户操作，转为通用表 (若想继续保持字典多租户，请忽略此提交更新)
+### 🐞 Bug Fixes
+- 选中三级菜单会使菜单展开项错误
+- 修复README单词拼写错误
+- 修复了无法清空用户岗位的问题
+- 修复nginx匹配location优先级过高导致正则不生效问题
+- 通知中心消息多解决溢出的情况 添加固定高度 by @WWTBNBWN in [#72](https://github.com/yixiaco/ruoyi-tdesign/pull/72)
+- td描述组件新增tableLayout属性，并修改为原默认行为"auto"
+- 修复个人中心手机号、邮箱为空时修改报错；修复租户联系电话前端没校验问题
+- 修改接口权限代码错误问题-获取系统访问记录详细信息 by @WWTBNBWN in [#71](https://github.com/yixiaco/ruoyi-tdesign/pull/71)
+- 修复SaSecurityContext方法名错误
+- 修复RedisLockUtil问题
+- 修复TransactionalEventPublisher发送commit事件执行两次、beforeCommit未执行回调
+- 修复MultipleLoginBaseHelper更新用户方法可能引起报错问题
+- 数据库枚举类型字段导入报错
+- 修复代码生成设置动态数据库没生效问题
+- 修复普通角色查询菜单报错问题 by @yixiaco in [#67](https://github.com/yixiaco/ruoyi-tdesign/pull/67)
+- 修复国际化提示问题，前端切换语言时，服务端也需要切换
+- 多租户忽略检验兼容分页插件写法
+- powerJob表名错误问题
+- 修复MapStructPlus 1.4.0版本在对象属性为List发生复制时的报错问题 by @yixiaco in [#65](https://github.com/yixiaco/ruoyi-tdesign/pull/65)
+- TaskExecutorBuilder过期的问题，使用ThreadPoolTaskExecutorBuilder替换 by @WWTBNBWN in [#69](https://github.com/yixiaco/ruoyi-tdesign/pull/69)
+### 🏡 Chore
+remove npm lock file ignore
+补充弹窗内容最大高度样式
+字典不再支持多租户操作，转为通用表。补充sql脚本,删除其他租户的字典与数据 (若想继续保持字典多租户，请忽略此提交更新)
+提供JsonUtil将对象转为Map、List<Map>方法
+sys_app重命名为sys_tenant_app，目的是使表的作用更具体
+字典列表链接到字典数据样式高亮；字典组件新增参数
+图片预览禁止选中
+
+### 🔨 Dependency Upgrades
+#### 🔨 java pom
+- Upgrade to redisson-3.32.0
+#### 🔨 node package
+- Upgrade to @vueuse/core@^11.0.3
+- Upgrade to axios@^1.7.5
+- Upgrade to dayjs@^1.11.13
+- Upgrade to pinia@^2.2.2
+- Upgrade to qs@^6.13.0
+- Upgrade to tdesign-icons-vue-next@0.2.4
+- Upgrade to tdesign-vue-next@1.9.9
+- Upgrade to tinymce@^7.3.0
+- Upgrade to vue-cropper@^1.1.4
+- Upgrade to vue-i18n@^9.14.0
+- Upgrade to vue-router@^4.4.
+- Upgrade to @commitlint/cli@^19.4.1
+- Upgrade to @commitlint/config-conventional@^19.4.1
+- Upgrade to @types/lodash@^4.17.7
+- Upgrade to @types/prismjs@^1.26.4
+- Upgrade to @types/qs@^6.9.15
+- Upgrade to @typescript-eslint/eslint-plugin@^7.13.0
+- Upgrade to @typescript-eslint/parser@^7.13.0
+- Upgrade to @vitejs/plugin-vue@^5.1.2
+- Upgrade to @vitejs/plugin-vue-jsx@^4.0.1
+- Upgrade to eslint-plugin-simple-import-sort@^12.1.0
+- Upgrade to eslint-plugin-vue@^9.26.0
+- Upgrade to postcss-html@^1.7.0
+- Upgrade to prettier@^3.3.3
+- Upgrade to unplugin-auto-import@^0.18.2
+- Upgrade to unplugin-vue-components@^0.27.4
+- Upgrade to vite@~5.4.2
+- Upgrade to vite-plugin-mock@^3.0.2
+- Upgrade to vue-tsc@^2.0.29
+- remove @vue/compiler-sfc
+## 🎉New Contributors
+* @WWTBNBWN made their first contribution in [#69](https://github.com/yixiaco/ruoyi-tdesign/pull/69)
+
 ## 🌈 1.3.0 `2024-4-13`
 > 本次更新需要执行`update_1.2.0-1.3.0.sql`脚本<br>
 > PowerJob需要额外更新SQL<br>
