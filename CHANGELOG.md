@@ -50,13 +50,13 @@
 - 修复MapStructPlus 1.4.0版本在对象属性为List发生复制时的报错问题 by @yixiaco in [#65](https://github.com/yixiaco/ruoyi-tdesign/pull/65)
 - TaskExecutorBuilder过期的问题，使用ThreadPoolTaskExecutorBuilder替换 by @WWTBNBWN in [#69](https://github.com/yixiaco/ruoyi-tdesign/pull/69)
 ### 🏡 Chore
-remove npm lock file ignore
-补充弹窗内容最大高度样式
-字典不再支持多租户操作，转为通用表。补充sql脚本,删除其他租户的字典与数据 (若想继续保持字典多租户，请忽略此提交更新)
-提供JsonUtil将对象转为Map、List<Map>方法
-sys_app重命名为sys_tenant_app，目的是使表的作用更具体
-字典列表链接到字典数据样式高亮；字典组件新增参数
-图片预览禁止选中
+- remove npm lock file ignore
+- 补充弹窗内容最大高度样式
+- 字典不再支持多租户操作，转为通用表。补充sql脚本,删除其他租户的字典与数据 (若想继续保持字典多租户，请忽略此提交更新)
+- 提供JsonUtil将对象转为Map、List<Map>方法
+- sys_app重命名为sys_tenant_app，目的是使表的作用更具体
+- 字典列表链接到字典数据样式高亮；字典组件新增参数
+- 图片预览禁止选中
 
 ### 🔨 Dependency Upgrades
 #### 🔨 java pom
