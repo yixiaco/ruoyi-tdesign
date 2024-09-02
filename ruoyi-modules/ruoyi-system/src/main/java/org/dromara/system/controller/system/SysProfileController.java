@@ -32,6 +32,7 @@ import org.dromara.system.domain.vo.SysUserVo;
 import org.dromara.system.service.ISysDeptService;
 import org.dromara.system.service.ISysLogininforService;
 import org.dromara.system.service.ISysOssService;
+import org.dromara.system.service.ISysRoleService;
 import org.dromara.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -56,6 +57,8 @@ public class SysProfileController extends BaseController {
     @Autowired
     private ISysUserService userService;
     @Autowired
+    private ISysRoleService roleService;
+    @Autowired
     private ISysOssService ossService;
     @Autowired
     private ISysDeptService deptService;
@@ -68,10 +71,11 @@ public class SysProfileController extends BaseController {
     @GetMapping
     public R<ProfileVo> profile() {
         SysUserVo user = userService.selectUserById(LoginHelper.getUserId());
+        user.setRoles(roleService.selectRolesByUserId(user.getUserId()));
         ProfileVo profileVo = new ProfileVo();
         profileVo.setUser(user);
-        profileVo.setRoleGroup(userService.selectUserRoleGroup(user.getUserName()));
-        profileVo.setPostGroup(userService.selectUserPostGroup(user.getUserName()));
+        profileVo.setRoleGroup(userService.selectUserRoleGroup(user.getUserId()));
+        profileVo.setPostGroup(userService.selectUserPostGroup(user.getUserId()));
         if (user.getDept() != null) {
             List<Long> deptIds = Arrays.stream(StrUtil.splitToLong(user.getDept().getAncestors(), ','))
                 .boxed().collect(Collectors.toList());

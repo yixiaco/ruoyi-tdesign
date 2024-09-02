@@ -26,10 +26,10 @@ public interface SysPostMapper extends BaseMapperPlus<SysPost, SysPostVo> {
     /**
      * 查询用户所属岗位组
      *
-     * @param userName 用户名
+     * @param userId 用户ID
      * @return 结果
      */
-    List<SysPostVo> selectPostsByUserName(@Param("userName") String userName);
+    List<SysPostVo> selectPostsByUserId(@Param("userId") Long userId);
 
     /**
      * 查询岗位信息列表

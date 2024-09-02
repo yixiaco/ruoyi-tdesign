@@ -44,7 +44,7 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept, SysDeptVo> {
     @DataPermission({
         @DataColumn(key = "deptName", value = "dept_id")
     })
-    SysDeptVo selectDeptById(@Param("deptId") Long deptId);
+    long countDeptById(Long deptId);
 
     /**
      * 根据角色ID查询部门树信息

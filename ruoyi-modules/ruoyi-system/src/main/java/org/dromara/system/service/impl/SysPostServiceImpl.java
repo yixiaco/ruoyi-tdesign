@@ -6,6 +6,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
+import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.SortQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
@@ -79,7 +80,8 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      */
     @Override
     public List<Long> selectPostListByUserId(Long userId) {
-        return baseMapper.selectPostListByUserId(userId);
+        List<SysPostVo> list = baseMapper.selectPostsByUserId(userId);
+        return StreamUtils.toList(list, SysPostVo::getPostId);
     }
 
     /**

@@ -409,7 +409,7 @@ function handleUpdate(row?: SysClientVo) {
 /** 状态修改 */
 function handleStatusChange(row: SysClientVo) {
   handleChangeStatus(clientList.value, row, 'id', 'status', `${row.clientKey}客户端`, (obj) =>
-    changeStatus(obj.id, obj.status),
+    changeStatus(obj.clientId, obj.status),
   );
 }
 

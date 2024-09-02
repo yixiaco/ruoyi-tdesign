@@ -56,32 +56,6 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser, SysUserVo> {
     })
     List<SysUserVo> selectUnallocatedList(SysUserQuery query);
 
-    /**
-     * 通过用户名查询用户
-     *
-     * @param userName 用户名
-     * @return 用户对象信息
-     */
-    @InterceptorIgnore(tenantLine = "true")
-    SysUserVo selectUserByUserName(@Param("userName") String userName);
-
-    /**
-     * 通过手机号查询用户
-     *
-     * @param phonenumber 手机号
-     * @return 用户对象信息
-     */
-    @InterceptorIgnore(tenantLine = "true")
-    SysUserVo selectUserByPhonenumber(@Param("phonenumber") String phonenumber);
-
-    /**
-     * 通过邮箱查询用户
-     *
-     * @param email 邮箱
-     * @return 用户对象信息
-     */
-    @InterceptorIgnore(tenantLine = "true")
-    SysUserVo selectUserByEmail(@Param("email") String email);
 
     /**
      * 通过权限查询用户
@@ -90,18 +64,22 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser, SysUserVo> {
      * @return 用户对象信息
      */
     @DataPermission({
-        @DataColumn(key = "deptName", value = "d.dept_id"),
-        @DataColumn(key = "userName", value = "u.user_id")
+        @DataColumn(key = "deptName", value = "dept_id"),
+        @DataColumn(key = "userName", value = "user_id")
     })
     SysUserVo selectSafeUserById(@Param("userId") Long userId);
 
     /**
-     * 通过用户ID查询用户
+     * 通过权限查询用户
      *
      * @param userId 用户ID
      * @return 用户对象信息
      */
-    SysUserVo selectUserById(@Param("userId") Long userId);
+    @DataPermission({
+        @DataColumn(key = "deptName", value = "dept_id"),
+        @DataColumn(key = "userName", value = "user_id")
+    })
+    long countUserById(@Param("userId") Long userId);
 
     @Override
     @DataPermission({

@@ -36,10 +36,12 @@ import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.system.domain.SysSocial;
 import org.dromara.system.domain.SysUser;
 import org.dromara.system.domain.bo.SysSocialBo;
+import org.dromara.system.domain.vo.SysRoleVo;
 import org.dromara.system.domain.vo.SysTenantVo;
 import org.dromara.system.domain.vo.SysUserVo;
 import org.dromara.system.mapper.SysUserMapper;
 import org.dromara.system.service.ISysPermissionService;
+import org.dromara.system.service.ISysRoleService;
 import org.dromara.system.service.ISysSocialService;
 import org.dromara.system.service.ISysTenantService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -69,6 +71,8 @@ public class SysLoginService {
     private ISysPermissionService permissionService;
     @Autowired
     private ISysSocialService sysSocialService;
+    @Autowired
+    private ISysRoleService roleService;
     @Autowired
     private SysUserMapper userMapper;
 
@@ -171,8 +175,10 @@ public class SysLoginService {
         loginUser.setMenuPermission(permissionService.getMenuPermission(user.getUserId()));
         loginUser.setRolePermission(permissionService.getRolePermission(user.getUserId()));
         loginUser.setDeptName(ObjectUtil.isNull(user.getDept()) ? "" : user.getDept().getDeptName());
-        List<RoleDTO> roles = BeanUtil.copyToList(user.getRoles(), RoleDTO.class);
-        loginUser.setRoles(roles);
+        List<SysRoleVo> roles = DataPermissionHelper.ignore(() -> {
+            return roleService.selectRolesByUserId(user.getUserId());
+        });
+        loginUser.setRoles(BeanUtil.copyToList(roles, RoleDTO.class));
         return loginUser;
     }
 

@@ -28,8 +28,8 @@ import org.dromara.common.social.config.properties.SocialLoginConfigProperties;
 import org.dromara.common.social.config.properties.SocialProperties;
 import org.dromara.common.social.utils.SocialUtils;
 import org.dromara.common.tenant.helper.TenantHelper;
-import org.dromara.system.domain.SysClient;
 import org.dromara.system.domain.query.SysTenantQuery;
+import org.dromara.system.domain.vo.SysClientVo;
 import org.dromara.system.domain.vo.SysTenantVo;
 import org.dromara.system.service.ISysClientService;
 import org.dromara.system.service.ISysSocialService;
@@ -100,7 +100,7 @@ public class AuthController {
         // 授权类型和客户端id
         String clientId = loginBody.getClientId();
         String grantType = loginBody.getGrantType();
-        SysClient client = clientService.queryByClientId(clientId);
+        SysClientVo client = clientService.queryByClientId(clientId);
         // 查询不到 client 或 client 内不包含 grantType
         if (ObjectUtil.isNull(client) || !StringUtils.contains(client.getGrantType(), grantType)) {
             log.info("客户端id: {} 认证类型：{} 异常!.", clientId, grantType);

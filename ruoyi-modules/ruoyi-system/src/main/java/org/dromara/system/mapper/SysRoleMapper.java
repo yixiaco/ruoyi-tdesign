@@ -61,9 +61,9 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole, SysRoleVo> {
     /**
      * 根据用户ID查询角色
      *
-     * @param userName 用户名
+     * @param userId 用户ID
      * @return 角色列表
      */
-    List<SysRoleVo> selectRolesByUserName(@Param("userName") String userName);
+    List<SysRoleVo> selectRolesByUserId(@Param("userId") Long userId);
 
 }

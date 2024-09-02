@@ -24,8 +24,8 @@ import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.dromara.common.tenant.annotation.IgnoreTenant;
 import org.dromara.common.web.config.properties.CaptchaProperties;
-import org.dromara.system.domain.SysClient;
 import org.dromara.system.domain.SysUser;
+import org.dromara.system.domain.vo.SysClientVo;
 import org.dromara.system.domain.vo.SysUserVo;
 import org.dromara.system.mapper.SysUserMapper;
 import org.dromara.web.domain.vo.LoginVo;
@@ -49,7 +49,7 @@ public class PasswordAuthStrategy implements IAuthStrategy<PasswordLoginBody> {
 
     @Override
     @IgnoreTenant
-    public LoginVo login(PasswordLoginBody loginBody, SysClient client) {
+    public LoginVo login(PasswordLoginBody loginBody, SysClientVo client) {
         String username = loginBody.getUsername();
         String password = loginBody.getPassword();
         String code = loginBody.getCode();
@@ -112,10 +112,7 @@ public class PasswordAuthStrategy implements IAuthStrategy<PasswordLoginBody> {
     }
 
     private SysUserVo loadUserByUsername(String username) {
-        SysUser user = userMapper.selectOne(new LambdaQueryWrapper<SysUser>()
-            .select(SysUser::getUserName, SysUser::getStatus)
-//            .eq(TenantHelper.isEnable(), SysUser::getTenantId, tenantId)
-            .eq(SysUser::getUserName, username));
+        SysUserVo user = userMapper.selectVoOne(new LambdaQueryWrapper<SysUser>().eq(SysUser::getUserName, username));
         if (ObjectUtil.isNull(user)) {
             log.info("登录用户：{} 不存在.", username);
             throw new UserException("user.not.exists", username);
@@ -123,7 +120,7 @@ public class PasswordAuthStrategy implements IAuthStrategy<PasswordLoginBody> {
             log.info("登录用户：{} 已被停用.", username);
             throw new UserException("user.blocked", username);
         }
-        return userMapper.selectUserByUserName(username);
+        return user;
     }
 
 }

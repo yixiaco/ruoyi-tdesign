@@ -83,18 +83,18 @@ public interface ISysUserService extends IService<SysUser> {
     /**
      * 根据用户ID查询用户所属角色组
      *
-     * @param userName 用户名
+     * @param userId 用户ID
      * @return 结果
      */
-    String selectUserRoleGroup(String userName);
+    String selectUserRoleGroup(Long userId);
 
     /**
      * 根据用户ID查询用户所属岗位组
      *
-     * @param userName 用户名
+     * @param userId 用户ID
      * @return 结果
      */
-    String selectUserPostGroup(String userName);
+    String selectUserPostGroup(Long userId);
 
     /**
      * 校验用户名称是否唯一

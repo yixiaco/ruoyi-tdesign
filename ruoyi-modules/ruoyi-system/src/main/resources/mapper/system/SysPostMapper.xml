@@ -9,8 +9,8 @@
     <resultMap id="SysPostResultVo" autoMapping="true" type="org.dromara.system.domain.vo.SysPostVo">
     </resultMap>
 
-    <select id="selectPostListByUserId" parameterType="Long" resultType="Long">
-        select p.post_id
+    <select id="selectPostsByUserId" parameterType="Long" resultMap="SysPostResult">
+        select p.post_id, p.post_name, p.post_code
         from sys_post p
                  left join sys_user_post up on up.post_id = p.post_id
                  left join sys_user u on u.user_id = up.user_id

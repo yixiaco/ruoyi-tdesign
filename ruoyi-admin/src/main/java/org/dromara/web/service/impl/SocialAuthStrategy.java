@@ -3,7 +3,6 @@ package org.dromara.web.service.impl;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
-import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.model.AuthResponse;
@@ -20,8 +19,7 @@ import org.dromara.common.social.config.properties.SocialProperties;
 import org.dromara.common.social.utils.SocialUtils;
 import org.dromara.common.tenant.annotation.IgnoreTenant;
 import org.dromara.common.tenant.helper.TenantHelper;
-import org.dromara.system.domain.SysClient;
-import org.dromara.system.domain.SysUser;
+import org.dromara.system.domain.vo.SysClientVo;
 import org.dromara.system.domain.vo.SysSocialVo;
 import org.dromara.system.domain.vo.SysUserVo;
 import org.dromara.system.mapper.SysUserMapper;
@@ -55,7 +53,7 @@ public class SocialAuthStrategy implements IAuthStrategy<SocialLoginBody> {
      */
     @Override
     @IgnoreTenant
-    public LoginVo login(SocialLoginBody body, SysClient client) {
+    public LoginVo login(SocialLoginBody body, SysClientVo client) {
         AuthResponse<AuthUser> response = SocialUtils.loginAuth(body.getSource(), body.getSocialCode(), body.getSocialState(), socialProperties);
         if (!response.ok()) {
             throw new ServiceException(response.getMsg());
@@ -102,18 +100,17 @@ public class SocialAuthStrategy implements IAuthStrategy<SocialLoginBody> {
     }
 
     private SysUserVo loadUser(String tenantId, Long userId) {
-        SysUser user = userMapper.selectOne(new LambdaQueryWrapper<SysUser>()
-            .select(SysUser::getUserName, SysUser::getStatus)
-            .eq(TenantHelper.isEnable(), SysUser::getTenantId, tenantId)
-            .eq(SysUser::getUserId, userId));
-        if (ObjectUtil.isNull(user)) {
-            log.info("登录用户：{} 不存在.", "");
-            throw new UserException("user.not.exists", "");
-        } else if (UserStatus.DISABLE.getCode().equals(user.getStatus())) {
-            log.info("登录用户：{} 已被停用.", "");
-            throw new UserException("user.blocked", "");
-        }
-        return userMapper.selectUserByUserName(user.getUserName());
+        return TenantHelper.dynamicTenant(tenantId, () -> {
+            SysUserVo user = userMapper.selectVoById(userId);
+            if (ObjectUtil.isNull(user)) {
+                log.info("登录用户：{} 不存在.", "");
+                throw new UserException("user.not.exists", "");
+            } else if (UserStatus.DISABLE.getCode().equals(user.getStatus())) {
+                log.info("登录用户：{} 已被停用.", "");
+                throw new UserException("user.blocked", "");
+            }
+            return user;
+        });
     }
 
 }

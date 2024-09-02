@@ -11,7 +11,7 @@ import org.dromara.common.core.enums.UserStatus;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.satoken.utils.MultipleStpUtil;
 import org.dromara.common.tenant.annotation.IgnoreTenant;
-import org.dromara.system.domain.SysClient;
+import org.dromara.system.domain.vo.SysClientVo;
 import org.dromara.system.domain.vo.SysUserVo;
 import org.dromara.web.domain.vo.LoginVo;
 import org.dromara.web.service.IAuthStrategy;
@@ -32,7 +32,7 @@ public class XcxAuthStrategy implements IAuthStrategy<XcxLoginBody> {
 
     @Override
     @IgnoreTenant
-    public LoginVo login(XcxLoginBody loginBody, SysClient client) {
+    public LoginVo login(XcxLoginBody loginBody, SysClientVo client) {
         // xcxCode 为 小程序调用 wx.login 授权后获取
         String xcxCode = loginBody.getXcxCode();
         // 多个小程序识别使用

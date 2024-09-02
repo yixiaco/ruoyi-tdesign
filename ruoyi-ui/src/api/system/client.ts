@@ -42,12 +42,12 @@ export function delClient(ids: number | Array<number>) {
 
 /**
  * 状态修改
- * @param id ID
+ * @param clientId 客户端id
  * @param status 状态
  */
-export function changeStatus(id: number, status: string) {
+export function changeStatus(clientId: string, status: string) {
   const data = {
-    id,
+    clientId,
     status,
   };
   return request.put({

@@ -229,8 +229,7 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         if (LoginHelper.isSuperAdmin()) {
             return;
         }
-        SysDeptVo dept = baseMapper.selectDeptById(deptId);
-        if (ObjectUtil.isNull(dept)) {
+        if (baseMapper.countDeptById(deptId) == 0) {
             throw new ServiceException("没有权限访问部门数据！");
         }
     }
