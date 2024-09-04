@@ -15,6 +15,7 @@ import org.dromara.common.core.utils.ServletUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.funtion.Apply;
 import org.dromara.common.core.utils.spring.SpringUtils;
+import org.dromara.common.mybatis.helper.MyInterceptorIgnoreHelper;
 import org.dromara.common.redis.utils.RedisUtils;
 import org.dromara.common.satoken.context.SaSecurityContext;
 
@@ -66,7 +67,7 @@ public class TenantHelper {
      * 开启忽略租户(开启后需手动调用 {@link #disableIgnore()} 关闭)
      */
     public static void enableIgnore() {
-        InterceptorIgnoreHelper.handle(IgnoreStrategy.builder().tenantLine(true).build());
+        MyInterceptorIgnoreHelper.setIgnoreTenantLine();
         HEAVY_ENTRY_IGNORE_DB_TENANT.get().incrementAndGet();
     }
 
@@ -86,7 +87,7 @@ public class TenantHelper {
      */
     public static void disableIgnore(boolean force) {
         if (force || HEAVY_ENTRY_IGNORE_DB_TENANT.get().decrementAndGet() <= 0) {
-            InterceptorIgnoreHelper.clearIgnoreStrategy();
+            MyInterceptorIgnoreHelper.removeIgnoreTenantLine();
             HEAVY_ENTRY_IGNORE_DB_TENANT.remove();
         }
     }

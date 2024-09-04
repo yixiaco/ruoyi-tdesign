@@ -101,7 +101,9 @@ public class SysTenantServiceImpl extends ServiceImpl<SysTenantMapper, SysTenant
     @Transactional(rollbackFor = Exception.class)
     public Boolean insertByBo(SysTenantBo bo) {
         // 检查用户是否存在
-        if (userMapper.selectUserByUserName(bo.getUsername()) != null) {
+        boolean existsUser = userMapper.exists(new LambdaQueryWrapper<SysUser>()
+            .eq(SysUser::getUserName, bo.getUsername()));
+        if (existsUser) {
             throw new ServiceException("新增用户名'" + bo.getUsername() + "'失败，用户名已被占用");
         }
 

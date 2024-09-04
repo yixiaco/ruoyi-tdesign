@@ -52,14 +52,14 @@ public class DataPermissionHelper {
      * 开启忽略数据权限(开启后需手动调用 {@link #disableIgnore()} 关闭)
      */
     public static void enableIgnore() {
-        InterceptorIgnoreHelper.handle(IgnoreStrategy.builder().dataPermission(true).build());
+        MyInterceptorIgnoreHelper.setIgnoreDataPermission();
     }
 
     /**
      * 关闭忽略数据权限
      */
     public static void disableIgnore() {
-        InterceptorIgnoreHelper.clearIgnoreStrategy();
+        MyInterceptorIgnoreHelper.removeIgnoreDataPermission();
     }
 
     /**
