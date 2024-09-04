@@ -37,15 +37,6 @@ public interface SysRoleMapper extends BaseMapperPlus<SysRole, SysRoleVo> {
      */
     List<SysRoleVo> selectRolePermissionByUserId(@Param("userId") Long userId);
 
-
-    /**
-     * 根据用户ID获取角色选择框列表
-     *
-     * @param userId 用户ID
-     * @return 选中角色ID列表
-     */
-    List<Long> selectRoleListByUserId(@Param("userId") Long userId);
-
     /**
      * 通过角色ID查询角色
      *
