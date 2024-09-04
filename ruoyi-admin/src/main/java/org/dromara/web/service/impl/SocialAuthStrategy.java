@@ -64,16 +64,18 @@ public class SocialAuthStrategy implements IAuthStrategy<SocialLoginBody> {
         if (!ObjectUtil.isNotNull(social)) {
             throw new ServiceException("你还没有绑定第三方账号，绑定后才可以登录！");
         }
-        // 验证授权表里面的租户id是否包含当前租户id
-        String tenantId = social.getTenantId();
-        if (ObjectUtil.isNull(social) || StrUtil.isBlank(tenantId)) {
-            throw new ServiceException("对不起，你没有权限登录当前租户！");
+        if (TenantHelper.isEnable()) {
+            String tenantId = social.getTenantId();
+            // 验证授权表里面的租户id是否包含当前租户id
+            if (ObjectUtil.isNull(social) || StrUtil.isBlank(tenantId)) {
+                throw new ServiceException("对不起，你没有权限登录当前租户！");
+            }
+            // 校验租户
+            loginService.checkTenant(tenantId);
         }
-        // 校验租户
-        loginService.checkTenant(tenantId);
 
         // 查找用户
-        SysUserVo user = loadUser(tenantId, social.getUserId());
+        SysUserVo user = loadUser(social.getUserId());
 
         // 此处可根据登录用户的数据不同 自行创建 loginUser 属性不够用继承扩展就行了
         LoginUser loginUser = loginService.buildLoginUser(user);
@@ -99,18 +101,16 @@ public class SocialAuthStrategy implements IAuthStrategy<SocialLoginBody> {
         return loginVo;
     }
 
-    private SysUserVo loadUser(String tenantId, Long userId) {
-        return TenantHelper.dynamicTenant(tenantId, () -> {
-            SysUserVo user = userMapper.selectVoById(userId);
-            if (ObjectUtil.isNull(user)) {
-                log.info("登录用户：{} 不存在.", "");
-                throw new UserException("user.not.exists", "");
-            } else if (UserStatus.DISABLE.getCode().equals(user.getStatus())) {
-                log.info("登录用户：{} 已被停用.", "");
-                throw new UserException("user.blocked", "");
-            }
-            return user;
-        });
+    private SysUserVo loadUser(Long userId) {
+        SysUserVo user = userMapper.selectVoById(userId);
+        if (ObjectUtil.isNull(user)) {
+            log.info("登录用户：{} 不存在.", "");
+            throw new UserException("user.not.exists", "");
+        } else if (UserStatus.DISABLE.getCode().equals(user.getStatus())) {
+            log.info("登录用户：{} 已被停用.", "");
+            throw new UserException("user.blocked", "");
+        }
+        return user;
     }
 
 }
