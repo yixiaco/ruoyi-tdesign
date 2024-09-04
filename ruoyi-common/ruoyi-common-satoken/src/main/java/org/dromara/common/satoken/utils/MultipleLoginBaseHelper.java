@@ -98,7 +98,7 @@ public class MultipleLoginBaseHelper {
     }
 
     /**
-     * 获取用户(多级缓存)
+     * 获取用户
      */
     @SuppressWarnings("unchecked")
     public static <T extends BaseUser> T getUser(StpLogic logic) {
@@ -190,18 +190,14 @@ public class MultipleLoginBaseHelper {
      * 获取用户id
      */
     public static Long getUserId(StpLogic logic) {
-        return StorageUtil.getStorageIfAbsentSet(getLoginType(logic) + USER_KEY,
-            () -> getUserOptional(logic).map(BaseUser::getUserId).orElse(null),
-            Convert::toLong);
+        return getUserOptional(logic).map(baseUser -> Convert.toLong(baseUser.getUserId())).orElse(null);
     }
 
     /**
      * 获取租户ID
      */
     public static String getTenantId(StpLogic logic) {
-        return StorageUtil.getStorageIfAbsentSet(getLoginType(logic) + TENANT_KEY, () ->
-            getUserOptional(logic).map(BaseUser::getTenantId).orElse(null)
-        );
+        return getUserOptional(logic).map(BaseUser::getTenantId).orElse(null);
     }
 
     /**
