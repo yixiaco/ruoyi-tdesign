@@ -36,9 +36,11 @@ import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.system.domain.SysSocial;
 import org.dromara.system.domain.SysUser;
 import org.dromara.system.domain.bo.SysSocialBo;
+import org.dromara.system.domain.vo.SysDeptVo;
 import org.dromara.system.domain.vo.SysRoleVo;
 import org.dromara.system.domain.vo.SysTenantVo;
 import org.dromara.system.domain.vo.SysUserVo;
+import org.dromara.system.mapper.SysDeptMapper;
 import org.dromara.system.mapper.SysUserMapper;
 import org.dromara.system.service.ISysPermissionService;
 import org.dromara.system.service.ISysRoleService;
@@ -73,6 +75,8 @@ public class SysLoginService {
     private ISysSocialService sysSocialService;
     @Autowired
     private ISysRoleService roleService;
+    @Autowired
+    private SysDeptMapper deptMapper;
     @Autowired
     private SysUserMapper userMapper;
 
@@ -174,7 +178,8 @@ public class SysLoginService {
         loginUser.setUserType(user.getUserType());
         loginUser.setMenuPermission(permissionService.getMenuPermission(user.getUserId()));
         loginUser.setRolePermission(permissionService.getRolePermission(user.getUserId()));
-        loginUser.setDeptName(ObjectUtil.isNull(user.getDept()) ? "" : user.getDept().getDeptName());
+        SysDeptVo dept = deptMapper.selectVoById(user.getDeptId());
+        loginUser.setDeptName(ObjectUtil.isNull(dept) ? "" : dept.getDeptName());
         List<SysRoleVo> roles = DataPermissionHelper.ignore(() -> {
             return roleService.selectRolesByUserId(user.getUserId());
         });
