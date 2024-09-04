@@ -92,7 +92,9 @@ public class MultipleLoginBaseHelper {
         model = ObjectUtil.defaultIfNull(model, new SaLoginModel());
         SaSecurityContext.setContext(baseUser);
         logic.login(loginId, model);
-        logic.getTokenSession().set(LOGIN_USER_KEY, baseUser);
+        SaSession tokenSession = logic.getTokenSession();
+        tokenSession.updateTimeout(model.getTimeout());
+        tokenSession.set(LOGIN_USER_KEY, baseUser);
     }
 
     /**
