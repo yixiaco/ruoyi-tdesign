@@ -11,7 +11,6 @@ import org.aspectj.lang.annotation.AfterThrowing;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.annotation.Before;
 import org.dromara.common.core.constant.GlobalConstants;
-import org.dromara.common.core.context.ThreadLocalHolder;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.domain.model.BaseUser;
 import org.dromara.common.core.exception.ServiceException;
@@ -38,7 +37,7 @@ import java.util.StringJoiner;
 @Aspect
 public class RepeatSubmitAspect {
 
-    private static final String KEY_CACHE = "keyCache";
+    private static final ThreadLocal<String> KEY_CACHE = new ThreadLocal<>();
 
     @Before("@annotation(repeatSubmit)")
     public void doBefore(JoinPoint point, RepeatSubmit repeatSubmit) throws Throwable {
@@ -67,7 +66,7 @@ public class RepeatSubmitAspect {
         // 唯一标识（指定key + url + 消息头）
         String cacheRepeatKey = GlobalConstants.REPEAT_SUBMIT_KEY + url + submitKey;
         if (RedisUtils.setObjectIfAbsent(cacheRepeatKey, "", Duration.ofMillis(interval))) {
-            ThreadLocalHolder.set(KEY_CACHE, cacheRepeatKey);
+            KEY_CACHE.set(cacheRepeatKey);
         } else {
             String message = repeatSubmit.message();
             if (StringUtils.startsWith(message, "{") && StringUtils.endsWith(message, "}")) {
@@ -90,10 +89,9 @@ public class RepeatSubmitAspect {
                 if (r.getCode() == R.SUCCESS) {
                     return;
                 }
-                String cacheKey = ThreadLocalHolder.get(KEY_CACHE);
-                RedisUtils.deleteObject(cacheKey);
+                RedisUtils.deleteObject(KEY_CACHE.get());
             } finally {
-                ThreadLocalHolder.remove(KEY_CACHE);
+                KEY_CACHE.remove();
             }
         }
     }
@@ -106,9 +104,8 @@ public class RepeatSubmitAspect {
      */
     @AfterThrowing(value = "@annotation(repeatSubmit)", throwing = "e")
     public void doAfterThrowing(JoinPoint joinPoint, RepeatSubmit repeatSubmit, Exception e) {
-        String cacheKey = ThreadLocalHolder.get(KEY_CACHE);
-        RedisUtils.deleteObject(cacheKey);
-        ThreadLocalHolder.remove(KEY_CACHE);
+        RedisUtils.deleteObject(KEY_CACHE.get());
+        KEY_CACHE.remove();
     }
 
     /**
