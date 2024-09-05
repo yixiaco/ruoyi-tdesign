@@ -1,6 +1,5 @@
 package org.dromara.system.mapper;
 
-import com.baomidou.mybatisplus.annotation.InterceptorIgnore;
 import com.baomidou.mybatisplus.core.conditions.Wrapper;
 import com.baomidou.mybatisplus.core.toolkit.Constants;
 import org.apache.ibatis.annotations.Param;
@@ -9,6 +8,7 @@ import org.dromara.common.mybatis.annotation.DataPermission;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysUser;
 import org.dromara.system.domain.query.SysUserQuery;
+import org.dromara.system.domain.vo.SysUserExportVo;
 import org.dromara.system.domain.vo.SysUserVo;
 
 import java.util.List;
@@ -27,10 +27,22 @@ public interface SysUserMapper extends BaseMapperPlus<SysUser, SysUserVo> {
      * @return {@link SysUser}
      */
     @DataPermission({
-        @DataColumn(key = "deptName", value = "sd.dept_id"),
+        @DataColumn(key = "deptName", value = "su.dept_id"),
         @DataColumn(key = "userName", value = "su.user_id")
     })
     List<SysUserVo> queryList(SysUserQuery query);
+
+    /**
+     * 查询用户信息列表
+     *
+     * @param query 查询对象
+     * @return {@link SysUser}
+     */
+    @DataPermission({
+        @DataColumn(key = "deptName", value = "su.dept_id"),
+        @DataColumn(key = "userName", value = "su.user_id")
+    })
+    List<SysUserExportVo> selectUserExportList(SysUserQuery query);
 
     /**
      * 根据条件分页查询已配用户角色列表

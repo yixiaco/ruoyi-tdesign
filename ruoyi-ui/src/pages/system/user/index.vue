@@ -400,7 +400,7 @@
     >
       <my-descriptions :loading="openViewLoading">
         <t-descriptions-item label="用户ID">{{ formView.userId }}</t-descriptions-item>
-        <t-descriptions-item label="部门">{{ formView.dept?.deptName }}</t-descriptions-item>
+        <t-descriptions-item label="部门">{{ formView.deptName }}</t-descriptions-item>
         <t-descriptions-item label="用户账号">{{ formView.userName }}</t-descriptions-item>
         <t-descriptions-item label="用户昵称">{{ formView.nickName }}</t-descriptions-item>
         <t-descriptions-item label="用户类型">{{ formView.userType }}</t-descriptions-item>

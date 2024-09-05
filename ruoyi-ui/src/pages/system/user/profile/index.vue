@@ -63,7 +63,7 @@
             {{ userInfo.roleGroup }}
           </t-descriptions-item>
           <t-descriptions-item label="部门">
-            {{ userInfo.deptGroup }}
+            {{ userInfo.user.deptName }}
           </t-descriptions-item>
         </t-descriptions>
       </t-card>

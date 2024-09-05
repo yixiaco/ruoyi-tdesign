@@ -6,15 +6,10 @@
 
     <resultMap id="SysUserResult" autoMapping="true" type="org.dromara.system.domain.vo.SysUserVo">
         <id property="userId" column="user_id"/>
-        <result property="deptId" column="dept_id"/>
-        <association property="dept" column="dept_id" javaType="org.dromara.system.domain.SysDept" resultMap="deptResult"/>
     </resultMap>
 
-    <resultMap id="deptResult" autoMapping="true" type="org.dromara.system.domain.vo.SysDeptVo">
-        <id property="deptId" column="dept_id"/>
-        <result property="email" column="dept_email"/>
-        <result property="status" column="dept_status"/>
-        <result property="createTime" column="dept_create_time"/>
+    <resultMap id="SysUserExportResult" type="org.dromara.system.domain.vo.SysUserExportVo">
+        <id property="userId" column="user_id"/>
     </resultMap>
 
     <sql id="selectUserVo">
@@ -62,6 +57,41 @@
         select su.user_id, su.dept_id, su.user_name, su.nick_name, su.user_type, su.email, su.phonenumber, su.sex, su.avatar, su.password, su.status, su.del_flag, su.login_ip, su.login_date, su.create_by, su.create_time, su.update_by, su.update_time, su.remark from sys_user su
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysUserQuery" resultMap="SysUserResult">
+        select su.user_id,
+               su.dept_id,
+               su.nick_name,
+               su.user_name,
+               su.email,
+               su.avatar,
+               su.phonenumber,
+               su.sex,
+               su.status,
+               su.del_flag,
+               su.login_ip,
+               su.login_date,
+               su.create_by,
+               su.update_time,
+               su.create_time,
+               su.remark
+        from sys_user su
+        <where>
+            and su.del_flag = '0'
+            <if test="userId != null "> and su.user_id = #{userId}</if>
+            <if test="deptIds != null and deptIds.length != 0">
+                and su.dept_id in
+                <foreach collection="deptIds" index="index" item="item" open="(" separator="," close=")">
+                    #{item}
+                </foreach>
+            </if>
+            <if test="userName != null and userName != ''"> and su.user_name like concat(concat('%', #{userName}), '%')</if>
+            <if test="email != null and email != ''"> and su.email like concat(concat('%', #{email}), '%')</if>
+            <if test="phonenumber != null and phonenumber != ''"> and su.phonenumber like concat(concat('%', #{phonenumber}), '%')</if>
+            <if test="status != null and status != ''"> and su.status = #{status}</if>
+            <if test="params.beginTime != null and params.endTime != null">and su.create_time between #{params.beginTime} and #{params.endTime}</if>
+        </where>
+        order by su.create_time desc
+    </select>
+    <select id="selectUserExportList" parameterType="org.dromara.system.domain.query.SysUserQuery" resultMap="SysUserExportResult">
         select su.user_id,
                su.dept_id,
                su.nick_name,

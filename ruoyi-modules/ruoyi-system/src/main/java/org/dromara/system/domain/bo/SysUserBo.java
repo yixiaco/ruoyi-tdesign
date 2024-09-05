@@ -103,11 +103,6 @@ public class SysUserBo extends BaseEntity {
     private Long updateBy;
 
     /**
-     * 部门组
-     */
-    private Long[] deptIds;
-
-    /**
      * 角色组
      */
     @Size(min = 1, message = "用户角色不能为空")

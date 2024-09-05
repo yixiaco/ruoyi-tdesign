@@ -28,6 +28,7 @@ import org.dromara.system.domain.query.SysRoleQuery;
 import org.dromara.system.domain.query.SysUserQuery;
 import org.dromara.system.domain.vo.SysPostVo;
 import org.dromara.system.domain.vo.SysRoleVo;
+import org.dromara.system.domain.vo.SysUserExportVo;
 import org.dromara.system.domain.vo.SysUserVo;
 import org.dromara.system.mapper.SysPostMapper;
 import org.dromara.system.mapper.SysRoleMapper;
@@ -71,15 +72,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public TableDataInfo<SysUserVo> selectPageUserList(SysUserQuery user) {
-        if (user.getDeptId() != null) {
-            List<SysDept> deptList = deptService.lambdaQuery()
-                .select(SysDept::getDeptId)
-                .apply(DataBaseHelper.findInSet(user.getDeptId(), "ancestors"))
-                .list();
-            List<Long> ids = StreamUtils.toList(deptList, SysDept::getDeptId);
-            ids.add(user.getDeptId());
-            user.setDeptIds(ids.toArray(Long[]::new));
-        }
+        setDeptIds(user);
         return PageQuery.of(() -> baseMapper.queryList(user));
     }
 
@@ -90,15 +83,21 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return 用户信息集合信息
      */
     @Override
-    public List<SysUserVo> selectUserList(SysUserQuery user) {
+    public List<SysUserExportVo> selectUserExportList(SysUserQuery user) {
+        setDeptIds(user);
+        return baseMapper.selectUserExportList(user);
+    }
+
+    private void setDeptIds(SysUserQuery user) {
         if (user.getDeptId() != null) {
             List<SysDept> deptList = deptService.lambdaQuery()
                 .select(SysDept::getDeptId)
                 .apply(DataBaseHelper.findInSet(user.getDeptId(), "ancestors"))
                 .list();
-            user.setDeptIds(deptList.stream().map(SysDept::getDeptId).toArray(Long[]::new));
+            List<Long> ids = StreamUtils.toList(deptList, SysDept::getDeptId);
+            ids.add(user.getDeptId());
+            user.setDeptIds(ids.toArray(Long[]::new));
         }
-        return baseMapper.queryList(user);
     }
 
     /**
@@ -166,7 +165,12 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public SysUserVo selectUserById(Long userId) {
-        return baseMapper.selectVoById(userId);
+        SysUserVo user = baseMapper.selectVoById(userId);
+        if (ObjectUtil.isNull(user)) {
+            return user;
+        }
+        user.setRoles(roleMapper.selectRolesByUserId(user.getUserId()));
+        return user;
     }
 
     /**

@@ -3,7 +3,6 @@ package org.dromara.system.controller.system;
 import cn.dev33.satoken.secure.BCrypt;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.util.StrUtil;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.Size;
 import org.dromara.common.core.domain.R;
@@ -32,7 +31,6 @@ import org.dromara.system.domain.vo.SysUserVo;
 import org.dromara.system.service.ISysDeptService;
 import org.dromara.system.service.ISysLogininforService;
 import org.dromara.system.service.ISysOssService;
-import org.dromara.system.service.ISysRoleService;
 import org.dromara.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -41,8 +39,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.util.Arrays;
-import java.util.List;
-import java.util.stream.Collectors;
 
 /**
  * 个人信息 业务处理
@@ -57,11 +53,7 @@ public class SysProfileController extends BaseController {
     @Autowired
     private ISysUserService userService;
     @Autowired
-    private ISysRoleService roleService;
-    @Autowired
     private ISysOssService ossService;
-    @Autowired
-    private ISysDeptService deptService;
     @Autowired
     private ISysLogininforService logininforService;
 
@@ -71,17 +63,10 @@ public class SysProfileController extends BaseController {
     @GetMapping
     public R<ProfileVo> profile() {
         SysUserVo user = userService.selectUserById(LoginHelper.getUserId());
-        user.setRoles(roleService.selectRolesByUserId(user.getUserId()));
         ProfileVo profileVo = new ProfileVo();
         profileVo.setUser(user);
         profileVo.setRoleGroup(userService.selectUserRoleGroup(user.getUserId()));
         profileVo.setPostGroup(userService.selectUserPostGroup(user.getUserId()));
-        if (user.getDept() != null) {
-            List<Long> deptIds = Arrays.stream(StrUtil.splitToLong(user.getDept().getAncestors(), ','))
-                .boxed().collect(Collectors.toList());
-            deptIds.add(user.getDept().getDeptId());
-            profileVo.setDeptGroup(deptService.selectDeptNameByDeptIds(deptIds, "/"));
-        }
         return R.ok(profileVo);
     }
 

@@ -1,5 +1,4 @@
 import type { BaseEntity } from '@/api/model/resultModel';
-import type { SysDeptVo } from '@/api/system/model/deptModel';
 import type { SysPostVo } from '@/api/system/model/postModel';
 import type { SysRoleVo } from '@/api/system/model/roleModel';
 
@@ -58,8 +57,6 @@ export interface SysUserForm {
   remark?: string;
   /** 创建部门 */
   createDept?: number;
-  /** 部门对象 */
-  dept?: SysDeptVo;
   /** 角色对象 */
   roles?: Array<SysRoleVo>;
   /** 角色组 */
@@ -109,8 +106,8 @@ export interface SysUserVo {
   updateTime?: any;
   /** 备注 */
   remark?: string;
-  /** 部门对象 */
-  dept?: SysDeptVo;
+  /** 部门名称 */
+  deptName?: string;
   /** 角色对象 */
   roles?: SysRoleVo[];
   /** 角色组 */
@@ -138,8 +135,6 @@ export interface ProfileVo {
   roleGroup?: string;
   /** 用户所属岗位组 */
   postGroup?: string;
-  /** 部门 */
-  deptGroup?: string;
 }
 
 export interface AvatarVo {

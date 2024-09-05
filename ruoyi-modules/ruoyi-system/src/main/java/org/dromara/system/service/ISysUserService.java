@@ -5,6 +5,7 @@ import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.system.domain.SysUser;
 import org.dromara.system.domain.bo.SysUserBo;
 import org.dromara.system.domain.query.SysUserQuery;
+import org.dromara.system.domain.vo.SysUserExportVo;
 import org.dromara.system.domain.vo.SysUserVo;
 
 import java.util.List;
@@ -30,7 +31,7 @@ public interface ISysUserService extends IService<SysUser> {
      * @param user 用户信息
      * @return 用户信息集合信息
      */
-    List<SysUserVo> selectUserList(SysUserQuery user);
+    List<SysUserExportVo> selectUserExportList(SysUserQuery user);
 
     /**
      * 根据条件分页查询已分配用户角色列表
