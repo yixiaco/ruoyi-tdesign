@@ -95,9 +95,10 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
     }
 
     /**
-     * 查询OSS对象基于id串
+     * 根据一组 ossIds 获取对应的 SysOssVo 列表
      *
      * @param ossIds OSS对象ID串
+     * @return 包含 SysOssVo 对象的列表
      */
     @Override
     public List<SysOssVo> listVoByIds(Collection<Long> ossIds) {
@@ -124,10 +125,10 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
     }
 
     /**
-     * 通过ossId查询对应的url
+     * 根据一组 ossIds 获取对应文件的 URL 列表
      *
-     * @param ossIds ossId串逗号分隔
-     * @return
+     * @param ossIds ossIds 以逗号分隔的 ossId 字符串
+     * @return 以逗号分隔的文件 URL 字符串
      */
     @Override
     public String selectUrlByIds(String ossIds) {
@@ -149,7 +150,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
     }
 
     /**
-     * 上传OSS对象存储
+     * 文件下载方法，支持一次性下载完整文件
      *
      * @param ossId OSS对象ID
      * @return
@@ -173,11 +174,12 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
     }
 
     /**
-     * 上传OSS对象存储
+     * 上传 MultipartFile 到对象存储服务，并保存文件信息到数据库
      *
-     * @param file 文件
+     * @param file 要上传的 MultipartFile 对象
      * @param bo   业务对象
-     * @return
+     * @return 上传成功后的 SysOssVo 对象，包含文件信息
+     * @throws ServiceException 如果上传过程中发生异常，则抛出 ServiceException 异常
      */
     @Override
     public SysOssVo upload(MultipartFile file, SysOssBo bo) {
@@ -198,11 +200,11 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
     }
 
     /**
-     * 上传OSS对象存储
+     * 上传文件到对象存储服务，并保存文件信息到数据库
      *
-     * @param file 文件
+     * @param file 要上传的文件对象
      * @param bo   业务对象
-     * @return
+     * @return 上传成功后的 SysOssVo 对象，包含文件信息
      */
     @Override
     public SysOssVo upload(File file, SysOssBo bo) {
@@ -308,7 +310,7 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
     }
 
     /**
-     * 匹配Url
+     * 桶类型为 private 的URL 修改为临时URL时长为120s
      *
      * @param oss OSS对象
      * @return oss 匹配Url的OSS对象

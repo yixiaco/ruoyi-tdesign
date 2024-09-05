@@ -221,8 +221,8 @@ public interface ISysUserService extends IService<SysUser> {
     /**
      * 通过部门id查询当前部门所有用户
      *
-     * @param deptId
-     * @return
+     * @param deptId 部门id
+     * @return 结果
      */
     List<SysUserVo> selectUserListByDept(Long deptId);
 }

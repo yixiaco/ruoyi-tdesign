@@ -18,6 +18,10 @@ public interface IAuthStrategy<L extends LoginBody> {
 
     /**
      * 登录
+     *
+     * @param client    授权管理视图对象
+     * @param loginBody 登录对象
+     * @return 登录验证信息
      */
     static <L extends LoginBody> LoginVo login(SysClientVo client, L loginBody) {
         // 授权类型和客户端id
@@ -32,6 +36,10 @@ public interface IAuthStrategy<L extends LoginBody> {
 
     /**
      * 登录
+     *
+     * @param loginBody 登录对象
+     * @param client    授权管理视图对象
+     * @return 登录验证信息
      */
     LoginVo login(L loginBody, SysClientVo client);
 
