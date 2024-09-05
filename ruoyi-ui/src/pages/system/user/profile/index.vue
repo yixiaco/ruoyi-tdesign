@@ -63,7 +63,7 @@
             {{ userInfo.roleGroup }}
           </t-descriptions-item>
           <t-descriptions-item label="部门">
-            {{ userInfo.user.deptName }}
+            {{ userInfo.user?.deptName }}
           </t-descriptions-item>
         </t-descriptions>
       </t-card>
@@ -94,7 +94,7 @@
       <t-card class="user-intro" :bordered="false">
         <user-avatar />
         <div class="name">{{ userInfo.user?.userName }}</div>
-        <div class="position">{{ userInfo.deptGroup }}员工</div>
+        <div class="position">{{ userInfo.user?.deptName }}员工</div>
       </t-card>
 
       <!--   登录日志   -->

@@ -99,19 +99,22 @@
       </span>
     </div>
     <div style="display: flex; justify-content: flex-end; flex-direction: row">
-      <t-button shape="circle" variant="outline" @click="doSocialLogin('wechat_open')">
-        <logo-wechat-icon />
+      <t-button shape="circle" variant="outline" title="微信登录" @click="doSocialLogin('wechat_open')">
+        <logo-wechat-icon style="color: #1aad19" />
       </t-button>
-      <t-button shape="circle" variant="outline" @click="doSocialLogin('qq')">
+      <t-button shape="circle" variant="outline" title="QQ登录" @click="doSocialLogin('qq')">
         <logo-qq-icon />
       </t-button>
-      <t-button shape="circle" variant="outline" @click="doSocialLogin('maxkey')">
+      <t-button shape="circle" variant="outline" title="MaxKey登录" @click="doSocialLogin('maxkey')">
         <max-key class="t-icon" />
       </t-button>
-      <t-button shape="circle" variant="outline" @click="doSocialLogin('gitee')">
+      <t-button shape="circle" variant="outline" title="TopIam登录" @click="doSocialLogin('topiam')">
+        <img :src="TopIam" class="t-icon" alt="使用 TopIam 账号授权登录" />
+      </t-button>
+      <t-button shape="circle" variant="outline" title="Gitee登录" @click="doSocialLogin('gitee')">
         <gitee-svg class="t-icon" />
       </t-button>
-      <t-button shape="circle" variant="outline" @click="doSocialLogin('github')">
+      <t-button shape="circle" variant="outline" title="Github登录" @click="doSocialLogin('github')">
         <logo-github-filled-icon />
       </t-button>
     </div>
@@ -142,6 +145,7 @@ import type { LoginParam } from '@/api/model/loginModel';
 import { authBinding } from '@/api/system/social';
 import GiteeSvg from '@/assets/icons/svg/gitee.svg?component';
 import MaxKey from '@/assets/icons/svg/maxkey.svg?component';
+import TopIam from '@/assets/icons/svg/topiam.svg?url';
 import { useCounter } from '@/hooks';
 import { t } from '@/locales';
 import { useTabsRouterStore, useUserStore } from '@/store';
