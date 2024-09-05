@@ -57,6 +57,7 @@ public interface SysDeptMapper extends BaseMapperPlus<SysDept, SysDeptVo> {
 
     /**
      * 查询部门信息
+     *
      * @param deptId
      * @return
      */

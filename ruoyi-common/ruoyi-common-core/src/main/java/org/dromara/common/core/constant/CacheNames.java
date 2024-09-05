@@ -53,7 +53,7 @@ public interface CacheNames {
     /**
      * 部门
      */
-    String SYS_DEPT = "sys_dept#30d";
+    String SYS_DEPT = GlobalConstants.GLOBAL_REDIS_KEY + "sys_dept#30d";
 
     /**
      * OSS内容
