@@ -4,7 +4,7 @@ spring.servlet.multipart.location: /ruoyi/server/temp
 --- # 监控中心配置
 spring.boot.admin.client:
   # 增加客户端开关
-  enabled: true
+  enabled: false
   url: http://localhost:9090/admin
   instance:
     service-host-type: IP
@@ -47,8 +47,8 @@ spring:
           # jdbc 所有参数配置参考 https://lionli.blog.csdn.net/article/details/122018562
           # rewriteBatchedStatements=true 批处理优化 大幅提升批量插入更新删除性能(对数据库有性能损耗 使用批量操作应考虑性能问题)
           url: jdbc:mysql://localhost:3306/ruoyi-tdesign?useUnicode=true&characterEncoding=utf8&zeroDateTimeBehavior=convertToNull&useSSL=true&serverTimezone=GMT%2B8&autoReconnect=true&rewriteBatchedStatements=true&allowPublicKeyRetrieval=true
-          username: root
-          password: root
+          username: ruoyi-tdesign
+          password: 48yRLcjPkJcDFyWj
         # 从库数据源
         slave:
           lazy: true
@@ -104,7 +104,7 @@ spring:
       # 数据库索引
       database: 0
       # 密码(如没有密码请注释掉)
-      # password:
+      password: hcrFmT2wA7N6LCDW
       # 连接超时时间
       timeout: 10s
       # 是否开启ssl
@@ -136,7 +136,6 @@ redisson:
 
 --- # 三方授权
 justauth:
-  enabled: true
   # 前端外网访问地址
   address: http://localhost:80
   type:

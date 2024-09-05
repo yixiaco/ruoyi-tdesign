@@ -2,7 +2,7 @@ package org.dromara.common.web.config;
 
 import io.undertow.server.DefaultByteBufferPool;
 import io.undertow.websockets.jsr.WebSocketDeploymentInfo;
-import org.dromara.common.core.utils.SpringUtils;
+import org.dromara.common.core.utils.spring.SpringUtils;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.boot.web.embedded.undertow.UndertowServletWebServerFactory;
 import org.springframework.boot.web.server.WebServerFactoryCustomizer;
