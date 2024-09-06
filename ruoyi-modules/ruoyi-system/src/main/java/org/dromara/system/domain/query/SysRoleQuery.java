@@ -5,6 +5,8 @@ import lombok.EqualsAndHashCode;
 import lombok.NoArgsConstructor;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 
+import java.util.List;
+
 /**
  * 角色信息查询对象 sys_role
  *
@@ -35,6 +37,11 @@ public class SysRoleQuery extends BaseEntity {
      * 角色状态（1正常 0停用）
      */
     private String status;
+
+    /**
+     * 多个角色ID
+     */
+    private List<Long> roleIds;
 
     public SysRoleQuery(Long roleId) {
         this.roleId = roleId;

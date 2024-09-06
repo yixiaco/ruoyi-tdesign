@@ -137,4 +137,16 @@ public class SysDeptController extends BaseController {
         deptService.checkDeptDataScope(deptId);
         return toAjax(deptService.deleteDeptById(deptId));
     }
+
+    /**
+     * 获取部门选择框列表
+     *
+     * @param deptIds 部门ID串
+     */
+    @SaCheckPermission("system:dept:query")
+    @GetMapping("/optionSelect")
+    public R<List<SysDeptVo>> optionSelect(@RequestParam(required = false) Long[] deptIds) {
+        return R.ok(deptService.selectDeptByIds(List.of(deptIds)));
+    }
+
 }

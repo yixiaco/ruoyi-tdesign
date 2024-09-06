@@ -1,4 +1,5 @@
 import type { R, TableDataInfo, TreeModel } from '@/api/model/resultModel';
+import type { SysPostVo } from '@/api/system/model/postModel';
 import type { SysUserForm, SysUserInfoVo, SysUserQuery, SysUserVo, UserAuthRole } from '@/api/system/model/userModel';
 import { request } from '@/utils/request';
 import { parseStrEmpty } from '@/utils/ruoyi';
@@ -101,5 +102,17 @@ export function deptTreeSelect() {
   return request.get<R<Array<TreeModel<number>>>>({
     url: '/system/user/deptTree',
     method: 'get',
+  });
+}
+
+/**
+ * 根据用户ID串批量获取用户基础信息
+ * @param userIds 用户ID串
+ * @param deptId 部门ID
+ */
+export function userOptionSelect(userIds: Array<number | string>, deptId: number | string) {
+  return request.get<R<Array<SysUserVo>>>({
+    url: '/system/user/optionSelect',
+    params: { userIds, deptId },
   });
 }

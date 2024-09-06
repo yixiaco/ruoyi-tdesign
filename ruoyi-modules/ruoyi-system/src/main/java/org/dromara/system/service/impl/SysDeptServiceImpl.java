@@ -145,6 +145,14 @@ public class SysDeptServiceImpl extends ServiceImpl<SysDeptMapper, SysDept> impl
         return baseMapper.queryVoById(deptId);
     }
 
+    @Override
+    public List<SysDeptVo> selectDeptByIds(List<Long> deptIds) {
+        return baseMapper.selectDeptList(new LambdaQueryWrapper<SysDept>()
+            .select(SysDept::getDeptId, SysDept::getDeptName, SysDept::getLeader)
+            .eq(SysDept::getStatus, NormalDisableEnum.NORMAL.getCode())
+            .in(CollUtil.isNotEmpty(deptIds), SysDept::getDeptId, deptIds));
+    }
+
     /**
      * 通过部门ID查询部门名称
      *

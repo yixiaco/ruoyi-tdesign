@@ -39,3 +39,14 @@ export function delPost(postId: number | number[]) {
     url: `/system/post/${postId}`,
   });
 }
+
+/**
+ * 获取岗位选择框列表
+ * @param postIds 岗位ID串
+ */
+export function postOptionSelect(postIds: Array<number | string>) {
+  return request.get<R<Array<SysPostVo>>>({
+    url: '/system/post/optionSelect',
+    params: { postIds },
+  });
+}

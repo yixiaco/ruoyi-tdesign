@@ -46,3 +46,14 @@ export function delDept(deptId: number) {
     url: `/system/dept/${deptId}`,
   });
 }
+
+/**
+ * 获取部门选择框列表
+ * @param deptIds 部门ID串
+ */
+export function deptOptionSelect(deptIds: Array<number | string>) {
+  return request.get<R<Array<SysDeptVo>>>({
+    url: '/system/dept/optionSelect',
+    params: { deptIds },
+  });
+}

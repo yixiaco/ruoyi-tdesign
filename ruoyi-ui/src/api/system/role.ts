@@ -107,3 +107,14 @@ export function deptTreeSelect(roleId: number) {
     url: `/system/role/deptTree/${roleId}`,
   });
 }
+
+/**
+ * 获取角色选择框列表
+ * @param roleIds 角色ID串
+ */
+export function roleOptionSelect(roleIds: Array<number | string>) {
+  return request.get<R<Array<SysRoleVo>>>({
+    url: '/system/role/optionSelect',
+    params: { roleIds },
+  });
+}

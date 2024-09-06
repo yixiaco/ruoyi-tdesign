@@ -158,6 +158,20 @@ public class SysRoleServiceImpl extends ServiceImpl<SysRoleMapper, SysRole> impl
     }
 
     /**
+     * 通过角色ID串查询角色
+     *
+     * @param roleIds 角色ID串
+     * @return 角色列表信息
+     */
+    @Override
+    public List<SysRoleVo> selectRoleByIds(List<Long> roleIds) {
+        SysRoleQuery query = new SysRoleQuery();
+        query.setStatus(NormalDisableEnum.NORMAL.getCode());
+        query.setRoleIds(roleIds);
+        return baseMapper.queryList(query);
+    }
+
+    /**
      * 校验角色名称是否唯一
      *
      * @param role 角色信息

@@ -1,9 +1,11 @@
 package org.dromara.system.service.impl;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
@@ -82,6 +84,20 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
     public List<Long> selectPostListByUserId(Long userId) {
         List<SysPostVo> list = baseMapper.selectPostsByUserId(userId);
         return StreamUtils.toList(list, SysPostVo::getPostId);
+    }
+
+    /**
+     * 通过岗位ID串查询岗位
+     *
+     * @param postIds 岗位id串
+     * @return 岗位列表信息
+     */
+    @Override
+    public List<SysPostVo> selectPostByIds(List<Long> postIds) {
+        return baseMapper.selectVoList(new LambdaQueryWrapper<SysPost>()
+            .select(SysPost::getPostId, SysPost::getPostName, SysPost::getPostCode)
+            .eq(SysPost::getStatus, NormalDisableEnum.NORMAL.getCode())
+            .in(CollUtil.isNotEmpty(postIds), SysPost::getPostId, postIds));
     }
 
     /**

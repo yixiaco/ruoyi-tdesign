@@ -115,12 +115,13 @@ public class SysPostController extends BaseController {
 
     /**
      * 获取岗位选择框列表
+     *
+     * @param postIds 岗位ID串
      */
-    @GetMapping("/optionselect")
-    public R<List<SysPostVo>> optionselect() {
-        SysPostQuery query = new SysPostQuery();
-        query.setStatus(NormalDisableEnum.NORMAL.getCode());
-        List<SysPostVo> posts = postService.selectPostList(query);
-        return R.ok(posts);
+    @SaCheckPermission("system:post:query")
+    @GetMapping("/optionSelect")
+    public R<List<SysPostVo>> optionSelect(@RequestParam(required = false) Long[] postIds) {
+        return R.ok(postService.selectPostByIds(List.of(postIds)));
     }
+
 }
