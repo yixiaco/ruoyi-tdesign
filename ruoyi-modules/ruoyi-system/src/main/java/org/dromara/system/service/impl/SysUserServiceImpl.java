@@ -183,7 +183,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public List<SysUserVo> selectUserByIds(List<Long> userIds, Long deptId) {
-        return baseMapper.selectVoList(new LambdaQueryWrapper<SysUser>()
+        return baseMapper.selectUserList(new LambdaQueryWrapper<SysUser>()
             .select(SysUser::getUserId, SysUser::getUserName, SysUser::getNickName)
             .eq(SysUser::getStatus, NormalDisableEnum.NORMAL.getCode())
             .eq(ObjectUtil.isNotNull(deptId), SysUser::getDeptId, deptId)

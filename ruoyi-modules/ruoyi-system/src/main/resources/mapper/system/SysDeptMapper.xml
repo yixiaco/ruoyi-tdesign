@@ -26,7 +26,14 @@
 
 
     <select id="selectDeptList" resultMap="SysDeptResultVo">
-        select * from sys_dept ${ew.getCustomSqlSegment}
+        select
+        <if test="ew.getSqlSelect != null">
+            ${ew.getSqlSelect}
+        </if>
+        <if test="ew.getSqlSelect == null">
+            *
+        </if>
+        from sys_dept ${ew.getCustomSqlSegment}
     </select>
 
     <select id="countDeptById" resultType="Long">

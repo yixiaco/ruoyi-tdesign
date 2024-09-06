@@ -131,6 +131,19 @@
         order by su.create_time desc
     </select>
 
+    <select id="selectUserList" resultMap="SysUserResult">
+        select
+        <if test="ew.getSqlSelect != null">
+            ${ew.getSqlSelect}
+        </if>
+        <if test="ew.getSqlSelect == null">
+            u.user_id, u.dept_id, u.nick_name, u.user_name, u.email, u.avatar, u.phonenumber, u.sex,
+            u.status, u.del_flag, u.login_ip, u.login_date, u.create_by, u.create_time, u.remark
+        </if>
+        from sys_user u
+        ${ew.getCustomSqlSegment}
+    </select>
+
     <select id="selectAllocatedList" resultMap="SysUserResult">
         select distinct u.user_id, u.dept_id, u.user_name, u.nick_name, u.email, u.phonenumber, u.status, u.create_time
         from sys_user u
