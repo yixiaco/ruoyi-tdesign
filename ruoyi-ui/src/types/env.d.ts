@@ -19,6 +19,8 @@ export interface ImportMetaEnv {
   readonly VITE_CLIENT_ID: string;
   /** 接口加密传输 RSA */
   readonly VITE_APP_RSA_PUBLIC_KEY: string;
+  /** 接口加密功能开关(如需关闭 后端也必须对应关闭) */
+  readonly VITE_APP_ENCRYPT: string;
   readonly VITE_APP_RSA_PRIVATE_KEY: string;
   /** websocket 开关 */
   readonly VITE_APP_WEBSOCKET: string;

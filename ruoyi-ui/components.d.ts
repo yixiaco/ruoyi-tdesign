@@ -25,6 +25,7 @@ declare module 'vue' {
     RectSelect: typeof import('./src/components/rect-select/index.vue')['default']
     Result: typeof import('./src/components/result/index.vue')['default']
     RIcon: typeof import('./src/components/r-icon/index.vue')['default']
+    RoleSelect: typeof import('./src/components/role-select/index.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     TAside: typeof import('tdesign-vue-next')['Aside']
@@ -100,5 +101,6 @@ declare module 'vue' {
     TWatermark: typeof import('tdesign-vue-next')['Watermark']
     UploadExcel: typeof import('./src/components/upload-excel/index.vue')['default']
     UploadSelect: typeof import('./src/components/upload-select/index.vue')['default']
+    UserSelect: typeof import('./src/components/user-select/index.vue')['default']
   }
 }

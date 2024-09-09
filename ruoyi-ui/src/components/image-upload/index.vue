@@ -291,7 +291,7 @@ function handleSelectSubmit(values: SelectFile[]) {
     const arr2: SelectFile[] = [];
     rowValues.forEach((value) => {
       const suffix = getHttpFileSuffix(value.name);
-      if (props.fileType.includes(suffix)) {
+      if (props.fileType.includes(suffix?.toLowerCase())) {
         arr1.push(value);
       } else {
         arr2.push(value);

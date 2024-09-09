@@ -3,6 +3,7 @@ import path from 'node:path';
 import vue from '@vitejs/plugin-vue';
 import vueJsx from '@vitejs/plugin-vue-jsx';
 import copy from 'rollup-plugin-copy';
+import UnoCSS from 'unocss/vite';
 import AutoImport from 'unplugin-auto-import/vite';
 import { TDesignResolver } from 'unplugin-vue-components/resolvers';
 import Components from 'unplugin-vue-components/vite';
@@ -44,6 +45,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
     },
 
     plugins: [
+      UnoCSS(),
       copy({
         targets: [
           {

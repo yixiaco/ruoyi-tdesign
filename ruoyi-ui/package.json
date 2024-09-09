@@ -85,6 +85,7 @@
     "stylelint-config-standard": "^36.0.0",
     "stylelint-order": "~6.0.4",
     "typescript": "~5.4.4",
+    "unocss": "^0.62.3",
     "unplugin-auto-import": "^0.18.2",
     "unplugin-vue-components": "^0.27.4",
     "vite": "~5.4.2",
