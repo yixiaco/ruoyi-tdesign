@@ -234,7 +234,7 @@ public class SysUserController extends BaseController {
      */
     @SaCheckPermission("system:user:query")
     @GetMapping("/optionSelect")
-    public R<List<SysUserVo>> optionSelect(@RequestParam(required = false) Long[] userIds,
+    public R<List<SysUserVo>> optionSelect(@RequestParam(name = "userIds[]", required = false) Long[] userIds,
                                            @RequestParam(required = false) Long deptId) {
         return R.ok(userService.selectUserByIds(userIds == null ? null : List.of(userIds), deptId));
     }

@@ -1,7 +1,7 @@
 <template>
   <t-dialog
     v-model:visible="roleDialog.visible.value"
-    :title="roleDialog.title"
+    :header="roleDialog.title.value"
     width="80%"
     :close-on-overlay-click="false"
     placement="center"
@@ -104,21 +104,49 @@
 defineOptions({
   name: 'RoleSelect',
 });
+
 import { RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import type { PageInfo, PrimaryTableCol, TableProps, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, type PropType, ref } from 'vue';
 
 import type { SysRoleQuery, SysRoleVo } from '@/api/system/model/roleModel';
-import { listRole } from '@/api/system/role';
+import { listRole, roleOptionSelect } from '@/api/system/role';
 import useDialog from '@/hooks/useDialog';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
+const props = defineProps({
+  multiple: {
+    type: Boolean,
+    default: false,
+  },
+  data: [String, Number, Array] as PropType<string | number | Array<string | number>>,
+});
+
 const modelValue = defineModel({
   type: Array as PropType<SysRoleVo[]>,
   default: () => [] as SysRoleVo[],
 });
+
+const emit = defineEmits<{
+  (e: 'confirmCallBack', value: SysRoleVo[]): void;
+}>();
+
+const computedIds = (data: string | number | Array<string | number>) => {
+  if (data instanceof Array) {
+    return [...data];
+  }
+  if (typeof data === 'string') {
+    return data.split(',');
+  }
+  if (typeof data === 'number') {
+    return [data];
+  }
+  console.warn('<role-select> The data type of data should be array or string or number, but I received other');
+  return [];
+};
+const defaultSelectRoleIds = computed(() => computedIds(props.data));
 
 const roleDialog = useDialog({
   title: '角色选择',
@@ -133,7 +161,7 @@ const columnControllerVisible = ref(false);
 const sort = ref<TableSort>();
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
-  { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 50, align: 'center' },
+  { title: `选择列`, colKey: 'row-select', type: props.multiple ? 'multiple' : 'single', width: 50, align: 'center' },
   { title: `角色名称`, colKey: 'roleName', ellipsis: true, align: 'center', width: 150 },
   { title: `权限字符`, colKey: 'roleKey', ellipsis: true, align: 'center', width: 150 },
   { title: `显示顺序`, colKey: 'roleSort', align: 'center', width: 120, sorter: true },
@@ -208,6 +236,10 @@ function handleSortChange(value?: TableSort) {
 
 /** 多选框选中数据 */
 const handleSelectionChange: TableProps['onSelectChange'] = (selection, options) => {
+  if (!props.multiple) {
+    selectRoleList.value = roleList.value.filter((value) => selection.includes(value.roleId));
+    return;
+  }
   if (options.type === 'check' && options.currentRowKey === 'CHECK_ALL_BOX') {
     // 全选
     roleList.value
@@ -228,7 +260,10 @@ const handleSelectionChange: TableProps['onSelectChange'] = (selection, options)
 
 /** 提交按钮 */
 function onSubmit() {
-  modelValue.value = [...selectRoleList.value];
+  const value = [...selectRoleList.value];
+  modelValue.value = value;
+  emit('confirmCallBack', value);
+  roleDialog.closeDialog();
 }
 
 const handleCloseTag = (index: number) => {
@@ -236,7 +271,17 @@ const handleCloseTag = (index: number) => {
 };
 
 const handleOpened = () => {
+  initSelectRole();
   getList();
+};
+
+const initSelectRole = async () => {
+  if (defaultSelectRoleIds.value.length > 0) {
+    const { data } = await roleOptionSelect(defaultSelectRoleIds.value);
+    selectRoleList.value = data;
+  } else {
+    selectRoleList.value = modelValue.value;
+  }
 };
 
 defineExpose({

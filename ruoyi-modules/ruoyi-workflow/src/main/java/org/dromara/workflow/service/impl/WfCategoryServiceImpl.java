@@ -1,12 +1,12 @@
 package org.dromara.workflow.service.impl;
 
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
-import com.baomidou.mybatisplus.core.toolkit.Wrappers;
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.dromara.common.core.utils.MapstructUtils;
-import org.dromara.common.core.utils.StringUtils;
 import org.dromara.workflow.domain.WfCategory;
 import org.dromara.workflow.domain.bo.WfCategoryBo;
+import org.dromara.workflow.domain.query.WfCategoryQuery;
 import org.dromara.workflow.domain.vo.WfCategoryVo;
 import org.dromara.workflow.mapper.WfCategoryMapper;
 import org.dromara.workflow.service.IWfCategoryService;
@@ -28,14 +28,15 @@ import java.util.List;
  */
 @RequiredArgsConstructor
 @Service
-public class WfCategoryServiceImpl implements IWfCategoryService {
-
-    private final WfCategoryMapper baseMapper;
+public class WfCategoryServiceImpl extends ServiceImpl<WfCategoryMapper, WfCategory> implements IWfCategoryService {
 
     private final RepositoryService repositoryService;
 
     /**
      * 查询流程分类
+     *
+     * @param id 主键
+     * @return WfCategoryVo
      */
     @Override
     public WfCategoryVo queryById(Long id) {
@@ -45,24 +46,23 @@ public class WfCategoryServiceImpl implements IWfCategoryService {
 
     /**
      * 查询流程分类列表
+     *
+     * @param query 查询对象
+     * @return WfCategoryVo
      */
     @Override
-    public List<WfCategoryVo> queryList(WfCategoryBo bo) {
-        LambdaQueryWrapper<WfCategory> lqw = buildQueryWrapper(bo);
-        return baseMapper.selectVoList(lqw);
-    }
-
-    private LambdaQueryWrapper<WfCategory> buildQueryWrapper(WfCategoryBo bo) {
-        LambdaQueryWrapper<WfCategory> lqw = Wrappers.lambdaQuery();
-        lqw.like(StringUtils.isNotBlank(bo.getCategoryName()), WfCategory::getCategoryName, bo.getCategoryName());
-        lqw.eq(StringUtils.isNotBlank(bo.getCategoryCode()), WfCategory::getCategoryCode, bo.getCategoryCode());
-        return lqw;
+    public List<WfCategoryVo> queryList(WfCategoryQuery query) {
+        return baseMapper.queryList(query);
     }
 
     /**
-     * 新增流程分类
+     * 根据新增业务对象插入流程分类
+     *
+     * @param bo 流程分类新增业务对象
+     * @return Boolean
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean insertByBo(WfCategoryBo bo) {
         WfCategory add = MapstructUtils.convert(bo, WfCategory.class);
         validEntityBeforeSave(add);
@@ -74,7 +74,10 @@ public class WfCategoryServiceImpl implements IWfCategoryService {
     }
 
     /**
-     * 修改流程分类
+     * 根据编辑业务对象修改流程分类
+     *
+     * @param bo 流程分类编辑业务对象
+     * @return Boolean
      */
     @Override
     @Transactional(rollbackFor = Exception.class)
@@ -109,6 +112,7 @@ public class WfCategoryServiceImpl implements IWfCategoryService {
      * 批量删除流程分类
      */
     @Override
+    @Transactional(rollbackFor = Exception.class)
     public Boolean deleteWithValidByIds(Collection<Long> ids, Boolean isValid) {
         if (isValid) {
             //TODO 做一些业务上的校验,判断是否需要校验

@@ -110,7 +110,7 @@ export function deptTreeSelect() {
  * @param userIds 用户ID串
  * @param deptId 部门ID
  */
-export function userOptionSelect(userIds: Array<number | string>, deptId: number | string) {
+export function userOptionSelect(userIds: Array<number | string>, deptId?: number | string) {
   return request.get<R<Array<SysUserVo>>>({
     url: '/system/user/optionSelect',
     params: { userIds, deptId },

@@ -1,7 +1,7 @@
 <template>
   <t-dialog
     v-model:visible="userDialog.visible.value"
-    :title="userDialog.title"
+    :header="userDialog.title.value"
     width="80%"
     :close-on-overlay-click="false"
     placement="center"
@@ -15,9 +15,7 @@
         <t-card hover-shadow>
           <div class="head-container">
             <t-input v-model="deptName" placeholder="请输入部门名称" clearable style="margin-bottom: 20px">
-              <template #prefixIcon>
-                <search-icon />
-              </template>
+              <template #prefixIcon><search-icon /></template>
             </t-input>
           </div>
           <div class="head-container">
@@ -152,16 +150,43 @@ import { computed, getCurrentInstance, ref } from 'vue';
 
 import type { TreeModel } from '@/api/model/resultModel';
 import type { SysUserQuery, SysUserVo } from '@/api/system/model/userModel';
-import { deptTreeSelect, listUser } from '@/api/system/user';
+import { deptTreeSelect, listUser, userOptionSelect } from '@/api/system/user';
 import useDialog from '@/hooks/useDialog';
 
 const { proxy } = getCurrentInstance();
 const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 
+const props = defineProps({
+  multiple: {
+    type: Boolean,
+    default: false,
+  },
+  data: [String, Number, Array] as PropType<string | number | Array<string | number>>,
+});
+
 const modelValue = defineModel({
   type: Array as PropType<SysUserVo[]>,
   default: () => [] as SysUserVo[],
 });
+
+const emit = defineEmits<{
+  (e: 'confirmCallBack', value: SysUserVo[]): void;
+}>();
+
+const computedIds = (data: string | number | Array<string | number>) => {
+  if (data instanceof Array) {
+    return [...data];
+  }
+  if (typeof data === 'string') {
+    return data.split(',');
+  }
+  if (typeof data === 'number') {
+    return [data];
+  }
+  console.warn('<user-select> The data type of data should be array or string or number, but I received other');
+  return [];
+};
+const defaultSelectUserIds = computed(() => computedIds(props.data));
 
 const selectUserList = ref<SysUserVo[]>([]);
 const userList = ref<SysUserVo[]>([]);
@@ -180,12 +205,12 @@ const userDialog = useDialog({
   title: '用户选择',
 });
 // 列显隐信息
-const columns = ref<Array<PrimaryTableCol>>([
-  { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 30, align: 'center' },
+const columns = computed<Array<PrimaryTableCol>>(() => [
+  { title: `选择列`, colKey: 'row-select', type: props.multiple ? 'multiple' : 'single', width: 50, align: 'center' },
   { title: `用户编号`, colKey: 'userId', align: 'center', ellipsis: true },
   { title: `用户名称`, colKey: 'userName', ellipsis: true, align: 'center' },
   { title: `用户昵称`, colKey: 'nickName', ellipsis: true, align: 'center' },
-  { title: `头像`, colKey: 'avatar', align: 'center' },
+  // { title: `头像`, colKey: 'avatar', align: 'center' },
   { title: `部门`, colKey: 'dept.deptName', align: 'center' },
   { title: `手机号码`, colKey: 'phonenumber', align: 'center' },
   { title: `状态`, colKey: 'status', align: 'center' },
@@ -215,10 +240,10 @@ const pagination = computed(() => {
     },
   };
 });
-const userIds = computed<number[]>(() => selectUserList.value.map((item) => item.userId));
+const userIds = computed<number[]>(() => selectUserList.value?.map((item) => item.userId) ?? []);
 
 watchEffect(() => {
-  selectUserList.value = modelValue.value;
+  selectUserList.value = modelValue.value ?? [];
 });
 
 /** 通过条件过滤节点  */
@@ -281,6 +306,11 @@ function handleSortChange(value?: TableSort) {
 
 /** 选择条数  */
 const handleSelectionChange: TableProps['onSelectChange'] = (selection, options) => {
+  if (!props.multiple) {
+    // 单选
+    selectUserList.value = userList.value.filter((value) => selection.includes(value.userId));
+    return;
+  }
   if (options.type === 'check' && options.currentRowKey === 'CHECK_ALL_BOX') {
     // 全选
     userList.value
@@ -289,28 +319,43 @@ const handleSelectionChange: TableProps['onSelectChange'] = (selection, options)
         selectUserList.value.push(value);
       });
   } else if (options.type === 'check') {
-    // 勾选
+    // 选中
     selectUserList.value.push(options.currentRowData as SysUserVo);
   } else if (options.type === 'uncheck' && options.currentRowKey === 'CHECK_ALL_BOX') {
+    // 取消全选
     const ids = userList.value.map((value) => value.userId);
     selectUserList.value = selectUserList.value.filter((value) => !ids.includes(value.userId));
   } else {
+    // 取消选中
     selectUserList.value = selectUserList.value.filter((value) => value.userId !== options.currentRowData.userId);
   }
 };
 
 const onSubmit = () => {
-  modelValue.value = [...selectUserList.value];
+  const value = [...selectUserList.value];
+  modelValue.value = value;
+  emit('confirmCallBack', value);
+  userDialog.closeDialog();
 };
 
 const handleOpened = () => {
   getDeptTree().then(() => triggerExpandedDept());
+  initSelectUser();
   deptFormOptions.value = deptOptions.value;
   getList();
 };
 
 const handleCloseTag = (index: number) => {
-  selectUserList.value.splice(index, 1);
+  selectUserList.value?.splice(index, 1);
+};
+
+const initSelectUser = async () => {
+  if (defaultSelectUserIds.value.length > 0) {
+    const { data } = await userOptionSelect(defaultSelectUserIds.value);
+    selectUserList.value = data;
+  } else {
+    selectUserList.value = modelValue.value;
+  }
 };
 
 defineExpose({

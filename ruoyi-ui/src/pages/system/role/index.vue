@@ -325,8 +325,12 @@
         <t-descriptions-item label="角色状态">
           <dict-tag :options="sys_normal_disable" :value="form.status" />
         </t-descriptions-item>
-        <t-descriptions-item label="菜单树选择项是否关联显示" :span="2">{{ form.menuCheckStrictly }}</t-descriptions-item>
-        <t-descriptions-item label="部门树选择项是否关联显示" :span="2">{{ form.deptCheckStrictly }}</t-descriptions-item>
+        <t-descriptions-item label="菜单树选择项是否关联显示" :span="2">
+          {{ form.menuCheckStrictly }}
+        </t-descriptions-item>
+        <t-descriptions-item label="部门树选择项是否关联显示" :span="2">
+          {{ form.deptCheckStrictly }}
+        </t-descriptions-item>
         <t-descriptions-item label="备注" :span="2">{{ form.remark }}</t-descriptions-item>
         <t-descriptions-item label="更新时间">{{ parseTime(form.updateTime) }}</t-descriptions-item>
         <t-descriptions-item label="创建时间">{{ parseTime(form.createTime) }}</t-descriptions-item>

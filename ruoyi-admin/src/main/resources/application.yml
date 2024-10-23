@@ -127,6 +127,7 @@ sa-token:
         - /monitor/**
         - /resource/**
         - /demo/**
+        - /workflow/**
     user:
       # 允许动态设置 token 有效期
       dynamic-active-timeout: true

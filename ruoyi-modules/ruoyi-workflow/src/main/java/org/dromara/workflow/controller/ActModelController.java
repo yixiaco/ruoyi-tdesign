@@ -1,5 +1,6 @@
 package org.dromara.workflow.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotEmpty;
@@ -44,21 +45,10 @@ public class ActModelController extends BaseController {
      *
      * @param modelBo 模型参数
      */
+    @SaCheckPermission("workflow:model:list")
     @GetMapping("/list")
     public TableDataInfo<Model> page(ModelBo modelBo) {
         return actModelService.page(modelBo);
-    }
-
-    /**
-     * 新增模型
-     *
-     * @param modelBo 模型请求对象
-     */
-    @Log(title = "模型管理", businessType = BusinessType.INSERT)
-    @RepeatSubmit()
-    @PostMapping("/save")
-    public R<Void> saveNewModel(@Validated(AddGroup.class) @RequestBody ModelBo modelBo) {
-        return toAjax(actModelService.saveNewModel(modelBo));
     }
 
     /**
@@ -72,10 +62,24 @@ public class ActModelController extends BaseController {
     }
 
     /**
+     * 新增模型
+     *
+     * @param modelBo 模型请求对象
+     */
+    @SaCheckPermission("workflow:model:add")
+    @Log(title = "模型管理", businessType = BusinessType.INSERT)
+    @RepeatSubmit()
+    @PostMapping("/save")
+    public R<Void> saveNewModel(@Validated(AddGroup.class) @RequestBody ModelBo modelBo) {
+        return toAjax(actModelService.saveNewModel(modelBo));
+    }
+
+    /**
      * 修改模型信息
      *
      * @param modelBo 模型数据
      */
+    @SaCheckPermission("workflow:model:edit")
     @Log(title = "模型管理", businessType = BusinessType.UPDATE)
     @RepeatSubmit()
     @PutMapping(value = "/update")
@@ -88,6 +92,7 @@ public class ActModelController extends BaseController {
      *
      * @param modelBo 模型数据
      */
+    @SaCheckPermission("workflow:model:design")
     @Log(title = "模型管理", businessType = BusinessType.UPDATE)
     @RepeatSubmit()
     @PutMapping(value = "/editModelXml")
@@ -100,6 +105,7 @@ public class ActModelController extends BaseController {
      *
      * @param ids 模型id
      */
+    @SaCheckPermission("workflow:model:remove")
     @Log(title = "模型管理", businessType = BusinessType.DELETE)
     @RepeatSubmit()
     @DeleteMapping("/{ids}")
@@ -114,6 +120,7 @@ public class ActModelController extends BaseController {
      *
      * @param id 模型id
      */
+    @SaCheckPermission("workflow:model:deploy")
     @Log(title = "模型管理", businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping("/modelDeploy/{id}")
@@ -127,6 +134,7 @@ public class ActModelController extends BaseController {
      * @param modelId  模型id
      * @param response 相应
      */
+    @SaCheckPermission("workflow:model:export")
     @GetMapping("/export/zip/{modelId}")
     public void exportZip(@NotEmpty(message = "模型id不能为空") @PathVariable String modelId,
                           HttpServletResponse response) {

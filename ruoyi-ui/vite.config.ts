@@ -161,5 +161,23 @@ export default ({ mode }: ConfigEnv): UserConfig => {
       },
       open: true,
     },
+    // 预编译
+    optimizeDeps: {
+      include: [
+        'vue',
+        'vue-router',
+        'pinia',
+        'axios',
+        '@vueuse/core',
+        'path-to-regexp',
+        'vue-i18n',
+        'bpmn-js/lib/Modeler.js',
+        'bpmn-js-properties-panel',
+        'min-dash',
+        'bpmn-js/lib/features/palette/PaletteProvider',
+        'bpmn-js/lib/features/context-pad/ContextPadProvider',
+        'diagram-js/lib/draw/BaseRenderer',
+      ],
+    },
   };
 };

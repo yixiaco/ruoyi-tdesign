@@ -158,7 +158,7 @@ public class SysRoleController extends BaseController {
      */
     @SaCheckPermission("system:role:query")
     @GetMapping("/optionSelect")
-    public R<List<SysRoleVo>> optionSelect(@RequestParam(required = false) Long[] roleIds) {
+    public R<List<SysRoleVo>> optionSelect(@RequestParam(name = "roleIds[]", required = false) Long[] roleIds) {
         return R.ok(roleService.selectRoleByIds(roleIds == null ? null : List.of(roleIds)));
     }
 

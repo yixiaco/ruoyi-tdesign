@@ -1,6 +1,7 @@
 package org.dromara.workflow.controller;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaMode;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -14,6 +15,7 @@ import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.web.core.BaseController;
 import org.dromara.workflow.domain.bo.WfCategoryBo;
+import org.dromara.workflow.domain.query.WfCategoryQuery;
 import org.dromara.workflow.domain.vo.WfCategoryVo;
 import org.dromara.workflow.service.IWfCategoryService;
 import org.springframework.validation.annotation.Validated;
@@ -40,8 +42,8 @@ public class WfCategoryController extends BaseController {
      */
     @SaCheckPermission("workflow:category:list")
     @GetMapping("/list")
-    public R<List<WfCategoryVo>> list(WfCategoryBo bo) {
-        List<WfCategoryVo> list = wfCategoryService.queryList(bo);
+    public R<List<WfCategoryVo>> list(WfCategoryQuery query) {
+        List<WfCategoryVo> list = wfCategoryService.queryList(query);
         return R.ok(list);
 
     }
@@ -52,8 +54,8 @@ public class WfCategoryController extends BaseController {
     @SaCheckPermission("workflow:category:export")
     @Log(title = "流程分类", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
-    public void export(WfCategoryBo bo, HttpServletResponse response) {
-        List<WfCategoryVo> list = wfCategoryService.queryList(bo);
+    public void export(WfCategoryQuery query, HttpServletResponse response) {
+        List<WfCategoryVo> list = wfCategoryService.queryList(query);
         ExcelUtil.exportExcel(list, "流程分类", WfCategoryVo.class, response);
     }
 
@@ -62,10 +64,9 @@ public class WfCategoryController extends BaseController {
      *
      * @param id 主键
      */
-    @SaCheckPermission("workflow:category:query")
+    @SaCheckPermission(value = {"workflow:category:query", "workflow:category:edit"}, mode = SaMode.OR)
     @GetMapping("/{id}")
-    public R<WfCategoryVo> getInfo(@NotNull(message = "主键不能为空")
-                                   @PathVariable Long id) {
+    public R<WfCategoryVo> getInfo(@NotNull(message = "主键不能为空") @PathVariable Long id) {
         return R.ok(wfCategoryService.queryById(id));
     }
 
@@ -99,8 +100,7 @@ public class WfCategoryController extends BaseController {
     @SaCheckPermission("workflow:category:remove")
     @Log(title = "流程分类", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
-    public R<Void> remove(@NotEmpty(message = "主键不能为空")
-                          @PathVariable Long[] ids) {
+    public R<Void> remove(@NotEmpty(message = "主键不能为空") @PathVariable Long[] ids) {
         return toAjax(wfCategoryService.deleteWithValidByIds(List.of(ids), true));
     }
 }
