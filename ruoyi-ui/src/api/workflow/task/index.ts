@@ -14,11 +14,10 @@ import { request } from '@/utils/request';
 /**
  * 查询待办列表
  * @param query
- * @returns {*}
  */
-export const getTaskWaitByPage = (query: TaskQuery) => {
+export const getPageByTaskWait = (query: TaskQuery) => {
   return request.get<TableDataInfo<TaskVo>>({
-    url: '/workflow/task/getTaskWaitByPage',
+    url: '/workflow/task/getPageByTaskWait',
     params: query,
   });
 };
@@ -27,9 +26,9 @@ export const getTaskWaitByPage = (query: TaskQuery) => {
  * 查询已办列表
  * @param query
  */
-export const getTaskFinishByPage = (query: TaskQuery) => {
+export const getPageByTaskFinish = (query: TaskQuery) => {
   return request.get<TableDataInfo<TaskVo>>({
-    url: '/workflow/task/getTaskFinishByPage',
+    url: '/workflow/task/getPageByTaskFinish',
     params: query,
   });
 };
@@ -38,9 +37,9 @@ export const getTaskFinishByPage = (query: TaskQuery) => {
  * 查询当前用户的抄送列表
  * @param query
  */
-export const getTaskCopyByPage = (query: TaskQuery) => {
+export const getPageByTaskCopy = (query: TaskQuery) => {
   return request.get<TableDataInfo<TaskVo>>({
-    url: '/workflow/task/getTaskCopyByPage',
+    url: '/workflow/task/getPageByTaskCopy',
     params: query,
   });
 };
@@ -49,9 +48,9 @@ export const getTaskCopyByPage = (query: TaskQuery) => {
  * 当前租户所有待办任务
  * @param query
  */
-export const getAllTaskWaitByPage = (query: TaskQuery) => {
+export const getPageByAllTaskWait = (query: TaskQuery) => {
   return request.get<TableDataInfo<TaskVo>>({
-    url: '/workflow/task/getAllTaskWaitByPage',
+    url: '/workflow/task/getPageByAllTaskWait',
     params: query,
   });
 };
@@ -60,9 +59,9 @@ export const getAllTaskWaitByPage = (query: TaskQuery) => {
  * 当前租户所有已办任务
  * @param query
  */
-export const getAllTaskFinishByPage = (query: TaskQuery) => {
+export const getPageByAllTaskFinish = (query: TaskQuery) => {
   return request.get<TableDataInfo<TaskVo>>({
-    url: '/workflow/task/getAllTaskFinishByPage',
+    url: '/workflow/task/getPageByAllTaskFinish',
     params: query,
   });
 };
@@ -121,13 +120,13 @@ export const backProcess = (data: BackProcessBo) => {
 };
 
 /**
- * 获取流程状态
+ * 获取当前任务
  * @param taskId
  * @returns
  */
-export const getBusinessStatus = (taskId: string) => {
-  return request.get<R<string>>({
-    url: `/workflow/task/getBusinessStatus/${taskId}`,
+export const getTaskById = (taskId: string) => {
+  return request.get<R<TaskVo>>({
+    url: `/workflow/task/getTaskById/${taskId}`,
   });
 };
 
@@ -166,3 +165,15 @@ export const updateAssignee = (taskIds: Array<string>, userId: string | number) 
     url: `/workflow/task/updateAssignee/${taskIds}/${userId}`,
   });
 };
+
+/**
+ * 转办任务
+ * @returns
+ * @param data
+ */
+export function transferTask(data: object) {
+  return request.post<R>({
+    url: `/workflow/task/transferTask`,
+    data,
+  });
+}

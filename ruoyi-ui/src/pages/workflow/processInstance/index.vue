@@ -194,13 +194,13 @@ import { computed, ref } from 'vue';
 import { listCategory } from '@/api/workflow/category';
 import type { WfCategoryVo } from '@/api/workflow/model/categoryModel';
 import type { ProcessInstanceQuery, ProcessInstanceVo } from '@/api/workflow/model/processInstanceModel';
-import { getProcessDefinitionListByKey, migrationProcessDefinition } from '@/api/workflow/processDefinition';
+import { getListByKey, migrationDefinition } from '@/api/workflow/processDefinition';
 import {
-  deleteFinishProcessAndHisInst,
-  deleteRuntimeProcessAndHisInst,
-  deleteRuntimeProcessInst,
-  getProcessInstanceFinishByPage,
-  getProcessInstanceRunningByPage,
+  deleteFinishAndHisInstance,
+  deleteRunAndHisInstance,
+  deleteRunInstance,
+  getPageByFinish,
+  getPageByRunning,
 } from '@/api/workflow/processInstance';
 import ApprovalRecord from '@/components/Process/approvalRecord.vue';
 // 审批记录组件
@@ -359,7 +359,7 @@ const handleSelectionChange = (selection: Array<string | number>) => {
 const getProcessInstanceRunningList = () => {
   loading.value = true;
   queryParams.value.categoryCode = treeActived.value.at(0);
-  getProcessInstanceRunningByPage(queryParams.value).then((resp) => {
+  getPageByRunning(queryParams.value).then((resp) => {
     processInstanceList.value = resp.rows;
     total.value = resp.total;
     loading.value = false;
@@ -368,7 +368,7 @@ const getProcessInstanceRunningList = () => {
 // 分页
 const getProcessInstanceFinishList = () => {
   loading.value = true;
-  getProcessInstanceFinishByPage(queryParams.value).then((resp) => {
+  getPageByFinish(queryParams.value).then((resp) => {
     processInstanceList.value = resp.rows;
     total.value = resp.total;
     loading.value = false;
@@ -381,10 +381,10 @@ const handleDelete = async (row: any) => {
   proxy?.$modal.confirm(`是否确认删除id为【${id}】的数据项？`, async () => {
     loading.value = true;
     if (tab.value === 'running') {
-      await deleteRuntimeProcessAndHisInst(id).finally(() => (loading.value = false));
+      await deleteRunAndHisInstance(id).finally(() => (loading.value = false));
       getProcessInstanceRunningList();
     } else {
-      await deleteFinishProcessAndHisInst(id).finally(() => (loading.value = false));
+      await deleteFinishAndHisInstance(id).finally(() => (loading.value = false));
       getProcessInstanceFinishList();
     }
     await proxy?.$modal.msgSuccess('删除成功');
@@ -407,7 +407,7 @@ const handleInvalid = async (row: ProcessInstanceVo) => {
         processInstanceId: row.id,
         deleteReason: deleteReason.value,
       };
-      await deleteRuntimeProcessInst(param).finally(() => (loading.value = false));
+      await deleteRunInstance(param).finally(() => (loading.value = false));
       getProcessInstanceRunningList();
       await proxy?.$modal.msgSuccess('操作成功');
     }
@@ -421,7 +421,7 @@ const getProcessDefinitionHitoryList = (id: string, key: string) => {
   processDefinitionDialog.visible = true;
   processDefinitionId.value = id;
   loading.value = true;
-  getProcessDefinitionListByKey(key).then((resp) => {
+  getListByKey(key).then((resp) => {
     if (resp.data && resp.data.length > 0) {
       processDefinitionHistoryList.value = resp.data.filter((item: any) => item.id !== id);
     }
@@ -432,7 +432,7 @@ const getProcessDefinitionHitoryList = (id: string, key: string) => {
 const handleChange = async (id: string) => {
   proxy?.$modal.confirm('是否确认切换？', () => {
     loading.value = true;
-    migrationProcessDefinition(processDefinitionId.value, id).then(() => {
+    migrationDefinition(processDefinitionId.value, id).then(() => {
       proxy?.$modal.msgSuccess('操作成功');
       getProcessInstanceRunningList();
       processDefinitionDialog.visible = false;

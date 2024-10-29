@@ -240,13 +240,13 @@ import { listCategory } from '@/api/workflow/category';
 import type { WfCategoryVo } from '@/api/workflow/model/categoryModel';
 import {
   convertToModel,
+  definitionImage,
+  definitionXml,
   deleteProcessDefinition,
   deployProcessFile,
-  getProcessDefinitionListByKey,
+  getListByKey,
   listProcessDefinition,
-  processDefinitionImage,
-  processDefinitionXml,
-  updateProcessDefState,
+  updateDefinitionState,
 } from '@/api/workflow/processDefinition';
 import type { ProcessDefinitionQuery, ProcessDefinitionVo } from '@/api/workflow/processDefinition/types';
 
@@ -392,7 +392,7 @@ const getList = async () => {
 const getProcessDefinitionHistoryList = async (id: string, key: string) => {
   processDefinitionDialog.visible = true;
   loading.value = true;
-  const resp = await getProcessDefinitionListByKey(key);
+  const resp = await getListByKey(key);
   if (resp.data && resp.data.length > 0) {
     processDefinitionHistoryList.value = resp.data.filter((item: any) => item.id !== id);
   }
@@ -402,7 +402,7 @@ const getProcessDefinitionHistoryList = async (id: string, key: string) => {
 // 预览图片
 const clickPreviewImg = async (id: string) => {
   loading.value = true;
-  const resp = await processDefinitionImage(id);
+  const resp = await definitionImage(id);
   if (previewRef.value) {
     url.value = [];
     url.value.push(`data:image/png;base64,${resp.data}`);
@@ -413,7 +413,7 @@ const clickPreviewImg = async (id: string) => {
 // 预览xml
 const clickPreviewXML = async (id: string) => {
   loading.value = true;
-  const resp = await processDefinitionXml(id);
+  const resp = await definitionXml(id);
   if (previewRef.value) {
     url.value = [];
     url.value = resp.data.xml;
@@ -440,7 +440,7 @@ const handleProcessDefState = async (row: ProcessDefinitionVo) => {
   }
   proxy?.$modal.confirm(msg, async () => {
     loading.value = true;
-    await updateProcessDefState(row.id).finally(() => (loading.value = false));
+    await updateDefinitionState(row.id).finally(() => (loading.value = false));
     await getList();
     proxy?.$modal.msgSuccess('操作成功');
   });

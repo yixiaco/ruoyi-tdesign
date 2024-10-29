@@ -158,11 +158,7 @@ import type { SysUserVo } from '@/api/system/model/userModel';
 import { deptTreeSelect } from '@/api/system/user';
 import { addMultiInstanceExecution, deleteMultiInstanceExecution } from '@/api/workflow/task';
 import type { TaskVo } from '@/api/workflow/task/types';
-import {
-  getUserListByIds,
-  getWorkflowAddMultiListByPage,
-  getWorkflowDeleteMultiInstanceList,
-} from '@/api/workflow/workflowUser';
+import { getListByDeleteMultiInstance, getPageByAddMultiInstance, getUserListByIds } from '@/api/workflow/workflowUser';
 
 const { proxy } = getCurrentInstance();
 
@@ -251,7 +247,7 @@ const getAddMultiInstanceList = async (taskId: string, userIdList: Array<number 
   queryParams.value.deptId = deptActived.value.at(0);
   queryParams.value.taskId = taskId;
   loading.value = true;
-  const res = await getWorkflowAddMultiListByPage(queryParams.value);
+  const res = await getPageByAddMultiInstance(queryParams.value);
   loading.value = false;
   userList.value = res.rows;
   total.value = res.total;
@@ -260,7 +256,7 @@ const getAddMultiInstanceList = async (taskId: string, userIdList: Array<number 
 
 const getList = async () => {
   loading.value = true;
-  const res = await getWorkflowAddMultiListByPage(queryParams.value);
+  const res = await getPageByAddMultiInstance(queryParams.value);
   loading.value = false;
   userList.value = res.rows;
   total.value = res.total;
@@ -284,7 +280,7 @@ const getDeleteMultiInstanceList = async (taskId: string) => {
   queryParams.value.taskId = taskId;
   multiInstance.value = 'delete';
   visible.value = true;
-  const res = await getWorkflowDeleteMultiInstanceList(taskId);
+  const res = await getListByDeleteMultiInstance(taskId);
   taskList.value = res.data;
   loading.value = false;
 };

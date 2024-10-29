@@ -76,7 +76,7 @@
 import type { PrimaryTableCol } from 'tdesign-vue-next';
 import { ref } from 'vue';
 
-import { getHistoryProcessImage, getHistoryRecord } from '@/api/workflow/processInstance';
+import { getHistoryImage, getHistoryRecord } from '@/api/workflow/processInstance';
 
 const { proxy } = getCurrentInstance();
 
@@ -126,7 +126,7 @@ const init = async (processInstanceId: string) => {
   loading.value = true;
   historyList.value = [];
   graphicInfoVos.value = [];
-  getHistoryProcessImage(processInstanceId).then((res) => {
+  getHistoryImage(processInstanceId).then((res) => {
     src.value = `data:image/png;base64,${res.data}`;
   });
   getHistoryRecord(processInstanceId).then((response) => {

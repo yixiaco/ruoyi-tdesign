@@ -4,6 +4,7 @@
     :header="dialog.title"
     width="50%"
     :close-on-overlay-click="false"
+    placement="center"
     @close="cancel"
   >
     <t-loading :loading="loading">
@@ -15,7 +16,7 @@
             <t-checkbox label="3" name="type">短信</t-checkbox>
           </t-checkbox-group>
         </t-form-item>
-        <t-form-item label="附件">
+        <t-form-item v-if="task.businessStatus === 'waiting'" label="附件">
           <fileUpload
             v-model="form.fileId"
             :file-type="['doc', 'xls', 'ppt', 'txt', 'pdf', 'xlsx', 'docx', 'zip']"
@@ -36,26 +37,60 @@
             {{ user.userName }}
           </t-tag>
         </t-form-item>
-        <t-form-item v-if="businessStatus === 'waiting'" label="审批意见">
+        <t-form-item v-if="task.businessStatus === 'waiting'" label="审批意见">
           <t-textarea v-model="form.message" />
         </t-form-item>
       </t-form>
     </t-loading>
     <template #footer>
       <span class="dialog-footer">
-        <t-button :loading="buttonLoading" variant="outline" @click="cancel">取消</t-button>
         <t-button :loading="buttonLoading" theme="primary" @click="handleCompleteTask"> 提交 </t-button>
         <t-button
-          v-if="businessStatus === 'waiting'"
+          v-if="task.businessStatus === 'waiting' && task.multiInstance"
+          :loading="buttonLoading"
+          theme="primary"
+          @click="openTransferTask"
+        >
+          转办
+        </t-button>
+        <t-button
+          v-if="task.businessStatus === 'waiting' && task.multiInstance"
+          :loading="buttonLoading"
+          theme="primary"
+          @click="addMultiInstanceUser"
+        >
+          加签
+        </t-button>
+        <t-button
+          v-if="task.businessStatus === 'waiting' && task.multiInstance"
+          :loading="buttonLoading"
+          theme="primary"
+          @click="deleteMultiInstanceUser"
+        >
+          减签
+        </t-button>
+        <t-button
+          v-if="task.businessStatus === 'waiting'"
           :loading="buttonLoading"
           theme="danger"
           @click="handleBackProcess"
         >
           退回
         </t-button>
+        <t-button :loading="buttonLoading" variant="outline" @click="cancel">取消</t-button>
       </span>
     </template>
-    <user-select ref="userSelectCopyRef" :data="selectCopyUserIds" @confirm-call-back="userSelectCopyCallBack" />
+    <!-- 抄送 -->
+    <user-select
+      ref="userSelectCopyRef"
+      :multiple="userMultiple"
+      :data="selectCopyUserIds"
+      @confirm-call-back="userSelectCopyCallBack"
+    />
+    <!-- 转办 -->
+    <user-select ref="transferTaskRef" :multiple="userMultiple" @confirm-call-back="handleTransferTask"></user-select>
+    <!-- 加签组件 -->
+    <multi-instance-user ref="multiInstanceUserRef" :title="title" @submit-callback="closeDialog" />
   </t-dialog>
 </template>
 
@@ -64,12 +99,17 @@ import { AddIcon } from 'tdesign-icons-vue-next';
 import { ref } from 'vue';
 
 import type { SysUserVo } from '@/api/system/model/userModel';
-import { backProcess, completeTask, getBusinessStatus } from '@/api/workflow/task';
+import { backProcess, completeTask, getTaskById, transferTask } from '@/api/workflow/task';
+import type { TaskVo } from '@/api/workflow/task/types';
+import MultiInstanceUser from '@/components/Process/multiInstanceUser.vue';
 import UserSelect from '@/components/user-select/index.vue';
 
 const { proxy } = getCurrentInstance();
 
 const userSelectCopyRef = ref<InstanceType<typeof UserSelect>>();
+const transferTaskRef = ref<InstanceType<typeof UserSelect>>();
+// 加签组件
+const multiInstanceUserRef = ref<InstanceType<typeof MultiInstanceUser>>();
 
 const props = defineProps({
   taskVariables: {
@@ -81,15 +121,44 @@ const props = defineProps({
 const loading = ref(true);
 // 按钮
 const buttonLoading = ref(true);
-// 流程状态
-const businessStatus = ref<string>('');
 // 任务id
 const taskId = ref<string>('');
 // 抄送人
 const selectCopyUserList = ref<SysUserVo[]>([]);
 // 抄送人id
-const selectCopyUserIds = ref<string>('');
+const selectCopyUserIds = ref<string>(undefined);
+// 是否多选人员
+const userMultiple = ref(false);
 
+// 任务
+const task = ref<TaskVo>({
+  id: undefined,
+  name: undefined,
+  description: undefined,
+  priority: undefined,
+  owner: undefined,
+  assignee: undefined,
+  assigneeName: undefined,
+  processInstanceId: undefined,
+  executionId: undefined,
+  taskDefinitionId: undefined,
+  processDefinitionId: undefined,
+  endTime: undefined,
+  taskDefinitionKey: undefined,
+  dueDate: undefined,
+  category: undefined,
+  parentTaskId: undefined,
+  tenantId: undefined,
+  claimTime: undefined,
+  businessStatus: undefined,
+  businessStatusName: undefined,
+  processDefinitionName: undefined,
+  processDefinitionKey: undefined,
+  participantVo: undefined,
+  multiInstance: undefined,
+});
+// 加签 减签标题
+const title = ref('');
 const dialog = reactive({
   visible: false,
   title: '提示',
@@ -102,9 +171,12 @@ const form = ref<Record<string, any>>({
   messageType: ['1'],
   wfCopyList: [],
 });
+const closeDialog = () => {
+  dialog.visible = false;
+};
 // 打开弹窗
 const openDialog = (id?: string) => {
-  selectCopyUserIds.value = '';
+  selectCopyUserIds.value = undefined;
   selectCopyUserList.value = [];
   form.value.fileId = undefined;
   taskId.value = id;
@@ -113,8 +185,8 @@ const openDialog = (id?: string) => {
   loading.value = true;
   buttonLoading.value = true;
   nextTick(() => {
-    getBusinessStatus(taskId.value).then((response) => {
-      businessStatus.value = response.data;
+    getTaskById(taskId.value).then((response) => {
+      task.value = response.data;
       loading.value = false;
       buttonLoading.value = false;
     });
@@ -169,6 +241,7 @@ const cancel = async () => {
 };
 // 打开抄送人员
 const openUserSelectCopy = () => {
+  userMultiple.value = true;
   userSelectCopyRef.value.open();
 };
 // 确认抄送人员
@@ -185,6 +258,45 @@ const handleCopyCloseTag = (user: SysUserVo) => {
   const index = selectCopyUserList.value.findIndex((item) => item.userId === userId);
   selectCopyUserList.value.splice(index, 1);
   selectCopyUserIds.value = selectCopyUserList.value.map((item) => item.userId).join(',');
+};
+// 加签
+const addMultiInstanceUser = () => {
+  if (multiInstanceUserRef.value) {
+    title.value = '加签人员';
+    multiInstanceUserRef.value.getAddMultiInstanceList(taskId.value, []);
+  }
+};
+// 减签
+const deleteMultiInstanceUser = () => {
+  if (multiInstanceUserRef.value) {
+    title.value = '减签人员';
+    multiInstanceUserRef.value.getDeleteMultiInstanceList(taskId.value);
+  }
+};
+// 打开转办
+const openTransferTask = () => {
+  userMultiple.value = false;
+  transferTaskRef.value.open();
+};
+// 转办
+const handleTransferTask = async (data: SysUserVo[]) => {
+  if (data && data.length > 0) {
+    const params = {
+      taskId: taskId.value,
+      userId: data[0].userId,
+      comment: form.value.message,
+    };
+    proxy?.$modal.confirm('是否确认提交？', async () => {
+      loading.value = true;
+      buttonLoading.value = true;
+      await transferTask(params).finally(() => (loading.value = false));
+      dialog.visible = false;
+      emits('submitCallback');
+      proxy?.$modal.msgSuccess('操作成功');
+    });
+  } else {
+    proxy?.$modal.msgWarning('请选择用户！');
+  }
 };
 /**
  * 对外暴露子组件方法

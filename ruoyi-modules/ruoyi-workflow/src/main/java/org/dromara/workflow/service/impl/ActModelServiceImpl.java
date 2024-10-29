@@ -15,6 +15,7 @@ import org.apache.batik.transcoder.image.PNGTranscoder;
 import org.apache.commons.io.IOUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.dromara.common.core.exception.ServiceException;
+import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.tenant.helper.TenantHelper;
 import org.dromara.workflow.common.constant.FlowConstant;
@@ -22,12 +23,10 @@ import org.dromara.workflow.domain.bo.ModelBo;
 import org.dromara.workflow.domain.vo.ModelVo;
 import org.dromara.workflow.service.IActModelService;
 import org.dromara.workflow.utils.ModelUtils;
+import org.dromara.workflow.utils.QueryUtils;
 import org.flowable.bpmn.model.BpmnModel;
 import org.flowable.engine.RepositoryService;
-import org.flowable.engine.repository.Deployment;
-import org.flowable.engine.repository.Model;
-import org.flowable.engine.repository.ModelQuery;
-import org.flowable.engine.repository.ProcessDefinition;
+import org.flowable.engine.repository.*;
 import org.flowable.validation.ValidationError;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +37,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
-import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
@@ -61,9 +60,8 @@ public class ActModelServiceImpl implements IActModelService {
      * @return 返回分页列表
      */
     @Override
-    public TableDataInfo<Model> page(ModelBo modelBo) {
-        ModelQuery query = repositoryService.createModelQuery();
-        query.modelTenantId(TenantHelper.getTenantId());
+    public TableDataInfo<Model> page(ModelBo modelBo, PageQuery pageQuery) {
+        ModelQuery query = QueryUtils.modelQuery();
         if (StringUtils.isNotEmpty(modelBo.getName())) {
             query.modelNameLike("%" + modelBo.getName() + "%");
         }
@@ -77,7 +75,7 @@ public class ActModelServiceImpl implements IActModelService {
         // 创建时间降序排列
         query.orderByCreateTime().desc();
         // 分页查询
-        List<Model> modelList = query.listPage(modelBo.getPageNum(), modelBo.getPageSize());
+        List<Model> modelList = query.listPage(pageQuery.getFirstNum(), pageQuery.getPageSize());
         // 总记录数
         long total = query.count();
         return new TableDataInfo<>(modelList, total);
@@ -99,7 +97,7 @@ public class ActModelServiceImpl implements IActModelService {
             String description = modelBo.getDescription();
             String categoryCode = modelBo.getCategoryCode();
             String xml = modelBo.getXml();
-            Model checkModel = repositoryService.createModelQuery().modelKey(key).modelTenantId(TenantHelper.getTenantId()).singleResult();
+            Model checkModel = QueryUtils.modelQuery().modelKey(key).singleResult();
             if (ObjectUtil.isNotNull(checkModel)) {
                 throw new ServiceException("模型key已存在！");
             }
@@ -158,7 +156,7 @@ public class ActModelServiceImpl implements IActModelService {
     public boolean update(ModelBo modelBo) {
         try {
             Model model = repositoryService.getModel(modelBo.getId());
-            List<Model> list = repositoryService.createModelQuery().modelTenantId(TenantHelper.getTenantId()).modelKey(modelBo.getKey()).list();
+            List<Model> list = QueryUtils.modelQuery().modelKey(modelBo.getKey()).list();
             list.stream().filter(e -> !e.getId().equals(model.getId())).findFirst().ifPresent(e -> {
                 throw new ServiceException("模型KEY已存在！");
             });
@@ -189,7 +187,7 @@ public class ActModelServiceImpl implements IActModelService {
             BpmnModel bpmnModel = ModelUtils.xmlToBpmnModel(xml);
             ModelUtils.checkBpmnModel(bpmnModel);
             Model model = repositoryService.getModel(modelId);
-            List<Model> list = repositoryService.createModelQuery().modelTenantId(TenantHelper.getTenantId()).modelKey(key).list();
+            List<Model> list = QueryUtils.modelQuery().modelKey(key).list();
             list.stream().filter(e -> !e.getId().equals(model.getId())).findFirst().ifPresent(e -> {
                 throw new ServiceException("模型KEY已存在！");
             });
@@ -271,7 +269,7 @@ public class ActModelServiceImpl implements IActModelService {
             model.setDeploymentId(deployment.getId());
             repositoryService.saveModel(model);
             // 更新分类
-            ProcessDefinition definition = repositoryService.createProcessDefinitionQuery().deploymentId(deployment.getId()).singleResult();
+            ProcessDefinition definition = QueryUtils.definitionQuery().deploymentId(deployment.getId()).singleResult();
             repositoryService.setProcessDefinitionCategory(definition.getId(), model.getCategory());
             return true;
         } catch (Exception e) {

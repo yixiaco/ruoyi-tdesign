@@ -77,7 +77,7 @@
                 <t-form-item v-if="formData.allocationType === AllocationTypeEnum.USER" label="分配人员">
                   <t-input v-model="formData.fixedAssignee" @change="fixedAssigneeChange">
                     <template #suffixIcon>
-                      <search-icon class="cursor-pointer" @click="proxy.$modal.msgWarning('开发中。。。。。。')" />
+<!--                      <search-icon class="cursor-pointer" @click="proxy.$modal.msgWarning('开发中。。。。。。')" />-->
                     </template>
                   </t-input>
                 </t-form-item>

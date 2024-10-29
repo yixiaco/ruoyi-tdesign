@@ -85,7 +85,7 @@ import { RefreshIcon, RootListIcon, SearchIcon, SettingIcon } from 'tdesign-icon
 import type { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, ref } from 'vue';
 
-import { getTaskFinishByPage } from '@/api/workflow/task';
+import { getPageByTaskFinish } from '@/api/workflow/task';
 import type { TaskQuery, TaskVo } from '@/api/workflow/task/types';
 import ApprovalRecord from '@/components/Process/approvalRecord.vue';
 // 审批记录组件
@@ -170,7 +170,7 @@ const handleSelectionChange = (selection: Array<string | number>) => {
 };
 const getFinishList = () => {
   loading.value = true;
-  getTaskFinishByPage(queryParams.value)
+  getPageByTaskFinish(queryParams.value)
     .then((resp) => {
       taskList.value = resp.rows;
       total.value = resp.total;

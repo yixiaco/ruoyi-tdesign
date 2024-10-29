@@ -155,11 +155,7 @@ import { computed, ref } from 'vue';
 import { listCategory } from '@/api/workflow/category';
 import type { WfCategoryVo } from '@/api/workflow/model/categoryModel';
 import type { ProcessInstanceQuery, ProcessInstanceVo } from '@/api/workflow/model/processInstanceModel';
-import {
-  cancelProcessApply,
-  deleteRuntimeProcessAndHisInst,
-  getCurrentSubmitByPage,
-} from '@/api/workflow/processInstance';
+import { cancelProcessApply, deleteRunAndHisInstance, getPageByCurrent } from '@/api/workflow/processInstance';
 import ApprovalRecord from '@/components/Process/approvalRecord.vue';
 import SubmitVerify from '@/components/Process/submitVerify.vue';
 // 提交组件
@@ -296,7 +292,7 @@ const handleSelectionChange = (selection: Array<string | number>) => {
 const getList = () => {
   loading.value = true;
   queryParams.value.categoryCode = treeActived.value.at(0);
-  getCurrentSubmitByPage(queryParams.value).then((resp) => {
+  getPageByCurrent(queryParams.value).then((resp) => {
     processInstanceList.value = resp.rows;
     total.value = resp.total;
     loading.value = false;
@@ -309,7 +305,7 @@ const handleDelete = async (row: ProcessInstanceVo) => {
   proxy?.$modal.confirm(`是否确认删除id为【${id}】的数据项？`, async () => {
     loading.value = true;
     if (tab.value === 'running') {
-      await deleteRuntimeProcessAndHisInst(id).finally(() => (loading.value = false));
+      await deleteRunAndHisInstance(id).finally(() => (loading.value = false));
       getList();
     }
     await proxy?.$modal.msgSuccess('删除成功');

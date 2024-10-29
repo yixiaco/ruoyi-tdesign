@@ -143,7 +143,7 @@ import { computed, ref } from 'vue';
 import type { TreeModel } from '@/api/model/resultModel';
 import type { SysUserVo } from '@/api/system/model/userModel';
 import { deptTreeSelect } from '@/api/system/user';
-import { getUserListByIds, getUserListByPage } from '@/api/workflow/workflowUser';
+import { getPageByUserList, getUserListByIds } from '@/api/workflow/workflowUser';
 
 const props = defineProps({
   // 宽
@@ -236,7 +236,7 @@ const getUserList = async (userIdList: Array<number | string>) => {
   defaultSelectUserIds.value = userIdList;
   visible.value = true;
   loading.value = true;
-  const res = await getUserListByPage(queryParams.value);
+  const res = await getPageByUserList(queryParams.value);
   loading.value = false;
   userList.value = res.rows;
   total.value = res.total;
@@ -245,7 +245,7 @@ const getUserList = async (userIdList: Array<number | string>) => {
 
 const getList = async () => {
   loading.value = true;
-  const res = await getUserListByPage(queryParams.value);
+  const res = await getPageByUserList(queryParams.value);
   loading.value = false;
   userList.value = res.rows;
   total.value = res.total;

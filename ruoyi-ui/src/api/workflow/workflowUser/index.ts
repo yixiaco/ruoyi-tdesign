@@ -7,9 +7,9 @@ import { request } from '@/utils/request';
  * 分页查询工作流选择加签人员
  * @param query
  */
-export const getWorkflowAddMultiListByPage = (query: object) => {
+export const getPageByAddMultiInstance = (query: object) => {
   return request.get<TableDataInfo<SysUserVo>>({
-    url: '/workflow/user/getWorkflowAddMultiListByPage',
+    url: '/workflow/user/getPageByAddMultiInstance',
     params: query,
   });
 };
@@ -18,9 +18,9 @@ export const getWorkflowAddMultiListByPage = (query: object) => {
  * 查询工作流选择减签人员
  * @param taskId
  */
-export const getWorkflowDeleteMultiInstanceList = (taskId: string) => {
+export const getListByDeleteMultiInstance = (taskId: string) => {
   return request.get<R<TaskVo[]>>({
-    url: `/workflow/user/getWorkflowDeleteMultiInstanceList/${taskId}`,
+    url: `/workflow/user/getListByDeleteMultiInstance/${taskId}`,
   });
 };
 
@@ -38,9 +38,9 @@ export const getUserListByIds = (userIdList: any[]) => {
  * 分页查询用户
  * @param query
  */
-export const getUserListByPage = (query: object) => {
+export const getPageByUserList = (query: object) => {
   return request.get<TableDataInfo<SysUserVo>>({
-    url: '/workflow/user/getUserListByPage',
+    url: '/workflow/user/getPageByUserList',
     params: query,
   });
 };

@@ -6,9 +6,9 @@ import { request } from '@/utils/request';
  * 查询运行中实例列表
  * @param query
  */
-export function getProcessInstanceRunningByPage(query: ProcessInstanceQuery) {
+export function getPageByRunning(query: ProcessInstanceQuery) {
   return request.get<TableDataInfo<ProcessInstanceVo>>({
-    url: '/workflow/processInstance/getProcessInstanceRunningByPage',
+    url: '/workflow/processInstance/getPageByRunning',
     params: query,
   });
 }
@@ -17,9 +17,9 @@ export function getProcessInstanceRunningByPage(query: ProcessInstanceQuery) {
  * 查询已完成实例列表
  * @param query
  */
-export function getProcessInstanceFinishByPage(query: ProcessInstanceQuery) {
+export function getPageByFinish(query: ProcessInstanceQuery) {
   return request.get<TableDataInfo<ProcessInstanceVo>>({
-    url: '/workflow/processInstance/getProcessInstanceFinishByPage',
+    url: '/workflow/processInstance/getPageByFinish',
     params: query,
   });
 }
@@ -27,9 +27,18 @@ export function getProcessInstanceFinishByPage(query: ProcessInstanceQuery) {
 /**
  * 通过流程实例id获取历史流程图
  */
-export function getHistoryProcessImage(processInstanceId: string) {
+export function getHistoryImage(processInstanceId: string) {
   return request.get<R<string>>({
-    url: `/workflow/processInstance/getHistoryProcessImage/${processInstanceId}?t${Math.random()}`,
+    url: `/workflow/processInstance/getHistoryImage/${processInstanceId}?t${Math.random()}`,
+  });
+}
+
+/**
+ * 通过流程实例id获取历史流程图运行中，历史等节点
+ */
+export function getHistoryList(processInstanceId: string) {
+  return request.get({
+    url: `/workflow/processInstance/getHistoryList/${processInstanceId}?t${Math.random()}`,
   });
 }
 
@@ -49,9 +58,9 @@ export function getHistoryRecord(processInstanceId: string) {
  * @param data 参数
  * @returns
  */
-export function deleteRuntimeProcessInst(data: object) {
+export function deleteRunInstance(data: object) {
   return request.post<R>({
-    url: `/workflow/processInstance/deleteRuntimeProcessInst`,
+    url: `/workflow/processInstance/deleteRunInstance`,
     data,
   });
 }
@@ -61,9 +70,9 @@ export function deleteRuntimeProcessInst(data: object) {
  * @param processInstanceId 流程实例id
  * @returns
  */
-export function deleteRuntimeProcessAndHisInst(processInstanceId: string | string[]) {
+export function deleteRunAndHisInstance(processInstanceId: string | string[]) {
   return request.delete<R>({
-    url: `/workflow/processInstance/deleteRuntimeProcessAndHisInst/${processInstanceId}`,
+    url: `/workflow/processInstance/deleteRunAndHisInstance/${processInstanceId}`,
   });
 }
 
@@ -72,20 +81,19 @@ export function deleteRuntimeProcessAndHisInst(processInstanceId: string | strin
  * @param processInstanceId 流程实例id
  * @returns
  */
-export function deleteFinishProcessAndHisInst(processInstanceId: string | string[]) {
+export function deleteFinishAndHisInstance(processInstanceId: string | string[]) {
   return request.delete<R>({
-    url: `/workflow/processInstance/deleteFinishProcessAndHisInst/${processInstanceId}`,
+    url: `/workflow/processInstance/deleteFinishAndHisInstance/${processInstanceId}`,
   });
 }
 
 /**
  * 分页查询当前登录人单据
  * @param query
- * @returns {*}
  */
-export function getCurrentSubmitByPage(query: ProcessInstanceQuery) {
+export function getPageByCurrent(query: ProcessInstanceQuery) {
   return request.get<TableDataInfo<ProcessInstanceVo>>({
-    url: '/workflow/processInstance/getCurrentSubmitByPage',
+    url: '/workflow/processInstance/getPageByCurrent',
     params: query,
   });
 }

@@ -267,4 +267,8 @@ public class PageQuery implements Serializable {
         return of().execute(supplier);
     }
 
+    public Integer getFirstNum() {
+        return (pageNum - 1) * pageSize;
+    }
+
 }

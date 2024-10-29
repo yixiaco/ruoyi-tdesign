@@ -2,7 +2,7 @@ import type { R, TableDataInfo } from '@/api/model/resultModel';
 import type {
   ProcessDefinitionQuery,
   ProcessDefinitionVo,
-  ProcessDefinitionXmlVO,
+  DefinitionXmlVO,
 } from '@/api/workflow/processDefinition/types';
 import { request } from '@/utils/request';
 
@@ -22,18 +22,18 @@ export function listProcessDefinition(query: ProcessDefinitionQuery) {
  * @param key 流程定义key
  * @returns
  */
-export function getProcessDefinitionListByKey(key: string) {
+export function getListByKey(key: string) {
   return request.get<R<ProcessDefinitionVo[]>>({
-    url: `/workflow/processDefinition/getProcessDefinitionListByKey/${key}`,
+    url: `/workflow/processDefinition/getListByKey/${key}`,
   });
 }
 
 /**
  * 通过流程定义id获取流程图
  */
-export function processDefinitionImage(processDefinitionId: string) {
+export function definitionImage(processDefinitionId: string) {
   return request.get<R<string>>({
-    url: `/workflow/processDefinition/processDefinitionImage/${processDefinitionId}?t${Math.random()}`,
+    url: `/workflow/processDefinition/definitionImage/${processDefinitionId}?t${Math.random()}`,
   });
 }
 
@@ -42,9 +42,9 @@ export function processDefinitionImage(processDefinitionId: string) {
  * @param processDefinitionId 流程定义id
  * @returns
  */
-export function processDefinitionXml(processDefinitionId: string) {
-  return request.get<R<ProcessDefinitionXmlVO>>({
-    url: `/workflow/processDefinition/processDefinitionXml/${processDefinitionId}`,
+export function definitionXml(processDefinitionId: string) {
+  return request.get<R<DefinitionXmlVO>>({
+    url: `/workflow/processDefinition/definitionXml/${processDefinitionId}`,
   });
 }
 
@@ -64,9 +64,9 @@ export function deleteProcessDefinition(deploymentId: string, processDefinitionI
  * @param processDefinitionId 流程定义id
  * @returns
  */
-export function updateProcessDefState(processDefinitionId: string) {
+export function updateDefinitionState(processDefinitionId: string) {
   return request.put<R>({
-    url: `/workflow/processDefinition/updateProcessDefState/${processDefinitionId}`,
+    url: `/workflow/processDefinition/updateDefinitionState/${processDefinitionId}`,
   });
 }
 
@@ -98,8 +98,8 @@ export function deployProcessFile(data: any) {
  * @param fromProcessDefinitionId
  * @returns
  */
-export function migrationProcessDefinition(currentProcessDefinitionId: string, fromProcessDefinitionId: string) {
+export function migrationDefinition(currentProcessDefinitionId: string, fromProcessDefinitionId: string) {
   return request.put<R>({
-    url: `/workflow/processDefinition/migrationProcessDefinition/${currentProcessDefinitionId}/${fromProcessDefinitionId}`,
+    url: `/workflow/processDefinition/migrationDefinition/${currentProcessDefinitionId}/${fromProcessDefinitionId}`,
   });
 }

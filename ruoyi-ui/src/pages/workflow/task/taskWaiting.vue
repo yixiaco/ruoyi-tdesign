@@ -134,7 +134,7 @@ import {
 import type { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, ref } from 'vue';
 
-import { claim, getTaskWaitByPage, returnTask } from '@/api/workflow/task';
+import { claim, getPageByTaskWait, returnTask } from '@/api/workflow/task';
 import type { TaskQuery, TaskVo } from '@/api/workflow/task/types';
 import ApprovalRecord from '@/components/Process/approvalRecord.vue';
 import SubmitVerify from '@/components/Process/submitVerify.vue';
@@ -224,7 +224,7 @@ const handleSelectionChange = (selection: Array<string | number>) => {
 // 分页
 const getWaitingList = () => {
   loading.value = true;
-  getTaskWaitByPage(queryParams.value)
+  getPageByTaskWait(queryParams.value)
     .then((resp) => {
       taskList.value = resp.rows;
       total.value = resp.total;

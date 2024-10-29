@@ -78,7 +78,7 @@
             </t-form>
           </t-card>
           <t-card hover-shadow header-bordered>
-            <template #header>
+            <template v-if="props.multiple" #header>
               <t-space break-line size="4px">
                 <t-tag
                   v-for="(user, index) in selectUserList"
@@ -346,6 +346,7 @@ const handleOpened = () => {
 };
 
 const handleCloseTag = (index: number) => {
+  // 使用splice删除用户
   selectUserList.value?.splice(index, 1);
 };
 
