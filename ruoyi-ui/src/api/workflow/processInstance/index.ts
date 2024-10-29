@@ -36,9 +36,9 @@ export function getHistoryImage(processInstanceId: string) {
 /**
  * 通过流程实例id获取历史流程图运行中，历史等节点
  */
-export function getHistoryList(processInstanceId: string) {
-  return request.get({
-    url: `/workflow/processInstance/getHistoryList/${processInstanceId}?t${Math.random()}`,
+export function getHistoryList(instanceId: string) {
+  return request.get<R<Record<string, any>>>({
+    url: `/workflow/processInstance/getHistoryList/${instanceId}?t${Math.random()}`,
   });
 }
 
@@ -108,3 +108,16 @@ export function cancelProcessApply(processInstanceId: string) {
     url: `/workflow/processInstance/cancelProcessApply/${processInstanceId}`,
   });
 }
+
+export default {
+  getPageByRunning,
+  getPageByFinish,
+  getHistoryImage,
+  getHistoryList,
+  getHistoryRecord,
+  deleteRunInstance,
+  deleteRunAndHisInstance,
+  deleteFinishAndHisInstance,
+  getPageByCurrent,
+  cancelProcessApply,
+};

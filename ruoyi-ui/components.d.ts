@@ -9,6 +9,7 @@ declare module 'vue' {
   export interface GlobalComponents {
     ApprovalRecord: typeof import('./src/components/Process/approvalRecord.vue')['default']
     BpmnDesign: typeof import('./src/components/BpmnDesign/index.vue')['default']
+    BpmnView: typeof import('./src/components/BpmnView/index.vue')['default']
     Color: typeof import('./src/components/color/index.vue')['default']
     DictTag: typeof import('./src/components/dict-tag/index.vue')['default']
     DueDate: typeof import('./src/components/BpmnDesign/panel/property/DueDate.vue')['default']
@@ -113,6 +114,7 @@ declare module 'vue' {
     TTabPanel: typeof import('tdesign-vue-next')['TabPanel']
     TTabs: typeof import('tdesign-vue-next')['Tabs']
     TTag: typeof import('tdesign-vue-next')['Tag']
+    TText: typeof import('tdesign-vue-next')['Text']
     TTextarea: typeof import('tdesign-vue-next')['Textarea']
     TTimeline: typeof import('tdesign-vue-next')['Timeline']
     TTimelineItem: typeof import('tdesign-vue-next')['TimelineItem']

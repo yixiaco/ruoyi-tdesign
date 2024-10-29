@@ -105,14 +105,17 @@
         </template>
         <template #operation="{ row }">
           <t-space :size="8" break-line>
-            <t-link theme="primary" hover="color" @click.stop="handleApprovalRecord(row)">
-              <root-list-icon />审批记录
+            <t-link theme="primary" hover="color" size="small" @click.stop="handleApprovalRecord(row)">
+              <template #prefix-icon><root-list-icon /></template>审批记录
             </t-link>
-            <t-link theme="primary" hover="color" @click.stop="addMultiInstanceUser(row)">
-              <add-circle-icon />加签
+            <t-link theme="primary" hover="color" size="small" @click.stop="addMultiInstanceUser(row)">
+              <template #prefix-icon><add-circle-icon /></template>加签
             </t-link>
-            <t-link theme="primary" hover="color" @click.stop="deleteMultiInstanceUser(row)">
-              <minus-circle-icon />减签
+            <t-link theme="primary" hover="color" size="small" @click.stop="deleteMultiInstanceUser(row)">
+              <template #prefix-icon><minus-circle-icon /></template>减签
+            </t-link>
+            <t-link theme="primary" hover="color" size="small" @click.stop="handleInstanceVariable(row)">
+              <template #prefix-icon><calculator1-icon /></template>流程变量
             </t-link>
           </t-space>
         </template>
@@ -120,18 +123,40 @@
     </t-space>
     <!-- 审批记录 -->
     <approval-record ref="approvalRecordRef" />
-    <!-- 提交组件 -->
-    <submit-verify ref="submitVerifyRef" :task-id="taskId" @submit-callback="handleQuery" />
     <!-- 加签组件 -->
     <multi-instance-user ref="multiInstanceUserRef" :title="title" @submit-callback="handleQuery" />
     <!-- 选人组件 -->
-    <select-sys-user ref="selectSysUserRef" :multiple="true" @submit-callback="submitCallback" />
+    <user-select ref="userSelectRef" :multiple="false" @confirm-call-back="submitCallback"></user-select>
+    <!-- 流程变量开始 -->
+    <t-dialog v-model:visible="variableVisible" header="流程变量" width="60%" :close-on-overlay-click="false">
+      <t-loading :loading="variableLoading">
+        <t-card class="box-card">
+          <template #header>
+            <div class="clearfix">
+              <span>
+                流程定义名称：
+                <t-tag variant="light" theme="primary">{{ processDefinitionName }}</t-tag>
+              </span>
+            </div>
+          </template>
+          <div v-for="(v, index) in variableList" :key="index">
+            <t-form v-if="v.key !== '_FLOWABLE_SKIP_EXPRESSION_ENABLED'" label-align="right" label-width="150px">
+              <t-form-item :label="v.key + '：'">
+                {{ v.value }}
+              </t-form-item>
+            </t-form>
+          </div>
+        </t-card>
+      </t-loading>
+    </t-dialog>
+    <!-- 流程变量结束 -->
   </t-card>
 </template>
 
 <script lang="ts" setup>
 import {
   AddCircleIcon,
+  Calculator1Icon,
   EditIcon,
   MinusCircleIcon,
   RefreshIcon,
@@ -143,20 +168,17 @@ import type { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, ref } from 'vue';
 
 import type { SysUserVo } from '@/api/system/model/userModel';
-import { getPageByAllTaskFinish, getPageByAllTaskWait, updateAssignee } from '@/api/workflow/task';
-import type { TaskQuery, TaskVo } from '@/api/workflow/task/types';
+import { getInstanceVariable, getPageByAllTaskFinish, getPageByAllTaskWait, updateAssignee } from '@/api/workflow/task';
+import type { TaskQuery, TaskVo, VariableVo } from '@/api/workflow/task/types';
 import ApprovalRecord from '@/components/Process/approvalRecord.vue';
 import MultiInstanceUser from '@/components/Process/multiInstanceUser.vue';
-import SelectSysUser from '@/components/Process/selectSysUser.vue';
-import SubmitVerify from '@/components/Process/submitVerify.vue';
-// 提交组件
-const submitVerifyRef = ref<InstanceType<typeof SubmitVerify>>();
+import UserSelect from '@/components/user-select/index.vue';
 // 审批记录组件
 const approvalRecordRef = ref<InstanceType<typeof ApprovalRecord>>();
 // 加签组件
 const multiInstanceUserRef = ref<InstanceType<typeof MultiInstanceUser>>();
 // 选人组件
-const selectSysUserRef = ref<InstanceType<typeof SelectSysUser>>();
+const userSelectRef = ref<InstanceType<typeof UserSelect>>();
 
 const columnControllerVisible = ref(false);
 
@@ -175,9 +197,14 @@ const showSearch = ref(true);
 const total = ref(0);
 // 模型定义表格数据
 const taskList = ref([]);
-// 任务id
-const taskId = ref('');
 const title = ref('');
+// 流程变量是否显示
+const variableVisible = ref(false);
+const variableLoading = ref(true);
+// 流程变量
+const variableList = ref<VariableVo[]>([]);
+// 流程定义名称
+const processDefinitionName = ref(undefined);
 // 查询参数
 const queryParams = ref<TaskQuery>({
   pageNum: 1,
@@ -189,18 +216,30 @@ const queryParams = ref<TaskQuery>({
 const tab = ref('waiting');
 
 // 列显隐信息
-const columns = ref<Array<PrimaryTableCol>>([
-  { colKey: 'row-select', type: 'multiple', width: 30, align: 'center' },
-  { title: `序号`, colKey: 'serial-number', width: 70 },
-  { title: `流程定义名称`, colKey: 'processDefinitionName', ellipsis: true, align: 'center' },
-  { title: `流程定义KEY`, colKey: 'processDefinitionKey', align: 'center' },
-  { title: `任务名称`, colKey: 'name', align: 'center' },
-  { title: `办理人`, colKey: 'assigneeName', align: 'center' },
-  { title: `流程状态`, colKey: 'businessStatusName', align: 'center' },
-  { title: `创建时间`, colKey: 'startTime', align: 'center', width: '10%', minWidth: 112 },
-  { title: `结束时间`, colKey: 'endTime', align: 'center', width: '10%', minWidth: 112 },
-  { title: `操作`, colKey: 'operation', align: 'center', fixed: 'right' },
-]);
+const columns = computed<Array<PrimaryTableCol>>(
+  () =>
+    [
+      { colKey: 'row-select', type: 'multiple', width: 30, align: 'center' },
+      { title: `序号`, colKey: 'serial-number', width: 70 },
+      { title: `流程定义名称`, colKey: 'processDefinitionName', ellipsis: true, align: 'center' },
+      { title: `流程定义KEY`, colKey: 'processDefinitionKey', align: 'center' },
+      { title: `任务名称`, colKey: 'name', align: 'center' },
+      { title: `办理人`, colKey: 'assigneeName', align: 'center' },
+      { title: `流程状态`, colKey: 'businessStatusName', align: 'center' },
+      { title: `创建时间`, colKey: 'createTime', align: 'center', width: '10%', minWidth: 112 },
+      { title: `创建时间`, colKey: 'startTime', align: 'center', width: '10%', minWidth: 112 },
+      { title: `结束时间`, colKey: 'endTime', align: 'center', width: '10%', minWidth: 112 },
+      { title: `操作`, colKey: 'operation', align: 'center', fixed: 'right' },
+    ].filter((item) => {
+      if (item.colKey === 'createTime') {
+        return tab.value === 'waiting';
+      }
+      if (item.colKey === 'startTime') {
+        return tab.value === 'finish';
+      }
+      return true;
+    }) as PrimaryTableCol[],
+);
 
 const pagination = computed(() => {
   return {
@@ -284,19 +323,30 @@ const getFinishList = () => {
     loading.value = false;
   });
 };
+// 打开修改选人
 const handleUpdate = () => {
-  if (selectSysUserRef.value) {
-    selectSysUserRef.value.getUserList([]);
-  }
+  userSelectRef.value.open();
 };
 // 修改办理人
-const submitCallback = (data: SysUserVo[]) => {
+const submitCallback = async (data: SysUserVo[]) => {
   if (data && data.length > 0) {
-    updateAssignee(ids.value, data[0].userId).then(() => {
-      selectSysUserRef.value.close();
-      proxy?.$modal.msgSuccess('操作成功');
+    proxy?.$modal.confirm('是否确认提交？', async () => {
+      loading.value = true;
+      await updateAssignee(ids.value, data[0].userId);
       handleQuery();
+      proxy?.$modal.msgSuccess('操作成功');
     });
+  } else {
+    proxy?.$modal.msgWarning('请选择用户！');
   }
+};
+// 查询流程变量
+const handleInstanceVariable = async (row: TaskVo) => {
+  variableLoading.value = true;
+  variableVisible.value = true;
+  processDefinitionName.value = row.processDefinitionName;
+  const data = await getInstanceVariable(row.id);
+  variableList.value = data.data;
+  variableLoading.value = false;
 };
 </script>

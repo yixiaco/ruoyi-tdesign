@@ -124,7 +124,7 @@ const columns = computed<Array<PrimaryTableCol>>(() => {
     { title: `流程定义KEY`, colKey: 'processDefinitionKey', align: 'center' },
     { title: `任务名称`, colKey: 'name', align: 'center' },
     { title: `办理人`, colKey: 'assigneeName', align: 'center' },
-    { title: `创建时间`, colKey: 'createTime', align: 'center', width: '10%', minWidth: 112 },
+    { title: `创建时间`, colKey: 'startTime', align: 'center', width: '10%', minWidth: 112 },
     { title: `操作`, colKey: 'operation', align: 'center', fixed: 'right' },
   ] as PrimaryTableCol[];
 });

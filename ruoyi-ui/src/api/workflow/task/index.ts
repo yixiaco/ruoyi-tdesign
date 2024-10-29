@@ -8,6 +8,7 @@ import type {
   StartWorkFlowResult,
   TaskQuery,
   TaskVo,
+  VariableVo,
 } from '@/api/workflow/task/types';
 import { request } from '@/utils/request';
 
@@ -175,5 +176,26 @@ export function transferTask(data: object) {
   return request.post<R>({
     url: `/workflow/task/transferTask`,
     data,
+  });
+}
+
+/**
+ * 终止任务
+ * @returns
+ */
+export function terminationTask(data: any) {
+  return request.post({
+    url: `/workflow/task/terminationTask`,
+    data,
+  });
+}
+
+/**
+ * 查询流程变量
+ * @returns
+ */
+export function getInstanceVariable(taskId: string) {
+  return request.get<R<VariableVo[]>>({
+    url: `/workflow/task/getInstanceVariable/${taskId}`,
   });
 }

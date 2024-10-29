@@ -36,6 +36,7 @@ const open = async (id: string) => {
 // 保存模型
 const saveCallBack = async (data: any) => {
   proxy?.$modal.confirm('是否确认保存？', () => {
+    data.loading.value = true;
     modelForm.value.id = modelId.value;
     modelForm.value.xml = data.xml;
     modelForm.value.svg = data.svg;
@@ -48,6 +49,7 @@ const saveCallBack = async (data: any) => {
         emit('closeCallBack', data);
       }
     });
+    data.loading.value = false;
   });
 };
 

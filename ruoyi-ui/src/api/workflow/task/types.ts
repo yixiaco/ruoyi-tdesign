@@ -40,6 +40,11 @@ export interface TaskVo extends BaseEntity {
   multiInstance: boolean;
 }
 
+export interface VariableVo {
+  key: string;
+  value: string;
+}
+
 /**
  * 启动流程对象
  */

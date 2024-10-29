@@ -64,7 +64,7 @@ create table WF_CATEGORY
         unique,
     PARENT_ID     NUMBER(20),
     SORT_NUM      NUMBER(10),
-    TENANT_ID     VARCHAR2(20) default '000000'
+    TENANT_ID     VARCHAR2(20) default '000000',
     CREATE_DEPT   NUMBER(20),
     CREATE_BY     NUMBER(20),
     CREATE_TIME   DATE,
@@ -84,6 +84,7 @@ comment on column WF_CATEGORY.CREATE_BY is '创建者';
 comment on column WF_CATEGORY.CREATE_TIME is '创建时间';
 comment on column WF_CATEGORY.UPDATE_BY is '更新者';
 comment on column WF_CATEGORY.UPDATE_TIME is '更新时间';
+INSERT INTO wf_category values (1, 'OA', 'OA', 0, 0, '000000', 103, 1, sysdate, 1, sysdate);
 
 INSERT INTO sys_menu(menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_dept, create_by, create_time, update_by, update_time, remark) VALUES (11638, '请假申请', 0, 8, 'leave', 'workflow/leave/index', 0, 1, 'C', 1, 1, 'demo:leave:list', 'assignment-user', 103, 1, sysdate, NULL, NULL, '请假申请菜单');
 INSERT INTO sys_menu(menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_dept, create_by, create_time, update_by, update_time, remark) VALUES (11639, '请假申请查询', 11638, 1, '#', '', 0, 1, 'F', 1, 1, 'demo:leave:query', '#', 103, 1, sysdate, NULL, NULL, '');

@@ -160,17 +160,24 @@ public class WorkflowUtils {
                 }
             } else {
                 List<HistoricIdentityLink> candidateList = StreamUtils.filter(linksForTask, e -> FlowConstant.CANDIDATE.equals(e.getType()));
-                List<Long> userIdList = StreamUtils.toList(linksForTask, e -> Long.valueOf(e.getUserId()));
+                List<Long> userIdList = new ArrayList<>();
+                for (HistoricIdentityLink historicIdentityLink : linksForTask) {
+                    try {
+                        userIdList.add(Long.valueOf(historicIdentityLink.getUserId()));
+                    } catch (NumberFormatException ignored) {
+
+                    }
+                }
                 List<SysUserVo> sysUsers = WORKFLOW_USER_SERVICE.getUserListByIds(userIdList);
                 if (CollUtil.isNotEmpty(sysUsers)) {
                     List<Long> userIds = StreamUtils.toList(sysUsers, SysUserVo::getUserId);
                     List<String> nickNames = StreamUtils.toList(sysUsers, SysUserVo::getNickName);
                     participantVo.setCandidate(userIds);
                     participantVo.setCandidateName(nickNames);
-                    if (StringUtils.isBlank(task.getAssignee()) && CollUtil.isNotEmpty(candidateList)) {
+                    if (StringUtils.isBlank(task.getAssignee()) && CollUtil.isNotEmpty(candidateList) && candidateList.size() > 1) {
                         participantVo.setClaim(false);
                     }
-                    if (!StringUtils.isBlank(task.getAssignee()) && CollUtil.isNotEmpty(candidateList)) {
+                    if (!StringUtils.isBlank(task.getAssignee()) && CollUtil.isNotEmpty(candidateList) && candidateList.size() > 1) {
                         participantVo.setClaim(true);
                     }
                 }

@@ -140,7 +140,12 @@
               <template #prefix-icon><rollback-icon /></template>撤销
             </t-link>
             <t-link
-              v-if="row.processInstanceVo.businessStatus === 'waiting'"
+              v-if="
+                row.processInstanceVo.businessStatus === 'waiting' ||
+                row.processInstanceVo.businessStatus === 'finish' ||
+                row.processInstanceVo.businessStatus === 'termination' ||
+                row.processInstanceVo.businessStatus === 'invalid'
+              "
               theme="primary"
               hover="color"
               size="small"
@@ -511,7 +516,7 @@ function handleDelete(row?: TestLeaveVo) {
 
 // 提交申请
 const handleStartWorkFlow = async (data: TestLeaveVo) => {
-  submitFormData.value.processKey = 'leave7';
+  submitFormData.value.processKey = 'leave1';
   submitFormData.value.businessKey = String(data.id);
   // 流程变量
   taskVariables.value = {

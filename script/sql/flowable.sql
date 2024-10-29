@@ -56,6 +56,8 @@ create table wf_category
     constraint uni_category_code
         unique (category_code)
 ) engine=innodb comment= '流程分类';
+INSERT INTO wf_category values (1, 'OA', 'OA', 0, 0, '000000', 103, 1, sysdate(), 1, sysdate());
+
 
 INSERT INTO sys_menu(menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_dept, create_by, create_time, update_by, update_time, remark) VALUES (11638, '请假申请', 0, 8, 'leave', 'workflow/leave/index', 0, 1, 'C', '1', '1', 'demo:leave:list', 'assignment-user', 103, 1, sysdate(), NULL, NULL, '请假申请菜单');
 INSERT INTO sys_menu(menu_id, menu_name, parent_id, order_num, path, component, is_frame, is_cache, menu_type, visible, status, perms, icon, create_dept, create_by, create_time, update_by, update_time, remark) VALUES (11639, '请假申请查询', 11638, 1, '#', '', 0, 1, 'F', '1', '1', 'demo:leave:query', '#', 103, 1, sysdate(), NULL, NULL, '');

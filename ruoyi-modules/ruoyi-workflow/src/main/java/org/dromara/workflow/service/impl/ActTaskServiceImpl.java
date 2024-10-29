@@ -3,7 +3,6 @@ package org.dromara.workflow.service.impl;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.collection.CollectionUtil;
-import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
@@ -23,6 +22,7 @@ import org.dromara.workflow.common.enums.TaskStatusEnum;
 import org.dromara.workflow.domain.bo.*;
 import org.dromara.workflow.domain.vo.MultiInstanceVo;
 import org.dromara.workflow.domain.vo.TaskVo;
+import org.dromara.workflow.domain.vo.VariableVo;
 import org.dromara.workflow.domain.vo.WfCopy;
 import org.dromara.workflow.flowable.cmd.*;
 import org.dromara.workflow.flowable.strategy.FlowEventStrategy;
@@ -44,8 +44,8 @@ import org.flowable.engine.runtime.ProcessInstance;
 import org.flowable.task.api.Task;
 import org.flowable.task.api.TaskQuery;
 import org.flowable.task.api.history.HistoricTaskInstance;
-import org.flowable.task.api.history.HistoricTaskInstanceQuery;
 import org.flowable.task.service.impl.persistence.entity.TaskEntity;
+import org.flowable.variable.api.persistence.entity.VariableInstance;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -53,8 +53,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
 
-import static org.dromara.workflow.common.constant.FlowConstant.FLOWABLE_SKIP_EXPRESSION_ENABLED;
-import static org.dromara.workflow.common.constant.FlowConstant.INITIATOR;
+import static org.dromara.workflow.common.constant.FlowConstant.*;
 
 /**
  * 任务 服务层实现
@@ -96,7 +95,7 @@ public class ActTaskServiceImpl implements IActTaskService {
             if (CollUtil.isNotEmpty(startProcessBo.getVariables())) {
                 taskService.setVariables(taskResult.get(0).getId(), startProcessBo.getVariables());
             }
-            map.put("processInstanceId", taskResult.get(0).getProcessInstanceId());
+            map.put(PROCESS_INSTANCE_ID, taskResult.get(0).getProcessInstanceId());
             map.put("taskId", taskResult.get(0).getId());
             return map;
         }
@@ -129,7 +128,8 @@ public class ActTaskServiceImpl implements IActTaskService {
 
         runtimeService.updateBusinessStatus(pi.getProcessInstanceId(), BusinessStatusEnum.DRAFT.getStatus());
         taskService.setAssignee(taskList.get(0).getId(), LoginHelper.getUserId().toString());
-        taskService.setVariable(taskList.get(0).getId(), "processInstanceId", pi.getProcessInstanceId());
+        taskService.setVariable(taskList.get(0).getId(), PROCESS_INSTANCE_ID, pi.getProcessInstanceId());
+        taskService.setVariable(taskList.get(0).getId(), BUSINESS_KEY, pi.getBusinessKey());
         map.put("processInstanceId", pi.getProcessInstanceId());
         map.put("taskId", taskList.get(0).getId());
         return map;
@@ -187,6 +187,7 @@ public class ActTaskServiceImpl implements IActTaskService {
             //办理意见
             taskService.addComment(completeTaskBo.getTaskId(), task.getProcessInstanceId(), TaskStatusEnum.PASS.getStatus(), StringUtils.isBlank(completeTaskBo.getMessage()) ? "同意" : completeTaskBo.getMessage());
             //办理任务
+            taskService.setAssignee(task.getId(),userId);
             if (CollUtil.isNotEmpty(completeTaskBo.getVariables())) {
                 taskService.complete(completeTaskBo.getTaskId(), completeTaskBo.getVariables());
             } else {
@@ -239,13 +240,15 @@ public class ActTaskServiceImpl implements IActTaskService {
     public TableDataInfo<TaskVo> getPageByTaskWait(TaskBo taskBo, PageQuery pageQuery) {
         QueryWrapper<TaskVo> queryWrapper = new QueryWrapper<>();
         List<RoleDTO> roles = LoginHelper.getUser().getRoles();
+        List<String> roleIds = StreamUtils.toList(roles, e -> String.valueOf(e.getRoleId()));
         String userId = String.valueOf(LoginHelper.getUserId());
         queryWrapper.eq("t.business_status_", BusinessStatusEnum.WAITING.getStatus());
         queryWrapper.eq(TenantHelper.isEnable(), "t.tenant_id_", TenantHelper.getTenantId());
         queryWrapper.and(w1 ->
             w1.eq("t.assignee_", userId)
                 .or(w2 -> w2.isNull("t.assignee_")
-                    .and(w3 -> w3.eq("t.user_id_", userId).or().in("t.group_id_", StreamUtils.toList(roles, RoleDTO::getRoleId))))
+                    .apply("exists ( select LINK.ID_ from ACT_RU_IDENTITYLINK LINK where LINK.TASK_ID_ = t.ID_ and LINK.TYPE_ = 'candidate' " +
+                        "and (LINK.USER_ID_ = {0} or ( LINK.GROUP_ID_ IN " + getInParam(roleIds) + " ) ))", userId))
         );
         if (StringUtils.isNotBlank(taskBo.getName())) {
             queryWrapper.like("t.name_", taskBo.getName());
@@ -265,6 +268,19 @@ public class ActTaskServiceImpl implements IActTaskService {
             task.setMultiInstance(WorkflowUtils.isMultiInstance(task.getProcessDefinitionId(), task.getTaskDefinitionKey()) != null);
         }
         return new TableDataInfo<>(taskList, page.getTotal());
+    }
+
+    private String getInParam(List<String> param) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("(");
+        for (int i = 0; i < param.size(); i++) {
+            sb.append("'").append(param.get(i)).append("'");
+            if (i != param.size() - 1) {
+                sb.append(",");
+            }
+        }
+        sb.append(")");
+        return sb.toString();
     }
 
     /**
@@ -319,39 +335,18 @@ public class ActTaskServiceImpl implements IActTaskService {
     @Override
     public TableDataInfo<TaskVo> getPageByTaskFinish(TaskBo taskBo, PageQuery pageQuery) {
         String userId = String.valueOf(LoginHelper.getUserId());
-        HistoricTaskInstanceQuery query = QueryUtils.hisTaskInstanceQuery();
-        query.taskAssignee(userId).finished().orderByHistoricTaskInstanceStartTime().desc();
-        if (StringUtils.isNotBlank(taskBo.getName())) {
-            query.taskNameLike("%" + taskBo.getName() + "%");
+        QueryWrapper<TaskVo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(StringUtils.isNotBlank(taskBo.getName()), "t.name_", taskBo.getName());
+        queryWrapper.like(StringUtils.isNotBlank(taskBo.getProcessDefinitionName()), "t.processDefinitionName", taskBo.getProcessDefinitionName());
+        queryWrapper.eq(StringUtils.isNotBlank(taskBo.getProcessDefinitionKey()), "t.processDefinitionKey", taskBo.getProcessDefinitionKey());
+        queryWrapper.eq("t.assignee_", userId);
+        Page<TaskVo> page = actTaskMapper.getTaskFinishByPage(pageQuery.build(), queryWrapper);
+
+        List<TaskVo> taskList = page.getRecords();
+        for (TaskVo task : taskList) {
+            task.setBusinessStatusName(BusinessStatusEnum.findByStatus(task.getBusinessStatus()));
         }
-        if (StringUtils.isNotBlank(taskBo.getProcessDefinitionName())) {
-            query.processDefinitionNameLike("%" + taskBo.getProcessDefinitionName() + "%");
-        }
-        if (StringUtils.isNotBlank(taskBo.getProcessDefinitionKey())) {
-            query.processDefinitionKey(taskBo.getProcessDefinitionKey());
-        }
-        List<HistoricTaskInstance> taskInstanceList = query.listPage(pageQuery.getFirstNum(), pageQuery.getPageSize());
-        List<HistoricProcessInstance> historicProcessInstanceList = null;
-        if (CollUtil.isNotEmpty(taskInstanceList)) {
-            Set<String> processInstanceIds = StreamUtils.toSet(taskInstanceList, HistoricTaskInstance::getProcessInstanceId);
-            historicProcessInstanceList = QueryUtils.hisInstanceQuery(processInstanceIds).list();
-        }
-        List<TaskVo> list = new ArrayList<>();
-        for (HistoricTaskInstance task : taskInstanceList) {
-            TaskVo taskVo = BeanUtil.toBean(task, TaskVo.class);
-            if (CollUtil.isNotEmpty(historicProcessInstanceList)) {
-                historicProcessInstanceList.stream().filter(e -> e.getId().equals(task.getProcessInstanceId())).findFirst().ifPresent(e -> {
-                    taskVo.setBusinessStatus(e.getBusinessStatus());
-                    taskVo.setBusinessStatusName(BusinessStatusEnum.findByStatus(taskVo.getBusinessStatus()));
-                    taskVo.setProcessDefinitionKey(e.getProcessDefinitionKey());
-                    taskVo.setProcessDefinitionName(e.getProcessDefinitionName());
-                });
-            }
-            taskVo.setAssignee(StringUtils.isNotBlank(task.getAssignee()) ? Long.valueOf(task.getAssignee()) : null);
-            list.add(taskVo);
-        }
-        long count = query.count();
-        return new TableDataInfo<>(list, count);
+        return new TableDataInfo<>(taskList, page.getTotal());
     }
 
     /**
@@ -378,7 +373,6 @@ public class ActTaskServiceImpl implements IActTaskService {
         List<TaskVo> taskList = page.getRecords();
         for (TaskVo task : taskList) {
             task.setBusinessStatusName(BusinessStatusEnum.findByStatus(task.getBusinessStatus()));
-            task.setMultiInstance(WorkflowUtils.isMultiInstance(task.getProcessDefinitionId(), task.getTaskDefinitionKey()) != null);
         }
         return new TableDataInfo<>(taskList, page.getTotal());
     }
@@ -390,39 +384,17 @@ public class ActTaskServiceImpl implements IActTaskService {
      */
     @Override
     public TableDataInfo<TaskVo> getPageByAllTaskFinish(TaskBo taskBo, PageQuery pageQuery) {
-        HistoricTaskInstanceQuery query = QueryUtils.hisTaskInstanceQuery();
-        query.finished().orderByHistoricTaskInstanceStartTime().desc();
-        if (StringUtils.isNotBlank(taskBo.getName())) {
-            query.taskNameLike("%" + taskBo.getName() + "%");
+        QueryWrapper<TaskVo> queryWrapper = new QueryWrapper<>();
+        queryWrapper.like(StringUtils.isNotBlank(taskBo.getName()), "t.name_", taskBo.getName());
+        queryWrapper.like(StringUtils.isNotBlank(taskBo.getProcessDefinitionName()), "t.processDefinitionName", taskBo.getProcessDefinitionName());
+        queryWrapper.eq(StringUtils.isNotBlank(taskBo.getProcessDefinitionKey()), "t.processDefinitionKey", taskBo.getProcessDefinitionKey());
+        Page<TaskVo> page = actTaskMapper.getTaskFinishByPage(pageQuery.build(), queryWrapper);
+
+        List<TaskVo> taskList = page.getRecords();
+        for (TaskVo task : taskList) {
+            task.setBusinessStatusName(BusinessStatusEnum.findByStatus(task.getBusinessStatus()));
         }
-        if (StringUtils.isNotBlank(taskBo.getProcessDefinitionName())) {
-            query.processDefinitionNameLike("%" + taskBo.getProcessDefinitionName() + "%");
-        }
-        if (StringUtils.isNotBlank(taskBo.getProcessDefinitionKey())) {
-            query.processDefinitionKey(taskBo.getProcessDefinitionKey());
-        }
-        List<HistoricTaskInstance> taskInstanceList = query.listPage(pageQuery.getFirstNum(), pageQuery.getPageSize());
-        List<HistoricProcessInstance> historicProcessInstanceList = null;
-        if (CollUtil.isNotEmpty(taskInstanceList)) {
-            Set<String> processInstanceIds = StreamUtils.toSet(taskInstanceList, HistoricTaskInstance::getProcessInstanceId);
-            historicProcessInstanceList = QueryUtils.hisInstanceQuery(processInstanceIds).list();
-        }
-        List<TaskVo> list = new ArrayList<>();
-        for (HistoricTaskInstance task : taskInstanceList) {
-            TaskVo taskVo = BeanUtil.toBean(task, TaskVo.class);
-            if (CollUtil.isNotEmpty(historicProcessInstanceList)) {
-                historicProcessInstanceList.stream().filter(e -> e.getId().equals(task.getProcessInstanceId())).findFirst().ifPresent(e -> {
-                    taskVo.setBusinessStatus(e.getBusinessStatus());
-                    taskVo.setBusinessStatusName(BusinessStatusEnum.findByStatus(taskVo.getBusinessStatus()));
-                    taskVo.setProcessDefinitionKey(e.getProcessDefinitionKey());
-                    taskVo.setProcessDefinitionName(e.getProcessDefinitionName());
-                });
-            }
-            taskVo.setAssignee(Convert.toLong(task.getAssignee()));
-            list.add(taskVo);
-        }
-        long count = query.count();
-        return new TableDataInfo<>(list, count);
+        return new TableDataInfo<>(taskList, page.getTotal());
     }
 
     /**
@@ -473,7 +445,7 @@ public class ActTaskServiceImpl implements IActTaskService {
             throw new ServiceException(FlowConstant.MESSAGE_SUSPENDED);
         }
         HistoricProcessInstance historicProcessInstance = QueryUtils.hisInstanceQuery()
-            .processInstanceBusinessKey(task.getProcessInstanceId()).singleResult();
+            .processInstanceId(task.getProcessInstanceId()).singleResult();
         BusinessStatusEnum.checkInvalidStatus(historicProcessInstance.getBusinessStatus());
         try {
             if (StringUtils.isBlank(terminationBo.getComment())) {
@@ -488,9 +460,9 @@ public class ActTaskServiceImpl implements IActTaskService {
                 if (CollectionUtil.isNotEmpty(subTasks)) {
                     subTasks.forEach(e -> taskService.deleteTask(e.getId()));
                 }
+                runtimeService.updateBusinessStatus(task.getProcessInstanceId(), BusinessStatusEnum.TERMINATION.getStatus());
                 runtimeService.deleteProcessInstance(task.getProcessInstanceId(), StrUtil.EMPTY);
             }
-            runtimeService.updateBusinessStatus(task.getProcessInstanceId(), BusinessStatusEnum.TERMINATION.getStatus());
             FlowProcessEventHandler processHandler = flowEventStrategy.getProcessHandler(historicProcessInstance.getProcessDefinitionKey());
             if (processHandler != null) {
                 processHandler.handleProcess(historicProcessInstance.getBusinessKey(), BusinessStatusEnum.TERMINATION.getStatus(), false);
@@ -635,7 +607,7 @@ public class ActTaskServiceImpl implements IActTaskService {
     @Transactional(rollbackFor = Exception.class)
     public String backProcess(BackProcessBo backProcessBo) {
         TaskQuery query = QueryUtils.taskQuery();
-        Task task = query.taskId(backProcessBo.getTaskId()).taskAssignee(String.valueOf(LoginHelper.getUserId())).singleResult();
+        Task task = query.taskId(backProcessBo.getTaskId()).taskCandidateOrAssigned(String.valueOf(LoginHelper.getUserId())).singleResult();
         if (ObjectUtil.isEmpty(task)) {
             throw new ServiceException(FlowConstant.MESSAGE_CURRENT_TASK_IS_NULL);
         }
@@ -704,5 +676,45 @@ public class ActTaskServiceImpl implements IActTaskService {
             throw new ServiceException("修改失败：" + e.getMessage());
         }
         return true;
+    }
+
+    /**
+     * 查询流程变量
+     *
+     * @param taskId 任务id
+     */
+    @Override
+    public List<VariableVo> getInstanceVariable(String taskId) {
+        List<VariableVo> variableVoList = new ArrayList<>();
+        Map<String, VariableInstance> variableInstances = taskService.getVariableInstances(taskId);
+        if (CollectionUtil.isNotEmpty(variableInstances)) {
+            for (Map.Entry<String, VariableInstance> entry : variableInstances.entrySet()) {
+                VariableVo variableVo = new VariableVo();
+                variableVo.setKey(entry.getKey());
+                variableVo.setValue(entry.getValue().getValue().toString());
+                variableVoList.add(variableVo);
+            }
+        }
+        return variableVoList;
+    }
+
+    /**
+     * 获取可驳回得任务节点
+     *
+     * @param processInstanceId 流程实例id
+     */
+    @Override
+    public Set<TaskVo> getTaskNodeList(String processInstanceId) {
+        Set<TaskVo> list = new HashSet<>();
+        List<HistoricTaskInstance> historicTaskInstances = QueryUtils.hisTaskInstanceQuery(processInstanceId).orderByHistoricTaskInstanceEndTime().desc().list();
+        for (HistoricTaskInstance historicTaskInstance : historicTaskInstances) {
+            if (historicTaskInstance.getEndTime() != null) {
+                TaskVo taskVo = new TaskVo();
+                taskVo.setName(historicTaskInstance.getName());
+                taskVo.setTaskDefinitionKey(historicTaskInstance.getTaskDefinitionKey());
+                list.add(taskVo);
+            }
+        }
+        return list;
     }
 }

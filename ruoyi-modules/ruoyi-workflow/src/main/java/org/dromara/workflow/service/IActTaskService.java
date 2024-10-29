@@ -4,8 +4,11 @@ import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.workflow.domain.bo.*;
 import org.dromara.workflow.domain.vo.TaskVo;
+import org.dromara.workflow.domain.vo.VariableVo;
 
+import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * 任务 服务层
@@ -33,7 +36,8 @@ public interface IActTaskService {
     /**
      * 查询当前用户的待办任务
      *
-     * @param taskBo 参数
+     * @param taskBo    参数
+     * @param pageQuery 分页
      * @return 结果
      */
     TableDataInfo<TaskVo> getPageByTaskWait(TaskBo taskBo, PageQuery pageQuery);
@@ -41,7 +45,8 @@ public interface IActTaskService {
     /**
      * 查询当前租户所有待办任务
      *
-     * @param taskBo 参数
+     * @param taskBo    参数
+     * @param pageQuery 分页
      * @return 结果
      */
     TableDataInfo<TaskVo> getPageByAllTaskWait(TaskBo taskBo, PageQuery pageQuery);
@@ -50,7 +55,8 @@ public interface IActTaskService {
     /**
      * 查询当前用户的已办任务
      *
-     * @param taskBo 参数
+     * @param taskBo    参数
+     * @param pageQuery 参数
      * @return 结果
      */
     TableDataInfo<TaskVo> getPageByTaskFinish(TaskBo taskBo, PageQuery pageQuery);
@@ -58,7 +64,8 @@ public interface IActTaskService {
     /**
      * 查询当前用户的抄送
      *
-     * @param taskBo 参数
+     * @param taskBo    参数
+     * @param pageQuery 参数
      * @return 结果
      */
     TableDataInfo<TaskVo> getPageByTaskCopy(TaskBo taskBo, PageQuery pageQuery);
@@ -66,7 +73,8 @@ public interface IActTaskService {
     /**
      * 查询当前租户所有已办任务
      *
-     * @param taskBo 参数
+     * @param taskBo    参数
+     * @param pageQuery 参数
      * @return 结果
      */
     TableDataInfo<TaskVo> getPageByAllTaskFinish(TaskBo taskBo, PageQuery pageQuery);
@@ -127,4 +135,20 @@ public interface IActTaskService {
      * @return 结果
      */
     boolean updateAssignee(String[] taskIds, String userId);
+
+    /**
+     * 查询流程变量
+     *
+     * @param taskId 任务id
+     * @return 结果
+     */
+    List<VariableVo> getInstanceVariable(String taskId);
+
+    /**
+     * 获取可驳回得任务节点
+     *
+     * @param processInstanceId 流程实例id
+     * @return 结果
+     */
+    Set<TaskVo> getTaskNodeList(String processInstanceId);
 }

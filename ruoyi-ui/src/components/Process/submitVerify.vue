@@ -46,7 +46,7 @@
       <span class="dialog-footer">
         <t-button :loading="buttonLoading" theme="primary" @click="handleCompleteTask"> 提交 </t-button>
         <t-button
-          v-if="task.businessStatus === 'waiting' && task.multiInstance"
+          v-if="task.businessStatus === 'waiting'"
           :loading="buttonLoading"
           theme="primary"
           @click="openTransferTask"
@@ -68,6 +68,14 @@
           @click="deleteMultiInstanceUser"
         >
           减签
+        </t-button>
+        <t-button
+          v-if="task.businessStatus === 'waiting'"
+          :loading="buttonLoading"
+          theme="danger"
+          @click="handleTerminationTask"
+        >
+          终止
         </t-button>
         <t-button
           v-if="task.businessStatus === 'waiting'"
@@ -99,7 +107,7 @@ import { AddIcon } from 'tdesign-icons-vue-next';
 import { ref } from 'vue';
 
 import type { SysUserVo } from '@/api/system/model/userModel';
-import { backProcess, completeTask, getTaskById, transferTask } from '@/api/workflow/task';
+import { backProcess, completeTask, getTaskById, terminationTask, transferTask } from '@/api/workflow/task';
 import type { TaskVo } from '@/api/workflow/task/types';
 import MultiInstanceUser from '@/components/Process/multiInstanceUser.vue';
 import UserSelect from '@/components/user-select/index.vue';
@@ -298,6 +306,23 @@ const handleTransferTask = async (data: SysUserVo[]) => {
     proxy?.$modal.msgWarning('请选择用户！');
   }
 };
+
+// 终止任务
+const handleTerminationTask = async () => {
+  const params = {
+    taskId: taskId.value,
+    comment: form.value.message,
+  };
+  proxy?.$modal.confirm('是否确认终止？', async () => {
+    loading.value = true;
+    buttonLoading.value = true;
+    await terminationTask(params).finally(() => (loading.value = false));
+    dialog.visible = false;
+    emits('submitCallback');
+    proxy?.$modal.msgSuccess('操作成功');
+  });
+};
+
 /**
  * 对外暴露子组件方法
  */

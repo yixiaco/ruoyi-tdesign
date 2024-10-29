@@ -151,21 +151,37 @@
       width="30%"
     >
       <t-loading :loading="uploadDialogLoading">
-        <t-upload
-          class="upload-bpmn"
-          :limit="1"
-          accept="application/zip,application/xml,.bpmn"
-          :request-method="handlerDeployProcessFile"
-          theme="file"
-          draggable
-          tips="仅允许导入xls、xlsx格式文件。"
-        >
-          <template #tips>
-            选择BPMN流程文件<br />
-            仅支持 .zip、.bpmn20.xml、bpmn 格式文件<br />
-            PS:如若部署请部署从本项目模型管理导出的数据
-          </template>
-        </t-upload>
+        <t-form colon label-width="calc(8em + 41px)">
+          <t-form-item label="请选择部署流程分类" required-mark>
+            <t-tree-select
+              v-model="selectCategory"
+              :data="categoryOptions"
+              filterable
+              :tree-props="{
+                keys: { value: 'categoryCode', label: 'categoryName', children: 'children' },
+                checkStrictly: true,
+              }"
+              placeholder="请选择父级分类"
+            />
+          </t-form-item>
+          <t-form-item label-width="0px">
+            <t-upload
+              class="upload-bpmn"
+              :limit="1"
+              accept="application/zip,application/xml,.bpmn"
+              :request-method="handlerDeployProcessFile"
+              theme="file"
+              draggable
+              tips="仅允许导入xls、xlsx格式文件。"
+            >
+              <template #tips>
+                选择BPMN流程文件<br />
+                仅支持 .zip、.bpmn20.xml、bpmn 格式文件<br />
+                PS:如若部署请部署从本项目模型管理导出的数据
+              </template>
+            </t-upload>
+          </t-form-item>
+        </t-form>
       </t-loading>
     </t-dialog>
 
@@ -273,6 +289,8 @@ const processDefinitionHistoryList = ref<ProcessDefinitionVo[]>([]);
 const url = ref<string[]>([]);
 const categoryOptions = ref<WfCategoryVo[]>([]);
 const categoryName = ref('');
+/** 部署文件分类选择 */
+const selectCategory = ref();
 
 const uploadDialog = reactive({
   visible: false,
@@ -459,19 +477,19 @@ const handlerDeployProcessFile: UploadProps['requestMethod'] = (files) => {
   return new Promise((resolve) => {
     const file = Array.isArray(files) ? files.at(0) : files;
     const formData = new FormData();
-    if (queryParams.value.categoryCode === 'ALL') {
+    if (selectCategory.value === 'ALL') {
       proxy?.$modal.msgError('顶级节点不可作为分类！');
       resolve({ status: 'fail', error: '顶级节点不可作为分类！', response: {} });
       return;
     }
-    if (!queryParams.value.categoryCode) {
-      proxy?.$modal.msgError('请选择左侧要上传的分类！');
-      resolve({ status: 'fail', error: '请选择左侧要上传的分类！', response: {} });
+    if (!selectCategory.value) {
+      proxy?.$modal.msgError('请选择部署流程分类！');
+      resolve({ status: 'fail', error: '请选择部署流程分类！', response: {} });
       return;
     }
     uploadDialogLoading.value = true;
     formData.append('file', file.raw);
-    formData.append('categoryCode', queryParams.value.categoryCode);
+    formData.append('categoryCode', selectCategory.value);
     deployProcessFile(formData)
       .then(() => {
         uploadDialog.visible = false;
@@ -487,6 +505,9 @@ const handlerDeployProcessFile: UploadProps['requestMethod'] = (files) => {
 };
 </script>
 <style lang="less" scoped>
+:global(.upload-bpmn) {
+  width: 100%;
+}
 :global(.upload-bpmn .t-upload__dragger) {
   width: 100%;
 }

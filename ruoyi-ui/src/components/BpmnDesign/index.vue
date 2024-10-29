@@ -1,6 +1,6 @@
 <template>
   <div class="containers">
-    <div class="app-containers">
+    <t-loading :loading="loading" class="app-containers">
       <t-layout class="h-full">
         <t-content>
           <t-layout style="align-items: stretch; height: 100%">
@@ -95,7 +95,7 @@
           </div>
         </t-aside>
       </t-layout>
-    </div>
+    </t-loading>
   </div>
   <div>
     <t-dialog v-model="perviewXMLShow" header="XML预览" width="80%" attach="body">
@@ -160,6 +160,7 @@ const perviewXMLShow = ref(false);
 const perviewSVGShow = ref(false);
 const xmlStr = ref('');
 const svgData = ref('');
+const loading = ref(false);
 
 const panelBarClick = () => {
   // 延迟执行，否则会导致面板收起时，属性面板不显示
@@ -335,6 +336,7 @@ const saveXml = async () => {
     svg,
     key: process.id,
     name: process.name,
+    loading,
   };
   emit('saveCallBack', data);
 };
