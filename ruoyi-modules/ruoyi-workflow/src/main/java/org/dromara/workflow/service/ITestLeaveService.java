@@ -2,7 +2,6 @@ package org.dromara.workflow.service;
 
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
-import org.dromara.workflow.domain.TestLeave;
 import org.dromara.workflow.domain.bo.TestLeaveBo;
 import org.dromara.workflow.domain.vo.TestLeaveVo;
 
@@ -35,12 +34,12 @@ public interface ITestLeaveService {
     /**
      * 新增请假
      */
-    TestLeave insertByBo(TestLeaveBo bo);
+    TestLeaveVo insertByBo(TestLeaveBo bo);
 
     /**
      * 修改请假
      */
-    TestLeave updateByBo(TestLeaveBo bo);
+    TestLeaveVo updateByBo(TestLeaveBo bo);
 
     /**
      * 校验并批量删除请假信息

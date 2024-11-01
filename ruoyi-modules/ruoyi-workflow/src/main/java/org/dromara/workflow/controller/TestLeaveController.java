@@ -15,7 +15,6 @@ import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.web.core.BaseController;
-import org.dromara.workflow.domain.TestLeave;
 import org.dromara.workflow.domain.bo.TestLeaveBo;
 import org.dromara.workflow.domain.vo.TestLeaveVo;
 import org.dromara.workflow.service.ITestLeaveService;
@@ -33,7 +32,7 @@ import java.util.List;
 @Validated
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/demo/leave")
+@RequestMapping("/workflow/leave")
 public class TestLeaveController extends BaseController {
 
     private final ITestLeaveService testLeaveService;
@@ -41,7 +40,7 @@ public class TestLeaveController extends BaseController {
     /**
      * 查询请假列表
      */
-    @SaCheckPermission("demo:leave:list")
+    @SaCheckPermission("workflow:leave:list")
     @GetMapping("/list")
     public TableDataInfo<TestLeaveVo> list(TestLeaveBo bo, PageQuery pageQuery) {
         return testLeaveService.queryPageList(bo, pageQuery);
@@ -50,7 +49,7 @@ public class TestLeaveController extends BaseController {
     /**
      * 导出请假列表
      */
-    @SaCheckPermission("demo:leave:export")
+    @SaCheckPermission("workflow:leave:export")
     @Log(title = "请假", businessType = BusinessType.EXPORT)
     @PostMapping("/export")
     public void export(TestLeaveBo bo, HttpServletResponse response) {
@@ -63,7 +62,7 @@ public class TestLeaveController extends BaseController {
      *
      * @param id 主键
      */
-    @SaCheckPermission("demo:leave:query")
+    @SaCheckPermission("workflow:leave:query")
     @GetMapping("/{id}")
     public R<TestLeaveVo> getInfo(@NotNull(message = "主键不能为空")
                                   @PathVariable Long id) {
@@ -73,22 +72,22 @@ public class TestLeaveController extends BaseController {
     /**
      * 新增请假
      */
-    @SaCheckPermission("demo:leave:add")
+    @SaCheckPermission("workflow:leave:add")
     @Log(title = "请假", businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping()
-    public R<TestLeave> add(@Validated(AddGroup.class) @RequestBody TestLeaveBo bo) {
+    public R<TestLeaveVo> add(@Validated(AddGroup.class) @RequestBody TestLeaveBo bo) {
         return R.ok(testLeaveService.insertByBo(bo));
     }
 
     /**
      * 修改请假
      */
-    @SaCheckPermission("demo:leave:edit")
+    @SaCheckPermission("workflow:leave:edit")
     @Log(title = "请假", businessType = BusinessType.UPDATE)
     @RepeatSubmit()
     @PutMapping()
-    public R<TestLeave> edit(@Validated(EditGroup.class) @RequestBody TestLeaveBo bo) {
+    public R<TestLeaveVo> edit(@Validated(EditGroup.class) @RequestBody TestLeaveBo bo) {
         return R.ok(testLeaveService.updateByBo(bo));
     }
 
@@ -97,7 +96,7 @@ public class TestLeaveController extends BaseController {
      *
      * @param ids 主键串
      */
-    @SaCheckPermission("demo:leave:remove")
+    @SaCheckPermission("workflow:leave:remove")
     @Log(title = "请假", businessType = BusinessType.DELETE)
     @DeleteMapping("/{ids}")
     public R<Void> remove(@NotEmpty(message = "主键不能为空")

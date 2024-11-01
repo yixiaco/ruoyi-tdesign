@@ -57,6 +57,11 @@ public class TestLeave extends TenantEntity {
     private String remark;
 
     /**
+     * 状态
+     */
+    private String status;
+
+    /**
      * 创建部门
      */
     @TableField(fill = FieldFill.INSERT)

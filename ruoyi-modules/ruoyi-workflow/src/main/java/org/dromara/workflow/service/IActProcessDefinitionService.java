@@ -50,11 +50,11 @@ public interface IActProcessDefinitionService {
     /**
      * 删除流程定义
      *
-     * @param deploymentId        部署id
-     * @param processDefinitionId 流程定义id
+     * @param deploymentIds        部署id
+     * @param processDefinitionIds 流程定义id
      * @return 结果
      */
-    boolean deleteDeployment(String deploymentId, String processDefinitionId);
+    boolean deleteDeployment(List<String> deploymentIds, List<String> processDefinitionIds);
 
     /**
      * 激活或者挂起流程定义
@@ -86,7 +86,6 @@ public interface IActProcessDefinitionService {
      *
      * @param file         文件
      * @param categoryCode 分类
-     * @return 结果
      */
-    boolean deployByFile(MultipartFile file, String categoryCode);
+    void deployByFile(MultipartFile file, String categoryCode);
 }

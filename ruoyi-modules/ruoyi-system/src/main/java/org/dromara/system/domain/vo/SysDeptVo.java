@@ -56,6 +56,12 @@ public class SysDeptVo implements Serializable {
     private String deptName;
 
     /**
+     * 部门类别编码
+     */
+    @ExcelProperty(value = "部门类别编码")
+    private String deptCategory;
+
+    /**
      * 显示顺序
      */
     @ExcelProperty(value = "显示顺序")

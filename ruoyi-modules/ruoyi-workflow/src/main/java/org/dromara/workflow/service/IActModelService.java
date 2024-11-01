@@ -7,6 +7,8 @@ import org.dromara.workflow.domain.bo.ModelBo;
 import org.dromara.workflow.domain.vo.ModelVo;
 import org.flowable.engine.repository.Model;
 
+import java.util.List;
+
 
 /**
  * 模型管理 服务层
@@ -66,8 +68,16 @@ public interface IActModelService {
     /**
      * 导出模型zip压缩包
      *
-     * @param modelId  模型id
-     * @param response 相应
+     * @param modelIds 模型id
+     * @param response 响应
      */
-    void exportZip(String modelId, HttpServletResponse response);
+    void exportZip(List<String> modelIds, HttpServletResponse response);
+
+    /**
+     * 复制模型
+     *
+     * @param modelBo 模型数据
+     * @return 结果
+     */
+    boolean copyModel(ModelBo modelBo);
 }

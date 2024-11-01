@@ -11,13 +11,14 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.json.utils.JsonUtils;
 import org.dromara.workflow.domain.vo.MultiInstanceVo;
 import org.flowable.bpmn.converter.BpmnXMLConverter;
 import org.flowable.bpmn.model.*;
 import org.flowable.bpmn.model.Process;
 import org.flowable.editor.language.json.converter.BpmnJsonConverter;
-import org.flowable.engine.impl.util.ProcessDefinitionUtil;
+import org.flowable.engine.ProcessEngine;
 
 import javax.xml.stream.XMLInputFactory;
 import javax.xml.stream.XMLStreamException;
@@ -36,6 +37,8 @@ import java.util.stream.Collectors;
  */
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ModelUtils {
+
+    private static final ProcessEngine PROCESS_ENGINE = SpringUtils.getBean(ProcessEngine.class);
 
     public static BpmnModel xmlToBpmnModel(String xml) throws IOException {
         if (xml == null) {
@@ -153,10 +156,47 @@ public class ModelUtils {
         if (!(targetFlowElement instanceof UserTask) && !subtask) {
             throw new ServerException("开始节点后第一个节点必须是用户任务！");
         }
-
+        //开始节点后第一个节点申请人节点
+        if ((targetFlowElement instanceof UserTask) && !subtask) {
+            UserTask userTask = (UserTask) targetFlowElement;
+            if (StringUtils.isBlank(userTask.getFormKey())) {
+                throw new ServerException("申请人节点必须选择表单！");
+            }
+        }
         List<EndEvent> endEventList = flowElements.stream().filter(EndEvent.class::isInstance).map(EndEvent.class::cast).collect(Collectors.toList());
         if (CollUtil.isEmpty(endEventList)) {
             throw new ServerException(subtask ? "子流程必须存在结束节点！" : "必须存在结束节点！");
+        }
+    }
+
+    /**
+     * 获取流程全部用户节点
+     *
+     * @param processDefinitionId 流程定义id
+     */
+    public static List<UserTask> getUserTaskFlowElements(String processDefinitionId) {
+        BpmnModel bpmnModel = PROCESS_ENGINE.getRepositoryService().getBpmnModel(processDefinitionId);
+        List<UserTask> list = new ArrayList<>();
+        List<Process> processes = bpmnModel.getProcesses();
+        Collection<FlowElement> flowElements = processes.get(0).getFlowElements();
+        buildUserTaskFlowElements(flowElements, list);
+        return list;
+    }
+
+    /**
+     * 递归获取所有节点
+     *
+     * @param flowElements 节点信息
+     * @param list         集合
+     */
+    private static void buildUserTaskFlowElements(Collection<FlowElement> flowElements, List<UserTask> list) {
+        for (FlowElement flowElement : flowElements) {
+            if (flowElement instanceof SubProcess) {
+                Collection<FlowElement> subFlowElements = ((SubProcess) flowElement).getFlowElements();
+                buildUserTaskFlowElements(subFlowElements, list);
+            } else if (flowElement instanceof UserTask) {
+                list.add((UserTask) flowElement);
+            }
         }
     }
 
@@ -166,7 +206,7 @@ public class ModelUtils {
      * @param processDefinitionId 流程定义id
      */
     public static List<FlowElement> getFlowElements(String processDefinitionId) {
-        BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinitionId);
+        BpmnModel bpmnModel = PROCESS_ENGINE.getRepositoryService().getBpmnModel(processDefinitionId);
         List<FlowElement> list = new ArrayList<>();
         List<Process> processes = bpmnModel.getProcesses();
         Collection<FlowElement> flowElements = processes.get(0).getFlowElements();
@@ -195,7 +235,7 @@ public class ModelUtils {
      *
      * @param processDefinitionId 流程定义id
      */
-    public Map<String, List<ExtensionElement>> getExtensionElements(String processDefinitionId) {
+    public static Map<String, List<ExtensionElement>> getExtensionElements(String processDefinitionId) {
         Map<String, List<ExtensionElement>> map = new HashMap<>();
         List<FlowElement> flowElements = getFlowElements(processDefinitionId);
         for (FlowElement flowElement : flowElements) {
@@ -212,10 +252,38 @@ public class ModelUtils {
      * @param processDefinitionId 流程定义id
      * @param flowElementId       节点id
      */
-    public Map<String, List<ExtensionElement>> getExtensionElement(String processDefinitionId, String flowElementId) {
-        BpmnModel bpmnModel = ProcessDefinitionUtil.getBpmnModel(processDefinitionId);
+    public static Map<String, List<ExtensionElement>> getExtensionElement(String processDefinitionId, String flowElementId) {
+        BpmnModel bpmnModel = PROCESS_ENGINE.getRepositoryService().getBpmnModel(processDefinitionId);
         Process process = bpmnModel.getMainProcess();
         FlowElement flowElement = process.getFlowElement(flowElementId);
         return flowElement.getExtensionElements();
+    }
+
+    /**
+     * 判断当前节点是否为用户任务
+     *
+     * @param processDefinitionId 流程定义id
+     * @param taskDefinitionKey   流程定义id
+     */
+    public static boolean isUserTask(String processDefinitionId, String taskDefinitionKey) {
+        BpmnModel bpmnModel = PROCESS_ENGINE.getRepositoryService().getBpmnModel(processDefinitionId);
+        FlowNode flowNode = (FlowNode) bpmnModel.getFlowElement(taskDefinitionKey);
+        return flowNode instanceof UserTask;
+    }
+
+    /**
+     * 获取申请人节点
+     *
+     * @param processDefinitionId 流程定义id
+     * @return 结果
+     */
+    public static UserTask getApplyUserTask(String processDefinitionId) {
+        BpmnModel bpmnModel = PROCESS_ENGINE.getRepositoryService().getBpmnModel(processDefinitionId);
+        Collection<FlowElement> flowElements = bpmnModel.getMainProcess().getFlowElements();
+        List<StartEvent> startEventList = flowElements.stream().filter(StartEvent.class::isInstance).map(StartEvent.class::cast).collect(Collectors.toList());
+        StartEvent startEvent = startEventList.get(0);
+        List<SequenceFlow> outgoingFlows = startEvent.getOutgoingFlows();
+        FlowElement targetFlowElement = outgoingFlows.get(0).getTargetFlowElement();
+        return (UserTask) targetFlowElement;
     }
 }

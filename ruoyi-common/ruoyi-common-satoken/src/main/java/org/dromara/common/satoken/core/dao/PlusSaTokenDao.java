@@ -53,7 +53,7 @@ public class PlusSaTokenDao implements SaTokenDao {
         } else {
             RedisUtils.setObject(key, value, Duration.ofSeconds(timeout));
         }
-        CAFFEINE.put(key, value);
+        CAFFEINE.invalidate(key);
     }
 
     /**
@@ -63,7 +63,7 @@ public class PlusSaTokenDao implements SaTokenDao {
     public void update(String key, String value) {
         if (RedisUtils.hasKey(key)) {
             RedisUtils.setObject(key, value, true);
-            CAFFEINE.put(key, value);
+            CAFFEINE.invalidate(key);
         }
     }
 
@@ -115,7 +115,7 @@ public class PlusSaTokenDao implements SaTokenDao {
         } else {
             RedisUtils.setObject(key, object, Duration.ofSeconds(timeout));
         }
-        CAFFEINE.put(key, object);
+        CAFFEINE.invalidate(key);
     }
 
     /**
@@ -125,7 +125,7 @@ public class PlusSaTokenDao implements SaTokenDao {
     public void updateObject(String key, Object object) {
         if (RedisUtils.hasKey(key)) {
             RedisUtils.setObject(key, object, true);
-            CAFFEINE.put(key, object);
+            CAFFEINE.invalidate(key);
         }
     }
 

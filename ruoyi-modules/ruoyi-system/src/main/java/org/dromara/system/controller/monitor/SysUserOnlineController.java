@@ -2,6 +2,7 @@ package org.dromara.system.controller.monitor;
 
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.exception.NotLoginException;
+import cn.dev33.satoken.stp.StpLogic;
 import cn.hutool.core.bean.BeanUtil;
 import org.dromara.common.core.constant.CacheConstants;
 import org.dromara.common.core.constant.GlobalConstants;
@@ -21,12 +22,14 @@ import org.dromara.system.domain.SysUserOnline;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 在线用户监控
@@ -101,4 +104,45 @@ public class SysUserOnlineController extends BaseController {
         }
         return R.ok();
     }
+
+    /**
+     * 获取当前用户登录在线设备
+     */
+    @GetMapping()
+    public TableDataInfo<SysUserOnline> getInfo() {
+        StpLogic logic = MultipleStpUtil.SYSTEM;
+        // 获取指定账号 id 的 token 集合
+        List<String> tokenIds = logic.getTokenValueListByLoginId(logic.getLoginIdAsString());
+        List<UserOnlineDTO> userOnlineDTOList = tokenIds.stream()
+            .filter(token -> logic.getTokenActiveTimeoutByToken(token) >= -1)
+            .map(token -> (UserOnlineDTO) RedisUtils.getObject(CacheConstants.ONLINE_TOKEN_KEY + token))
+            .collect(Collectors.toList());
+        //复制和处理 SysUserOnline 对象列表
+        Collections.reverse(userOnlineDTOList);
+        userOnlineDTOList.removeAll(Collections.singleton(null));
+        List<SysUserOnline> userOnlineList = BeanUtil.copyToList(userOnlineDTOList, SysUserOnline.class);
+        return TableDataInfo.build(userOnlineList);
+    }
+
+    /**
+     * 强退当前在线设备
+     *
+     * @param tokenId token值
+     */
+    @Log(title = "在线设备", businessType = BusinessType.FORCE)
+    @PostMapping("/{tokenId}")
+    public R<Void> remove(@PathVariable("tokenId") String tokenId) {
+        StpLogic logic = MultipleStpUtil.SYSTEM;
+        try {
+            // 获取指定账号 id 的 token 集合
+            List<String> keys = logic.getTokenValueListByLoginId(logic.getLoginIdAsString());
+            keys.stream()
+                .filter(key -> key.equals(tokenId))
+                .findFirst()
+                .ifPresent(key -> logic.kickoutByTokenValue(tokenId));
+        } catch (NotLoginException ignored) {
+        }
+        return R.ok();
+    }
+
 }

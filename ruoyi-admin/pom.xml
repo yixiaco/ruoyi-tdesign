@@ -55,6 +55,11 @@
 
         <dependency>
             <groupId>org.dromara</groupId>
+            <artifactId>ruoyi-common-mail</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.dromara</groupId>
             <artifactId>ruoyi-system</artifactId>
         </dependency>
 
@@ -90,11 +95,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
             <scope>test</scope>
-        </dependency>
-
-        <dependency>
-            <groupId>me.zhyd.oauth</groupId>
-            <artifactId>JustAuth</artifactId>
         </dependency>
 
         <!-- 消息模块 -->

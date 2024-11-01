@@ -1,7 +1,6 @@
 -- ----------------------------
 -- 第三方平台授权表
 -- ----------------------------
-drop table if exists sys_social;
 create table sys_social
 (
     id                 bigint           not null        comment '主键',
@@ -39,7 +38,6 @@ create table sys_social
 -- ----------------------------
 -- 租户表
 -- ----------------------------
-drop table if exists sys_tenant;
 create table sys_tenant
 (
     id                bigint(20)    not null        comment 'id',
@@ -76,7 +74,6 @@ insert into sys_tenant values(1, '000000', '管理组', '15888888888', 'XXX有�
 -- ----------------------------
 -- 租户套餐表
 -- ----------------------------
-drop table if exists sys_tenant_package;
 create table sys_tenant_package (
     package_id              bigint(20)     not null    comment '租户套餐id',
     package_name            varchar(20)                comment '套餐名称',
@@ -107,13 +104,13 @@ CREATE TABLE sys_tenant_package_menu  (
 -- ----------------------------
 -- 1、部门表
 -- ----------------------------
-drop table if exists sys_dept;
 create table sys_dept (
     dept_id           bigint(20)      not null                   comment '部门id',
     tenant_id         varchar(20)     default '000000'           comment '租户编号',
     parent_id         bigint(20)      default 0                  comment '父部门id',
     ancestors         varchar(500)    default ''                 comment '祖级列表',
     dept_name         varchar(30)     default ''                 comment '部门名称',
+    dept_category     varchar(100)    default null               comment '部门类别编码',
     order_num         int(4)          default 0                  comment '显示顺序',
     leader            bigint(20)      default null               comment '负责人',
     phone             varchar(11)     default null               comment '联系电话',
@@ -132,22 +129,21 @@ create table sys_dept (
 -- 初始化-部门表数据
 -- ----------------------------
 
-insert into sys_dept values(100, '000000', 0,   '0',          'XXX科技',   0, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
-insert into sys_dept values(101, '000000', 100, '0,100',      '深圳总公司', 1, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
-insert into sys_dept values(102, '000000', 100, '0,100',      '长沙分公司', 2, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
-insert into sys_dept values(103, '000000', 101, '0,100,101',  '研发部门',   1, 1,    '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
-insert into sys_dept values(104, '000000', 101, '0,100,101',  '市场部门',   2, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
-insert into sys_dept values(105, '000000', 101, '0,100,101',  '测试部门',   3, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
-insert into sys_dept values(106, '000000', 101, '0,100,101',  '财务部门',   4, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
-insert into sys_dept values(107, '000000', 101, '0,100,101',  '运维部门',   5, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
-insert into sys_dept values(108, '000000', 102, '0,100,102',  '市场部门',   1, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
-insert into sys_dept values(109, '000000', 102, '0,100,102',  '财务部门',   2, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
+insert into sys_dept values(100, '000000', 0,   '0',          'XXX科技',   null,0, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
+insert into sys_dept values(101, '000000', 100, '0,100',      '深圳总公司', null,1, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
+insert into sys_dept values(102, '000000', 100, '0,100',      '长沙分公司', null,2, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
+insert into sys_dept values(103, '000000', 101, '0,100,101',  '研发部门',   null,1, 1,    '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
+insert into sys_dept values(104, '000000', 101, '0,100,101',  '市场部门',   null,2, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
+insert into sys_dept values(105, '000000', 101, '0,100,101',  '测试部门',   null,3, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
+insert into sys_dept values(106, '000000', 101, '0,100,101',  '财务部门',   null,4, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
+insert into sys_dept values(107, '000000', 101, '0,100,101',  '运维部门',   null,5, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
+insert into sys_dept values(108, '000000', 102, '0,100,102',  '市场部门',   null,1, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
+insert into sys_dept values(109, '000000', 102, '0,100,102',  '财务部门',   null,2, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate(), null, null);
 
 
 -- ----------------------------
 -- 2、用户信息表
 -- ----------------------------
-drop table if exists sys_user;
 create table sys_user (
     user_id           bigint(20)      not null                   comment '用户ID',
     tenant_id         varchar(20)     default '000000'           comment '租户编号',
@@ -182,12 +178,13 @@ insert into sys_user values(1, '000000', 103, 'admin', '管理员', 'sys_user', 
 -- ----------------------------
 -- 3、岗位信息表
 -- ----------------------------
-drop table if exists sys_post;
 create table sys_post
 (
     post_id       bigint(20)      not null                   comment '岗位ID',
     tenant_id     varchar(20)     default '000000'           comment '租户编号',
+    dept_id       bigint(20)      not null                   comment '部门id',
     post_code     varchar(64)     not null                   comment '岗位编码',
+    post_category varchar(100)    default null               comment '岗位类别编码',
     post_name     varchar(50)     not null                   comment '岗位名称',
     post_sort     int(4)          not null                   comment '显示顺序',
     status        char(1)         not null                   comment '状态（1正常 0停用）',
@@ -203,16 +200,15 @@ create table sys_post
 -- ----------------------------
 -- 初始化-岗位信息表数据
 -- ----------------------------
-insert into sys_post values(1, '000000', 'ceo',  '董事长',    1, '1', 103, 1, sysdate(), null, null, '');
-insert into sys_post values(2, '000000', 'se',   '项目经理',  2, '1', 103, 1, sysdate(), null, null, '');
-insert into sys_post values(3, '000000', 'hr',   '人力资源',  3, '1', 103, 1, sysdate(), null, null, '');
-insert into sys_post values(4, '000000', 'user', '普通员工',  4, '1', 103, 1, sysdate(), null, null, '');
+insert into sys_post values(1, '000000', 103, 'ceo',  null, '董事长',    1, '1', 103, 1, sysdate(), null, null, '');
+insert into sys_post values(2, '000000', 100, 'se',   null, '项目经理',  2, '1', 103, 1, sysdate(), null, null, '');
+insert into sys_post values(3, '000000', 100, 'hr',   null, '人力资源',  3, '1', 103, 1, sysdate(), null, null, '');
+insert into sys_post values(4, '000000', 100, 'user', null, '普通员工',  4, '1', 103, 1, sysdate(), null, null, '');
 
 
 -- ----------------------------
 -- 4、角色信息表
 -- ----------------------------
-drop table if exists sys_role;
 create table sys_role (
     role_id              bigint(20)      not null                   comment '角色ID',
     tenant_id            varchar(20)     default '000000'           comment '租户编号',
@@ -243,7 +239,6 @@ insert into sys_role values(2, '000000', '普通角色',    'common', 2, 2, 1, 1
 -- ----------------------------
 -- 5、菜单权限表
 -- ----------------------------
-drop table if exists sys_menu;
 create table sys_menu (
     menu_id           bigint(20)      not null                   comment '菜单ID',
     menu_name         varchar(50)     not null                   comment '菜单名称',
@@ -293,7 +288,6 @@ insert into sys_menu values('107',  '通知公告',     '1',   '8', 'notice',   
 insert into sys_menu values('108',  '日志管理',     '1',   '9', 'log',              '',                             null,   '', 0, 1, 'M', '1', '1', '',                            'root-list',    null, null, 103, 1, sysdate(), null, null, '日志管理菜单');
 insert into sys_menu values('109',  '在线用户',     '2',   '1', 'online',           'monitor/online/index','Online',         '', 0, 1, 'C', '1', '1', 'monitor:online:list',         'user-talk',        null, null, 103, 1, sysdate(), null, null, '在线用户菜单');
 insert into sys_menu values('113',  '缓存监控',     '2',   '5', 'cache',            'monitor/cache/index','Cache',          '', 0, 1, 'C', '1', '1', 'monitor:cache:list',          'layers',         null, null, 103, 1, sysdate(), null, null, '缓存监控菜单');
-insert into sys_menu values('114',  '表单构建',     '3',   '1', 'build',            'tool/build/index','Build',             '', 0, 1, 'C', '1', '1', 'tool:build:list',             'logo-windows-filled',         null, null, 103, 1, sysdate(), null, null, '表单构建菜单');
 insert into sys_menu values('115',  '代码生成',     '3',   '2', 'gen',              'tool/gen/index','Gen',               '', 0, 1, 'C', '1', '1', 'tool:gen:list',               'code',          null, null, 103, 1, sysdate(), null, null, '代码生成菜单');
 insert into sys_menu values('121',  '租户管理',     '6',   '1', 'tenant',           'system/tenant/index','Tenant',          '', 0, 1, 'C', '1', '1', 'system:tenant:list',          'bulletpoint',          null, null, 103, 1, sysdate(), null, null, '租户管理菜单');
 insert into sys_menu values('122',  '租户套餐管理',  '6',   '2', 'tenantPackage',    'system/tenantPackage/index','TenantPackage',   '', 0, 1, 'C', '1', '1', 'system:tenantPackage:list',   'edit-1',          null, null, 103, 1, sysdate(), null, null, '租户套餐管理菜单');
@@ -303,9 +297,9 @@ insert into sys_menu values('124',  '敏感词',      '1', '13', 'sensitiveWord'
 -- springboot-admin监控
 insert into sys_menu values('117',  'Admin监控',   '2',   '5',  'Admin',            'monitor/admin/index','Admin',         '', 0, 1, 'C', '1', '1', 'monitor:admin:list',           'dashboard',     null, '!getProperty(\'spring.boot.admin.client.enabled\')', 103, 1, sysdate(), null, null, 'Admin监控菜单');
 -- oss菜单
-insert into sys_menu values('1510', '对象存储', '1', '10', 'store', null, null, null, 0, 1, 'M', '1', '1', null, 'cloud', null, null, 103, 1, sysdate(), 1, null, '');
--- powerjob server控制台
-insert into sys_menu values('120',  '任务调度中心',  '2',   '5',  'powerjob',           'monitor/powerjob/index','Powerjob',        '', 0, 1, 'C', '1', '1', 'monitor:powerjob:list',          'video',           null, '!getProperty(\'powerjob.worker.enabled\')', 103, 1, sysdate(), null, null, 'PowerJob控制台菜单');
+insert into sys_menu values('1510', '文件管理', '1', '10', 'store', null, null, null, 0, 1, 'M', '1', '1', null, 'cloud', null, null, 103, 1, sysdate(), 1, null, '');
+-- snail-job server控制台
+insert into sys_menu values('120',  '任务调度中心',  '2',   '6',  'snailjob',     'monitor/snailjob/index', null,        '', 0, 1, 'C', '1', '1', 'monitor:snailjob:list', 'video',           null, '!getProperty(''snail-job.enabled'')', 103, 1, sysdate(), null, null, 'SnailJob控制台菜单');
 
 -- 三级菜单
 insert into sys_menu values('500',  '操作日志', '108', '1', 'operlog',    'monitor/operlog/index','Operlog',    '', 0, 1, 'C', '1', '1', 'monitor:operlog:list',    'edit-1',          null, null, 103, 1, sysdate(), null, null, '操作日志菜单');
@@ -469,7 +463,6 @@ insert into sys_menu values('1833', '消息发送记录导出', '1830', 5, '#', 
 -- ----------------------------
 -- 6、用户和角色关联表  用户N-1角色
 -- ----------------------------
-drop table if exists sys_user_role;
 create table sys_user_role (
     user_id   bigint(20) not null comment '用户ID',
     role_id   bigint(20) not null comment '角色ID',
@@ -485,7 +478,6 @@ insert into sys_user_role values ('1', '1');
 -- ----------------------------
 -- 7、角色和菜单关联表  角色1-N菜单
 -- ----------------------------
-drop table if exists sys_role_menu;
 create table sys_role_menu (
     role_id   bigint(20) not null comment '角色ID',
     menu_id   bigint(20) not null comment '菜单ID',
@@ -583,7 +575,6 @@ insert into sys_role_menu values ('2', '1065');
 -- ----------------------------
 -- 8、角色和部门关联表  角色1-N部门
 -- ----------------------------
-drop table if exists sys_role_dept;
 create table sys_role_dept (
     role_id   bigint(20) not null comment '角色ID',
     dept_id   bigint(20) not null comment '部门ID',
@@ -591,17 +582,8 @@ create table sys_role_dept (
 ) engine=innodb comment = '角色和部门关联表';
 
 -- ----------------------------
--- 初始化-角色和部门关联表数据
--- ----------------------------
-insert into sys_role_dept values ('2', '100');
-insert into sys_role_dept values ('2', '101');
-insert into sys_role_dept values ('2', '105');
-
-
--- ----------------------------
 -- 9、用户与岗位关联表  用户1-N岗位
 -- ----------------------------
-drop table if exists sys_user_post;
 create table sys_user_post
 (
     user_id   bigint(20) not null comment '用户ID',
@@ -613,13 +595,10 @@ create table sys_user_post
 -- 初始化-用户与岗位关联表数据
 -- ----------------------------
 insert into sys_user_post values ('1', '1');
-insert into sys_user_post values ('2', '2');
-
 
 -- ----------------------------
 -- 10、操作日志记录
 -- ----------------------------
-drop table if exists sys_oper_log;
 create table sys_oper_log (
     oper_id           bigint(20)      not null                   comment '日志主键',
     tenant_id         varchar(20)     default '000000'           comment '租户编号',
@@ -650,7 +629,6 @@ create table sys_oper_log (
 -- ----------------------------
 -- 11、字典类型表
 -- ----------------------------
-drop table if exists sys_dict_type;
 create table sys_dict_type
 (
     dict_id          bigint(20)      not null                   comment '字典主键',
@@ -687,7 +665,6 @@ insert into sys_dict_type values(17, '000000', '敏感词类别', 'sensitive_wor
 -- ----------------------------
 -- 12、字典数据表
 -- ----------------------------
-drop table if exists sys_dict_data;
 create table sys_dict_data
 (
     dict_code        bigint(20)      not null                   comment '字典编码',
@@ -773,7 +750,6 @@ insert into sys_dict_data values(70, '000000', 99, '其他', 'other', 'sensitive
 -- ----------------------------
 -- 13、参数配置表
 -- ----------------------------
-drop table if exists sys_config;
 create table sys_config (
     config_id         bigint(20)      not null                   comment '参数主键',
     tenant_id         varchar(20)     default '000000'           comment '租户编号',
@@ -801,21 +777,20 @@ insert into sys_config values(11, '000000', 'OSS预览列表资源开关',      
 -- ----------------------------
 -- 14、系统访问记录
 -- ----------------------------
-drop table if exists sys_logininfor;
 create table sys_logininfor (
-    info_id         bigint(20)     not null                  comment '访问ID',
-    tenant_id       varchar(20)    default '000000'          comment '租户编号',
-    user_id         bigint         default null              comment '用户id',
-    user_name       varchar(50)    default ''                comment '用户账号',
-    ipaddr          varchar(128)   default ''                comment '登录IP地址',
-    login_location  varchar(255)   default ''                comment '登录地点',
-    browser         varchar(50)    default ''                comment '浏览器类型',
-    os              varchar(50)    default ''                comment '操作系统',
-    status          char(1)        default '1'               comment '登录状态（1成功 0失败）',
-    client_key      varchar(32)    default ''                comment '客户端',
-    device_type     varchar(32)    default ''                comment '设备类型',
-    msg             varchar(255)   default ''                comment '提示消息',
-    login_time      datetime                                 comment '访问时间',
+    info_id        bigint(20)     not null                  comment '访问ID',
+    tenant_id      varchar(20)    default '000000'          comment '租户编号',
+    user_id        bigint         default null              comment '用户id',
+    user_name      varchar(50)    default ''                comment '用户账号',
+    client_key     varchar(32)    default ''                comment '客户端',
+    device_type    varchar(32)    default ''                comment '设备类型',
+    ipaddr         varchar(128)   default ''                comment '登录IP地址',
+    login_location varchar(255)   default ''                comment '登录地点',
+    browser        varchar(50)    default ''                comment '浏览器类型',
+    os             varchar(50)    default ''                comment '操作系统',
+    status         char(1)        default '1'               comment '登录状态（1成功 0失败）',
+    msg            varchar(255)   default ''                comment '提示消息',
+    login_time     datetime                                 comment '访问时间',
     primary key (info_id),
     key idx_sys_logininfor_s  (status),
     key idx_sys_logininfor_lt (login_time)
@@ -825,7 +800,6 @@ create table sys_logininfor (
 -- ----------------------------
 -- 17、通知公告表
 -- ----------------------------
-drop table if exists sys_notice;
 create table sys_notice (
     notice_id         bigint(20)      not null                   comment '公告ID',
     tenant_id         varchar(20)     default '000000'           comment '租户编号',
@@ -852,7 +826,6 @@ insert into sys_notice values('2', '000000', '维护通知：2018-07-01 系统�
 -- ----------------------------
 -- 18、代码生成业务表
 -- ----------------------------
-drop table if exists gen_table;
 create table gen_table (
     table_id          bigint(20)      not null                   comment '编号',
     data_name         varchar(200)    default ''                 comment '数据源名称',
@@ -881,7 +854,6 @@ create table gen_table (
 -- ----------------------------
 -- 19、代码生成业务表字段
 -- ----------------------------
-drop table if exists gen_table_column;
 create table gen_table_column (
     column_id         bigint(20)      not null                   comment '编号',
     table_id          bigint(20)                                 comment '归属表编号',
@@ -914,7 +886,6 @@ create table gen_table_column (
 -- ----------------------------
 -- OSS对象存储表
 -- ----------------------------
-drop table if exists sys_oss;
 create table sys_oss (
     oss_id          bigint(20)   not null                   comment '对象存储主键',
     tenant_id       varchar(20)           default '000000'  comment '租户编号',
@@ -941,7 +912,6 @@ create table sys_oss (
 -- ----------------------------
 -- OSS分类表
 -- ----------------------------
-drop table if exists sys_oss_category;
 create table sys_oss_category  (
   oss_category_id   bigint(20)      not null                    comment 'oss分类id',
   category_name     varchar(255)    not null                    comment '分类名称',
@@ -960,9 +930,8 @@ create table sys_oss_category  (
 -- ----------------------------
 -- OSS对象存储动态配置表
 -- ----------------------------
-drop table if exists sys_oss_config;
 create table sys_oss_config (
-    oss_config_id   bigint(20)    not null                  comment '主建',
+    oss_config_id   bigint(20)    not null                  comment '主键',
     tenant_id       varchar(20)             default '000000'comment '租户编号',
     config_key      varchar(20)   not null  default ''      comment '配置key',
     access_key      varchar(255)            default ''      comment 'accessKey',
@@ -995,7 +964,6 @@ insert into sys_oss_config values (5, '000000', 'image',  'ruoyi',            'r
 -- ----------------------------
 -- 系统授权表
 -- ----------------------------
-drop table if exists sys_client;
 create table sys_client (
     id                  bigint(20)    not null            comment 'id',
     client_id           varchar(64)   default null        comment '客户端id',
@@ -1021,7 +989,6 @@ insert into sys_client values (2, '428a8310cd442757ae699df5d894f051', 'app', 'ap
 -- ----------------------------
 -- OSS处理规则表
 -- ----------------------------
-drop table if exists sys_oss_rule;
 create table sys_oss_rule  (
     oss_rule_id   bigint       not null                  comment 'oss规则id',
     tenant_id     varchar(20)  null     default '000000' comment '租户编号',
@@ -1048,7 +1015,6 @@ insert into sys_oss_rule values (2, '000000', '800x800', 'oss-cn-beijing.aliyunc
 -- ----------------------------
 -- 租户应用管理表
 -- ----------------------------
-drop table if exists sys_tenant_app;
 create table sys_tenant_app  (
     appid         bigint          not null                        comment '应用id',
     tenant_id     varchar(20)     null        default '000000'    comment '租户编号',
@@ -1067,7 +1033,6 @@ create table sys_tenant_app  (
 -- ----------------------------
 -- 消息配置表
 -- ----------------------------
-drop table if exists sys_message_config;
 create table sys_message_config  (
     message_config_id bigint(20)      not null                    comment '消息设置id',
     title             varchar(255)    not null                    comment '标题',
@@ -1088,7 +1053,6 @@ create table sys_message_config  (
 -- ----------------------------
 -- 消息常量表
 -- ----------------------------
-drop table if exists sys_message_key;
 create table sys_message_key  (
     message_key_id    bigint(20)      not null                    comment '消息key主键',
     name              varchar(255)    not null                    comment '消息名称',
@@ -1105,7 +1069,6 @@ create table sys_message_key  (
 -- ----------------------------
 -- 消息发送记录表
 -- ----------------------------
-drop table if exists sys_message_log;
 create table sys_message_log  (
     message_log_id        bigint(20)      not null                    comment '消息发送记录id',
     message_template_id   bigint(20)      null        default null    comment '消息模板id',
@@ -1130,7 +1093,6 @@ create table sys_message_log  (
 -- ----------------------------
 -- 消息模板表
 -- ----------------------------
-drop table if exists sys_message_template;
 create table sys_message_template  (
     message_template_id   bigint(20)      not null                    comment '消息模板id',
     template_name         varchar(255)    not null                    comment '模板名称',
@@ -1159,7 +1121,6 @@ create table sys_message_template  (
 -- ----------------------------
 -- 敏感词表
 -- ----------------------------
-drop table if exists sys_sensitive_word;
 create table sys_sensitive_word  (
   word_id       bigint          not null            comment '敏感词id',
   word          varchar(255)    not null            comment '敏感词',

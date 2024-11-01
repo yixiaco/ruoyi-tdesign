@@ -1,6 +1,8 @@
 package org.dromara.system.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.collection.CollUtil;
+import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ArrayUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
@@ -10,12 +12,14 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.CacheNames;
 import org.dromara.common.core.constant.UserConstants;
+import org.dromara.common.core.domain.dto.UserDTO;
 import org.dromara.common.core.enums.NormalDisableEnum;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.service.UserService;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.core.utils.StringUtils;
+import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.mybatis.helper.DataBaseHelper;
@@ -39,6 +43,7 @@ import org.dromara.system.mapper.SysUserRoleMapper;
 import org.dromara.system.service.ISysDeptService;
 import org.dromara.system.service.ISysUserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -322,8 +327,8 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      */
     @Override
     public boolean registerUser(SysUserBo user, String tenantId) {
-        user.setCreateBy(user.getUserId());
-        user.setUpdateBy(user.getUserId());
+        user.setCreateBy(0L);
+        user.setUpdateBy(0L);
         SysUser sysUser = MapstructUtils.convert(user, SysUser.class);
         sysUser.setTenantId(tenantId);
         boolean b = baseMapper.insert(sysUser) > 0;
@@ -338,6 +343,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @return 结果
      */
     @Override
+    @CacheEvict(cacheNames = CacheNames.SYS_NICKNAME, key = "#user.userId")
     @Transactional(rollbackFor = Exception.class)
     public int updateUser(SysUserBo user) {
         // 新增用户与角色管理
@@ -386,6 +392,7 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
      * @param user 用户信息
      * @return 结果
      */
+    @CacheEvict(cacheNames = CacheNames.SYS_NICKNAME, key = "#user.userId")
     @Override
     public int updateUserProfile(SysUserBo user) {
         return baseMapper.update(null,
@@ -596,6 +603,24 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
     }
 
     /**
+     * 通过用户ID查询用户账户
+     *
+     * @param userIds 用户ID 多个用逗号隔开
+     * @return 用户账户
+     */
+    @Override
+    public String selectNicknameByIds(String userIds) {
+        List<String> list = new ArrayList<>();
+        for (Long id : StringUtils.splitTo(userIds, Convert::toLong)) {
+            String nickname = SpringUtils.getAopProxy(this).selectNicknameById(id);
+            if (StringUtils.isNotBlank(nickname)) {
+                list.add(nickname);
+            }
+        }
+        return String.join(StringUtils.SEPARATOR, list);
+    }
+
+    /**
      * 通过用户ID查询用户手机号
      *
      * @param userId 用户id
@@ -619,6 +644,25 @@ public class SysUserServiceImpl extends ServiceImpl<SysUserMapper, SysUser> impl
         SysUser sysUser = baseMapper.selectOne(new LambdaQueryWrapper<SysUser>()
             .select(SysUser::getEmail).eq(SysUser::getUserId, userId));
         return ObjectUtil.isNull(sysUser) ? null : sysUser.getEmail();
+    }
+
+    @Override
+    public List<UserDTO> selectListByIds(List<Long> userIds) {
+        if (CollUtil.isEmpty(userIds)) {
+            return List.of();
+        }
+        List<SysUserVo> list = baseMapper.selectVoList(new LambdaQueryWrapper<SysUser>()
+            .select(SysUser::getUserId, SysUser::getUserName, SysUser::getNickName)
+            .eq(SysUser::getStatus, NormalDisableEnum.NORMAL.getCode())
+            .in(CollUtil.isNotEmpty(userIds), SysUser::getUserId, userIds));
+        return BeanUtil.copyToList(list, UserDTO.class);
+    }
+
+    @Override
+    public List<Long> selectUserIdsByRoleIds(List<Long> roleIds) {
+        List<SysUserRole> userRoles = userRoleMapper.selectList(
+            new LambdaQueryWrapper<SysUserRole>().in(SysUserRole::getRoleId, roleIds));
+        return StreamUtils.toList(userRoles, SysUserRole::getUserId);
     }
 
 }

@@ -72,6 +72,12 @@ public class RedisUtils {
         consumer.accept(msg);
     }
 
+    /**
+     * 发布消息到指定的频道
+     *
+     * @param channelKey 通道key
+     * @param msg        发送数据
+     */
     public static <T> void publish(String channelKey, T msg) {
         RTopic topic = CLIENT.getTopic(channelKey);
         topic.publish(msg);
@@ -137,7 +143,11 @@ public class RedisUtils {
                 bucket.setAndKeepTTL(value);
             } catch (Exception e) {
                 long timeToLive = bucket.remainTimeToLive();
-                setObject(key, value, Duration.ofMillis(timeToLive));
+                if (timeToLive == -1) {
+                    setObject(key, value);
+                } else {
+                    setObject(key, value, Duration.ofMillis(timeToLive));
+                }
             }
         } else {
             bucket.set(value);

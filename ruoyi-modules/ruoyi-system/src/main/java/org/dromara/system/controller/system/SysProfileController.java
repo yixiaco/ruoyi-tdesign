@@ -4,13 +4,16 @@ import cn.dev33.satoken.secure.BCrypt;
 import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.io.FileUtil;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.dromara.common.core.constant.RegexConstants;
 import org.dromara.common.core.domain.R;
 import org.dromara.common.core.enums.UserType;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.core.utils.file.MimeTypeUtils;
 import org.dromara.common.encrypt.annotation.ApiEncrypt;
+import org.dromara.common.idempotent.annotation.RepeatSubmit;
 import org.dromara.common.log.annotation.Log;
 import org.dromara.common.log.enums.BusinessType;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
@@ -28,7 +31,6 @@ import org.dromara.system.domain.vo.ProfileVo;
 import org.dromara.system.domain.vo.SysLogininforVo;
 import org.dromara.system.domain.vo.SysOssVo;
 import org.dromara.system.domain.vo.SysUserVo;
-import org.dromara.system.service.ISysDeptService;
 import org.dromara.system.service.ISysLogininforService;
 import org.dromara.system.service.ISysOssService;
 import org.dromara.system.service.ISysUserService;
@@ -71,11 +73,12 @@ public class SysProfileController extends BaseController {
     }
 
     /**
-     * 修改用户
+     * 修改用户信息
      */
+    @RepeatSubmit
     @Log(title = "个人信息", businessType = BusinessType.UPDATE)
     @PutMapping("/basic")
-    public R<Void> updateProfile(@RequestBody SysUserProfileBo profile) {
+    public R<Void> updateProfile(@Validated @RequestBody SysUserProfileBo profile) {
         SysUserBo user = BeanUtil.toBean(profile, SysUserBo.class);
         user.setUserId(LoginHelper.getUserId());
         if (userService.updateUserProfile(user) > 0) {
@@ -89,7 +92,8 @@ public class SysProfileController extends BaseController {
      */
     @Log(title = "个人信息", businessType = BusinessType.UPDATE)
     @PutMapping("/updatePhonenumber")
-    public R<Void> updateNickname(@RequestParam String phonenumber) {
+    public R<Void> updateNickname(@Pattern(regexp = RegexConstants.MOBILE, message = "手机号格式不正确")
+                                  @RequestParam String phonenumber) {
         String username = LoginHelper.getUsername();
         SysUserBo bo = new SysUserBo();
         bo.setUserId(LoginHelper.getUserId());
@@ -130,6 +134,7 @@ public class SysProfileController extends BaseController {
      *
      * @param bo 新旧密码
      */
+    @RepeatSubmit
     @ApiEncrypt
     @Log(title = "个人信息", businessType = BusinessType.UPDATE)
     @PutMapping("/updatePwd")
@@ -154,6 +159,7 @@ public class SysProfileController extends BaseController {
      *
      * @param avatarfile 用户头像
      */
+    @RepeatSubmit
     @Log(title = "用户头像", businessType = BusinessType.UPDATE)
     @PostMapping(value = "/avatar", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
     public R<AvatarVo> avatar(@RequestPart("avatarfile") MultipartFile avatarfile) {

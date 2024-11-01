@@ -37,6 +37,10 @@ public class ActHistoryInfoVo implements Serializable {
      */
     private String processInstanceId;
     /**
+     * 版本
+     */
+    private Integer version;
+    /**
      * 开始时间
      */
     private Date startTime;
@@ -59,7 +63,7 @@ public class ActHistoryInfoVo implements Serializable {
     /**
      * 办理人id
      */
-    private Long assignee;
+    private String assignee;
 
     /**
      * 办理人名称

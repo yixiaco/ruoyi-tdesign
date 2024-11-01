@@ -30,6 +30,11 @@ public class SysDeptQuery extends BaseEntity {
     private String deptName;
 
     /**
+     * 部门类别编码
+     */
+    private String deptCategory;
+
+    /**
      * 部门状态
      */
     private String status;

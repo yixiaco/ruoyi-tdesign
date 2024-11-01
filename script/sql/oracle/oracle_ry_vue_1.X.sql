@@ -177,6 +177,7 @@ create table sys_dept (
   parent_id         number(20)      default 0,
   ancestors         varchar2(500)   default '',
   dept_name         varchar2(30)    default '',
+  dept_category     varchar2(100)   default null,
   order_num         number(4)       default 0,
   leader            number(20)      default null,
   phone             varchar2(11)    default null,
@@ -198,6 +199,7 @@ comment on column sys_dept.tenant_id    is '租户编号';
 comment on column sys_dept.parent_id    is '父部门id';
 comment on column sys_dept.ancestors    is '祖级列表';
 comment on column sys_dept.dept_name    is '部门名称';
+comment on column sys_dept.dept_category is '部门类别编码';
 comment on column sys_dept.order_num    is '显示顺序';
 comment on column sys_dept.leader       is '负责人';
 comment on column sys_dept.phone        is '联系电话';
@@ -213,16 +215,16 @@ comment on column sys_dept.update_time  is '更新时间';
 -- ----------------------------
 -- 初始化-部门表数据
 -- ----------------------------
-insert into sys_dept values(100, '000000', 0,   '0',          'XXX科技',   0, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
-insert into sys_dept values(101, '000000', 100, '0,100',      '深圳总公司', 1, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
-insert into sys_dept values(102, '000000', 100, '0,100',      '长沙分公司', 2, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
-insert into sys_dept values(103, '000000', 101, '0,100,101',  '研发部门',   1, 1,    '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
-insert into sys_dept values(104, '000000', 101, '0,100,101',  '市场部门',   2, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
-insert into sys_dept values(105, '000000', 101, '0,100,101',  '测试部门',   3, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
-insert into sys_dept values(106, '000000', 101, '0,100,101',  '财务部门',   4, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
-insert into sys_dept values(107, '000000', 101, '0,100,101',  '运维部门',   5, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
-insert into sys_dept values(108, '000000', 102, '0,100,102',  '市场部门',   1, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
-insert into sys_dept values(109, '000000', 102, '0,100,102',  '财务部门',   2, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
+insert into sys_dept values(100, '000000', 0,   '0',          'XXX科技',   null, 0, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
+insert into sys_dept values(101, '000000', 100, '0,100',      '深圳总公司', null, 1, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
+insert into sys_dept values(102, '000000', 100, '0,100',      '长沙分公司', null, 2, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
+insert into sys_dept values(103, '000000', 101, '0,100,101',  '研发部门',   null, 1, 1,    '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
+insert into sys_dept values(104, '000000', 101, '0,100,101',  '市场部门',   null, 2, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
+insert into sys_dept values(105, '000000', 101, '0,100,101',  '测试部门',   null, 3, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
+insert into sys_dept values(106, '000000', 101, '0,100,101',  '财务部门',   null, 4, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
+insert into sys_dept values(107, '000000', 101, '0,100,101',  '运维部门',   null, 5, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
+insert into sys_dept values(108, '000000', 102, '0,100,102',  '市场部门',   null, 1, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
+insert into sys_dept values(109, '000000', 102, '0,100,102',  '财务部门',   null, 2, null, '15888888888', 'xxx@qq.com', '1', '0', 103, 1, sysdate, null, null);
 
 
 -- ----------------------------
@@ -289,7 +291,9 @@ insert into sys_user values(1, '000000', 103, 'admin', '管理员', 'sys_user', 
 create table sys_post (
   post_id           number(20)      not null,
   tenant_id         varchar2(20)    default '000000',
+  dept_id           number(20)      not null,
   post_code         varchar2(64)    not null,
+  post_category     varchar2(64)    default null,
   post_name         varchar2(50)    not null,
   post_sort         number(4)       not null,
   status            char(1)         not null,
@@ -306,7 +310,9 @@ alter table sys_post add constraint pk_sys_post primary key (post_id);
 comment on table  sys_post              is '岗位信息表';
 comment on column sys_post.post_id      is '岗位ID';
 comment on column sys_post.tenant_id    is '租户编号';
+comment on column sys_post.dept_id      is '部门id';
 comment on column sys_post.post_code    is '岗位编码';
+comment on column sys_post.post_category is '岗位类别编码';
 comment on column sys_post.post_name    is '岗位名称';
 comment on column sys_post.post_sort    is '显示顺序';
 comment on column sys_post.status       is '状态（1正常 0停用）';
@@ -320,10 +326,10 @@ comment on column sys_post.remark       is '备注';
 -- ----------------------------
 -- 初始化-岗位信息表数据
 -- ----------------------------
-insert into sys_post values(1, '000000', 'ceo',  '董事长',    1, '1', 103, 1, sysdate, null, null, '');
-insert into sys_post values(2, '000000', 'se',   '项目经理',  2, '1', 103, 1, sysdate, null, null, '');
-insert into sys_post values(3, '000000', 'hr',   '人力资源',  3, '1', 103, 1, sysdate, null, null, '');
-insert into sys_post values(4, '000000', 'user', '普通员工',  4, '1', 103, 1, sysdate, null, null, '');
+insert into sys_post values(1, '000000', 103, 'ceo',  null, '董事长',    1, '1', 103, 1, sysdate, null, null, '');
+insert into sys_post values(2, '000000', 100, 'se',   null, '项目经理',  2, '1', 103, 1, sysdate, null, null, '');
+insert into sys_post values(3, '000000', 100, 'hr',   null, '人力资源',  3, '1', 103, 1, sysdate, null, null, '');
+insert into sys_post values(4, '000000', 100, 'user', null, '普通员工',  4, '1', 103, 1, sysdate, null, null, '');
 
 
 -- ----------------------------
@@ -452,7 +458,6 @@ insert into sys_menu values('107',  '通知公告',     '1',   '8', 'notice',   
 insert into sys_menu values('108',  '日志管理',     '1',   '9', 'log',              '',              '',                             '', 0, 1, 'M', '1', '1', '',                            'root-list',           null, null, 103, 1, sysdate, null, null, '日志管理菜单');
 insert into sys_menu values('109',  '在线用户',     '2',   '1', 'online',           'monitor/online/index', 'Online',         '', 0, 1, 'C', '1', '1', 'monitor:online:list',         'user-talk',        null, null, 103, 1, sysdate, null, null, '在线用户菜单');
 insert into sys_menu values('113',  '缓存监控',     '2',   '5', 'cache',            'monitor/cache/index', 'Cache',          '', 0, 1, 'C', '1', '1', 'monitor:cache:list',          'layers',         null, null, 103, 1, sysdate, null, null, '缓存监控菜单');
-insert into sys_menu values('114',  '表单构建',     '3',   '1', 'build',            'tool/build/index', 'Build',             '', 0, 1, 'C', '1', '1', 'tool:build:list',             'logo-windows-filled',         null, null, 103, 1, sysdate, null, null, '表单构建菜单');
 insert into sys_menu values('115',  '代码生成',     '3',   '2', 'gen',              'tool/gen/index', 'Gen',               '', 0, 1, 'C', '1', '1', 'tool:gen:list',               'code',          null, null, 103, 1, sysdate, null, null, '代码生成菜单');
 insert into sys_menu values('121',  '租户管理',     '6',   '1', 'tenant',           'system/tenant/index', 'Tenant',          '', 0, 1, 'C', '1', '1', 'system:tenant:list',          'bulletpoint',          null, null, 103, 1, sysdate, null, null, '租户管理菜单');
 insert into sys_menu values('122',  '租户套餐管理', '6',   '2', 'tenantPackage',    'system/tenantPackage/index', 'TenantPackage',   '', 0, 1, 'C', '1', '1', 'system:tenantPackage:list',   'edit-1',          null, null, 103, 1, sysdate, null, null, '租户套餐管理菜单');
@@ -461,9 +466,9 @@ insert into sys_menu values('124',  '敏感词',      '1', '13', 'sensitiveWord'
 -- springboot-admin监控
 insert into sys_menu values('117',  'Admin监控',   '2',    '5', 'Admin',            'monitor/admin/index', 'Admin',         '', 0, 1, 'C', '1', '1', 'monitor:admin:list',          'dashboard',     null, '!getProperty(''spring.boot.admin.client.enabled'')', 103, 1, sysdate, null, null, 'Admin监控菜单');
 -- oss菜单
-insert into sys_menu values('1510', '对象存储', '1', '10', 'store', NULL, NULL, NULL, 0, 1, 'M', '1', '1', NULL, 'cloud', null, null, 103, 1, sysdate, 1, null, '');
--- powerjob server控制台
-insert into sys_menu values('120',  '任务调度中心',  '2',    '5', 'powerjob',           'monitor/powerjob/index', 'Powerjob',        '', 0, 1, 'C', '1', '1', 'monitor:powerjob:list',         'video',           null, '!getProperty(''powerjob.worker.enabled'')', 103, 1, sysdate, null, null, 'PowerJob控制台菜单');
+insert into sys_menu values('1510', '文件管理', '1', '10', 'store', NULL, NULL, NULL, 0, 1, 'M', '1', '1', NULL, 'cloud', null, null, 103, 1, sysdate, 1, null, '');
+-- snail-job server控制台
+insert into sys_menu values('120',  '任务调度中心',  '2',    '6', 'snailjob',           'monitor/snailjob/index', null,        '', 0, 1, 'C', '1', '1', 'monitor:snailjob:list', 'video',           null, '!getProperty(''snail-job.enabled'')', 103, 1, sysdate, null, null, 'snailjob控制台菜单');
 
 -- 三级菜单
 insert into sys_menu values('500',  '操作日志', '108', '1', 'operlog',    'monitor/operlog/index', 'Operlog',    '', 0, 1, 'C', '1', '1', 'monitor:operlog:list',    'edit-1',          null, null, 103, 1, sysdate, null, null, '操作日志菜单');
@@ -758,13 +763,6 @@ comment on table  sys_role_dept              is '角色和部门关联表';
 comment on column sys_role_dept.role_id      is '角色ID';
 comment on column sys_role_dept.dept_id      is '部门ID';
 
--- ----------------------------
--- 初始化-角色和部门关联表数据
--- ----------------------------
-insert into sys_role_dept values ('2', '100');
-insert into sys_role_dept values ('2', '101');
-insert into sys_role_dept values ('2', '105');
-
 
 -- ----------------------------
 -- 9、用户与岗位关联表  用户1-N岗位
@@ -784,8 +782,6 @@ comment on column sys_user_post.post_id      is '岗位ID';
 -- 初始化-用户与岗位关联表数据
 -- ----------------------------
 insert into sys_user_post values ('1', '1');
-insert into sys_user_post values ('2', '2');
-
 
 -- ----------------------------
 -- 10、操作日志记录
@@ -1327,7 +1323,7 @@ create table sys_oss_config (
 alter table sys_oss_config add constraint pk_sys_oss_config primary key (oss_config_id);
 
 comment on table sys_oss_config                 is '对象存储配置表';
-comment on column sys_oss_config.oss_config_id  is '主建';
+comment on column sys_oss_config.oss_config_id  is '主键';
 comment on column sys_oss_config.tenant_id      is '租户编码';
 comment on column sys_oss_config.config_key     is '配置key';
 comment on column sys_oss_config.access_key     is 'accesskey';
@@ -1379,7 +1375,7 @@ create table sys_client (
 alter table sys_client add constraint pk_sys_client primary key (id);
 
 comment on table sys_client                         is '系统授权表';
-comment on column sys_client.id                     is '主建';
+comment on column sys_client.id                     is '主键';
 comment on column sys_client.client_id              is '客户端id';
 comment on column sys_client.client_key             is '客户端key';
 comment on column sys_client.client_secret          is '客户端秘钥';

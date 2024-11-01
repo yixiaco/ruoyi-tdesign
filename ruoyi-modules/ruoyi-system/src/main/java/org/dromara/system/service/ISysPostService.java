@@ -19,10 +19,10 @@ public interface ISysPostService extends IService<SysPost> {
     /**
      * 获取岗位列表
      *
-     * @param post 岗位信息
+     * @param query 岗位信息
      * @return 岗位列表
      */
-    TableDataInfo<SysPostVo> selectPagePostList(SysPostQuery post);
+    TableDataInfo<SysPostVo> selectPagePostList(SysPostQuery query);
 
     /**
      * 查询岗位信息集合

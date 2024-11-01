@@ -142,6 +142,11 @@ public class TaskVo implements Serializable {
     private String processDefinitionKey;
 
     /**
+     * 流程定义版本
+     */
+    private Integer processDefinitionVersion;
+
+    /**
      * 参与者
      */
     private ParticipantVo participantVo;
@@ -150,4 +155,19 @@ public class TaskVo implements Serializable {
      * 是否会签
      */
     private Boolean multiInstance;
+
+    /**
+     * 业务id
+     */
+    private String businessKey;
+
+    /**
+     * 流程定义配置
+     */
+    private WfDefinitionConfigVo wfDefinitionConfigVo;
+
+    /**
+     * 节点配置
+     */
+    private WfNodeConfigVo wfNodeConfigVo;
 }

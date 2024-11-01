@@ -1,6 +1,8 @@
 package org.dromara.system.mapper;
 
 import org.apache.ibatis.annotations.Param;
+import org.dromara.common.mybatis.annotation.DataColumn;
+import org.dromara.common.mybatis.annotation.DataPermission;
 import org.dromara.common.mybatis.core.mapper.BaseMapperPlus;
 import org.dromara.system.domain.SysPost;
 import org.dromara.system.domain.query.SysPostQuery;
@@ -29,5 +31,9 @@ public interface SysPostMapper extends BaseMapperPlus<SysPost, SysPostVo> {
      * @param query 查询对象
      * @return {@link SysPost}
      */
+    @DataPermission({
+        @DataColumn(key = "deptName", value = "dept_id"),
+        @DataColumn(key = "userName", value = "create_by")
+    })
     List<SysPostVo> queryList(SysPostQuery query);
 }

@@ -1,5 +1,6 @@
 package org.dromara.workflow.controller;
 
+import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
@@ -12,10 +13,12 @@ import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
 import org.dromara.common.satoken.utils.LoginHelper;
 import org.dromara.common.web.core.BaseController;
+import org.dromara.workflow.domain.WfTaskBackNode;
 import org.dromara.workflow.domain.bo.*;
 import org.dromara.workflow.domain.vo.TaskVo;
 import org.dromara.workflow.domain.vo.VariableVo;
 import org.dromara.workflow.service.IActTaskService;
+import org.dromara.workflow.service.IWfTaskBackNodeService;
 import org.dromara.workflow.utils.QueryUtils;
 import org.flowable.engine.TaskService;
 import org.springframework.validation.annotation.Validated;
@@ -23,7 +26,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
  * 任务管理 控制层
@@ -40,6 +42,8 @@ public class ActTaskController extends BaseController {
 
     private final TaskService taskService;
 
+    private final IWfTaskBackNodeService wfTaskBackNodeService;
+
 
     /**
      * 启动任务
@@ -49,7 +53,7 @@ public class ActTaskController extends BaseController {
     @Log(title = "任务管理", businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping("/startWorkFlow")
-    public R<Map<String, Object>> startWorkFlow(@RequestBody StartProcessBo startProcessBo) {
+    public R<Map<String, Object>> startWorkFlow(@Validated(AddGroup.class) @RequestBody StartProcessBo startProcessBo) {
         Map<String, Object> map = actTaskService.startWorkFlow(startProcessBo);
         return R.ok("提交成功", map);
     }
@@ -220,8 +224,8 @@ public class ActTaskController extends BaseController {
     @Log(title = "任务管理", businessType = BusinessType.INSERT)
     @RepeatSubmit()
     @PostMapping("/backProcess")
-    public R<String> backProcess(@RequestBody BackProcessBo backProcessBo) {
-        return R.ok(actTaskService.backProcess(backProcessBo));
+    public R<String> backProcess(@Validated({AddGroup.class}) @RequestBody BackProcessBo backProcessBo) {
+        return R.ok("操作成功", actTaskService.backProcess(backProcessBo));
     }
 
     /**
@@ -264,7 +268,28 @@ public class ActTaskController extends BaseController {
      * @param processInstanceId 流程实例id
      */
     @GetMapping("/getTaskNodeList/{processInstanceId}")
-    public R<Set<TaskVo>> getNodeList(@PathVariable String processInstanceId) {
-        return R.ok(actTaskService.getTaskNodeList(processInstanceId));
+    public R<List<WfTaskBackNode>> getNodeList(@PathVariable String processInstanceId) {
+        return R.ok(CollUtil.reverse(wfTaskBackNodeService.getListByInstanceId(processInstanceId)));
     }
+
+    /**
+     * 查询工作流任务用户选择加签人员
+     *
+     * @param taskId 任务id
+     */
+    @GetMapping("/getTaskUserIdsByAddMultiInstance/{taskId}")
+    public R<String> getTaskUserIdsByAddMultiInstance(@PathVariable String taskId) {
+        return R.ok("操作成功", actTaskService.getTaskUserIdsByAddMultiInstance(taskId));
+    }
+
+    /**
+     * 查询工作流选择减签人员
+     *
+     * @param taskId 任务id
+     */
+    @GetMapping("/getListByDeleteMultiInstance/{taskId}")
+    public R<List<TaskVo>> getListByDeleteMultiInstance(@PathVariable String taskId) {
+        return R.ok(actTaskService.getListByDeleteMultiInstance(taskId));
+    }
+
 }

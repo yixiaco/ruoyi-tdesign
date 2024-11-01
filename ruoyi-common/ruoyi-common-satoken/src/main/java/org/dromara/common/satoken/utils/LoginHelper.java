@@ -2,6 +2,7 @@ package org.dromara.common.satoken.utils;
 
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpLogic;
+import cn.hutool.core.convert.Convert;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import org.dromara.common.core.constant.TenantConstants;
@@ -132,6 +133,20 @@ public class LoginHelper {
      */
     public static Long getDeptId() {
         return getUserOptional().map(LoginUser::getDeptId).orElse(null);
+    }
+
+    /**
+     * 获取部门名
+     */
+    public static String getDeptName() {
+        return Convert.toStr(getUserOptional().map(LoginUser::getDeptName));
+    }
+
+    /**
+     * 获取部门类别编码
+     */
+    public static String getDeptCategory() {
+        return Convert.toStr(getUserOptional().map(LoginUser::getDeptCategory));
     }
 
     /**

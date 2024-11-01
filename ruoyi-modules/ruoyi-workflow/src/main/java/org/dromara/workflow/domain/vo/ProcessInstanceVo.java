@@ -41,7 +41,7 @@ public class ProcessInstanceVo implements Serializable {
     /**
      * 流程定义版本
      */
-    private String processDefinitionVersion;
+    private Integer processDefinitionVersion;
 
     /**
      * 部署id
@@ -92,4 +92,9 @@ public class ProcessInstanceVo implements Serializable {
      * 待办任务集合
      */
     private List<TaskVo> taskVoList;
+
+    /**
+     * 节点配置
+     */
+    private WfNodeConfigVo wfNodeConfigVo;
 }

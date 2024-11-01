@@ -149,16 +149,20 @@ public class SysUserController extends BaseController {
         SysUserInfoVo userInfoVo = new SysUserInfoVo();
         SysRoleQuery roleQuery = new SysRoleQuery();
         roleQuery.setStatus(NormalDisableEnum.NORMAL.getCode());
-        SysPostQuery postQuery = new SysPostQuery();
-        postQuery.setStatus(NormalDisableEnum.NORMAL.getCode());
+
         List<SysRoleVo> roles = roleService.selectRoleList(roleQuery);
         userInfoVo.setRoles(LoginHelper.isSuperAdmin(userId) ? roles : StreamUtils.filter(roles, r -> !r.isSuperAdmin()));
-        userInfoVo.setPosts(postService.selectPostList(postQuery));
         if (ObjectUtil.isNotNull(userId)) {
             SysUserVo sysUser = userService.selectUserById(userId);
             userInfoVo.setUser(sysUser);
             userInfoVo.setRoleIds(roleService.selectRoleListByUserId(userId));
-            userInfoVo.setPostIds(postService.selectPostListByUserId(userId));
+            Long deptId = sysUser.getDeptId();
+            if (ObjectUtil.isNotNull(deptId)) {
+                SysPostQuery postQuery = new SysPostQuery();
+                postQuery.setStatus(NormalDisableEnum.NORMAL.getCode());
+                userInfoVo.setPosts(postService.selectPostList(postQuery));
+                userInfoVo.setPostIds(postService.selectPostListByUserId(userId));
+            }
         }
         return R.ok(userInfoVo);
     }
@@ -313,4 +317,5 @@ public class SysUserController extends BaseController {
     public R<List<SysUserVo>> listByDept(@PathVariable @NotNull Long deptId) {
         return R.ok(userService.selectUserListByDept(deptId));
     }
+
 }

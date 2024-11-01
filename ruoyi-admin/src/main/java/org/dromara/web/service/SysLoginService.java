@@ -6,6 +6,7 @@ import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.http.Header;
 import cn.hutool.http.useragent.UserAgent;
 import cn.hutool.http.useragent.UserAgentUtil;
+import com.baomidou.lock.annotation.Lock4j;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import me.zhyd.oauth.model.AuthUser;
@@ -84,12 +85,13 @@ public class SysLoginService {
      * 绑定第三方用户
      *
      * @param authUserData 授权响应实体
-     * @return 统一响应实体
      */
+    @Lock4j
     public void socialRegister(AuthUser authUserData) {
         SysSocialBo bo = BeanUtil.toBean(authUserData, SysSocialBo.class);
         BeanUtil.copyProperties(authUserData.getToken(), bo);
-        bo.setUserId(LoginHelper.getUserId());
+        Long userId = LoginHelper.getUserId();
+        bo.setUserId(userId);
         bo.setAuthId(authUserData.getSource() + authUserData.getUuid());
         bo.setOpenId(authUserData.getUuid());
         bo.setUserName(authUserData.getUsername());
@@ -183,6 +185,7 @@ public class SysLoginService {
             dept = deptService.selectDeptById(user.getDeptId());
         }
         loginUser.setDeptName(ObjectUtil.isNull(dept) ? "" : dept.getDeptName());
+        loginUser.setDeptCategory(ObjectUtil.isNull(dept) ? "" : dept.getDeptCategory());
         List<SysRoleVo> roles = roleService.selectRolesByUserId(user.getUserId());
         loginUser.setRoles(BeanUtil.copyToList(roles, RoleDTO.class));
         return loginUser;

@@ -4,6 +4,8 @@ import lombok.Data;
 import lombok.EqualsAndHashCode;
 import org.dromara.common.mybatis.core.domain.BaseEntity;
 
+import java.util.List;
+
 /**
  * 岗位信息查询对象 sys_post
  *
@@ -20,6 +22,11 @@ public class SysPostQuery extends BaseEntity {
     private String postCode;
 
     /**
+     * 岗位类别编码
+     */
+    private String postCategory;
+
+    /**
      * 岗位名称
      */
     private String postName;
@@ -28,5 +35,20 @@ public class SysPostQuery extends BaseEntity {
      * 状态（1正常 0停用）
      */
     private String status;
+
+    /**
+     * 部门id（单部门）
+     */
+    private Long deptId;
+
+    /**
+     * 归属部门id（部门树）
+     */
+    private Long belongDeptId;
+
+    /**
+     * 部门id
+     */
+    private List<Long> deptIds;
 
 }

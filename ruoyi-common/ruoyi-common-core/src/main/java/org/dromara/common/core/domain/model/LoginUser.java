@@ -12,7 +12,6 @@ import java.util.List;
  *
  * @author Lion Li
  */
-
 @Data
 @EqualsAndHashCode(callSuper = true)
 @NoArgsConstructor
@@ -32,6 +31,11 @@ public class LoginUser extends BaseUser {
      * 部门ID
      */
     private Long deptId;
+
+    /**
+     * 部门类别编码
+     */
+    private String deptCategory;
 
     /**
      * 部门名

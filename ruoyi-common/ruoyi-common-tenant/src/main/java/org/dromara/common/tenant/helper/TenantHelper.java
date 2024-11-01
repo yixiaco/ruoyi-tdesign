@@ -273,7 +273,7 @@ public class TenantHelper {
     }
 
     /**
-     * 设置动态租户(一直有效 需要手动清理)
+     * 设置当前用户的动态租户(一直有效 需要手动清理)
      */
     public static void setUserDynamicTenant(String tenantId) {
         BaseUser user = SaSecurityContext.getContext();
@@ -283,7 +283,7 @@ public class TenantHelper {
     }
 
     /**
-     * 获取动态租户(一直有效 需要手动清理)
+     * 获取当前用户的动态租户(一直有效 需要手动清理)
      */
     public static String getUserDynamicTenant() {
         BaseUser user = SaSecurityContext.getContext();
@@ -304,7 +304,7 @@ public class TenantHelper {
     }
 
     /**
-     * 清除动态租户
+     * 清除当前用户的动态租户
      */
     public static void clearUserDynamicTenant() {
         BaseUser user = SaSecurityContext.getContext();

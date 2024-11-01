@@ -7,11 +7,14 @@ import com.baomidou.mybatisplus.core.incrementer.IdentifierGenerator;
 import com.baomidou.mybatisplus.extension.plugins.MybatisPlusInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.OptimisticLockerInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.PaginationInnerInterceptor;
+import com.baomidou.mybatisplus.extension.plugins.inner.TenantLineInnerInterceptor;
 import org.dromara.common.core.factory.YmlPropertySourceFactory;
 import org.dromara.common.core.utils.spring.SpringUtils;
 import org.dromara.common.mybatis.handler.InjectionMetaObjectHandler;
+import org.dromara.common.mybatis.handler.MybatisExceptionHandler;
 import org.dromara.common.mybatis.interceptor.PlusDataPermissionInterceptor;
 import org.mybatis.spring.annotation.MapperScan;
+import org.springframework.beans.BeansException;
 import org.springframework.boot.autoconfigure.AutoConfiguration;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.PropertySource;
@@ -31,6 +34,12 @@ public class MybatisPlusConfig {
     @Bean
     public MybatisPlusInterceptor mybatisPlusInterceptor() {
         MybatisPlusInterceptor interceptor = new MybatisPlusInterceptor();
+        // 多租户插件 必须放到第一位
+        try {
+            TenantLineInnerInterceptor tenant = SpringUtils.getBean(TenantLineInnerInterceptor.class);
+            interceptor.addInnerInterceptor(tenant);
+        } catch (BeansException ignore) {
+        }
         // 数据权限处理
         interceptor.addInnerInterceptor(dataPermissionInterceptor());
         // 分页插件
@@ -52,8 +61,6 @@ public class MybatisPlusConfig {
      */
     public PaginationInnerInterceptor paginationInnerInterceptor() {
         PaginationInnerInterceptor paginationInnerInterceptor = new PaginationInnerInterceptor();
-        // 设置最大单页限制数量，默认 500 条，-1 不受限制
-        paginationInnerInterceptor.setMaxLimit(-1L);
         // 分页合理化
         paginationInnerInterceptor.setOverflow(false);
         return paginationInnerInterceptor;
@@ -81,6 +88,14 @@ public class MybatisPlusConfig {
     @Bean
     public IdentifierGenerator idGenerator() {
         return new DefaultIdentifierGenerator(NetUtil.getLocalhost());
+    }
+
+    /**
+     * 异常处理器
+     */
+    @Bean
+    public MybatisExceptionHandler mybatisExceptionHandler() {
+        return new MybatisExceptionHandler();
     }
 
     /**

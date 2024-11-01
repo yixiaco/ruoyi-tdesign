@@ -71,9 +71,19 @@ public interface FlowConstant {
     String ZIP = "ZIP";
 
     /**
-     * 流程实例对象
+     * 业务与流程实例关联对象
      */
-    String PROCESS_INSTANCE_VO = "processInstanceVo";
+    String BUSINESS_INSTANCE_DTO = "businessInstanceDTO";
+
+    /**
+     * 流程定义配置
+     */
+    String WF_DEFINITION_CONFIG_VO = "wfDefinitionConfigVo";
+
+    /**
+     * 节点配置
+     */
+    String WF_NODE_CONFIG_VO = "wfNodeConfigVo";
 
     /**
      * 流程发起人
@@ -91,6 +101,11 @@ public interface FlowConstant {
     String BUSINESS_KEY = "businessKey";
 
     /**
+     * 流程定义id
+     */
+    String PROCESS_DEFINITION_ID = "processDefinitionId";
+
+    /**
      * 开启跳过表达式变量
      */
     String FLOWABLE_SKIP_EXPRESSION_ENABLED = "_FLOWABLE_SKIP_EXPRESSION_ENABLED";
@@ -99,4 +114,24 @@ public interface FlowConstant {
      * 模型标识key命名规范正则表达式
      */
     String MODEL_KEY_PATTERN = "^[a-zA-Z][a-zA-Z0-9_]{0,254}$";
+
+    /**
+     * 用户任务
+     */
+    String USER_TASK = "userTask";
+
+    /**
+     * 会签
+     */
+    String MULTI_INSTANCE = "multiInstance";
+
+    /**
+     * 是
+     */
+    String TRUE = "0";
+
+    /**
+     * 否
+     */
+    String FALSE = "1";
 }

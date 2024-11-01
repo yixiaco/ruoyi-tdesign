@@ -35,7 +35,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             select table_name, table_comment, create_time, update_time
             from information_schema.tables
             where table_schema = database()
-            AND table_name NOT LIKE 'pj_%'
+            AND table_name NOT LIKE 'sj_%'
+            AND table_name NOT LIKE 'act_%' AND table_name NOT LIKE 'flw_%'
             <foreach collection="genTableNames" open="AND table_name NOT IN(" close=")" separator="," item="item" nullable="true">
                 #{item}
             </foreach>
@@ -53,7 +54,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             where dt.table_name = dtc.table_name
             and dt.table_name = uo.object_name
             and uo.object_type = 'TABLE'
-            AND dt.table_name NOT LIKE 'pj_%'
+            AND dt.table_name NOT LIKE 'SJ_%'
+            AND dt.table_name NOT LIKE 'ACT_%' AND dt.table_name NOT LIKE 'FLW_%'
             <foreach collection="genTableNames" open="AND lower(dt.table_name) NOT IN(" close=")" separator="," item="item" nullable="true">
                 #{item}
             </foreach>
@@ -79,7 +81,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     AND n.nspname = 'public'::name
                     AND n.nspname <![CDATA[ <> ]]> ''::name
             ) list_table
-            where table_name NOT LIKE 'pj_%'
+            where table_name NOT LIKE 'sj_%'
+            AND table_name NOT LIKE 'act_%' AND table_name NOT LIKE 'flw_%'
             <foreach collection="genTableNames" open="AND table_name NOT IN(" close=")" separator="," item="item" nullable="true">
                 #{item}
             </foreach>
@@ -99,7 +102,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             FROM SYSOBJECTS D
                 INNER JOIN SYS.EXTENDED_PROPERTIES F ON D.ID = F.MAJOR_ID
                     AND F.MINOR_ID = 0 AND D.XTYPE = 'U' AND D.NAME != 'DTPROPERTIES'
-                    AND D.NAME NOT LIKE 'pj_%'
+                    AND D.NAME NOT LIKE 'sj_%'
+                    AND D.NAME NOT LIKE 'act_%' AND D.NAME NOT LIKE 'flw_%'
             <foreach collection="genTableNames" open="AND D.NAME NOT IN(" close=")" separator="," item="item" nullable="true">
                 #{item}
             </foreach>
@@ -116,7 +120,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectDbTableListByNames" resultMap="GenTableResultVo">
         <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isMySql()">
             select table_name, table_comment, create_time, update_time from information_schema.tables
-            where table_name NOT LIKE 'pj_%' and table_schema = (select database())
+            where table_schema = (select database())
+            and table_name NOT LIKE 'sj_%'
+            and table_name NOT LIKE 'act_%' AND table_name NOT LIKE 'flw_%'
             and table_name in
             <foreach collection="array" item="name" open="(" separator="," close=")">
                  #{name}
@@ -128,7 +134,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             where dt.table_name = dtc.table_name
             and dt.table_name = uo.object_name
             and uo.object_type = 'TABLE'
-            AND dt.table_name NOT LIKE 'pj_%'
+            and dt.table_name NOT LIKE 'SJ_%'
+            and dt.table_name NOT LIKE 'ACT_%' AND dt.table_name NOT LIKE 'FLW_%'
             and lower(dt.table_name) in
             <foreach collection="array" item="name" open="(" separator="," close=")">
                 #{name}
@@ -148,7 +155,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     AND n.nspname = 'public'::name
                     AND n.nspname <![CDATA[ <> ]]> ''::name
             ) list_table
-            where table_name NOT LIKE 'pj_%'
+            where table_name NOT LIKE 'sj_%'
+            and table_name NOT LIKE 'act_%' and table_name NOT LIKE 'flw_%'
             and table_name in
             <foreach collection="array" item="name" open="(" separator="," close=")">
                 #{name}
@@ -162,7 +170,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             FROM SYSOBJECTS D
                 INNER JOIN SYS.EXTENDED_PROPERTIES F ON D.ID = F.MAJOR_ID
                     AND F.MINOR_ID = 0 AND D.XTYPE = 'U' AND D.NAME != 'DTPROPERTIES'
-                    AND D.NAME NOT LIKE 'pj_%'
+                    AND D.NAME NOT LIKE 'sj_%'
+                    AND D.NAME NOT LIKE 'act_%' AND D.NAME NOT LIKE 'flw_%'
                     AND D.NAME in
                     <foreach collection="array" item="name" open="(" separator="," close=")">
                         #{name}
@@ -173,7 +182,9 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
     <select id="selectTableByName" parameterType="String" resultMap="GenTableResult">
         <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isMySql()">
             select table_name, table_comment, create_time, update_time from information_schema.tables
-            where table_name NOT LIKE 'pj_%' and table_schema = (select database())
+            where table_schema = (select database())
+            and table_name NOT LIKE 'sj_%'
+            and table_name NOT LIKE 'act_%' AND table_name NOT LIKE 'flw_%'
             and table_name = #{tableName}
         </if>
         <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isOracle()">
@@ -182,7 +193,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             where dt.table_name = dtc.table_name
             and dt.table_name = uo.object_name
             and uo.object_type = 'TABLE'
-            AND dt.table_name NOT LIKE 'pj_%'
+            AND dt.table_name NOT LIKE 'SJ_%'
+            AND dt.table_name NOT LIKE 'ACT_%' AND dt.table_name NOT LIKE 'FLW_%'
             AND dt.table_name NOT IN (select table_name from gen_table)
             and lower(dt.table_name) = #{tableName}
         </if>
@@ -200,7 +212,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
                     AND n.nspname = 'public'::name
                     AND n.nspname <![CDATA[ <> ]]> ''::name
             ) list_table
-            where table_name NOT LIKE 'pj_%'
+            where table_name NOT LIKE 'sj_%'
+            and table_name NOT LIKE 'act_%' and table_name NOT LIKE 'flw_%'
             and table_name = #{tableName}
         </if>
         <if test="@org.dromara.common.mybatis.helper.DataBaseHelper@isSqlServer()">
@@ -211,7 +224,8 @@ PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
             FROM SYSOBJECTS D
                 INNER JOIN SYS.EXTENDED_PROPERTIES F ON D.ID = F.MAJOR_ID
                     AND F.MINOR_ID = 0 AND D.XTYPE = 'U' AND D.NAME != 'DTPROPERTIES'
-                    AND D.NAME NOT LIKE 'pj_%'
+                    AND D.NAME NOT LIKE 'sj_%'
+                    AND D.NAME NOT LIKE 'act_%' AND D.NAME NOT LIKE 'flw_%'
                     AND D.NAME = #{tableName}
         </if>
     </select>

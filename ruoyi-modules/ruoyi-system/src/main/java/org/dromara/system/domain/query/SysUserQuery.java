@@ -66,4 +66,9 @@ public class SysUserQuery extends BaseEntity {
      */
     private List<Long> userIds;
 
+    /**
+     * 排除不查询的用户(工作流用)
+     */
+    private String excludeUserIds;
+
 }

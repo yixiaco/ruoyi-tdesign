@@ -8,6 +8,7 @@ import cn.dev33.satoken.strategy.SaStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.satoken.core.dao.PlusSaTokenDao;
 import org.dromara.common.satoken.core.service.SaPermissionImpl;
+import org.dromara.common.satoken.handler.SaTokenExceptionHandler;
 import org.dromara.common.satoken.online.DefaultOnlineUserCacheManager;
 import org.dromara.common.satoken.online.OnlineUserCacheManager;
 import org.dromara.common.satoken.stp.DynamicStpLogic;
@@ -46,6 +47,14 @@ public class SaTokenConfiguration implements WebMvcConfigurer {
     @Bean
     public SaTokenDao saTokenDao() {
         return new PlusSaTokenDao();
+    }
+
+    /**
+     * 异常处理器
+     */
+    @Bean
+    public SaTokenExceptionHandler saTokenExceptionHandler() {
+        return new SaTokenExceptionHandler();
     }
 
     /**

@@ -50,49 +50,54 @@ public interface BaseMapperPlus<T, V> extends BaseMapper<T> {
      * 批量插入
      */
     default boolean insertBatch(Collection<T> entityList) {
-        return Db.saveBatch(entityList);
+        Db.saveBatch(entityList);
+        // 临时解决 新版本 mp 插入状态判断错误问题
+        return true;
     }
 
     /**
      * 批量更新
      */
     default boolean updateBatchById(Collection<T> entityList) {
-        return Db.updateBatchById(entityList);
+        Db.updateBatchById(entityList);
+        // 临时解决 新版本 mp 插入状态判断错误问题
+        return true;
     }
 
     /**
      * 批量插入或更新
      */
     default boolean insertOrUpdateBatch(Collection<T> entityList) {
-        return Db.saveOrUpdateBatch(entityList);
+        Db.saveOrUpdateBatch(entityList);
+        // 临时解决 新版本 mp 插入状态判断错误问题
+        return true;
     }
 
     /**
      * 批量插入(包含限制条数)
      */
     default boolean insertBatch(Collection<T> entityList, int batchSize) {
-        return Db.saveBatch(entityList, batchSize);
+        Db.saveBatch(entityList, batchSize);
+        // 临时解决 新版本 mp 插入状态判断错误问题
+        return true;
     }
 
     /**
      * 批量更新(包含限制条数)
      */
     default boolean updateBatchById(Collection<T> entityList, int batchSize) {
-        return Db.updateBatchById(entityList, batchSize);
+        Db.updateBatchById(entityList, batchSize);
+        // 临时解决 新版本 mp 插入状态判断错误问题
+        return true;
     }
 
     /**
      * 批量插入或更新(包含限制条数)
      */
     default boolean insertOrUpdateBatch(Collection<T> entityList, int batchSize) {
-        return Db.saveOrUpdateBatch(entityList, batchSize);
-    }
-
-    /**
-     * 插入或更新(包含限制条数)
-     */
-    default boolean insertOrUpdate(T entity) {
-        return Db.saveOrUpdate(entity);
+        Db.saveOrUpdateBatch(entityList, batchSize);
+        // 临时解决 新版本 mp 插入状态判断错误问题
+        return true;
     }
 
     default V selectVoById(Serializable id) {
@@ -144,11 +149,22 @@ public interface BaseMapperPlus<T, V> extends BaseMapper<T> {
         return selectVoOne(wrapper, this.currentVoClass());
     }
 
+    default V selectVoOne(Wrapper<T> wrapper, boolean throwEx) {
+        return selectVoOne(wrapper, this.currentVoClass(), throwEx);
+    }
+
     /**
      * 根据 entity 条件，查询一条记录
      */
     default <C> C selectVoOne(Wrapper<T> wrapper, Class<C> voClass) {
-        T obj = this.selectOne(wrapper);
+        return selectVoOne(wrapper, voClass, true);
+    }
+
+    /**
+     * 根据 entity 条件，查询一条记录
+     */
+    default <C> C selectVoOne(Wrapper<T> wrapper, Class<C> voClass, boolean throwEx) {
+        T obj = this.selectOne(wrapper, throwEx);
         if (ObjectUtil.isNull(obj)) {
             return null;
         }

@@ -5,11 +5,13 @@ import cn.dev33.satoken.context.model.SaStorage;
 import cn.dev33.satoken.session.SaSession;
 import cn.dev33.satoken.stp.SaLoginModel;
 import cn.dev33.satoken.stp.StpLogic;
+import cn.dev33.satoken.stp.StpUtil;
 import cn.hutool.core.collection.CollUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.util.ObjectUtil;
 import cn.hutool.core.util.StrUtil;
 import org.dromara.common.core.domain.model.BaseUser;
+import org.dromara.common.core.domain.model.LoginUser;
 import org.dromara.common.core.enums.DeviceType;
 import org.dromara.common.satoken.context.SaSecurityContext;
 
@@ -85,10 +87,10 @@ public class MultipleLoginBaseHelper {
     public static void login(StpLogic logic, BaseUser baseUser, Object loginId, SaLoginModel model) {
         String loginType = getLoginType(logic);
         baseUser.setLoginType(loginType);
-        SaStorage storage = SaHolder.getStorage();
-        storage.set(loginType + LOGIN_USER_KEY, baseUser);
-        storage.set(loginType + TENANT_KEY, baseUser.getTenantId());
-        storage.set(loginType + USER_KEY, baseUser.getUserId());
+//        SaStorage storage = SaHolder.getStorage();
+//        storage.set(loginType + LOGIN_USER_KEY, baseUser);
+//        storage.set(loginType + TENANT_KEY, baseUser.getTenantId());
+//        storage.set(loginType + USER_KEY, baseUser.getUserId());
         model = ObjectUtil.defaultIfNull(model, new SaLoginModel());
         SaSecurityContext.setContext(baseUser);
         logic.login(loginId, model);
@@ -102,13 +104,11 @@ public class MultipleLoginBaseHelper {
      */
     @SuppressWarnings("unchecked")
     public static <T extends BaseUser> T getUser(StpLogic logic) {
-        return StorageUtil.getStorageIfAbsentSet(getLoginType(logic) + LOGIN_USER_KEY, () -> {
-            SaSession session = logic.getTokenSession(false);
-            if (session != null) {
-                return (T) session.get(LOGIN_USER_KEY);
-            }
+        SaSession session = logic.getTokenSession();
+        if (ObjectUtil.isNull(session)) {
             return null;
-        });
+        }
+        return (T) session.get(LOGIN_USER_KEY);
     }
 
     /**

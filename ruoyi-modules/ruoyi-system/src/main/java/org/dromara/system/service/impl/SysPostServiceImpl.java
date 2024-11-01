@@ -12,6 +12,8 @@ import org.dromara.common.core.utils.StreamUtils;
 import org.dromara.common.mybatis.core.page.PageQuery;
 import org.dromara.common.mybatis.core.page.SortQuery;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
+import org.dromara.common.mybatis.helper.DataBaseHelper;
+import org.dromara.system.domain.SysDept;
 import org.dromara.system.domain.SysPost;
 import org.dromara.system.domain.SysUserPost;
 import org.dromara.system.domain.bo.SysPostBo;
@@ -19,12 +21,14 @@ import org.dromara.system.domain.query.SysPostQuery;
 import org.dromara.system.domain.vo.SysPostVo;
 import org.dromara.system.mapper.SysPostMapper;
 import org.dromara.system.mapper.SysUserPostMapper;
+import org.dromara.system.service.ISysDeptService;
 import org.dromara.system.service.ISysPostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * 岗位信息 服务层处理
@@ -35,11 +39,14 @@ import java.util.List;
 public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> implements ISysPostService {
 
     @Autowired
+    private ISysDeptService deptService;
+    @Autowired
     private SysUserPostMapper userPostMapper;
 
     @Override
-    public TableDataInfo<SysPostVo> selectPagePostList(SysPostQuery post) {
-        return PageQuery.of(() -> baseMapper.queryList(post));
+    public TableDataInfo<SysPostVo> selectPagePostList(SysPostQuery query) {
+        buildQuery(query);
+        return PageQuery.of(() -> baseMapper.queryList(query));
     }
 
     /**
@@ -50,7 +57,22 @@ public class SysPostServiceImpl extends ServiceImpl<SysPostMapper, SysPost> impl
      */
     @Override
     public List<SysPostVo> selectPostList(SysPostQuery query) {
+        buildQuery(query);
         return SortQuery.of(() -> baseMapper.queryList(query));
+    }
+
+    private void buildQuery(SysPostQuery query) {
+        if (ObjectUtil.isNull(query.getDeptId()) && ObjectUtil.isNotNull(query.getBelongDeptId())) {
+            //部门树搜索
+            List<Long> deptIds = deptService.lambdaQuery()
+                .select(SysDept::getDeptId)
+                .apply(DataBaseHelper.findInSet(query.getBelongDeptId(), "ancestors"))
+                .list()
+                .stream()
+                .map(SysDept::getDeptId)
+                .collect(Collectors.toList());
+            query.setDeptIds(deptIds);
+        }
     }
 
     /**

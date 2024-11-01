@@ -1,13 +1,14 @@
 package org.dromara.system.service.impl;
 
+import cn.hutool.core.bean.BeanUtil;
 import cn.hutool.core.convert.Convert;
 import cn.hutool.core.io.FileUtil;
-import cn.hutool.core.io.IoUtil;
 import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
 import org.dromara.common.core.constant.CacheNames;
+import org.dromara.common.core.domain.dto.OssDTO;
 import org.dromara.common.core.enums.UserType;
 import org.dromara.common.core.enums.YesNoEnum;
 import org.dromara.common.core.exception.ServiceException;
@@ -42,7 +43,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -137,6 +138,25 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
         return StreamUtils.join(ossVos, SysOssVo::getUrl);
     }
 
+    @Override
+    public List<OssDTO> selectByIds(String ossIds) {
+        List<OssDTO> list = new ArrayList<>();
+        for (Long id : StringUtils.splitTo(ossIds, Convert::toLong)) {
+            SysOssVo vo = SpringUtils.getAopProxy(this).getById(id);
+            if (ObjectUtil.isNotNull(vo)) {
+                try {
+                    vo.setUrl(this.matchingUrl(vo).getUrl());
+                    list.add(BeanUtil.toBean(vo, OssDTO.class));
+                } catch (Exception ignored) {
+                    // 如果oss异常无法连接则将数据直接返回
+                    list.add(BeanUtil.toBean(vo, OssDTO.class));
+                }
+            }
+        }
+        return list;
+    }
+
+
     /**
      * 通过id获取oss对象
      *
@@ -164,13 +184,8 @@ public class SysOssServiceImpl extends ServiceImpl<SysOssMapper, SysOss> impleme
         FileUtils.setAttachmentResponseHeader(response, sysOss.getOriginalName());
         response.setContentType(MediaType.APPLICATION_OCTET_STREAM_VALUE + "; charset=UTF-8");
         OssClient storage = OssFactory.instance(sysOss.getService());
-        try (InputStream inputStream = storage.getObjectContent(sysOss.getUrl())) {
-            int available = inputStream.available();
-            IoUtil.copy(inputStream, response.getOutputStream(), available);
-            response.setContentLength(available);
-        } catch (Exception e) {
-            throw new ServiceException(e.getMessage());
-        }
+        long contentLength = storage.download(sysOss.getFileName(), response.getOutputStream());
+        response.setContentLengthLong(contentLength);
     }
 
     /**

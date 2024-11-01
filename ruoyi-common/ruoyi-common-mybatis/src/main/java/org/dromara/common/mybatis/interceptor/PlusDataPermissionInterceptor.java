@@ -2,10 +2,12 @@ package org.dromara.common.mybatis.interceptor;
 
 import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import com.baomidou.mybatisplus.core.toolkit.PluginUtils;
-import com.baomidou.mybatisplus.extension.parser.JsqlParserSupport;
+import com.baomidou.mybatisplus.extension.plugins.handler.MultiDataPermissionHandler;
+import com.baomidou.mybatisplus.extension.plugins.inner.BaseMultiTableInnerInterceptor;
 import com.baomidou.mybatisplus.extension.plugins.inner.InnerInterceptor;
 import lombok.extern.slf4j.Slf4j;
 import net.sf.jsqlparser.expression.Expression;
+import net.sf.jsqlparser.schema.Table;
 import net.sf.jsqlparser.statement.delete.Delete;
 import net.sf.jsqlparser.statement.select.PlainSelect;
 import net.sf.jsqlparser.statement.select.Select;
@@ -31,7 +33,7 @@ import java.util.List;
  * @version 3.5.0
  */
 @Slf4j
-public class PlusDataPermissionInterceptor extends JsqlParserSupport implements InnerInterceptor {
+public class PlusDataPermissionInterceptor extends BaseMultiTableInnerInterceptor implements InnerInterceptor {
 
     private final PlusDataPermissionHandler dataPermissionHandler;
 
@@ -74,8 +76,8 @@ public class PlusDataPermissionInterceptor extends JsqlParserSupport implements 
 
     @Override
     protected void processSelect(Select select, int index, String sql, Object obj) {
-        if (select instanceof PlainSelect plainSelect) {
-            this.setWhere(plainSelect, (String) obj);
+        if (select instanceof PlainSelect) {
+            this.setWhere((PlainSelect) select, (String) obj);
         } else if (select instanceof SetOperationList setOperationList) {
             List<Select> selectBodyList = setOperationList.getSelects();
             selectBodyList.forEach(s -> this.setWhere((PlainSelect) s, (String) obj));
@@ -111,5 +113,11 @@ public class PlusDataPermissionInterceptor extends JsqlParserSupport implements 
         }
     }
 
+    @Override
+    public Expression buildTableExpression(Table table, Expression where, String whereSegment) {
+        // 只有新版数据权限处理器才会执行到这里
+        final MultiDataPermissionHandler handler = (MultiDataPermissionHandler) dataPermissionHandler;
+        return handler.getSqlSegment(table, where, whereSegment);
+    }
 }
 

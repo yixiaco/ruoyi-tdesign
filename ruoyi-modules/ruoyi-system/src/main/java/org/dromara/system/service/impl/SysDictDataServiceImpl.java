@@ -1,5 +1,6 @@
 package org.dromara.system.service.impl;
 
+import cn.hutool.core.util.ObjectUtil;
 import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.constant.CacheNames;
@@ -118,6 +119,23 @@ public class SysDictDataServiceImpl extends ServiceImpl<SysDictDataMapper, SysDi
             return baseMapper.selectDictDataByType(data.getDictType());
         }
         throw new ServiceException("操作失败");
+    }
+
+    /**
+     * 校验字典键值是否唯一
+     *
+     * @param dict 字典数据
+     * @return 结果
+     */
+    @Override
+    public boolean checkDictDataUnique(SysDictDataBo dict) {
+        Long dictCode = ObjectUtil.isNull(dict.getDictCode()) ? -1L : dict.getDictCode();
+        SysDictData entity = baseMapper.selectOne(new LambdaQueryWrapper<SysDictData>()
+            .eq(SysDictData::getDictType, dict.getDictType()).eq(SysDictData::getDictValue, dict.getDictValue()));
+        if (ObjectUtil.isNotNull(entity) && !dictCode.equals(entity.getDictCode())) {
+            return false;
+        }
+        return true;
     }
 
 }

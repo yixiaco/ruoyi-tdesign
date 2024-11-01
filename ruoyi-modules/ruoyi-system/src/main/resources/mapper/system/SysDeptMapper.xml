@@ -19,6 +19,7 @@
             <if test="deptId != null "> and sd.dept_id = #{deptId}</if>
             <if test="parentId != null "> and sd.parent_id = #{parentId}</if>
             <if test="deptName != null and deptName != ''"> and sd.dept_name like concat(concat('%', #{deptName}), '%')</if>
+            <if test="deptCategory != null and deptCategory != ''"> and sd.dept_category like concat(concat('%', #{deptCategory}), '%')</if>
             <if test="status != null and status != ''"> and sd.status = #{status}</if>
         </where>
         order by parent_id,order_num

@@ -21,7 +21,7 @@ import java.util.Date;
 public class SysOssConfig extends BaseEntity {
 
     /**
-     * 主建
+     * 主键
      */
     @TableId(value = "oss_config_id")
     private Long ossConfigId;

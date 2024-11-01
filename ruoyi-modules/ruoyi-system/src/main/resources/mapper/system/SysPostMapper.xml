@@ -10,7 +10,7 @@
     </resultMap>
 
     <select id="selectPostsByUserId" parameterType="Long" resultMap="SysPostResultVo">
-        select p.post_id, p.post_name, p.post_code
+        select p.post_id, p.dept_id, p.post_name, p.post_code, p.post_category
         from sys_post p
                  left join sys_user_post up on up.post_id = p.post_id
                  left join sys_user u on u.user_id = up.user_id
@@ -24,8 +24,13 @@
         <include refid="selectSysPostVo"/>
         <where>
             <if test="postCode != null and postCode != ''"> and sp.post_code like concat(concat('%', #{postCode}), '%')</if>
+            <if test="postCategory != null and postCategory != ''"> and sp.post_category like concat(concat('%', #{postCategory}), '%')</if>
             <if test="postName != null and postName != ''"> and sp.post_name like concat(concat('%', #{postName}), '%')</if>
             <if test="status != null and status != ''"> and sp.status = #{status}</if>
+            <if test="deptId != null and deptId != ''"> and sp.dept_id = #{deptId}</if>
+            <foreach collection="deptIds" item="item" index="index" open="and sp.dept_id in (" separator="," close=")" nullable="true">
+                #{item}
+            </foreach>
         </where>
         order by create_time desc
     </select>

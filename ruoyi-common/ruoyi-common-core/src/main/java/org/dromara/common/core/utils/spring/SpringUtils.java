@@ -1,7 +1,6 @@
 package org.dromara.common.core.utils.spring;
 
 import cn.hutool.extra.spring.SpringUtil;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.NoSuchBeanDefinitionException;
 import org.springframework.boot.autoconfigure.thread.Threading;
@@ -83,7 +82,7 @@ public final class SpringUtils extends SpringUtil {
      */
     @SuppressWarnings("unchecked")
     public static <T> T getAopProxy(T invoker) {
-        return (T) AopContext.currentProxy();
+        return (T) getBean(invoker.getClass());
     }
 
 
