@@ -8,7 +8,7 @@ insert into sys_menu values('11620', '流程定义', '11616', '3', 'processDefin
 insert into sys_menu values('11621', '流程实例', '11630', '1', 'processInstance',   'workflow/processInstance/index','WorkflowProcessInstance',   '', '0', '1', 'C', '1', '1', '',                       'tree-round-dot', null, null,103, 1, sysdate(), NULL, NULL, '');
 insert into sys_menu values('11622', '流程分类', '11616', '1', 'category',          'workflow/category/index','WorkflowCategory',          '', '0', '1', 'C', '1', '1', 'workflow:category:list', 'app', null, null,103, 1, sysdate(), NULL, NULL, '');
 insert into sys_menu values('11629', '我发起的', '11618', '1', 'myDocument',        'workflow/task/myDocument','WorkflowMyDocument',         '', '0', '1', 'C', '1', '1', '',                       'send', null, null,103, 1, sysdate(), NULL, NULL, '');
-insert into sys_menu values('11630', '流程监控', '11616', '4', 'monitor',           '',null,                                 '', '0', '1', 'M', '1', '1', '',                       'chart-analytics', null, null,103, 1, sysdate(), NULL, NULL, '');
+insert into sys_menu values('11630', '流程监控', '11616', '4', 'wf-monitor',           '',null,                                 '', '0', '1', 'M', '1', '1', '',                       'chart-analytics', null, null,103, 1, sysdate(), NULL, NULL, '');
 insert into sys_menu values('11631', '待办任务', '11630', '2', 'allTaskWaiting',    'workflow/task/allTaskWaiting','WorkflowAllTaskWaiting',     '', '0', '1', 'C', '1', '1', '',                       'task-visible', null, null,103, 1, sysdate(), NULL, NULL, '');
 
 

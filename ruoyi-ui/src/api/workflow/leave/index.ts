@@ -8,7 +8,7 @@ import { request } from '@/utils/request';
  */
 export function listLeave(query?: TestLeaveQuery) {
   return request.get<TableDataInfo<TestLeaveVo>>({
-    url: '/demo/leave/list',
+    url: '/workflow/leave/list',
     params: query,
   });
 }
@@ -19,7 +19,7 @@ export function listLeave(query?: TestLeaveQuery) {
  */
 export function getLeave(id: string | number) {
   return request.get<R<TestLeaveVo>>({
-    url: `/demo/leave/${id}`,
+    url: `/workflow/leave/${id}`,
   });
 }
 
@@ -29,7 +29,7 @@ export function getLeave(id: string | number) {
  */
 export function addLeave(data: TestLeaveForm) {
   return request.post<R<TestLeaveVo>>({
-    url: '/demo/leave',
+    url: '/workflow/leave',
     data,
   });
 }
@@ -40,7 +40,7 @@ export function addLeave(data: TestLeaveForm) {
  */
 export function updateLeave(data: TestLeaveForm) {
   return request.put<R<TestLeaveVo>>({
-    url: '/demo/leave',
+    url: '/workflow/leave',
     data,
   });
 }
@@ -51,6 +51,6 @@ export function updateLeave(data: TestLeaveForm) {
  */
 export function delLeave(id: string | number | Array<string | number>) {
   return request.delete({
-    url: `/demo/leave/${id}`,
+    url: `/workflow/leave/${id}`,
   });
 }

@@ -1,5 +1,7 @@
 import type { BasePageQuery } from '@/api/model/resultModel';
 import type { TaskVo } from '@/api/workflow/task/types';
+import type {NodeConfigVO} from "@/api/workflow/nodeConfig/types";
+import type {DefinitionConfigVO} from "@/api/workflow/definitionConfig/types";
 
 export interface ProcessInstanceQuery extends BasePageQuery {
   categoryCode?: string;
@@ -22,7 +24,7 @@ export interface ProcessInstanceVo {
   /** 流程定义key */
   processDefinitionKey?: string;
   /** 流程定义版本 */
-  processDefinitionVersion?: string;
+  processDefinitionVersion?: number;
   /** 部署id */
   deploymentId?: string;
   /** 业务id */
@@ -43,4 +45,8 @@ export interface ProcessInstanceVo {
   businessStatusName?: string;
   /** 待办任务集合 */
   taskVoList?: TaskVo[];
+  /** 节点配置 */
+  wfNodeConfigVo?: NodeConfigVO;
+  /** 多余，不报错 */
+  wfDefinitionConfigVo?: DefinitionConfigVO;
 }

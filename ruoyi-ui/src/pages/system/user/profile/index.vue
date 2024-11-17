@@ -83,9 +83,14 @@
         @submit="(email) => (userInfo.user.email = email)"
       />
 
-      <!--   内容tabs   -->
+      <!--   第三方应用   -->
       <t-card class="content-container" title="第三方应用" :bordered="false">
         <third-party />
+      </t-card>
+
+      <!--   在线设备   -->
+      <t-card title="在线设备" :bordered="false">
+        <online-device />
       </t-card>
     </t-col>
 
@@ -126,6 +131,7 @@ import { dateDiffAbs, dateFormat } from '@/utils/date';
 import BindingEmail from './BindingEmail.vue';
 import BindingPhone from './BindingPhone.vue';
 import ModifyUserBasicInfo from './ModifyUserBasicInfo.vue';
+import OnlineDevice from './OnlineDevice.vue';
 import ThirdParty from './ThirdParty.vue';
 import UserAvatar from './UserAvatar.vue';
 import UserLoginLog from './UserLoginLog.vue';

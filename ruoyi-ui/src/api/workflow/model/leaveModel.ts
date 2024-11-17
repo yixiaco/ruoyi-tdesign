@@ -25,6 +25,8 @@ export interface TestLeaveForm {
   leaveDays?: number;
   /** 请假原因 */
   remark?: string;
+  /** 状态 */
+  status?: string;
 }
 /**
  * 请假申请视图对象
@@ -42,6 +44,8 @@ export interface TestLeaveVo {
   leaveDays?: number;
   /** 请假原因 */
   remark?: string;
+  /** 状态 */
+  status?: string;
   /** 创建时间 */
   createTime?: any;
   /** 更新时间 */

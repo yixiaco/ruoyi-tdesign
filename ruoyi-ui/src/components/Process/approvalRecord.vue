@@ -14,6 +14,9 @@
         <t-tab-panel label="审批信息" value="info">
           <t-loading :loading="loading">
             <t-table :data="historyList" row-key="id" :columns="columns" style="width: 100%">
+              <template #nickName="{ row }">
+                <t-tag theme="success" variant="light">{{ row.nickName || '无' }}</t-tag>
+              </template>
               <template #statusName="{ row }">
                 <t-tag variant="outline" theme="success">{{ row.statusName }}</t-tag>
               </template>
@@ -63,7 +66,6 @@ const props = defineProps({
 const loading = ref(false);
 const visible = ref(false);
 const historyList = ref<Array<any>>([]);
-const deleteReason = ref<string>('');
 const tabActiveName = ref('bpmn');
 
 const bpmnViewRef = ref<InstanceType<typeof BpmnView>>();
@@ -72,7 +74,7 @@ const bpmnViewRef = ref<InstanceType<typeof BpmnView>>();
 const columns = computed<Array<PrimaryTableCol>>(() => [
   { title: `序号`, colKey: 'serial-number', width: 70 },
   { title: `任务名称`, colKey: 'name', align: 'center' },
-  { title: `办理人`, colKey: 'nickName', align: 'center' },
+  { title: `办理人`, colKey: 'nickName', align: 'center', ellipsis: true },
   { title: `状态`, colKey: 'statusName', align: 'center' },
   { title: `审批意见`, colKey: 'comment', align: 'center' },
   { title: `开始时间`, colKey: 'startTime', align: 'center', width: '10%', minWidth: 112 },
@@ -87,18 +89,17 @@ const attachmentListColumns = computed<Array<PrimaryTableCol>>(() => [
 ]);
 
 // 初始化查询审批记录
-const init = async (instanceId: string) => {
+const init = async (businessKey: string | number) => {
   visible.value = true;
   loading.value = true;
   tabActiveName.value = 'bpmn';
   historyList.value = [];
-  processApi.getHistoryRecord(instanceId).then((resp) => {
-    historyList.value = resp.data.historyRecordList;
-    deleteReason.value = resp.data.deleteReason;
+  processApi.getHistoryRecord(businessKey).then((resp) => {
+    historyList.value = resp.data;
     loading.value = false;
   });
   await nextTick(() => {
-    bpmnViewRef.value.init(instanceId);
+    bpmnViewRef.value.init(businessKey as string);
   });
 };
 

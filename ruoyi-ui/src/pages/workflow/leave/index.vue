@@ -42,12 +42,12 @@
         <template #topContent>
           <t-row>
             <t-col flex="auto">
-              <t-button v-hasPermi="['demo:leave:add']" theme="primary" @click="handleAdd">
+              <t-button v-hasPermi="['workflow:leave:add']" theme="primary" @click="handleAdd">
                 <template #icon> <add-icon /></template>
                 新增
               </t-button>
               <t-button
-                v-hasPermi="['demo:leave:edit']"
+                v-hasPermi="['workflow:leave:edit']"
                 theme="default"
                 variant="outline"
                 :disabled="single"
@@ -57,7 +57,7 @@
                 修改
               </t-button>
               <t-button
-                v-hasPermi="['demo:leave:remove']"
+                v-hasPermi="['workflow:leave:remove']"
                 theme="danger"
                 variant="outline"
                 :disabled="multiple"
@@ -66,7 +66,7 @@
                 <template #icon> <delete-icon /> </template>
                 删除
               </t-button>
-              <t-button v-hasPermi="['demo:leave:export']" theme="default" variant="outline" @click="handleExport">
+              <t-button v-hasPermi="['workflow:leave:export']" theme="default" variant="outline" @click="handleExport">
                 <template #icon> <download-icon /> </template>
                 导出
               </t-button>
@@ -89,12 +89,12 @@
         <template #startDate="{ row }">{{ parseTime(row.startDate, '{y}-{m}-{d}') }}</template>
         <template #endDate="{ row }">{{ parseTime(row.endDate, '{y}-{m}-{d}') }}</template>
         <template #businessStatusName="{ row }">
-          <t-tag theme="success" variant="light">{{ row.processInstanceVo.businessStatusName }}</t-tag>
+          <dict-tag :options="wf_business_status" :value="row.status"></dict-tag>
         </template>
         <template #operation="{ row }">
           <t-space :size="8" break-line>
             <t-link
-              v-hasPermi="['demo:leave:query']"
+              v-hasPermi="['workflow:leave:query']"
               size="small"
               theme="primary"
               hover="color"
@@ -103,12 +103,8 @@
               <template #prefix-icon><browse-icon /></template>详情
             </t-link>
             <t-link
-              v-if="
-                row.processInstanceVo.businessStatus === 'draft' ||
-                row.processInstanceVo.businessStatus === 'cancel' ||
-                row.processInstanceVo.businessStatus === 'back'
-              "
-              v-hasPermi="['demo:leave:edit']"
+              v-if="row.status === 'draft' || row.status === 'cancel' || row.status === 'back'"
+              v-hasPermi="['workflow:leave:edit']"
               size="small"
               theme="primary"
               hover="color"
@@ -117,12 +113,8 @@
               <template #prefix-icon><edit-icon /></template>修改
             </t-link>
             <t-link
-              v-if="
-                row.processInstanceVo.businessStatus === 'draft' ||
-                row.processInstanceVo.businessStatus === 'cancel' ||
-                row.processInstanceVo.businessStatus === 'back'
-              "
-              v-hasPermi="['demo:leave:remove']"
+              v-if="row.status === 'draft' || row.status === 'cancel' || row.status === 'back'"
+              v-hasPermi="['workflow:leave:remove']"
               theme="danger"
               hover="color"
               size="small"
@@ -130,84 +122,22 @@
             >
               <template #prefix-icon><delete-icon /></template>删除
             </t-link>
+            <t-link theme="primary" hover="color" size="small" @click.stop="handleView(row)">
+              <template #prefix-icon><browse-icon /></template>查看
+            </t-link>
             <t-link
-              v-if="row.processInstanceVo.businessStatus === 'waiting'"
+              v-if="row.status === 'waiting'"
               theme="warning"
               hover="color"
               size="small"
-              @click.stop="handleCancelProcessApply(row.processInstanceVo.id)"
+              @click.stop="handleCancelProcessApply(row.id)"
             >
               <template #prefix-icon><rollback-icon /></template>撤销
-            </t-link>
-            <t-link
-              v-if="
-                row.processInstanceVo.businessStatus === 'waiting' ||
-                row.processInstanceVo.businessStatus === 'finish' ||
-                row.processInstanceVo.businessStatus === 'termination' ||
-                row.processInstanceVo.businessStatus === 'invalid'
-              "
-              theme="primary"
-              hover="color"
-              size="small"
-              @click.stop="handleApprovalRecord(row.processInstanceVo.id)"
-            >
-              <template #prefix-icon><root-list-icon /></template>审批记录
             </t-link>
           </t-space>
         </template>
       </t-table>
     </t-space>
-
-    <!-- 添加或修改请假申请对话框 -->
-    <t-dialog
-      v-model:visible="open"
-      :header="title"
-      destroy-on-close
-      :close-on-overlay-click="false"
-      width="min(500px, 100%)"
-      attach="body"
-    >
-      <t-loading :loading="buttonLoading" size="small">
-        <t-form
-          ref="leaveRef"
-          label-align="right"
-          :data="form"
-          :rules="rules"
-          label-width="calc(4em + 41px)"
-          scroll-to-first-error="smooth"
-          @submit="submitForm"
-        >
-          <t-form-item label="请假类型" name="leaveType">
-            <t-select v-model="form.leaveType" placeholder="请选择请假类型" clearable>
-              <t-option v-for="item in options" :key="item.value" :label="item.label" :value="item.value" />
-            </t-select>
-          </t-form-item>
-          <t-form-item label="请假时间">
-            <t-date-range-picker
-              v-model="leaveTime"
-              allow-input
-              clearable
-              separator="至"
-              :placeholder="['开始日期', '结束日期']"
-              @change="changeLeaveTime()"
-            />
-          </t-form-item>
-          <t-form-item label="请假天数" name="leaveDays">
-            <t-input-number v-model="form.leaveDays" theme="normal" disabled placeholder="请输入" />
-          </t-form-item>
-          <t-form-item label="请假原因" name="remark">
-            <t-textarea v-model="form.remark" placeholder="请输入请假原因" />
-          </t-form-item>
-        </t-form>
-      </t-loading>
-      <template #footer>
-        <div class="dialog-footer">
-          <t-button :loading="buttonLoading" theme="default" @click="handleOnSubmit('draft')">暂 存</t-button>
-          <t-button :loading="buttonLoading" theme="primary" @click="handleOnSubmit('submit')">提 交</t-button>
-          <t-button variant="outline" @click="open = false">取 消</t-button>
-        </div>
-      </template>
-    </t-dialog>
 
     <!-- 请假申请详情 -->
     <t-dialog
@@ -228,10 +158,6 @@
         <t-descriptions-item label="更新时间">{{ parseTime(form.updateTime) }}</t-descriptions-item>
       </my-descriptions>
     </t-dialog>
-    <!-- 提交组件 -->
-    <submit-verify ref="submitVerifyRef" :task-variables="taskVariables" @submit-callback="submitCallback" />
-    <!-- 审批记录 -->
-    <approval-record ref="approvalRecordRef" />
   </t-card>
 </template>
 <script lang="ts" setup>
@@ -247,30 +173,23 @@ import {
   EditIcon,
   RefreshIcon,
   RollbackIcon,
-  RootListIcon,
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
+import type { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, ref } from 'vue';
 
-import { addLeave, delLeave, getLeave, listLeave, updateLeave } from '@/api/workflow/leave';
+import { delLeave, getLeave, listLeave } from '@/api/workflow/leave';
 import type { TestLeaveForm, TestLeaveQuery, TestLeaveVo } from '@/api/workflow/model/leaveModel';
 import { cancelProcessApply } from '@/api/workflow/processInstance';
-import { startWorkFlow } from '@/api/workflow/task';
-import type { StartProcessBo } from '@/api/workflow/task/types';
-import type ApprovalRecord from '@/components/Process/approvalRecord.vue';
-import type SubmitVerify from '@/components/Process/submitVerify.vue';
 import { ArrayOps } from '@/utils/array';
 
 const { proxy } = getCurrentInstance();
+const { wf_business_status } = proxy.useDict('wf_business_status');
 
+const router = useRouter();
 const openView = ref(false);
 const openViewLoading = ref(false);
-const leaveRef = ref<FormInstanceFunctions>();
-const open = ref(false);
-const buttonLoading = ref(false);
-const title = ref('');
 const leaveList = ref<TestLeaveVo[]>([]);
 const loading = ref(false);
 const columnControllerVisible = ref(false);
@@ -279,8 +198,6 @@ const total = ref(0);
 const ids = ref([]);
 const single = ref(true);
 const multiple = ref(true);
-const leaveTime = ref<Array<string>>([]);
-const status = ref<'draft' | 'submit'>('submit');
 const options = [
   {
     value: '1',
@@ -299,24 +216,6 @@ const options = [
     label: '婚假',
   },
 ];
-// 提交组件
-const submitVerifyRef = ref<InstanceType<typeof SubmitVerify>>();
-// 审批记录组件
-const approvalRecordRef = ref<InstanceType<typeof ApprovalRecord>>();
-const taskVariables = ref<Record<string, any>>({});
-
-const submitFormData = ref<StartProcessBo>({
-  businessKey: '',
-  processKey: '',
-  variables: {},
-});
-
-// 校验规则
-const rules = ref<Record<string, Array<FormRule>>>({
-  leaveType: [{ required: true, message: '请假类型不能为空' }],
-  leaveDays: [{ required: true, message: '请假天数不能为空' }],
-  remark: [{ max: 255, message: '请假原因不能超过255个字符}' }],
-});
 
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
@@ -375,12 +274,6 @@ function getList() {
 // 表单重置
 function reset() {
   form.value = {};
-  leaveTime.value = [];
-  submitFormData.value = {
-    businessKey: '',
-    processKey: '',
-    variables: {},
-  };
   proxy.resetForm('leaveRef');
 }
 
@@ -397,19 +290,6 @@ function resetQuery() {
   handleQuery();
 }
 
-const changeLeaveTime = () => {
-  const startDate = new Date(leaveTime.value[0]);
-  startDate.setHours(0, 0, 0, 0);
-  const startTime = startDate.getTime();
-  const endDate = new Date(leaveTime.value[1]);
-  endDate.setHours(0, 0, 0, 0);
-  const endTime = endDate.getTime();
-  const diffInMilliseconds = endTime - startTime;
-  form.value.leaveDays = Math.floor(diffInMilliseconds / (1000 * 60 * 60 * 24)) + 1;
-  form.value.startDate = leaveTime.value[0];
-  form.value.endDate = leaveTime.value[1];
-};
-
 /** 多选框选中数据 */
 function handleSelectionChange(selection: Array<string | number>) {
   ids.value = selection;
@@ -419,9 +299,13 @@ function handleSelectionChange(selection: Array<string | number>) {
 
 /** 新增按钮操作 */
 function handleAdd() {
-  reset();
-  open.value = true;
-  title.value = '添加请假申请';
+  // proxy.$tab.closePage(proxy.$route);
+  router.push({
+    path: `/workflow/leaveEdit/index`,
+    query: {
+      type: 'add',
+    },
+  });
 }
 
 /** 详情按钮操作 */
@@ -438,63 +322,26 @@ function handleDetail(row: TestLeaveVo) {
 
 /** 修改按钮操作 */
 function handleUpdate(row?: TestLeaveVo) {
-  buttonLoading.value = true;
-  reset();
-  open.value = true;
-  title.value = '修改请假申请';
-  const id = row?.id || ids.value.at(0);
-  getLeave(id).then((response) => {
-    buttonLoading.value = false;
-    form.value = response.data;
-    leaveTime.value = [];
-    leaveTime.value.push(form.value.startDate);
-    leaveTime.value.push(form.value.endDate);
+  // proxy.$tab.closePage(proxy.$route);
+  router.push({
+    path: `/workflow/leaveEdit/index`,
+    query: {
+      id: row.id,
+      type: 'update',
+    },
   });
 }
 
-function handleOnSubmit(type: 'draft' | 'submit') {
-  if (leaveTime.value.length === 0) {
-    proxy?.$modal.msgError('请假时间不能为空');
-    return;
-  }
-  status.value = type;
-  leaveRef.value.submit();
-}
-
-/** 提交表单 */
-async function submitForm({ validateResult, firstError }: SubmitContext) {
-  if (validateResult === true) {
-    buttonLoading.value = true;
-    const msgLoading = proxy.$modal.msgLoading('提交中...');
-    try {
-      if (form.value.id) {
-        const res = await updateLeave(form.value);
-        await saveAndNext(res.data);
-        open.value = false;
-      } else {
-        const res = await addLeave(form.value);
-        await saveAndNext(res.data);
-        open.value = false;
-      }
-    } finally {
-      buttonLoading.value = false;
-      proxy.$modal.msgClose(msgLoading);
-    }
-  } else {
-    await proxy.$modal.msgError(firstError);
-  }
-}
-
-async function saveAndNext(data: TestLeaveVo) {
-  if (status.value === 'draft') {
-    buttonLoading.value = false;
-    open.value = false;
-    await proxy?.$modal.msgSuccess('暂存成功');
-    getList();
-  } else {
-    await handleStartWorkFlow(data);
-    await proxy?.$modal.msgSuccess('提交成功');
-  }
+/** 查看按钮操作 */
+function handleView(row?: TestLeaveVo) {
+  // proxy.$tab.closePage(proxy.$route);
+  router.push({
+    path: `/workflow/leaveEdit/index`,
+    query: {
+      id: row.id,
+      type: 'view',
+    },
+  });
 }
 
 /** 删除按钮操作 */
@@ -513,36 +360,6 @@ function handleDelete(row?: TestLeaveVo) {
       });
   });
 }
-
-// 提交申请
-const handleStartWorkFlow = async (data: TestLeaveVo) => {
-  submitFormData.value.processKey = 'leave1';
-  submitFormData.value.businessKey = String(data.id);
-  // 流程变量
-  taskVariables.value = {
-    entity: data,
-    leaveDays: data.leaveDays,
-    userList: [1, 2],
-    userList2: [1, 2],
-  };
-  submitFormData.value.variables = taskVariables.value;
-  const resp = await startWorkFlow(submitFormData.value);
-  if (submitVerifyRef.value) {
-    buttonLoading.value = false;
-    submitVerifyRef.value.openDialog(resp.data.taskId);
-  }
-};
-// 审批记录
-const handleApprovalRecord = (id: string) => {
-  if (approvalRecordRef.value) {
-    approvalRecordRef.value.init(id);
-  }
-};
-// 提交回调
-const submitCallback = async () => {
-  open.value = false;
-  handleQuery();
-};
 /** 撤销按钮操作 */
 const handleCancelProcessApply = async (id: string) => {
   proxy?.$modal.confirm('是否确认撤销当前单据？', async () => {

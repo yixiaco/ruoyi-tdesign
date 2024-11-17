@@ -59,7 +59,7 @@ const loading = ref(false);
 const bpmnVisible = ref(true);
 const historyList = ref([]);
 
-const init = (instanceId: string) => {
+const init = (businessKey: string) => {
   loading.value = true;
   bpmnVisible.value = true;
   nextTick(async () => {
@@ -75,10 +75,32 @@ const init = (instanceId: string) => {
         MoveCanvasModule,
       ] as ModuleDeclaration[],
     });
-    const resp = await processApi.getHistoryList(instanceId);
+    const resp = await processApi.getHistoryList(businessKey);
     xml.value = resp.data.xml;
     taskList.value = resp.data.taskList;
     historyList.value = resp.data.historyList;
+    await createDiagram(xml.value);
+    loading.value = false;
+  });
+};
+
+const initXml = (xmlStr: string) => {
+  loading.value = true;
+  bpmnVisible.value = true;
+  nextTick(async () => {
+    if (modeler.value) modeler.value.destroy();
+    modeler.value = new BpmnViewer({
+      container: canvas.value,
+      additionalModules: [
+        {
+          // 禁止滚轮滚动
+          zoomScroll: ['value', ''],
+        },
+        ZoomScrollModule,
+        MoveCanvasModule,
+      ] as ModuleDeclaration[],
+    });
+    xml.value = xmlStr;
     await createDiagram(xml.value);
     loading.value = false;
   });
@@ -119,6 +141,7 @@ const genNodeDetailBox = (e, overlays, data) => {
                     <p>开始时间：${data.startTime || ''}</p>
                     <p>结束时间：${data.endTime || ''}</p>
                     <p>审批耗时：${data.runDuration || ''}</p>
+                    <p>流程版本：v${data.version || ''}</p>
                    </div>`,
   });
 };
@@ -246,6 +269,7 @@ const gateway = (id, targetRefType, targetRefId, canvas, completed) => {
 };
 defineExpose({
   init,
+  initXml,
 });
 </script>
 
@@ -296,7 +320,7 @@ defineExpose({
   }
 }
 .bpmn-el-container {
-  height: 500px;
+  height: calc(100vh - 350px);
 }
 .flow-containers {
   width: 100%;
@@ -345,16 +369,35 @@ defineExpose({
   :deep(.highlight.djs-connection > .djs-visual > path) {
     stroke: green !important;
   }
-  :deep(.highlight-todo.djs-connection > .djs-visual > path) {
-    stroke: orange !important;
-    stroke-dasharray: 4px !important;
-    fill-opacity: 0.2 !important;
-    marker-end: url(#sequenceflow-end-_E7DFDF-_E7DFDF-803g1kf6zwzmcig1y2ulm5egr);
+
+  // 边框滚动动画
+  @keyframes path-animation {
+    from {
+      stroke-dashoffset: 100%;
+    }
+
+    to {
+      stroke-dashoffset: 0%;
+    }
   }
-  :deep(.highlight-todo.djs-shape .djs-visual > :nth-child(1)) {
-    fill: orange !important;
-    stroke: orange !important;
+
+  :deep(.highlight-todo.djs-connection > .djs-visual > path) {
+    animation: path-animation 60s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
     stroke-dasharray: 4px !important;
+    stroke: orange !important;
+    fill-opacity: 0.2 !important;
+    marker-end: url('#sequenceflow-end-_E7DFDF-_E7DFDF-803g1kf6zwzmcig1y2ulm5egr');
+  }
+
+  :deep(.highlight-todo.djs-shape .djs-visual > :nth-child(1)) {
+    animation: path-animation 60s;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    stroke-dasharray: 4px !important;
+    stroke: orange !important;
+    fill: orange !important;
     fill-opacity: 0.2 !important;
   }
 }
@@ -370,5 +413,6 @@ defineExpose({
     margin: 0;
     padding: 0;
   }
+  cursor: pointer;
 }
 </style>

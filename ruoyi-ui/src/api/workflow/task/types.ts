@@ -1,4 +1,6 @@
-import type { BaseEntity, BasePageQuery } from '@/api/model/resultModel';
+import type { BaseEntity, BasePageQuery, TenantEntity } from '@/api/model/resultModel';
+import type { DefinitionConfigVO } from '@/api/workflow/definitionConfig/types';
+import type { NodeConfigVO } from '@/api/workflow/nodeConfig/types';
 
 export interface TaskQuery extends BasePageQuery {
   name?: string;
@@ -32,12 +34,15 @@ export interface TaskVo extends BaseEntity {
   parentTaskId?: any;
   tenantId: string;
   claimTime?: string;
-  businessStatus: string;
-  businessStatusName: string;
-  processDefinitionName: string;
-  processDefinitionKey: string;
-  participantVo: ParticipantVo;
-  multiInstance: boolean;
+  businessStatus?: string;
+  businessStatusName?: string;
+  processDefinitionName?: string;
+  processDefinitionKey?: string;
+  participantVo?: ParticipantVo;
+  multiInstance?: boolean;
+  businessKey?: string;
+  wfNodeConfigVo?: NodeConfigVO;
+  wfDefinitionConfigVo?: DefinitionConfigVO;
 }
 
 export interface VariableVo {
@@ -50,9 +55,9 @@ export interface VariableVo {
  */
 export interface StartProcessBo {
   /** 业务唯一值id */
-  businessKey?: string;
-  /** 流程执行key */
-  processKey?: string;
+  businessKey?: string | number;
+  /** 表名 */
+  tableName?: string;
   /** 流程变量，前端会提交一个元素{'entity': {业务详情数据对象}} */
   variables: Record<string, any>;
 }
@@ -130,4 +135,34 @@ export interface DeleteMultiBo {
 export interface StartWorkFlowResult {
   processInstanceId?: string;
   taskId?: string;
+}
+
+/**
+ * 节点驳回记录
+ */
+export interface WfTaskBackNode extends TenantEntity {
+  /** 主键 */
+  id?: number;
+  /** 实例id */
+  instanceId?: string;
+  /** 节点id */
+  nodeId?: string;
+  /** 节点名称 */
+  nodeName?: string;
+  /** 排序 */
+  orderNo?: number;
+  /** 节点类型 */
+  taskType?: string;
+  /** 办理人 */
+  assignee?: string;
+  /** 创建部门 */
+  createDept?: number;
+  /** 创建者 */
+  createBy?: number;
+  /** 创建时间 */
+  createTime?: any;
+  /** 更新者 */
+  updateBy?: number;
+  /** 更新时间 */
+  updateTime?: any;
 }

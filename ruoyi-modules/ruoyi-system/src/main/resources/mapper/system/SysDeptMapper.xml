@@ -10,7 +10,7 @@
     </resultMap>
 
     <sql id="selectSysDeptVo">
-        select sd.dept_id, sd.parent_id, sd.ancestors, sd.dept_name, sd.order_num, sd.leader, sd.phone, sd.email, sd.status, sd.del_flag, sd.create_by, sd.create_time, sd.update_by, sd.update_time from sys_dept sd
+        select sd.dept_id, sd.tenant_id, sd.parent_id, sd.ancestors, sd.dept_name, sd.dept_category, sd.order_num, sd.leader, sd.phone, sd.email, sd.status, sd.del_flag, sd.create_dept, sd.create_by, sd.create_time, sd.update_by, sd.update_time from sys_dept sd
     </sql>
     <select id="queryList" parameterType="org.dromara.system.domain.query.SysDeptQuery" resultMap="SysDeptResultVo">
         <include refid="selectSysDeptVo"/>

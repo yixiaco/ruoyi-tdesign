@@ -3,42 +3,7 @@
     <t-row :gutter="20">
       <!--模型分类-->
       <t-col :sm="2" :xs="12">
-        <div class="head-container">
-          <t-row style="width: 100%" :gutter="20">
-            <t-col :span="10">
-              <t-input v-model="categoryName" placeholder="请输入流程分类名称" clearable style="margin-bottom: 20px">
-                <template #prefixIcon>
-                  <search-icon />
-                </template>
-              </t-input>
-            </t-col>
-            <t-col :span="2">
-              <t-button shape="square" variant="outline" @click="getTreeselect">
-                <template #icon><refresh-icon /></template>
-              </t-button>
-            </t-col>
-          </t-row>
-        </div>
-        <div class="head-container">
-          <t-loading :loading="loadingTree" size="small">
-            <t-tree
-              ref="deptTreeRef"
-              v-model:actived="treeActived"
-              v-model:expanded="expandedTree"
-              class="t-tree--block-node"
-              :data="categoryOptions"
-              :keys="{ value: 'categoryCode', label: 'categoryName', children: 'children' }"
-              :filter="filterNode"
-              activable
-              hover
-              line
-              check-strictly
-              allow-fold-node-on-filter
-              transition
-              @active="handleQuery"
-            />
-          </t-loading>
-        </div>
+        <category-tree v-model="treeActived" @active="handleQuery" />
       </t-col>
       <!--模型数据-->
       <t-col :sm="10" :xs="12">
@@ -108,6 +73,7 @@
                     v-hasPermi="['workflow:model:export']"
                     theme="default"
                     variant="outline"
+                    :disabled="multiple"
                     @click="clickExportZip()"
                   >
                     <template #icon> <download-icon /> </template>
@@ -146,7 +112,7 @@
                   @click.stop="clickExportZip(row)"
                 >
                   <template #prefix-icon>
-                    <download-1-icon />
+                    <download-icon />
                   </template>
                   导出
                 </t-link>
@@ -186,6 +152,9 @@
                 >
                   <template #prefix-icon><delete-icon /></template>删除
                 </t-link>
+                <t-link size="small" theme="primary" hover="color" @click.stop="handleCopy(row)">
+                  <template #prefix-icon><copy-icon /></template>复制模型
+                </t-link>
               </t-space>
             </template>
           </t-table>
@@ -217,10 +186,22 @@
           @submit="submitForm"
         >
           <t-form-item label="模型名称" name="name">
-            <t-input v-model="form.name" placeholder="请输入模型名称" clearable />
+            <t-input
+              v-model="form.name"
+              :disabled="ids && ids.length > 0 && billType === 'update'"
+              placeholder="请输入模型名称"
+              clearable
+            />
           </t-form-item>
           <t-form-item label="模型KEY" name="key">
-            <t-input v-model="form.key" placeholder="请输入模型KEY" clearable />
+            <t-input
+              v-model="form.key"
+              :disabled="ids && ids.length > 0 && billType === 'update'"
+              placeholder="请输入模型KEY"
+              :maxlength="20"
+              show-limit-number
+              clearable
+            />
           </t-form-item>
           <t-form-item label="流程分类" name="categoryCode">
             <t-tree-select
@@ -269,12 +250,16 @@
 </template>
 
 <script lang="ts" setup>
+defineOptions({
+  name: 'ActReModel',
+});
+
 import {
   AddIcon,
   BrowseIcon,
   CloudUploadIcon,
+  CopyIcon,
   DeleteIcon,
-  Download1Icon,
   DownloadIcon,
   EditIcon,
   GestureUpIcon,
@@ -282,27 +267,16 @@ import {
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
-
-defineOptions({
-  name: 'ActReModel',
-});
-import type {
-  FormInstanceFunctions,
-  FormRule,
-  PageInfo,
-  PrimaryTableCol,
-  SubmitContext,
-  TreeNodeModel,
-} from 'tdesign-vue-next';
+import type { FormInstanceFunctions, FormRule, PageInfo, PrimaryTableCol, SubmitContext } from 'tdesign-vue-next';
 import { computed, ref } from 'vue';
 
 import { listCategory } from '@/api/workflow/category';
-import { addModel, delModel, getModelInfo, listModel, modelDeploy, updateModel } from '@/api/workflow/model';
+import { addModel, copyModel, delModel, getModelInfo, listModel, modelDeploy, updateModel } from '@/api/workflow/model';
 import type { WfCategoryVo } from '@/api/workflow/model/categoryModel';
 import type { ModelForm, ModelQuery, ModelVO } from '@/api/workflow/model/types';
+import ModelDesign from '@/components/BpmnDesign/index.vue';
+import CategoryTree from '@/pages/workflow/category/CategoryTree.vue';
 import { ArrayOps } from '@/utils/array';
-
-import ModelDesign from './design.vue';
 
 const { proxy } = getCurrentInstance();
 
@@ -314,7 +288,6 @@ const title = ref('');
 const openView = ref(false);
 const openViewLoading = ref(false);
 const buttonLoading = ref(false);
-const loadingTree = ref(false);
 const loading = ref(false);
 const ids = ref<string[]>([]);
 const single = ref(true);
@@ -325,9 +298,8 @@ const total = ref(0);
 const modelList = ref<ModelVO[]>([]);
 const categoryDict = ref<WfCategoryVo[]>([]);
 const categoryOptions = ref<WfCategoryVo[]>([]);
-const categoryName = ref('');
 const treeActived = ref<string[]>([]);
-const expandedTree = ref<string[]>([]);
+const billType = ref<string>('');
 
 const initFormData: ModelForm = {
   id: '',
@@ -358,13 +330,13 @@ const rules = ref<Record<string, Array<FormRule>>>({
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 30, align: 'center' },
-  { title: `模型名称`, colKey: 'name', ellipsis: true, align: 'center' },
-  { title: `模型KEY`, colKey: 'key', ellipsis: true, align: 'center' },
+  { title: `模型名称`, colKey: 'name', align: 'center', ellipsis: true },
+  { title: `模型KEY`, colKey: 'key', align: 'center', ellipsis: true },
   { title: `版本号`, colKey: 'version', align: 'center' },
-  { title: `备注说明`, colKey: 'metaInfo', align: 'center' },
+  { title: `备注说明`, colKey: 'metaInfo', align: 'center', ellipsis: true },
   { title: `更新时间`, colKey: 'lastUpdateTime', align: 'center', width: '10%', minWidth: 112 },
   { title: `创建时间`, colKey: 'createTime', align: 'center', width: '10%', minWidth: 112 },
-  { title: `操作`, colKey: 'operation', align: 'center' },
+  { title: `操作`, colKey: 'operation', align: 'center', fixed: 'right', width: 240 },
 ]);
 
 const pagination = computed(() => {
@@ -383,21 +355,6 @@ const pagination = computed(() => {
 
 onMounted(() => {
   getList();
-  getTreeselect().then(() => triggerExpandedTree());
-});
-
-function triggerExpandedTree() {
-  expandedTree.value = categoryOptions.value
-    .flatMap((value) => value.children?.concat([value]) ?? [value])
-    .map((value) => value.categoryCode);
-}
-/** 通过条件过滤节点  */
-const filterNode = computed(() => {
-  const value = categoryName.value;
-  return (node: TreeNodeModel) => {
-    if (!node.value || !value) return true;
-    return node.label.indexOf(value) >= 0;
-  };
 });
 
 /** 搜索按钮操作 */
@@ -467,13 +424,17 @@ const clickDeploy = async (id: string, key: string) => {
       });
   });
 };
+// 新增打开
 const handleAdd = () => {
+  billType.value = 'add';
   reset();
   getTreeselect();
   open.value = true;
   title.value = '新增模型';
 };
+// 修改打开
 const handleUpdate = async (row?: ModelVO) => {
+  billType.value = 'update';
   buttonLoading.value = true;
   reset();
   open.value = true;
@@ -486,12 +447,28 @@ const handleUpdate = async (row?: ModelVO) => {
   });
 };
 
+// 复制打开
+const handleCopy = (row?: ModelVO) => {
+  billType.value = 'copy';
+  title.value = '复制模型';
+  nextTick(async () => {
+    await getTreeselect();
+    form.value = { ...initFormData };
+    form.value.id = row.id;
+    open.value = true;
+  });
+};
+
 /** 提交表单 */
 function submitForm({ validateResult, firstError }: SubmitContext) {
   if (validateResult === true) {
     buttonLoading.value = true;
     const msgLoading = proxy.$modal.msgLoading('提交中...');
-    if (form.value.id) {
+    if (billType.value === 'copy') {
+      copyModel(form.value).then(() => {
+        proxy?.$modal.msgSuccess('操作成功');
+      });
+    } else if (form.value.id && billType.value === 'update') {
       updateModel(form.value)
         .then(() => {
           proxy.$modal.msgSuccess('修改成功');
@@ -533,7 +510,8 @@ const clickDesign = async (id: string) => {
 };
 // 导出流程模型
 const clickExportZip = (data?: ModelVO) => {
-  proxy?.$download.zip(`/workflow/model/export/zip/${data?.id}`, `${data?.name}-${data?.key}`);
+  const id = data?.id ?? ids.value.at(0);
+  proxy?.$download.zip(`/workflow/model/export/zip/${id}`, '模型');
 };
 
 /** 查询流程分类下拉树结构 */

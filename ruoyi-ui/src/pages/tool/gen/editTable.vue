@@ -199,9 +199,8 @@ import TCustomCheckbox from './components/checkbox.vue';
 import UpdateTableName from './components/UpdateTableName.vue';
 import GenInfoForm from './genInfoForm.vue';
 
-const tabsRouterStore = useTabsRouterStore();
+const removeCurrentTab = useTabsRouterStore().useRemoveCurrentTab();
 const route = useRoute();
-const router = useRouter();
 const { proxy } = getCurrentInstance();
 
 const formRef = ref<FormInstanceFunctions>();
@@ -388,7 +387,7 @@ function onSubmit({ validateResult }: SubmitContext) {
 
 // 返回到列表
 function close() {
-  tabsRouterStore.removeCurrentTab(route, '/tool/gen', router);
+  removeCurrentTab('/tool/gen');
 }
 
 /**

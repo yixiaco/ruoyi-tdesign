@@ -63,6 +63,9 @@
             </t-col>
           </t-row>
         </template>
+        <template #processDefinitionName="{ row }">
+          <span>{{ row.processDefinitionName }}v{{ row.processDefinitionVersion }}.0</span>
+        </template>
         <template #assigneeName="{ row }">
           <template v-if="row.participantVo && row.assignee === null">
             <t-tag
@@ -75,74 +78,35 @@
             </t-tag>
           </template>
           <template v-else>
-            <t-tag theme="success" variant="light">{{ row.assigneeName }}</t-tag>
+            <t-tag theme="success" variant="light">{{ row.assigneeName || '无' }}</t-tag>
           </template>
         </template>
-        <template #businessStatusName="{ row }">
-          <t-tag theme="success" variant="light">{{ row.businessStatusName }}</t-tag>
+        <template #businessStatus="{ row }">
+          <dict-tag :options="wf_business_status" :value="row.businessStatus"></dict-tag>
         </template>
         <template #operation="{ row }">
           <t-space :size="8" break-line>
-            <t-link theme="primary" hover="color" @click.stop="handleApprovalRecord(row)">
-              <root-list-icon />审批记录
-            </t-link>
-            <t-link
-              v-if="row.participantVo && (row.participantVo.claim === null || row.participantVo.claim === true)"
-              theme="primary"
-              hover="color"
-              @click.stop="submitVerifyOpen(row.id)"
-            >
-              <edit-icon />办理
-            </t-link>
-            <t-link
-              v-if="row.participantVo && row.participantVo.claim === true"
-              theme="primary"
-              hover="color"
-              @click.stop="handleReturnTask(row.id)"
-            >
-              <rollback-icon />归还
-            </t-link>
-            <t-link
-              v-if="row.participantVo && row.participantVo.claim === false"
-              theme="primary"
-              hover="color"
-              @click.stop="handleClaimTask(row.id)"
-            >
-              <task-add-icon />认领
-            </t-link>
+            <t-link theme="primary" hover="color" @click.stop="handleOpen(row)"> <edit-icon />办理 </t-link>
           </t-space>
         </template>
       </t-table>
     </t-space>
-    <!-- 审批记录 -->
-    <approval-record ref="approvalRecordRef" />
-    <!-- 提交组件 -->
-    <submit-verify ref="submitVerifyRef" @submit-callback="handleQuery" />
   </t-card>
 </template>
 
 <script lang="ts" setup>
-import {
-  EditIcon,
-  RefreshIcon,
-  RollbackIcon,
-  RootListIcon,
-  SearchIcon,
-  SettingIcon,
-  TaskAddIcon,
-} from 'tdesign-icons-vue-next';
+import { EditIcon, RefreshIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import type { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, ref } from 'vue';
 
-import { claim, getPageByTaskWait, returnTask } from '@/api/workflow/task';
+import { getPageByTaskWait } from '@/api/workflow/task';
 import type { TaskQuery, TaskVo } from '@/api/workflow/task/types';
-import ApprovalRecord from '@/components/Process/approvalRecord.vue';
-import SubmitVerify from '@/components/Process/submitVerify.vue';
-// 提交组件
-const submitVerifyRef = ref<InstanceType<typeof SubmitVerify>>();
-// 审批记录组件
-const approvalRecordRef = ref<InstanceType<typeof ApprovalRecord>>();
+import { useRouterJump } from '@/api/workflow/workflowCommon';
+import type { RouterJumpVo } from '@/api/workflow/workflowCommon/types';
+
 const { proxy } = getCurrentInstance();
+const { wf_business_status } = proxy.useDict('wf_business_status');
+const routerJump = useRouterJump();
 // 遮罩层
 const loading = ref(true);
 // 选中数组
@@ -199,12 +163,6 @@ const pagination = computed(() => {
 onMounted(() => {
   getWaitingList();
 });
-// 审批记录
-const handleApprovalRecord = (row: TaskVo) => {
-  if (approvalRecordRef.value) {
-    approvalRecordRef.value.init(row.processInstanceId);
-  }
-};
 /** 搜索按钮操作 */
 const handleQuery = () => {
   getWaitingList();
@@ -231,26 +189,15 @@ const getWaitingList = () => {
     })
     .finally(() => (loading.value = false));
 };
-// 提交
-const submitVerifyOpen = async (id: string) => {
-  if (submitVerifyRef.value) {
-    submitVerifyRef.value.openDialog(id);
-  }
-};
-
-/** 认领任务 */
-const handleClaimTask = async (taskId: string) => {
-  loading.value = true;
-  await claim(taskId).finally(() => (loading.value = false));
-  getWaitingList();
-  await proxy?.$modal.msgSuccess('操作成功');
-};
-
-/** 归还任务 */
-const handleReturnTask = async (taskId: string) => {
-  loading.value = true;
-  await returnTask(taskId).finally(() => (loading.value = false));
-  getWaitingList();
-  await proxy?.$modal.msgSuccess('操作成功');
+// 办理
+const handleOpen = async (row: TaskVo) => {
+  const routerJumpVo = reactive<RouterJumpVo>({
+    wfDefinitionConfigVo: row.wfDefinitionConfigVo,
+    wfNodeConfigVo: row.wfNodeConfigVo,
+    businessKey: row.businessKey,
+    taskId: row.id,
+    type: 'approval',
+  });
+  routerJump(routerJumpVo);
 };
 </script>

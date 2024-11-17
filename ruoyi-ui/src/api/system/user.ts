@@ -1,5 +1,4 @@
 import type { R, TableDataInfo, TreeModel } from '@/api/model/resultModel';
-import type { SysPostVo } from '@/api/system/model/postModel';
 import type { SysUserForm, SysUserInfoVo, SysUserQuery, SysUserVo, UserAuthRole } from '@/api/system/model/userModel';
 import { request } from '@/utils/request';
 import { parseStrEmpty } from '@/utils/ruoyi';
@@ -21,7 +20,7 @@ export function getUser(userId?: number) {
 
 // 新增用户
 export function addUser(data: SysUserForm) {
-  return request.post<R<void>>({
+  return request.post<R>({
     url: '/system/user',
     data,
   });
@@ -29,7 +28,7 @@ export function addUser(data: SysUserForm) {
 
 // 修改用户
 export function updateUser(data: SysUserForm) {
-  return request.put<R<void>>({
+  return request.put<R>({
     url: '/system/user',
     data,
   });
@@ -37,7 +36,7 @@ export function updateUser(data: SysUserForm) {
 
 // 删除用户
 export function delUser(userId: number | number[]) {
-  return request.delete<R<void>>({
+  return request.delete<R>({
     url: `/system/user/${userId}`,
     method: 'delete',
   });
@@ -49,13 +48,14 @@ export function resetUserPwd(userId: number, password: string) {
     userId,
     password,
   };
-  return request.put<R<void>>(
+  return request.put<R>(
     {
       url: '/system/user/resetPwd',
       data,
     },
     {
       withEncrypt: true,
+      repeatSubmit: false,
     },
   );
 }
@@ -66,7 +66,7 @@ export function changeUserStatus(userId: number, status: string) {
     userId,
     status,
   };
-  return request.put<R<void>>({
+  return request.put<R>({
     url: '/system/user/changeStatus',
     data,
   });
@@ -81,7 +81,7 @@ export function getAuthRole(userId: number | string) {
 
 // 保存授权角色
 export function updateAuthRole(data: { userId: number; roleIds: string }) {
-  return request.put<R<void>>({
+  return request.put<R>({
     url: '/system/user/authRole',
     params: data,
   });

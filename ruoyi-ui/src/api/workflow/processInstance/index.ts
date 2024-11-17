@@ -25,31 +25,31 @@ export function getPageByFinish(query: ProcessInstanceQuery) {
 }
 
 /**
- * 通过流程实例id获取历史流程图
+ * 通过业务id获取历史流程图
  */
-export function getHistoryImage(processInstanceId: string) {
+export function getHistoryImage(businessKey: string) {
   return request.get<R<string>>({
-    url: `/workflow/processInstance/getHistoryImage/${processInstanceId}?t${Math.random()}`,
+    url: `/workflow/processInstance/getHistoryImage/${businessKey}?t${Math.random()}`,
   });
 }
 
 /**
- * 通过流程实例id获取历史流程图运行中，历史等节点
+ * 通过业务id获取历史流程图运行中，历史等节点
  */
-export function getHistoryList(instanceId: string) {
+export function getHistoryList(businessKey: string) {
   return request.get<R<Record<string, any>>>({
-    url: `/workflow/processInstance/getHistoryList/${instanceId}?t${Math.random()}`,
+    url: `/workflow/processInstance/getHistoryList/${businessKey}?t${Math.random()}`,
   });
 }
 
 /**
  * 获取审批记录
- * @param processInstanceId 流程实例id
+ * @param businessKey 业务id
  * @returns
  */
-export function getHistoryRecord(processInstanceId: string) {
+export function getHistoryRecord(businessKey: string | number) {
   return request.get({
-    url: `/workflow/processInstance/getHistoryRecord/${processInstanceId}`,
+    url: `/workflow/processInstance/getHistoryRecord/${businessKey}`,
   });
 }
 
@@ -67,23 +67,23 @@ export function deleteRunInstance(data: object) {
 
 /**
  * 运行中的实例 删除程实例，删除历史记录，删除业务与流程关联信息
- * @param processInstanceId 流程实例id
+ * @param businessKey 业务id
  * @returns
  */
-export function deleteRunAndHisInstance(processInstanceId: string | string[]) {
+export function deleteRunAndHisInstance(businessKey: string | string[]) {
   return request.delete<R>({
-    url: `/workflow/processInstance/deleteRunAndHisInstance/${processInstanceId}`,
+    url: `/workflow/processInstance/deleteRunAndHisInstance/${businessKey}`,
   });
 }
 
 /**
  * 已完成的实例 删除程实例，删除历史记录，删除业务与流程关联信息
- * @param processInstanceId 流程实例id
+ * @param businessKey 业务id
  * @returns
  */
-export function deleteFinishAndHisInstance(processInstanceId: string | string[]) {
+export function deleteFinishAndHisInstance(businessKey: string | string[]) {
   return request.delete<R>({
-    url: `/workflow/processInstance/deleteFinishAndHisInstance/${processInstanceId}`,
+    url: `/workflow/processInstance/deleteFinishAndHisInstance/${businessKey}`,
   });
 }
 
@@ -100,12 +100,12 @@ export function getPageByCurrent(query: ProcessInstanceQuery) {
 
 /**
  * 撤销流程
- * @param processInstanceId 流程实例id
+ * @param businessKey 业务id
  * @returns
  */
-export function cancelProcessApply(processInstanceId: string) {
+export function cancelProcessApply(businessKey: string) {
   return request.post<R>({
-    url: `/workflow/processInstance/cancelProcessApply/${processInstanceId}`,
+    url: `/workflow/processInstance/cancelProcessApply/${businessKey}`,
   });
 }
 

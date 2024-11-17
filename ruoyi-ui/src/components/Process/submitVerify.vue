@@ -44,10 +44,18 @@
     </t-loading>
     <template #footer>
       <span class="dialog-footer">
-        <t-button :loading="buttonLoading" theme="primary" @click="handleCompleteTask"> 提交 </t-button>
+        <t-button :disabled="buttonDisabled" theme="primary" @click="handleCompleteTask"> 提交 </t-button>
         <t-button
           v-if="task.businessStatus === 'waiting'"
-          :loading="buttonLoading"
+          :disabled="buttonDisabled"
+          theme="primary"
+          @click="openDelegateTask"
+        >
+          委托
+        </t-button>
+        <t-button
+          v-if="task.businessStatus === 'waiting'"
+          :disabled="buttonDisabled"
           theme="primary"
           @click="openTransferTask"
         >
@@ -55,7 +63,7 @@
         </t-button>
         <t-button
           v-if="task.businessStatus === 'waiting' && task.multiInstance"
-          :loading="buttonLoading"
+          :disabled="buttonDisabled"
           theme="primary"
           @click="addMultiInstanceUser"
         >
@@ -63,7 +71,7 @@
         </t-button>
         <t-button
           v-if="task.businessStatus === 'waiting' && task.multiInstance"
-          :loading="buttonLoading"
+          :disabled="buttonDisabled"
           theme="primary"
           @click="deleteMultiInstanceUser"
         >
@@ -71,7 +79,7 @@
         </t-button>
         <t-button
           v-if="task.businessStatus === 'waiting'"
-          :loading="buttonLoading"
+          :disabled="buttonDisabled"
           theme="danger"
           @click="handleTerminationTask"
         >
@@ -79,26 +87,58 @@
         </t-button>
         <t-button
           v-if="task.businessStatus === 'waiting'"
-          :loading="buttonLoading"
+          :disabled="buttonDisabled"
           theme="danger"
-          @click="handleBackProcess"
+          @click="handleBackProcessOpen"
         >
           退回
         </t-button>
-        <t-button :loading="buttonLoading" variant="outline" @click="cancel">取消</t-button>
+        <t-button :disabled="buttonDisabled" variant="outline" @click="cancel">取消</t-button>
       </span>
     </template>
     <!-- 抄送 -->
     <user-select
       ref="userSelectCopyRef"
-      :multiple="userMultiple"
+      :multiple="true"
       :data="selectCopyUserIds"
       @confirm-call-back="userSelectCopyCallBack"
     />
     <!-- 转办 -->
-    <user-select ref="transferTaskRef" :multiple="userMultiple" @confirm-call-back="handleTransferTask"></user-select>
+    <user-select ref="transferTaskRef" :multiple="false" @confirm-call-back="handleTransferTask"></user-select>
+    <!-- 委托 -->
+    <user-select ref="delegateTaskRef" :multiple="false" @confirm-call-back="handleDelegateTask"></user-select>
     <!-- 加签组件 -->
     <multi-instance-user ref="multiInstanceUserRef" :title="title" @submit-callback="closeDialog" />
+
+    <!-- 驳回开始 -->
+    <t-dialog v-model:visible="backVisible" header="驳回" width="40%" :close-on-overlay-click="false">
+      <t-form v-if="task.businessStatus === 'waiting'" :data="backForm" label-width="120px">
+        <t-loading :loading="backLoading">
+          <t-form-item name="驳回节点">
+            <t-select v-model="backForm.targetActivityId" clearable placeholder="请选择" style="width: 300px">
+              <t-option v-for="item in taskNodeList" :key="item.nodeId" :label="item.nodeName" :value="item.nodeId" />
+            </t-select>
+          </t-form-item>
+          <t-form-item name="消息提醒">
+            <t-checkbox-group v-model="backForm.messageType">
+              <t-checkbox label="1" name="type" disabled>站内信</t-checkbox>
+              <t-checkbox label="2" name="type">邮件</t-checkbox>
+              <t-checkbox label="3" name="type">短信</t-checkbox>
+            </t-checkbox-group>
+          </t-form-item>
+          <t-form-item name="审批意见">
+            <t-textarea v-model="backForm.message" />
+          </t-form-item>
+        </t-loading>
+      </t-form>
+      <template #footer>
+        <div class="dialog-footer" style="float: right; padding-bottom: 20px">
+          <t-button :disabled="backButtonDisabled" theme="primary" @click="handleBackProcess">确认</t-button>
+          <t-button :disabled="backButtonDisabled" variant="outline" @click="backVisible = false">取消</t-button>
+        </div>
+      </template>
+    </t-dialog>
+    <!-- 驳回结束 -->
   </t-dialog>
 </template>
 
@@ -107,7 +147,15 @@ import { AddIcon } from 'tdesign-icons-vue-next';
 import { ref } from 'vue';
 
 import type { SysUserVo } from '@/api/system/model/userModel';
-import { backProcess, completeTask, getTaskById, terminationTask, transferTask } from '@/api/workflow/task';
+import {
+  backProcess,
+  completeTask,
+  delegateTask,
+  getTaskById,
+  getTaskNodeList,
+  terminationTask,
+  transferTask,
+} from '@/api/workflow/task';
 import type { TaskVo } from '@/api/workflow/task/types';
 import MultiInstanceUser from '@/components/Process/multiInstanceUser.vue';
 import UserSelect from '@/components/user-select/index.vue';
@@ -116,27 +164,33 @@ const { proxy } = getCurrentInstance();
 
 const userSelectCopyRef = ref<InstanceType<typeof UserSelect>>();
 const transferTaskRef = ref<InstanceType<typeof UserSelect>>();
+const delegateTaskRef = ref<InstanceType<typeof UserSelect>>();
+
 // 加签组件
 const multiInstanceUserRef = ref<InstanceType<typeof MultiInstanceUser>>();
 
 const props = defineProps({
   taskVariables: {
-    type: Object as PropType<Record<string, any>>,
+    type: Object,
     default: () => {},
   },
 });
 // 遮罩层
 const loading = ref(true);
 // 按钮
-const buttonLoading = ref(true);
+const buttonDisabled = ref(true);
 // 任务id
 const taskId = ref<string>('');
 // 抄送人
 const selectCopyUserList = ref<SysUserVo[]>([]);
 // 抄送人id
 const selectCopyUserIds = ref<string>(undefined);
-// 是否多选人员
-const userMultiple = ref(false);
+// 驳回是否显示
+const backVisible = ref(false);
+const backLoading = ref(true);
+const backButtonDisabled = ref(true);
+// 可驳回得任务节点
+const taskNodeList = ref([]);
 
 // 任务
 const task = ref<TaskVo>({
@@ -164,6 +218,8 @@ const task = ref<TaskVo>({
   processDefinitionKey: undefined,
   participantVo: undefined,
   multiInstance: undefined,
+  businessKey: undefined,
+  wfNodeConfigVo: undefined,
 });
 // 加签 减签标题
 const title = ref('');
@@ -179,6 +235,13 @@ const form = ref<Record<string, any>>({
   messageType: ['1'],
   wfCopyList: [],
 });
+const backForm = ref<Record<string, any>>({
+  taskId: undefined,
+  targetActivityId: undefined,
+  message: undefined,
+  variables: {},
+  messageType: ['1'],
+});
 const closeDialog = () => {
   dialog.visible = false;
 };
@@ -191,12 +254,12 @@ const openDialog = (id?: string) => {
   form.value.message = undefined;
   dialog.visible = true;
   loading.value = true;
-  buttonLoading.value = true;
+  buttonDisabled.value = true;
   nextTick(() => {
     getTaskById(taskId.value).then((response) => {
       task.value = response.data;
       loading.value = false;
-      buttonLoading.value = false;
+      buttonDisabled.value = false;
     });
   });
 };
@@ -221,22 +284,43 @@ const handleCompleteTask = async () => {
   }
   proxy?.$modal.confirm('是否确认提交？', async () => {
     loading.value = true;
-    buttonLoading.value = true;
-    await completeTask(form.value).finally(() => (loading.value = false));
-    dialog.visible = false;
-    emits('submitCallback');
-    await proxy?.$modal.msgSuccess('操作成功');
+    buttonDisabled.value = true;
+    try {
+      await completeTask(form.value);
+      dialog.visible = false;
+      emits('submitCallback');
+      proxy?.$modal.msgSuccess('操作成功');
+    } finally {
+      loading.value = false;
+      buttonDisabled.value = false;
+    }
   });
 };
 
+/** 驳回弹窗打开 */
+const handleBackProcessOpen = async () => {
+  backForm.value = {};
+  backForm.value.messageType = ['1'];
+  backVisible.value = true;
+  backLoading.value = true;
+  backButtonDisabled.value = true;
+  const data = await getTaskNodeList(task.value.processInstanceId);
+  taskNodeList.value = data.data;
+  backLoading.value = false;
+  backButtonDisabled.value = false;
+  backForm.value.targetActivityId = taskNodeList.value[0].nodeId;
+};
 /** 驳回流程 */
 const handleBackProcess = async () => {
-  form.value.taskId = taskId.value;
+  backForm.value.taskId = taskId.value;
   proxy?.$modal.confirm('是否确认驳回到申请人？', async () => {
     loading.value = true;
-    buttonLoading.value = true;
-    await backProcess(form.value).finally(() => (loading.value = false));
+    backLoading.value = true;
+    backButtonDisabled.value = true;
+    await backProcess(backForm.value).finally(() => (loading.value = false));
     dialog.visible = false;
+    backLoading.value = false;
+    backButtonDisabled.value = false;
     emits('submitCallback');
     await proxy?.$modal.msgSuccess('操作成功');
   });
@@ -244,12 +328,11 @@ const handleBackProcess = async () => {
 // 取消
 const cancel = async () => {
   dialog.visible = false;
-  buttonLoading.value = false;
+  buttonDisabled.value = false;
   emits('cancelCallback');
 };
 // 打开抄送人员
 const openUserSelectCopy = () => {
-  userMultiple.value = true;
   userSelectCopyRef.value.open();
 };
 // 确认抄送人员
@@ -283,7 +366,6 @@ const deleteMultiInstanceUser = () => {
 };
 // 打开转办
 const openTransferTask = () => {
-  userMultiple.value = false;
   transferTaskRef.value.open();
 };
 // 转办
@@ -296,8 +378,33 @@ const handleTransferTask = async (data: SysUserVo[]) => {
     };
     proxy?.$modal.confirm('是否确认提交？', async () => {
       loading.value = true;
-      buttonLoading.value = true;
+      buttonDisabled.value = true;
       await transferTask(params).finally(() => (loading.value = false));
+      dialog.visible = false;
+      emits('submitCallback');
+      proxy?.$modal.msgSuccess('操作成功');
+    });
+  } else {
+    proxy?.$modal.msgWarning('请选择用户！');
+  }
+};
+
+// 打开委托
+const openDelegateTask = () => {
+  delegateTaskRef.value.open();
+};
+// 委托
+const handleDelegateTask = async (data) => {
+  if (data && data.length > 0) {
+    const params = {
+      taskId: taskId.value,
+      userId: data[0].userId,
+      nickName: data[0].nickName,
+    };
+    proxy?.$modal.confirm('是否确认提交？', async () => {
+      loading.value = true;
+      buttonDisabled.value = true;
+      await delegateTask(params).finally(() => (loading.value = false));
       dialog.visible = false;
       emits('submitCallback');
       proxy?.$modal.msgSuccess('操作成功');
@@ -315,7 +422,7 @@ const handleTerminationTask = async () => {
   };
   proxy?.$modal.confirm('是否确认终止？', async () => {
     loading.value = true;
-    buttonLoading.value = true;
+    buttonDisabled.value = true;
     await terminationTask(params).finally(() => (loading.value = false));
     dialog.visible = false;
     emits('submitCallback');

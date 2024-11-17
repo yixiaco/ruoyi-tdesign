@@ -37,6 +37,7 @@ declare module 'bpmnDesign' {
     multiInstanceType: MultiInstanceTypeEnum;
     async?: boolean;
     priority?: number;
+    formKey?: string;
     skipExpression?: string;
     isForCompensation?: boolean;
     triggerServiceTask?: boolean;
@@ -74,5 +75,21 @@ declare module 'bpmnDesign' {
     };
     conditionExpressionValue: string;
     skipExpression: string;
+  }
+
+  export interface ParticipantPanel extends BasePanel {}
+  export interface SubProcessPanel extends BasePanel {
+    multiInstanceType: MultiInstanceTypeEnum;
+    collection?: string;
+    elementVariable?: string;
+    completionCondition?: string;
+    loopCharacteristics?: {
+      collection: string;
+      elementVariable: string;
+      isSequential: boolean;
+      completionCondition: {
+        body: string;
+      };
+    };
   }
 }

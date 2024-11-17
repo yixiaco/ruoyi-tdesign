@@ -19,7 +19,7 @@ export function getCategory(id: number) {
 
 // 新增流程分类
 export function addCategory(data: WfCategoryForm) {
-  return request.post<R<void>>({
+  return request.post<R>({
     url: '/workflow/category',
     data,
   });
@@ -27,7 +27,7 @@ export function addCategory(data: WfCategoryForm) {
 
 // 修改流程分类
 export function updateCategory(data: WfCategoryForm) {
-  return request.put<R<void>>({
+  return request.put<R>({
     url: '/workflow/category',
     data,
   });
@@ -35,7 +35,7 @@ export function updateCategory(data: WfCategoryForm) {
 
 // 删除流程分类
 export function delCategory(ids: number | Array<number>) {
-  return request.delete<R<void>>({
+  return request.delete<R>({
     url: `/workflow/category/${ids}`,
   });
 }

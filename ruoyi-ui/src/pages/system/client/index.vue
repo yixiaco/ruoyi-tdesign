@@ -179,9 +179,9 @@
           </t-form-item>
           <t-form-item v-if="form.clientId !== clientId" label="状态" name="status">
             <t-radio-group v-model="form.status">
-              <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">{{
-                dict.label
-              }}</t-radio>
+              <t-radio v-for="dict in sys_normal_disable" :key="dict.value" :value="dict.value">
+                {{ dict.label }}
+              </t-radio>
             </t-radio-group>
           </t-form-item>
         </t-form>

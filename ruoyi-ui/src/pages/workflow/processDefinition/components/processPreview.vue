@@ -1,16 +1,10 @@
 <template>
-  <t-dialog v-model:visible="data.visible" header="预览" width="70%" attach="body">
-    <div v-if="data.type === 'png'" style="align: center">
-      <t-image v-if="data.type === 'png'" :src="data.url[0]">
-        <template #loading>
-          <div>流程图加载中 <t-loading size="small" /></div>
-        </template>
-      </t-image>
+  <t-dialog v-model:visible="data.visible" title="预览" width="70%" attach="body" :close-on-overlay-click="false">
+    <div v-if="data.type === 'bpmn' && data.xmlStr">
+      <bpmn-viewer ref="bpmnViewerRef"></bpmn-viewer>
     </div>
-    <div v-if="data.type === 'xml'" class="xml-data">
-      <div v-for="(xml, index) in data.url" :key="index">
-        <pre class="font">{{ xml }}</pre>
-      </div>
+    <div v-if="data.type === 'xml' && data.xmlStr">
+      <preview-code language="xml" code="data.xmlStr" />
     </div>
     <template #footer>
       <span v-if="data.type === 'xml'" class="dialog-footer"> </span>
@@ -19,16 +13,28 @@
 </template>
 
 <script setup lang="ts">
+import BpmnViewer from '@/components/BpmnView/index.vue';
+
 const data = reactive({
   visible: false,
-  url: new Array<string>(),
   type: '',
+  xmlStr: '',
 });
+
+const bpmnViewerRef = ref<InstanceType<typeof BpmnViewer>>();
+type PreviewType = 'xml' | 'bpmn';
 // 打开
-const openDialog = (url: string[], type: string) => {
+const openDialog = (xmlStr: string, type: PreviewType) => {
   data.visible = true;
-  data.url = url;
+  data.xmlStr = xmlStr;
   data.type = type;
+  /** 流程图 */
+  if (type === 'bpmn') {
+    /** 必须放在nextTick 否则第一次打开为空 */
+    nextTick(() => {
+      bpmnViewerRef.value?.initXml(data.xmlStr);
+    });
+  }
 };
 /**
  * 对外暴露子组件方法
@@ -37,21 +43,3 @@ defineExpose({
   openDialog,
 });
 </script>
-<style scoped>
-:global(.xml-data) {
-  background-color: #2b2b2b;
-  border-radius: 5px;
-  color: #c6c6c6;
-  word-break: break-all;
-  box-sizing: border-box;
-  padding: 8px 0px;
-  height: 500px;
-  width: inherit;
-  line-height: 1px;
-  overflow: auto;
-}
-:global(.font) {
-  font-family: '幼圆', serif;
-  font-weight: 500;
-}
-</style>

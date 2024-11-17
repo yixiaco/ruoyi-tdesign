@@ -78,7 +78,7 @@
             </t-form>
           </t-card>
           <t-card hover-shadow header-bordered>
-            <template v-if="props.multiple" #header>
+            <template #header>
               <t-space break-line size="4px">
                 <t-tag
                   v-for="(user, index) in selectUserList"
@@ -102,6 +102,7 @@
               :columns="columns"
               :selected-row-keys="userIds"
               select-on-row-click
+              row-selection-allow-uncheck
               :pagination="pagination"
               :column-controller="{
                 hideTriggerButton: true,
@@ -159,13 +160,12 @@ const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 const props = defineProps({
   multiple: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   data: [String, Number, Array] as PropType<string | number | Array<string | number>>,
 });
 
-const modelValue = defineModel({
-  type: Array as PropType<SysUserVo[]>,
+const modelValue = defineModel<SysUserVo[]>({
   default: () => [] as SysUserVo[],
 });
 
@@ -354,8 +354,6 @@ const initSelectUser = async () => {
   if (defaultSelectUserIds.value.length > 0) {
     const { data } = await userOptionSelect(defaultSelectUserIds.value);
     selectUserList.value = data;
-  } else {
-    selectUserList.value = modelValue.value;
   }
 };
 

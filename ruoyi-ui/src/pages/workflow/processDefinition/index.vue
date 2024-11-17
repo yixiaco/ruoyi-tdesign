@@ -3,42 +3,7 @@
     <t-row :gutter="20">
       <!--模型分类-->
       <t-col :sm="2" :xs="12">
-        <div class="head-container">
-          <t-row style="width: 100%" :gutter="20">
-            <t-col :span="10">
-              <t-input v-model="categoryName" placeholder="请输入流程分类名称" clearable style="margin-bottom: 20px">
-                <template #prefixIcon>
-                  <search-icon />
-                </template>
-              </t-input>
-            </t-col>
-            <t-col :span="2">
-              <t-button shape="square" variant="outline" @click="getTreeselect">
-                <template #icon><refresh-icon /></template>
-              </t-button>
-            </t-col>
-          </t-row>
-        </div>
-        <div class="head-container">
-          <t-loading :loading="loadingTree" size="small">
-            <t-tree
-              ref="deptTreeRef"
-              v-model:actived="treeActived"
-              v-model:expanded="expandedTree"
-              class="t-tree--block-node"
-              :data="categoryOptions"
-              :keys="{ value: 'categoryCode', label: 'categoryName', children: 'children' }"
-              :filter="filterNode"
-              activable
-              hover
-              line
-              check-strictly
-              allow-fold-node-on-filter
-              transition
-              @active="handleQuery"
-            />
-          </t-loading>
-        </div>
+        <category-tree v-model="treeActived" @active="handleQuery" />
       </t-col>
       <!--模型数据-->
       <t-col :sm="10" :xs="12">
@@ -80,6 +45,10 @@
             <template #topContent>
               <t-row>
                 <t-col flex="auto">
+                  <t-button theme="danger" :disabled="multiple" @click="handleDelete()">
+                    <template #icon><delete-icon /></template>
+                    删除
+                  </t-button>
                   <t-button theme="primary" @click="uploadDialog.visible = true">
                     <template #icon> <cloud-upload-icon /></template>
                     部署流程文件
@@ -99,18 +68,21 @@
             </template>
             <template #version="{ row }">v{{ row.version }}.0</template>
             <template #resourceName="{ row }">
-              <t-link theme="primary" hover="color" @click.stop="clickPreviewXML(row.id)">
+              <t-link theme="primary" hover="color" @click.stop="clickPreview(row.id, 'xml')">
                 {{ row.resourceName }}
               </t-link>
             </template>
             <template #diagramResourceName="{ row }">
-              <t-link theme="primary" hover="color" @click.stop="clickPreviewImg(row.id)">
+              <t-link theme="primary" hover="color" @click.stop="clickPreview(row.id, 'bpmn')">
                 {{ row.resourceName }}
               </t-link>
             </template>
             <template #suspensionState="{ row }">
               <t-tag v-if="row.suspensionState === 1" theme="success" variant="light">激活</t-tag>
               <t-tag v-else theme="danger" variant="light">挂起</t-tag>
+            </template>
+            <template #tableName="{ row }">
+              <span v-if="row.wfDefinitionConfigVo">{{ row.wfDefinitionConfigVo.tableName }}</span>
             </template>
             <template #operation="{ row }">
               <t-space :size="8" break-line>
@@ -119,12 +91,6 @@
                   <lock-off-icon v-else />
                   {{ row.suspensionState === 1 ? '挂起流程' : '激活流程' }}
                 </t-link>
-                <t-link theme="danger" size="small" hover="color" @click.stop="handleDelete(row)">
-                  <template #prefix-icon><delete-icon /></template>删除
-                </t-link>
-                <t-link theme="primary" size="small" hover="color" @click.stop="handleConvertToModel(row)">
-                  <template #prefix-icon><swap-icon /></template>转换模型
-                </t-link>
                 <t-link
                   theme="primary"
                   size="small"
@@ -132,6 +98,15 @@
                   @click.stop="getProcessDefinitionHistoryList(row.id, row.key)"
                 >
                   <template #prefix-icon><history-icon /></template>历史版本
+                </t-link>
+                <t-link theme="danger" size="small" hover="color" @click.stop="handleDelete(row)">
+                  <template #prefix-icon><delete-icon /></template>删除
+                </t-link>
+                <t-link theme="primary" size="small" hover="color" @click.stop="handleConvertToModel(row)">
+                  <template #prefix-icon><swap-icon /></template>转换模型
+                </t-link>
+                <t-link theme="primary" size="small" hover="color" @click.stop="handleDefinitionConfigOpen(row)">
+                  <template #prefix-icon><catalog-icon /></template>绑定业务
                 </t-link>
               </t-space>
             </template>
@@ -167,10 +142,11 @@
           <t-form-item label-width="0px">
             <t-upload
               class="upload-bpmn"
-              :limit="1"
+              multiple
               accept="application/zip,application/xml,.bpmn"
               :request-method="handlerDeployProcessFile"
               theme="file"
+              :before-upload="handlerBeforeUpload"
               draggable
               tips="仅允许导入xls、xlsx格式文件。"
             >
@@ -200,12 +176,12 @@
       >
         <template #version="{ row }">v{{ row.version }}.0</template>
         <template #resourceName="{ row }">
-          <t-link theme="primary" hover="color" @click.stop="clickPreviewXML(row.id)">
+          <t-link theme="primary" hover="color" @click.stop="clickPreview(row.id, 'xml')">
             {{ row.resourceName }}
           </t-link>
         </template>
         <template #diagramResourceName="{ row }">
-          <t-link theme="primary" hover="color" @click.stop="clickPreviewImg(row.id)">
+          <t-link theme="primary" hover="color" @click.stop="clickPreview(row.id, 'bpmn')">
             {{ row.resourceName }}
           </t-link>
         </template>
@@ -220,21 +196,57 @@
               <lock-off-icon v-else />
               {{ row.suspensionState === 1 ? '挂起流程' : '激活流程' }}
             </t-link>
-            <t-link theme="danger" size="small" hover="color" @click.stop="handleDelete(row)">
-              <template #prefix-icon><delete-icon /></template>删除
+            <t-link theme="primary" size="small" hover="color" @click.stop="handleDefinitionConfigOpen(row)">
+              <template #prefix-icon><catalog-icon /></template>绑定业务
             </t-link>
             <t-link theme="primary" size="small" hover="color" @click.stop="handleConvertToModel(row)">
               <template #prefix-icon><swap-icon /></template>转换模型
+            </t-link>
+            <t-link theme="danger" size="small" hover="color" @click.stop="handleDelete(row)">
+              <template #prefix-icon><delete-icon /></template>删除
             </t-link>
           </t-space>
         </template>
       </t-table>
     </t-dialog>
+
+    <!-- 表单配置 -->
+    <t-dialog
+      v-model:visible="definitionConfigDialog.visible"
+      :title="definitionConfigDialog.title"
+      width="650px"
+      attach="body"
+      :close-on-overlay-click="false"
+    >
+      <t-form :data="definitionConfigForm" label-width="auto">
+        <t-form-item label="流程KEY">
+          <t-input v-model="definitionConfigForm.processKey" disabled />
+        </t-form-item>
+        <t-form-item label="表名" name="formId">
+          <t-input v-model="definitionConfigForm.tableName" placeholder="示例:test_leave" />
+        </t-form-item>
+        <t-form-item label="备注">
+          <t-textarea v-model="definitionConfigForm.remark" />
+        </t-form-item>
+      </t-form>
+
+      <template #footer>
+        <div class="dialog-footer">
+          <t-button variant="outline" @click="definitionConfigDialog.visible = false">取消</t-button>
+          <t-button theme="primary" @click="handlerSaveForm">保存</t-button>
+        </div>
+      </template>
+    </t-dialog>
   </t-card>
 </template>
 
 <script lang="ts" setup>
+defineOptions({
+  name: 'ProcessDefinition',
+});
+
 import {
+  CatalogIcon,
   CloudUploadIcon,
   DeleteIcon,
   HistoryIcon,
@@ -245,14 +257,11 @@ import {
   SettingIcon,
   SwapIcon,
 } from 'tdesign-icons-vue-next';
-
-defineOptions({
-  name: 'ProcessDefinition',
-});
-import type { PageInfo, PrimaryTableCol, TreeNodeModel, UploadProps } from 'tdesign-vue-next';
+import type { PageInfo, PrimaryTableCol, TableProps, UploadProps } from 'tdesign-vue-next';
 import { computed, ref } from 'vue';
 
-import { listCategory } from '@/api/workflow/category';
+import { getByDefId, getByTableNameNotDefId, saveOrUpdate } from '@/api/workflow/definitionConfig';
+import type { DefinitionConfigForm } from '@/api/workflow/definitionConfig/types';
 import type { WfCategoryVo } from '@/api/workflow/model/categoryModel';
 import {
   convertToModel,
@@ -265,20 +274,22 @@ import {
   updateDefinitionState,
 } from '@/api/workflow/processDefinition';
 import type { ProcessDefinitionQuery, ProcessDefinitionVo } from '@/api/workflow/processDefinition/types';
+import CategoryTree from '@/pages/workflow/category/CategoryTree.vue';
 
 import ProcessPreview from './components/processPreview.vue';
 
 const { proxy } = getCurrentInstance();
 
 const previewRef = ref<InstanceType<typeof ProcessPreview>>();
+const definitionConfigForm = ref<DefinitionConfigForm>({});
 
-const loadingTree = ref(false);
 const treeActived = ref<string[]>([]);
-const expandedTree = ref<string[]>([]);
 const columnControllerVisible = ref(false);
 
 const loading = ref(true);
-const ids = ref<Array<string | number>>([]);
+const ids = ref<Array<any>>([]);
+const deploymentIds = ref<Array<any>>([]);
+const keys = ref<Array<any>>([]);
 const single = ref(true);
 const multiple = ref(true);
 const showSearch = ref(true);
@@ -286,9 +297,7 @@ const total = ref(0);
 const uploadDialogLoading = ref(false);
 const processDefinitionList = ref<ProcessDefinitionVo[]>([]);
 const processDefinitionHistoryList = ref<ProcessDefinitionVo[]>([]);
-const url = ref<string[]>([]);
 const categoryOptions = ref<WfCategoryVo[]>([]);
-const categoryName = ref('');
 /** 部署文件分类选择 */
 const selectCategory = ref();
 
@@ -302,17 +311,23 @@ const processDefinitionDialog = reactive({
   title: '历史版本',
 });
 
+const definitionConfigDialog = reactive({
+  visible: false,
+  title: '流程定义配置',
+});
+
 // 列显隐信息
 const columns = ref<Array<PrimaryTableCol>>([
   { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 30, align: 'center' },
   { title: `序号`, colKey: 'serial-number', width: 60 },
-  { title: `流程定义名称`, colKey: 'name', ellipsis: true, align: 'center' },
-  { title: `标识Key`, colKey: 'key', ellipsis: true, align: 'center' },
+  { title: `流程定义名称`, colKey: 'name', align: 'center', ellipsis: true },
+  { title: `标识KEY`, colKey: 'key', align: 'center', ellipsis: true },
   { title: `版本号`, colKey: 'version', align: 'center' },
   { title: `流程XML`, colKey: 'resourceName', align: 'center', ellipsis: true },
   { title: `流程图片`, colKey: 'diagramResourceName', align: 'center', ellipsis: true },
   { title: `状态`, colKey: 'suspensionState', align: 'center' },
   { title: `部署时间`, colKey: 'deploymentTime', align: 'center', width: '10%', minWidth: 112 },
+  { title: `表名/表单KEY`, colKey: 'tableName', align: 'center' },
   { title: `操作`, colKey: 'operation', align: 'center', fixed: 'right' },
 ]);
 
@@ -320,8 +335,8 @@ const columns = ref<Array<PrimaryTableCol>>([
 const historyColumns = ref<Array<PrimaryTableCol>>([
   // { title: `选择列`, colKey: 'row-select', type: 'multiple', width: 30, align: 'center' },
   { title: `序号`, colKey: 'serial-number', width: 60 },
-  { title: `流程定义名称`, colKey: 'name', ellipsis: true, align: 'center' },
-  { title: `标识Key`, colKey: 'key', ellipsis: true, align: 'center' },
+  { title: `流程定义名称`, colKey: 'name', align: 'center', ellipsis: true },
+  { title: `标识KEY`, colKey: 'key', align: 'center', ellipsis: true },
   { title: `版本号`, colKey: 'version', align: 'center' },
   { title: `流程XML`, colKey: 'resourceName', align: 'center', ellipsis: true },
   { title: `流程图片`, colKey: 'diagramResourceName', align: 'center', ellipsis: true },
@@ -355,31 +370,7 @@ const pagination = computed(() => {
 
 onMounted(() => {
   getList();
-  getTreeselect().then(() => triggerExpandedTree());
 });
-
-function triggerExpandedTree() {
-  expandedTree.value = categoryOptions.value
-    .flatMap((value) => value.children?.concat([value]) ?? [value])
-    .map((value) => value.categoryCode);
-}
-/** 通过条件过滤节点  */
-const filterNode = computed(() => {
-  const value = categoryName.value;
-  return (node: TreeNodeModel) => {
-    if (!node.value || !value) return true;
-    return node.label.indexOf(value) >= 0;
-  };
-});
-
-/** 查询流程分类下拉树结构 */
-const getTreeselect = async () => {
-  return listCategory().then((response) => {
-    categoryOptions.value = [
-      { categoryCode: 'ALL', categoryName: '顶级节点', children: proxy.handleTree(response.data, 'id', 'parentId') },
-    ];
-  });
-};
 
 /** 搜索按钮操作 */
 const handleQuery = () => {
@@ -392,9 +383,19 @@ const resetQuery = () => {
   treeActived.value = [];
   handleQuery();
 };
+const selectList = ref<any[]>();
 // 多选框选中数据
-const handleSelectionChange = (selection: any) => {
-  ids.value = selection.map((item: any) => item.id);
+const handleSelectionChange: TableProps['onSelectChange'] = (selection, options) => {
+  if (options.type === 'uncheck' && options.currentRowKey === 'CHECK_ALL_BOX') {
+    // 取消全选. 注：此处组件有bug，无法获取到取消全选的数据，只能通过获取到全部数据再做对比
+    const ids = processDefinitionList.value.map((value) => value.id);
+    selectList.value = selectList.value.filter((value) => !ids.includes(value.id));
+  } else {
+    selectList.value = options.selectedRowData;
+  }
+  ids.value = selection;
+  deploymentIds.value = selectList.value.map((item) => item.deploymentId);
+  keys.value = selectList.value.map((item) => item.key);
   single.value = selection.length !== 1;
   multiple.value = !selection.length;
 };
@@ -417,33 +418,26 @@ const getProcessDefinitionHistoryList = async (id: string, key: string) => {
   loading.value = false;
 };
 
-// 预览图片
-const clickPreviewImg = async (id: string) => {
-  loading.value = true;
-  const resp = await definitionImage(id);
-  if (previewRef.value) {
-    url.value = [];
-    url.value.push(`data:image/png;base64,${resp.data}`);
-    loading.value = false;
-    previewRef.value.openDialog(url.value, 'png');
-  }
-};
-// 预览xml
-const clickPreviewXML = async (id: string) => {
+type PreviewType = 'xml' | 'bpmn';
+// 预览 公共方法
+const clickPreview = async (id: string, type: PreviewType) => {
   loading.value = true;
   const resp = await definitionXml(id);
   if (previewRef.value) {
-    url.value = [];
-    url.value = resp.data.xml;
+    const xmlStr = resp.data.xmlStr;
     loading.value = false;
-    previewRef.value.openDialog(url.value, 'xml');
+    previewRef.value.openDialog(xmlStr, type);
   }
 };
+
 /** 删除按钮操作 */
-const handleDelete = async (row: ProcessDefinitionVo) => {
-  proxy?.$modal.confirm(`是否确认删除流程定义key为【${row.key}】的数据项？`, async () => {
+const handleDelete = async (row?: ProcessDefinitionVo) => {
+  const id = row?.id || ids.value;
+  const deployIds = row?.deploymentId || deploymentIds.value;
+  const defKeys = row?.key || keys.value;
+  proxy?.$modal.confirm(`是否确认删除流程定义KEY为【${defKeys}】的数据项？`, async () => {
     loading.value = true;
-    await deleteProcessDefinition(row.deploymentId, row.id).finally(() => (loading.value = false));
+    await deleteProcessDefinition(deployIds, id).finally(() => (loading.value = false));
     await getList();
     await proxy?.$modal.msgSuccess('删除成功');
   });
@@ -471,7 +465,18 @@ const handleConvertToModel = async (row: ProcessDefinitionVo) => {
     await proxy?.$modal.msgSuccess('操作成功');
   });
 };
-
+// 上传文件前的钩子
+const handlerBeforeUpload = () => {
+  if (selectCategory.value === 'ALL') {
+    proxy?.$modal.msgError('顶级节点不可作为分类！');
+    return false;
+  }
+  if (!selectCategory.value) {
+    proxy?.$modal.msgError('请选择左侧要上传的分类！');
+    return false;
+  }
+  return true;
+};
 // 部署文件
 const handlerDeployProcessFile: UploadProps['requestMethod'] = (files) => {
   return new Promise((resolve) => {
@@ -494,13 +499,61 @@ const handlerDeployProcessFile: UploadProps['requestMethod'] = (files) => {
       .then(() => {
         uploadDialog.visible = false;
         proxy?.$modal.msgSuccess('部署成功');
-        uploadDialogLoading.value = false;
         handleQuery();
         resolve({ status: 'success', response: {} });
       })
       .catch((e) => {
         resolve({ status: 'fail', error: e, response: {} });
+      })
+      .finally(() => {
+        uploadDialogLoading.value = false;
       });
+  });
+};
+
+// 打开流程定义配置
+const handleDefinitionConfigOpen = async (row: ProcessDefinitionVo) => {
+  definitionConfigDialog.visible = true;
+  definitionConfigForm.value.processKey = row.key;
+  definitionConfigForm.value.definitionId = row.id;
+  definitionConfigForm.value.version = row.version;
+  const resp = await getByDefId(row.id);
+  if (resp.data) {
+    definitionConfigForm.value = resp.data;
+  } else {
+    definitionConfigForm.value.tableName = undefined;
+    definitionConfigForm.value.remark = undefined;
+  }
+};
+// 保存表单
+const handlerSaveForm = async () => {
+  getByTableNameNotDefId(definitionConfigForm.value.tableName, definitionConfigForm.value.definitionId).then((res) => {
+    if (res.data && res.data.length > 0) {
+      proxy.$modal.confirm(
+        `表名已被【${res.data[0].processKey}】版本v${res.data[0].version}.0绑定确认后将会删除绑定的流程KEY!`,
+        () => {
+          saveOrUpdate(definitionConfigForm.value).then((resp) => {
+            if (resp.code === 200) {
+              proxy?.$modal.msgSuccess('操作成功');
+              definitionConfigDialog.visible = false;
+              getList();
+            }
+          });
+        },
+        null,
+        {
+          theme: 'warning',
+        },
+      );
+    } else {
+      saveOrUpdate(definitionConfigForm.value).then((resp) => {
+        if (resp.code === 200) {
+          proxy?.$modal.msgSuccess('操作成功');
+          definitionConfigDialog.visible = false;
+          getList();
+        }
+      });
+    }
   });
 };
 </script>

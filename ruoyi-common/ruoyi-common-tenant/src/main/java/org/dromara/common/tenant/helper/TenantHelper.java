@@ -3,8 +3,6 @@ package org.dromara.common.tenant.helper;
 import cn.dev33.satoken.context.SaHolder;
 import cn.hutool.core.convert.Convert;
 import com.alibaba.ttl.TransmittableThreadLocal;
-import com.baomidou.mybatisplus.core.plugins.IgnoreStrategy;
-import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

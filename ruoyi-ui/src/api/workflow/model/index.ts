@@ -28,7 +28,7 @@ export function getModelInfo(id: string) {
  * @param data
  */
 export function addModel(data: ModelForm) {
-  return request.post<R<void>>({
+  return request.post<R>({
     url: '/workflow/model/save',
     data,
   });
@@ -39,7 +39,7 @@ export function addModel(data: ModelForm) {
  * @param data
  */
 export function updateModel(data: ModelForm) {
-  return request.put<R<void>>({
+  return request.put<R>({
     url: '/workflow/model/update',
     data,
   });
@@ -50,7 +50,7 @@ export function updateModel(data: ModelForm) {
  * @param data
  */
 export function editModelXml(data: ModelForm) {
-  return request.put<R<void>>({
+  return request.put<R>({
     url: '/workflow/model/editModelXml',
     data,
   });
@@ -61,7 +61,7 @@ export function editModelXml(data: ModelForm) {
  * @param id 模型id
  */
 export function delModel(id: string | string[]) {
-  return request.delete<R<void>>({
+  return request.delete<R>({
     url: `/workflow/model/${id}`,
   });
 }
@@ -71,7 +71,18 @@ export function delModel(id: string | string[]) {
  * @param id 模型id
  */
 export function modelDeploy(id: string) {
-  return request.post<R<void>>({
+  return request.post<R>({
     url: `/workflow/model/modelDeploy/${id}`,
+  });
+}
+
+/**
+ * 复制模型
+ * @param data
+ */
+export function copyModel(data: ModelForm) {
+  return request.post<R>({
+    url: '/workflow/model/copyModel',
+    data,
   });
 }

@@ -1,8 +1,8 @@
 import type { R, TableDataInfo } from '@/api/model/resultModel';
 import type {
+  DefinitionXmlVO,
   ProcessDefinitionQuery,
   ProcessDefinitionVo,
-  DefinitionXmlVO,
 } from '@/api/workflow/processDefinition/types';
 import { request } from '@/utils/request';
 
@@ -50,10 +50,10 @@ export function definitionXml(processDefinitionId: string) {
 
 /**
  * 删除流程定义
- * @param processDefinitionId 流程定义id
  * @param deploymentId 部署id
+ * @param processDefinitionId 流程定义id
  */
-export function deleteProcessDefinition(deploymentId: string, processDefinitionId: string) {
+export function deleteProcessDefinition(deploymentId: string | string[], processDefinitionId: string | string[]) {
   return request.delete<R>({
     url: `/workflow/processDefinition/${deploymentId}/${processDefinitionId}`,
   });
@@ -89,6 +89,9 @@ export function deployProcessFile(data: any) {
   return request.post<R>({
     url: '/workflow/processDefinition/deployByFile',
     data,
+    headers: {
+      repeatSubmit: false,
+    },
   });
 }
 

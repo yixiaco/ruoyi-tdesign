@@ -1,6 +1,5 @@
 package org.dromara.common.tenant.handle;
 
-import com.baomidou.mybatisplus.core.plugins.InterceptorIgnoreHelper;
 import org.dromara.common.core.constant.GlobalConstants;
 import org.dromara.common.core.exception.ServiceException;
 import org.dromara.common.core.utils.StringUtils;
@@ -25,9 +24,6 @@ public class TenantKeyPrefixHandler extends KeyPrefixHandler {
     public String map(String name) {
         if (StringUtils.isBlank(name)) {
             return null;
-        }
-        if (InterceptorIgnoreHelper.willIgnoreTenantLine("")) {
-            return super.map(name);
         }
         if (StringUtils.contains(name, GlobalConstants.GLOBAL_REDIS_KEY)) {
             return super.map(name);
@@ -55,9 +51,6 @@ public class TenantKeyPrefixHandler extends KeyPrefixHandler {
         String unmap = super.unmap(name);
         if (StringUtils.isBlank(unmap)) {
             return null;
-        }
-        if (InterceptorIgnoreHelper.willIgnoreTenantLine("")) {
-            return super.unmap(name);
         }
         if (StringUtils.contains(name, GlobalConstants.GLOBAL_REDIS_KEY) || TenantHelper.isIgnoreCache()) {
             return super.unmap(name);

@@ -26,7 +26,7 @@ export function getDept(deptId: number) {
 
 // 新增部门
 export function addDept(data: SysDeptForm) {
-  return request.post<R<void>>({
+  return request.post<R>({
     url: '/system/dept',
     data,
   });
@@ -34,7 +34,7 @@ export function addDept(data: SysDeptForm) {
 
 // 修改部门
 export function updateDept(data: SysDeptForm) {
-  return request.put<R<void>>({
+  return request.put<R>({
     url: '/system/dept',
     data,
   });
@@ -42,7 +42,7 @@ export function updateDept(data: SysDeptForm) {
 
 // 删除部门
 export function delDept(deptId: number) {
-  return request.delete<R<void>>({
+  return request.delete<R>({
     url: `/system/dept/${deptId}`,
   });
 }

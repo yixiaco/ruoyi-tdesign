@@ -119,7 +119,7 @@ const { sys_normal_disable } = proxy.useDict('sys_normal_disable');
 const props = defineProps({
   multiple: {
     type: Boolean,
-    default: false,
+    default: true,
   },
   data: [String, Number, Array] as PropType<string | number | Array<string | number>>,
 });
@@ -263,7 +263,9 @@ function onSubmit() {
   const value = [...selectRoleList.value];
   modelValue.value = value;
   emit('confirmCallBack', value);
-  roleDialog.closeDialog();
+  nextTick(() => {
+    roleDialog.closeDialog();
+  });
 }
 
 const handleCloseTag = (index: number) => {

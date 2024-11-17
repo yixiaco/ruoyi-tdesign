@@ -123,7 +123,8 @@ public class SysPostController extends BaseController {
      */
     @SaCheckPermission("system:post:query")
     @GetMapping("/optionSelect")
-    public R<List<SysPostVo>> optionSelect(@RequestParam(required = false) Long[] postIds, @RequestParam(required = false) Long deptId) {
+    public R<List<SysPostVo>> optionSelect(@RequestParam(name = "postIds[]", required = false) Long[] postIds,
+                                           @RequestParam(required = false) Long deptId) {
         List<SysPostVo> list = new ArrayList<>();
         if (ObjectUtil.isNotNull(deptId)) {
             SysPostQuery query = new SysPostQuery();

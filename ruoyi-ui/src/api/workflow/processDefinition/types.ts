@@ -1,4 +1,5 @@
 import type { BaseEntity, BasePageQuery } from '@/api/model/resultModel';
+import type { DefinitionConfigVO } from '@/api/workflow/definitionConfig/types';
 
 export interface ProcessDefinitionQuery extends BasePageQuery {
   key?: string;
@@ -16,6 +17,7 @@ export interface ProcessDefinitionVo extends BaseEntity {
   diagramResourceName: string;
   deploymentId: string;
   deploymentTime: string;
+  wfDefinitionConfigVo: DefinitionConfigVO;
 }
 
 export interface DefinitionXmlVO {

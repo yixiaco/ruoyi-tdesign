@@ -160,6 +160,7 @@ public class SysUserController extends BaseController {
             if (ObjectUtil.isNotNull(deptId)) {
                 SysPostQuery postQuery = new SysPostQuery();
                 postQuery.setStatus(NormalDisableEnum.NORMAL.getCode());
+                postQuery.setDeptId(deptId);
                 userInfoVo.setPosts(postService.selectPostList(postQuery));
                 userInfoVo.setPostIds(postService.selectPostListByUserId(userId));
             }

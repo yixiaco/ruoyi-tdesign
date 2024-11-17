@@ -1,7 +1,13 @@
 import { defineStore } from 'pinia';
 import { nextTick } from 'vue';
-import type { RouteLocationNormalizedLoaded, Router, RouteRecordRaw } from 'vue-router';
+import type {
+  LocationQueryRaw,
+  RouteLocationAsPathGeneric,
+  RouteLocationAsRelativeGeneric,
+  RouteRecordRaw,
+} from 'vue-router';
 
+import Router from '@/router';
 import { store, unfoldRoutesPath, usePermissionStore } from '@/store';
 import type { TRouterInfo, TTabRouterType } from '@/types/interface';
 
@@ -80,18 +86,30 @@ export const useTabsRouterStore = defineStore('tabsRouter', {
     initTabRouterList(newRoutes: TRouterInfo[]) {
       newRoutes?.forEach((route: TRouterInfo) => this.appendTabRouterList(route));
     },
-    // 关闭当前路由
-    removeCurrentTab(route: RouteLocationNormalizedLoaded, to?: string, router?: Router) {
-      const index = this.tabRouterList.findIndex((item: TRouterInfo) => item.path === route.path);
-      if (index !== -1) {
-        const nextRouter = this.tabRouterList[index + 1] || this.tabRouterList[index - 1];
-        this.tabRouterList = this.tabRouterList.slice(0, index).concat(this.tabRouterList.slice(index + 1));
-        if (!to || to === route.path) {
-          router?.push({ path: nextRouter.path, query: nextRouter.query });
-        } else {
-          router.push({ path: to });
+    /**
+     * 关闭当前路由，并跳转到目标路由
+     */
+    useRemoveCurrentTab() {
+      const route = useRoute();
+      const router = useRouter();
+      return (to?: Parameters<typeof router.push>[0]) => {
+        const index = this.tabRouterList.findIndex((item: TRouterInfo) => item.path === route.path);
+        if (index !== -1) {
+          const nextRouter = this.tabRouterList[index + 1] || this.tabRouterList[index - 1];
+          this.tabRouterList = this.tabRouterList.slice(0, index).concat(this.tabRouterList.slice(index + 1));
+          if (!to) {
+            router?.go(-1);
+          } else if (typeof to === 'string') {
+            if (to === route.path) {
+              router?.push({ path: nextRouter.path, query: nextRouter.query });
+            } else {
+              router.push({ path: to });
+            }
+          } else {
+            router.push(to);
+          }
         }
-      }
+      };
     },
   },
   persist: {

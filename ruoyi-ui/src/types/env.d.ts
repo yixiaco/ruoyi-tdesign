@@ -8,9 +8,9 @@ export interface ImportMetaEnv {
   /** 应用访问路径 例如使用前缀 /admin/ */
   readonly VITE_APP_CONTEXT_PATH: string;
   /** Admin监控地址 */
-  readonly VITE_APP_MONITRO_ADMIN: string;
+  readonly VITE_APP_MONITOR_ADMIN: string;
   /** Job监控地址 */
-  readonly VITE_APP_POWERJOB_ADMIN: string;
+  readonly VITE_APP_SNAILJOB_ADMIN: string;
   /** 若依管理系统/生产环境 api前缀 */
   readonly VITE_APP_BASE_API: string;
   /** 是否在打包时开启压缩，支持 gzip 和 brotli */

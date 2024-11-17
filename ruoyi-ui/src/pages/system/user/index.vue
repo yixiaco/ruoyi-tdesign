@@ -3,42 +3,7 @@
     <t-row :gutter="20">
       <!--部门数据-->
       <t-col :sm="2" :xs="12">
-        <div class="head-container">
-          <t-row style="width: 100%" :gutter="20">
-            <t-col :span="10">
-              <t-input v-model="deptName" placeholder="请输入部门名称" clearable style="margin-bottom: 20px">
-                <template #prefixIcon>
-                  <search-icon />
-                </template>
-              </t-input>
-            </t-col>
-            <t-col :span="2">
-              <t-button shape="square" variant="outline" @click="getDeptTree">
-                <template #icon><refresh-icon /></template>
-              </t-button>
-            </t-col>
-          </t-row>
-        </div>
-        <div class="head-container">
-          <t-loading :loading="loadingDept" size="small">
-            <t-tree
-              ref="deptTreeRef"
-              v-model:actived="deptActived"
-              v-model:expanded="expandedDept"
-              class="t-tree--block-node"
-              :data="deptOptions"
-              :keys="{ value: 'id', label: 'label', children: 'children' }"
-              :filter="filterNode"
-              activable
-              hover
-              line
-              check-strictly
-              allow-fold-node-on-filter
-              transition
-              @active="handleQuery"
-            />
-          </t-loading>
-        </div>
+        <dept-tree v-model="deptActived" @active="handleQuery" />
       </t-col>
       <!--用户数据-->
       <t-col :sm="10" :xs="12">
@@ -259,6 +224,7 @@
                     checkStrictly: true,
                   }"
                   placeholder="请选择归属部门"
+                  @change="handleDeptChange"
                 />
               </t-form-item>
             </t-col>
@@ -313,6 +279,7 @@
               <t-form-item label="岗位" name="postIds">
                 <t-select
                   v-model="form.postIds"
+                  :loading="loadingPost"
                   clearable
                   multiple
                   placeholder="请选择"
@@ -334,6 +301,7 @@
                   v-model="form.roleIds"
                   clearable
                   multiple
+                  filterable
                   placeholder="请选择"
                   :tag-props="{ theme: 'primary', variant: 'light' }"
                 >
@@ -428,6 +396,7 @@
 defineOptions({
   name: 'User',
 });
+
 import { storeToRefs } from 'pinia';
 import {
   AddIcon,
@@ -450,7 +419,6 @@ import type {
   SubmitContext,
   SuccessContext,
   TableSort,
-  TreeNodeModel,
   UploadInstanceFunctions,
 } from 'tdesign-vue-next';
 import { computed, createVNode, getCurrentInstance, onMounted, reactive, ref } from 'vue';
@@ -460,6 +428,7 @@ import type { TreeModel } from '@/api/model/resultModel';
 import type { SysPostVo } from '@/api/system/model/postModel';
 import type { SysRoleVo } from '@/api/system/model/roleModel';
 import type { SysUserForm, SysUserQuery, SysUserVo } from '@/api/system/model/userModel';
+import { postOptionSelect } from '@/api/system/post';
 import {
   addUser,
   changeUserStatus,
@@ -486,7 +455,6 @@ const openView = ref(false);
 const openViewLoading = ref(false);
 const loading = ref(true);
 const dLoading = ref(false);
-const loadingDept = ref(false);
 const showSearch = ref(true);
 const columnControllerVisible = ref(false);
 const ids = ref([]);
@@ -495,15 +463,13 @@ const multiple = ref(true);
 const total = ref(0);
 const title = ref('');
 const dateRange = ref([]);
-const deptName = ref('');
-const deptOptions = ref<Array<TreeModel<number>>>([]);
 const deptFormOptions = ref<Array<TreeModel<number>>>([]);
-const expandedDept = ref<number[]>([]);
 const initPassword = ref(undefined);
 const postOptions = ref<SysPostVo[]>([]);
 const roleOptions = ref<SysRoleVo[]>([]);
 const deptActived = ref<number[]>([]);
 const sort = ref<TableSort>();
+const loadingPost = ref(false);
 const { token } = storeToRefs(useUserStore());
 /** 用户导入参数 */
 const upload = reactive({
@@ -582,34 +548,23 @@ const pagination = computed(() => {
   };
 });
 
-/** 通过条件过滤节点  */
-const filterNode = computed(() => {
-  const value = deptName.value;
-  return (node: TreeNodeModel) => {
-    if (!node.value || !value) return true;
-    return node.label.indexOf(value) >= 0;
-  };
-});
-/** 查询部门下拉树结构 */
-async function getDeptTree() {
-  loadingDept.value = true;
-  return deptTreeSelect()
-    .then((response) => {
-      deptOptions.value = response.data;
-    })
-    .finally(() => (loadingDept.value = false));
-}
 /** 查询部门下拉树结构 */
 async function getDeptFormTree() {
   return deptTreeSelect().then((response) => {
     deptFormOptions.value = response.data;
   });
 }
-function triggerExpandedDept() {
-  expandedDept.value = deptOptions.value
-    .flatMap((value) => value.children?.concat([value]) ?? [value])
-    .map((value) => value.id);
+
+function handleDeptChange(value: number | string) {
+  loadingPost.value = true;
+  form.value.postIds = [];
+  postOptionSelect(value)
+    .then((res) => {
+      postOptions.value = res.data;
+    })
+    .finally(() => (loadingPost.value = false));
 }
+
 /** 查询用户列表 */
 function getList() {
   loading.value = true;
@@ -843,8 +798,6 @@ const onSubmit = ({ validateResult, firstError }: SubmitContext) => {
 };
 
 onMounted(() => {
-  getDeptTree().then(() => triggerExpandedDept());
-  deptFormOptions.value = deptOptions.value;
   getList();
 });
 </script>

@@ -59,9 +59,8 @@ const pageNum = ref(1);
 const pageSize = ref(10);
 const roleIds = ref([]);
 const roles = ref<SysRoleVo[]>([]);
-const tabsRouterStore = useTabsRouterStore();
+const removeCurrentTab = useTabsRouterStore().useRemoveCurrentTab();
 const route = useRoute();
-const router = useRouter();
 const form = ref<SysUserVo>({
   nickName: undefined,
   userName: undefined,
@@ -95,7 +94,7 @@ function handleSelectionChange(selection: Array<string | number>) {
 }
 /** 关闭按钮 */
 function close() {
-  tabsRouterStore.removeCurrentTab(route, '/system/user', router);
+  removeCurrentTab('/system/user');
 }
 /** 提交按钮 */
 function submitForm() {

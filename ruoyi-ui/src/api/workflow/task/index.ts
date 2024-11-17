@@ -9,6 +9,7 @@ import type {
   TaskQuery,
   TaskVo,
   VariableVo,
+  WfTaskBackNode,
 } from '@/api/workflow/task/types';
 import { request } from '@/utils/request';
 
@@ -197,5 +198,44 @@ export function terminationTask(data: any) {
 export function getInstanceVariable(taskId: string) {
   return request.get<R<VariableVo[]>>({
     url: `/workflow/task/getInstanceVariable/${taskId}`,
+  });
+}
+
+/**
+ * 获取可驳回得任务节点
+ */
+export function getTaskNodeList(processInstanceId: string) {
+  return request.get<R<WfTaskBackNode[]>>({
+    url: `/workflow/task/getTaskNodeList/${processInstanceId}`,
+  });
+}
+
+/**
+ * 委托任务
+ */
+export function delegateTask(data: any) {
+  return request.post<R>({
+    url: `/workflow/task/delegateTask`,
+    data,
+  });
+}
+
+/**
+ * 查询工作流任务用户选择加签人员
+ * @param taskId
+ */
+export function getTaskUserIdsByAddMultiInstance(taskId: string) {
+  return request.get<R<string>>({
+    url: `/workflow/task/getTaskUserIdsByAddMultiInstance/${taskId}`,
+  });
+}
+
+/**
+ * 查询工作流选择减签人员
+ * @param taskId
+ */
+export function getListByDeleteMultiInstance(taskId: string) {
+  return request.get<R<TaskVo[]>>({
+    url: `/workflow/task/getListByDeleteMultiInstance/${taskId}`,
   });
 }

@@ -1,9 +1,11 @@
 package org.dromara.workflow.service;
 
-import org.dromara.workflow.domain.vo.WfFormManageVo;
-import org.dromara.workflow.domain.bo.WfFormManageBo;
+import com.baomidou.mybatisplus.extension.service.IService;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
-import org.dromara.common.mybatis.core.page.PageQuery;
+import org.dromara.workflow.domain.WfFormManage;
+import org.dromara.workflow.domain.bo.WfFormManageBo;
+import org.dromara.workflow.domain.query.WfFormManageQuery;
+import org.dromara.workflow.domain.vo.WfFormManageVo;
 
 import java.util.Collection;
 import java.util.List;
@@ -14,7 +16,7 @@ import java.util.List;
  * @author may
  * @date 2024-03-29
  */
-public interface IWfFormManageService {
+public interface IWfFormManageService extends IService<WfFormManage> {
 
     /**
      * 查询表单管理
@@ -33,13 +35,12 @@ public interface IWfFormManageService {
     List<WfFormManageVo> queryByIds(List<Long> ids);
 
     /**
-     * 查询表单管理列表
+     * 分页查询表单管理列表
      *
-     * @param bo        参数
-     * @param pageQuery 分页
-     * @return 结果
+     * @param query 查询对象
+     * @return 表单管理分页列表
      */
-    TableDataInfo<WfFormManageVo> queryPageList(WfFormManageBo bo, PageQuery pageQuery);
+    TableDataInfo<WfFormManageVo> queryPageList(WfFormManageQuery query);
 
     /**
      * 查询表单管理列表
@@ -50,10 +51,10 @@ public interface IWfFormManageService {
     /**
      * 查询表单管理列表
      *
-     * @param bo 参数
+     * @param query 查询对象
      * @return 结果
      */
-    List<WfFormManageVo> queryList(WfFormManageBo bo);
+    List<WfFormManageVo> queryList(WfFormManageQuery query);
 
     /**
      * 新增表单管理

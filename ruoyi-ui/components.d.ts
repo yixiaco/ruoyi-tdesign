@@ -11,6 +11,7 @@ declare module 'vue' {
     BpmnDesign: typeof import('./src/components/BpmnDesign/index.vue')['default']
     BpmnView: typeof import('./src/components/BpmnView/index.vue')['default']
     Color: typeof import('./src/components/color/index.vue')['default']
+    DeptTree: typeof import('./src/components/dept-tree/index.vue')['default']
     DictTag: typeof import('./src/components/dict-tag/index.vue')['default']
     DueDate: typeof import('./src/components/BpmnDesign/panel/property/DueDate.vue')['default']
     Editor: typeof import('./src/components/editor/index.vue')['default']

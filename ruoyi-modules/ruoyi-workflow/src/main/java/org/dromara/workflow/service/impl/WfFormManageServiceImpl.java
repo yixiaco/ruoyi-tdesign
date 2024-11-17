@@ -1,5 +1,6 @@
 package org.dromara.workflow.service.impl;
 
+import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import org.dromara.common.core.utils.MapstructUtils;
 import org.dromara.common.core.utils.StringUtils;
 import org.dromara.common.mybatis.core.page.TableDataInfo;
@@ -9,6 +10,7 @@ import com.baomidou.mybatisplus.core.conditions.query.LambdaQueryWrapper;
 import com.baomidou.mybatisplus.core.toolkit.Wrappers;
 import lombok.RequiredArgsConstructor;
 import org.dromara.workflow.common.enums.FormTypeEnum;
+import org.dromara.workflow.domain.query.WfFormManageQuery;
 import org.springframework.stereotype.Service;
 import org.dromara.workflow.domain.bo.WfFormManageBo;
 import org.dromara.workflow.domain.vo.WfFormManageVo;
@@ -25,11 +27,8 @@ import java.util.Collection;
  * @author may
  * @date 2024-03-29
  */
-@RequiredArgsConstructor
 @Service
-public class WfFormManageServiceImpl implements IWfFormManageService {
-
-    private final WfFormManageMapper baseMapper;
+public class WfFormManageServiceImpl extends ServiceImpl<WfFormManageMapper, WfFormManage> implements IWfFormManageService {
 
     /**
      * 查询表单管理
@@ -48,10 +47,8 @@ public class WfFormManageServiceImpl implements IWfFormManageService {
      * 查询表单管理列表
      */
     @Override
-    public TableDataInfo<WfFormManageVo> queryPageList(WfFormManageBo bo, PageQuery pageQuery) {
-        LambdaQueryWrapper<WfFormManage> lqw = buildQueryWrapper(bo);
-        Page<WfFormManageVo> result = baseMapper.selectVoPage(pageQuery.build(), lqw);
-        return TableDataInfo.build(result);
+    public TableDataInfo<WfFormManageVo> queryPageList(WfFormManageQuery query) {
+        return PageQuery.of(() -> baseMapper.queryList(query));
     }
 
     @Override
@@ -67,16 +64,8 @@ public class WfFormManageServiceImpl implements IWfFormManageService {
      * 查询表单管理列表
      */
     @Override
-    public List<WfFormManageVo> queryList(WfFormManageBo bo) {
-        LambdaQueryWrapper<WfFormManage> lqw = buildQueryWrapper(bo);
-        return baseMapper.selectVoList(lqw);
-    }
-
-    private LambdaQueryWrapper<WfFormManage> buildQueryWrapper(WfFormManageBo bo) {
-        LambdaQueryWrapper<WfFormManage> lqw = Wrappers.lambdaQuery();
-        lqw.like(StringUtils.isNotBlank(bo.getFormName()), WfFormManage::getFormName, bo.getFormName());
-        lqw.eq(StringUtils.isNotBlank(bo.getFormType()), WfFormManage::getFormType, bo.getFormType());
-        return lqw;
+    public List<WfFormManageVo> queryList(WfFormManageQuery query) {
+        return baseMapper.queryList(query);
     }
 
     /**

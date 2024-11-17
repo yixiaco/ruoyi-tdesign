@@ -169,7 +169,6 @@ export default ({ mode }: ConfigEnv): UserConfig => {
         'pinia',
         'axios',
         '@vueuse/core',
-        'path-to-regexp',
         'vue-i18n',
         'bpmn-js/lib/Modeler.js',
         'bpmn-js-properties-panel',
@@ -177,6 +176,7 @@ export default ({ mode }: ConfigEnv): UserConfig => {
         'bpmn-js/lib/features/palette/PaletteProvider',
         'bpmn-js/lib/features/context-pad/ContextPadProvider',
         'diagram-js/lib/draw/BaseRenderer',
+        'image-conversion',
       ],
     },
   };

@@ -115,7 +115,9 @@ public class SysUserOnlineController extends BaseController {
         List<String> tokenIds = logic.getTokenValueListByLoginId(logic.getLoginIdAsString());
         List<UserOnlineDTO> userOnlineDTOList = tokenIds.stream()
             .filter(token -> logic.getTokenActiveTimeoutByToken(token) >= -1)
-            .map(token -> (UserOnlineDTO) RedisUtils.getObject(CacheConstants.ONLINE_TOKEN_KEY + token))
+            .map(token -> {
+                return (UserOnlineDTO) RedisUtils.getObject(CacheConstants.ONLINE_TOKEN_KEY + token);
+            })
             .collect(Collectors.toList());
         //复制和处理 SysUserOnline 对象列表
         Collections.reverse(userOnlineDTOList);

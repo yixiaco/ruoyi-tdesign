@@ -155,10 +155,14 @@ import { computed, ref } from 'vue';
 
 import type { TreeModel } from '@/api/model/resultModel';
 import type { SysUserVo } from '@/api/system/model/userModel';
-import { deptTreeSelect } from '@/api/system/user';
-import { addMultiInstanceExecution, deleteMultiInstanceExecution } from '@/api/workflow/task';
+import { deptTreeSelect, listUser, userOptionSelect } from '@/api/system/user';
+import {
+  addMultiInstanceExecution,
+  deleteMultiInstanceExecution,
+  getListByDeleteMultiInstance,
+  getTaskUserIdsByAddMultiInstance,
+} from '@/api/workflow/task';
 import type { TaskVo } from '@/api/workflow/task/types';
-import { getListByDeleteMultiInstance, getPageByAddMultiInstance, getUserListByIds } from '@/api/workflow/workflowUser';
 
 const { proxy } = getCurrentInstance();
 
@@ -247,7 +251,9 @@ const getAddMultiInstanceList = async (taskId: string, userIdList: Array<number 
   queryParams.value.deptId = deptActived.value.at(0);
   queryParams.value.taskId = taskId;
   loading.value = true;
-  const res = await getPageByAddMultiInstance(queryParams.value);
+  const res1 = await getTaskUserIdsByAddMultiInstance(taskId);
+  queryParams.value.excludeUserIds = res1.data;
+  const res = await listUser(queryParams.value);
   loading.value = false;
   userList.value = res.rows;
   total.value = res.total;
@@ -256,7 +262,9 @@ const getAddMultiInstanceList = async (taskId: string, userIdList: Array<number 
 
 const getList = async () => {
   loading.value = true;
-  const res = await getPageByAddMultiInstance(queryParams.value);
+  const res1 = await getTaskUserIdsByAddMultiInstance(queryParams.value.taskId);
+  queryParams.value.excludeUserIds = res1.data;
+  const res = await listUser(queryParams.value);
   loading.value = false;
   userList.value = res.rows;
   total.value = res.total;
@@ -265,7 +273,7 @@ const getList = async () => {
 async function initSelectUser(userIdList: Array<number | string>) {
   userIdList ??= props.userIdList;
   if (userIdList.length > 0) {
-    const data = await getUserListByIds(props.userIdList);
+    const data = await userOptionSelect(props.userIdList);
     if (data.data && data.data.length > 0) {
       chooseUserList.value = data.data;
     }

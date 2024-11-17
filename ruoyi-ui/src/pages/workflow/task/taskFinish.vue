@@ -63,34 +63,35 @@
             </t-col>
           </t-row>
         </template>
+        <template #processDefinitionName="{ row }">
+          <span>{{ row.processDefinitionName }}v{{ row.processDefinitionVersion }}.0</span>
+        </template>
         <template #assigneeName="{ row }">
-          <t-tag theme="success" variant="light">{{ row.assigneeName }}</t-tag>
+          <t-tag theme="success" variant="light">{{ row.assigneeName || '无' }}</t-tag>
         </template>
         <template #operation="{ row }">
           <t-space :size="8" break-line>
-            <t-link theme="primary" hover="color" @click.stop="handleApprovalRecord(row)">
-              <root-list-icon />审批记录
-            </t-link>
+            <t-link theme="primary" hover="color" @click.stop="handleView(row)"> <browse-icon />查看 </t-link>
           </t-space>
         </template>
       </t-table>
     </t-space>
-    <!-- 审批记录 -->
-    <approval-record ref="approvalRecordRef" />
   </t-card>
 </template>
 
 <script lang="ts" setup>
-import { RefreshIcon, RootListIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
+import { BrowseIcon, RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import type { PageInfo, PrimaryTableCol } from 'tdesign-vue-next';
 import { computed, ref } from 'vue';
 
 import { getPageByTaskFinish } from '@/api/workflow/task';
 import type { TaskQuery, TaskVo } from '@/api/workflow/task/types';
-import ApprovalRecord from '@/components/Process/approvalRecord.vue';
-// 审批记录组件
-const approvalRecordRef = ref<InstanceType<typeof ApprovalRecord>>();
+import { useRouterJump } from '@/api/workflow/workflowCommon';
+import type { RouterJumpVo } from '@/api/workflow/workflowCommon/types';
+
 const { proxy } = getCurrentInstance();
+const routerJump = useRouterJump();
+
 // 遮罩层
 const loading = ref(true);
 // 选中数组
@@ -143,15 +144,6 @@ const pagination = computed(() => {
   };
 });
 
-onMounted(() => {
-  getFinishList();
-});
-// 审批记录
-const handleApprovalRecord = (row: TaskVo) => {
-  if (approvalRecordRef.value) {
-    approvalRecordRef.value.init(row.processInstanceId);
-  }
-};
 /** 搜索按钮操作 */
 const handleQuery = () => {
   getFinishList();
@@ -177,4 +169,20 @@ const getFinishList = () => {
     })
     .finally(() => (loading.value = false));
 };
+
+/** 查看按钮操作 */
+const handleView = (row: TaskVo) => {
+  const routerJumpVo = reactive<RouterJumpVo>({
+    wfDefinitionConfigVo: row.wfDefinitionConfigVo,
+    wfNodeConfigVo: row.wfNodeConfigVo,
+    businessKey: row.businessKey,
+    taskId: row.id,
+    type: 'view',
+  });
+  routerJump(routerJumpVo);
+};
+
+onMounted(() => {
+  getFinishList();
+});
 </script>

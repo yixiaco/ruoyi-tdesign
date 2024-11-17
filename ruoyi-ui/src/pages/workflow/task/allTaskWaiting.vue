@@ -75,6 +75,9 @@
             </t-col>
           </t-row>
         </template>
+        <template #processDefinitionName="{ row }">
+          <span>{{ row.processDefinitionName }}v{{ row.processDefinitionVersion }}.0</span>
+        </template>
         <template #assigneeName="{ row }">
           <template v-if="tab === 'waiting'">
             <template v-if="row.participantVo && row.assignee === null">
@@ -89,40 +92,46 @@
             </template>
             <template v-else>
               <t-tag variant="light" theme="success">
-                {{ row.assigneeName }}
+                {{ row.assigneeName || '无' }}
               </t-tag>
             </template>
           </template>
           <template v-else-if="tab === 'finish'">
             <t-tag variant="light" theme="success">
-              {{ row.assigneeName }}
+              {{ row.assigneeName || '无' }}
             </t-tag>
           </template>
         </template>
-        <template #businessStatusName="{ row }">
-          <t-tag v-if="tab === 'waiting'" variant="light" theme="success">{{ row.businessStatusName }}</t-tag>
+        <template #businessStatus="{ row }">
+          <dict-tag v-if="tab === 'waiting'" :options="wf_business_status" :value="row.businessStatus"></dict-tag>
           <t-tag v-else variant="light" theme="success">已完成</t-tag>
         </template>
         <template #operation="{ row }">
           <t-space :size="8" break-line>
-            <t-link theme="primary" hover="color" size="small" @click.stop="handleApprovalRecord(row)">
-              <template #prefix-icon><root-list-icon /></template>审批记录
+            <t-link theme="primary" hover="color" size="small" @click.stop="handleView(row)">
+              <template #prefix-icon><browse-icon /></template>查看
             </t-link>
-            <t-link theme="primary" hover="color" size="small" @click.stop="addMultiInstanceUser(row)">
-              <template #prefix-icon><add-circle-icon /></template>加签
-            </t-link>
-            <t-link theme="primary" hover="color" size="small" @click.stop="deleteMultiInstanceUser(row)">
-              <template #prefix-icon><minus-circle-icon /></template>减签
-            </t-link>
-            <t-link theme="primary" hover="color" size="small" @click.stop="handleInstanceVariable(row)">
+            <t-link
+              v-if="tab === 'waiting'"
+              theme="primary"
+              hover="color"
+              size="small"
+              @click.stop="handleInstanceVariable(row)"
+            >
               <template #prefix-icon><calculator1-icon /></template>流程变量
             </t-link>
+            <template v-if="row.multiInstance">
+              <t-link theme="primary" hover="color" size="small" @click.stop="deleteMultiInstanceUser(row)">
+                <template #prefix-icon><minus-circle-icon /></template>减签
+              </t-link>
+              <t-link theme="primary" hover="color" size="small" @click.stop="addMultiInstanceUser(row)">
+                <template #prefix-icon><add-circle-icon /></template>加签
+              </t-link>
+            </template>
           </t-space>
         </template>
       </t-table>
     </t-space>
-    <!-- 审批记录 -->
-    <approval-record ref="approvalRecordRef" />
     <!-- 加签组件 -->
     <multi-instance-user ref="multiInstanceUserRef" :title="title" @submit-callback="handleQuery" />
     <!-- 选人组件 -->
@@ -156,11 +165,11 @@
 <script lang="ts" setup>
 import {
   AddCircleIcon,
+  BrowseIcon,
   Calculator1Icon,
   EditIcon,
   MinusCircleIcon,
   RefreshIcon,
-  RootListIcon,
   SearchIcon,
   SettingIcon,
 } from 'tdesign-icons-vue-next';
@@ -170,11 +179,10 @@ import { computed, ref } from 'vue';
 import type { SysUserVo } from '@/api/system/model/userModel';
 import { getInstanceVariable, getPageByAllTaskFinish, getPageByAllTaskWait, updateAssignee } from '@/api/workflow/task';
 import type { TaskQuery, TaskVo, VariableVo } from '@/api/workflow/task/types';
-import ApprovalRecord from '@/components/Process/approvalRecord.vue';
+import { useRouterJump } from '@/api/workflow/workflowCommon';
+import type { RouterJumpVo } from '@/api/workflow/workflowCommon/types';
 import MultiInstanceUser from '@/components/Process/multiInstanceUser.vue';
 import UserSelect from '@/components/user-select/index.vue';
-// 审批记录组件
-const approvalRecordRef = ref<InstanceType<typeof ApprovalRecord>>();
 // 加签组件
 const multiInstanceUserRef = ref<InstanceType<typeof MultiInstanceUser>>();
 // 选人组件
@@ -183,6 +191,9 @@ const userSelectRef = ref<InstanceType<typeof UserSelect>>();
 const columnControllerVisible = ref(false);
 
 const { proxy } = getCurrentInstance();
+const routerJump = useRouterJump();
+const { wf_business_status } = proxy.useDict('wf_business_status');
+
 // 遮罩层
 const loading = ref(true);
 // 选中数组
@@ -196,7 +207,7 @@ const showSearch = ref(true);
 // 总条数
 const total = ref(0);
 // 模型定义表格数据
-const taskList = ref([]);
+const taskList = ref<TaskVo[]>([]);
 const title = ref('');
 // 流程变量是否显示
 const variableVisible = ref(false);
@@ -204,7 +215,7 @@ const variableLoading = ref(true);
 // 流程变量
 const variableList = ref<VariableVo[]>([]);
 // 流程定义名称
-const processDefinitionName = ref(undefined);
+const processDefinitionName = ref();
 // 查询参数
 const queryParams = ref<TaskQuery>({
   pageNum: 1,
@@ -225,7 +236,7 @@ const columns = computed<Array<PrimaryTableCol>>(
       { title: `流程定义KEY`, colKey: 'processDefinitionKey', align: 'center' },
       { title: `任务名称`, colKey: 'name', align: 'center' },
       { title: `办理人`, colKey: 'assigneeName', align: 'center' },
-      { title: `流程状态`, colKey: 'businessStatusName', align: 'center' },
+      { title: `流程状态`, colKey: 'businessStatus', align: 'center' },
       { title: `创建时间`, colKey: 'createTime', align: 'center', width: '10%', minWidth: 112 },
       { title: `创建时间`, colKey: 'startTime', align: 'center', width: '10%', minWidth: 112 },
       { title: `结束时间`, colKey: 'endTime', align: 'center', width: '10%', minWidth: 112 },
@@ -255,15 +266,6 @@ const pagination = computed(() => {
   };
 });
 
-onMounted(() => {
-  getWaitingList();
-});
-// 审批记录
-const handleApprovalRecord = (row: TaskVo) => {
-  if (approvalRecordRef.value) {
-    approvalRecordRef.value.init(row.processInstanceId);
-  }
-};
 // 加签
 const addMultiInstanceUser = (row: TaskVo) => {
   if (multiInstanceUserRef.value) {
@@ -299,6 +301,7 @@ const handleSelectionChange = (selection: Array<string | number>) => {
   multiple.value = !selection.length;
 };
 const changeTab = async (data: string) => {
+  taskList.value = [];
   queryParams.value.pageNum = 1;
   if (data === 'waiting') {
     getWaitingList();
@@ -349,4 +352,20 @@ const handleInstanceVariable = async (row: TaskVo) => {
   variableList.value = data.data;
   variableLoading.value = false;
 };
+
+/** 查看按钮操作 */
+const handleView = (row: TaskVo) => {
+  const routerJumpVo = reactive<RouterJumpVo>({
+    wfDefinitionConfigVo: row.wfDefinitionConfigVo,
+    wfNodeConfigVo: row.wfNodeConfigVo,
+    businessKey: row.businessKey,
+    taskId: row.id,
+    type: 'view',
+  });
+  routerJump(routerJumpVo);
+};
+
+onMounted(() => {
+  getWaitingList();
+});
 </script>
