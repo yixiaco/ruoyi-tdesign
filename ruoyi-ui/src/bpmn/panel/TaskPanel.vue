@@ -17,7 +17,7 @@
               <t-input v-model="formData.name" @change="nameChange($event as string)"> </t-input>
             </t-form-item>
             <t-form-item v-if="showConfig.skipExpression" name="skipExpression" label="跳过表达式">
-              <t-input v-model="formData.skipExpression" @change="skipExpressionChange"> </t-input>
+              <t-input v-model="formData.skipExpression" @change="skipExpressionChange($event as string)"> </t-input>
             </t-form-item>
             <t-loading :loading="formManageListLoading">
               <t-form-item name="formKey" label="表单地址">
@@ -51,13 +51,7 @@
           </template>
           <div>
             <t-form-item v-if="showConfig.async" name="sync" label="是否异步">
-              <t-switch
-                v-model="formData.async"
-                inline-prompt
-                active-text="是"
-                inactive-text="否"
-                @change="syncChange"
-              />
+              <t-switch v-model="formData.async" :label="['是', '否']" @change="syncChange" />
             </t-form-item>
 
             <t-tabs placement="left" class="demo-tabs" default-value="1">
@@ -126,7 +120,12 @@
             </t-tabs>
 
             <t-form-item v-if="showConfig.dueDate" name="dueDate" label="到期时间">
-              <t-input v-model="formData.dueDate" clearable @change="dueDateChange" @click="openDueDate">
+              <t-input
+                v-model="formData.dueDate"
+                clearable
+                @change="dueDateChange($event as string)"
+                @click="openDueDate"
+              >
                 <template #suffixIcon>
                   <search-icon class="cursor-pointer" @click="openDueDate" />
                 </template>
@@ -174,7 +173,7 @@
                     </t-tooltip>
                   </span>
                 </template>
-                <t-input v-model="formData.collection" @change="collectionChange"></t-input>
+                <t-input v-model="formData.collection" @change="collectionChange($event as string)"></t-input>
               </t-form-item>
               <t-form-item label="元素变量">
                 <template #label>
@@ -190,7 +189,8 @@
                     </t-tooltip>
                   </span>
                 </template>
-                <t-input v-model="formData.elementVariable" @change="elementVariableChange"> </t-input>
+                <t-input v-model="formData.elementVariable" @change="elementVariableChange($event as string)">
+                </t-input>
               </t-form-item>
               <t-form-item label="完成条件">
                 <template #label>
@@ -207,7 +207,7 @@
                     </t-tooltip>
                   </span>
                 </template>
-                <t-input v-model="formData.completionCondition" @change="completionConditionChange"> </t-input>
+                <t-input v-model="formData.completionCondition" @change="completionConditionChange($event as string)" />
               </t-form-item>
             </div>
           </div>
@@ -357,7 +357,7 @@ const openRoleSelect = () => {
 const openDueDate = (e) => {
   dueDateRef.value.openDialog();
 };
-const blurAssignee = (assignee) => {
+const blurAssignee = (assignee: string) => {
   updateProperties({ 'flowable:assignee': assignee || undefined });
 };
 const singleUserSelectCallBack = (data: SysUserVo[]) => {
@@ -424,19 +424,19 @@ const taskTabClick = (e) => {
   assignee.value = {};
 };
 
-const syncChange = (newVal) => {
+const syncChange = (newVal: any) => {
   updateProperties({ 'flowable:async': newVal });
 };
-const skipExpressionChange = (newVal) => {
+const skipExpressionChange = (newVal: string) => {
   updateProperties({ 'flowable:skipExpression': newVal && newVal.length > 0 ? newVal : undefined });
 };
-const priorityChange = (newVal) => {
+const priorityChange = (newVal: string | number) => {
   updateProperties({ 'flowable:priority': newVal });
 };
 const fixedAssigneeChange = (newVal) => {
   updateProperties({ 'flowable:assignee': newVal && newVal.length > 0 ? newVal : undefined });
 };
-const multiInstanceTypeChange = (newVal) => {
+const multiInstanceTypeChange = (newVal: string) => {
   if (newVal !== MultiInstanceTypeEnum.NONE) {
     let loopCharacteristics = props.element.businessObject.get('loopCharacteristics');
     if (!loopCharacteristics) {
@@ -452,7 +452,7 @@ const multiInstanceTypeChange = (newVal) => {
     updateProperties({ loopCharacteristics: undefined });
   }
 };
-const collectionChange = (newVal) => {
+const collectionChange = (newVal: string) => {
   let loopCharacteristics = props.element.businessObject.get('loopCharacteristics');
   if (!loopCharacteristics) {
     loopCharacteristics = createModdleElement(
@@ -464,7 +464,7 @@ const collectionChange = (newVal) => {
   loopCharacteristics.collection = newVal && newVal.length > 0 ? newVal : undefined;
   updateProperties({ loopCharacteristics });
 };
-const elementVariableChange = (newVal) => {
+const elementVariableChange = (newVal: string) => {
   let loopCharacteristics = props.element.businessObject.get('loopCharacteristics');
   if (!loopCharacteristics) {
     loopCharacteristics = createModdleElement(
@@ -476,7 +476,7 @@ const elementVariableChange = (newVal) => {
   loopCharacteristics.elementVariable = newVal && newVal.length > 0 ? newVal : undefined;
   updateProperties({ loopCharacteristics });
 };
-const completionConditionChange = (newVal) => {
+const completionConditionChange = (newVal: string) => {
   let loopCharacteristics = props.element.businessObject.get<ModdleElement>('loopCharacteristics');
   if (!loopCharacteristics) {
     loopCharacteristics = createModdleElement(
@@ -500,7 +500,7 @@ const completionConditionChange = (newVal) => {
   }
   updateProperties({ loopCharacteristics });
 };
-const dueDateChange = (newVal) => {
+const dueDateChange = (newVal: string) => {
   updateProperties({ 'flowable:dueDate': newVal && newVal.length > 0 ? newVal : undefined });
 };
 const selectUserLength = computed(() => {

@@ -105,6 +105,7 @@ defineOptions({
   name: 'RoleSelect',
 });
 
+import cloneDeep from 'lodash/cloneDeep';
 import { RefreshIcon, SearchIcon, SettingIcon } from 'tdesign-icons-vue-next';
 import type { PageInfo, PrimaryTableCol, TableProps, TableSort } from 'tdesign-vue-next';
 import { computed, getCurrentInstance, type PropType, ref } from 'vue';
@@ -124,8 +125,7 @@ const props = defineProps({
   data: [String, Number, Array] as PropType<string | number | Array<string | number>>,
 });
 
-const modelValue = defineModel({
-  type: Array as PropType<SysRoleVo[]>,
+const modelValue = defineModel<SysRoleVo[]>({
   default: () => [] as SysRoleVo[],
 });
 
@@ -146,7 +146,7 @@ const computedIds = (data: string | number | Array<string | number>) => {
   console.warn('<role-select> The data type of data should be array or string or number, but I received other');
   return [];
 };
-const defaultSelectRoleIds = computed(() => computedIds(props.data));
+const defaultSelectRoleIds = computed(() => computedIds(props.data).filter((item) => item));
 
 const roleDialog = useDialog({
   title: '角色选择',
@@ -192,10 +192,6 @@ const pagination = computed(() => {
       getList();
     },
   };
-});
-
-watchEffect(() => {
-  selectRoleList.value = modelValue.value;
 });
 
 /** 查询角色列表 */
@@ -263,9 +259,7 @@ function onSubmit() {
   const value = [...selectRoleList.value];
   modelValue.value = value;
   emit('confirmCallBack', value);
-  nextTick(() => {
-    roleDialog.closeDialog();
-  });
+  roleDialog.closeDialog();
 }
 
 const handleCloseTag = (index: number) => {
@@ -281,8 +275,6 @@ const initSelectRole = async () => {
   if (defaultSelectRoleIds.value.length > 0) {
     const { data } = await roleOptionSelect(defaultSelectRoleIds.value);
     selectRoleList.value = data;
-  } else {
-    selectRoleList.value = modelValue.value;
   }
 };
 

@@ -186,7 +186,7 @@ const computedIds = (data: string | number | Array<string | number>) => {
   console.warn('<user-select> The data type of data should be array or string or number, but I received other');
   return [];
 };
-const defaultSelectUserIds = computed(() => computedIds(props.data));
+const defaultSelectUserIds = computed(() => computedIds(props.data).filter((item) => item));
 
 const selectUserList = ref<SysUserVo[]>([]);
 const userList = ref<SysUserVo[]>([]);
