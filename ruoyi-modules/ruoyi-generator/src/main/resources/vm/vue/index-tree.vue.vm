@@ -539,7 +539,7 @@ const rules = ref<Record<string, Array<FormRule>>>({
 #else
 #set($comment=$column.columnComment)
 #end
-  $column.javaField: [#if($column.isRequired()){ required: true, message: '$comment不能为空' }#end#if($column.javaType == 'String' && $length > 0)#if($column.isRequired()), #end{ max: $length, message: '${comment}不能超过${length}个字符}' }#end],
+  $column.javaField: [#if($column.isRequired()){ required: true, message: '$comment不能为空' }#end#if($column.javaType == 'String' && $length > 0)#if($column.isRequired()), #end{ max: $length, message: '${comment}不能超过${length}个字符' }#end],
 #end
 #end
 #end
