@@ -237,17 +237,17 @@ const multiple = ref(true);
 const rules = ref<Record<string, Array<FormRule>>>({
   formName: [
     { required: true, message: '表单名称不能为空' },
-    { max: 255, message: '表单名称不能超过255个字符}' },
+    { max: 255, message: '表单名称不能超过255个字符' },
   ],
   formType: [
     { required: true, message: '表单类型不能为空' },
-    { max: 255, message: '表单类型不能超过255个字符}' },
+    { max: 255, message: '表单类型不能超过255个字符' },
   ],
   router: [
     { required: true, message: '路由地址/表单ID不能为空' },
-    { max: 255, message: '路由地址/表单ID不能超过255个字符}' },
+    { max: 255, message: '路由地址/表单ID不能超过255个字符' },
   ],
-  remark: [{ max: 500, message: '备注不能超过500个字符}' }],
+  remark: [{ max: 500, message: '备注不能超过500个字符' }],
 });
 
 // 列显隐信息

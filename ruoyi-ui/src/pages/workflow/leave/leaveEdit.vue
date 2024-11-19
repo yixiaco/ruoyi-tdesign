@@ -124,7 +124,7 @@ const taskVariables = ref<Record<string, any>>({});
 const rules = ref<Record<string, Array<FormRule>>>({
   leaveType: [{ required: true, message: '请假类型不能为空' }],
   leaveDays: [{ required: true, message: '请假天数不能为空' }],
-  remark: [{ max: 255, message: '请假原因不能超过255个字符}' }],
+  remark: [{ max: 255, message: '请假原因不能超过255个字符' }],
 });
 
 const form = ref<TestLeaveVo & TestLeaveForm>({});

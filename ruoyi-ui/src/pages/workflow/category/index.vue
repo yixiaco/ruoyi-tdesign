@@ -220,8 +220,8 @@ const expandedTreeNodes = ref([]);
 
 // 校验规则
 const rules = ref<Record<string, Array<FormRule>>>({
-  categoryName: [{ max: 255, message: '分类名称不能超过255个字符}' }],
-  categoryCode: [{ max: 255, message: '分类编码不能超过255个字符}' }],
+  categoryName: [{ max: 255, message: '分类名称不能超过255个字符' }],
+  categoryCode: [{ max: 255, message: '分类编码不能超过255个字符' }],
 });
 
 // 列显隐信息

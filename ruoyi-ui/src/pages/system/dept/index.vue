@@ -298,7 +298,7 @@ const expandedTreeNodes = ref([]);
 const rules = ref<Record<string, Array<FormRule>>>({
   parentId: [{ required: true, message: '上级部门不能为空' }],
   deptName: [{ required: true, message: '部门名称不能为空' }],
-  deptCategory: [{ max: 100, message: '部门类别编码不能超过100个字符}' }],
+  deptCategory: [{ max: 100, message: '部门类别编码不能超过100个字符' }],
   orderNum: [{ required: true, message: '显示排序不能为空' }],
   email: [{ email: true, message: '请输入正确的邮箱地址' }],
   phone: [{ pattern: /^1[3456789][0-9]\d{8}$/, message: '请输入正确的手机号码' }],
