@@ -377,13 +377,13 @@ const testResult = ref<SysSensitiveWordTestVo>();
 const rules = ref<Record<string, Array<FormRule>>>({
   word: [
     { required: true, message: '敏感词不能为空' },
-    { max: 255, message: '敏感词不能超过255个字符}' },
+    { max: 255, message: '敏感词不能超过255个字符' },
   ],
   category: [
     { required: true, message: '敏感词类别不能为空' },
-    { max: 20, message: '敏感词类别不能超过20个字符}' },
+    { max: 20, message: '敏感词类别不能超过20个字符' },
   ],
-  description: [{ max: 500, message: '描述不能超过500个字符}' }],
+  description: [{ max: 500, message: '描述不能超过500个字符' }],
   status: [{ required: true, message: '启用状态不能为空' }],
 });
 const testRules = ref<Record<string, Array<FormRule>>>({
