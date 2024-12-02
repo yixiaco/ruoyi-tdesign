@@ -244,6 +244,50 @@ const navToHelper = () => {
   }
 }
 
+// 菜单溢出时，显示滚动条
+.@{starter-prefix}-header-menu-fixed {
+  :deep(.t-menu) {
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    @thumbThickness: 4px;
+    @trackThickness: 4px;
+
+    &::-webkit-scrollbar {
+      width: @trackThickness; /* 滚动条的宽度 */
+      height: @trackThickness; /* 横向滚动条的高度 */
+      background-color: transparent;
+    }
+
+    /* 滚动条轨道 */
+    &::-webkit-scrollbar-track {
+      background-color: var(--td-scroll-track-color); /* 轨道的背景色 */
+      border-radius: @trackThickness; /* 轨道的圆角 */
+    }
+
+    &::-webkit-scrollbar-track:hover {
+      background-color: var(--td-scroll-track-color); /* 轨道的背景色 */
+    }
+
+    &::-webkit-scrollbar-corner {
+      width: 0;
+    }
+
+    /* 滚动条滑块 */
+    &::-webkit-scrollbar-thumb {
+      border-radius: calc(@trackThickness / 2); /* 滑块的圆角 */
+      border: calc((@trackThickness - @thumbThickness) / 2) solid transparent;
+      background-clip: padding-box;
+      background-color: var(--td-scrollbar-color); /* 滑块的背景色 */
+    }
+
+    /* 滑块在悬停时的样式 */
+    &::-webkit-scrollbar-thumb:hover {
+      background-color: var(--td-scrollbar-hover-color); /* 滑块悬停时的背景色 */
+    }
+  }
+}
+
 .header-menu {
   flex: 1 1 1;
   display: inline-flex;
