@@ -905,6 +905,7 @@ insert into sys_dict_type values(14, '000000', '消息模板类型', 'sys_messag
 insert into sys_dict_type values(15, '000000', '授权类型', 'sys_grant_type',     103, 1, now(), null, null, '认证授权类型');
 insert into sys_dict_type values(16, '000000', '设备类型', 'sys_device_type',    103, 1, now(), null, null, '客户端设备类型');
 insert into sys_dict_type values(17, '000000', '敏感词类别', 'sensitive_words_category', 103, 1, now(), 1, now(), null);
+insert into sys_dict_type values(18, '000000', 'OSS的URL风格', 'oss_url_style', 103, 1, now(), 1, now(), 'https://docs.aws.amazon.com/zh_cn/AmazonS3/latest/userguide/VirtualHosting.html#VirtualHostingControl');
 
 
 -- ----------------------------
@@ -1008,6 +1009,8 @@ insert into sys_dict_data values(59, '000000', 12, '鼎众短信', 'DING_ZHONG',
 insert into sys_dict_data values(60, '000000', 13, '联麓短信', 'LIAN_LU', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, now(), 1, now(), null);
 insert into sys_dict_data values(61, '000000', 14, '七牛云短信', 'QI_NIU', 'sys_message_supplier_type', null, 'primary', null, 'N', 103, 1, now(), 1, now(), null);
 insert into sys_dict_data values(70, '000000', 99, '其他', 'other', 'sensitive_words_category', null, 'primary', null, 'N', 103, 1, now(), 1, now(), null);
+insert into sys_dict_data values(71, '000000', 1,  '拟托管风格', '0', 'oss_url_style',  '',   '', '',  'Y', 104, 1, now(), 1, now(), '示例：<bucket-name>.s3.region-code.amazonaws.com');
+insert into sys_dict_data values(72, '000000', 2,  '路径风格',   '1', 'oss_url_style',  '',   '', '',  'N', 104, 1, now(), 1, now(), '示例：s3.region-code.amazonaws.com/<bucket-name>');
 
 
 
@@ -1342,6 +1345,7 @@ create table if not exists sys_oss_config
     prefix        varchar(255) default ''::varchar,
     endpoint      varchar(255) default ''::varchar,
     domain        varchar(255) default ''::varchar,
+    url_style     char(1)      default '0'::bpchar not null,
     is_https      char         default 'N'::bpchar,
     region        varchar(255) default ''::varchar,
     access_policy char(1)      default '1'::bpchar not null,
@@ -1367,6 +1371,7 @@ comment on column sys_oss_config.bucket_name    is '桶名称';
 comment on column sys_oss_config.prefix         is '前缀';
 comment on column sys_oss_config.endpoint       is '访问站点';
 comment on column sys_oss_config.domain         is '自定义域名';
+comment on column sys_oss_config.url_style      is 'URL风格（0=路径风格，1=虚拟托管风格）';
 comment on column sys_oss_config.is_https       is '是否https（Y=是,N=否）';
 comment on column sys_oss_config.region         is '域';
 comment on column sys_oss_config.access_policy  is '桶权限类型(0=private 1=public 2=custom)';
