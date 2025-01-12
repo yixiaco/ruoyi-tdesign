@@ -173,16 +173,16 @@ public class OssClient {
         String endpoint = properties.getEndpoint();
         String protocol = OssConstant.IS_HTTPS.equals(properties.getIsHttps()) ? "https://" : "http://";
         boolean pathStyleAccessEnabled = OssConstant.IS_HTTPS.equals(properties.getIsHttps());
-        boolean customDomain = StringUtils.isBlank(domain);
+        boolean customDomainIsBlank = StringUtils.isBlank(domain);
         // 路径风格访问
         if (pathStyleAccessEnabled) {
-            if (customDomain) {
+            if (customDomainIsBlank) {
                 return protocol + endpoint + "/" + properties.getBucketName();
             }
             return protocol + domain + "/" + properties.getBucketName();
         }
         // 虚拟主机域名风格访问
-        if (customDomain) {
+        if (customDomainIsBlank) {
            return protocol + properties.getBucketName() + "." + endpoint;
         }
         return protocol + domain;
