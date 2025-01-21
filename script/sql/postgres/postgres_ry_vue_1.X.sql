@@ -1371,7 +1371,7 @@ comment on column sys_oss_config.bucket_name    is '桶名称';
 comment on column sys_oss_config.prefix         is '前缀';
 comment on column sys_oss_config.endpoint       is '访问站点';
 comment on column sys_oss_config.domain         is '自定义域名';
-comment on column sys_oss_config.url_style      is 'URL风格（0=路径风格，1=虚拟托管风格）';
+comment on column sys_oss_config.url_style      is 'URL风格（0=虚拟托管风格，1=路径风格）';
 comment on column sys_oss_config.is_https       is '是否https（Y=是,N=否）';
 comment on column sys_oss_config.region         is '域';
 comment on column sys_oss_config.access_policy  is '桶权限类型(0=private 1=public 2=custom)';

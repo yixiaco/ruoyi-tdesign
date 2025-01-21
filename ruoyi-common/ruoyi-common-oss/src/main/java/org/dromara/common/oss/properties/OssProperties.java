@@ -66,7 +66,7 @@ public class OssProperties {
     private Boolean createBucket;
 
     /**
-     * url风格（0虚拟主机风格，1路径风格）
+     * url风格（0=虚拟托管风格，1=路径风格）
      *
      * @see https://docs.aws.amazon.com/zh_cn/AmazonS3/latest/userguide/VirtualHosting.html
      */

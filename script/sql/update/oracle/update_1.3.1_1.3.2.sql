@@ -1,6 +1,6 @@
 -- OSS表增加url_style字段
 ALTER TABLE sys_oss_config ADD (url_style char(1) DEFAULT '0');
-comment on column sys_oss_config.url_style is 'URL风格（0=路径风格，1=虚拟托管风格）';
+comment on column sys_oss_config.url_style is 'URL风格（0=虚拟托管风格，1=路径风格）';
 
 -- 旧数据迁移，包含 aliyun、obs、qcloud、qiniu 等改为虚拟托管，其余改为路径风格
 UPDATE sys_oss_config

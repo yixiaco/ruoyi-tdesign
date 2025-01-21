@@ -988,8 +988,8 @@ insert into sys_dict_data values(59, '000000', 12, '鼎众短信', 'DING_ZHONG',
 insert into sys_dict_data values(60, '000000', 13, '联麓短信', 'LIAN_LU', 'sys_message_supplier_type', null, 'primary', '', 'N', 103, 1, sysdate, 1, sysdate, null);
 insert into sys_dict_data values(61, '000000', 14, '七牛云短信', 'QI_NIU', 'sys_message_supplier_type', null, 'primary', null, 'N', 103, 1, sysdate, 1, sysdate, null);
 insert into sys_dict_data values(70, '000000', 99, '其他', 'other', 'sensitive_words_category', null, 'primary', null, 'N', 103, 1, sysdate, 1, sysdate, null);
-insert into sys_dict_data values(71, '000000', 1,  '拟托管风格', '0', 'oss_url_style',  '',   '', '',  'Y', 104, 1, sysdate, null, null, '示例：<bucket-name>.s3.region-code.amazonaws.com');
-insert into sys_dict_data values(72, '000000', 2,  '路径风格',   '1', 'oss_url_style',  '',   '', '',  'N', 104, 1, sysdate, null, null, '示例：s3.region-code.amazonaws.com/<bucket-name>');
+insert into sys_dict_data values(71, '000000', 1,  '虚拟托管风格', '0', 'oss_url_style',  '',   '', '',  'Y', 103, 1, sysdate, null, null, '示例：<bucket-name>.s3.region-code.amazonaws.com');
+insert into sys_dict_data values(72, '000000', 2,  '路径风格',   '1', 'oss_url_style',  '',   '', '',  'N', 103, 1, sysdate, null, null, '示例：s3.region-code.amazonaws.com/<bucket-name>');
 
 
 -- ----------------------------
@@ -1340,6 +1340,7 @@ comment on column sys_oss_config.bucket_name    is '桶名称';
 comment on column sys_oss_config.prefix         is '前缀';
 comment on column sys_oss_config.endpoint       is '访问站点';
 comment on column sys_oss_config.domain         is '自定义域名';
+comment on column sys_oss_config.url_style      is 'URL（0=虚拟托管风格，1=路径风格）';
 comment on column sys_oss_config.is_https       is '是否https（Y=是,N=否）';
 comment on column sys_oss_config.region         is '域';
 comment on column sys_oss_config.access_policy  is '桶权限类型(0=private 1=public 2=custom)';

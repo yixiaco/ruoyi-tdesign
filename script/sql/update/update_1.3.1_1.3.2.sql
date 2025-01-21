@@ -9,7 +9,7 @@ SET url_style =
     END;
 
 -- 添加字典类型
-insert into sys_dict_type values(18, '000000', 'URL风格（0=路径风格，1=虚拟托管风格）', 'oss_url_style', 103, 1, sysdate(), 1, sysdate(), null);
+insert into sys_dict_type values(18, '000000', 'URL风格（0=虚拟托管风格，1=路径风格）', 'oss_url_style', 103, 1, sysdate(), 1, sysdate(), null);
 -- 添加字典数据
 insert into sys_dict_data values(71, '000000', 1,  '拟托管风格', '0', 'oss_url_style',  '',   '', '',  'Y', 18, 1, sysdate(), null, null, '示例：<bucket-name>.s3.region-code.amazonaws.com');
 insert into sys_dict_data values(72, '000000', 2,  '路径风格',   '1', 'oss_url_style',  '',   '', '',  'N', 18, 1, sysdate(), null, null, '示例：s3.region-code.amazonaws.com/<bucket-name>');
