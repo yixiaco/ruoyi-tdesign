@@ -239,13 +239,13 @@
             <span>
               <template v-if="form.isHttps === 'Y'">https://</template>
               <template v-else-if="form.isHttps === 'N'">http://</template>
-              <template v-if="form.urlStyle === '0'">
+              <template v-if="form.urlStyle === '1'">
+                <template v-if="form.domain">{{ form.domain }}/{{ form.bucketName }}</template>
+                <template v-else>{{ form.endpoint }}/{{ form.bucketName }}</template>
+              </template>
+              <template v-else-if="form.urlStyle === '0'">
                 <template v-if="form.domain">{{ form.domain }}</template>
                 <template v-else>{{ form.bucketName }}.{{ form.endpoint }}</template>
-              </template>
-              <template v-if="form.urlStyle === '1'">
-                <template v-if="form.domain">{{ form.domain }}</template>
-                <template v-else>{{ form.endpoint }}/{{ form.bucketName }}</template>
               </template>
               <template v-if="form.prefix">/{{ form.prefix }}</template>
             </span>
