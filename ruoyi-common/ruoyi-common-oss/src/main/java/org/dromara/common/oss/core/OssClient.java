@@ -172,7 +172,7 @@ public class OssClient {
         String domain = properties.getDomain();
         String endpoint = properties.getEndpoint();
         String protocol = OssConstant.IS_HTTPS.equals(properties.getIsHttps()) ? "https://" : "http://";
-        boolean pathStyleAccessEnabled = OssConstant.IS_HTTPS.equals(properties.getIsHttps());
+        boolean pathStyleAccessEnabled = OssConstant.PATH_STYLE_ACCESS_ENABLED.equals(properties.getUrlStyle());
         boolean customDomainIsBlank = StringUtils.isBlank(domain);
         // 路径风格访问
         if (pathStyleAccessEnabled) {
